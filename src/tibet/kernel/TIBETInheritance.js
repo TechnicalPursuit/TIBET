@@ -12303,6 +12303,155 @@ function(fullName) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.Namespace.Inst.defineMethod('definePseudoNativeModule',
+function(typeNamesToExport) {
+
+    /**
+     * @method definePseudoNativeModule
+     * @summary Defines types belonging to this namespace as TIBET ECMA classes
+     *     and exports them, putting the definition into the TIBET cache so that
+     *     it can be found by code that wants to use these types as ECMA
+     *     classes.
+     * @param {String[]} [typeNamesToExport] An optional Array of type names to
+     *     export. If this is not supplied, then all types belonging to this
+     *     namespace will be exported. Note that these type names should be the
+     *     *local* type name for the type, not the global one (i.e. 'Point' not
+     *     'TP.gui.Point'. Also, these types should belong to the receiver
+     *     namespace.
+     * @returns {TP.lang.Namespace} The receiver.
+     */
+
+    var moduleName,
+        moduleRoot,
+        modulePrefix,
+
+        moduleExportNames,
+        moduleBody,
+
+        typeNames,
+
+        len,
+        i,
+        typeName,
+        fullyQualifiedTypeName,
+        fullyQualifiedType,
+
+        defaultDefinition;
+
+    moduleName = TP.escapeTypeName(this.getName());
+    moduleRoot = this.getNamespaceRoot();
+    modulePrefix = this.getNamespacePrefix();
+
+    moduleExportNames = TP.ac();
+
+    moduleBody = '';
+
+    //  If an Array of specific typenames was supplied to export, then iterate
+    //  over them, computing a fully qualified type name using the namespace and
+    //  checking to make sure that is a valid type. We can only process types
+    //  that belong in this namespace.
+    if (TP.isArray(typeNamesToExport)) {
+        typeNames = TP.ac();
+
+        len = typeNamesToExport.getSize();
+        for (i = 0; i < len; i++) {
+            typeName = typeNamesToExport.at(i);
+            if (/[.:]/.test(typeName)) {
+                TP.ifError() ?
+                    TP.error('Invalid name: ' +
+                                typeName +
+                                '. Use local type name') : 0;
+                return this;
+            }
+
+            //  Build a fully qualified type name using the receiver's root and
+            //  prefix and the type name.
+            fullyQualifiedTypeName = moduleRoot + '.' +
+                                        modulePrefix + '.' +
+                                        typeName;
+
+            //  If a type cannot be found under that type name then it either
+            //  doesn't exist or it doesn't belong to the receiver.
+            fullyQualifiedType = TP.sys.getTypeByName(fullyQualifiedTypeName);
+            if (!TP.isType(fullyQualifiedType)) {
+                return this.raise('TP.sig.InvalidType');
+            }
+
+            typeNames.push(fullyQualifiedTypeName);
+        }
+    } else {
+        typeNames = this.getTypeNames();
+    }
+
+    //  Iterate over all of the type names and build code that will define a
+    //  'native class' proxy for each type we're going to export using TIBET's
+    //  defineNativeClass method.
+    typeNames.forEach(
+        function(aTypeName) {
+            var type,
+                typeLocalName,
+
+                typeNameForECMAClass;
+
+            type = TP.sys.getTypeByName(aTypeName);
+            typeLocalName = type.getLocalName();
+
+            //  Generate the type name for the proxy class. This will take for
+            //  the form of 'TP.proxy.ECMA_<prefix>_<typename>_Class'.
+            typeNameForECMAClass =
+                'TP.proxy.ECMA_' +
+                modulePrefix + '_' + typeLocalName + '_Class';
+
+            //  Add the code that will cause TIBET to define a native class
+            //  (with an empty class body) and also define a local variable
+            //  pointing to the defined proxy class object. This will allow the
+            //  simplistic ECMA module syntax to work (it doesn't allow export
+            //  of dot-separated names).
+            moduleBody += type.getName() + '.defineNativeClass(' +
+                            '\'' + typeNameForECMAClass + '\',' +
+                            'class extends Object { })' +
+                            ';\n';
+            moduleBody += 'const ' +
+                            typeLocalName +
+                            ' = ' +
+                            typeNameForECMAClass +
+                            ';\n\n';
+
+            moduleExportNames.push(typeLocalName);
+        });
+
+    //  Build a 'default' object definition for the module that exports all of
+    //  the exported symbol names as an object literal. This will act as a
+    //  'namespace' for the module.
+    defaultDefinition = '{';
+    moduleExportNames.forEach(
+        function(aName) {
+            defaultDefinition += '\'' + aName + '\'' +
+                                    ': ' +
+                                    aName +
+                                    ', ';
+        });
+    defaultDefinition = defaultDefinition.slice(0, -2) + '}';
+
+    //  Add the default 'export' statement.
+    moduleBody += 'export default ' + defaultDefinition + ';\n\n';
+
+    //  Add the 'export' statement that exports all of the individual 'class'
+    //  names.
+    moduleBody += 'export {' + moduleExportNames.join(', ') + '};';
+
+    //  Store the module in the pseudo module cache under a name that can be
+    //  imported into native ECMAScript modules.
+    caches.open('TIBET_PSEUDO_MODULE_CACHE').then(
+        function(cache) {
+            cache.put(moduleName + '.js', new Response(moduleBody));
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Namespace.Inst.defineMethod('getKeys',
 function() {
 
