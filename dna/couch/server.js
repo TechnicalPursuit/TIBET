@@ -23,6 +23,7 @@
         certFile,           // Name of the certificate file.
         certKey,            // Name of the key file for certs.
         certPath,           // Directory containing cert data.
+        sslErrMsg,          // SSL Error msg containing useful information.
         key,                // The key file data.
         cert,               // The cert file data.
         env,                // Current execution environment.
@@ -321,6 +322,21 @@
         certKey = TDS.getcfg('tds.cert.key') || 'ssl.key';
         certFile = TDS.getcfg('tds.cert.file') || 'ssl.crt';
 
+        sslErrMsg =
+            'You can generate a self-signed certificate *which should be used' +
+            ' for development\n' +
+            'purposes only* by executing the following commands' +
+            '(assuming openssl\n' +
+            'is installed on your system):\n\n' +
+
+            'mkdir etc;' +
+            ' openssl req -nodes -new -x509' +
+            ' -keyout ./etc/ssl.key -out ./etc/ssl.crt\n\n' +
+
+            'Note that the only required fields are \'Common Name\' (which' +
+            ' should be set to\n' +
+            '\'localhost\') and \'Email Address\'\n\n';
+
         try {
             certKey = path.join(certPath, certKey);
             key = fs.readFileSync(certKey);
@@ -336,6 +352,7 @@
         }
 
         if (!key || !cert) {
+            TDS.logger.error(sslErrMsg);
             if (TDS.logger.flush) {
                 TDS.logger.flush(true);
             }
