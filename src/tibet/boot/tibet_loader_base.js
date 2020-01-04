@@ -9272,7 +9272,8 @@ TP.boot.$sourceUrlImport = function(scriptUrl, targetDoc, callback, shouldThrow)
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
+TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow,
+isECMAModule) {
 
     /**
      * @method $sourceImport
@@ -9288,6 +9289,9 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
      *     supplied.
      * @param {Boolean} shouldThrow True to cause errors to throw a native Error
      *     so outer catch blocks will trigger.
+     * @param {Boolean} isECMAModule Whether or not the source being imported is
+     *     an ECMAScript Module. If so, the script tag created to hold the
+     *     supplied script file or text will have a 'type="module"' attribute.
      * @returns {HTMLElement} The new 'script' element that was created to
      *     import the code.
      */
@@ -9327,6 +9331,12 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
     //  load the source the 'DOM way' so we get commented source
     elem = TP.boot.$$scriptTemplate.cloneNode(true);
     TP.boot.$$loadNode = elem;
+
+    //  if this is an ECMA Module, set a 'type' of 'module' on the new script
+    //  element.
+    if (isECMAModule) {
+        elem.setAttribute('type', 'module');
+    }
 
     //  ensure we keep track of the proper package/config information
     TP.boot.$$loadNode.setAttribute('loadpkg',
@@ -9652,6 +9662,7 @@ TP.boot.$importComponents = function(loadSync) {
     var j,
         tn,
         ch,
+        isECMAModule,
         msg,
         level,
         nd,
@@ -9831,6 +9842,8 @@ TP.boot.$importComponents = function(loadSync) {
         //  Once the source is available we can then treat it consistently by
         //  invoking the sourceImport call to do the actual work.
 
+        isECMAModule = nd.getAttribute('type') === 'module';
+
         if ((srcpath = nd.getAttribute('src')) != null) {
             //  debuggers like Firebuggy have issues with script nodes that
             //  have inline source instead of file references (or they did
@@ -9847,6 +9860,10 @@ TP.boot.$importComponents = function(loadSync) {
 
                 elem.setAttribute('srcpkg', TP.boot.$$srcPackage);
                 elem.setAttribute('srccfg', TP.boot.$$srcConfig);
+
+                if (isECMAModule) {
+                    elem.setAttribute('type', 'module');
+                }
 
                 TP.boot.$$loadNode = elem;
 
@@ -9896,7 +9913,7 @@ TP.boot.$importComponents = function(loadSync) {
 
         //  if we were handling inline code then we can import it directly now.
         try {
-            TP.boot.$sourceImport(source, null, srcpath);
+            TP.boot.$sourceImport(source, null, srcpath, false, isECMAModule);
         } finally {
             TP.boot.$$loadNode = null;
         }
