@@ -7032,7 +7032,7 @@ function() {
     //  Force a reload. Note that we approach this two ways depending on the
     //  nature of the URI. Source code needs to be loaded via the boot system so
     //  it properly loads and runs, whereas other resources can load via XHR.
-    callback = function(result) {
+    callback = async function(result) {
 
         var url,
             resourceHash,
@@ -7065,7 +7065,7 @@ function() {
             pkgcfg = TP.isEmpty(TP.boot.$$bootconfig) ?
                 TP.boot.$$bootfile :
                 TP.boot.$$bootfile + '@' + TP.boot.$$bootconfig;
-            TP.sys.importPackage(pkgcfg, true);
+            await TP.sys.importPackage(pkgcfg, true);
         }
 
         //  Trigger post-processing for specific URIs.

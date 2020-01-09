@@ -622,8 +622,8 @@ TP.boot.$$bootconfig = null;
 TP.boot.$$bootxml = null;
 
 //  prebuilt function for setTimeout processing when async loading
-TP.boot.$$importAsync = function() {
-        TP.boot.$importComponents(false);
+TP.boot.$$importAsync = async function() {
+        await TP.boot.$importComponents(false);
     };
 
 //  placeholder for the currently loading script node. this is used to track

@@ -137,7 +137,7 @@ function(aURI, aDocument, aRequest, scriptElemAttrs) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getAllScriptPaths',
-function(packageConfig, phase) {
+async function(packageConfig, phase) {
 
     /**
      * @method getAllScriptPaths
@@ -202,7 +202,7 @@ function(packageConfig, phase) {
             TP.isValid(phase) ? phase === TP.PHASE_ONE : true);
         TP.sys.setcfg('boot.phase_two',
             TP.isValid(phase) ? phase === TP.PHASE_TWO : true);
-        packageAssets = TP.boot.$listPackageAssets(uri, cfgName);
+        packageAssets = await TP.boot.$listPackageAssets(uri, cfgName);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
         //  tell what the script list is.
@@ -241,7 +241,7 @@ function(packageConfig, phase) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getAllPackagePaths',
-function(packageConfig, phase) {
+async function(packageConfig, phase) {
 
     /**
      * @method getAllPackagePaths
@@ -306,7 +306,7 @@ function(packageConfig, phase) {
             TP.isValid(phase) ? phase === TP.PHASE_ONE : true);
         TP.sys.setcfg('boot.phase_two',
             TP.isValid(phase) ? phase === TP.PHASE_TWO : true);
-        packageAssets = TP.boot.$listPackageAssets(uri, cfgName, null, true);
+        packageAssets = await TP.boot.$listPackageAssets(uri, cfgName, null, true);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
         //  tell what the script list is.
@@ -561,7 +561,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getMissingPackagingInfo',
-function(packageConfig) {
+async function(packageConfig) {
 
     /**
      * @method getMissingPackagingInfo
@@ -612,7 +612,7 @@ function(packageConfig) {
 
     //  Grab all of the script paths in the named packages and configs. This
     //  will be all of the paths that are contained in that package and config.
-    configScriptPaths = TP.sys.getAllScriptPaths(packageConfig);
+    configScriptPaths = await TP.sys.getAllScriptPaths(packageConfig);
 
     //  Compute the config script paths against our master list of expanded
     //  paths. This will produce a list of paths that the system knows about
@@ -664,7 +664,7 @@ function(packageConfig) {
 
     //  We obtain all reachable package paths from the named packages and
     //  configs.
-    allPackagePaths = TP.sys.getAllPackagePaths(packageConfig);
+    allPackagePaths = await TP.sys.getAllPackagePaths(packageConfig);
 
     //  Compute all package paths against our list of used package paths. This
     //  will produce a list of paths that the system knows about given the
@@ -758,7 +758,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('importPackage',
-function(packageConfig, shouldSignal) {
+async function(packageConfig, shouldSignal) {
 
     /**
      * @method importPackage
@@ -778,7 +778,7 @@ function(packageConfig, shouldSignal) {
 
         promise;
 
-    packageScriptPaths = TP.sys.getAllScriptPaths(packageConfig);
+    packageScriptPaths = await TP.sys.getAllScriptPaths(packageConfig);
     if (TP.isNull(packageScriptPaths)) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
         //  tell what the script list is. Trigger a failure.

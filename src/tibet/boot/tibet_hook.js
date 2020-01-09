@@ -21,7 +21,7 @@
 //  ----------------------------------------------------------------------------
 
 //  Using a wrapper lets us use 'return' statements to exit early as needed.
-(function(root) {
+(async function(root) {
 
     var $$location,
         $$fragment,
@@ -218,11 +218,11 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
             //  to deal with the fact that the 'tibet' target may be in
             //  any stage of loading we'll create a function that either
             //  of the two sides can invoke to finish things
-            TP.boot.bootPhaseTwo = function() {
+            TP.boot.bootPhaseTwo = async function() {
                 //  notify the main boot code logic that phase two
                 //  should be imported. we'll leave it up to that code
                 //  to do the real work :)
-                TP.boot.$$importPhaseTwo();
+                await TP.boot.$$importPhaseTwo();
 
                 return;
             };
@@ -232,7 +232,7 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
             //  in progress it's up to the loader to detect we've set the
             //  $$phase_two flag and continue the boot process.
             if (TP.boot.$$stage === 'import_paused') {
-                TP.boot.bootPhaseTwo();
+                await TP.boot.bootPhaseTwo();
             }
         }
     } else {

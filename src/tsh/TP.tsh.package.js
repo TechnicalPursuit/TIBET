@@ -42,6 +42,8 @@ function(aRequest) {
         profile,
         profileParts,
 
+        promise,
+
         results,
 
         packageEntries,
@@ -97,174 +99,187 @@ function(aRequest) {
     //  If we're looking for unlisted paths, then we have to ask the system for
     //  script paths that belong to methods that were actually invoked.
     if (unlisted) {
-        results = TP.sys.getMissingPackagingInfo(profile);
+        promise = TP.sys.getMissingPackagingInfo(profile);
 
-        //  NB: These contain fully expanded paths
-        packageEntries = results.at('packageEntries');
-        scriptEntries = results.at('scriptEntries');
+        promise.then(
+            function() {
 
-        //  We want to make all package and script paths that *start* with the
-        //  '~lib_src' path be relative to '~lib_src', since they're going to be
-        //  added to the application's 'alacarte' target, which already has a
-        //  basedir of '~lib_src'.
+                //  NB: These contain fully expanded paths
+                packageEntries = results.at('packageEntries');
+                scriptEntries = results.at('scriptEntries');
 
-        //  Compute the fully expanded path to '~lib_src'.
-        libSrcPath = TP.uriExpandPath('~lib_src');
+                //  We want to make all package and script paths that *start*
+                //  with the '~lib_src' path be relative to '~lib_src', since
+                //  they're going to be added to the application's 'alacarte'
+                //  target, which already has a basedir of '~lib_src'.
 
-        //  Iterate over all of the package entries and make their scripts
-        //  relative to the fully expanded '~lib_src' path *if they start with
-        //  it*.
-        packageOutputEntries = packageEntries.collect(
-            function(anEntry) {
-                var outEntry,
-                    path;
+                //  Compute the fully expanded path to '~lib_src'.
+                libSrcPath = TP.uriExpandPath('~lib_src');
 
-                outEntry = TP.ac('package',
-                                    anEntry[TP.LOAD_INDEX],
-                                    anEntry[TP.PACKAGING_REP]);
+                //  Iterate over all of the package entries and make their
+                //  scripts relative to the fully expanded '~lib_src' path *if
+                //  they start with it*.
+                packageOutputEntries = packageEntries.collect(
+                    function(anEntry) {
+                        var outEntry,
+                            path;
 
-                //  The path here was already expanded by the call that produced
-                //  these results.
-                path = anEntry[TP.PACKAGING_REP].split('@').first();
+                        outEntry = TP.ac('package',
+                                            anEntry[TP.LOAD_INDEX],
+                                            anEntry[TP.PACKAGING_REP]);
 
-                if (path.startsWith(libSrcPath)) {
-                    outEntry.push(TP.uriRelativeToPath(path, libSrcPath));
+                        //  The path here was already expanded by the call that
+                        //  produced these results.
+                        path = anEntry[TP.PACKAGING_REP].split('@').first();
+
+                        if (path.startsWith(libSrcPath)) {
+                            outEntry.push(
+                                    TP.uriRelativeToPath(path, libSrcPath));
+                        } else {
+                            outEntry.push(path);
+                        }
+
+                        return outEntry;
+                    });
+
+                //  Iterate over all of the script entries and make their
+                //  scripts relative to the fully expanded '~lib_src' path *if
+                //  they start with it*.
+                scriptOutputEntries = scriptEntries.collect(
+                    function(anEntry) {
+                        var outEntry,
+                            path;
+
+                        outEntry = TP.ac('script',
+                                            anEntry[TP.LOAD_INDEX],
+                                            anEntry[TP.PACKAGING_REP]);
+
+                        //  The path here was already expanded by the call that
+                        //  produced these results.
+                        path = anEntry[TP.PACKAGING_REP];
+
+                        if (path.startsWith(libSrcPath)) {
+                            outEntry.push(
+                                    TP.uriRelativeToPath(path, libSrcPath));
+                        } else {
+                            outEntry.push(path);
+                        }
+
+                        return outEntry;
+                    });
+
+                //  If the user is asking us to fix this situation, then we
+                //  invoke a remote command to actually patch these into the
+                //  config matching the profile.
+                shouldFix = shell.getArgument(aRequest, 'tsh:fix', null, false);
+
+                //  TODO: This line should be removed when '--fix' capability is
+                //  available in the TDS version of the 'package' command.
+                shouldFix = false;
+
+                if (shouldFix) {
+
+                    //  Iterate over all of the paths and escape spaces, since
+                    //  we're going to join them all together on a space.
+                    results = results.collect(
+                                function(aPath) {
+                                    return aPath.replace(/ /g, '\\ ');
+                                });
+
+                    //  Join all of the paths together with spaces.
+                    results = results.join(' ');
+
+                    //  Build a new set of arguments, leaving out the 'unlisted'
+                    //  and 'fix' flags and adding the 'add' flag and the paths
+                    //  to be added.
+                    newArgs = TP.hc(
+                                'ARGV', TP.ac(),
+                                'tsh:profile', TP.ac(profile, profile),
+                                'tsh:add', TP.ac(results, results));
+
+                    aRequest.set('ARGUMENTS', newArgs);
+
+                    TP.signal(null, 'RemoteConsoleCommand',
+                        TP.hc(
+                            'originalRequest', aRequest,
+                            'timeout', 60000,
+                            TP.ONSUCCESS, function(aResponse) {
+
+                                var successOutputReq;
+
+                                successOutputReq =
+                                    TP.sig.UserOutputRequest.construct(
+                                        TP.hc(
+                                        'output', 'Profile \'' +
+                                                    profile +
+                                                    '\' updated.',
+                                        'async', true,
+                                        'cmdAsIs', true));
+
+                                successOutputReq.fire(shell);
+                            },
+                            TP.ONFAIL, function(aResponse) {
+                                //  empty
+                            }
+                        ));
+
+                    aRequest.complete('delegated to :cli');
                 } else {
-                    outEntry.push(path);
-                }
+                    //  Iterate over all of the paths and compose a chunk of
+                    //  markup that could be copied and pasted into a cfg file.
+                    str = '<ul>';
 
-                return outEntry;
-            });
+                    //  Create an Array of all of the output entries by
+                    //  concatenating all of the script output entries onto the
+                    //  package output entries. Then sort that by the load
+                    //  index. This will make sure that scripts or packages that
+                    //  require prerequisites to be loaded before they are are
+                    //  generated that way.
+                    allOutputEntries = packageOutputEntries.concat(
+                                                        scriptOutputEntries);
+                    allOutputEntries.sort(function(entryA, entryB) {
+                        return entryA.at(1) - entryB.at(1);
+                    });
 
-        //  Iterate over all of the script entries and make their scripts
-        //  relative to the fully expanded '~lib_src' path *if they start with
-        //  it*.
-        scriptOutputEntries = scriptEntries.collect(
-            function(anEntry) {
-                var outEntry,
-                    path;
+                    //  Write those entries properly based on their type.
+                    allOutputEntries.forEach(
+                        function(anEntry) {
+                            var entryType,
 
-                outEntry = TP.ac('script',
-                                    anEntry[TP.LOAD_INDEX],
-                                    anEntry[TP.PACKAGING_REP]);
+                                path,
+                                configParts;
 
-                //  The path here was already expanded by the call that produced
-                //  these results.
-                path = anEntry[TP.PACKAGING_REP];
+                            entryType = anEntry.at(0);
 
-                if (path.startsWith(libSrcPath)) {
-                    outEntry.push(TP.uriRelativeToPath(path, libSrcPath));
-                } else {
-                    outEntry.push(path);
-                }
+                            //  The path is the 4th item, whether it's a package
+                            //  or script.
+                            path = TP.uriInTIBETFormat(anEntry.at(3));
 
-                return outEntry;
-            });
+                            if (entryType === 'package') {
+                                configParts = anEntry.at(2).split('@');
 
-        //  If the user is asking us to fix this situation, then we invoke a
-        //  remote command to actually patch these into the config matching the
-        //  profile.
-        shouldFix = shell.getArgument(aRequest, 'tsh:fix', null, false);
-
-        //  TODO: This line should be removed when '--fix' capability is
-        //  available in the TDS version of the 'package' command.
-        shouldFix = false;
-
-        if (shouldFix) {
-
-            //  Iterate over all of the paths and escape spaces, since we're
-            //  going to join them all together on a space.
-            results = results.collect(
-                        function(aPath) {
-                            return aPath.replace(/ /g, '\\ ');
+                                str += '<li>' +
+                                        '&lt;package src="' +
+                                        path +
+                                        '" config="' +
+                                            configParts.last() +
+                                        '"/&gt;' +
+                                        '</li>';
+                            } else if (entryType === 'script') {
+                                str += '<li>' +
+                                        '&lt;script src="' + path + '"/&gt;' +
+                                        '</li>';
+                            }
                         });
 
-            //  Join all of the paths together with spaces.
-            results = results.join(' ');
+                    str += '</ul>';
 
-            //  Build a new set of arguments, leaving out the 'unlisted' and
-            //  'fix' flags and adding the 'add' flag and the paths to be added
-            newArgs = TP.hc(
-                        'ARGV', TP.ac(),
-                        'tsh:profile', TP.ac(profile, profile),
-                        'tsh:add', TP.ac(results, results));
-
-            aRequest.set('ARGUMENTS', newArgs);
-
-            TP.signal(null, 'RemoteConsoleCommand',
-                TP.hc(
-                    'originalRequest', aRequest,
-                    'timeout', 60000,
-                    TP.ONSUCCESS, function(aResponse) {
-
-                        var successOutputReq;
-
-                        successOutputReq =
-                            TP.sig.UserOutputRequest.construct(
-                                TP.hc(
-                                'output', 'Profile \'' + profile + '\' updated.',
-                                'async', true,
-                                'cmdAsIs', true));
-
-                        successOutputReq.fire(shell);
-                    },
-                    TP.ONFAIL, function(aResponse) {
-                        //  empty
-                    }
-                ));
-
-            aRequest.complete('delegated to :cli');
-        } else {
-            //  Iterate over all of the paths and compose a chunk of markup that
-            //  could be copied and pasted into a cfg file.
-            str = '<ul>';
-
-            //  Create an Array of all of the output entries by concatenating
-            //  all of the script output entries onto the package output
-            //  entries. Then sort that by the load index. This will make sure
-            //  that scripts or packages that require prerequisites to be loaded
-            //  before they are are generated that way.
-            allOutputEntries = packageOutputEntries.concat(scriptOutputEntries);
-            allOutputEntries.sort(function(entryA, entryB) {
-                return entryA.at(1) - entryB.at(1);
-            });
-
-            //  Write those entries properly based on their type.
-            allOutputEntries.forEach(
-                function(anEntry) {
-                    var entryType,
-
-                        path,
-                        configParts;
-
-                    entryType = anEntry.at(0);
-
-                    //  The path is the 4th item, whether it's a package or
-                    //  script.
-                    path = TP.uriInTIBETFormat(anEntry.at(3));
-
-                    if (entryType === 'package') {
-                        configParts = anEntry.at(2).split('@');
-
-                        str += '<li>' +
-                                '&lt;package src="' +
-                                path +
-                                '" config="' + configParts.last() + '"/&gt;' +
-                                '</li>';
-                    } else if (entryType === 'script') {
-                        str += '<li>' +
-                                '&lt;script src="' + path + '"/&gt;' +
-                                '</li>';
-                    }
-                });
-
-            str += '</ul>';
-
-            //  Make sure to mark the request 'as is' since we're outputting
-            //  markup that we don't want processed.
-            aRequest.atPut('cmdAsIs', true);
-            aRequest.complete(str);
-        }
+                    //  Make sure to mark the request 'as is' since we're
+                    //  outputting  markup that we don't want processed.
+                    aRequest.atPut('cmdAsIs', true);
+                    aRequest.complete(str);
+                }
+        });
     } else {
 
         //  Otherwise, we just list the package assets
@@ -280,9 +295,10 @@ function(aRequest) {
             uri += '.xml';
         }
 
-        results = TP.boot.$listPackageAssets(uri, profileParts.last());
-
-        aRequest.complete(results);
+        TP.boot.$listPackageAssets(uri, profileParts.last()).then(
+            function(finalResults) {
+                aRequest.complete(finalResults);
+            });
     }
 
     return aRequest;

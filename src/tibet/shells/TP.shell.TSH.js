@@ -2132,17 +2132,20 @@ function(aRequest) {
      * @returns {TP.sig.ShellRequest} The request.
      */
 
-    var types,
-        arr,
-        tname,
-        type,
-        raw,
+    var arr,
         profile,
         pkg,
         cfg,
-        paths,
         context,
-        phase;
+        phase,
+
+        raw,
+        tname,
+
+        type,
+        types,
+        promise,
+        paths;
 
     arr = [];
 
@@ -2170,58 +2173,44 @@ function(aRequest) {
             return aRequest.fail(
                 'Unable to find type ' + TP.str(tname));
         }
+
+        promise = Promise.resolve();
     } else {
         //  NOTE we only access resource data for custom types.
         types = TP.sys.getCustomTypes();
 
         //  Get the list of paths from the defined profile.
-        paths = TP.sys.getAllScriptPaths(profile, phase).collect(
-                function(path) {
-                    return TP.uriInTIBETFormat(path);
-                }).unique();
+        promise = TP.sys.getAllScriptPaths(profile, phase).then(
+            function(scriptPaths) {
+            paths = scriptPaths.collect(
+                    function(path) {
+                        return TP.uriInTIBETFormat(path);
+                    }).unique();
+            }).then(function() {
 
-        //  Filter types by the package paths we're provided. If it's part of
-        //  the overall package we retain it.
-        types = types.select(function(item) {
-            var srcpath;
+                //  Filter types by the package paths we're provided. If it's
+                //  part of the overall package we retain it.
+                types = types.select(function(item) {
+                    var srcpath;
 
-            srcpath = TP.objectGetSourcePath(item[1]);
+                    srcpath = TP.objectGetSourcePath(item[1]);
 
-            return paths.contains(srcpath);
-        });
+                    return paths.contains(srcpath);
+                });
+            });
     }
 
-    //  types will be a hash of names/type objects.
-    types.perform(function(item) {
-        var itemtype,
-            themes,
-            val;
+    promise.then(
+        function() {
+            //  types will be a hash of names/type objects.
+            types.perform(function(item) {
+                var itemtype,
+                    themes,
+                    val;
 
-        itemtype = item.last();
-        if (TP.canInvoke(itemtype, 'computeResourceURI')) {
-            val = itemtype.computeResourceURI('template');
-            if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
-                arr.push(
-                    val + TP.JOIN +
-                    itemtype[TP.LOAD_STAGE] + TP.JOIN +
-                    itemtype.getName()
-                );
-            }
-            val = itemtype.computeResourceURI('style');
-            if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
-                arr.push(
-                    val + TP.JOIN +
-                    itemtype[TP.LOAD_STAGE] + TP.JOIN +
-                    itemtype.getName()
-                );
-            }
-
-            //  Now iterate on the known themes...
-            themes = TP.sys.getcfg('project.theme.list', []);
-            themes = themes.concat(TP.sys.getcfg('tibet.theme.list', []));
-            themes.forEach(
-                function(theme) {
-                    val = itemtype.computeResourceURI('style_' + theme);
+                itemtype = item.last();
+                if (TP.canInvoke(itemtype, 'computeResourceURI')) {
+                    val = itemtype.computeResourceURI('template');
                     if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
                         arr.push(
                             val + TP.JOIN +
@@ -2229,56 +2218,85 @@ function(aRequest) {
                             itemtype.getName()
                         );
                     }
-                });
+                    val = itemtype.computeResourceURI('style');
+                    if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
+                        arr.push(
+                            val + TP.JOIN +
+                            itemtype[TP.LOAD_STAGE] + TP.JOIN +
+                            itemtype.getName()
+                        );
+                    }
 
-            if (raw) {
-                val = itemtype.computeResourceURI('source');
-                if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
-                    arr.push(
-                        val + TP.JOIN +
-                        itemtype[TP.LOAD_STAGE] + TP.JOIN +
-                        itemtype.getName()
-                    );
+                    //  Now iterate on the known themes...
+                    themes = TP.sys.getcfg('project.theme.list', []);
+                    themes = themes.concat(
+                                    TP.sys.getcfg('tibet.theme.list', []));
+                    themes.forEach(
+                        function(theme) {
+                            val = itemtype.computeResourceURI('style_' + theme);
+                            if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
+                                arr.push(
+                                    val + TP.JOIN +
+                                    itemtype[TP.LOAD_STAGE] + TP.JOIN +
+                                    itemtype.getName()
+                                );
+                            }
+                        });
+
+                    if (raw) {
+                        val = itemtype.computeResourceURI('source');
+                        if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
+                            arr.push(
+                                val + TP.JOIN +
+                                itemtype[TP.LOAD_STAGE] + TP.JOIN +
+                                itemtype.getName()
+                            );
+                        }
+
+                        val = itemtype.computeResourceURI('tests');
+                        if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
+                            arr.push(
+                                val + TP.JOIN +
+                                itemtype[TP.LOAD_STAGE] + TP.JOIN +
+                                itemtype.getName()
+                            );
+                        }
+                    }
                 }
-
-                val = itemtype.computeResourceURI('tests');
-                if (TP.notEmpty(val) && val !== TP.NO_RESULT) {
-                    arr.push(
-                        val + TP.JOIN +
-                        itemtype[TP.LOAD_STAGE] + TP.JOIN +
-                        itemtype.getName()
-                    );
-                }
-            }
-        }
-    });
-
-    arr = arr.unique().compact().map(
-        function(item) {
-            delete item.$$oid;
-            return item;
-        });
-
-    //  Headless/CLI support requires output line-by-line.
-    if (TP.sys.cfg('boot.context') === 'headless') {
-
-        //  Reprocess paths to void ~Type/* format. That won't resolve in CLI.
-        arr.forEach(
-            function(result) {
-                var parts,
-                    res;
-
-                parts = result.split(TP.JOIN);
-                parts[0] = TP.uriInTIBETFormat(TP.uriExpandPath(parts[0]));
-                res = parts.join(TP.JOIN);
-
-                aRequest.stdout(res);
             });
 
-        return aRequest.complete();
-    }
+            arr = arr.unique().compact().map(
+                function(item) {
+                    delete item.$$oid;
+                    return item;
+                });
 
-    return aRequest.complete(arr);
+            //  Headless/CLI support requires output line-by-line.
+            if (TP.sys.cfg('boot.context') === 'headless') {
+
+                //  Reprocess paths to void ~Type/* format. That won't resolve
+                //  in CLI.
+                arr.forEach(
+                    function(result) {
+                        var parts,
+                            res;
+
+                        parts = result.split(TP.JOIN);
+                        parts[0] = TP.uriInTIBETFormat(
+                                    TP.uriExpandPath(parts[0]));
+                        res = parts.join(TP.JOIN);
+
+                        aRequest.stdout(res);
+                    });
+
+                aRequest.complete();
+                return;
+            }
+
+            aRequest.complete(arr);
+    });
+
+    return aRequest;
 });
 
 TP.shell.TSH.addHelpTopic('resource',
