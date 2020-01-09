@@ -48,7 +48,9 @@ self.addEventListener('fetch', function(event) {
     var url,
         filename,
 
-        promise;
+        promise,
+
+        shouldWarn;
 
     //  Grab the url that we're fetching.
     url = event.request.url;
@@ -103,6 +105,12 @@ self.addEventListener('fetch', function(event) {
             return;
         }
 
+        //  If the 'cfg' variable is available and has it's 'debug.cache'
+        //  flag set to true, then we will warn about cache misses.
+        if (self.cfg && self.cfg['debug.cache'] === true) {
+            shouldWarn = true;
+        }
+
         //  If the libResourcePath has not been configured, then we're not yet
         //  at a point where the service worker is being controlled by TIBET
         //  (probably in the earliest stages of loading before the loader's boot
@@ -122,8 +130,12 @@ self.addEventListener('fetch', function(event) {
                                 return cache.match(event.request);
                             }).then(function(response) {
                                 if (!response) {
-                                    console.warn(
-                                        'CACHE MISS ON LIB RESOURCE: ' + url);
+                                    if (shouldWarn) {
+                                        console.warn(
+                                            'CACHE MISS ON LIB RESOURCE: ' +
+                                            url);
+                                    }
+
                                     return fetch(event.request).then(
                                         function(resp) {
                                             return resp;
@@ -142,8 +154,12 @@ self.addEventListener('fetch', function(event) {
                                 return cache.match(event.request);
                             }).then(function(response) {
                                 if (!response) {
-                                    console.warn(
-                                        'CACHE MISS ON APP RESOURCE: ' + url);
+                                    if (shouldWarn) {
+                                        console.warn(
+                                            'CACHE MISS ON APP RESOURCE: ' +
+                                            url);
+                                    }
+
                                     return fetch(event.request).then(
                                         function(resp) {
                                             return resp;
