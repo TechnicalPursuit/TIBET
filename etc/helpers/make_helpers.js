@@ -277,7 +277,8 @@ helpers.resource_build = function(make, options) {
         (make.options.verbose ? ' --verbose' : '') +
         (make.options.color ? '' : ' --no-color') +
         (make.options['tds-cli'] ? ' --tds-cli' : '') +
-        (make.options.silent ? '' : ' --no-silent');
+        (make.options.silent ? '' : ' --no-silent') +
+        (make.options.timeout ? ' --timeout ' + make.options.timeout : '');
 
     make.log('executing ' + cmd);
 
