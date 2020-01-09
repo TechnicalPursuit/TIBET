@@ -355,25 +355,27 @@ Cmd.prototype.execute = function() {
 
         puppetPage = page;
 
+    }).then(function() {
+
         //  Set the timeout on Puppeteer so that it matches what we hand to the
         //  TSH:
-        page.setDefaultTimeout(finalTimeout);
+        puppetPage.setDefaultTimeout(finalTimeout);
 
-        page.on('close', function(evt) {
+        puppetPage.on('close', function(evt) {
             process.exit(0);
         });
 
-        page.on('error', function(err) {
+        puppetPage.on('error', function(err) {
             cmd.stderr(err);
             process.exit(1);
         });
 
-        page.on('pageerror', function(err) {
+        puppetPage.on('pageerror', function(err) {
             cmd.stderr(err);
             process.exit(1);
         });
 
-        page.on('console', function(msg) {
+        puppetPage.on('console', function(msg) {
 
             var text;
 
