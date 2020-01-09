@@ -82,7 +82,7 @@ function() {
             //  slice off the 'path.' portion. Any remaining periods ('.') in
             //  the key are then replaced with '-'. Then, quote the value so
             //  that LESS doesn't have issues with spaces, etc.
-            if (TP.notEmpty(val = cfg.at(aKey))) {
+            if (TP.notEmpty(val = cfg.at(aKey)) && TP.isString(val)) {
                 globalVars[aKey.slice(5).replace(/\./g, '-')] =
                     '"' + TP.uriResolveVirtualPath(val) + '"';
             }
