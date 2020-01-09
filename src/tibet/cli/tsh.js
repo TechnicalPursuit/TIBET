@@ -75,7 +75,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     'boolean': ['color', 'errimg', 'help', 'usage', 'debug', 'tap',
         'system', 'quiet'],
     'string': ['script', 'url', 'params', 'level'],
-    'number': ['timeout', 'remote-debug-port'],
+    'number': ['timeout'],
     'default': {
         color: true
     }
