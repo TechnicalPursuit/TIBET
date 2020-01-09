@@ -1124,6 +1124,31 @@
     TP.sys.setcfg('path.ide_root', '~lib_src/tibet/tools/sherpa');
     TP.sys.setcfg('path.ide_src', '~ide_root/src');
 
+    //  The set of lib paths that could be cached but are loaded before the
+    //  cache computation has begun.
+    TP.sys.setcfg('path.preboot_lib_paths',
+        [
+            '~lib_lib/src/tibet_loader.min.js'
+        ]);
+
+    //  The set of app paths that could be cached but are loaded before the
+    //  cache computation has begun.
+    TP.sys.setcfg('path.preboot_app_paths',
+        [
+            '~app_boot/xhtml/blank.xhtml',
+            '~app_boot/xhtml/UIBOOT.xhtml',
+            '~app_boot/styles/tibet_content.css',
+            '~app_boot/styles/tibet_boot.css',
+            '~app/styles/app.css',
+            '~app_boot/media/app_logo.png',
+            '~app_boot/media/nojs.png',
+            '~app_boot/styles/tibet.css',
+            '~app_boot/styles/tibet_intro.css',
+            '~app_boot/media/tibet_world.gif',
+            '~app_boot/media/tibet_logo.png',
+            '~app/tibet.json'
+        ]);
+
 
     //  ---
     //  api/ecma
