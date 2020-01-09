@@ -1359,21 +1359,12 @@ TP.sys.inDeveloperMode = function() {
      *     'developer mode'.
      */
 
-    var profile,
-        package,
-
-        matcher;
+    var package;
 
     //  Compute whether we're booting the developer target or not.
-    //  NB: Like other logic in the boot system, we respect the setting
-    //  of 'boot.profile' first before considering 'boot.package'.
-
-    profile = TP.sys.cfg('boot.profile') || '';
     package = TP.sys.cfg('boot.package') || '';
 
-    matcher = /(developer|contributor)/;
-
-    return matcher.test(profile) || matcher.test(package);
+    return /development/.test(package);
 };
 
 //  ----------------------------------------------------------------------------
@@ -3129,7 +3120,7 @@ system or the net and produce XML documents which can be manipulated.
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$uriLoad = function(targetUrl, resultType, targetType) {
+TP.boot.$uriLoad = async function(targetUrl, resultType, targetType) {
 
     /**
      * @method $uriLoad
@@ -3167,7 +3158,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType) {
             result = TP.boot.$uriLoadCommonFile(targetUrl, returnType);
         }
     } else {
-        result = TP.boot.$uriLoadCommonHttp(targetUrl, returnType);
+        result = await TP.boot.$uriLoadCommonHttp(targetUrl, returnType);
     }
 
     return result;
@@ -3374,7 +3365,7 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType) {
+TP.boot.$uriLoadCommonHttp = async function(targetUrl, resultType) {
 
     /**
      * @method $uriLoadCommonHttp
@@ -3386,11 +3377,15 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType) {
      */
 
     var returnType,
-        httpObj;
+        // httpObj,
+        req,
+        res,
+        text;
 
     returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
     try {
+        /*
         httpObj = TP.boot.$httpCall(targetUrl, TP.HTTP_GET);
 
         if (httpObj.status === 200) {
@@ -3403,6 +3398,18 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType) {
                 return TP.boot.$uriResult(httpObj.responseText, returnType);
             }
         }
+        */
+
+        req = new Request(
+                    targetUrl,
+                    {
+                        method: TP.HTTP_GET
+                    });
+
+        res = await fetch(req);
+        text = await res.text();
+
+        return TP.boot.$uriResult(text, returnType);
     } catch (e) {
         TP.boot.$stderr('AccessException: ' + targetUrl,
                         TP.boot.$ec(e));
@@ -8264,7 +8271,7 @@ TP.boot.$setLibRoot = function(aPath) {
 //  CONFIGURATION FUNCTIONS
 //  ============================================================================
 
-TP.boot.$configurePackage = function() {
+TP.boot.$configurePackage = async function() {
 
     /**
      * @method $configurePackage
@@ -8373,7 +8380,7 @@ TP.boot.$configurePackage = function() {
     TP.boot.$stdout('Loading package: ' +
         TP.boot.$uriInTIBETFormat(file), TP.DEBUG);
 
-    xml = TP.boot.$uriLoad(file, TP.DOM, 'manifest');
+    xml = await TP.boot.$uriLoad(file, TP.DOM, 'manifest');
     if (xml) {
         TP.boot.$$bootxml = xml;
         TP.boot.$$bootfile = file;
@@ -8395,7 +8402,7 @@ TP.boot.$configurePackage = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$configureBootstrap = function() {
+TP.boot.$configureBootstrap = async function() {
 
     /**
      * @method $configureBootstrap
@@ -8427,7 +8434,7 @@ TP.boot.$configureBootstrap = function() {
 
     try {
         TP.boot.$stdout('Loading TIBET project file: ' + logpath, TP.DEBUG);
-        str = TP.boot.$uriLoad(file, TP.TEXT, 'source');
+        str = await TP.boot.$uriLoad(file, TP.TEXT, 'source');
         if (!str) {
             TP.boot.$stderr('Failed to load: ' + file, TP.FATAL);
         }
@@ -9484,7 +9491,7 @@ isECMAModule) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$$importComplete = function() {
+TP.boot.$$importComplete = async function() {
 
     /**
      * @method $$importComplete
@@ -9611,7 +9618,7 @@ TP.boot.$$importComplete = function() {
                             if (TP.boot.bootPhaseTwo) {
                                 TP.boot.bootPhaseTwo();
                             } else {
-                                TP.boot.$$importPhaseTwo();
+                                await TP.boot.$$importPhaseTwo();
                             }
 
                             return;
@@ -9644,7 +9651,7 @@ TP.boot.$$importComplete = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$importComponents = function(loadSync) {
+TP.boot.$importComponents = async function(loadSync) {
 
     /**
      * @method $importComponents
@@ -9705,7 +9712,10 @@ TP.boot.$importComponents = function(loadSync) {
 
     //  if we're out of nodes we can wrap things up :)
     if (TP.boot.$$bootnodes.length === 0 || nd == null) {
-        return TP.boot.$$importComplete();
+        //  We need to return here.
+        /* eslint-disable no-return-await */
+        return await TP.boot.$$importComplete();
+        /* eslint-enable no-return-await */
     }
 
     //  default the first time through to whatever might be configured
@@ -9741,9 +9751,9 @@ TP.boot.$importComponents = function(loadSync) {
                 TP.boot.$displayProgress();
 
                 if (sync) {
-                    TP.boot.$importComponents(sync);
+                    await TP.boot.$importComponents(sync);
                 } else {
-                    setTimeout(TP.boot.$$importAsync, 0);
+                    setTimeout(await TP.boot.$$importAsync, 0);
                 }
                 return;
 
@@ -9778,9 +9788,9 @@ TP.boot.$importComponents = function(loadSync) {
                 TP.boot.$displayProgress();
 
                 if (sync) {
-                    TP.boot.$importComponents(sync);
+                    await TP.boot.$importComponents(sync);
                 } else {
-                    setTimeout(TP.boot.$$importAsync, 0);
+                    setTimeout(await TP.boot.$$importAsync, 0);
                 }
 
                 return;
@@ -9864,7 +9874,7 @@ TP.boot.$importComponents = function(loadSync) {
 
                 TP.boot.$$loadNode = elem;
 
-                callback = function(event) {
+                callback = async function(event) {
 
                     TP.boot.$$loadNode = null;
 
@@ -9872,9 +9882,9 @@ TP.boot.$importComponents = function(loadSync) {
                     TP.boot.$displayProgress();
 
                     if (sync) {
-                        TP.boot.$importComponents(sync);
+                        await TP.boot.$importComponents(sync);
                     } else {
-                        setTimeout(TP.boot.$$importAsync, 0);
+                        setTimeout(await TP.boot.$$importAsync, 0);
                     }
                 };
 
@@ -9890,7 +9900,7 @@ TP.boot.$importComponents = function(loadSync) {
                 return;
             }
 
-            source = TP.boot.$uriLoad(srcpath, TP.TEXT, 'source');
+            source = await TP.boot.$uriLoad(srcpath, TP.TEXT, 'source');
         } else {
             source = '';
 
@@ -9966,15 +9976,15 @@ TP.boot.$importComponents = function(loadSync) {
     TP.boot.$displayProgress();
 
     if (sync) {
-        TP.boot.$importComponents(sync);
+        await TP.boot.$importComponents(sync);
     } else {
-        setTimeout(TP.boot.$$importAsync, 0);
+        setTimeout(await TP.boot.$$importAsync, 0);
     }
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$$importPhase = function() {
+TP.boot.$$importPhase = async function() {
 
     /**
      * @method $$importPhase
@@ -9995,7 +10005,7 @@ TP.boot.$$importPhase = function() {
     config = TP.sys.cfg('boot.config');
     phase = TP.sys.cfg('boot.phase_one') ? 'Phase One' : 'Phase Two';
 
-    nodelist = TP.boot.$listPackageAssets(package, config);
+    nodelist = await TP.boot.$listPackageAssets(package, config);
 
     //  remaining list is our workload for actual importing
     TP.boot.$stdout('Importing ' + nodelist.length + ' ' +
@@ -10008,12 +10018,12 @@ TP.boot.$$importPhase = function() {
     TP.boot.$$workload = nodelist.length;
     TP.boot.$$totalwork += nodelist.length;
 
-    TP.boot.$importComponents();
+    await TP.boot.$importComponents();
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$$importPhaseOne = function() {
+TP.boot.$$importPhaseOne = async function() {
 
     /**
      * @method $$importPhaseOne
@@ -10028,12 +10038,12 @@ TP.boot.$$importPhaseOne = function() {
     TP.sys.setcfg('boot.phase_one', true);
     TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
 
-    TP.boot.$$importPhase();
+    await TP.boot.$$importPhase();
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$$importPhaseTwo = function(manifest) {
+TP.boot.$$importPhaseTwo = async function(manifest) {
 
     /**
      * @method $$importPhaseTwo
@@ -10052,7 +10062,7 @@ TP.boot.$$importPhaseTwo = function(manifest) {
     TP.sys.setcfg('boot.phase_one', false);
     TP.sys.setcfg('boot.phase_two', true);
 
-    TP.boot.$$importPhase();
+    await TP.boot.$$importPhase();
 };
 
 //  ============================================================================
@@ -10071,7 +10081,7 @@ TP.boot.$$assets_list = null;
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$config = function() {
+TP.boot.$config = async function() {
 
     /**
      * @method $config
@@ -10091,7 +10101,7 @@ TP.boot.$config = function() {
     TP.boot.$updateDependentVars();
 */
     //  find and initially process the boot package/config we'll be booting.
-    TP.boot.$configurePackage();
+    await TP.boot.$configurePackage();
 
     //  Update any cached variable content. We do this each time we've read in
     //  new configuration values regardless of their source.
@@ -10142,7 +10152,7 @@ TP.boot.$config = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$expand = function() {
+TP.boot.$expand = async function() {
 
     /**
      * @method expand
@@ -10160,17 +10170,15 @@ TP.boot.$expand = function() {
 
     TP.boot.$stdout('Expanding package@config: ' + file + '@' + config,
                     TP.DEBUG);
-    TP.boot.$expandPackage(file, config);
+    await TP.boot.$expandPackage(file, config);
 
     //  Property tags in the package may require us to update var config.
     TP.boot.$updateDependentVars();
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$expandConfig = function(anElement, configName) {
+TP.boot.$expandConfig = async function(anElement, configName) {
 
     /**
      * @method expandConfig
@@ -10180,118 +10188,223 @@ TP.boot.$expandConfig = function(anElement, configName) {
      * @param {String} [configName] A specific config name to expand.
      */
 
-    var list;
+    var list,
+        len,
+        i,
+        child,
+        ref,
+        src,
+        config,
+        cfg,
+        key,
+        name,
+        elem,
+        value,
+        level,
+        text,
+        msg,
+        str,
+        doc;
 
     list = Array.prototype.slice.call(anElement.childNodes, 0);
 
-    list.forEach(
-            function(child) {
+    len = list.length;
 
-                var ref,
-                    src,
-                    config,
-                    cfg,
-                    key,
-                    name,
-                    elem,
-                    value,
-                    level,
-                    text,
-                    msg,
-                    str,
-                    doc;
+    for (i = 0; i < len; i++) {
 
-                if (child.nodeType === Node.ELEMENT_NODE) {
+        child = list[i];
 
-                    switch (child.tagName) {
+        if (child.nodeType === Node.ELEMENT_NODE) {
 
-                        case 'config':
-                            ref = child.getAttribute('ref');
-                            ref = TP.boot.$expandReference(ref);
+            switch (child.tagName) {
 
-                            cfg = child.getAttribute('config') ||
-                                anElement.getAttribute('config');
+                case 'config':
+                    ref = child.getAttribute('ref');
+                    ref = TP.boot.$expandReference(ref);
 
-                            //  First try to find one qualified by the config.
-                            //  We have to clone them if qualified so they can
-                            //  live in the same document.
-                            if (TP.boot.$notEmpty(cfg)) {
-                                config = anElement.ownerDocument.getElementById(
-                                    ref + '_' + cfg);
-                                if (TP.boot.$notValid(config)) {
-                                    config =
-                                        anElement.ownerDocument.getElementById(
-                                                                        ref);
-                                    if (TP.boot.$notValid(config)) {
-                                        msg = 'config not found: ' +
-                                            TP.boot.$getCurrentPackage() +
-                                                                        '@' +
-                                                                        ref;
-                                        throw new Error(msg);
-                                    }
-                                    config = config.cloneNode(true);
-                                    config.setAttribute('id', ref + '_' + cfg);
-                                    config.setAttribute('config', cfg);
-                                    config = TP.boot.$getPackageNode(
-                                        anElement.ownerDocument).appendChild(
-                                                                        config);
-                                }
-                            } else {
-                                config = anElement.ownerDocument.getElementById(
-                                                                        ref);
-                            }
+                    cfg = child.getAttribute('config') ||
+                            anElement.getAttribute('config');
 
+                    //  First try to find one qualified by the config.
+                    //  We have to clone them if qualified so they can
+                    //  live in the same document.
+                    if (TP.boot.$notEmpty(cfg)) {
+                        config = anElement.ownerDocument.getElementById(
+                            ref + '_' + cfg);
+                        if (TP.boot.$notValid(config)) {
+                            config =
+                                anElement.ownerDocument.getElementById(
+                                                                ref);
                             if (TP.boot.$notValid(config)) {
-                                throw new Error('config not found: ' + ref);
+                                msg = 'config not found: ' +
+                                    TP.boot.$getCurrentPackage() + '@' + ref;
+                                throw new Error(msg);
                             }
+                            config = config.cloneNode(true);
+                            config.setAttribute('id', ref + '_' + cfg);
+                            config.setAttribute('config', cfg);
+                            config = TP.boot.$getPackageNode(
+                                        anElement.ownerDocument).appendChild(
+                                                                config);
+                        }
+                    } else {
+                        config = anElement.ownerDocument.getElementById(ref);
+                    }
 
-                            key = TP.boot.$getCurrentPackage() + '@' + ref;
+                    if (TP.boot.$notValid(config)) {
+                        throw new Error('config not found: ' + ref);
+                    }
 
-                            if (TP.boot.$notEmpty(cfg)) {
-                                key += '.' + cfg;
-                            }
+                    key = TP.boot.$getCurrentPackage() + '@' + ref;
 
-                            if (TP.boot.$$configs.indexOf(key) !== -1) {
-                                //  A duplicate/circular reference of some type.
-                                TP.boot.$stderr(
-                                    'Ignoring duplicate config reference to: ' +
-                                    key);
-                                break;
-                            }
+                    if (TP.boot.$notEmpty(cfg)) {
+                        key += '.' + cfg;
+                    }
 
-                            TP.boot.$$configs.push(key);
-                            TP.boot.$expandConfig(config, cfg);
+                    if (TP.boot.$$configs.indexOf(key) !== -1) {
+                        //  A duplicate/circular reference of some type.
+                        TP.boot.$stderr(
+                            'Ignoring duplicate config reference to: ' +
+                            key);
+                        break;
+                    }
 
-                            break;
+                    TP.boot.$$configs.push(key);
+                    await TP.boot.$expandConfig(config, cfg);
 
-                        case 'echo':
+                    break;
 
-                            value = child.getAttribute('message');
-                            if (TP.boot.$isEmpty(value)) {
-                                try {
-                                    child.normalize();
-                                    text = child.childNodes[0];
-                                    value = text.data;
-                                } catch (e) {
-                                    throw new Error('Unable to find message: ' +
-                                        TP.boot.$nodeAsString(child));
-                                }
-                            }
+                case 'echo':
 
-                            level = child.getAttribute('level');
-                            if (TP.boot.$notEmpty(level)) {
-                                level = ', ' + level;
-                            } else {
-                                level = '';
-                            }
+                    value = child.getAttribute('message');
+                    if (TP.boot.$isEmpty(value)) {
+                        try {
+                            child.normalize();
+                            text = child.childNodes[0];
+                            value = text.data;
+                        } catch (e) {
+                            throw new Error('Unable to find message: ' +
+                                TP.boot.$nodeAsString(child));
+                        }
+                    }
 
-                            try {
-                                str = '<script><![CDATA[' +
+                    level = child.getAttribute('level');
+                    if (TP.boot.$notEmpty(level)) {
+                        level = ', ' + level;
+                    } else {
+                        level = '';
+                    }
+
+                    try {
+                        str = '<script><![CDATA[' +
                                     'TP.boot.$stdout(\'' +
                                         value.replace(/'/g, '\\\'') +
                                     '\'' + level + ');' +
                                     ']]></script>';
+                        doc = TP.boot.$documentFromString(str);
+                        elem = doc.childNodes[0];
+
+                        value = child.getAttribute('if');
+                        if (TP.boot.$notEmpty(value)) {
+                            elem.setAttribute('if', value);
+                        }
+
+                        value = child.getAttribute('unless');
+                        if (TP.boot.$notEmpty(value)) {
+                            elem.setAttribute('unless', value);
+                        }
+
+                        child.parentNode.replaceChild(elem, child);
+
+                    } catch (e) {
+                        msg = e.message;
+                        throw new Error('Error expanding: ' +
+                            TP.boot.$nodeAsString(child) +
+                            msg);
+                    }
+
+                    break;
+
+              case 'img':
+                    /* falls through */
+              case 'image':
+
+                    //  similar to default case but we need to avoid
+                    //  messing with data urls.
+                    src = child.getAttribute('src');
+                    if (TP.boot.$notEmpty(src) &&
+                        src.indexOf('data:') !== 0) {
+
+                        src = TP.boot.$getFullPath(child, src);
+                        child.setAttribute('src', src);
+                    }
+                    break;
+
+                case 'package':
+
+                    src = child.getAttribute('src');
+
+                    //  For packages we allow a kind of shorthand where
+                    //  you can specify a directory (with a trailing /)
+                    //  and have that imply a file in that directory
+                    //  with a '.xml' extension and name matching the
+                    //  directory name. This is largely for bundles.
+                    if (src.charAt(src.length - 1) === '/') {
+                        src = src.slice(0, -1);
+                        text = src.slice(src.lastIndexOf('/'));
+                        src = src + text + '.xml';
+                    }
+
+                    src = TP.boot.$getFullPath(child, src);
+                    child.setAttribute('src', src);
+
+                    config = child.getAttribute('config') ||
+                        anElement.getAttribute('config') ||
+                        'default';
+
+                    if (TP.boot.$notEmpty(config)) {
+                        config = TP.boot.$expandReference(config);
+                    }
+
+                    key = src + '@' + config;
+                    if (TP.boot.$$configs.indexOf(key) !== -1) {
+                        //  A duplicate/circular reference of some type.
+                        TP.boot.$stdout(
+                            'Ignoring duplicate package reference to: ' +
+                            key,
+                            TP.WARN);
+                        break;
+                    }
+
+                    TP.boot.$$configs.push(key);
+                    await TP.boot.$expandPackage(src, config);
+
+                    break;
+
+                case 'property':
+
+                    name = child.getAttribute('name');
+                    value = child.getAttribute('value');
+
+                    if (TP.boot.$notEmpty(name) &&
+                        TP.boot.$notEmpty(value)) {
+
+                        value = TP.boot.$getArgumentPrimitive(value);
+
+                        //  If the property is a boot property we need
+                        //  to set it right now or it won't take effect.
+                        if (name.indexOf('boot.') === 0) {
+                            TP.sys.setcfg(name, value);
+                        } else {
+                            try {
+                                str = '<script><![CDATA[' +
+                                        'TP.sys.setcfg(' +
+                                        '\'' + name + '\', ' +
+                                        TP.boot.$quoted('' + value) +
+                                        ');' +
+                                        ']]></script>';
                                 doc = TP.boot.$documentFromString(str);
+
                                 elem = doc.childNodes[0];
 
                                 value = child.getAttribute('if');
@@ -10304,148 +10417,45 @@ TP.boot.$expandConfig = function(anElement, configName) {
                                     elem.setAttribute('unless', value);
                                 }
 
-                                child.parentNode.replaceChild(elem, child);
-
+                                child.parentNode.replaceChild(
+                                                        elem, child);
                             } catch (e) {
                                 msg = e.message;
                                 throw new Error('Error expanding: ' +
                                     TP.boot.$nodeAsString(child) +
                                     msg);
                             }
-
-                            break;
-
-                      case 'img':
-                            /* falls through */
-                      case 'image':
-
-                            //  similar to default case but we need to avoid
-                            //  messing with data urls.
-                            src = child.getAttribute('src');
-                            if (TP.boot.$notEmpty(src) &&
-                                src.indexOf('data:') !== 0) {
-
-                                src = TP.boot.$getFullPath(child, src);
-                                child.setAttribute('src', src);
-                            }
-                            break;
-
-                        case 'package':
-
-                            src = child.getAttribute('src');
-
-                            //  For packages we allow a kind of shorthand where
-                            //  you can specify a directory (with a trailing /)
-                            //  and have that imply a file in that directory
-                            //  with a '.xml' extension and name matching the
-                            //  directory name. This is largely for bundles.
-                            if (src.charAt(src.length - 1) === '/') {
-                                src = src.slice(0, -1);
-                                text = src.slice(src.lastIndexOf('/'));
-                                src = src + text + '.xml';
-                            }
-
-                            src = TP.boot.$getFullPath(child, src);
-                            child.setAttribute('src', src);
-
-                            config = child.getAttribute('config') ||
-                                anElement.getAttribute('config') ||
-                                'default';
-
-                            if (TP.boot.$notEmpty(config)) {
-                                config = TP.boot.$expandReference(config);
-                            }
-
-                            key = src + '@' + config;
-                            if (TP.boot.$$configs.indexOf(key) !== -1) {
-                                //  A duplicate/circular reference of some type.
-                                TP.boot.$stdout(
-                                    'Ignoring duplicate package reference to: ' +
-                                    key,
-                                    TP.WARN);
-                                break;
-                            }
-
-                            TP.boot.$$configs.push(key);
-                            TP.boot.$expandPackage(src, config);
-
-                            break;
-
-                        case 'property':
-
-                            name = child.getAttribute('name');
-                            value = child.getAttribute('value');
-
-                            if (TP.boot.$notEmpty(name) &&
-                                TP.boot.$notEmpty(value)) {
-
-                                value = TP.boot.$getArgumentPrimitive(value);
-
-                                //  If the property is a boot property we need
-                                //  to set it right now or it won't take effect.
-                                if (name.indexOf('boot.') === 0) {
-                                    TP.sys.setcfg(name, value);
-                                } else {
-                                    try {
-                                        str = '<script><![CDATA[' +
-                                            'TP.sys.setcfg(' +
-                                            '\'' + name + '\', ' +
-                                            TP.boot.$quoted('' + value) +
-                                            ');' +
-                                            ']]></script>';
-                                        doc = TP.boot.$documentFromString(str);
-
-                                        elem = doc.childNodes[0];
-
-                                        value = child.getAttribute('if');
-                                        if (TP.boot.$notEmpty(value)) {
-                                            elem.setAttribute('if', value);
-                                        }
-
-                                        value = child.getAttribute('unless');
-                                        if (TP.boot.$notEmpty(value)) {
-                                            elem.setAttribute('unless', value);
-                                        }
-
-                                        child.parentNode.replaceChild(
-                                                                elem, child);
-                                    } catch (e) {
-                                        msg = e.message;
-                                        throw new Error('Error expanding: ' +
-                                            TP.boot.$nodeAsString(child) +
-                                            msg);
-                                    }
-                                }
-                            }
-
-                            break;
-                        case 'resource':
-                            /* falls through */
-                        case 'script':
-                            /* falls through */
-                        default:
-
-                            src = child.getAttribute('href');
-                            if (TP.boot.$notEmpty(src)) {
-                                src = TP.boot.$getFullPath(child, src);
-                                child.setAttribute('href', src);
-                            }
-
-                            src = child.getAttribute('src');
-                            if (TP.boot.$notEmpty(src)) {
-                                src = TP.boot.$getFullPath(child, src);
-                                child.setAttribute('src', src);
-                            }
-
-                            break;
+                        }
                     }
-                }
-            });
+
+                    break;
+                case 'resource':
+                    /* falls through */
+                case 'script':
+                    /* falls through */
+                default:
+
+                    src = child.getAttribute('href');
+                    if (TP.boot.$notEmpty(src)) {
+                        src = TP.boot.$getFullPath(child, src);
+                        child.setAttribute('href', src);
+                    }
+
+                    src = child.getAttribute('src');
+                    if (TP.boot.$notEmpty(src)) {
+                        src = TP.boot.$getFullPath(child, src);
+                        child.setAttribute('src', src);
+                    }
+
+                    break;
+            }
+        }
+    }
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$expandPackage = function(aPath, aConfig) {
+TP.boot.$expandPackage = async function(aPath, aConfig) {
 
     /**
      * @method $expandPackage
@@ -10483,12 +10493,12 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
             if (expanded === TP.boot.$$bootfile) {
                 doc = TP.boot.$$bootxml;
             } else {
-                doc = TP.boot.$uriLoad(expanded, TP.DOM, 'manifest');
+                doc = await TP.boot.$uriLoad(expanded, TP.DOM, 'manifest');
             }
 
             if (!doc) {
                 //  Usually an invalid XML file...try to provide parse info.
-                txt = TP.boot.$uriLoad(expanded, TP.TEXT, 'manifest');
+                txt = await TP.boot.$uriLoad(expanded, TP.TEXT, 'manifest');
                 if (TP.boot.$isValid(txt)) {
                     doc = TP.boot.$documentFromString(txt, true);
                 }
@@ -10544,7 +10554,7 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
 
         //  Note that this may ultimately result in calls back into this routine
         //  if the config in question has embedded package references.
-        TP.boot.$expandConfig(node, config);
+        await TP.boot.$expandConfig(node, config);
     } catch (e) {
         msg = e.message;
         throw new Error('Error expanding package: ' + expanded + '. ' + msg);
@@ -10828,7 +10838,7 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$isLoadableScript = function(aURI) {
+TP.boot.$isLoadableScript = async function(aURI) {
 
     /**
      * @method $isLoadableScript
@@ -10849,7 +10859,7 @@ TP.boot.$isLoadableScript = function(aURI) {
         phaseTwo = TP.sys.cfg('boot.phase_two');
         TP.sys.setcfg('boot.phase_one', true);
         TP.sys.setcfg('boot.phase_two', true);
-        loadables = TP.boot.$listPackageAssets(
+        loadables = await TP.boot.$listPackageAssets(
             TP.boot.$$bootfile, TP.boot.$$bootconfig);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
@@ -10889,7 +10899,7 @@ TP.boot.$isLoadedScript = function(aURI) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) {
+TP.boot.$listConfigAssets = async function(anElement, aList, configName, includePkgs) {
 
     /**
      * @method $listConfigAssets
@@ -10905,7 +10915,18 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
      */
 
     var list,
-        result;
+        result,
+
+        len,
+        i,
+        child,
+
+        ref,
+        src,
+        msg,
+        cfg,
+        text,
+        config;
 
     //  If aList is empty we're starting fresh which means we need a fresh
     //  asset-uniquing dictionary.
@@ -10920,112 +10941,145 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
     }
 
     list = Array.prototype.slice.call(anElement.childNodes, 0);
-    list.forEach(
-            function(child) {
 
-                var ref,
-                    src,
-                    msg,
-                    cfg,
-                    text,
-                    config;
+    len = list.length;
 
-                if (child.nodeType === Node.ELEMENT_NODE) {
+    for (i = 0; i < len; i++) {
 
-                    if (!TP.boot.$ifUnlessPassed(child)) {
-                        return;
-                    }
+        child = list[i];
 
-                    if (!TP.boot.$ifAssetPassed(child)) {
-                        return;
-                    }
+        if (child.nodeType === Node.ELEMENT_NODE) {
 
-                    switch (child.tagName) {
+            if (!TP.boot.$ifUnlessPassed(child)) {
+                continue;
+            }
 
-                        case 'config':
-                            ref = child.getAttribute('ref');
+            if (!TP.boot.$ifAssetPassed(child)) {
+                continue;
+            }
 
-                            cfg = child.getAttribute('config') ||
-                                anElement.getAttribute('config');
+            switch (child.tagName) {
 
-                            //  First try to find one qualified by the config. We
-                            //  have to clone them if qualified so they can live in
-                            //  the same document.
-                            if (TP.boot.$notEmpty(cfg)) {
-                                config = anElement.ownerDocument.getElementById(
-                                    ref + '_' + cfg);
-                                if (TP.boot.$notValid(config)) {
-                                    config =
-                                        anElement.ownerDocument.getElementById(ref);
-                                    if (TP.boot.$notValid(config)) {
-                                        msg = 'config not found: ' +
-                                            TP.boot.$getCurrentPackage() + '@' + ref;
-                                        throw new Error(msg);
-                                    }
-                                    config = config.cloneNode(true);
-                                    config.setAttribute('id', ref + '_' + cfg);
-                                    config.setAttribute('config', cfg);
-                                    config = TP.boot.$getPackageNode(
-                                        anElement.ownerDocument).appendChild(config);
-                                }
-                            } else {
-                                config = anElement.ownerDocument.getElementById(ref);
-                            }
+                case 'config':
+                    ref = child.getAttribute('ref');
 
+                    cfg = child.getAttribute('config') ||
+                        anElement.getAttribute('config');
+
+                    //  First try to find one qualified by the config. We
+                    //  have to clone them if qualified so they can live in
+                    //  the same document.
+                    if (TP.boot.$notEmpty(cfg)) {
+                        config = anElement.ownerDocument.getElementById(
+                            ref + '_' + cfg);
+                        if (TP.boot.$notValid(config)) {
+                            config =
+                                anElement.ownerDocument.getElementById(ref);
                             if (TP.boot.$notValid(config)) {
-                                throw new Error('config not found: ' + ref);
+                                msg = 'config not found: ' +
+                                    TP.boot.$getCurrentPackage() + '@' + ref;
+                                throw new Error(msg);
                             }
+                            config = config.cloneNode(true);
+                            config.setAttribute('id', ref + '_' + cfg);
+                            config.setAttribute('config', cfg);
+                            config = TP.boot.$getPackageNode(
+                                anElement.ownerDocument).appendChild(config);
+                        }
+                    } else {
+                        config = anElement.ownerDocument.getElementById(ref);
+                    }
 
-                            TP.boot.$listConfigAssets(
-                                        config, result, cfg, includePkgs);
+                    if (TP.boot.$notValid(config)) {
+                        throw new Error('config not found: ' + ref);
+                    }
 
-                            break;
+                    await TP.boot.$listConfigAssets(config, result, cfg, includePkgs);
 
-                        case 'echo':
+                    break;
 
-                            //  Shouldn't exist, these should have been
-                            //  converted into script tags calling
-                            //  TP.boot.$stdout.
-                            break;
+                case 'echo':
 
-                        case 'package':
+                    //  Shouldn't exist, these should have been
+                    //  converted into script tags calling
+                    //  TP.boot.$stdout.
+                    break;
 
-                            src = child.getAttribute('src');
+                case 'package':
 
-                            //  For packages we allow a kind of shorthand where
-                            //  you can specify a directory (with a trailing /)
-                            //  and have that imply a file in that directory
-                            //  with a '.xml' extension and name matching the
-                            //  directory name. This is largely for bundles.
-                            if (src.charAt(src.length - 1) === '/') {
-                                src = src.slice(0, -1);
-                                text = src.slice(src.lastIndexOf('/'));
-                                src = src + text + '.xml';
-                            }
+                    src = child.getAttribute('src');
 
-                            config = child.getAttribute('config') ||
-                                anElement.getAttribute('config') ||
-                                'default';
+                    //  For packages we allow a kind of shorthand where
+                    //  you can specify a directory (with a trailing /)
+                    //  and have that imply a file in that directory
+                    //  with a '.xml' extension and name matching the
+                    //  directory name. This is largely for bundles.
+                    if (src.charAt(src.length - 1) === '/') {
+                        src = src.slice(0, -1);
+                        text = src.slice(src.lastIndexOf('/'));
+                        src = src + text + '.xml';
+                    }
 
-                            if (TP.boot.$isEmpty(src)) {
-                                throw new Error('package missing src: ' +
-                                    TP.boot.$nodeAsString(child));
-                            }
+                    config = child.getAttribute('config') ||
+                        anElement.getAttribute('config') ||
+                        'default';
 
-                            //  Make sure to fully expand the path.
-                            src = TP.boot.$getFullPath(child, src);
+                    if (TP.boot.$isEmpty(src)) {
+                        throw new Error('package missing src: ' +
+                            TP.boot.$nodeAsString(child));
+                    }
 
-                            if (includePkgs) {
-                                child.setAttribute('src', src);
-                                result.push(child);
-                            }
+                    //  Make sure to fully expand the path.
+                    src = TP.boot.$getFullPath(child, src);
 
-                            TP.boot.$listPackageAssets(
-                                        src, config, result, includePkgs);
+                    if (includePkgs) {
+                        child.setAttribute('src', src);
+                        result.push(child);
+                    }
 
-                            break;
+                    await TP.boot.$listPackageAssets(
+                                src, config, result, includePkgs);
 
-                        case 'property':
+                    break;
+
+                case 'property':
+
+                    child.setAttribute('loadpkg',
+                        TP.boot.$getCurrentPackage());
+                    child.setAttribute('loadcfg',
+                        anElement.getAttribute('id'));
+                    child.setAttribute('loadstage',
+                        TP.boot.$$stage);
+                    child.setAttribute('srcpkg',
+                        TP.boot.$getCurrentPackage());
+                    child.setAttribute('srccfg',
+                        anElement.getAttribute('id'));
+
+                    result.push(child);
+
+                    break;
+
+                case 'image':
+                    /* falls through */
+                case 'img':
+                    /* falls through */
+                case 'script':
+                    /* falls through */
+                case 'resource':
+                    /* falls through */
+                default:
+
+                    src = child.getAttribute('src') ||
+                        child.getAttribute('href');
+
+                    if (TP.boot.$notEmpty(src)) {
+                        //  Make sure to fully expand the path.
+                        src = TP.boot.$getFullPath(child, src);
+
+                        //  Unique the things we push by checking and
+                        //  caching entries as we go.
+                        if (TP.boot.$notValid(TP.boot.$$assets[src])) {
+                            TP.boot.$$assets[src] = src;
 
                             child.setAttribute('loadpkg',
                                 TP.boot.$getCurrentPackage());
@@ -11033,82 +11087,46 @@ TP.boot.$listConfigAssets = function(anElement, aList, configName, includePkgs) 
                                 anElement.getAttribute('id'));
                             child.setAttribute('loadstage',
                                 TP.boot.$$stage);
+
                             child.setAttribute('srcpkg',
                                 TP.boot.$getCurrentPackage());
                             child.setAttribute('srccfg',
                                 anElement.getAttribute('id'));
 
                             result.push(child);
+                        } else {
+                            TP.boot.$stdout(
+                                    'Skipping duplicate asset: ' + src,
+                                    TP.WARN);
+                        }
+                    } else {
+                        child.setAttribute('loadpkg',
+                            TP.boot.$getCurrentPackage());
+                        child.setAttribute('loadcfg',
+                            anElement.getAttribute('id'));
+                        child.setAttribute('loadstage',
+                            TP.boot.$$stage);
 
-                            break;
+                        child.setAttribute('srcpkg',
+                            TP.boot.$getCurrentPackage());
+                        child.setAttribute('srccfg',
+                            anElement.getAttribute('id'));
 
-                        case 'image':
-                            /* falls through */
-                        case 'img':
-                            /* falls through */
-                        case 'script':
-                            /* falls through */
-                        case 'resource':
-                            /* falls through */
-                        default:
-
-                            src = child.getAttribute('src') ||
-                                child.getAttribute('href');
-
-                            if (TP.boot.$notEmpty(src)) {
-                                //  Make sure to fully expand the path.
-                                src = TP.boot.$getFullPath(child, src);
-
-                                //  Unique the things we push by checking and
-                                //  caching entries as we go.
-                                if (TP.boot.$notValid(TP.boot.$$assets[src])) {
-                                    TP.boot.$$assets[src] = src;
-
-                                    child.setAttribute('loadpkg',
-                                        TP.boot.$getCurrentPackage());
-                                    child.setAttribute('loadcfg',
-                                        anElement.getAttribute('id'));
-                                    child.setAttribute('loadstage',
-                                        TP.boot.$$stage);
-
-                                    child.setAttribute('srcpkg',
-                                        TP.boot.$getCurrentPackage());
-                                    child.setAttribute('srccfg',
-                                        anElement.getAttribute('id'));
-
-                                    result.push(child);
-                                } else {
-                                    TP.boot.$stdout(
-                                            'Skipping duplicate asset: ' + src,
-                                            TP.WARN);
-                                }
-                            } else {
-                                child.setAttribute('loadpkg',
-                                    TP.boot.$getCurrentPackage());
-                                child.setAttribute('loadcfg',
-                                    anElement.getAttribute('id'));
-                                child.setAttribute('loadstage',
-                                    TP.boot.$$stage);
-
-                                child.setAttribute('srcpkg',
-                                    TP.boot.$getCurrentPackage());
-                                child.setAttribute('srccfg',
-                                    anElement.getAttribute('id'));
-
-                                result.push(child);
-                            }
-
-                            break;
+                        result.push(child);
                     }
-                }
-    });
+
+                    break;
+            }
+        }
+    }
 
     return result;
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$listPackageAssets = function(aPackage, aConfig, aList, includePkgs) {
+TP.boot.$listPackageAssets = async function(aPackage, aConfig, aList,
+includePkgs) {
 
     /**
      * @method $listPackageAssets
@@ -11154,7 +11172,7 @@ TP.boot.$listPackageAssets = function(aPackage, aConfig, aList, includePkgs) {
         if (TP.boot.$notValid(doc)) {
             //  Try to load it now...
             TP.boot.$$packages[path] =
-                TP.boot.$uriLoad(path, TP.DOM, 'manifest');
+                    await TP.boot.$uriLoad(path, TP.DOM, 'manifest');
             doc = TP.boot.$$packages[path];
             if (TP.boot.$notValid(doc)) {
                 throw new Error('Can not list unexpanded package: ' + pkg);
@@ -11179,7 +11197,7 @@ TP.boot.$listPackageAssets = function(aPackage, aConfig, aList, includePkgs) {
             TP.boot.$$assets = {};
         }
         result = aList || [];
-        TP.boot.$listConfigAssets(node, result, config, includePkgs);
+        await TP.boot.$listConfigAssets(node, result, config, includePkgs);
     } finally {
         TP.boot.$popPackage(path);
     }
@@ -11230,7 +11248,7 @@ TP.boot.$pushPostImport = function(aType) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$refreshPackages = function(aURI) {
+TP.boot.$refreshPackages = async function(aURI) {
 
     /**
      * @method $refreshPackages
@@ -11241,19 +11259,28 @@ TP.boot.$refreshPackages = function(aURI) {
      */
 
     var packages,
+        uri,
         keys,
-        stderr,
-        uri;
+        promises,
+        stderr;
 
     packages = TP.boot.$$packages;
     if (aURI) {
         uri = TP.boot.$uriExpandPath(aURI);
-        packages[uri] = TP.boot.$uriLoad(uri, TP.DOM, 'manifest');
+        packages[uri] = await TP.boot.$uriLoad(uri, TP.DOM, 'manifest');
     } else {
         keys = Object.keys(packages);
-        keys.forEach(
-            function(key) {
-                packages[key] = TP.boot.$uriLoad(key, TP.DOM, 'manifest');
+        promises = keys.map(
+                    function(key) {
+                        return TP.boot.$uriLoad(key, TP.DOM, 'manifest');
+                    });
+
+        Promise.all(promises).then(
+            function(response) {
+                response.forEach(
+                    function(aPackage, index) {
+                        packages[keys.at(index)] = aPackage;
+                    });
             });
     }
 
@@ -11262,7 +11289,7 @@ TP.boot.$refreshPackages = function(aURI) {
     try {
         stderr = TP.boot.$stderr;
         TP.boot.$stderr = TP.boot.STDERR_NULL;
-        TP.boot.$expand();
+        await TP.boot.$expand();
     } finally {
         TP.boot.$stderr = stderr;
     }
@@ -11270,7 +11297,7 @@ TP.boot.$refreshPackages = function(aURI) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$importApplication = function() {
+TP.boot.$importApplication = async function() {
 
     /**
      * @method $importApplication
@@ -11284,7 +11311,520 @@ TP.boot.$importApplication = function() {
 
     TP.boot.$$totalwork = 0;
 
-    TP.boot.$$importPhaseOne();
+    await TP.boot.$$importPhaseOne();
+};
+
+//  ============================================================================
+//  CACHE FUNCTIONS
+//  ============================================================================
+
+TP.boot.configureAndPopulateCaches = function() {
+
+    /**
+     * @method configureAndPopulateCaches
+     * @summary Configures the lib and app caches and populates them if
+     *     necessary.
+     * @description We have 3 different flag that control ServiceWorker caching
+     * based on different scenarios:
+     *
+     * 1. TeamTIBET developer - Neither ServiceWorker cache is never used and
+     *      all caches are checked upon each reload and cleared if they contain
+     *      content.
+     * 2. Application developer - The lib cache is used but the app cache is not
+     *      and is checked upon each reload and cleared if it contains content.
+     * 3. Application user - Both caches are used.
+     */
+
+    var populateCaches,
+
+        path,
+
+        libCacheRequests,
+        appCacheRequests;
+
+    populateCaches = async function(
+        libCacheNeedsPopulating, appCacheNeedsPopulating) {
+
+        var prebootLibPaths,
+            prebootAppPaths,
+
+            phaseOne,
+            phaseTwo,
+
+            package,
+            config,
+
+            nonTeamTIBETEnv,
+
+            packageAssets,
+            teamTIBETAssets,
+            loadableAssets,
+
+            loadablePaths,
+            packagePaths,
+
+            allPaths,
+
+            libResourcePath,
+            libPaths,
+
+            appResourcePath,
+            appPaths;
+
+        //  Grab the 'built-in' preboot lib paths that were in the cfg() system
+        //  and expand them.
+        prebootLibPaths = TP.sys.cfg('path.preboot_lib_paths');
+        prebootLibPaths = prebootLibPaths.map(
+                            function(aPath) {
+                                return TP.boot.$uriExpandPath(aPath);
+                            });
+
+        //  Grab the 'built-in' preboot app paths that were in the cfg() system
+        //  and expand them.
+        prebootAppPaths = TP.sys.cfg('path.preboot_app_paths');
+        prebootAppPaths = prebootAppPaths.map(
+                            function(aPath) {
+                                return TP.boot.$uriExpandPath(aPath);
+                            });
+
+        //  Next, grab the paths of the module package files themselves.
+
+        //  Grab the current values of 'boot.phase_one' and 'boot.phase_two' and
+        //  then set them to true, so that the list of assets we get in the
+        //  following steps think that we're obtaining resources for both
+        //  phases.
+
+        phaseOne = TP.sys.cfg('boot.phase_one');
+        phaseTwo = TP.sys.cfg('boot.phase_two');
+
+        TP.sys.setcfg('boot.phase_one', true);
+        TP.sys.setcfg('boot.phase_two', true);
+
+        //  Grab the package and config that the user booted with.
+        package = TP.sys.cfg('boot.package');
+        config = TP.sys.cfg('boot.config');
+
+        //  Grab the list of resources using that package and config.
+        packageAssets = await TP.boot.$listPackageAssets(package, config);
+
+        //  If we're running in a non-Team TIBET environment, that means that
+        //  we're running with at least the lib (and possibly the app) in a form
+        //  where some of the resources are inlined. We need to get a list of
+        //  all the 'resource' tags using the package and config that the user
+        //  booted with, but acting as if we're a member of Team TIBET so that
+        //  we can traverse all of the applicable manifest entries to find
+        //  applicable 'resource' tags.
+        nonTeamTIBETEnv = TP.sys.getcfg('boot.teamtibet') !== true;
+        if (nonTeamTIBETEnv) {
+
+            //  Set the flag that members of Team TIBET use to load individual,
+            //  non-inlined, resources.
+            TP.sys.setcfg('boot.teamtibet', true);
+
+            //  'production' means that we're interested in what the manifest
+            //  system calls 'base'.
+            if (config === 'production') {
+                config = 'base';
+            }
+
+            //  Grab the list of resources using that package and config.
+            teamTIBETAssets = await TP.boot.$listPackageAssets(package, config);
+
+            //  Filter out the assets that are not 'resource' tags.
+            teamTIBETAssets = teamTIBETAssets.filter(
+                        function(anElem) {
+                            return anElem.tagName === 'resource';
+                        });
+
+            //  Add those assets to the list of assets we already have.
+            packageAssets = packageAssets.concat(teamTIBETAssets);
+
+            //  Put the Team TIBET flag back.
+            TP.sys.setcfg('boot.teamtibet', false);
+        }
+
+        //  Restore the previous values for 'boot.phase_one' and
+        //  'boot.phase_two'.
+        TP.sys.setcfg('boot.phase_one', phaseOne);
+        TP.sys.setcfg('boot.phase_two', phaseTwo);
+
+        //  Grab the paths of the actual package manifest files themselves that
+        //  were populated into TP.boot.$$packages when we did the processing
+        //  above.
+        packagePaths = Object.keys(TP.boot.$$packages);
+
+        //  Next, grab the files referenced in those package files. These must
+        //  be assets that have a 'src' or 'href' attribute and then a path is
+        //  obtained and expanded from there.
+
+        loadableAssets = packageAssets.filter(
+                            function(anElem) {
+                                return anElem.hasAttribute('src') ||
+                                        anElem.hasAttribute('href');
+                            });
+
+        loadablePaths = loadableAssets.map(
+                            function(anElem) {
+                                var rawPath;
+
+                                rawPath = anElem.getAttribute('src') ||
+                                            anElem.getAttribute('href');
+                                return TP.boot.$uriExpandPath(rawPath);
+                            });
+
+        //  Make sure that we're dealing with absolute paths.
+        loadablePaths = loadablePaths.filter(
+                            function(aPath) {
+                                return TP.boot.$uriIsAbsolute(
+                                        TP.boot.$uriExpandPath(aPath));
+                            });
+
+        //  Concatenate all of the paths together.
+        allPaths = prebootLibPaths.concat(prebootAppPaths,
+                                            packagePaths,
+                                            loadablePaths);
+
+        //  Separate out the lib paths. These will be loaded into the lib file
+        //  cache.
+        libResourcePath = TP.sys.cfg('boot.lib_resource_path');
+        libPaths = allPaths.filter(
+                    function(aPath) {
+                        return aPath.startsWith(libResourcePath) &&
+                                /\.\w+$/.test(aPath);
+                    });
+
+        //  Separate out the app paths. These will be loaded into the app file
+        //  cache.
+        appResourcePath = TP.sys.cfg('boot.app_resource_path');
+        appPaths = allPaths.filter(
+                    function(aPath) {
+                        return aPath.startsWith(appResourcePath) &&
+                                !aPath.startsWith(libResourcePath) &&
+                                /\.\w+$/.test(aPath);
+                    });
+
+        return caches.open('TIBET_LIB_CACHE').then(
+            function(cache) {
+                if (libCacheNeedsPopulating) {
+                    return cache.addAll(libPaths);
+                }
+            }).then(function() {
+                return caches.open('TIBET_APP_CACHE');
+            }).then(function(cache) {
+                if (appCacheNeedsPopulating) {
+                    return cache.addAll(appPaths);
+                }
+            });
+    };
+
+    //  Grab the lib resource path, defaulting it to the lib root and make sure
+    //  it's expanded.
+    path = TP.sys.cfg('boot.lib_resource_path', TP.boot.$getLibRoot());
+    TP.sys.setcfg('boot.lib_resource_path', TP.boot.$uriExpandPath(path));
+
+    //  Grab the app resource path, defaulting it to the app root and make sure
+    //  it's expanded.
+    path = TP.sys.cfg('boot.app_resource_path', TP.boot.$getAppRoot());
+    TP.sys.setcfg('boot.app_resource_path', TP.boot.$uriExpandPath(path));
+
+    //  Set up the Service Worker and then begin the process of populating the
+    //  cache.
+    return TP.boot.setupServiceWorker().then(function() {
+                var cacheCfgBody;
+
+                //  Compute a String from the current config data.
+                cacheCfgBody = JSON.stringify(TP.sys.cfg());
+
+                //  Send a message over to the Service Worker giving it all of
+                //  the cfg data that we have.
+                return TP.boot.sendMessageToServiceWorker(
+                    navigator.serviceWorker.controller,
+                    {
+                        command: 'setcfg',
+                        payload: cacheCfgBody
+                    });
+            }).then(function() {
+                //  Open the lib file cache.
+                return caches.open('TIBET_LIB_CACHE');
+            }).then(function(cache) {
+                return cache.keys();
+            }).then(function(keys) {
+                libCacheRequests = keys;
+                //  Open the app file cache.
+                return caches.open('TIBET_APP_CACHE');
+            }).then(function(cache) {
+                return cache.keys();
+            }).then(function(keys) {
+                var libCachePaths,
+                    appCachePaths,
+
+                    libCacheNeedsPopulating,
+                    appCacheNeedsPopulating,
+
+                    promise,
+
+                    foundDeveloperFiles;
+
+                appCacheRequests = keys;
+
+                libCachePaths = libCacheRequests.map(
+                                    function(aRequest) {
+                                        return aRequest.url;
+                                    });
+
+                appCachePaths = appCacheRequests.map(
+                                    function(aRequest) {
+                                        return aRequest.url;
+                                    });
+
+                //  Now we have to decide whether or not to populate the caches
+                //  based on flag settings and whether we found content in those
+                //  caches.
+
+                libCacheNeedsPopulating = false;
+                appCacheNeedsPopulating = false;
+
+                promise = Promise.resolve();
+
+                if (TP.boot.shouldCacheLibFiles()) {
+                    if (TP.boot.$isEmpty(libCachePaths)) {
+                        libCacheNeedsPopulating = true;
+                    } else {
+                        if (TP.sys.inDeveloperMode()) {
+                            foundDeveloperFiles =
+                                libCachePaths.filter(
+                                    function(aPath) {
+                                        return /tibet_developer/.test(aPath);
+                                    });
+                            if (TP.boot.$isEmpty(foundDeveloperFiles)) {
+                                libCacheNeedsPopulating = true;
+                            }
+                        }
+                    }
+                } else {
+                    if (!TP.boot.$isEmpty(libCachePaths)) {
+                        promise = promise.then(
+                            function() {
+                                return caches.delete('TIBET_LIB_CACHE');
+                            });
+                    }
+                }
+
+                if (TP.boot.shouldCacheAppFiles()) {
+                    if (TP.boot.$isEmpty(appCachePaths)) {
+                        appCacheNeedsPopulating = true;
+                    }
+                } else {
+                    if (!TP.boot.$isEmpty(appCachePaths)) {
+                        promise = promise.then(
+                            function() {
+                                return caches.delete('TIBET_APP_CACHE');
+                            });
+                    }
+                }
+
+                //  If the cache doesn't need populating, we'll send a message
+                //  over to the ServiceWorker telling it to turn caching on and
+                //  we won't bother to populate the caches.
+                if (!libCacheNeedsPopulating && !appCacheNeedsPopulating) {
+
+                    //  First, make sure that if either the lib or app cache has
+                    //  been configured to not cache (but, in this case, since
+                    //  we're at this point in the code, the other cache *has*
+                    //  been configured to cache), that that cache is emptied.
+
+                    return promise.then(
+                        function() {
+                            return TP.boot.sendMessageToServiceWorker(
+                                    navigator.serviceWorker.controller,
+                                    {
+                                        command: 'setcfgprop',
+                                        payload: '{"boot.use_sw_cache":true}'
+                                    });
+                        });
+                }
+
+                //  If either one or both caches need populating, then we need
+                //  to send a message to the ServiceWorker that it is *not*
+                //  supposed to use the cache to vend files, since we're going
+                //  to populate it now.
+                return promise.then(function() {
+                        return TP.boot.sendMessageToServiceWorker(
+                                navigator.serviceWorker.controller,
+                                {
+                                    command: 'setcfgprop',
+                                    payload: '{"boot.use_sw_cache":false}'
+                                });
+                    }).then(function() {
+                        //  Populate one or both caches.
+                        return populateCaches(
+                                    libCacheNeedsPopulating,
+                                    appCacheNeedsPopulating);
+                    }).then(function() {
+                        //  Now that the cache population is done, send a
+                        //  message over to the ServiceWorker telling it to
+                        //  turn caching back on.
+                        return TP.boot.sendMessageToServiceWorker(
+                                navigator.serviceWorker.controller,
+                                {
+                                    command: 'setcfgprop',
+                                    payload: '{"boot.use_sw_cache":true}'
+                                });
+                    });
+            });
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.sendMessageToServiceWorker = function(sender, msgObjContent) {
+
+    /**
+     * @method sendMessageToServiceWorker
+     * @summary Sends a message (via postMessage) to the Service Worker.
+     * @returns {Promise} A Promise that will resolve when the ServiceWorker has
+     *     been sent the message.
+     */
+
+    var listenerPromise;
+
+    listenerPromise = new Promise(
+        function(resolver, rejector) {
+            var messageChannel;
+
+            messageChannel = new MessageChannel();
+            messageChannel.port1.onmessage = function(event) {
+                if (event.data.error) {
+                    rejector(event.data.error);
+                } else {
+                    resolver(event.data);
+                }
+            };
+
+            sender.postMessage(msgObjContent, [messageChannel.port2]);
+        });
+
+    return listenerPromise;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.setupServiceWorker = function() {
+
+    /**
+     * @method setupServiceWorker
+     * @summary Sets up the Service Worker used by TIBET to control caching and
+     *     provide other, more esoteric ;-), services.
+     * @returns {Promise} A Promise that will resolve when the ServiceWorker is
+     *     ready.
+     */
+
+    return navigator.serviceWorker.register('/tibet_service_worker.js').then(
+            function(registration) {
+                //  Registration was successful
+                TP.trace('TIBET ServiceWorker' +
+                            ' initialization successful with' +
+                            ' scope: ' + registration.scope);
+
+                TP.boot.$$serviceWorkerRegistration = registration;
+
+                //  We have to wait until the ServiceWorker is ready... and then
+                //  we have to wait until it has a real controller via it's
+                //  'controllerchange' event before we can continue.
+                return navigator.serviceWorker.ready.then(
+                        function() {
+                            return new Promise(
+                                function(resolver, rejector) {
+                                    if (navigator.serviceWorker.controller) {
+                                        resolver();
+                                    }
+                                    navigator.serviceWorker.addEventListener(
+                                        'controllerchange',
+                                        function() {
+                                            resolver();
+                                        });
+                                });
+                        });
+
+                }, function(err) {
+                    //  Registration failed :(
+                    TP.error('TIBET ServiceWorker' +
+                                ' initialization failed' + err.message);
+            });
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.shouldCacheFiles = function() {
+
+    /**
+     * @method shouldCacheFiles
+     * @summary Whether or not we should cache any type of file, lib or app.
+     * @returns {Boolean} Whether or not to cache files at all.
+     */
+
+    //  If we're headless, even if we've been launched over HTTP, then we don't
+    //  cache any files.
+    if (TP.sys.cfg('boot.context') === 'headless') {
+        return false;
+    }
+
+    //  If the user is running as a Team TIBET user, then we don't cache any
+    //  files.
+    if (TP.sys.getcfg('boot.teamtibet') === true) {
+        return false;
+    }
+
+    return TP.sys.isHTTPBased();
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.shouldCacheAppFiles = function() {
+
+    /**
+     * @method shouldCacheAppFiles
+     * @summary Whether or not we should cache app files.
+     * @returns {Boolean} Whether or not to cache app files.
+     */
+
+    //  If we're caching files at all, we cache app files as long as we're not
+    //  in developer mode.
+    if (TP.sys.inDeveloperMode() === true) {
+        return false;
+    }
+
+    //  And we're HTTP based.
+    return TP.sys.isHTTPBased();
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.shouldCacheLibFiles = function() {
+
+    /**
+     * @method shouldCacheLibFiles
+     * @summary Whether or not we should cache lib files.
+     * @returns {Boolean} Whether or not to cache lib files.
+     */
+
+    //  If we're caching files at all, we cache lib files as long as we're HTTP
+    //  based.
+    return TP.sys.isHTTPBased();
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.teardownCaches = function() {
+
+    /**
+     * @method teardownCaches
+     * @summary Tears down both lib and app caches.
+     */
+
+    return caches.delete('TIBET_LIB_CACHE').then(
+        function(cache) {
+            return caches.delete('TIBET_APP_CACHE');
+        });
 };
 
 //  ============================================================================
@@ -11301,14 +11841,24 @@ TP.boot.boot = function() {
      */
 
     //  perform any additional configuration work necessary before we boot.
-    TP.boot.$config();
-
-    //  expand the manifest in preparation for importing components.
-    TP.boot.$expand();
-
-    //  import based on expanded package. startup is invoked once the async
-    //  import process completes.
-    TP.boot.$importApplication();
+    TP.boot.$config().then(
+        function() {
+            //  expand the manifest in preparation for importing components.
+            return TP.boot.$expand();
+        }).then(function() {
+            //  check to see if we need to cache files.
+            if (TP.boot.shouldCacheFiles()) {
+                return TP.boot.configureAndPopulateCaches();
+            } else {
+                //  if we're not caching at all, then tear down any existing
+                //  caches.
+                return TP.boot.teardownCaches();
+            }
+        }).then(function() {
+            //  import based on expanded package. startup is invoked once the
+            //  async import process completes.
+            return TP.boot.$importApplication();
+        });
 };
 
 //  ----------------------------------------------------------------------------
@@ -11372,81 +11922,87 @@ TP.boot.launch = function(options) {
     //  loads the tibet.json file which typically contains profile and lib_root
     //  data. with those two values the system can find the primary package and
     //  configuration that will ultimately drive what we load.
-    TP.boot.$configureBootstrap();
+    TP.boot.$configureBootstrap().then(
+        function() {
 
-    //  Update any cached variable content. We do this each time we've read in
-    //  new configuration values regardless of their source.
-    TP.boot.$updateDependentVars();
+            //  Update any cached variable content. We do this each time we've
+            //  read in new configuration values regardless of their source.
+            TP.boot.$updateDependentVars();
 
-    try {
-        //  set the initial stage. this will also capture a start time.
-        TP.boot.$setStage('prelaunch');
-    } catch (e) {
-        if (window.location.protocol.indexOf('file') === 0) {
-            //  File launch issue.
-            if (TP.sys.isUA('chrome')) {
-                TP.boot.$stderr(
-                    'File launch aborted. ' +
-                    'On Chrome you need to start the browser with ' +
-                    'the --allow-file-access-from-files flag.',
-                    TP.FATAL);
-            } else if (TP.sys.isUA('firefox')) {
-                TP.boot.$stderr(
-                    'File launch aborted. ' +
-                    'On Firefox you must set the config flag ' +
-                    '\'security.fileuri.strict_origin_policy\' to false,' +
-                    ' via about:config, quit the browser and restart.',
-                    TP.FATAL);
-            } else {
-                TP.boot.$stderr(
-                    'File launch aborted. Check browser security settings.',
-                    TP.FATAL);
+            try {
+                //  set the initial stage. this will also capture a start time.
+                TP.boot.$setStage('prelaunch');
+            } catch (e) {
+                if (window.location.protocol.indexOf('file') === 0) {
+                    //  File launch issue.
+                    if (TP.sys.isUA('chrome')) {
+                        TP.boot.$stderr(
+                            'File launch aborted. ' +
+                            'On Chrome you need to start the browser with ' +
+                            'the --allow-file-access-from-files flag.',
+                            TP.FATAL);
+                    } else if (TP.sys.isUA('firefox')) {
+                        TP.boot.$stderr(
+                            'File launch aborted. ' +
+                            'On Firefox you must set the config flag ' +
+                            '\'security.fileuri.strict_origin_policy\' to false,' +
+                            ' via about:config, quit the browser and restart.',
+                            TP.FATAL);
+                    } else {
+                        TP.boot.$stderr(
+                            'File launch aborted. Check browser security' +
+                            ' settings.',
+                            TP.FATAL);
+                    }
+                    return;
+                }
             }
-            return;
-        }
-    }
 
-    //  If the browser is considered obsolete we can stop right now.
-    if (TP.sys.isObsolete()) {
-        TP.boot.$stderr('Obsolete browser/platform: ' + TP.$agent +
-            '. Boot sequence terminated.', TP.FATAL);
-        return;
-    }
+            //  If the browser is considered obsolete we can stop right now.
+            if (TP.sys.isObsolete()) {
+                TP.boot.$stderr('Obsolete browser/platform: ' + TP.$agent +
+                    '. Boot sequence terminated.', TP.FATAL);
+                return;
+            }
 
-    //  If the initial coded launch options didn't tell us to ignore the URL
-    //  we'll process it for any overrides and update based on any changes. The
-    //  argument 'true' here tells the system to activate override checking.
-    if (TP.sys.cfg('boot.no_url_args') !== true) {
-        TP.boot.$$configureOverrides(
-            TP.boot.$uriFragmentParameters(TP.sys.getLaunchURL()), true);
-        TP.boot.$updateDependentVars();
-    }
+            //  If the initial coded launch options didn't tell us to ignore the
+            //  URL we'll process it for any overrides and update based on any
+            //  changes. The argument 'true' here tells the system to activate
+            //  override checking.
+            if (TP.sys.cfg('boot.no_url_args') !== true) {
+                TP.boot.$$configureOverrides(
+                    TP.boot.$uriFragmentParameters(
+                                TP.sys.getLaunchURL()), true);
+                TP.boot.$updateDependentVars();
+            }
 
-    //  Regardless of any ignore URL arg settings avoid cycling when the
-    //  login page was the first page into the user interface (double-click,
-    //  bookmark, shortcut, etc.)
+            //  Regardless of any ignore URL arg settings avoid cycling when the
+            //  login page was the first page into the user interface
+            //  (double-click, bookmark, shortcut, etc.)
 
-    //  now that both option lists have been set we can proceed with the
-    //  startup sequence.
+            //  now that both option lists have been set we can proceed with the
+            //  startup sequence.
 
-    //  don't boot TIBET twice into the same window hierarchy, check to make
-    //  sure we don't already see the $$TIBET window reference
-    if (window.$$TIBET && window.$$TIBET !== window) {
+            //  don't boot TIBET twice into the same window hierarchy, check to
+            //  make sure we don't already see the $$TIBET window reference
+            if (window.$$TIBET && window.$$TIBET !== window) {
 
-        //  make sure the user sees this
-        TP.boot.$stderr('Found existing TIBET image in ' +
-            (typeof window.$$TIBET.getFullName === 'function' ?
-                window.$$TIBET.getFullName() :
-                window.$$TIBET.name) +
-                '. Boot sequence terminated.', TP.FATAL);
+                //  make sure the user sees this
+                TP.boot.$stderr('Found existing TIBET image in ' +
+                    (typeof window.$$TIBET.getFullName === 'function' ?
+                        window.$$TIBET.getFullName() :
+                        window.$$TIBET.name) +
+                        '. Boot sequence terminated.', TP.FATAL);
 
-        return;
-    }
+                return;
+            }
 
-    //  configure the UI boot frame. This involves potentially creating/loading
-    //  the frame so it may be async. On completion this routine will trigger
-    //  the uiRootConfig routine to create the root UI frame in a similar way.
-    TP.boot.$uiBootConfig();
+            //  configure the UI boot frame. This involves potentially
+            //  creating/loading the frame so it may be async. On completion
+            //  this routine will trigger the uiRootConfig routine to create the
+            //  root UI frame in a similar way.
+            TP.boot.$uiBootConfig();
+        });
 };
 
 //  ----------------------------------------------------------------------------
@@ -11546,7 +12102,7 @@ TP.boot.$activate = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$stageAction = function() {
+TP.boot.$stageAction = async function() {
 
     /**
      * @method $stageAction
@@ -11575,7 +12131,7 @@ TP.boot.$stageAction = function() {
             TP.boot.$$restarttime = new Date();
             TP.boot.$stdout('Startup process re-engaged by user.',
                 TP.SYSTEM);
-            TP.boot.$$importPhaseTwo();
+            await TP.boot.$$importPhaseTwo();
 
             break;
 
