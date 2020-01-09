@@ -3377,7 +3377,6 @@ TP.boot.$uriLoadCommonHttp = async function(targetUrl, resultType) {
      */
 
     var returnType,
-        // httpObj,
         req,
         res,
         text;
@@ -3385,21 +3384,6 @@ TP.boot.$uriLoadCommonHttp = async function(targetUrl, resultType) {
     returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
     try {
-        /*
-        httpObj = TP.boot.$httpCall(targetUrl, TP.HTTP_GET);
-
-        if (httpObj.status === 200) {
-            return TP.boot.$uriResult(httpObj.responseText, returnType);
-        } else if (httpObj.status === 304) {
-            return null;
-        } else if (httpObj.status === 0) {
-            if (/^chrome-extension/.test(targetUrl) &&
-                httpObj.responseText != null) {
-                return TP.boot.$uriResult(httpObj.responseText, returnType);
-            }
-        }
-        */
-
         req = new Request(
                     targetUrl,
                     {
@@ -3409,7 +3393,15 @@ TP.boot.$uriLoadCommonHttp = async function(targetUrl, resultType) {
         res = await fetch(req);
         text = await res.text();
 
-        return TP.boot.$uriResult(text, returnType);
+        if (res.status === 200) {
+            return TP.boot.$uriResult(text, returnType);
+        } else if (res.status === 304) {
+            return null;
+        } else if (res.status === 0) {
+            if (/^chrome-extension/.test(targetUrl) && text !== null) {
+                return TP.boot.$uriResult(text, returnType);
+            }
+        }
     } catch (e) {
         TP.boot.$stderr('AccessException: ' + targetUrl,
                         TP.boot.$ec(e));
