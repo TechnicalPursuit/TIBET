@@ -1987,13 +1987,6 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
 
     //  process any headers, note we always bypass caches if possible
     try {
-        httpObj.setRequestHeader('Pragma', 'no-cache');
-        httpObj.setRequestHeader('Cache-control', 'private');
-        httpObj.setRequestHeader('Cache-control', 'must-revalidate');
-        httpObj.setRequestHeader('Cache-control', 'no-cache');
-        httpObj.setRequestHeader('Cache-control', 'no-store');
-        httpObj.setRequestHeader('Expires', '-1');
-
         httpObj.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
         if (callHeaders != null) {

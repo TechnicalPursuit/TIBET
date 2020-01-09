@@ -919,11 +919,7 @@ function() {
     //  NOTE that we build a new hash each time so it can be modified as
     //  needed by each request. Also note that this is done lazily so that
     //  we're sure we're getting a full hash object, not a TP.boot.PHash.
-    return TP.hc('Pragma', 'no-cache',
-                    'Cache-Control', TP.ac('private',
-                        'no-cache', 'no-store', 'must-revalidate'),
-                    'Expires', '-1',
-                    'Accept', TP.ac(TP.JS_TEXT_ENCODED,
+    return TP.hc('Accept', TP.ac(TP.JS_TEXT_ENCODED,
                                     TP.JSON_ENCODED,
                                     TP.JSON_TEXT_ENCODED,
                                     TP.XML_ENCODED,
@@ -1074,13 +1070,6 @@ function(targetUrl, aRequest, httpObj) {
                     header.remove('no-cache');
                 }
             }
-        } else if (TP.notDefined(headers.at('Pragma'))) {
-            headers.atPut('Pragma', 'no-cache');
-        }
-
-        //  when no Cache-control is specified we want to bypass caches
-        if (TP.notDefined(headers.at('Cache-Control'))) {
-            headers.atPut('Cache-Control', TP.ac('no-cache', 'no-store'));
         }
     }
 
