@@ -245,6 +245,31 @@
 
     <resource href="xctrls/TP.xctrls_grid.less"/>
 
+
+    <!-- General theme files -->
+    <resource href="xctrls/themes/TP.xctrls_common_all.less"/>
+
+    <resource href="xctrls/themes/TP.xctrls.button_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.buttonitem_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.checkitem_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.combo_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.dialog_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.list_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.notifier_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.pagerbar_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.propertysheet_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.radioitem_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.select_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.sticky_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.tabbar_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.table_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.textitem_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.tooltip_all.less"/>
+
+    <!-- Individual theme files are brought in by their components based on a
+            setting of a cfg parameter so we don't have to mention them here..
+    -->
+
     <script src="xctrls/TP.xctrls.XMLNS.js"/>
 
     <script src="xctrls/TP.xctrls.Element.js"/>
