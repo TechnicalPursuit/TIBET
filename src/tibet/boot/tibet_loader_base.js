@@ -1616,6 +1616,35 @@ TP.sys.isHTTPBased = function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.sys.isHTTPSBased = function() {
+
+    /**
+     * @method isHTTPSBased
+     * @summary Returns true if the TIBET codebase was loaded via HTTPS.
+     * @returns {Boolean} Whether or not the TIBET codebase was loaded over
+     *     HTTPS.
+     */
+
+    return TP.sys.$httpBased && TP.sys.$scheme === 'https';
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.sys.isSecureContext = function() {
+
+    /**
+     * @method isSecureContext
+     * @summary Returns true if the TIBET codebase is running in a 'secure
+     *     context' (i.e. vended over HTTPS protocol or from localhost).
+     * @returns {Boolean} Whether or not the TIBET codebase was loaded over
+     *     HTTPS.
+     */
+
+    return TP.sys.isHTTPSBased() || TP.sys.$host === 'localhost';
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.sys.getLaunchDocument = function(aWindow) {
 
     /**
@@ -11839,9 +11868,8 @@ TP.boot.boot = function() {
             return TP.boot.$expand();
         }).then(function() {
             //  Caches will not be available in non-secure contexts. We need to
-            //  test for them here. Note that trying to test using '!', etc.
-            //  throws a ReferenceError.
-            if (!window.hasOwnProperty('caches')) {
+            //  test for them here.
+            if (!TP.sys.isSecureContext()) {
                 return;
             }
 
