@@ -11846,6 +11846,13 @@ TP.boot.boot = function() {
             //  expand the manifest in preparation for importing components.
             return TP.boot.$expand();
         }).then(function() {
+            //  Caches will not be available in non-secure contexts. We need to
+            //  test for them here. Note that trying to test using '!', etc.
+            //  throws a ReferenceError.
+            if (!window.hasOwnProperty('caches')) {
+                return;
+            }
+
             //  check to see if we need to cache files.
             if (TP.boot.shouldCacheFiles()) {
                 return TP.boot.configureAndPopulateCaches();
