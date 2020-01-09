@@ -200,6 +200,36 @@
     <resource href="~ide_root/TP.sherpa.groupingtool/TP.sherpa.grouping_injected.css"/>
     <resource href="~ide_root/TP.sherpa.outliner/TP.sherpa.outliner_injected.css"/>
 
+    <resource href="~ide_root/media/ic_list_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_home_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_play_arrow_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_keyboard_arrow_right_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_keyboard_arrow_left_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_playlist_add_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_change_history_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_playlist_play_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_traffic_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_build_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_cloud_upload_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_format_shapes_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_code_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_settings_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/baseline-cached-24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/baseline-view_module-24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/baseline-dashboard-24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_add_circle_outline_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_sync_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_crop_free_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_filter_1_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_filter_none_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_assignment_turned_in_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/call49.svg" no-inline="true"/>
+
+    <resource href="~ide_root/cm_theme/elegant.css" no-inline="true"/>
+
+    <resource href="~lib_fonts/inconsolata-v12-latin-ext_latin-regular.woff2" no-inline="true"/>
+    <resource href="~lib_fonts/inconsolata-v12-latin-ext_latin-700.woff2" no-inline="true"/>
+
 </config>
 
 </package>

@@ -338,6 +338,10 @@ Cmd.prototype.generateResourceList = function() {
             return;
         }
 
+        if (item.hasAttribute('no-inline')) {
+            return;
+        }
+
         pattern = item.getAttribute('pattern');
         if (pattern) {
             try {

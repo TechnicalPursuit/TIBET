@@ -308,6 +308,15 @@
         ]]>
     </script>
 
+    <resource href="~lib_deps/codemirror/lib/codemirror.css" no-inline="true"/>
+
+    <resource href="~lib_deps/ace/ace-tpi.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/mode-javascript.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/mode-json.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/worker-javascript.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/worker-json.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/theme-dawn.js" no-inline="true"/>
+
     <package src="xctrls/TP.xctrls.codeeditor/TP.xctrls.codeeditor.xml" config="base"/>
 
     <!-- END xctrls:codeeditor -->

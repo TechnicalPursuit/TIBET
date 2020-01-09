@@ -281,6 +281,22 @@
     <resource href="~lib_dat/TP.core.USAscii101Keyboard.xml"/>
     <resource href="~lib_dat/vcards.xml"/>
 
+    <resource href="~lib_styles/tibet_reset.css" no-inline="true"/>
+    <resource href="~lib_styles/normalize.css" no-inline="true"/>
+    <resource href="~lib_styles/tibet_normalize.css" no-inline="true"/>
+    <resource href="~lib_styles/tibet_framing.css" no-inline="true"/>
+    <resource href="~lib_styles/tibet.css" no-inline="true"/>
+
+    <resource href="~lib_lib/src/tibet_hook.min.js" no-inline="true"/>
+    <resource href="~lib_lib/src/tibet_worker.js" no-inline="true"/>
+
+    <resource href="~lib_deps/less-tpi.min.js" no-inline="true"/>
+
+    <resource href="~lib_media/tibet_logo.svg" no-inline="true"/>
+    <resource href="~lib_media/tibet_world.gif" no-inline="true"/>
+
+    <resource href="~lib_xhtml/blank.xhtml" no-inline="true"/>
+
 </config>
 
 <config id="full" depends="base">
