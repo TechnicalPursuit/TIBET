@@ -2555,7 +2555,7 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
 TP.boot.$uriIsAbsolute = function(aPath) {
 
     /**
-     * Returns true if the path provided appears to be an aboslute path. Note
+     * Returns true if the path provided appears to be an absolute path. Note
      * that this will return true for TIBET virtual paths since they are
      * absolute paths when expanded.
      * @param {string} aPath The path to be tested.
@@ -11505,8 +11505,9 @@ TP.boot.$activate = function() {
     /**
      * @method $activate
      * @summary Invoked from TP.boot.main() to activate the application when the
-     *     booting process is complete. This installs various window/system-level
-     *     hooks and then tells the entire system to activate.
+     *     booting process is complete. This installs various
+     *     window/system-level hooks and then tells the entire system to
+     *     activate.
      */
 
     try {

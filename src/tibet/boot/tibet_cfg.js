@@ -226,7 +226,7 @@
     //  code to assist with debugging into the framework code.
     TP.sys.setcfg('boot.minified', true);
 
-    //  Do we want to load inlined resources? Inlined reources are generated
+    //  Do we want to load inlined resources? Inlined resources are generated
     //  from resource tags and placed in separate config blocks which are
     //  typically leveraged during rollup for production.
     TP.sys.setcfg('boot.inlined', true);

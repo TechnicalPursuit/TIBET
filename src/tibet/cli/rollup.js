@@ -238,8 +238,8 @@ Cmd.prototype.finalizePackageOptions = function() {
     this.pkgOpts.nodes = true;
 
     //  Never try to roll up image or resource tags. Images are binary (so
-    //  should be more appcache level) and resources are inlined via the
-    //  resource command/config.
+    //  should be more cache API level) and resources are inlined via the
+    //  resource command/config (or are cached using the cache API).
     this.pkgOpts.images = false;
     this.pkgOpts.resources = false;
 

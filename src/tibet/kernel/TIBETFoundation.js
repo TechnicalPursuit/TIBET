@@ -43,8 +43,8 @@ function(params, windowContext) {
      *     functions. 'variables' Return global slots that are not functions.
      * @param {Window} windowContext The window/frame whose globals should be
      *     returned. Default is the current window.
-     * @returns {String[]} The list of Strings representing keys on the JavaScript
-     *     global object.
+     * @returns {String[]} The list of Strings representing keys on the
+     *     JavaScript global object.
      */
 
     var arr,
