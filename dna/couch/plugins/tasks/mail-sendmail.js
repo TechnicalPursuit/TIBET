@@ -106,6 +106,11 @@
             //  newline, and args for the nodemailer sendmail transport.
             sendmailOpts = TDS.blend({}, params.transport);
 
+            //  NodeJS TLSSocket options - we allow 'unauthorized' (i.e.
+            //  self-signed certificate) access to the underlying server.
+            sendmailOpts.tls = sendmailOpts.tls ||
+                                {rejectUnauthorized: false};
+
             sendmailOpts.path = sendmailOpts.path || 'sendmail';
             sendmailOpts.newline = sendmailOpts.newline || 'unix';
             //  NOTE we don't try to default the 'args' param since that can
