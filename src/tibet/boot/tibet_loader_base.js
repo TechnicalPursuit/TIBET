@@ -1381,10 +1381,14 @@ TP.sys.needsLoadingIndicator = function() {
      *     loading.
      */
 
+    var profile;
+
     //  We currently only show a loading indicator during boot if we're running
     //  in a developer mode. Otherwise, the boot process is so fast that it's
     //  not worth it :-).
-    return this.inDeveloperMode();
+    profile = TP.sys.cfg('boot.profile') || '';
+
+    return /(developer|contributor)/.test(profile);
 };
 
 //  ----------------------------------------------------------------------------
