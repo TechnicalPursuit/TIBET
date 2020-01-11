@@ -241,6 +241,215 @@ function() {
     });
 });
 
+//  ------------------------------------------------------------------------
+
+TP.test.OONativeClassTester.describe('NativeClass - complex inheritance',
+function() {
+
+    //  ---
+
+    this.it('Subclassing a subclass of TP.gui.Point', function(test, options) {
+
+        var executedL1Constructor,
+
+            executedL1ClassMethod,
+            executedL1InstanceMethod,
+            executedL1InstanceInitMethod,
+
+            newL1Point,
+            newL1PolarPoint,
+
+            executedL2Constructor,
+
+            executedL2ClassMethod,
+            executedL2InstanceMethod,
+
+            newL2Point,
+            newL2PolarPoint;
+
+        executedL1Constructor = false;
+        executedL1ClassMethod = false;
+        executedL1InstanceMethod = false;
+        executedL1InstanceInitMethod = false;
+
+        TP.gui.Point.defineNativeClass(
+            'TP.test.LevelOnePoint',
+            class extends Object {
+                constructor(x, y) {
+                    super(x, y);
+
+                    executedL1Constructor = true;
+                }
+
+                static testClassMethod() {
+                    executedL1ClassMethod = true;
+                }
+
+                static constructFromPolar(radius, angle) {
+                    return super.constructFromPolar(radius, angle);
+                }
+
+                init(x, y) {
+                    super.init(x, y);
+                    executedL1InstanceInitMethod = true;
+                }
+
+                testInstanceMethod() {
+                    executedL1InstanceMethod = true;
+                }
+
+                add(aPoint) {
+                    super.add(aPoint.addToX(10));
+                }
+            }
+        );
+
+        //  ---
+
+        test.assert.isFalse(executedL1ClassMethod);
+
+        TP.test.LevelOnePoint.testClassMethod();
+
+        test.assert.isTrue(executedL1ClassMethod);
+
+        //  ---
+
+        test.assert.isFalse(executedL1Constructor);
+        test.assert.isFalse(executedL1InstanceInitMethod);
+
+        newL1Point = new TP.test.LevelOnePoint(42, 42);
+        test.assert.isValid(newL1Point);
+
+        test.assert.isTrue(executedL1Constructor);
+        test.assert.isTrue(executedL1InstanceInitMethod);
+
+        //  ---
+
+        test.assert.isFalse(executedL1InstanceMethod);
+
+        newL1Point.testInstanceMethod();
+
+        test.assert.isTrue(executedL1InstanceMethod);
+
+        //  ---
+
+        test.assert.isEqualTo(newL1Point.getX(), 42);
+        test.assert.isEqualTo(newL1Point.getY(), 42);
+
+        //  ---
+
+        newL1PolarPoint = TP.test.LevelOnePoint.constructFromPolar(5, 5);
+        test.assert.isValid(newL1PolarPoint);
+
+        //  ---
+
+        test.assert.isEqualTo(newL1PolarPoint.getX().round(2), 4.98);
+        test.assert.isEqualTo(newL1PolarPoint.getY().round(2), 0.44);
+
+        //  ---
+
+        newL1Point = new TP.test.LevelOnePoint(42, 42);
+
+        newL1Point.add(TP.pc(5, 5));
+
+        test.assert.isEqualTo(newL1Point.getX(), 57);
+        test.assert.isEqualTo(newL1Point.getY(), 47);
+
+        //  --------------------------------------------------------------------
+
+        executedL1Constructor = false;
+        executedL1ClassMethod = false;
+        executedL1InstanceMethod = false;
+        executedL1InstanceInitMethod = false;
+
+        executedL2Constructor = false;
+        executedL2ClassMethod = false;
+        executedL2InstanceMethod = false;
+
+        class LevelTwoPoint extends TP.test.LevelOnePoint {
+
+            constructor(x, y) {
+                super(x + 10, y + 10);
+                executedL2Constructor = true;
+            }
+
+            static testClassMethod() {
+                super.testClassMethod();
+                executedL2ClassMethod = true;
+            }
+
+            static constructFromPolar(radius, angle) {
+                return super.constructFromPolar(radius, angle);
+            }
+
+            testInstanceMethod() {
+                super.testInstanceMethod();
+                executedL2InstanceMethod = true;
+            }
+        }
+
+        //  ---
+
+        test.assert.isFalse(executedL1ClassMethod);
+        test.assert.isFalse(executedL2ClassMethod);
+
+        LevelTwoPoint.testClassMethod();
+
+        test.assert.isTrue(executedL1ClassMethod);
+        test.assert.isTrue(executedL2ClassMethod);
+
+        //  ---
+
+        test.assert.isFalse(executedL1Constructor);
+        test.assert.isFalse(executedL1InstanceInitMethod);
+        test.assert.isFalse(executedL2Constructor);
+
+        newL2Point = new LevelTwoPoint(42, 42);
+        test.assert.isValid(newL2Point);
+
+        test.assert.isTrue(executedL1Constructor);
+        test.assert.isTrue(executedL1InstanceInitMethod);
+        test.assert.isTrue(executedL2Constructor);
+
+        //  ---
+
+        test.assert.isFalse(executedL1InstanceMethod);
+        test.assert.isFalse(executedL2InstanceMethod);
+
+        newL2Point.testInstanceMethod();
+
+        test.assert.isTrue(executedL1InstanceMethod);
+        test.assert.isTrue(executedL2InstanceMethod);
+
+        //  ---
+
+        //  Level 2 points add 10 to the initial values given to them.
+
+        test.assert.isEqualTo(newL2Point.getX(), 52);
+        test.assert.isEqualTo(newL2Point.getY(), 52);
+
+        //  ---
+
+        newL2PolarPoint = LevelTwoPoint.constructFromPolar(5, 5);
+        test.assert.isValid(newL2PolarPoint);
+
+        //  ---
+
+        test.assert.isEqualTo(newL2PolarPoint.getX().round(2), 14.98);
+        test.assert.isEqualTo(newL2PolarPoint.getY().round(2), 10.44);
+
+        //  ---
+
+        newL2Point = new LevelTwoPoint(42, 42);
+
+        newL2Point.add(TP.pc(5, 5));
+
+        test.assert.isEqualTo(newL2Point.getX(), 67);
+        test.assert.isEqualTo(newL2Point.getY(), 57);
+
+    });
+});
+
 /* eslint-enable class-methods-use-this */
 
 //  ------------------------------------------------------------------------
