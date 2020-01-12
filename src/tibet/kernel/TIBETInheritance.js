@@ -12318,7 +12318,7 @@ function(typeNamesToExport) {
      *     *local* type name for the type, not the global one (i.e. 'Point' not
      *     'TP.gui.Point'. Also, these types should belong to the receiver
      *     namespace.
-     * @returns {TP.lang.Namespace} The receiver.
+     * @returns {Promise} A promise which resolves based on success.
      */
 
     var moduleName,
@@ -12442,12 +12442,11 @@ function(typeNamesToExport) {
 
     //  Store the module in the pseudo module cache under a name that can be
     //  imported into native ECMAScript modules.
-    caches.open('TIBET_PSEUDO_MODULE_CACHE').then(
+    return caches.open('TIBET_PSEUDO_MODULE_CACHE').then(
         function(cache) {
             cache.put(moduleName + '.js', new Response(moduleBody));
+            return moduleBody;
         });
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
