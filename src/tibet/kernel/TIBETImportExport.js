@@ -24,7 +24,7 @@ function(aURI, aDocument, aRequest, scriptElemAttrs) {
      *     point to a function to call on complete.
      * @param {TP.core.Hash} [scriptElemAttrs] A optional hash of attributes to
      *     put on generated script elements.
-     * @returns {Promise} A promise which resolved based on success.
+     * @returns {Promise} A promise which resolves based on success.
      */
 
     var url,
@@ -769,7 +769,7 @@ async function(packageConfig, shouldSignal) {
      *     with an optional [@config] section. For example 'hello@base'.
      * @param {Boolean} [shouldSignal=false] Should scripts signal Change once
      *     they've completed their import process?
-     * @returns {Promise} A promise which resolved based on success.
+     * @returns {Promise} A promise which resolves based on success.
      */
 
     var packageScriptPaths,
@@ -834,7 +834,7 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} [aRequest] A optional set of request
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
-     * @returns {Promise} A promise which resolved based on success.
+     * @returns {Promise} A promise which resolves based on success.
      */
 
     var url,
