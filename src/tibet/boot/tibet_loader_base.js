@@ -11687,13 +11687,58 @@ TP.boot.configureAndPopulateCaches = function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
+
+    /**
+     * @method receiveMessageFromServiceWorker
+     * @summary Receives a message (via postMessage) from the Service Worker.
+     * @param {Object} msgObjContent The POJO object that contains data received
+     *     from the service worker.
+     */
+
+    var moduleName,
+
+        nsName,
+        namespace;
+
+    //  If the ServiceWorker asked us to create a module, then we try to compute
+    //  a TIBET namespace from the payload it handed us (which would be an
+    //  ECMA6-like file name) and message that namespace to create an ECMA6
+    //  module of it's content.
+    if (msgObjContent.command === 'createModule') {
+
+        moduleName = msgObjContent.payload;
+        if (TP.notEmpty(moduleName)) {
+
+            //  Compute a namespace name. So 'TP_gui.js' becomes 'TP.gui'
+            moduleName = TP.unescapeTypeName(moduleName);
+            nsName = moduleName.slice(0, moduleName.lastIndexOf('.'));
+
+            //  Try to grab the corresponding namespace object and, if it's
+            //  real, cause it to build an ECMA6 module of its content. Note
+            //  that it returns the text it builds in addition to adding it to a
+            //  well-known cache. We return that text here for sending back (via
+            //  a return postMessage) to the ServiceWorker.
+            namespace = TP.bySystemId(nsName);
+            if (TP.isNamespace(namespace)) {
+                return namespace.definePseudoNativeModule();
+            }
+        }
+    }
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.sendMessageToServiceWorker = function(sender, msgObjContent) {
 
     /**
      * @method sendMessageToServiceWorker
      * @summary Sends a message (via postMessage) to the Service Worker.
+     * @param {ServiceWorker} sender The service worker to post the message to.
+     * @param {Object} msgObjContent The POJO object that contains data to send
+     *     to the service worker.
      * @returns {Promise} A Promise that will resolve when the ServiceWorker has
-     *     been sent the message.
+     *     been sent the message and we have received a reply.
      */
 
     var listenerPromise;
@@ -11753,6 +11798,25 @@ TP.boot.setupServiceWorker = function() {
                                         function() {
                                             resolver();
                                         });
+                                });
+                        }).then(function() {
+
+                            //  Set up a 'message' handler that will listen for
+                            //  messages from the service worker, call our
+                            //  method and then post whatever result comes in on
+                            //  the Promise back to the service worker.
+                            navigator.serviceWorker.addEventListener(
+                                'message',
+                                function(event) {
+                                    TP.boot.receiveMessageFromServiceWorker(
+                                                    event.data).then(
+                                       function(result) {
+                                            event.ports[0].postMessage({
+                                                error: null,
+                                                msg: 'ok',
+                                                payload: result
+                                            });
+                                       })
                                 });
                         });
 
