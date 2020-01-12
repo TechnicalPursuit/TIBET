@@ -11555,20 +11555,6 @@ TP.boot.configureAndPopulateCaches = function() {
     //  Set up the Service Worker and then begin the process of populating the
     //  cache.
     return TP.boot.setupServiceWorker().then(function() {
-                var cacheCfgBody;
-
-                //  Compute a String from the current config data.
-                cacheCfgBody = JSON.stringify(TP.sys.cfg());
-
-                //  Send a message over to the Service Worker giving it all of
-                //  the cfg data that we have.
-                return TP.boot.sendMessageToServiceWorker(
-                    navigator.serviceWorker.controller,
-                    {
-                        command: 'setcfg',
-                        payload: cacheCfgBody
-                    });
-            }).then(function() {
                 //  Open the lib file cache.
                 return caches.open('TIBET_LIB_CACHE');
             }).then(function(cache) {
@@ -11774,6 +11760,20 @@ TP.boot.setupServiceWorker = function() {
                     //  Registration failed :(
                     TP.error('TIBET ServiceWorker' +
                                 ' initialization failed' + err.message);
+            }).then(function() {
+                var cacheCfgBody;
+
+                //  Compute a String from the current config data.
+                cacheCfgBody = JSON.stringify(TP.sys.cfg());
+
+                //  Send a message over to the Service Worker giving it all of
+                //  the cfg data that we have.
+                return TP.boot.sendMessageToServiceWorker(
+                        navigator.serviceWorker.controller,
+                        {
+                            command: 'setcfg',
+                            payload: cacheCfgBody
+                        });
             });
 };
 
@@ -11877,13 +11877,18 @@ TP.boot.boot = function() {
                 return;
             }
 
-            //  check to see if we need to cache files.
+            //  check to see if we need to cache files. Note that this will set
+            //  up a Service Worker.
             if (TP.boot.shouldCacheFiles()) {
                 return TP.boot.configureAndPopulateCaches();
             } else {
                 //  if we're not caching at all, then tear down any existing
-                //  caches.
-                return TP.boot.teardownCaches();
+                //  caches and set up a Service Worker since we may need it for
+                //  non-caching capabilities.
+                return TP.boot.teardownCaches().then(
+                        function() {
+                            return TP.boot.setupServiceWorker();
+                        });
             }
         }).then(function() {
             //  import based on expanded package. startup is invoked once the
