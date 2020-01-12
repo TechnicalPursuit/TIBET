@@ -6,6 +6,8 @@ self.addEventListener('install', function(event) {
     event.waitUntil(self.skipWaiting());
 });
 
+//  ----------------------------------------------------------------------------
+
 //  Add a listener to intercept 'activate' events for when Service Worker is
 //  activated.
 self.addEventListener('activate', function(event) {
@@ -14,33 +16,21 @@ self.addEventListener('activate', function(event) {
     event.waitUntil(self.clients.claim());
 });
 
+//  ----------------------------------------------------------------------------
+
 //  Add a listener to intercept 'message' events. This is used to trap messages
 //  that TIBET is sending from the main window.
 self.addEventListener('message', function(event) {
 
-    var propData,
-        key;
-
-    switch (event.data.command) {
-        case 'setcfg':
-            self.cfg = JSON.parse(event.data.payload);
-            self.libResourcePath = self.cfg['boot.lib_resource_path'];
-            self.appResourcePath = self.cfg['boot.app_resource_path'];
-            break;
-        case 'setcfgprop':
-            propData = JSON.parse(event.data.payload);
-            key = Object.keys(propData)[0];
-            self.cfg[key] = propData[key];
-            break;
-        default:
-            break;
-    }
+    self.receiveMessageFromPage(event.data);
 
     event.ports[0].postMessage({
         error: null,
         msg: 'ok'
     });
 });
+
+//  ----------------------------------------------------------------------------
 
 //  Add a listener to intercept 'fetch' events.
 self.addEventListener('fetch', function(event) {
@@ -75,9 +65,28 @@ self.addEventListener('fetch', function(event) {
     if (filename.startsWith('TP_')) {
         promise = caches.open('TIBET_PSEUDO_MODULE_CACHE').then(
             function(cache) {
+                //  See if we find a match of the 'filename' in the cache.
                 return cache.match(filename);
             }).then(function(response) {
-                return response.text();
+                if (response) {
+                    //  Found a match - return its content
+                    return response.text();
+                }
+
+                //  Didn't find a match. Post a message over to the main window
+                //  asking if it can create a module for us based on the
+                //  filename.
+                return self.clients.matchAll().then(
+                    function(clients) {
+                        return self.sendMessageToPage(
+                            clients[0],
+                            {
+                                command: 'createModule',
+                                payload: filename
+                            });
+                    }).then(function(result) {
+                        return result.payload;
+                    });
             }).then(function(text) {
                 var resp;
 
@@ -90,6 +99,8 @@ self.addEventListener('fetch', function(event) {
 
                 return resp;
             });
+
+            event.respondWith(promise);
 
     } else {
 
@@ -178,3 +189,71 @@ self.addEventListener('fetch', function(event) {
         /* eslint-enable no-console */
     }
 });
+
+//  ----------------------------------------------------------------------------
+
+self.receiveMessageFromPage = function(msgObjContent) {
+
+    /**
+     * @method receiveMessageFromPage
+     * @summary Receives a message (via postMessage) from this worker's
+     *     controlling page.
+     * @param {Object} msgObjContent The POJO object that contains data received
+     *     from the controlling page.
+     */
+
+    var propData,
+        key;
+
+    switch (msgObjContent.command) {
+        case 'setcfg':
+            self.cfg = JSON.parse(msgObjContent.payload);
+            self.libResourcePath = self.cfg['boot.lib_resource_path'];
+            self.appResourcePath = self.cfg['boot.app_resource_path'];
+            break;
+        case 'setcfgprop':
+            propData = JSON.parse(msgObjContent.payload);
+            key = Object.keys(propData)[0];
+            self.cfg[key] = propData[key];
+            break;
+        default:
+            break;
+    }
+};
+
+//  ----------------------------------------------------------------------------
+
+self.sendMessageToPage = function(client, msgObjContent) {
+
+    /**
+     * @method sendMessageToPage
+     * @summary Sends a message (via postMessage) to this worker's controlling
+     *     page.
+     * @param {Window} client The window to post the message on.
+     * @param {Object} msgObjContent The POJO object that contains data to send
+     *     to the controlling page.
+     * @returns {Promise} A Promise that will resolve when the ServiceWorker has
+     *     been sent the message and we have received a reply.
+     */
+
+    var listenerPromise;
+
+    listenerPromise = new Promise(
+        function(resolver, rejector) {
+            var messageChannel;
+
+            messageChannel = new MessageChannel();
+            messageChannel.port1.onmessage = function(event) {
+                if (event.data.error) {
+                    rejector(event.data.error);
+                } else {
+                    resolver(event.data);
+                }
+            };
+
+            client.postMessage(msgObjContent, [messageChannel.port2]);
+        });
+
+    return listenerPromise;
+};
+
