@@ -62,26 +62,26 @@ function() {
     //  What methods will be resolved and queried when 'S3' is *selected*.
     this.registerMethodSuffixForPath(
             'S3Designation',
-            TP.ac('REST', 'AWS', 'S3'));
+            TP.ac('Remote', 'AWS', 'S3'));
 
     //  What methods will be resolved and queried when 'All Buckets' is
     //  *selected*.
     this.registerMethodSuffixForPath(
             'S3AllBuckets',
-            TP.ac('REST', 'AWS', 'S3', 'All Buckets'));
+            TP.ac('Remote', 'AWS', 'S3', 'All Buckets'));
 
     //  Lambda
 
     //  What methods will be resolved and queried when 'Lambda' is *selected*.
     this.registerMethodSuffixForPath(
             'LambdaDesignation',
-            TP.ac('REST', 'AWS', 'Lambda'));
+            TP.ac('Remote', 'AWS', 'Lambda'));
 
     //  What methods will be resolved and queried when 'All Functions' is
     //  *selected*.
     this.registerMethodSuffixForPath(
             'LambdaAllFunctions',
-            TP.ac('REST', 'AWS', 'Lambda', 'All Functions'));
+            TP.ac('Remote', 'AWS', 'Lambda', 'All Functions'));
 
     /* eslint-enable no-useless-escape */
 

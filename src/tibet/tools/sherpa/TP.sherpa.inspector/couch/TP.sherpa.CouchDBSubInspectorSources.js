@@ -65,19 +65,19 @@ function() {
     //  'localhost') is *selected*.
     this.registerMethodSuffixForPath(
             'ServerDesignation',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+'));
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+'));
 
     //  What methods will be resolved and queried when 'Server Info' is
     //  *selected*.
     this.registerMethodSuffixForPath(
             'ServerInfo',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+', 'Server Info'));
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+', 'Server Info'));
 
     //  What methods will be resolved and queried when 'All Databases' is
     //  *selected*.
     this.registerMethodSuffixForPath(
             'AllDatabases',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases'));
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases'));
 
     //  Databases
 
@@ -85,34 +85,34 @@ function() {
     //  'testdb') is *selected*.
     this.registerMethodSuffixForPath(
             'DatabaseDesignation',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
                     '\.+'));
 
     //  What methods will be resolved and queried when 'Database Info' is
     //  *selected*.
     this.registerMethodSuffixForPath(
             'DatabaseInfo',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
                     '\.+', 'Database Info'));
 
     //  What methods will be resolved and queried when 'All Documents' is
     //  *selected*.
     this.registerMethodSuffixForPath(
             'AllDocuments',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
                     '\.+', 'All Documents'));
 
     //  What methods will be resolved and queried when 'Design Documents' is
     //  *selected*.
     this.registerMethodSuffixForPath(
             'DesignDocuments',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
                     '\.+', 'Design Documents'));
 
     //  What methods will be resolved and queried when 'Views' is *selected*.
     this.registerMethodSuffixForPath(
             'Views',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
                     '\.+', 'Views'));
 
     //  Documents
@@ -121,7 +121,7 @@ function() {
     //  Documents' or 'Design Documents' is *selected*.
     this.registerMethodSuffixForPath(
             'DocumentContent',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
                     '\.+', '(All|Design) Documents', '\.+'));
 
     //  Views
@@ -130,7 +130,7 @@ function() {
     //  is *selected*.
     this.registerMethodSuffixForPath(
             'ViewContent',
-            TP.ac('REST', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
+            TP.ac('Remote', 'CouchDB', 'CouchDB_Server_\\d+', 'All Databases',
                     '\.+', 'Views', '\.+'));
 
     /* eslint-enable no-useless-escape */

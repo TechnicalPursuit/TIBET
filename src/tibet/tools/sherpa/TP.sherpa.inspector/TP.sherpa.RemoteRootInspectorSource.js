@@ -9,14 +9,14 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.sherpa.RESTRootInspectorSource
+//  TP.sherpa.RemoteRootInspectorSource
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.RESTRootInspectorSource}
+ * @type {TP.sherpa.RemoteRootInspectorSource}
  */
 
-TP.sherpa.InspectorSource.defineSubtype('sherpa.RESTRootInspectorSource');
+TP.sherpa.InspectorSource.defineSubtype('sherpa.RemoteRootInspectorSource');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -26,7 +26,7 @@ TP.sherpa.InspectorSource.defineSubtype('sherpa.RESTRootInspectorSource');
 //  Inspector API
 //  ------------------------------------------------------------------------
 
-TP.sherpa.RESTRootInspectorSource.Inst.defineMethod('getConfigForInspector',
+TP.sherpa.RemoteRootInspectorSource.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
     /**
@@ -60,7 +60,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.RESTRootInspectorSource.Inst.defineMethod('getDataForInspector',
+TP.sherpa.RemoteRootInspectorSource.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -97,7 +97,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.RESTRootInspectorSource.Inst.defineMethod('resolveAspectForInspector',
+TP.sherpa.RemoteRootInspectorSource.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
     /**

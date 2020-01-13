@@ -1730,7 +1730,7 @@
     TP.sys.setcfg('sherpa.inspector_root_sources',
         [
             ['APP', 'TP.sherpa.AppRootInspectorSource'],
-            ['REST', 'TP.sherpa.RESTRootInspectorSource'],
+            ['Remote', 'TP.sherpa.RemoteRootInspectorSource'],
             ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
             ['Tag Store', 'TP.sherpa.TWSRootInspectorSource'],
             ['Summit', 'TP.sherpa.TWSRootInspectorSource'],

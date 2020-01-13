@@ -93,7 +93,7 @@
     <script src="./TP.sherpa.inspector/TP.sherpa.TSHRootInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.TDSRootInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.TWSRootInspectorSource.js"/>
-    <script src="./TP.sherpa.inspector/TP.sherpa.RESTRootInspectorSource.js"/>
+    <script src="./TP.sherpa.inspector/TP.sherpa.RemoteRootInspectorSource.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.SupportRootInspectorSource.js"/>
 
     <script src="./TP.sherpa.inspector/couch/TP.sherpa.CouchDBRootInspectorSource.js"/>

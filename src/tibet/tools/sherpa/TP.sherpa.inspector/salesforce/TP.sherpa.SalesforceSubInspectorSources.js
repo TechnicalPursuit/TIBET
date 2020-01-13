@@ -61,14 +61,14 @@ function() {
     //  What methods will be resolved and queried when 'Query' is *selected*.
     this.registerMethodSuffixForPath(
             'SFQuery',
-            TP.ac('REST', 'Salesforce', 'Query'));
+            TP.ac('Remote', 'Salesforce', 'Query'));
 
     //  Query Results
 
     //  What methods will be resolved and queried when 'Results' is *selected*.
     this.registerMethodSuffixForPath(
             'SFQueryResults',
-            TP.ac('REST', 'Salesforce', 'Query', 'Results'));
+            TP.ac('Remote', 'Salesforce', 'Query', 'Results'));
 
     /* eslint-enable no-useless-escape */
 
@@ -98,7 +98,7 @@ function() {
     //  Grab the number for the bay that the 'query' content has been loaded
     //  into.
     bayNum = inspector.getBayNumForPathParts(
-                TP.ac('REST', 'Salesforce', 'Query'));
+                TP.ac('Remote', 'Salesforce', 'Query'));
 
     //  Grab the underlying content for that bay. That is where our query form
     //  will be found.
