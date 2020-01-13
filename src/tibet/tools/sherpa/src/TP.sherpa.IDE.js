@@ -2722,7 +2722,7 @@ shouldFocusHalo, shouldShowAssistant, insertionCompletedHandler) {
 
     /**
      * @method insertServiceElementIntoCanvas
-     * @summary Inserts a 'tibet:service' element into the canvas with the
+     * @summary Inserts a 'http:service' element into the canvas with the
      *     supplied remote (and possibly local) locations using the supplied
      *     insertion element at the supplied insertion point.
      * @param {String} remoteLocation The remote URI location to use for the
@@ -2745,7 +2745,7 @@ shouldFocusHalo, shouldShowAssistant, insertionCompletedHandler) {
      *     false and is dependent on whether we're focusing the halo as well.
      * @param {Function} [insertionCompletedHandler] A Function to execute when
      *     the element has been inserted and any halo focusing has occurred.
-     * @returns {TP.tibet.service} The wrapped newly inserted 'tibet:service'
+     * @returns {TP.tibet.service} The wrapped newly inserted 'http:service'
      *     element.
      */
 
@@ -2775,7 +2775,7 @@ shouldFocusHalo, shouldShowAssistant, insertionCompletedHandler) {
     //  system can reference it and use it.
     TP.uc(localLoc);
 
-    newServiceElem = TP.elem('<tibet:service' +
+    newServiceElem = TP.elem('<http:service' +
                                 ' id="' + elemID + '"' +
                                 ' href="' + remoteLocation + '"' +
                                 ' name="' + localLoc + '"/>');

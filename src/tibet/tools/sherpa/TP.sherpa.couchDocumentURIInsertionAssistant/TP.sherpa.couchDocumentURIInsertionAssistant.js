@@ -292,7 +292,7 @@ function(anObject) {
     doc = TP.nodeGetDocument(newElem);
 
     newLoadServiceElem =
-        TP.elem('<tibet:service' +
+        TP.elem('<http:service' +
                 ' id="' + localID + '_loader"' +
                 ' href="' + remoteLoc + '"' +
                 ' name="' + localLoc + '"' +
@@ -302,7 +302,7 @@ function(anObject) {
     TP.nodeAppendChild(newElem, doc.createTextNode('\n'), false);
 
     newSaveServiceElem =
-        TP.elem('<tibet:service' +
+        TP.elem('<http:service' +
                 ' id="' + localID + '_saver"' +
                 ' href="' + remoteLoc + '"' +
                 ' body="' + localLoc + '"' +

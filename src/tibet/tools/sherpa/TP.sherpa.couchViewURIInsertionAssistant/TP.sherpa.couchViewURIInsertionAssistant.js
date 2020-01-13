@@ -266,7 +266,7 @@ function(anObject) {
     //  ---
 
     newLoadServiceElem =
-        TP.elem('<tibet:service' +
+        TP.elem('<http:service' +
                 ' id="' + localID + '_loader"' +
                 ' href="' + remoteLoc + '"' +
                 ' name="' + localLoc + '"' +

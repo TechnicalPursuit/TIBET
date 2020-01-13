@@ -202,11 +202,11 @@ function(aTPElement, aSourceURI) {
 
     /**
      * @method findServiceTag
-     * @summary Finds a 'tibet:service' tag in the same document as the supplied
+     * @summary Finds a 'http:service' tag in the same document as the supplied
      *     element that has either an 'href' or 'result' URI value that matches
      *     the *primary* URI portion of the supplied source URI.
      * @param {TP.dom.ElementNode} aTPElement The element to begin looking for
-     *     the 'tibet:service' tag. The nearest 'halo generator' will be found
+     *     the 'http:service' tag. The nearest 'halo generator' will be found
      *     for this element (i.e. if this element represents a custom tag, the
      *     search will *not* take place outside of its template). If that cannot
      *     be determined, the element's document's documentElement will be used
@@ -244,12 +244,12 @@ function(aTPElement, aSourceURI) {
 
     sourcePrimaryURI = aSourceURI.getPrimaryURI();
 
-    //  Try to find tibet:service tags that are under the context element that
+    //  Try to find http:service tags that are under the context element that
     //  have a remote URI that matches the supplied remote URI. Note that,
     //  because of URI location normalization (expansion, etc.) we need to do
-    //  this by querying for all 'tibet:service' tags and then comparing their
+    //  this by querying for all 'http:service' tags and then comparing their
     //  URIs individually.
-    serviceTPElems = TP.byCSSPath('tibet|service', contextTPElem, false, true);
+    serviceTPElems = TP.byCSSPath('http|service', contextTPElem, false, true);
 
     len = serviceTPElems.getSize();
     for (i = 0; i < len; i++) {

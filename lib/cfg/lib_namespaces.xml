@@ -4,14 +4,19 @@
     name="lib_namespaces" default="base" basedir="~lib_src">
 
 <config id="base">
+
+    <!-- Some of the namespaces below define subtypes of types defined in this
+        module, so it's important that it come first -->
+    <config ref="tibet"/>
+
     <config ref="acl"/>
     <config ref="bind"/>
     <config ref="ev"/>
     <config ref="html"/>
     <config ref="on"/>
-    <config ref="tibet"/>
     <config ref="tsh"/>
     <config ref="xml"/>
+    <config ref="http"/>
 </config>
 
 <config id="baseui">
@@ -132,6 +137,11 @@
     <script src="xhtml/html_StylesheetModuleNodes.js"/>
     <script src="xhtml/html_TableModuleNodes.js"/>
     <script src="xhtml/html_TextModuleNodes.js"/>
+</config>
+
+<config id="http">
+    <script src="http/TP.http.XMLNS.js"/>
+    <script src="http/TP.http.service.js"/>
 </config>
 
 <config id="on">

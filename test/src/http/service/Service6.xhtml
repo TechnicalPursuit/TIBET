@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+        xmlns:http="http://www.technicalpursuit.com/2020/http">
 
 <head>
 
@@ -17,7 +17,7 @@
         ]]>
     </tibet:data>
 
-    <tibet:service id="Service6" href="/TIBET_endpoints/HTTP_REST_GET_TEST/[[tibet://uicanvas#SearchTermField]]" name="urn:tibet:Service6_Result" headers="urn:tibet:Service6_headers"/>
+    <http:service id="Service6" href="/TIBET_endpoints/HTTP_REST_GET_TEST/[[tibet://uicanvas#SearchTermField]]" name="urn:tibet:Service6_Result" headers="urn:tibet:Service6_headers"/>
 
 </head>
 
@@ -27,7 +27,7 @@
 
     <br/>
     <br/>
-    This test sets up a &lt;tibet:service&gt; tag that services data at a particular URI. It shows how to perform a standard HTTP REST GET using a dynamic REST-style parameter with custom headers. It doesn't have a data type assigned, but will try to use a dynamically computed content type to hold the result data based on the data returned.
+    This test sets up a &lt;http:service&gt; tag that services data at a particular URI. It shows how to perform a standard HTTP REST GET using a dynamic REST-style parameter with custom headers. It doesn't have a data type assigned, but will try to use a dynamically computed content type to hold the result data based on the data returned.
     <br/>
     A variety of signals are thrown by the various objects involved.
     <br/>

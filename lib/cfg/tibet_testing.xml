@@ -217,7 +217,7 @@
 </config>
 
 <config id="service">
-    <script src="~lib_test/src/tibet/service/TP.tibet.service_Tests.js"/>
+    <script src="~lib_test/src/http/service/TP.http.service_Tests.js"/>
 </config>
 
 <config id="shell">

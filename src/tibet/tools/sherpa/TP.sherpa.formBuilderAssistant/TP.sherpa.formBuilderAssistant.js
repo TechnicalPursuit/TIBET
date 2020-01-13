@@ -287,7 +287,7 @@ function(anObject) {
     suppliedURI = suppliedData.at('uri');
 
     //  If the supplied URI is a URL, then we generate a local storage URI and a
-    //  set of 'tibet:service' tags to manage the local & remote storage
+    //  set of 'http:service' tags to manage the local & remote storage
     //  locations.
     if (TP.isKindOf(suppliedURI, TP.uri.URL)) {
 
@@ -306,7 +306,7 @@ function(anObject) {
         doc = TP.nodeGetDocument(newElem);
 
         newLoadServiceElem =
-            TP.elem('<tibet:service' +
+            TP.elem('<http:service' +
                     ' id="' + localID + '_loader"' +
                     ' href="' + remoteLoc + '"' +
                     ' name="' + localLoc + '"' +
@@ -316,7 +316,7 @@ function(anObject) {
         TP.nodeAppendChild(newElem, doc.createTextNode('\n'), false);
 
         newSaveServiceElem =
-            TP.elem('<tibet:service' +
+            TP.elem('<http:service' +
                     ' id="' + localID + '_saver"' +
                     ' href="' + remoteLoc + '"' +
                     ' body="' + localLoc + '"' +

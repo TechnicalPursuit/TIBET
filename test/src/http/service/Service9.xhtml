@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:http="http://www.technicalpursuit.com/2020/http">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <http:service id="Service9" href="/TIBET_endpoints/HTTP_REST_DELETE_TEST/[[tibet://uicanvas#SearchTermField]]" method="DELETE" name="urn:tibet:Service9_Result"/>
+
+</head>
+
+<body>
+
+    <h2>Service Test #9</h2><br/>
+
+    <br/>
+    <br/>
+    This test sets up a &lt;http:service&gt; tag that services data at a particular URI. It shows how to perform a standard HTTP REST DELETE using a dynamic REST-style parameter. It doesn't have a data type assigned, but will try to use a dynamically computed content type to hold the result data based on the data returned.
+    <br/>
+    A variety of signals are thrown by the various objects involved.
+    <br/>
+
+    <label for="SearchTermField">Search for: </label>
+    <input type="text" id="SearchTermField"/><br/>
+
+</body>
+</html>

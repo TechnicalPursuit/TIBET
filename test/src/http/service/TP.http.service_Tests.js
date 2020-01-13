@@ -9,10 +9,10 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.tibet.service
+//  TP.http.service
 //  ========================================================================
 
-TP.tibet.service.Inst.describe('TP.tibet.service',
+TP.http.service.Inst.describe('TP.http.service',
 function() {
 
     var driver,
@@ -76,7 +76,7 @@ function() {
 
     this.it('GET with static query-style parameter - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service1.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service1.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -183,13 +183,13 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).only();
 
     //  ---
 
     this.it('GET with dynamic query-style parameter - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service2.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service2.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -300,7 +300,7 @@ function() {
 
     this.it('REST GET with no parameter, no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service3.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service3.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -413,7 +413,7 @@ function() {
 
     this.it('REST GET with static parameter - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service4.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service4.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -526,7 +526,7 @@ function() {
 
     this.it('REST GET with dynamic parameter - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service5.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service5.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -637,7 +637,7 @@ function() {
 
     this.it('REST GET with dynamic parameter and custom headers - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service6.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service6.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -750,7 +750,7 @@ function() {
 
     this.it('REST POST with dynamic body - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service7.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service7.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -870,7 +870,7 @@ function() {
 
     this.it('REST PUT with dynamic parameter - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service8.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service8.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -981,7 +981,7 @@ function() {
 
     this.it('REST DELETE with dynamic parameter - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service9.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service9.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -1092,7 +1092,7 @@ function() {
 
     this.it('FORM POST with body - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service10.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service10.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -1211,7 +1211,7 @@ function() {
 
     this.it('MULTIPART FORM POST with body - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service11.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service11.xhtml');
 
         driver.setLocation(loadURI);
 
@@ -1325,7 +1325,7 @@ function() {
 
     this.it('MULTIPART RELATED POST with body - no specific result type', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/service/Service12.xhtml');
+        loadURI = TP.uc('~lib_test/src/http/service/Service12.xhtml');
 
         driver.setLocation(loadURI);
 

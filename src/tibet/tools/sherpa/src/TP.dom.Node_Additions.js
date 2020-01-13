@@ -2426,33 +2426,33 @@ function(insertionPointElement, insertionPosition) {
                                             getDocument().getDocumentElement();
             }
 
-            //  Search for 'tibet:service' elements that have an 'href' equal to
+            //  Search for 'http:service' elements that have an 'href' equal to
             //  the fully expanded location.
             fullyExpandedLoc = TP.uriExpandPath(insertedLoc);
             currentServiceTPElems =
-                TP.byCSSPath('tibet|service[href="' + fullyExpandedLoc + '"]',
+                TP.byCSSPath('http|service[href="' + fullyExpandedLoc + '"]',
                 contextTPElem,
                 false,
                 true);
 
-            //  If none could be found, search for 'tibet:service' elements that
+            //  If none could be found, search for 'http:service' elements that
             //  have an 'href' equal to the TIBET virtualized location.
             if (TP.isEmpty(currentServiceTPElems)) {
                 virtualLoc = TP.uriInTIBETFormat(fullyExpandedLoc);
                 currentServiceTPElems =
-                    TP.byCSSPath('tibet|service[href="' + virtualLoc + '"]',
+                    TP.byCSSPath('http|service[href="' + virtualLoc + '"]',
                     contextTPElem,
                     false,
                     true);
             }
 
             //  If none could be found, tell the Sherpa to insert a
-            //  'tibet:service' with that href at the insertion point and
+            //  'http:service' with that href at the insertion point and
             //  position. Note how we also pass true to have the Sherpa halo the
             //  element and pass true to have the Sherpa show the DOM property
             //  inspector for the element.
             if (TP.isEmpty(currentServiceTPElems)) {
-                //  Insert a 'tibet:service' element into the canvas at the
+                //  Insert a 'http:service' element into the canvas at the
                 //  desired location.
                 TP.bySystemId('Sherpa').insertServiceElementIntoCanvas(
                     insertedLoc,
@@ -2463,8 +2463,8 @@ function(insertionPointElement, insertionPosition) {
                     true);
             } else {
                 //  Otherwise, let the user know that there is already a
-                //  'tibet:service' element with that href.
-                TP.alert('A tibet:service tag with a remote URI of: ' +
+                //  'http:service' element with that href.
+                TP.alert('A http:service tag with a remote URI of: ' +
                             insertedLoc +
                             ' already exists within this custom element.');
             }
