@@ -3701,10 +3701,42 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.inputClickable.defineSubtype('button');
+TP.html.Focused.defineSubtype('button');
 
 TP.html.button.Type.set('booleanAttrs',
             TP.ac('autofocus', 'disabled', 'formNoValidate', 'willValidate'));
+
+//  ------------------------------------------------------------------------
+
+TP.html.button.Inst.defineMethod('disable',
+function() {
+
+    /**
+     * @method disable
+     * @summary Disables the control using the standard disabled attribute.
+     * @returns {TP.html.button} The receiver.
+     */
+
+    this.setAttribute('disabled', 'true');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.button.Inst.defineMethod('enable',
+function() {
+
+    /**
+     * @method enable
+     * @summary Enables the control by removing any disabled attribute.
+     * @returns {TP.html.button} The receiver.
+     */
+
+    this.removeAttribute('disabled');
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 //  end
