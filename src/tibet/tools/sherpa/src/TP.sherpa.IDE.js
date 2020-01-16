@@ -5469,6 +5469,8 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         visualAppElem,
 
+        appDescendantsToProcess,
+
         visualGeneratorElem,
         visualGeneratorTPElem,
 
@@ -5555,6 +5557,13 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     visualAppElem = TP.unwrap(this.getAppElement());
 
+    //  Filter out any nodes that mutated that are not under the visual app
+    //  element.
+    appDescendantsToProcess = mutatedNodes.filter(
+        function(anElem) {
+            return visualAppElem.contains(anElem);
+        });
+
     //  Search the hierarchy for the nearest custom tag (using the same search
     //  criteria as above) to set as the 'visual generator' element.
     visualGeneratorElem = mutationAncestor;
@@ -5577,7 +5586,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                     'Visual generator node needs node position');
     }
 
-    leni = mutatedNodes.getSize();
+    leni = appDescendantsToProcess.getSize();
     for (i = 0; i < leni; i++) {
         if (TP.notValid(visualGeneratorElem[TP.PREVIOUS_POSITION])) {
             return this.raise(
@@ -5591,11 +5600,11 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     //  called, because of the way MutationObservers work, its parentNode will
     //  be set to null and we have to use a more complex mechanism to get it's
     //  position in the DOM.
-    if (TP.nodeIsDetached(mutatedNodes.first()) ||
-        !TP.isElement(mutatedNodes.first())) {
+    if (TP.nodeIsDetached(appDescendantsToProcess.first()) ||
+        !TP.isElement(appDescendantsToProcess.first())) {
         visualSourceSearchElem = mutationAncestor;
     } else {
-        visualSourceSearchElem = mutatedNodes.first();
+        visualSourceSearchElem = appDescendantsToProcess.first();
     }
 
     //  If no tag source element could be computed, that means we're going to
@@ -5680,10 +5689,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     sourceMatchingNodes = TP.ac();
 
-    leni = mutatedNodes.getSize();
+    leni = appDescendantsToProcess.getSize();
     for (i = 0; i < leni; i++) {
 
-        visualMutatedNode = mutatedNodes.at(i);
+        visualMutatedNode = appDescendantsToProcess.at(i);
 
         if (TP.isElement(visualMutatedNode)) {
             //  If the mutated node is an *Element* and has a
@@ -5985,7 +5994,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
                 shouldMarkDirty = true;
             } else {
 
-                visualMutatedNode = mutatedNodes.at(i);
+                visualMutatedNode = appDescendantsToProcess.at(i);
 
                 if (TP.isElement(visualMutatedNode)) {
                     //  If the mutated node is an *Element* and has a
