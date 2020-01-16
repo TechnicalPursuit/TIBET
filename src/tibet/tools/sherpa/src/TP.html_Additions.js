@@ -118,7 +118,7 @@ function(aHalo) {
 //  ------------------------------------------------------------------------
 
 TP.html.html.Inst.defineMethod('hudCanDrop',
-function(aHUD, targetTPElem) {
+function(aHUD, droppingTPElem) {
 
     /**
      * @method hudCanDrop
@@ -126,7 +126,8 @@ function(aHUD, targetTPElem) {
      *     to be dropped into the receiver.
      * @param {TP.sherpa.hud} aHUD The hud that is requesting whether or not
      *     it can drop the supplied element into the receiver.
-     * @param {TP.sherpa.hud} droppingTPElem The element that is being dropped.
+     * @param {TP.dom.ElementNode} droppingTPElem The element that is being
+     *     dropped.
      * @returns {Boolean} Whether or not the hud can drop the supplied target
      *     into the receiver.
      */
@@ -138,7 +139,7 @@ function(aHUD, targetTPElem) {
 //  ------------------------------------------------------------------------
 
 TP.html.body.Inst.defineMethod('hudCanDrop',
-function(aHUD, targetTPElem) {
+function(aHUD, droppingTPElem) {
 
     /**
      * @method hudCanDrop
@@ -146,7 +147,8 @@ function(aHUD, targetTPElem) {
      *     to be dropped into the receiver.
      * @param {TP.sherpa.hud} aHUD The hud that is requesting whether or not
      *     it can drop the supplied element into the receiver.
-     * @param {TP.sherpa.hud} droppingTPElem The element that is being dropped.
+     * @param {TP.dom.ElementNode} droppingTPElem The element that is being
+     *     dropped.
      * @returns {Boolean} Whether or not the hud can drop the supplied target
      *     into the receiver.
      */
