@@ -503,7 +503,7 @@ function() {
      *     being 'opaque' and not connect to any of its descendants.
      */
 
-    return false;
+    return this.hasAttribute('sherpa:connector-accept');
 });
 
 //  ------------------------------------------------------------------------
@@ -1872,6 +1872,10 @@ function() {
 
     var ourName,
         appTagName;
+
+    if (this.hasAttribute('sherpa:connector-accept')) {
+        return true;
+    }
 
     ourName = this.getCanonicalName();
 

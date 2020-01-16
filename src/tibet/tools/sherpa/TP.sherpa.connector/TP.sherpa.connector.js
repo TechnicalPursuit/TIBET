@@ -81,14 +81,18 @@ function(aSignal) {
     targetElement = aSignal.getElementAtPagePoint();
     targetTPElem = TP.wrap(targetElement);
 
-    //  Iterate up the ancestor chain, looking for a valid connector
-    //  destination.
-    connectorDest = targetTPElem.detectAncestor(
-        function(aParent) {
-            if (aParent.isConnectorOpaque()) {
-                return aParent;
-            }
-        });
+    connectorDest = targetTPElem;
+
+    //  If the connector destination isn't 'opaque' (i.e. is the final target up
+    //  the hierarchy for the connection) itself, then check up the hierarchy.
+    if (!connectorDest.isConnectorOpaque()) {
+        connectorDest = targetTPElem.detectAncestor(
+            function(aParent) {
+                if (aParent.isConnectorOpaque()) {
+                    return aParent;
+                }
+            });
+    }
 
     //  If we couldn't compute a valid connector destination by iterating up the
     //  ancestor chain, then just as the target for it's connector destination.
