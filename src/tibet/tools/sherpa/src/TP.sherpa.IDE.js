@@ -2121,7 +2121,7 @@ function(aSignal) {
     var srcTPElem,
         destTPElem,
 
-        target,
+        targetType,
 
         connector,
 
@@ -2138,7 +2138,7 @@ function(aSignal) {
     srcTPElem = aSignal.at('sourceElement');
     destTPElem = TP.wrap(aSignal.getTarget());
 
-    target = destTPElem.getType();
+    targetType = destTPElem.getType();
 
     //  Turn off 'autohiding' the connector - we'll hide it when the assistant
     //  is done. Note that this is reset to 'true' every time the connector is
@@ -2194,7 +2194,7 @@ function(aSignal) {
         //  Show the assistant.
         TP.sherpa.signalConnectionAssistant.showAssistant(
                     TP.hc('sourceTPElement', srcTPElem,
-                            'destinationTarget', target,
+                            'destinationTarget', targetType,
                             'signalOrigin', destTPElem.getLocalID()));
     }
 
