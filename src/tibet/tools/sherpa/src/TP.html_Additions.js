@@ -117,6 +117,25 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.html.Inst.defineMethod('hudCanConnect',
+function(aHUD) {
+
+    /**
+     * @method hudCanConnect
+     * @summary Returns whether or not the hud should allow the supplied element
+     *     to be connected to the supplied element
+     * @param {TP.sherpa.hud} aHUD The hud that is requesting whether or not
+     *     it can connect the supplied element to the receiver.
+     * @returns {Boolean} Whether or not the hud can connect the supplied target
+     *     to the receiver.
+     */
+
+    //  We never allow connection to the <html> Element.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.html.Inst.defineMethod('hudCanDrop',
 function(aHUD, droppingTPElem) {
 
@@ -133,6 +152,25 @@ function(aHUD, droppingTPElem) {
      */
 
     //  No element can be dropped into the <html> Element by default.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.head.Inst.defineMethod('hudCanConnect',
+function(aHUD) {
+
+    /**
+     * @method hudCanConnect
+     * @summary Returns whether or not the hud should allow the supplied element
+     *     to be connected to the supplied element
+     * @param {TP.sherpa.hud} aHUD The hud that is requesting whether or not
+     *     it can connect the supplied element to the receiver.
+     * @returns {Boolean} Whether or not the hud can connect the supplied target
+     *     to the receiver.
+     */
+
+    //  We never allow connection to the <head> Element.
     return false;
 });
 

@@ -91,6 +91,26 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.Node.Inst.defineMethod('hudCanConnect',
+function(aHUD) {
+
+    /**
+     * @method hudCanConnect
+     * @summary Returns whether or not the hud should allow the supplied element
+     *     to be connected to the supplied element
+     * @param {TP.sherpa.hud} aHUD The hud that is requesting whether or not
+     *     it can connect the supplied element to the receiver.
+     * @returns {Boolean} Whether or not the hud can connect the supplied target
+     *     to the receiver.
+     */
+
+    //  We return false here because, at this level, the hud should not be
+    //  allowing connecting to anything.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('hudCanDrop',
 function(aHUD, droppingTPElem) {
 
@@ -1088,6 +1108,24 @@ function(aHalo, aSignal, haloCorner) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('hudCanConnect',
+function(aHUD) {
+
+    /**
+     * @method hudCanConnect
+     * @summary Returns whether or not the hud should allow the supplied element
+     *     to be connected to the supplied element
+     * @param {TP.sherpa.hud} aHUD The hud that is requesting whether or not
+     *     it can connect the supplied element to the receiver.
+     * @returns {Boolean} Whether or not the hud can connect the supplied target
+     *     to the receiver.
+     */
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------

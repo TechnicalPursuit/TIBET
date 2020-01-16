@@ -403,6 +403,8 @@ function(aTPElement) {
                 arr.push('normal');
             }
 
+            arr.push(aNode.hudCanConnect());
+
             info.push(arr);
         });
 
@@ -438,22 +440,24 @@ function() {
      * @returns {TP.sherpa.domhud} The receiver.
      */
 
-    var root,
+    var rootTPElem,
+        rootElem,
         arr;
 
-    root = TP.sys.getUICanvas().getDocument().getRoot();
-    if (TP.notValid(root)) {
+    rootTPElem = TP.sys.getUICanvas().getDocument().getRoot();
+    if (TP.notValid(rootTPElem)) {
         return this;
     }
 
-    root = root.getNativeNode();
+    rootElem = rootTPElem.getNativeNode();
 
     arr = TP.ac(
-            TP.lid(root, true),
+            TP.lid(rootElem, true),
             TP.getContentForTool(
-                TP.wrap(root),
+                TP.wrap(rootElem),
                 'DomHUDLabel'),
-            'normal');
+            'normal',
+            rootTPElem.hudCanConnect());
 
     //  List expects an array of arrays containing IDs and full names.
     this.setValue(TP.ac(arr));
@@ -882,7 +886,10 @@ function() {
         //  get out of order in a hurry.
         newData.push(
             data.at(i),
-            TP.ac('spacer_' + i, 'spacer', 'spacer_' + data.at(i).at(2)));
+            TP.ac('spacer_' + i,
+                    'spacer',
+                    'spacer_' + data.at(i).at(2),
+                    false));
     }
 
     return newData;
