@@ -9,7 +9,7 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.tibet.* Additions
+//  TP.http.* Additions
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Inst.defineMethod('getContentForDomHUDTileBody',
+TP.http.service.Inst.defineMethod('getContentForDomHUDTileBody',
 function() {
 
     /**
@@ -31,12 +31,12 @@ function() {
      *     'body' of the domhud tile panel.
      */
 
-    return TP.elem('<sherpa:domhud_TP_tibet_serviceContent/>');
+    return TP.elem('<sherpa:domhud_TP_http_serviceContent/>');
 });
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Inst.defineMethod('getContentForDomHUDTileFooter',
+TP.http.service.Inst.defineMethod('getContentForDomHUDTileFooter',
 function() {
 
     /**

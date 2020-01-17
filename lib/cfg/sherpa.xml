@@ -142,7 +142,7 @@
 
     <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_elementContent.js"/>
     <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_genericElementContent/TP.sherpa.domhud_genericElementContent.js"/>
-    <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_TP_tibet_serviceContent/TP.sherpa.domhud_TP_tibet_serviceContent.js"/>
+    <script src="./TP.sherpa.domhud/plugins/TP.sherpa.domhud_TP_http_serviceContent/TP.sherpa.domhud_TP_http_serviceContent.js"/>
 
     <script src="./TP.sherpa.styleshud/plugins/TP.sherpa.styleshud_ruleContent/TP.sherpa.styleshud_ruleContent.js"/>
 
@@ -167,7 +167,7 @@
     <script src="./src/TP.lang.RootObject_Additions.js"/>
     <script src="./src/TP.lang.Namespace_Additions.js"/>
     <script src="./src/TP.xctrls_Additions.js"/>
-    <script src="./src/TP.tibet_Additions.js"/>
+    <script src="./src/TP.http_Additions.js"/>
 
     <script src="~lib_deps/csstree-tpi.js" no-lint="no-lint"/>
     <script>

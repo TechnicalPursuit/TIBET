@@ -9,18 +9,18 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.domhud_TP_tibet_serviceContent}
+ * @type {TP.sherpa.domhud_TP_http_serviceContent}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_elementContent.defineSubtype('domhud_TP_tibet_serviceContent');
+TP.sherpa.domhud_elementContent.defineSubtype('domhud_TP_http_serviceContent');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_TP_tibet_serviceContent.Inst.defineHandler('BrowseToURI',
+TP.sherpa.domhud_TP_http_serviceContent.Inst.defineHandler('BrowseToURI',
 function(aSignal) {
 
     /**
@@ -28,7 +28,7 @@ function(aSignal) {
      * @summary Handles when the user wants to browse to the selected URI.
      * @param {TP.sig.BrowseToURI} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.domhud_TP_tibet_serviceContent} The receiver.
+     * @returns {TP.sherpa.domhud_TP_http_serviceContent} The receiver.
      */
 
     var fieldName,
@@ -57,7 +57,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.domhud_TP_tibet_serviceContent.Inst.defineHandler('RefreshFromRemote',
+TP.sherpa.domhud_TP_http_serviceContent.Inst.defineHandler('RefreshFromRemote',
 function(aSignal) {
 
     /**
@@ -66,7 +66,7 @@ function(aSignal) {
      *     remote URI.
      * @param {TP.sig.RefreshFromRemote} aSignal The TIBET signal which
      *     triggered this method.
-     * @returns {TP.sherpa.domhud_TP_tibet_serviceContent} The receiver.
+     * @returns {TP.sherpa.domhud_TP_http_serviceContent} The receiver.
      */
 
     var targetTPElem;
