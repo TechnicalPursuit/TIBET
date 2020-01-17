@@ -5,14 +5,6 @@ dist: xenial
 
 cache: yarn
 
-addons:
-    apt:
-        sources:
-          - google-chrome
-        packages:
-          - google-chrome-stable
-          - google-chrome-beta
-
 node_js:
     - "10"
 
