@@ -24,7 +24,7 @@ notifications:
 before_install:
     - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3CB3BD13
     - sudo apt-get update --allow-unauthenticated
-    - sudo apt-get install -y libappindicator1 fonts-liberation
+    - sudo apt-get install -y --allow-unauthenticated libappindicator1 fonts-liberation
     - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     - sudo dpkg -i google-chrome*.deb
 
