@@ -59,8 +59,8 @@
         //  The encrypt call will put salt on the front and separate with ':' so
         //  reverse that to get the one-time salt back so we can decrypt.
         parts = str.split(':');
-        salt = new Buffer(parts.shift(), 'hex');
-        str = new Buffer(parts.join(':'), 'hex');
+        salt = Buffer.from(parts.shift(), 'hex');
+        str = Buffer.from(parts.join(':'), 'hex');
 
         //  Capture key and normalize it to keylen bytes.
         key = process.env.TIBET_CRYPTO_KEY;
@@ -70,7 +70,7 @@
         }
         keylen = process.env.TIBET_CRYPTO_KEYLEN ||
             requestor.getcfg('tibet.crypto.keylen', 32);
-        key = new Buffer(requestor.rpad(key, keylen, '.'));
+        key = Buffer.from(requestor.rpad(key, keylen, '.'));
         key = key.slice(0, keylen);
 
         //  Get the target algorithm. This will ultimately default via getcfg here.
@@ -119,7 +119,7 @@
         }
         keylen = process.env.TIBET_CRYPTO_KEYLEN ||
             requestor.getcfg('tibet.crypto.keylen', 32);
-        key = new Buffer(requestor.rpad(key, keylen, '.'));
+        key = Buffer.from(requestor.rpad(key, keylen, '.'));
         key = key.slice(0, keylen);
 
         if (requestor.notValid(salt)) {
@@ -127,7 +127,7 @@
             //  https://www.owasp.org/index.php/Password_Storage_Cheat_Sheet
             saltlen = process.env.TIBET_CRYPTO_SALTLEN ||
                 requestor.getcfg('tibet.crypto.saltlen', 16);
-            saltval = new Buffer(crypto.randomBytes(saltlen));
+            saltval = Buffer.from(crypto.randomBytes(saltlen));
         } else {
             saltval = salt;
         }

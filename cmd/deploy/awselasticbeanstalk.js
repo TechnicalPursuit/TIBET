@@ -427,7 +427,7 @@
                 credentials.authorizationData[0].proxyEndpoint;
 
             //  Grab the returned token into a Buffer and base64 decode that.
-            credentialsBuffer = new Buffer(
+            credentialsBuffer = Buffer.from(
                     credentials.authorizationData[0].authorizationToken,
                     'base64');
             credentialsData = credentialsBuffer.toString('ascii');

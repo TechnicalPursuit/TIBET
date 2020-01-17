@@ -85,7 +85,7 @@
                     //  using an asymmetrical encryption approach.
                     try {
                         parts = pass.split(':');
-                        salt = new Buffer(parts.shift(), 'hex');
+                        salt = Buffer.from(parts.shift(), 'hex');
 
                         test = TDS.encrypt(password, salt);
                         if (test === pass) {
