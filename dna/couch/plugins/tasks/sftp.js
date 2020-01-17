@@ -149,7 +149,7 @@
             sftpObj = new SFTPClient(sftpOpts);
 
             //  Create a Buffer of the text of the submission.
-            contentBuffer = new Buffer(params.text, 'utf-8');
+            contentBuffer = Buffer.from(params.text, 'utf-8');
 
             //  Get the file name prefix to use
             fileNamePrefix = params.prefix || '';

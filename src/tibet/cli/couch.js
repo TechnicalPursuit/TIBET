@@ -502,7 +502,7 @@ Cmd.prototype.executePushapp = function() {
                     content).digest('hex');
 
                 //  Convert the hex hash form into base64.
-                buf = new Buffer(hex, 'hex');
+                buf = Buffer.from(hex, 'hex');
 
                 //  Always prepend the hashing model.
                 resolve('md5-' + buf.toString('base64'));
