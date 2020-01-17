@@ -115,6 +115,12 @@ Cmd.prototype.execute = function() {
 
     args = this.getArgv();
 
+    //  If we're coming from 'tibet start' remove the 'start' arg now.
+    if (args && args[0] === 'start') {
+        args.shift();
+        args.unshift('electron');
+    }
+
     //  If our TIBET-style debugger flag is set push on inspection arguments.
     if (this.options.debugger) {
         args.push('--inspect-brk');
