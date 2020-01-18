@@ -11504,13 +11504,25 @@ TP.boot.configureAndPopulateCaches = function() {
                                             packagePaths,
                                             loadablePaths);
 
+        //  Separate lib vs. app paths into two groups to load into the two
+        //  different caches.
+
+        //  NOTE: We *include* the TIBET library file here, even though it's
+        //  loaded from a link in the app directory and, therefore, has an app
+        //  path prefix, not a lib path prefix. We do this so that the TIBET
+        //  library file is cached with the rest of the library, not cached with
+        //  the rest of the app. This is important in developer mode when the
+        //  app developer wants the TIBET library to cache, but not their
+        //  application source.
+
         //  Separate out the lib paths. These will be loaded into the lib file
         //  cache.
         libResourcePath = TP.sys.cfg('boot.lib_resource_path');
         libPaths = allPaths.filter(
                     function(aPath) {
-                        return aPath.startsWith(libResourcePath) &&
-                                /\.\w+$/.test(aPath);
+                        return (aPath.startsWith(libResourcePath) &&
+                                /\.\w+$/.test(aPath)) ||
+                                /tibet.*\.min.js$/.test(aPath);
                     });
 
         //  Separate out the app paths. These will be loaded into the app file
@@ -11520,7 +11532,8 @@ TP.boot.configureAndPopulateCaches = function() {
                     function(aPath) {
                         return aPath.startsWith(appResourcePath) &&
                                 !aPath.startsWith(libResourcePath) &&
-                                /\.\w+$/.test(aPath);
+                                /\.\w+$/.test(aPath) &&
+                                !/tibet.*\.min.js$/.test(aPath);
                     });
 
         return caches.open('TIBET_LIB_CACHE').then(

@@ -40,6 +40,8 @@ self.addEventListener('fetch', function(event) {
 
         promise,
 
+        isTIBETLibFile,
+
         shouldWarn;
 
     //  Grab the url that we're fetching.
@@ -133,8 +135,14 @@ self.addEventListener('fetch', function(event) {
             self.appResourcePath = self.location.origin + '/';
         }
 
+        //  NB: We treat the TIBET library file specially. It will load through
+        //  an *app* path, but we cache it with the *lib* files. That way, if
+        //  we're in developer mode and we're not caching the application files,
+        //  we still are caching the TIBET library file.
+        isTIBETLibFile = /tibet.*\.min.js$/.test(url);
+
         /* eslint-disable no-console */
-        if (url.startsWith(self.libResourcePath)) {
+        if (url.startsWith(self.libResourcePath) || isTIBETLibFile) {
 
             promise = caches.open('TIBET_LIB_CACHE').then(
                             function(cache) {
