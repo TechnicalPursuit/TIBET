@@ -565,7 +565,7 @@ Cmd.prototype.executeProcess = function() {
 
     working = options.tmpdir;
 
-    badexts = ['.bmp', '.png', '.gif', '.jpg', '.ico', '.jpeg'];
+    badexts = ['.bmp', '.png', '.gif', '.jpg', '.ico', '.jpeg', '.gz', '.br'];
     badpaths = ['.DS_Store'];
 
     cmd.log('processing templates...');
