@@ -48,10 +48,10 @@ the `tibet help` command where to look for help files.
 
     <command> built-ins include:
 
-        appcache apropos clone config context deploy doclint
-        echo freeze help init lint make package quickstart
-        reflect release resources rollup start tag test thaw
-        tsh user version
+        apropos clone config context deploy doclint echo
+        freeze help init lint make package quickstart reflect
+        release resources rollup start tag test thaw tsh user
+        version
 
     makefile.js targets include:
 
