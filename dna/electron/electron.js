@@ -1,24 +1,66 @@
 const electron = require('electron'),
-     app = electron.app,    // Module to control application life.
-     BrowserWindow = electron.BrowserWindow, // Module to create browser window.
-     path = require('path'),
-     url = require('url');
+    sh = require('shelljs'),
+    app = electron.app,    // Module to control application life.
+    BrowserWindow = electron.BrowserWindow, // Module to create browser window.
+    path = require('path'),
+    url = require('url'),
+    Package = require('./TIBET-INF/tibet/etc/common/tibet_package.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,
-    createWindow;
+    createWindow,
+    package,
+    fileUrl,
+    json,
+    profile,
+    electronParams;
 
 createWindow = function() {
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 1024, height: 768});
+    mainWindow = new BrowserWindow({
+        width: 1024,
+        height: 768
+    });
+
+    package = new Package();
+
+    //  Load JSON to acquire any params for the file URL we'll try to launch.
+    json = require('./tibet.json');
+    electronParams = json.electron || {};
+
+    //  Verify build directory and add a development profile if not found.
+    builddir = package.expandPath('~app_build');
+    console.log(builddir);
+    if (!sh.test('-d', builddir)) {
+
+        //  Can't load a production profile...nothing's built.
+        console.warn('No build directory. Must use a development boot.profile.');
+        console.warn('Run `tibet build` to create your app\'s production build.');
+
+        //  Don't replace existing...but ensure development as a base default.
+        profile = electronParams['boot.profile'];
+        if (!profile) {
+            electronParams['boot.profile'] = 'development@developer';
+            console.warn('No boot.profile. Forcing boot.profile ' +
+                electronParams['boot.profile']);
+        }
+    }
 
     // and load the index.html of the app.
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file:',
-        slashes: true
-    }));
+    fileUrl = 'file://' + __dirname + '/index.html';
+
+    //  Loop over params and add them to the URL
+    paramStr = '';
+    Object.keys(electronParams).forEach(function(item) {
+        paramStr += item + '=' + electronParams[item] + '&';
+    });
+
+    if (paramStr.length > 0) {
+        fileUrl += '#?' + paramStr.slice(0, -1);
+    }
+
+    mainWindow.loadURL(fileUrl);
 
     // NOTE this is a TIBET-specific if block. The `tibet electron` command will
     // pass --devtools along so this flag is set, otherwise it's likely not there.

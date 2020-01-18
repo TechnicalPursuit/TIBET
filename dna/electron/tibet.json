@@ -5,5 +5,8 @@
     },
     "tibet": {
         "dna": "{{dna}}"
+    },
+    "electron": {
+        "boot.profile": "development@developer"
     }
 }
