@@ -268,22 +268,24 @@ function() {
                                     TP.uc('~').getConcreteURI());
 
         //  If we're running in headless mode, then we need to check to see if
-        //  we have a valid 'tibet_token' in the sessionStorage. If not, see if
-        //  the cfg has a 'headless.tibet_token' configured. If so, set it's
-        //  value into the session storage.
+        //  we have a valid 'TIBET.boot.tibet_token' in the sessionStorage. If
+        //  not, see if the cfg has a 'headless.tibet_token' configured. If so,
+        //  set it's value into the session storage.
         //  This helps when running tests or builds with apps that want to load
         //  resources on login. Note that we do *not* check to see if the
         //  application is configured to require login here. When in a headless
         //  mode, the 'boot.use_login' cfg parameter will always be false.
         if (TP.sys.cfg('boot.context') === 'headless') {
 
-            tibetToken = TP.global.sessionStorage.getItem('tibet_token');
+            tibetToken = TP.global.sessionStorage.getItem(
+                                        'TIBET.boot.tibet_token');
 
             if (TP.isEmpty(tibetToken)) {
                 tibetToken = TP.sys.getcfg('headless.tibet_token');
 
                 if (TP.notEmpty(tibetToken)) {
-                    TP.global.sessionStorage.setItem('tibet_token', tibetToken);
+                    TP.global.sessionStorage.setItem(
+                                        'TIBET.boot.tibet_token', tibetToken);
                 }
             }
         }
@@ -834,10 +836,11 @@ function(aURI) {
         url = TP.uc(TP.sys.cfg('path.blank_page'));
     }
 
-    //  Make sure to remove the 'tibet_token' value from sessionStorage. If
-    //  we're running against a server that vended us an authentication token
-    //  (like the TDS), it should be under this storage key.
-    TP.global.sessionStorage.removeItem('tibet_token');
+    //  Make sure to remove the 'TIBET.boot.tibet_token' value from
+    //  sessionStorage. If we're running against a server that vended us an
+    //  authentication token (like the TDS), it should be under this storage
+    //  key.
+    TP.global.sessionStorage.removeItem('TIBET.boot.tibet_token');
 
     //  close open/registered windows. won't always work, but we can try :)
     TP.core.Window.closeRegisteredWindows();

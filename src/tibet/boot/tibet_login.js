@@ -74,7 +74,8 @@
                 try {
                     obj = JSON.parse(text);
                     if (obj.token) {
-                        top.sessionStorage.setItem('tibet_token', obj.token);
+                        top.sessionStorage.setItem(
+                            'TIBET.boot.tibet_token', obj.token);
                     }
                 } catch (e) {
                     void 0;

@@ -1128,9 +1128,8 @@ function(targetUrl, aRequest, httpObj) {
             }
         }
     }
-
     //  If there's a client-side JWT token, send it as well.
-    token = TP.global.sessionStorage.getItem('tibet_token');
+    token = TP.global.sessionStorage.getItem('TIBET.boot.tibet_token');
     if (TP.notEmpty(token)) {
         headers.atPut('x-access-token', token);
     }

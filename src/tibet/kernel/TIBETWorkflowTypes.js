@@ -7431,7 +7431,8 @@ function() {
 
     //  See if the session storage had a stored session history. If so, restore
     //  our history from that.
-    sessionHistory = TP.global.sessionStorage.getItem('tibet_sessionHistory');
+    sessionHistory = TP.global.sessionStorage.getItem(
+                                                'TIBET.boot.session_history');
     if (TP.isValid(sessionHistory)) {
 
         //  Restore the session history from the (JSON) value stored in session
@@ -8431,7 +8432,7 @@ function() {
 
     str = TP.js2json(info);
 
-    TP.global.sessionStorage.setItem('tibet_sessionHistory', str);
+    TP.global.sessionStorage.setItem('TIBET.boot.session_history', str);
 
     return this;
 });
@@ -8613,7 +8614,8 @@ function(anEvent) {
     //  If the session storage is *not* storing a session history, then we can
     //  go ahead and capture history here. Otherwise, we do *not* want to do
     //  this or it messes up our history values.
-    if (TP.notValid(TP.global.sessionStorage.getItem('tibet_sessionHistory'))) {
+    if (TP.notValid(TP.global.sessionStorage.getItem(
+                                            'TIBET.boot.session_history'))) {
         this.captureHistory();
     }
 
