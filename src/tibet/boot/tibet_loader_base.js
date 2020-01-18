@@ -1845,11 +1845,11 @@ TP.sys.getHomeURL = function(checkSession) {
 
     var homeURL;
 
-    if (checkSession && window.sessionStorage) {
-        homeURL = window.sessionStorage.getItem('TIBET.project.home_page');
+    if (checkSession && top.sessionStorage) {
+        homeURL = top.sessionStorage.getItem('TIBET.project.home_page');
 
         //  This is a "one time use" value. Clear after fetching.
-        window.sessionStorage.removeItem('TIBET.project.home_page');
+        top.sessionStorage.removeItem('TIBET.project.home_page');
     }
 
     //  NOTE that the session.home_page value is set during startup to preserve
@@ -11550,7 +11550,7 @@ TP.boot.configureAndPopulateCaches = function() {
                     //  Store the project version number into local storage so
                     //  that we can find and compare against it in future
                     //  loadings of this application.
-                    window.localStorage.setItem(
+                    top.localStorage.setItem(
                         'TIBET.boot.cached_project_version',
                         TP.sys.cfg('project.version'));
                     return cache.addAll(appPaths);
@@ -11649,7 +11649,7 @@ TP.boot.configureAndPopulateCaches = function() {
                 projectOutOfDate = false;
 
                 projectVersion = TP.sys.cfg('project.version');
-                cachedProjectVersion = window.localStorage.getItem(
+                cachedProjectVersion = top.localStorage.getItem(
                                         'TIBET.boot.cached_project_version');
 
                 //  If there was no cached version or it doesn't match the
@@ -11659,7 +11659,7 @@ TP.boot.configureAndPopulateCaches = function() {
                     cachedProjectVersion !== projectVersion) {
 
                     projectOutOfDate = true;
-                    window.localStorage.removeItem(
+                    top.localStorage.removeItem(
                                         'TIBET.boot.cached_project_version');
 
                     promise = promise.then(
@@ -12043,10 +12043,10 @@ TP.boot.launch = function(options) {
     //  If we're booting in response to a login page sequence we may have had
     //  client-side fragment information tucked away. Check for that and restore
     //  it if we find any (and clear it for any future processing).
-    if (window.sessionStorage) {
-        hash = window.sessionStorage.getItem('TIBET.boot.fragment');
+    if (top.sessionStorage) {
+        hash = top.sessionStorage.getItem('TIBET.boot.fragment');
         if (hash) {
-            window.sessionStorage.removeItem('TIBET.boot.fragment');
+            top.sessionStorage.removeItem('TIBET.boot.fragment');
             top.location.hash = hash;
         }
     }

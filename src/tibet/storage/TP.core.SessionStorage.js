@@ -70,8 +70,8 @@ function(aKey) {
         return this[aKey];
     }
 
-    if (TP.isValid(window.sessionStorage)) {
-        return window.sessionStorage.getItem(aKey);
+    if (TP.isValid(TP.global.sessionStorage)) {
+        return TP.global.sessionStorage.getItem(aKey);
     }
 
     return null;
@@ -101,8 +101,8 @@ function(aKey, aValue) {
                     aValue);
     }
 
-    if (TP.isValid(window.sessionStorage)) {
-        return window.sessionStorage.setItem(aKey, aValue);
+    if (TP.isValid(TP.global.sessionStorage)) {
+        return TP.global.sessionStorage.setItem(aKey, aValue);
     }
 
     return this;
@@ -119,8 +119,8 @@ function() {
      * @returns {TP.core.SessionStorage} The receiver.
      */
 
-    if (TP.isValid(window.sessionStorage)) {
-        return window.sessionStorage.clear();
+    if (TP.isValid(TP.global.sessionStorage)) {
+        return TP.global.sessionStorage.clear();
     }
 
     return this;
@@ -138,8 +138,8 @@ function(aKey) {
      * @returns {TP.core.SessionStorage} The receiver.
      */
 
-    if (TP.isValid(window.sessionStorage)) {
-        return window.sessionStorage.removeItem(aKey);
+    if (TP.isValid(TP.global.sessionStorage)) {
+        return TP.global.sessionStorage.removeItem(aKey);
     }
 
     return this;

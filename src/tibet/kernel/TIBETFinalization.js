@@ -277,13 +277,13 @@ function() {
         //  mode, the 'boot.use_login' cfg parameter will always be false.
         if (TP.sys.cfg('boot.context') === 'headless') {
 
-            tibetToken = top.sessionStorage.getItem('tibet_token');
+            tibetToken = TP.global.sessionStorage.getItem('tibet_token');
 
             if (TP.isEmpty(tibetToken)) {
                 tibetToken = TP.sys.getcfg('headless.tibet_token');
 
                 if (TP.notEmpty(tibetToken)) {
-                    top.sessionStorage.setItem('tibet_token', tibetToken);
+                    TP.global.sessionStorage.setItem('tibet_token', tibetToken);
                 }
             }
         }
@@ -837,7 +837,7 @@ function(aURI) {
     //  Make sure to remove the 'tibet_token' value from sessionStorage. If
     //  we're running against a server that vended us an authentication token
     //  (like the TDS), it should be under this storage key.
-    top.sessionStorage.removeItem('tibet_token');
+    TP.global.sessionStorage.removeItem('tibet_token');
 
     //  close open/registered windows. won't always work, but we can try :)
     TP.core.Window.closeRegisteredWindows();

@@ -7211,15 +7211,15 @@ function(aSignal) {
         //  Note that we check and clear sessionStorage here to avoid having any
         //  values set by a bookmark or reload operation on a hooked file from
         //  hanging around and affecting future operations.
-        if (window.sessionStorage) {
-            homeURL = window.sessionStorage.getItem(
+        if (TP.global.sessionStorage) {
+            homeURL = TP.global.sessionStorage.getItem(
                 'TIBET.project.home_page');
             if (TP.notEmpty(homeURL)) {
                 //  Preserve the value in runtime config to support the
                 //  TP.sys.getHomeURL call.
                 TP.sys.setcfg('session.home_page', homeURL);
 
-                window.sessionStorage.removeItem('TIBET.project.home_page');
+                TP.global.sessionStorage.removeItem('TIBET.project.home_page');
             }
         }
 

@@ -70,8 +70,8 @@ function(aKey) {
         return this[aKey];
     }
 
-    if (TP.isValid(window.localStorage)) {
-        return window.localStorage.getItem(aKey);
+    if (TP.isValid(TP.global.localStorage)) {
+        return TP.global.localStorage.getItem(aKey);
     }
 
     return null;
@@ -101,8 +101,8 @@ function(aKey, aValue) {
                     aValue);
     }
 
-    if (TP.isValid(window.localStorage)) {
-        return window.localStorage.setItem(aKey, aValue);
+    if (TP.isValid(TP.global.localStorage)) {
+        return TP.global.localStorage.setItem(aKey, aValue);
     }
 
     return this;
@@ -119,8 +119,8 @@ function() {
      * @returns {TP.core.LocalStorage} The receiver.
      */
 
-    if (TP.isValid(window.localStorage)) {
-        return window.localStorage.clear();
+    if (TP.isValid(TP.global.localStorage)) {
+        return TP.global.localStorage.clear();
     }
 
     return this;
@@ -138,8 +138,8 @@ function(aKey) {
      * @returns {TP.core.LocalStorage} The receiver.
      */
 
-    if (TP.isValid(window.localStorage)) {
-        return window.localStorage.removeItem(aKey);
+    if (TP.isValid(TP.global.localStorage)) {
+        return TP.global.localStorage.removeItem(aKey);
     }
 
     return this;
