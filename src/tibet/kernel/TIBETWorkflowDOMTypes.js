@@ -493,6 +493,7 @@ function() {
      * @returns {String} A JSON-formatted string.
      */
 
+    /*
     var str;
 
     str = '["vcard",' +
@@ -501,6 +502,7 @@ function() {
 
     str += ']' +
             ']';
+    */
 
     //  TODO: Finish the implementation here according to RFC 7095
 

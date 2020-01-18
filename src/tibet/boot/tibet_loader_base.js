@@ -11520,9 +11520,11 @@ TP.boot.configureAndPopulateCaches = function() {
         libResourcePath = TP.sys.cfg('boot.lib_resource_path');
         libPaths = allPaths.filter(
                     function(aPath) {
+                        /* eslint-disable no-extra-parens */
                         return (aPath.startsWith(libResourcePath) &&
                                 /\.\w+$/.test(aPath)) ||
                                 /tibet.*\.min.js$/.test(aPath);
+                        /* eslint-enable no-extra-parens */
                     });
 
         //  Separate out the app paths. These will be loaded into the app file

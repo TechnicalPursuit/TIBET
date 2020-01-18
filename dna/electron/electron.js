@@ -2,16 +2,16 @@ const electron = require('electron'),
     sh = require('shelljs'),
     app = electron.app,    // Module to control application life.
     BrowserWindow = electron.BrowserWindow, // Module to create browser window.
-    path = require('path'),
-    url = require('url'),
     Package = require('./TIBET-INF/tibet/etc/common/tibet_package.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow,
     createWindow,
+    builddir,
     package,
     fileUrl,
+    paramStr,
     json,
     profile,
     electronParams;
@@ -31,10 +31,10 @@ createWindow = function() {
 
     //  Verify build directory and add a development profile if not found.
     builddir = package.expandPath('~app_build');
-    console.log(builddir);
     if (!sh.test('-d', builddir)) {
 
         //  Can't load a production profile...nothing's built.
+        /* eslint-disable no-console */
         console.warn('No build directory. Must use a development boot.profile.');
         console.warn('Run `tibet build` to create your app\'s production build.');
 
@@ -45,6 +45,7 @@ createWindow = function() {
             console.warn('No boot.profile. Forcing boot.profile ' +
                 electronParams['boot.profile']);
         }
+        /* eslint-enable no-console */
     }
 
     // and load the index.html of the app.
