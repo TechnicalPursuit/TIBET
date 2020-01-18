@@ -11848,7 +11848,7 @@ TP.boot.setupServiceWorker = function() {
                                                 msg: 'ok',
                                                 payload: result
                                             });
-                                       })
+                                       });
                                 });
                         });
 
