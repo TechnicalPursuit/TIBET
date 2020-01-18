@@ -11370,6 +11370,8 @@ TP.boot.configureAndPopulateCaches = function() {
             loadablePaths,
             packagePaths,
 
+            i,
+
             allPaths,
 
             libResourcePath,
@@ -11460,6 +11462,17 @@ TP.boot.configureAndPopulateCaches = function() {
         //  above.
         packagePaths = Object.keys(TP.boot.$$packages);
 
+        //  Remove the 'main.xml' package file from the list of files to cache.
+        //  It's the one with the version number in it, so we never want to
+        //  cache it (in our controlled cache anyway - we'll let the browser
+        //  handle caching/re-fetching it based on regular browser heuristics).
+        for (i = 0; i < packagePaths.length; i++) {
+            if (/main\.xml$/.test(packagePaths[i])) {
+                packagePaths.splice(i, 1);
+                break;
+            }
+        }
+
         //  Next, grab the files referenced in those package files. These must
         //  be assets that have a 'src' or 'href' attribute and then a path is
         //  obtained and expanded from there.
@@ -11519,6 +11532,12 @@ TP.boot.configureAndPopulateCaches = function() {
                 return caches.open('TIBET_APP_CACHE');
             }).then(function(cache) {
                 if (appCacheNeedsPopulating) {
+                    //  Store the project version number into local storage so
+                    //  that we can find and compare against it in future
+                    //  loadings of this application.
+                    window.localStorage.setItem(
+                        'TIBET.boot.cached_project_version',
+                        TP.sys.cfg('project.version'));
                     return cache.addAll(appPaths);
                 }
             });
@@ -11556,7 +11575,11 @@ TP.boot.configureAndPopulateCaches = function() {
 
                     promise,
 
-                    foundDeveloperFiles;
+                    foundDeveloperFiles,
+
+                    projectOutOfDate,
+                    projectVersion,
+                    cachedProjectVersion;
 
                 appCacheRequests = keys;
 
@@ -11603,8 +11626,35 @@ TP.boot.configureAndPopulateCaches = function() {
                     }
                 }
 
+                //  Grab the project version and an optional cached project
+                //  version (which will have been put into localStorage when the
+                //  app cache was populated). By comparing these, we'll know
+                //  whether we need to flush the app cache and reload it.
+
+                projectOutOfDate = false;
+
+                projectVersion = TP.sys.cfg('project.version');
+                cachedProjectVersion = window.localStorage.getItem(
+                                        'TIBET.boot.cached_project_version');
+
+                //  If there was no cached version or it doesn't match the
+                //  current version, set the flag that says the project is
+                //  out of date and finally delete the app cache.
+                if (TP.boot.$notValid(cachedProjectVersion) ||
+                    cachedProjectVersion !== projectVersion) {
+
+                    projectOutOfDate = true;
+                    window.localStorage.removeItem(
+                                        'TIBET.boot.cached_project_version');
+
+                    promise = promise.then(
+                        function() {
+                            return caches.delete('TIBET_APP_CACHE');
+                        });
+                }
+
                 if (TP.boot.shouldCacheAppFiles()) {
-                    if (TP.boot.$isEmpty(appCachePaths)) {
+                    if (TP.boot.$isEmpty(appCachePaths) || projectOutOfDate) {
                         appCacheNeedsPopulating = true;
                     }
                 } else {
