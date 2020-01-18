@@ -458,8 +458,8 @@
             artifacts = [];
         }
 
-        buildmsg = 'Project not built. Build your project using `tibet build`' +
-                    ' and then launch production version from: ' +
+        buildmsg = TDS.colorize('Project not built.' +
+                    ' Run `tibet build` for production url: ', 'warn') +
                     TDS.colorize(protocol + '://' + host +
                         (port === 80 ? '' : ':' + port), 'host');
 
@@ -532,7 +532,7 @@
                 //  Output a message telling the user how to build.
                 msg = buildmsg;
 
-                logger.system(msg,
+                logger.warn(msg,
                     {
                         comp: 'TDS',
                         type: 'tds',
@@ -577,7 +577,7 @@
                 //  Output a message telling the user how to build.
                 msg = buildmsg;
 
-                logger.system(msg,
+                logger.warn(msg,
                     {
                         comp: 'TDS',
                         type: 'tds',
