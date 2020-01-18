@@ -14,6 +14,11 @@
     <script src="~lib_src/tibet/boot/tibet_login.js"/>
 </config>
 
+<config id="service_worker">
+    <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
+    <script src="~lib_src/tibet/helpers/tibet_service_worker.js"/>
+</config>
+
 <config id="worker">
     <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
     <script src="~lib_src/tibet/helpers/tibet_worker.js"/>

@@ -11821,7 +11821,7 @@ TP.boot.setupServiceWorker = function() {
      *     ready.
      */
 
-    return navigator.serviceWorker.register('/tibet_service_worker.js').then(
+    return navigator.serviceWorker.register('/tibet_service_worker.min.js').then(
             function(registration) {
                 //  Registration was successful
                 TP.trace('TIBET ServiceWorker' +
