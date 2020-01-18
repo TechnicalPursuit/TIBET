@@ -11540,6 +11540,13 @@ TP.boot.configureAndPopulateCaches = function() {
 
         return caches.open('TIBET_LIB_CACHE').then(
             function(cache) {
+                var projectProfile;
+
+                projectProfile = TP.sys.cfg('boot.profile') ||
+                                    'main@production';
+                top.localStorage.setItem(
+                    'TIBET.boot.cached_project_profile', projectProfile);
+
                 if (libCacheNeedsPopulating) {
                     return cache.addAll(libPaths);
                 }
@@ -11592,7 +11599,15 @@ TP.boot.configureAndPopulateCaches = function() {
 
                     foundDeveloperFiles,
 
-                    projectOutOfDate,
+                    libOutOfDate,
+                    appOutOfDate,
+
+                    removeLibCache,
+                    removeAppCache,
+
+                    projectProfile,
+                    cachedProjectProfile,
+
                     projectVersion,
                     cachedProjectVersion;
 
@@ -11608,6 +11623,9 @@ TP.boot.configureAndPopulateCaches = function() {
                                         return aRequest.url;
                                     });
 
+                //  Allocate a Promise to chain to below.
+                promise = Promise.resolve();
+
                 //  Now we have to decide whether or not to populate the caches
                 //  based on flag settings and whether we found content in those
                 //  caches.
@@ -11615,38 +11633,38 @@ TP.boot.configureAndPopulateCaches = function() {
                 libCacheNeedsPopulating = false;
                 appCacheNeedsPopulating = false;
 
-                promise = Promise.resolve();
+                removeLibCache = false;
+                removeAppCache = false;
 
-                if (TP.boot.shouldCacheLibFiles()) {
-                    if (TP.boot.$isEmpty(libCachePaths)) {
-                        libCacheNeedsPopulating = true;
-                    } else {
-                        if (TP.sys.inDeveloperMode()) {
-                            foundDeveloperFiles =
-                                libCachePaths.filter(
-                                    function(aPath) {
-                                        return /tibet_developer/.test(aPath);
-                                    });
-                            if (TP.boot.$isEmpty(foundDeveloperFiles)) {
-                                libCacheNeedsPopulating = true;
-                            }
-                        }
-                    }
-                } else {
-                    if (!TP.boot.$isEmpty(libCachePaths)) {
-                        promise = promise.then(
-                            function() {
-                                return caches.delete('TIBET_LIB_CACHE');
-                            });
-                    }
+                libOutOfDate = false;
+                appOutOfDate = false;
+
+                projectProfile = TP.sys.cfg('boot.profile') ||
+                                    'main@production';
+
+                cachedProjectProfile = top.localStorage.getItem(
+                                        'TIBET.boot.cached_project_profile');
+
+                //  If there was no cached version or it doesn't match the
+                //  current version, set the flag that says the project is
+                //  out of date and finally delete the app cache.
+                if (TP.boot.$notValid(cachedProjectProfile) ||
+                    cachedProjectProfile !== projectProfile) {
+
+                    libOutOfDate = true;
+                    appOutOfDate = true;
+
+                    top.localStorage.removeItem(
+                                        'TIBET.boot.cached_project_profile');
+
+                    removeLibCache = true;
+                    removeAppCache = true;
                 }
 
                 //  Grab the project version and an optional cached project
                 //  version (which will have been put into localStorage when the
                 //  app cache was populated). By comparing these, we'll know
                 //  whether we need to flush the app cache and reload it.
-
-                projectOutOfDate = false;
 
                 projectVersion = TP.sys.cfg('project.version');
                 cachedProjectVersion = top.localStorage.getItem(
@@ -11658,27 +11676,45 @@ TP.boot.configureAndPopulateCaches = function() {
                 if (TP.boot.$notValid(cachedProjectVersion) ||
                     cachedProjectVersion !== projectVersion) {
 
-                    projectOutOfDate = true;
+                    appOutOfDate = true;
                     top.localStorage.removeItem(
                                         'TIBET.boot.cached_project_version');
 
-                    promise = promise.then(
-                        function() {
-                            return caches.delete('TIBET_APP_CACHE');
-                        });
+                    removeAppCache = true;
+                }
+
+                if (TP.boot.shouldCacheLibFiles()) {
+                    if (TP.boot.$isEmpty(libCachePaths) || libOutOfDate) {
+                        libCacheNeedsPopulating = true;
+                    }
+                } else {
+                    if (!TP.boot.$isEmpty(libCachePaths)) {
+                        removeLibCache = true;
+                    }
                 }
 
                 if (TP.boot.shouldCacheAppFiles()) {
-                    if (TP.boot.$isEmpty(appCachePaths) || projectOutOfDate) {
+                    if (TP.boot.$isEmpty(appCachePaths) || appOutOfDate) {
                         appCacheNeedsPopulating = true;
                     }
                 } else {
                     if (!TP.boot.$isEmpty(appCachePaths)) {
-                        promise = promise.then(
-                            function() {
-                                return caches.delete('TIBET_APP_CACHE');
-                            });
+                        removeAppCache = true;
                     }
+                }
+
+                if (removeLibCache) {
+                    promise = promise.then(
+                        function() {
+                            return caches.delete('TIBET_LIB_CACHE');
+                        });
+                }
+
+                if (removeAppCache) {
+                    promise = promise.then(
+                        function() {
+                            return caches.delete('TIBET_APP_CACHE');
+                        });
                 }
 
                 //  If the cache doesn't need populating, we'll send a message
