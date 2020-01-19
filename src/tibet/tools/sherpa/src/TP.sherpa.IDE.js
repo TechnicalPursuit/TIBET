@@ -5557,12 +5557,19 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     visualAppElem = TP.unwrap(this.getAppElement());
 
-    //  Filter out any nodes that mutated that are not under the visual app
-    //  element.
-    appDescendantsToProcess = mutatedNodes.filter(
-        function(anElem) {
-            return visualAppElem.contains(anElem);
-        });
+    //  If the operation is not TP.DELETE, then we can be a little more
+    //  efficient by filtering mutations by filtering out any nodes that mutated
+    //  that are not under the visual app element. Note that we cannot do this
+    //  for deleted nodes, since they're no longer part of the hierarchy and
+    //  this mechanism will always result in an empty Array.
+    if (operation !== TP.DELETE) {
+        appDescendantsToProcess = mutatedNodes.filter(
+            function(anElem) {
+                return visualAppElem.contains(anElem);
+            });
+    } else {
+        appDescendantsToProcess = mutatedNodes;
+    }
 
     //  Search the hierarchy for the nearest custom tag (using the same search
     //  criteria as above) to set as the 'visual generator' element.
@@ -5584,6 +5591,12 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         return this.raise(
                     'InvalidObject',
                     'Visual generator node needs node position');
+    }
+
+    //  If there are no mutated nodes to process, then exit here. Otherwise,
+    //  logic below will fail.
+    if (TP.isEmpty(appDescendantsToProcess)) {
+        return this;
     }
 
     leni = appDescendantsToProcess.getSize();
