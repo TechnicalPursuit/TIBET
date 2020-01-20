@@ -1083,12 +1083,20 @@ Cmd.prototype.updatePackage = function() {
     var cmd,
         dirty,
         pak,
-        assets,
-        pkgOpts,
-        cfgName,
+
+        inlineCfgName,
+        inlineCfgNode,
+        inlinePkgOpts,
+        inlineAssets,
+
+        resourceCfgName,
+        resourceCfgNode,
+        resourcePkgOpts,
+        resourceAssets,
+
         pkgName,
         pkgNode,
-        cfgNode,
+
         condAttr,
         cond,
         mainName,
@@ -1104,7 +1112,8 @@ Cmd.prototype.updatePackage = function() {
         pkgName = this.package.getcfg('project.name');
     }
 
-    cfgName = 'inlined';
+    //  Now we fetch or build nodes for both the inline and resource sections of
+    //  the config.
     if (pkgName.charAt(0) !== '~') {
         if (CLI.inProject()) {
             pkgName = path.join('~app_cfg', pkgName);
@@ -1121,10 +1130,15 @@ Cmd.prototype.updatePackage = function() {
 
     this.log('Writing package resource entries...');
 
+    //  ---
+    //  SET UP INLINE CONFIG AND ASSETS
+    //  ---
+
     //  This may build the node if not currently found.
-    cfgNode = this.readConfigNode(pkgNode, cfgName, true);
-    if (!cfgNode) {
-        throw new Error('Unable to find ' + pkgName + '@' + cfgName);
+    inlineCfgName = 'inlined';
+    inlineCfgNode = this.readConfigNode(pkgNode, inlineCfgName, true);
+    if (!inlineCfgNode) {
+        throw new Error('Unable to find ' + pkgName + '@' + inlineCfgName);
     }
 
     //  Ensure we have the right phase (in case we built the node)
@@ -1154,24 +1168,24 @@ Cmd.prototype.updatePackage = function() {
         cond = 'boot.phase_one';
     }
 
-    condAttr = cfgNode.getAttribute('if');
+    condAttr = inlineCfgNode.getAttribute('if');
     if (condAttr.indexOf(cond) === -1) {
         if (CLI.isEmpty(condAttr)) {
-            cfgNode.setAttribute('if', cond);
+            inlineCfgNode.setAttribute('if', cond);
         } else {
-            cfgNode.setAttribute('if', condAttr + ' ' + cond);
+            inlineCfgNode.setAttribute('if', condAttr + ' ' + cond);
             dirty = true;
         }
     }
 
     //  Ensure we have the resource filter on the node.
     cond = 'boot.inlined';
-    condAttr = cfgNode.getAttribute('if');
+    condAttr = inlineCfgNode.getAttribute('if');
     if (condAttr.indexOf(cond) === -1) {
         if (CLI.isEmpty(condAttr)) {
-            cfgNode.setAttribute('if', cond);
+            inlineCfgNode.setAttribute('if', cond);
         } else {
-            cfgNode.setAttribute('if', condAttr + ' ' + cond);
+            inlineCfgNode.setAttribute('if', condAttr + ' ' + cond);
             dirty = true;
         }
     }
@@ -1180,9 +1194,9 @@ Cmd.prototype.updatePackage = function() {
     //  potentially nested config structures. Being able to nest makes it easy
     //  to iterate while still being able to organize into different config
     //  bundles for different things (like sherpa vs. test vs. xctrls).
-    pkgOpts = {
+    inlinePkgOpts = {
         package: pkgName,
-        config: cfgName,
+        config: inlineCfgName,
         all: false,
         scripts: true,        //  The magic one...without this...no output.
         resources: true,
@@ -1194,24 +1208,64 @@ Cmd.prototype.updatePackage = function() {
         }
     };
 
-    pak = new Package(pkgOpts);
+    pak = new Package(inlinePkgOpts);
     pak.expandPackage();
-    assets = pak.listPackageAssets();
+    inlineAssets = pak.listPackageAssets();
 
     //  Normalize to TIBET format for comparison during product loop below.
-    assets = assets.map(function(asset) {
+    inlineAssets = inlineAssets.map(function(asset) {
+        return CLI.getVirtualPath(asset);
+    });
+
+    //  ---
+    //  SET UP RESOURCE CONFIG AND ASSETS
+    //  ---
+
+    //  This may build the node if not currently found.
+    resourceCfgName = 'resources';
+    resourceCfgNode = this.readConfigNode(pkgNode, resourceCfgName, true);
+    if (!resourceCfgNode) {
+        throw new Error('Unable to find ' + pkgName + '@' + resourceCfgName);
+    }
+
+    //  Get package information in expanded form so we can check against any
+    //  potentially nested config structures. Being able to nest makes it easy
+    //  to iterate while still being able to organize into different config
+    //  bundles for different things (like sherpa vs. test vs. xctrls).
+    resourcePkgOpts = {
+        package: pkgName,
+        config: resourceCfgName,
+        all: false,
+        scripts: true,        //  The magic one...without this...no output.
+        resources: true,
+        nodes: false,
+        phase: 'all',
+        boot: {
+            phase_one: true,
+            phase_two: true
+        }
+    };
+
+    pak = new Package(resourcePkgOpts);
+    pak.expandPackage();
+    resourceAssets = pak.listPackageAssets();
+
+    //  Normalize to TIBET format for comparison during product loop below.
+    resourceAssets = resourceAssets.map(function(asset) {
         return CLI.getVirtualPath(asset);
     });
 
     //  Process the individual files, checking for existence and adding any that
     //  are missing from the resource config.
     this.products.forEach(function(pair) {
-        var value,
-            file,
+        var file,
+            value,
             exclude,
-            inlined,
+            node,
+            assets,
             tag,
-            str;
+            str,
+            inlined;
 
         file = pair[1];
         value = CLI.getVirtualPath(file);
@@ -1228,6 +1282,9 @@ Cmd.prototype.updatePackage = function() {
             return;
         }
 
+        node = inlineCfgNode;
+        assets = inlineAssets;
+
         tag = cmd.getTag(file);
         if (tag === 'script') {
             str = '<' + tag + ' src="' + value + '"/>';
@@ -1237,8 +1294,11 @@ Cmd.prototype.updatePackage = function() {
             inlined = Cmd.INLINED_RESOURCES.some(function(regex) {
                 return regex.test(value);
             });
+
             if (!inlined) {
                 str += ' no-inline="true"';
+                node = resourceCfgNode;
+                assets = resourceAssets;
             }
 
             str += '/>';
@@ -1246,7 +1306,7 @@ Cmd.prototype.updatePackage = function() {
 
         if (assets.indexOf(value) === -1) {
             dirty = true;
-            cmd.addXMLEntry(cfgNode, '    ', str, '');
+            cmd.addXMLEntry(node, '    ', str, '');
             cmd.log(str + ' (added)');
             assets.push(value);
         } else {
