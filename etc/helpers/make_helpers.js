@@ -243,7 +243,11 @@ helpers.resource_build = function(make, options) {
         config,
         phase,
         proc,
-        deferred;
+        deferred,
+
+        file,
+        versionNums,
+        lastIndex;
 
     if (CLI.notValid(options)) {
         throw new Error('InvalidOptions');
@@ -262,6 +266,27 @@ helpers.resource_build = function(make, options) {
     phase = options.phase;
 
     deferred = Promise.pending();
+
+    // version bump if requested
+    if (options.bumppatch) {
+
+        versionNums = CLI.config.npm.version.split('.');
+        lastIndex = versionNums.length - 1;
+        versionNums[lastIndex] = parseInt(versionNums[lastIndex]) + 1;
+        CLI.config.npm.version = versionNums.join('.');
+
+        file = CLI.expandPath('package.json');
+        make.info('Updating npm version in package.json to: ' +
+                    CLI.config.npm.version);
+
+        try {
+            fs.writeFileSync(
+                    file, CLI.beautify(JSON.stringify(CLI.config.npm)));
+        } catch (e) {
+            make.error('Error writing file ' + file + ': ' + e.message);
+            return;
+        }
+    }
 
     make.log('generating resources');
 
