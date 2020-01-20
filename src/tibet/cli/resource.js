@@ -98,7 +98,9 @@ Cmd.EXCLUDE_REPLACEMENTS = [
 
 Cmd.INLINED_RESOURCES = [
     /\.css$/,
-    /\.xhtml$/
+    /\.xhtml$/,
+    /\.xml$/,
+    /\.json/
 ];
 
 
