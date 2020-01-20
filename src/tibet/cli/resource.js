@@ -80,7 +80,7 @@ Cmd.CSS_IMPORT_RULE = /@import\s*(url\()?['"]?(.*?)['"]?(\))?;/g;
  * List of regular expressions used to filter out "source code" from inlining.
  * @type {Array.<RegExp>}
  */
-Cmd.INLINE_EXCLUDES = [
+Cmd.RESOURCE_EXCLUDES = [
     /\.less$/,
     /\.sass$/,
     /\.scss$/,
@@ -95,6 +95,12 @@ Cmd.EXCLUDE_REPLACEMENTS = [
     [/\.coffee$/, 'js'],
     [/\.ts$/, 'js']
 ];
+
+Cmd.INLINED_RESOURCES = [
+    /\.css$/,
+    /\.xhtml$/
+];
+
 
 //  ---
 //  Instance Attributes
@@ -1059,7 +1065,6 @@ Cmd.prototype.updatePackage = function() {
         condAttr,
         cond,
         mainName,
-        mainPkg,
         mainNode,
         version,
         newVersion;
@@ -1101,10 +1106,6 @@ Cmd.prototype.updatePackage = function() {
 
         if (this.options.build) {
             mainName = path.join('~app_cfg', 'main.xml');
-            mainPkg = new Package({
-                package: mainName,
-                config: 'production'
-            });
             mainNode = cmd.readPackageNode(mainName);
 
             version = mainNode.getAttribute('version');
@@ -1112,6 +1113,11 @@ Cmd.prototype.updatePackage = function() {
                 this.package.getcfg('npm.version');
 
             if (version !== newVersion) {
+                //  update the "app package" version.
+                pkgNode.setAttribute('version', newVersion);
+                dirty = true;
+
+                //  update the root (main) package as well.
                 mainNode.setAttribute('version', newVersion);
                 cmd.writePackageNode(mainName, mainNode);
             }
@@ -1176,6 +1182,7 @@ Cmd.prototype.updatePackage = function() {
         var value,
             file,
             exclude,
+            inlined,
             tag,
             str;
 
@@ -1183,7 +1190,7 @@ Cmd.prototype.updatePackage = function() {
         value = CLI.getVirtualPath(file);
 
         //  Don't include "source code" files as inlined resources...no point.
-        exclude = Cmd.INLINE_EXCLUDES.some(function(regex) {
+        exclude = Cmd.RESOURCE_EXCLUDES.some(function(regex) {
             //  NOTE we test output, not original file path here so we don't
             //  filter LESS that turned into CSS etc.
             return regex.test(pair[1]);
@@ -1197,7 +1204,16 @@ Cmd.prototype.updatePackage = function() {
         if (tag === 'script') {
             str = '<' + tag + ' src="' + value + '"/>';
         } else if (tag === 'resource') {
-            str = '<' + tag + ' href="' + value + '"/>';
+            str = '<' + tag + ' href="' + value + '"';
+
+            inlined = Cmd.INLINED_RESOURCES.some(function(regex) {
+                return regex.test(value);
+            });
+            if (!inlined) {
+                str += ' no-inline="true"';
+            }
+
+            str += '/>';
         }
 
         if (assets.indexOf(value) === -1) {
