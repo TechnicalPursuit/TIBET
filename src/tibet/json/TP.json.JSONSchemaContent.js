@@ -142,7 +142,7 @@ function(definitionIndex) {
 
     index = TP.ifInvalid(definitionIndex, 0);
 
-    queryPath = TP.jpc('$.definitions');
+    queryPath = TP.jpc('$.definitions', TP.hc('shouldCollapse', true));
     defName = TP.keys(this.get(queryPath)).at(index);
 
     return defName;
@@ -196,7 +196,7 @@ function(aPropertyPath) {
     //  Build a query using the computed path prepended by the necessary
     //  prologue and appended with '.type' to get to the type definition.
     query = '$.definitions.' + query + '.type';
-    queryPath = TP.jpc(query);
+    queryPath = TP.jpc(query, TP.hc('shouldCollapse', true));
 
     dataType = this.get(queryPath);
 
