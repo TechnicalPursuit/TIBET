@@ -587,8 +587,9 @@ Cmd.prototype.processResources = function() {
                 res = res.replace(pair[0], '.' + pair[1]);
             });
 
-            base = res.slice(res.indexOf(path.sep) + 1).replace(
-                /\//g, '-');
+            //base = res.slice(res.indexOf(path.sep) + 1).replace(
+            //    /\//g, '-');
+            base = resource.replace(/^~/, '').replace(/\//g, '-');
             file = path.join(buildpath, base);
             if (path.extname(file) !== '.js') {
                 file += '.js';
@@ -596,7 +597,9 @@ Cmd.prototype.processResources = function() {
 
             cmd.products.push([resource, file]);
         });
+
         cmd.logConfigEntries();
+
         return Promise.resolve();
     }
 
