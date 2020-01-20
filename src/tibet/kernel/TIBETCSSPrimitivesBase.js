@@ -715,13 +715,23 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
 
                     if (TP.notEmpty(locationValue)) {
 
-                        //  Compute the value for the URL in the url(...)
-                        //  property by joining it with the 'collection
-                        //  location' for the stylesheet it was found in.
-                        importedStyleLocation =
-                                    TP.uriJoinPaths(
-                                        inlinedCollectionLoc,
-                                        locationValue);
+                        //  If the url is absolute and starts with a '/'
+                        //  (absolute urls can also start with a scheme), then
+                        //  it's a 'root relative path'. Expand it after
+                        //  prepending a '~app' onto the front of it.
+                        if (TP.uriIsAbsolute(locationValue) &&
+                            locationValue.startsWith('/')) {
+                            importedStyleLocation =
+                                TP.uriExpandPath('~app' + locationValue);
+                        } else {
+                            //  Compute the value for the URL in the url(...)
+                            //  property by joining it with the 'collection
+                            //  location' for the stylesheet it was found in.
+                            importedStyleLocation =
+                                        TP.uriJoinPaths(
+                                            inlinedCollectionLoc,
+                                            locationValue);
+                        }
                     }
 
                     //  Return the String that must exactly replace what the

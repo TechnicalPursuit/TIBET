@@ -12643,7 +12643,13 @@ function(aRequest) {
             function(attrName) {
 
                 var attrVal,
-                    newVal;
+
+                    hadScheme,
+
+                    newVal,
+
+                    root,
+                    base;
 
                 attrVal = TP.elementGetAttribute(elem, attrName, true);
 
@@ -12654,7 +12660,27 @@ function(aRequest) {
                 //  If its an absolute URI, check to see if it needs to be
                 //  rewritten.
                 if (TP.uriIsAbsolute(attrVal)) {
+
+                    //  If the attribute value already has a scheme, that will
+                    //  affect whether we check after we rewrite it to see if
+                    //  it needs to be prepended with '~app'
+                    hadScheme = TP.regex.HAS_SCHEME.test(attrVal);
+
+                    //  Use the URI map to rewrite the URL.
                     newVal = TP.uri.URI.rewrite(attrVal).getLocation();
+
+                    //  Grab the rewritten URI's root (i.e. scheme + separator)
+                    //  and base (the rest after scheme + separator).
+                    root = TP.uriRoot(newVal);
+                    base = newVal.slice(root.getSize());
+
+                    //  If the URI didn't have a scheme before it was rewritten
+                    //  and it's base is exactly the same as the original value,
+                    //  then it's a 'root relative path'. Expand it after
+                    //  prepending a '~app' onto the front of it.
+                    if (!hadScheme && base === attrVal) {
+                        newVal = TP.uriExpandPath('~app' + base);
+                    }
 
                     if (newVal !== attrVal) {
                         TP.elementSetAttribute(elem,
