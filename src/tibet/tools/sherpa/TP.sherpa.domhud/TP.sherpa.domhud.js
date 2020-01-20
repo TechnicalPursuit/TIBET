@@ -810,6 +810,12 @@ function(enterSelection) {
                 if (d[1] !== 'spacer') {
                     return d[0];
                 }
+            }).attr(
+            'sherpa:connector-accept',
+            function(d) {
+                if (d[3] === true) {
+                    return 'signalsource';
+                }
             }).text(
             function(d) {
                 if (d[1] !== 'spacer') {
@@ -942,6 +948,12 @@ function(updateSelection) {
             function(d) {
                 if (d[1] !== 'spacer') {
                     return d[0];
+                }
+            }).attr(
+            'sherpa:connector-accept',
+            function(d) {
+                if (d[3] === true) {
+                    return 'signalsource';
                 }
             }).text(
             function(d) {
@@ -1537,6 +1549,70 @@ function(aSignal) {
     origin: 'DOMInfo_Tile'
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('SherpaConnectCompleted',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaConnectCompleted
+     * @summary Handles when the Sherpa connector has completed a connection to
+     *     an element.
+     * @param {TP.sig.SherpaConnectCompleted} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.domhud} The receiver.
+     */
+
+    var targetElem,
+
+        peerID,
+        peerElem,
+        peerLocalID,
+
+        targetType,
+
+        connector;
+
+    targetElem = aSignal.getTarget();
+    if (!TP.isElement(targetElem)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  The peerID will contain the ID of the element that the lozenge is
+    //  representing.
+    peerID = TP.elementGetAttribute(targetElem, 'peer', true);
+    peerElem = TP.nodeGetElementById(TP.sys.uidoc(true), peerID, true);
+
+    if (!TP.isElement(peerElem)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  Grab the local ID of the peer element - we'll use this as the initial
+    //  signal origin.
+    peerLocalID = TP.lid(peerElem);
+
+    //  Resolve the type from the type name that will be at the second position
+    //  in the Array.
+    targetType = TP.wrap(peerElem).getType();
+
+    //  Turn off 'autohiding' the connector - we'll hide it when the assistant
+    //  is done. Note that this is reset to 'true' every time the connector is
+    //  hidden.
+    connector = TP.byId('SherpaConnector', this.getNativeDocument());
+    connector.set('autohideConnector', false);
+
+    //  Show the assistant.
+    TP.sherpa.signalConnectionAssistant.showAssistant(
+                TP.hc('sourceTPElement', aSignal.at('sourceElement'),
+                        'destinationTarget', targetType,
+                        'signalOrigin', peerLocalID,
+                        'signalPolicy', TP.RESPONDER_FIRING));
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.domhud.Inst.defineHandler('ShowContextMenu',
@@ -1680,12 +1756,14 @@ function(shouldObserve) {
                                 'TP.sig.DOMDNDTargetOut'));
 
         this.observe(TP.ANY, 'TP.sig.DOMDNDCompleted');
+        this.observe(this, 'TP.sig.SherpaConnectCompleted');
     } else {
         this.ignore(this.get('listcontent'),
                         TP.ac('TP.sig.DOMDNDTargetOver',
                                 'TP.sig.DOMDNDTargetOut'));
 
         this.ignore(TP.ANY, 'TP.sig.DOMDNDCompleted');
+        this.ignore(this, 'TP.sig.SherpaConnectCompleted');
     }
 
     return this;
