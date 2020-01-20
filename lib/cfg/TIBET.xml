@@ -104,6 +104,9 @@
     <config ref="contributor"/>
 </config>
 
+<config id="resources" if="boot.phase_one">
+</config>
+
 <config id="inlined" if="boot.phase_one boot.inlined">
     <!-- maintained by tibet resources command -->
 
