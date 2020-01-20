@@ -607,10 +607,32 @@ Cmd.prototype.processResources = function() {
     //  We have a filtered list, the challenge now is to produce promises
     //  so we can manage async operations like compiling LESS files etc.
     this.promises = this.filtered.map(function(resource) {
-        var fullpath;
+        var shouldInline,
+            shouldProcess,
+            fullpath;
 
         fullpath = CLI.expandPath(resource, true);
-            cmd.debug('Building ' + fullpath);
+
+        //  Detect whether the resource should be inlined.
+        shouldInline = Cmd.INLINED_RESOURCES.some(function(regex) {
+            return regex.test(fullpath);
+        });
+
+        //  Detect whether the resource needs processing (i.e. SASS that needs
+        //  to be converted to CSS).
+        shouldProcess = Cmd.NEEDS_PROCESSING.some(function(regex) {
+            return regex.test(fullpath);
+        });
+
+        //  If the resource shouldn't be inlined *and* isn't one that is
+        //  processed, then make an entry with just the virtualized resource
+        //  path itself and return a reflected, resolved Promise.
+        if (!shouldInline && !shouldProcess) {
+            cmd.products.push([resource, resource]);
+            return Promise.resolve().reflect();
+        }
+
+        cmd.debug('Building ' + fullpath);
 
         return new Promise(function(resolve, reject) {
             var data,
@@ -655,7 +677,9 @@ Cmd.prototype.processResources = function() {
                 content = 'TP.uc(\'' + resource + '\').setContent(\n';
                 content += CLI.quoted(data);
                 content += '\n);';
+
                 fs.writeFileSync(file, content);
+
                 return resolve();
             }
         }).reflect();
