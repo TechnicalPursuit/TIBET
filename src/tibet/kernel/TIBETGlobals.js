@@ -3131,7 +3131,7 @@ TP.regex.CSS_CLIP_RECT = /rect\s*\((\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*\)/;
 TP.regex.CSS_IMPORT_RULE = /@import\s*(url\()?['"]?(.*?)['"]?(\))?;/g;
 
 //  The URL value of the property can be found in group 2. (needs reset)
-TP.regex.CSS_URL_PROPERTY = /:\s+(url\(){1}['"]?([^)]*?)['"]?(\)){1};/g;
+TP.regex.CSS_URL_PROPERTY = /:\s+(url\(){1}['"]?([^)]*?)['"]?(\)){1}/g;
 
 //  The URL value of the property can be found in group 2. (needs reset)
 TP.regex.CSS_URL_VALUE = /(url\(){1}['"]?([^)]*?)['"]?(\)){1}/g;
