@@ -587,7 +587,7 @@ Cmd.prototype.processResources = function() {
                 res = res.replace(pair[0], '.' + pair[1]);
             });
 
-            //base = res.slice(res.indexOf(path.sep) + 1).replace(
+            // base = res.slice(res.indexOf(path.sep) + 1).replace(
             //    /\//g, '-');
             base = resource.replace(/^~/, '').replace(/\//g, '-');
             file = path.join(buildpath, base);
