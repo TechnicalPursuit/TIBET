@@ -1057,7 +1057,12 @@ Cmd.prototype.updatePackage = function() {
         pkgNode,
         cfgNode,
         condAttr,
-        cond;
+        cond,
+        mainName,
+        mainPkg,
+        mainNode,
+        version,
+        newVersion;
 
     cmd = this;
 
@@ -1093,6 +1098,25 @@ Cmd.prototype.updatePackage = function() {
     //  Ensure we have the right phase (in case we built the node)
     if (CLI.inProject()) {
         cond = 'boot.phase_two';
+
+        if (this.options.build) {
+            mainName = path.join('~app_cfg', 'main.xml');
+            mainPkg = new Package({
+                package: mainName,
+                config: 'production'
+            });
+            mainNode = cmd.readPackageNode(mainName);
+
+            version = mainNode.getAttribute('version');
+            newVersion = this.package.getcfg('project.version') ||
+                this.package.getcfg('npm.version');
+
+            if (version !== newVersion) {
+                mainNode.setAttribute('version', newVersion);
+                cmd.writePackageNode(mainName, mainNode);
+            }
+        }
+
     } else if (CLI.inLibrary()) {
         cond = 'boot.phase_one';
     }
