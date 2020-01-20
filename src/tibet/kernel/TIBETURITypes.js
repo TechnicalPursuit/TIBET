@@ -10377,15 +10377,16 @@ function(aURI, aRequest) {
 
     //  At least one rewrite property so process them, updating any named
     //  portions in the parts list with the rewrite value.
-    rewrites.forEach(function(key) {
-        var slot,
-            value;
+    rewrites.forEach(
+        function(key) {
+            var slot,
+                value;
 
-        slot = key.slice(key.lastIndexOf('.') + 1);
-        value = TP.sys.cfg(key);
+            slot = key.slice(key.lastIndexOf('.') + 1);
+            value = TP.sys.cfg(key);
 
-        parts.atPut(slot, value);
-    });
+            parts.atPut(slot, value);
+        });
 
     //  Build a new URI using the updated parts.
     newuri = TP.uc(parts);
