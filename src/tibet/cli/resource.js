@@ -80,7 +80,7 @@ Cmd.CSS_IMPORT_RULE = /@import\s*(url\()?['"]?(.*?)['"]?(\))?;/g;
  * List of regular expressions used to filter out "source code" from inlining.
  * @type {Array.<RegExp>}
  */
-Cmd.RESOURCE_EXCLUDES = [
+Cmd.NEEDS_PROCESSING = [
     /\.less$/,
     /\.sass$/,
     /\.scss$/,
@@ -1189,8 +1189,9 @@ Cmd.prototype.updatePackage = function() {
         file = pair[1];
         value = CLI.getVirtualPath(file);
 
-        //  Don't include "source code" files as inlined resources...no point.
-        exclude = Cmd.RESOURCE_EXCLUDES.some(function(regex) {
+        //  Don't include "source code" files that need processing as inlined
+        //  resources...no point.
+        exclude = Cmd.NEEDS_PROCESSING.some(function(regex) {
             //  NOTE we test output, not original file path here so we don't
             //  filter LESS that turned into CSS etc.
             return regex.test(pair[1]);
