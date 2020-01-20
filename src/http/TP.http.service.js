@@ -77,6 +77,24 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.http.service.Type.defineMethod('tagResolve',
+function(aRequest) {
+
+    /**
+     * @method tagResolve
+     * @summary Resolves the receiver's content. This includes resolving XML
+     *     Base URIs and virtual URIs that may occur on the receiver's
+     *     attributes.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    //  We return here because we *don't* want our 'href' attribute rewritten.
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
