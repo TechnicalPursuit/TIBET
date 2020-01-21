@@ -23,7 +23,14 @@
             make.sh.mkdir(fullpath);
         }
 
-        make.chain('_rollup_service_worker', '_rollup_loader', 'sync_dna_styles', 'sync_service_workers', '_lint', 'clean', 'build_tibet').then(resolve, reject);
+        make.chain('_rollup_service_worker',
+                    '_rollup_loader',
+                    'sync_dna_styles',
+                    'sync_service_workers',
+                    '_lint',
+                    'clean',
+                    'build_tibet'
+        ).then(resolve, reject);
     };
 
 }());
