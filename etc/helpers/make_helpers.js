@@ -283,7 +283,7 @@ helpers.resource_build = function(make, options) {
             fs.writeFileSync(
                     file, CLI.beautify(JSON.stringify(CLI.config.npm)));
         } catch (e) {
-            make.error('Error writing file ' + file + ': ' + e.message);
+            make.error('Error writing package.json file: ' + e.message);
             return;
         }
     }
