@@ -69,7 +69,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet start [--env <name>] [<tds options>]';
+Cmd.prototype.USAGE = 'tibet start [--env <name>] [<options>]';
 
 
 //  ---
@@ -108,28 +108,27 @@ Cmd.prototype.execute = function() {
     // Make sure we work from the launch (and hence server.js) location.
     process.chdir(CLI.getAppHead());
 
+    //  If we see electron.js delegate to the electron command....
+    if (sh.test('-f', 'electron.js')) {
+        msg = 'Found electron.js...\nRunning \'tibet electron\'...';
+        cmd.system(msg);
+
+        args = process.argv.slice(3);
+        return CLI.runCommand('electron' +
+            (args ? ' ' + args.join(' ') : ''),
+            path.join(__dirname, 'electron.js'));
+    }
+
+    //  If there's no server.js test to see if Electron is available.
     if (!sh.test('-f', 'server.js')) {
         msg = 'No server.js found...';
         cmd.warn(msg);
 
-        //  If there's no server.js test to see if Electron is available.
+        url = CLI.expandPath(CLI.getcfg('project.start_page'));
+        msg = 'Trying project.start_page via \'open\': ' + url;
+        cmd.system(msg);
 
-        //  If we see electron.js delegate to the electron command....
-        if (sh.test('-f', 'electron.js')) {
-            msg = 'Found electron.js...\nRunning \'tibet electron\'...';
-            cmd.system(msg);
-
-            args = process.argv.slice(3);
-            return CLI.runCommand('electron' +
-                (args ? ' ' + args.join(' ') : ''),
-                path.join(__dirname, 'electron.js'));
-        } else {
-            url = CLI.expandPath(CLI.getcfg('project.start_page'));
-            msg = 'Trying project.start_page via \'open\': ' + url;
-            cmd.system(msg);
-
-            server = child.spawn('open', [url]);
-        }
+        server = child.spawn('open', [url]);
 
     } else {
 
