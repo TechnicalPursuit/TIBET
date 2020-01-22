@@ -19,11 +19,7 @@
 
 var CLI,
     Cmd,
-    TDS,
     nodecli;
-
-//  Bring in the TDS code so we can reference command line options.
-TDS = require('../../../tds/tds_base');
 
 CLI = require('./_cli');
 nodecli = require('shelljs-nodecli');
@@ -64,8 +60,8 @@ Cmd.NAME = 'electron';
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     CLI.blend({
         boolean: ['debugger', 'devtools', 'empty']
-    }, TDS.PARSE_OPTIONS),       //  we use the TDS's list here so
-    Cmd.Parent.prototype.PARSE_OPTIONS);    //  we create a 'copy' first.
+    }, CLI.PARSE_OPTIONS),
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 
 /**
  * The command usage string.
@@ -115,10 +111,9 @@ Cmd.prototype.execute = function() {
 
     args = this.getArgv();
 
-    //  If we're coming from 'tibet start' remove the 'start' arg now.
+    //  If we're coming from 'tibet start' adjust to 'tibet electron'
     if (args && args[0] === 'start') {
-        args.shift();
-        args.unshift('electron');
+        args[0] = 'electron';
     }
 
     //  If our TIBET-style debugger flag is set push on inspection arguments.

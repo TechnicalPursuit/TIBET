@@ -11597,8 +11597,6 @@ TP.boot.configureAndPopulateCaches = function() {
 
                     promise,
 
-                    foundDeveloperFiles,
-
                     libOutOfDate,
                     appOutOfDate,
 

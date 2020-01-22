@@ -1,51 +1,100 @@
+//  ========================================================================
+/**
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     privacy waivers if you must keep your TIBET-based source code private.
+ * @overview The main electron application file for a TIBET-based project.
+ *     This file handles command line argument and package configuration to
+ *     support and manage the Electron main process. The Electron renderer
+ *     process ends up running the TIBET client (including Sherpa et. al.).
+ */
+//  ========================================================================
+
+/* eslint indent:0 no-console:0 */
+
+(function() {
+
+'use strict';
+
 const electron = require('electron'),
     sh = require('shelljs'),
-    app = electron.app,    // Module to control application life.
+    minimist = require('minimist'),
+
+    CLI = require('./TIBET-INF/tibet/src/tibet/cli/_cli'),
+    Logger = require('./TIBET-INF/tibet/etc/common/tibet_logger'),
+    Package = require('./TIBET-INF/tibet/etc/common/tibet_package.js'),
+
+    app = electron.app, // Module to control application life.
     BrowserWindow = electron.BrowserWindow, // Module to create browser window.
-    Package = require('./TIBET-INF/tibet/etc/common/tibet_package.js');
+    PARSE_OPTIONS = CLI.PARSE_OPTIONS;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow,
+let configure,
     createWindow,
-    builddir,
-    package,
-    fileUrl,
-    paramStr,
+    mainWindow,
+    logger,
+    options,
+    pkg,
     json,
-    profile,
-    electronParams;
+    electronOpts;
 
-createWindow = function() {
-    // Create the browser window.
-    mainWindow = new BrowserWindow({
-        width: 1024,
-        height: 768
-    });
+//  ---
+//  Main Functions
+//  ---
 
-    package = new Package();
+configure = function() {
+
+    //  Slice off first "arg" since it's the Electron executable.
+    options = minimist(process.argv.slice(1), PARSE_OPTIONS) || {_: []};
+    pkg = new Package(options);
+
+    //  Support logging using standard TIBET logging infrastructure.
+    options.scheme = process.env.TIBET_CLI_SCHEME ||
+        pkg.getcfg('cli.color.scheme') || 'ttychalk';
+    options.theme = process.env.TIBET_CLI_THEME ||
+        pkg.getcfg('cli.color.theme') || 'default';
+
+    //  Note these are globals so we can share across routines.
+    logger = new Logger(options);
 
     //  Load JSON to acquire any params for the file URL we'll try to launch.
     json = require('./tibet.json');
-    electronParams = json.electron || {};
+    electronOpts = json.electron || {};
+};
+
+/**
+ * Primary function used to launch Electron. Marshals command line arguments as
+ * well as any tibet.json "electron" options to configure the main window and
+ * load the targeted URI.
+ */
+createWindow = function() {
+    let builddir,
+        fileUrl,
+        paramStr,
+        profile;
+
+    if (!pkg) {
+        configure();
+    }
 
     //  Verify build directory and add a development profile if not found.
-    builddir = package.expandPath('~app_build');
+    builddir = pkg.expandPath('~app_build');
     if (!sh.test('-d', builddir)) {
 
         //  Can't load a production profile...nothing's built.
-        /* eslint-disable no-console */
-        console.warn('No build directory. Must use a development boot.profile.');
-        console.warn('Run `tibet build` to create your app\'s production build.');
+        logger.warn('No build directory. Must use a development boot.profile.');
+        logger.warn('Run `tibet build` to create your app\'s production build.');
 
         //  Don't replace existing...but ensure development as a base default.
-        profile = electronParams['boot.profile'];
+        profile = electronOpts['boot.profile'];
         if (!profile) {
-            electronParams['boot.profile'] = 'development@developer';
-            console.warn('No boot.profile. Forcing boot.profile ' +
-                electronParams['boot.profile']);
+            electronOpts['boot.profile'] = 'development@developer';
+            logger.warn('No boot.profile. Forcing boot.profile ' +
+                electronOpts['boot.profile']);
         }
-        /* eslint-enable no-console */
     }
 
     // and load the index.html of the app.
@@ -53,13 +102,19 @@ createWindow = function() {
 
     //  Loop over params and add them to the URL
     paramStr = '';
-    Object.keys(electronParams).forEach(function(item) {
-        paramStr += item + '=' + electronParams[item] + '&';
+    Object.keys(electronOpts).forEach(function(item) {
+        paramStr += item + '=' + electronOpts[item] + '&';
     });
 
     if (paramStr.length > 0) {
         fileUrl += '#?' + paramStr.slice(0, -1);
     }
+
+    // Create the browser window.
+    mainWindow = new BrowserWindow({
+        width: 1024,
+        height: 768
+    });
 
     mainWindow.loadURL(fileUrl);
 
@@ -70,6 +125,15 @@ createWindow = function() {
         mainWindow.webContents.openDevTools();
     }
 
+    //  Log client console to main console...
+    mainWindow.webContents.on('console-message',
+    function(event, level, message, line, sourceId) {
+        //  Use process.stdout here to avoid extra newlines in output stream.
+        if (options.verbose) {
+            process.stdout.write(message);
+        }
+    });
+
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {
         // Dereference the window object, usually you would store windows
@@ -79,12 +143,48 @@ createWindow = function() {
     });
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+
+//  ---
+//  Event Handlers
+//  ---
+
+process.on('uncaughtException', function(err) {
+    var str,
+        code;
+
+    code = -1;
+
+    switch (typeof err) {
+        case 'object':
+            str = err.message + ' (' + err.line + ')';
+            code = err.code;
+            break;
+        default:
+            str = err;
+            break;
+    }
+
+    console.error(str);
+    if (app) {
+        app.exit(code);
+    } else {
+        /* eslint-disable no-process-exit */
+        process.exit(code);
+        /* eslint-enable no-process-exit */
+    }
+});
+
+/**
+ * This method will be called when Electron has finished initialization and is
+ * ready to create browser windows. Some APIs can only be used after this event
+ * occurs.
+ */
 app.on('ready', createWindow);
 
-// Quit when all windows are closed.
+
+/**
+ * Quit when all windows are closed.
+ */
 app.on('window-all-closed', function() {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
@@ -93,7 +193,12 @@ app.on('window-all-closed', function() {
     }
 });
 
+
+/**
+ *
+ */
 app.on('activate', function() {
+
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
@@ -101,5 +206,4 @@ app.on('activate', function() {
     }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+}());
