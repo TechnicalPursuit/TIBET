@@ -5432,8 +5432,6 @@ function(regenerateIfNecessary) {
         repeatWholeResult,
         repeatResult,
 
-        repeatItem,
-
         boundElems,
 
         allRefreshedElements;
@@ -5463,16 +5461,6 @@ function(regenerateIfNecessary) {
 
     //  Make sure that repeatResult is a collection.
     if (TP.isCollection(repeatResult)) {
-
-        //  If there's only one item in the result, then see if it's a Hash or
-        //  POJO. If so, we get its key/value entries.
-        if (repeatResult.getSize() === 1) {
-            repeatItem = repeatResult.first();
-
-            if (TP.isPlainObject(repeatItem) || TP.isHash(repeatItem)) {
-                repeatResult = TP.entries(repeatItem);
-            }
-        }
 
         //  If this flag is true, then go ahead and regenerate (if necessary).
         //  Note how we pass any empty Array in here, since we're not adding or
