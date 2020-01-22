@@ -4382,6 +4382,8 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
 
         ownerElem,
 
+        str,
+
         isScopingElement,
 
         valueAndPath,
@@ -4704,23 +4706,36 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
             attrName = boundAttr.localName;
             attrVal = boundAttr.value;
 
-            //  If the attribute value contains a URI scheme, but it's primary
-            //  location doesn't match the primary location that changed and
-            //  that we're refreshing from (which may happen because we're
-            //  querying from the *document* down), then just move on.
-            if (TP.regex.ALL_SCHEMES.test(attrVal) &&
-                !primaryLocMatcher.test(attrVal)) {
-                continue;
-            }
-
-            ownerElem = boundAttr.ownerElement;
-            ownerTPElem = TP.wrap(ownerElem);
-
-            //  Are we processing a nested scope?
-
             /* eslint-disable no-extra-parens */
             isScopingElement = (attrName === 'scope' || attrName === 'repeat');
             /* eslint-enable no-extra-parens */
+
+            ownerElem = boundAttr.ownerElement;
+
+            //  If the attribute value contains a URI scheme, but it's primary
+            //  location doesn't match the primary location that changed and
+            //  that we're refreshing from (which may happen because we're
+            //  querying from the *document* down), then do a further check to
+            //  see if the element is scoping element. If it's not, just
+            //  continue and move on. If it is and the primary location being
+            //  refreshed does *not* occur in its content, then again just move
+            //  on. Otherwise, it will be an absolute URI that exists under a
+            //  different scope - but one we need to refresh anyway.
+            if (TP.regex.ALL_SCHEMES.test(attrVal) &&
+                !primaryLocMatcher.test(attrVal)) {
+                if (isScopingElement) {
+                    str = TP.str(ownerElem);
+                    if (!primaryLocMatcher.test(str)) {
+                        continue;
+                    }
+                } else {
+                    continue;
+                }
+            }
+
+            ownerTPElem = TP.wrap(ownerElem);
+
+            //  Are we processing a nested scope?
 
             if (isScopingElement) {
 
