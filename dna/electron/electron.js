@@ -23,7 +23,6 @@ const electron = require('electron'),
     minimist = require('minimist'),
 
     CLI = require('./TIBET-INF/tibet/src/tibet/cli/_cli'),
-    Color = require('./TIBET-INF/tibet/etc/common/tibet_color'),
     Logger = require('./TIBET-INF/tibet/etc/common/tibet_logger'),
     Package = require('./TIBET-INF/tibet/etc/common/tibet_package.js'),
 
@@ -36,8 +35,6 @@ const electron = require('electron'),
 let configure,
     createWindow,
     mainWindow,
-    color,
-    colorize,
     logger,
     options,
     pkg,
@@ -61,9 +58,7 @@ configure = function() {
         pkg.getcfg('cli.color.theme') || 'default';
 
     //  Note these are globals so we can share across routines.
-    color = new Color(options);
-    colorize = color.colorize.bind(color);
-    logger = new Logger(options)
+    logger = new Logger(options);
 
     //  Load JSON to acquire any params for the file URL we'll try to launch.
     json = require('./tibet.json');
@@ -155,25 +150,27 @@ createWindow = function() {
 
 process.on('uncaughtException', function(err) {
     var str,
-        code = -1;
+        code;
+
+    code = -1;
 
     switch (typeof err) {
         case 'object':
-            console.log('object...');
             str = err.message + ' (' + err.line + ')';
             code = err.code;
             break;
         default:
-            console.log('string...');
             str = err;
             break;
     }
 
-    console.error(err.message || err);
+    console.error(str);
     if (app) {
         app.exit(code);
     } else {
+        /* eslint-disable no-process-exit */
         process.exit(code);
+        /* eslint-enable no-process-exit */
     }
 });
 

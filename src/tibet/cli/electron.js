@@ -19,11 +19,7 @@
 
 var CLI,
     Cmd,
-    TDS,
     nodecli;
-
-//  Bring in the TDS code so we can reference command line options.
-TDS = require('../../../tds/tds_base');
 
 CLI = require('./_cli');
 nodecli = require('shelljs-nodecli');

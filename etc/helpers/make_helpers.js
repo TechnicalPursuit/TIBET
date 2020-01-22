@@ -272,7 +272,7 @@ helpers.resource_build = function(make, options) {
 
         versionNums = CLI.config.npm.version.split('.');
         lastIndex = versionNums.length - 1;
-        versionNums[lastIndex] = parseInt(versionNums[lastIndex]) + 1;
+        versionNums[lastIndex] = parseInt(versionNums[lastIndex], 10) + 1;
         CLI.config.npm.version = versionNums.join('.');
 
         file = CLI.expandPath('package.json');
