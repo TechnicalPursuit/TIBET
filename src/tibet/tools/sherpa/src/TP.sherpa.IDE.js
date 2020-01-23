@@ -5562,7 +5562,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     //  that are not under the visual app element. Note that we cannot do this
     //  for deleted nodes, since they're no longer part of the hierarchy and
     //  this mechanism will always result in an empty Array.
-    if (operation !== TP.DELETE) {
+    if (operation !== TP.DELETE || isAttrChange) {
         appDescendantsToProcess = mutatedNodes.filter(
             function(anElem) {
                 return visualAppElem.contains(anElem);
