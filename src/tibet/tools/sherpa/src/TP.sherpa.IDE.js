@@ -6001,6 +6001,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
         sourceCurrentNode = sourceMatchingNodes.at(i);
 
+        if (isAttrChange && TP.isTextNode(sourceCurrentNode)) {
+            continue;
+        }
+
         if (operation === TP.CREATE) {
 
             if (isAttrChange) {
