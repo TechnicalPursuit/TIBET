@@ -5970,6 +5970,10 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             continue;
         }
 
+        if (isAttrChange && TP.notValid(sourceCurrentNode)) {
+            continue;
+        }
+
         //  NB: This might push 'null'... and for non-attribute TP.CREATE
         //  operations, "that's ok" (since it will basically become an 'append'
         //  below).
