@@ -5571,6 +5571,12 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         appDescendantsToProcess = mutatedNodes;
     }
 
+    //  If there are no mutated nodes to process, then exit here. Otherwise,
+    //  logic below will fail.
+    if (TP.isEmpty(appDescendantsToProcess)) {
+        return this;
+    }
+
     //  Search the hierarchy for the nearest custom tag (using the same search
     //  criteria as above) to set as the 'visual generator' element.
     visualGeneratorElem = mutationAncestor;
@@ -5591,12 +5597,6 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         return this.raise(
                     'InvalidObject',
                     'Visual generator node needs node position');
-    }
-
-    //  If there are no mutated nodes to process, then exit here. Otherwise,
-    //  logic below will fail.
-    if (TP.isEmpty(appDescendantsToProcess)) {
-        return this;
     }
 
     leni = appDescendantsToProcess.getSize();
