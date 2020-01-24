@@ -40,6 +40,11 @@ function() {
 TP.sherpa.AWSSubInspectorSources.Inst.defineAttribute('$authInfoRequest');
 TP.sherpa.AWSSubInspectorSources.Inst.defineAttribute('$showAuthContent');
 
+TP.sherpa.AWSSubInspectorSources.Inst.defineAttribute('s3BucketName');
+TP.sherpa.AWSSubInspectorSources.Inst.defineAttribute('s3ObjectName');
+
+TP.sherpa.AWSSubInspectorSources.Inst.defineAttribute('lambdaFunctionName');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -70,6 +75,18 @@ function() {
             'S3AllBuckets',
             TP.ac('Remote', 'AWS', 'S3', 'All Buckets'));
 
+    //  What methods will be resolved and queried when a particular bucket is
+    //  *selected*.
+    this.registerMethodSuffixForPath(
+            'S3BucketContent',
+            TP.ac('Remote', 'AWS', 'S3', 'All Buckets', '\.+'));
+
+    //  What methods will be resolved and queried when the object in a
+    //  particular bucket is *selected*.
+    this.registerMethodSuffixForPath(
+            'S3ObjectContent',
+            TP.ac('Remote', 'AWS', 'S3', 'All Buckets', '\.+', '\.+'));
+
     //  Lambda
 
     //  What methods will be resolved and queried when 'Lambda' is *selected*.
@@ -82,6 +99,12 @@ function() {
     this.registerMethodSuffixForPath(
             'LambdaAllFunctions',
             TP.ac('Remote', 'AWS', 'Lambda', 'All Functions'));
+
+    //  What methods will be resolved and queried when a particular Function is
+    //  *selected*.
+    this.registerMethodSuffixForPath(
+            'LambdaFunctionInfo',
+            TP.ac('Remote', 'AWS', 'Lambda', 'All Functions', '\.+'));
 
     /* eslint-enable no-useless-escape */
 
@@ -331,6 +354,26 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspectorForS3BucketContent',
+function(options) {
+
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspectorForS3ObjectContent',
+function(options) {
+
+    options.atPut(TP.ATTR + '_childtype', 'html:div');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspectorForLambdaDesignation',
 function(options) {
 
@@ -345,6 +388,16 @@ TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspectorForLamb
 function(options) {
 
     options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getConfigForInspectorForLambdaFunctionInfo',
+function(options) {
+
+    options.atPut(TP.ATTR + '_childtype', 'html:div');
 
     return options;
 });
@@ -383,6 +436,37 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getContentForInspectorForS3BucketContent',
+function(options) {
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem(
+            '<xctrls:list bind:in="{data: ' +
+            dataURI.asString() +
+            '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getContentForInspectorForS3ObjectContent',
+function(options) {
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.xhtmlnode(
+            '<div class="cm-s-elegant scrollable wrapped noselect readonly"' +
+                ' bind:in="{value: ' +
+                dataURI.asString() +
+            '}"/>');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getContentForInspectorForLambdaDesignation',
 function(options) {
 
@@ -409,6 +493,22 @@ function(options) {
             '<xctrls:list bind:in="{data: ' +
             dataURI.asString() +
             '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getContentForInspectorForLambdaFunctionInfo',
+function(options) {
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.xhtmlnode(
+            '<div class="cm-s-elegant scrollable wrapped noselect readonly"' +
+                ' bind:in="{value: ' +
+                dataURI.asString() +
+            '}"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -464,6 +564,101 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getDataForInspectorForS3BucketContent',
+function(options) {
+
+    var dataURI,
+
+        requestParams,
+        s3Request;
+
+    if (TP.notEmpty(options.at('targetAspect'))) {
+        this.set('s3BucketName', options.at('targetAspect'));
+    }
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    requestParams = TP.hc(
+                        'action', 'listObjects',
+                        'params',
+                            TP.hc('remoteService', 'S3',
+                                    'Bucket', this.get('s3BucketName')));
+
+    s3Request = TP.sig.AWSPassthroughRequest.construct(requestParams);
+    s3Request.defineHandler('RequestSucceeded',
+                            function(aResponse) {
+                                var result,
+                                    data;
+
+                                result = aResponse.getResult();
+                                data = result.at('Contents').collect(
+                                        function(aHash) {
+                                            return TP.ac(
+                                                    aHash.at('Key'),
+                                                    aHash.at('Key'));
+                                        });
+
+                                dataURI.setResource(data);
+                            });
+
+    s3Request.fire();
+
+    return TP.ac('Data Loading...');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getDataForInspectorForS3ObjectContent',
+function(options) {
+
+    var dataURI,
+
+        requestParams,
+
+        s3Request;
+
+    if (TP.notEmpty(options.at('targetAspect'))) {
+        this.set('s3ObjectName', options.at('targetAspect'));
+    }
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    requestParams = TP.hc(
+                        'action', 'getObject',
+                        'params',
+                            TP.hc('remoteService', 'S3',
+                                    'Bucket', this.get('s3BucketName'),
+                                    'Key', this.get('s3ObjectName')));
+
+    s3Request = TP.sig.AWSPassthroughRequest.construct(requestParams);
+    s3Request.defineHandler('RequestSucceeded',
+                            function(aResponse) {
+                                var result,
+
+                                    rawArray,
+                                    arrayBuffer,
+
+                                    decoder,
+                                    data;
+
+                                result = aResponse.getResult();
+
+                                rawArray = result.at('Body').at('data');
+                                arrayBuffer = new Uint8Array(rawArray);
+
+                                decoder = new TextDecoder('utf-8');
+                                data = decoder.decode(arrayBuffer);
+
+                                dataURI.setResource(data);
+                            });
+
+    s3Request.fire();
+
+    return TP.ac('Data Loading...');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getDataForInspectorForLambdaDesignation',
 function(options) {
 
@@ -502,6 +697,49 @@ function(options) {
                                                     aHash.at('FunctionName'),
                                                     aHash.at('FunctionName'));
                                         });
+
+                                dataURI.setResource(data);
+                            });
+
+    lambdaRequest.fire();
+
+    return TP.ac('Data Loading...');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getDataForInspectorForLambdaFunctionInfo',
+function(options) {
+
+    var dataURI,
+
+        requestParams,
+
+        lambdaRequest;
+
+    if (TP.notEmpty(options.at('targetAspect'))) {
+        this.set('lambdaFunctionName', options.at('targetAspect'));
+    }
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    requestParams = TP.hc(
+                'action', 'getFunction',
+                'params',
+                    TP.hc('remoteService', 'Lambda',
+                            'FunctionName', this.get('lambdaFunctionName')));
+
+    lambdaRequest = TP.sig.AWSPassthroughRequest.construct(requestParams);
+    lambdaRequest.defineHandler('RequestSucceeded',
+                            function(aResponse) {
+                                var result,
+
+                                    data;
+
+                                result = aResponse.getResult();
+
+                                data = TP.sherpa.pp.fromString(
+                                                result.asJSONSource());
 
                                 dataURI.setResource(data);
                             });
