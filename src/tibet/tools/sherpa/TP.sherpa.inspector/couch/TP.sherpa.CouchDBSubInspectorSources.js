@@ -699,7 +699,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getChildTypeForCanvasForDocumentContent',
 function(options) {
 
-    return 'uri/CouchDB/document';
+    return 'remote/CouchDB/document';
 });
 
 //  ------------------------------------------------------------------------
@@ -707,7 +707,7 @@ function(options) {
 TP.sherpa.CouchDBSubInspectorSources.Inst.defineMethod('getChildTypeForCanvasForViewContent',
 function(options) {
 
-    return 'uri/CouchDB/view';
+    return 'remote/CouchDB/view';
 });
 
 //  ------------------------------------------------------------------------

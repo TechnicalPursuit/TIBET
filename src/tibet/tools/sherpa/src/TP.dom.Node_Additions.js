@@ -2417,7 +2417,7 @@ function(insertionPointElement, insertionPosition) {
 
     switch (childType) {
 
-        case 'uri/CouchDB/document':
+        case 'remote/CouchDB/document':
 
             insertedCouchURI = inspector.getCurrentPropertyValueForTool(
                                         'data',
@@ -2434,7 +2434,7 @@ function(insertionPointElement, insertionPosition) {
 
             break;
 
-        case 'uri/CouchDB/view':
+        case 'remote/CouchDB/view':
 
             insertedCouchURI = inspector.getCurrentPropertyValueForTool(
                                         'data',
