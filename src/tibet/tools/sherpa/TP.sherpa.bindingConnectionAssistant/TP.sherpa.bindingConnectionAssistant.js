@@ -53,10 +53,13 @@ function(assistantData) {
      *          'destTPElement': The TP.core.ElementNode that the binding
      *          is being made to.
      *          'sourceURI': The source URI that the element is binding to.
-     *          'path': An array of path parts to the source data.
      *          'propInfo': A hash of property information (such as the type of
      *          property, etc.)
      *          'isLeaf': Whether or not the property was a 'leaf' property.
+     *          'forceManualScope': Whether or not the manual scope should be
+     *          forced (in which case a computed scope won't even be computed).
+     *          'useServiceTag': Whether or not the panel should use (or
+     *          generate) a service tag.
      * @returns {TP.meta.sherpa.bindingConnectionAssistant} The receiver.
      */
 
@@ -580,55 +583,73 @@ function(anObj) {
 
     //  ---
 
-    //  Look for service element that has either its remote or its local
-    //  (result) URI set to connectedURI.
-    serviceInfo = this.findServiceTag(destTPElement, connectedURI);
-    if (TP.notValid(serviceInfo)) {
-        //  We couldn't find a service element. Turn on the flag.
-        needsServiceTag = true;
+    //  If the caller wants us to use a service tag, then we need to do some
+    //  additional computation. Otherwise, things are easy - we're binding
+    //  directly to the URL.
+    if (TP.notFalse(anObj.at('useServiceTag'))) {
 
-        //  If we need a service tag, then we need to generate a local (result)
-        //  URN that we can use in the scope and put into the service tag's
-        //  'result' attribute.
-        newLocalLoc = TP.TIBET_URN_PREFIX +
-                        'uri' + TP.genID().replace('$', '_') +
-                        '_result';
+        //  Look for service element that has either its remote or its local
+        //  (result) URI set to connectedURI.
+        serviceInfo = this.findServiceTag(destTPElement, connectedURI);
+        if (TP.notValid(serviceInfo)) {
+            //  We couldn't find a service element. Turn on the flag.
+            needsServiceTag = true;
 
-        localURI = TP.uc(newLocalLoc);
+            //  If we need a service tag, then we need to generate a local
+            //  (result) URN that we can use in the scope and put into the
+            //  service tag's 'result' attribute.
+            newLocalLoc = TP.TIBET_URN_PREFIX +
+                            'uri' + TP.genID().replace('$', '_') +
+                            '_result';
 
-        //  Capture the connectedPrimaryURI as the 'remote' URI for the service
-        //  tag.
-        remoteURI = connectedPrimaryURI;
-    } else {
-        //  We have a service tag available that has either its local or remote
-        //  URI value set to our connected *primary* URI. Turn off the flag.
-        needsServiceTag = false;
+            localURI = TP.uc(newLocalLoc);
 
-        //  The remote URI is what the service tag defines.
-        remoteURI = TP.uc(serviceInfo.first().getAttribute('href'));
+            //  Capture the connectedPrimaryURI as the 'remote' URI for the
+            //  service tag.
+            remoteURI = connectedPrimaryURI;
+        } else {
+            //  We have a service tag available that has either its local or
+            //  remote URI value set to our connected *primary* URI. Turn off
+            //  the flag.
+            needsServiceTag = false;
 
-        if (serviceInfo.last() === 'local') {
-            //  Everything is fine - we're hooking up to the local (result) URI.
-        } else if (serviceInfo.last() === 'remote') {
-            //  Otherwise, we're hooking up to the remote URI. We need to get
-            //  the local (result) URI from the service tag and use that as our
-            //  'connected URI'.
-            localURI = TP.uc(serviceInfo.first().getAttribute('name'));
+            //  The remote URI is what the service tag defines.
+            remoteURI = TP.uc(serviceInfo.first().getAttribute('href'));
+
+            if (serviceInfo.last() === 'local') {
+                //  Everything is fine - we're hooking up to the local (result)
+                //  URI.
+            } else if (serviceInfo.last() === 'remote') {
+                //  Otherwise, we're hooking up to the remote URI. We need to
+                //  get the local (result) URI from the service tag and use that
+                //  as our 'connected URI'.
+                localURI = TP.uc(serviceInfo.first().getAttribute('name'));
+            }
         }
+
+        localPrimaryURI = localURI.getPrimaryURI();
+
+        //  ---
+
+        newBindingInfo.atPut('needsServiceTag', needsServiceTag);
+
+        //  We initially set the 'wantsServiceTag' property to what the system
+        //  determined around needing a service tag.
+        newBindingInfo.atPut('wantsServiceTag', TP.ac(needsServiceTag));
+
+        newBindingInfo.atPut('serviceTagRemoteURI', remoteURI.getLocation());
+        newBindingInfo.atPut('serviceTagLocalURI', localPrimaryURI.getLocation());
+
+    } else {
+        localURI = connectedPrimaryURI;
+        needsServiceTag = false;
+        newBindingInfo.atPut('needsServiceTag', false);
+
+        //  We initially set the 'wantsServiceTag' property to what the system
+        //  determined around needing a service tag.
+        newBindingInfo.atPut('wantsServiceTag', TP.ac(false));
+
     }
-
-    localPrimaryURI = localURI.getPrimaryURI();
-
-    //  ---
-
-    newBindingInfo.atPut('needsServiceTag', needsServiceTag);
-
-    //  We initially set the 'wantsServiceTag' property to what the system
-    //  determined around needing a service tag.
-    newBindingInfo.atPut('wantsServiceTag', needsServiceTag);
-
-    newBindingInfo.atPut('serviceTagRemoteURI', remoteURI.getLocation());
-    newBindingInfo.atPut('serviceTagLocalURI', localPrimaryURI.getLocation());
 
     //  ---
 
@@ -636,15 +657,19 @@ function(anObj) {
 
     expressions = TP.ac();
 
-    computedScope = destTPElement.computeCommonScope(
-                                    connectedURI, isLeaf, localURI);
-
-    newBindingInfo.atPut('manualScope', '');
-    newBindingInfo.atPut('computedScope', '');
+    if (TP.notFalse(anObj.at('forceManualScope'))) {
+        newBindingInfo.atPut('manualScope', connectedPrimaryURI.getLocation());
+        computedScope = null;
+    } else {
+        newBindingInfo.atPut('manualScope', '');
+        computedScope = destTPElement.computeCommonScope(
+                                        connectedURI, isLeaf, localURI);
+    }
 
     //  Couldn't compute a scope - just flip 'scopeType' to 'manual'
     if (TP.isEmpty(computedScope)) {
         newBindingInfo.atPut('scopeType', 'manual');
+        newBindingInfo.atPut('computedScope', '');
     } else {
         newBindingInfo.atPut('scopeType', 'computed');
         newBindingInfo.atPut('computedScope', computedScope);
@@ -659,34 +684,41 @@ function(anObj) {
 
     //  Compute possible expression values
 
-    scopeParts = TP.apc(connectedURI.getFragment()).getPathParts();
+    if (TP.notEmpty(connectedURI.getFragment())) {
 
-    //  JSONPath-only alert
-    if (scopeParts.first() === '$') {
-        scopeParts.shift();
-    }
+        scopeParts = TP.apc(connectedURI.getFragment()).getPathParts();
 
-    if (isLeaf) {
         //  JSONPath-only alert
-        scopePrefix = scopeParts.slice(0, -1).join('.');
+        if (scopeParts.first() === '$') {
+            scopeParts.shift();
+        }
+
+        if (isLeaf) {
+            //  JSONPath-only alert
+            scopePrefix = scopeParts.slice(0, -1).join('.');
+        } else {
+            //  JSONPath-only alert
+            scopePrefix = scopeParts.join('.');
+        }
+
+        exprs = propInfo.at(scopePrefix).at('exprs');
+
+        if (TP.notEmpty(exprs)) {
+            exprs = exprs.collect(
+                            function(part) {
+                                //  TODO: JSONPath-only alert - slicing the 1
+                                //  offset is the path separator length.
+                                return part.slice(part.indexOf(scopePrefix) +
+                                                    scopePrefix.getSize() +
+                                                    1);
+                            });
+        }
     } else {
-        //  JSONPath-only alert
-        scopePrefix = scopeParts.join('.');
+        //  If there is no fragment, then we assume a property of 'value'.
+        exprs = propInfo.at('value').at('exprs');
     }
 
-    exprs = propInfo.at(scopePrefix).at('exprs');
-
-    if (TP.notEmpty(exprs)) {
-        exprs = exprs.collect(
-                        function(part) {
-                            //  TODO: JSONPath-only alert - slicing the 1
-                            //  offset is the path separator length.
-                            return part.slice(part.indexOf(scopePrefix) +
-                                                scopePrefix.getSize() +
-                                                1);
-                        });
-        newBindingInfo.atPut('possibleExprs', exprs);
-    }
+    newBindingInfo.atPut('possibleExprs', exprs);
 
     //  Expressions
     newBindingInfo.atPut('expressions', expressions);
