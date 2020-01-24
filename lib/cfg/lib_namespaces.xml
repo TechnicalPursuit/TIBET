@@ -34,6 +34,8 @@
 
     <config ref="xctrls"/>
 
+    <config ref="salesforce"/>
+
     <config ref="svg" unless="ie"/>
     <config ref="xmpp"/>
     <config ref="xs"/>
@@ -149,6 +151,35 @@
 
 <config id="on">
     <script src="on/TP.on.XMLNS.js"/>
+</config>
+
+<config id="salesforce" basedir="~lib_src">
+
+    <script src="~lib_deps/jsforce-tpi.min.js"
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+
+    <script src="~lib_deps/jsforce-tpi.js"
+        unless="boot.minified" no-lint="no-lint" />
+
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('jsforce', window.jsforce);
+        ]]>
+    </script>
+
+    <script src="sf/TP.sf.XMLNS.js"/>
+    <script src="sf/TP.sf.service.js"/>
+
+    <script src="sf/services/TP.sf.SalesforceService.js"/>
+
+    <script src="sf/services/TP.sig.SalesforceAuthenticationRequest.js"/>
+    <script src="sf/services/TP.sig.SalesforceAuthenticationResponse.js"/>
+
+    <script src="sf/services/query/TP.sf.SalesforceQueryService.js"/>
+
+    <script src="sf/services/query/TP.sig.SalesforceQueryRequest.js"/>
+    <script src="sf/services/query/TP.sig.SalesforceQueryResponse.js"/>
+
 </config>
 
 <config id="svg">

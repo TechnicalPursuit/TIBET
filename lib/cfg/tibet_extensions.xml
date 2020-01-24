@@ -25,7 +25,6 @@
     <config ref="crypto"/>
     <config ref="text_processing"/>
     <config ref="react"/>
-    <config ref="salesforce"/>
 </config>
 
 <config id="content">
@@ -143,32 +142,6 @@
 <config id="react" basedir="~lib_src">
 
     <script src="./react/TP.dom.ReactElement.js"/>
-
-</config>
-
-<config id="salesforce" basedir="~lib_src">
-
-    <script src="~lib_deps/jsforce-tpi.min.js"
-        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
-
-    <script src="~lib_deps/jsforce-tpi.js"
-        unless="boot.minified" no-lint="no-lint" />
-
-    <script>
-        <![CDATA[
-        TP.registerExternalObject('jsforce', window.jsforce);
-        ]]>
-    </script>
-
-    <script src="./sf/services/TP.sf.SalesforceService.js"/>
-
-    <script src="./sf/services/TP.sig.SalesforceAuthenticationRequest.js"/>
-    <script src="./sf/services/TP.sig.SalesforceAuthenticationResponse.js"/>
-
-    <script src="./sf/services/query/TP.sf.SalesforceQueryService.js"/>
-
-    <script src="./sf/services/query/TP.sig.SalesforceQueryRequest.js"/>
-    <script src="./sf/services/query/TP.sig.SalesforceQueryResponse.js"/>
 
 </config>
 
