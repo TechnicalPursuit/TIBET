@@ -2558,9 +2558,10 @@ function(aValue) {
      *     selection.
      */
 
-    //  If the value is just true, then populate a selection hash with the word
-    //  'on' in it.
-    if (aValue === true) {
+    //  If the value is just true (and we use TP.ifTrue() to check it, since it
+    //  might be a Boolean object - i.e. a boxed value), then populate a
+    //  selection hash with the word 'on' in it.
+    if (TP.isTrue(aValue) === true) {
         return TP.hc('on', '');
     }
 
