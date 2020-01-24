@@ -858,6 +858,18 @@ function(enterSelection) {
                 if (d[3] === true) {
                     return 'signalsource';
                 }
+            }).attr(
+            'sherpa:connector-source',
+            function(d) {
+                if (d[3] === true) {
+                    return 'DOMHUD';
+                }
+            }).attr(
+            'sherpa:connector-vend',
+            function(d) {
+                if (d[3] === true) {
+                    return 'bindingsource';
+                }
             }).text(
             function(d) {
                 if (d[1] !== 'spacer') {
@@ -996,6 +1008,18 @@ function(updateSelection) {
             function(d) {
                 if (d[3] === true) {
                     return 'signalsource';
+                }
+            }).attr(
+            'sherpa:connector-source',
+            function(d) {
+                if (d[3] === true) {
+                    return 'DOMHUD';
+                }
+            }).attr(
+            'sherpa:connector-vend',
+            function(d) {
+                if (d[3] === true) {
+                    return 'bindingsource';
                 }
             }).text(
             function(d) {
