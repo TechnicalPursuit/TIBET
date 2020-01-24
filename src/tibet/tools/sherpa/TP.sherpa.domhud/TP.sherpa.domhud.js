@@ -322,6 +322,48 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.domhud.Inst.defineMethod('getConnectorData',
+function(aSourceTPElement) {
+
+    /**
+     * @method getConnectorData
+     * @summary Returns data for a connector dragging session. This is called by
+     *     the Sherpa infrastructure to supply data when the connector has
+     *     successfully connected and data about the connector source is needed.
+     * @description For this type, this method computes the peer element that
+     *     the supplied source element (a lozenge) is pointing to and forwards
+     *     the request for connector data to it (if it can respond)
+     * @param {TP.dom.ElementNode} aSourceTPElement The source element that the
+     *     connection was dragged from.
+     * @returns {TP.core.Hash|null} The data to be used for this connector
+     *     dragging session.
+     */
+
+    var peerID,
+        peerElem,
+        peerTPElem;
+
+    //  The peerID will contain the ID of the element that the lozenge is
+    //  representing.
+    peerID = aSourceTPElement.getAttribute('peer');
+    peerElem = TP.nodeGetElementById(TP.sys.uidoc(true), peerID, true);
+
+    if (!TP.isElement(peerElem)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    peerTPElem = TP.wrap(peerElem);
+
+    if (TP.canInvoke(peerTPElem, 'getConnectorData')) {
+        return peerTPElem.getConnectorData(aSourceTPElement);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.domhud.Inst.defineMethod('focusOnTarget',
 function(aTPElement) {
 
