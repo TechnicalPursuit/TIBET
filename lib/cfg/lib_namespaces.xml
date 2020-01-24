@@ -78,6 +78,9 @@
         ]]>
     </script>
 
+    <script src="aws/TP.aws.XMLNS.js"/>
+    <script src="aws/TP.aws.service.js"/>
+
     <script src="aws/services/TP.aws.AWSService.js"/>
     <script src="aws/services/TP.sig.AWSAuthenticationRequest.js"/>
     <script src="aws/services/TP.sig.AWSAuthenticationResponse.js"/>

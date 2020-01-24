@@ -750,5 +750,13 @@ function(options) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.AWSSubInspectorSources.Inst.defineMethod('getChildTypeForCanvasForLambdaFunctionInfo',
+function(options) {
+
+    return 'remote/AWS/lambda';
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

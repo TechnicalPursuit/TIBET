@@ -2400,6 +2400,9 @@ function(insertionPointElement, insertionPosition) {
 
         assistantData,
 
+        lambdaFunctionName,
+        newElement,
+
         currentServiceTPElems,
 
         insertedURI,
@@ -2448,6 +2451,27 @@ function(insertionPointElement, insertionPosition) {
 
             TP.sherpa.couchViewURIInsertionAssistant.
                                             showAssistant(assistantData);
+
+            break;
+
+        case 'remote/AWS/lambda':
+
+            lambdaFunctionName = inspector.get('selectedItems').last();
+
+            //  Compute the new AWS service element with a type of 'lambda' and
+            //  capturing the Lambda's function name.
+            newElement = TP.elem(
+                            '<aws:service type="lambda"' +
+                            ' lambdaname="' + lambdaFunctionName + '"/>');
+
+            //  Insert the 'aws:service' element into the canvas at the
+            //  desired location.
+            TP.bySystemId('Sherpa').insertElementIntoCanvas(
+                newElement,
+                insertionPointElement,
+                insertionPosition,
+                true,
+                true);
 
             break;
 
