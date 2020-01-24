@@ -42,9 +42,8 @@ function(aRequest) {
 
         resultLoc;
 
-    //  NOTE: WE DO *NOT* callNextMethod() here. This method is unusual in that
-    //  it can take in Attribute nodes, etc. and our supertype method assumes
-    //  Element nodes.
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
