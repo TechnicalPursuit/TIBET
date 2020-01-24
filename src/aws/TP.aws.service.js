@@ -132,8 +132,8 @@ function(aSourceTPElement) {
      *     successfully connected and data about the connector source is needed.
      * @param {TP.dom.ElementNode} aSourceTPElement The source element that the
      *     connection was dragged from.
-     * @returns {TP.core.Hash|null} The data to be used for this connector
-     *     dragging session.
+     * @returns {Promise} A Promise that will resolve with the connector data,
+     *     which will be a TP.core.Hash.
      */
 
     var resultLoc,
@@ -149,7 +149,7 @@ function(aSourceTPElement) {
             'useServiceTag', false
             );
 
-    return info;
+    return TP.extern.Promise.resolve(info);
 });
 
 //  ------------------------------------------------------------------------

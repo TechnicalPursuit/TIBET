@@ -245,8 +245,8 @@ function(aSourceTPElement) {
      *     successfully connected and data about the connector source is needed.
      * @param {TP.dom.ElementNode} aSourceTPElement The source element that the
      *     connection was dragged from.
-     * @returns {TP.core.Hash|null} The data to be used for this connector
-     *     dragging session.
+     * @returns {Promise} A Promise that will resolve with the connector data,
+     *     which will be a TP.core.Hash.
      */
 
     var dataIndex,
@@ -320,14 +320,15 @@ function(aSourceTPElement) {
         loc = TP.uriJoinFragments.apply(TP, fragParts);
         uriWithFrag = TP.uc(loc);
 
-        return TP.hc('sourceURI', uriWithFrag,
+        return TP.extern.Promise.resolve(
+                TP.hc('sourceURI', uriWithFrag,
                         'propInfo', propInfo,
                         'isLeaf', isLeaf,
                         'forceManualScope', false,
-                        'useServiceTag', true);
+                        'useServiceTag', true));
     }
 
-    return null;
+    return TP.extern.Promise.resolve(null);
 });
 
 //  ------------------------------------------------------------------------

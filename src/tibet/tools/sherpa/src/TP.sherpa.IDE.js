@@ -2131,9 +2131,7 @@ function(aSignal) {
         acceptValue,
         acceptValues,
 
-        dataSource,
-
-        bindingData;
+        dataSource;
 
     srcTPElem = aSignal.at('sourceElement');
     destTPElem = TP.wrap(aSignal.getTarget());
@@ -2172,15 +2170,23 @@ function(aSignal) {
                 //  Ask the connector data source for any data it might have
                 //  regarding the connector session. Add the destination element
                 //  to that and pass it along to the assistant.
-                bindingData = dataSource.getConnectorData(srcTPElem);
-                if (TP.isValid(bindingData)) {
-                    bindingData.atPut('destTPElement', destTPElem);
-                } else {
-                    bindingData = TP.hc('destTPElement', destTPElem);
-                }
+                dataSource.getConnectorData(srcTPElem).then(
+                    function(bindingData) {
 
-                //  Show the assistant.
-                TP.sherpa.bindingConnectionAssistant.showAssistant(bindingData);
+                        var bindData;
+
+                        bindData = bindingData;
+
+                        if (TP.isValid(bindData)) {
+                            bindData.atPut('destTPElement', destTPElem);
+                        } else {
+                            bindData = TP.hc('destTPElement', destTPElem);
+                        }
+
+                        //  Show the assistant.
+                        TP.sherpa.bindingConnectionAssistant.showAssistant(
+                                                                bindData);
+                    });
             }
         }
 

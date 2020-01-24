@@ -335,8 +335,8 @@ function(aSourceTPElement) {
      *     the request for connector data to it (if it can respond)
      * @param {TP.dom.ElementNode} aSourceTPElement The source element that the
      *     connection was dragged from.
-     * @returns {TP.core.Hash|null} The data to be used for this connector
-     *     dragging session.
+     * @returns {Promise} A Promise that will resolve with the connector data,
+     *     which will be a TP.core.Hash.
      */
 
     var peerID,
@@ -359,7 +359,7 @@ function(aSourceTPElement) {
         return peerTPElem.getConnectorData(aSourceTPElement);
     }
 
-    return null;
+    return TP.extern.Promise.resolve(null);
 });
 
 //  ------------------------------------------------------------------------
