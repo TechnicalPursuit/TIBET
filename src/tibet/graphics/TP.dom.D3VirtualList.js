@@ -517,6 +517,9 @@ function() {
 
         this.get('containerSelection').selectAll('*').remove();
 
+        //  Signal to observers that this control has rendered.
+        this.signal('TP.sig.DidRender');
+
         return this;
     }
 
@@ -645,8 +648,10 @@ TP.extern.d3.VirtualScroller = function() {
         target,
         selectionInfo,
         delta,
-        dispatch,
         control,
+        dispatch,
+
+        rowsAdjustment,
 
         scrollerFunc;
 
@@ -686,6 +691,12 @@ TP.extern.d3.VirtualScroller = function() {
 
             computedRowCount = control.computeGeneratedRowCount();
 
+            //  We adjust the number of rows by whatever the 'real' computed row
+            //  count is times 10, which means this machinery will draw 10X the
+            //  number of rows it needs to, but makes it so there is much less
+            //  flickering when 'fast scrolling'.
+            rowsAdjustment = (computedRowCount * 10);
+
             scrollTop = viewport.node().scrollTop;
 
             /* eslint-disable no-extra-parens */
@@ -697,9 +708,18 @@ TP.extern.d3.VirtualScroller = function() {
 
             lastPosition = position;
             position = Math.floor(scrollTop / rowHeight);
+
+            if (position > (rowsAdjustment / 2)) {
+                position -= (rowsAdjustment / 2);
+            }
+
             delta = position - lastPosition;
 
-            scrollRenderFrame(position);
+            //  Make the scrolling render function itself run after the next
+            //  repaint for less flicker.
+            (function() {
+                scrollRenderFrame(position);
+            }).queueAfterNextRepaint();
         };
 
         control.$internalRender = render;
@@ -707,6 +727,8 @@ TP.extern.d3.VirtualScroller = function() {
         scrollRenderFrame = function(scrollPosition) {
 
             var hasBumpRow,
+
+                adjustedRowCount,
 
                 startOffset,
                 endOffset,
@@ -719,19 +741,21 @@ TP.extern.d3.VirtualScroller = function() {
 
             hasBumpRow = control.$get('$hasBumpRow');
 
+            adjustedRowCount = computedRowCount + rowsAdjustment;
+
             //  Calculate the start offset (if there was a 'bump row', add 1 to
             //  offset 0 position vs totalRow count diff)
             if (hasBumpRow) {
                 startOffset = Math.max(
                     0,
-                    Math.min(scrollPosition, totalRows - computedRowCount + 1));
+                    Math.min(scrollPosition, totalRows - adjustedRowCount + 1));
             } else {
                 startOffset = Math.max(
                     0,
-                    Math.min(scrollPosition, totalRows - computedRowCount));
+                    Math.min(scrollPosition, totalRows - adjustedRowCount));
             }
 
-            endOffset = startOffset + computedRowCount;
+            endOffset = startOffset + adjustedRowCount;
 
             oldStartOffset = control.$get('$startOffset');
             oldEndOffset = control.$get('$endOffset');
@@ -810,7 +834,7 @@ TP.extern.d3.VirtualScroller = function() {
                         rowSelection = container.selectAll(rowSelector).
                                         data(newData, dataid);
 
-                        rowSelection.exit().call(exit);
+                        rowSelection.exit().call(exit).remove();
 
                         rowSelection.enter().call(enter);
                         rowSelection.order();
@@ -818,6 +842,8 @@ TP.extern.d3.VirtualScroller = function() {
                         //  do not position .transitioning elements
                         rowUpdateSelection =
                             container.selectAll('.row:not(.transitioning)');
+
+                        rowUpdateSelection.call(update);
 
                         rowUpdateSelection.each(
                             function(d, i) {
