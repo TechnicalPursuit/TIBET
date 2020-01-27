@@ -536,7 +536,8 @@ function(finalizationFunc) {
     //  fork to let the system do a GUI refresh to show initializng status,
     //  etc.
     thisref = this;
-    setTimeout(function() {
+
+    (function() {
         var tpElem,
 
             screenLocEntries,
@@ -615,7 +616,7 @@ function(finalizationFunc) {
             finalizationFunc();
         }
 
-    }, TP.sys.cfg('sherpa.setup.delay', 250));
+    }).queueAfterNextRepaint();
 
     return this;
 });
@@ -2464,12 +2465,11 @@ function(aSignal) {
             //  After a 1000ms timeout, focus the halo on the element
             //  representing the grouping element that was actually inserted in
             //  the UI canvas.
-            setTimeout(
-                function() {
-                    //  Focus the halo on our new grouping element, passing true
-                    //  to actually show the halo if it's hidden.
-                    halo.focusOn(TP.wrap(insertedGroupingElem), true);
-                }, 1000);
+            (function() {
+                //  Focus the halo on our new grouping element, passing true to
+                //  actually show the halo if it's hidden.
+                halo.focusOn(TP.wrap(insertedGroupingElem), true);
+            }).queueAfterNextRepaint();
         }.bind(this));
 
     return this;
@@ -2678,36 +2678,35 @@ shouldShowAssistant, insertionCompletedHandler) {
 
     if (TP.isTrue(shouldFocusHalo)) {
         //  Focus the halo onto the inserted element after 1000ms
-        setTimeout(
-            function() {
-                var viewDoc,
-                    halo;
+        (function() {
+            var viewDoc,
+                halo;
 
-                //  The document that we were installed into.
-                viewDoc = this.get('vWin').document;
+            //  The document that we were installed into.
+            viewDoc = this.get('vWin').document;
 
-                halo = TP.byId('SherpaHalo', viewDoc);
+            halo = TP.byId('SherpaHalo', viewDoc);
 
-                //  This will move the halo off of the old element. Note that we
-                //  do *not* check here whether or not we *can* blur - we
-                //  definitely want to blur off of the old DOM content - it's
-                //  probably gone now anyway.
-                halo.blur();
+            //  This will move the halo off of the old element. Note that we
+            //  do *not* check here whether or not we *can* blur - we
+            //  definitely want to blur off of the old DOM content - it's
+            //  probably gone now anyway.
+            halo.blur();
 
-                //  Focus the halo on our new element, passing true to actually
-                //  show the halo if it's hidden.
-                if (insertedTPElem.haloCanFocus(halo)) {
-                    halo.focusOn(insertedTPElem, true);
-                }
+            //  Focus the halo on our new element, passing true to actually
+            //  show the halo if it's hidden.
+            if (insertedTPElem.haloCanFocus(halo)) {
+                halo.focusOn(insertedTPElem, true);
+            }
 
-                if (TP.isCallable(insertionCompletedHandler)) {
-                    insertionCompletedHandler(insertedTPElem);
-                }
+            if (TP.isCallable(insertionCompletedHandler)) {
+                insertionCompletedHandler(insertedTPElem);
+            }
 
-                if (TP.isTrue(shouldShowAssistant)) {
-                    TP.byId('DOMHUD', viewDoc).showAssistant();
-                }
-            }.bind(this), 1000);
+            if (TP.isTrue(shouldShowAssistant)) {
+                TP.byId('DOMHUD', viewDoc).showAssistant();
+            }
+        }).bind(this).queueAfterNextRepaint();
     }
 
     //  Set up a timeout to delete those flags after a set amount of time
@@ -3097,13 +3096,16 @@ function(aSummary, removedNodes) {
     roots = removedNodes.filter(
         function(aNode) {
             var len,
-                i;
+                i,
+
+                removedNode;
 
             len = removedNodes.getSize();
             for (i = 0; i < len; i++) {
-                if (aNode !== removedNodes.at(i) &&
+                removedNode = removedNodes.at(i);
+                if (aNode !== removedNode &&
                     aNode[TP.PREVIOUS_POSITION].startsWith(
-                        removedNodes.at(i)[TP.PREVIOUS_POSITION])) {
+                        removedNode[TP.PREVIOUS_POSITION])) {
                     return false;
                 }
             }
@@ -3695,6 +3697,9 @@ function() {
 
         sherpaFinishSetupFunc = function(aSignal) {
 
+            var hookElem,
+                logoFinishDisplayFunc;
+
             //  Turn off any future notifications.
             sherpaFinishSetupFunc.ignore(
                 drawerElement, 'TP.sig.DOMTransitionEnd');
@@ -3702,7 +3707,8 @@ function() {
             //  After the drawers have finished animating in, delay,
             //  giving the animation a chance to finish cleanly before
             //  proceeding.
-            setTimeout(function() {
+            hookElem = TP.byCSSPath('.right_hook', win, true, false);
+            logoFinishDisplayFunc = function() {
 
                 //  The basic Sherpa framing has been set up, but we complete
                 //  the setup here (after the drawers animate in). Note that
@@ -3712,9 +3718,14 @@ function() {
                         function() {
                             thisref.sherpaSetupComplete();
                         });
+            };
 
-            }, 1000);
+            //  NB: Because we're bringing in the SVG elements without IDs, we
+            //  need to make sure that the hook element has an ID before
+            //  observing it.
+            TP.lid(hookElem, true);
 
+            logoFinishDisplayFunc.observe(hookElem, 'TP.sig.DOMAnimationEnd');
         };
         sherpaFinishSetupFunc.observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
@@ -3733,7 +3744,7 @@ function() {
 
         loadingImageLoc = TP.uc('~lib_media/tibet_logo.svg').getLocation();
 
-        loadingImageReq = TP.request('uri', loadingImageLoc, 'async', false);
+        loadingImageReq = TP.request('uri', loadingImageLoc);
         loadingImageReq.defineHandler('IOCompleted',
             function(aSignal) {
                 var loadingSVGElem;
@@ -3776,12 +3787,12 @@ function() {
 
         TP.byId('SherpaHUD', win).toggle('closed');
 
-        //  Refresh the input area after a 1000ms timeout. This ensures that
-        //  animations and other layout will happen before the editor component
-        //  tries to compute its layout.
-        setTimeout(function() {
+        //  Refresh the input area after waiting for the next repaint. This
+        //  ensures that animations and other layout will happen before the
+        //  editor component tries to compute its layout.
+        (function() {
             TP.byId('SherpaConsole', win).render();
-        }, 1000);
+        }).queueAfterNextRepaint();
     }
 
     //  ---
@@ -5311,12 +5322,13 @@ function() {
         hudCompletelyOpenFunc.ignore(
                                 drawerElement, 'TP.sig.DOMTransitionEnd');
 
-        //  After the drawers have finished animating in, delay, giving the
-        //  animation a chance to finish cleanly before proceeding.
-        setTimeout(function() {
+        //  After the drawers have finished animating in, delay until the next
+        //  repaint, giving the animation a chance to finish cleanly before
+        //  proceeding.
+        (function() {
             TP.byId('SherpaHUD', viewWin).toggle('closed');
             thisref.signal('SherpaReady');
-        }, 1500);
+        }).queueAfterNextRepaint();
     };
     hudCompletelyOpenFunc.observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
