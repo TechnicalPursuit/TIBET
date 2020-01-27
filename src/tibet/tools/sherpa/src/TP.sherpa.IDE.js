@@ -2651,7 +2651,9 @@ shouldShowAssistant, insertionCompletedHandler) {
         insertionPointTPElem,
 
         insertedTPElem,
-        insertedElem;
+        insertedElem,
+
+        handler;
 
     newTPElem = TP.wrap(newElement);
 
@@ -2669,7 +2671,13 @@ shouldShowAssistant, insertionCompletedHandler) {
 
     insertedElem = TP.unwrap(insertedTPElem);
 
-    TP.nodeRefreshDescendantDocumentPositions(insertedElem);
+    //  Set up a handler that waits until the content renders and then focus it.
+    (handler = function(didRenderSignal) {
+        handler.ignore(insertedTPElem, 'TP.sig.DidRender');
+
+        TP.nodeRefreshDescendantDocumentPositions(insertedElem);
+
+    }).observe(insertedTPElem, 'TP.sig.DidRender');
 
     insertedElem[TP.INSERTION_POSITION] = aPositionOrPath;
     insertedElem[TP.SHERPA_MUTATION] = TP.INSERT;
