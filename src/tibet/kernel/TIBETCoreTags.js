@@ -867,18 +867,7 @@ function(wantsSherpa) {
         opts.push(cfg + ':app');
     }
 
-    //  If the system is configured to run the sherpa, then make sure it's not
-    //  running on IE (we do not support the Sherpa for IE at this time). If
-    //  not, push its tag into the list for consideration.
-    if (TP.sys.hasFeature('ie')) {
-        sherpaOk = false;
-
-        TP.ifWarn() ?
-            TP.warn('Sherpa not currently supported on IE. Setting default' +
-                ' app tag to tibet:app.') : 0;
-    } else {
-        sherpaOk = TP.ifInvalid(wantsSherpa, true);
-    }
+    sherpaOk = TP.ifInvalid(wantsSherpa, true);
 
     if (TP.sys.hasFeature('sherpa') && sherpaOk) {
         opts.unshift('tibet:sherpa');
