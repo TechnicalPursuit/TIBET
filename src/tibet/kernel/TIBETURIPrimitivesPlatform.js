@@ -27,8 +27,7 @@ Platform-specific functionality related to file access operations.
  *     Webkit-based browsers don't, in general, allow file-system access.
  */
 
-/* global ActiveXObject:false,
-          Components:false,
+/* global Components:false,
           netscape:false
 */
 

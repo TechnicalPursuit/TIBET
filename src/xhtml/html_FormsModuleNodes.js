@@ -819,8 +819,7 @@ function() {
      * @returns {String} The currently selected text.
      */
 
-    var node,
-        sel;
+    var node;
 
     node = this.getNativeNode();
 
@@ -838,12 +837,6 @@ function() {
      * @returns {Number} The ending index of the current selection.
      */
 
-    var range,
-        rangeDup,
-
-        start,
-        end;
-
     return this.getNativeNode().selectionEnd;
 });
 
@@ -857,11 +850,6 @@ function() {
      * @summary Returns the starting index of the currently selected text.
      * @returns {Number} The starting index of the current selection.
      */
-
-    var range,
-        rangeDup,
-
-        start;
 
     return this.getNativeNode().selectionStart;
 });
@@ -1032,9 +1020,7 @@ function(aStartIndex, anEndIndex) {
      * @returns {TP.html.textUtilities} The receiver.
      */
 
-    var node,
-
-        range;
+    var node;
 
     node = this.getNativeNode();
 

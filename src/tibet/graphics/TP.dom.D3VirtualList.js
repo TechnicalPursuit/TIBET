@@ -695,7 +695,7 @@ TP.extern.d3.VirtualScroller = function() {
             //  count is times 10, which means this machinery will draw 10X the
             //  number of rows it needs to, but makes it so there is much less
             //  flickering when 'fast scrolling'.
-            rowsAdjustment = (computedRowCount * 10);
+            rowsAdjustment = computedRowCount * 10;
 
             scrollTop = viewport.node().scrollTop;
 
@@ -709,9 +709,11 @@ TP.extern.d3.VirtualScroller = function() {
             lastPosition = position;
             position = Math.floor(scrollTop / rowHeight);
 
+            /* eslint-disable no-extra-parens */
             if (position > (rowsAdjustment / 2)) {
                 position -= (rowsAdjustment / 2);
             }
+            /* eslint-enable no-extra-parens */
 
             delta = position - lastPosition;
 

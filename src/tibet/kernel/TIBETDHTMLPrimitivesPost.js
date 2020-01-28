@@ -30,9 +30,6 @@ function() {
 
     var measuringDiv,
 
-        docStyleObj,
-
-        oldFontSize,
         keys,
         len,
         i,
@@ -802,9 +799,6 @@ function(aDocument, aFontSize) {
      */
 
     var numPixels,
-
-        docStyleObj,
-        oldFontSize,
 
         measuringDiv;
 
@@ -6294,16 +6288,6 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
         insertionNode,
 
-        prevFirstChild,
-        prevLastChild,
-
-        elemTagName,
-        elemParent,
-
-        childContainer,
-
-        childIndex,
-
         range,
         node,
 
@@ -6576,12 +6560,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 
         returnNode,
 
-        elemTagName,
-        elemParent,
-        childIndex,
-
-        childContainer,
-
         range,
         node;
 
@@ -6705,11 +6683,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     var awakenContent,
 
         nodeContent,
-        strContent,
-
-        elemTagName,
-
-        childContainer;
+        strContent;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -8151,8 +8125,6 @@ function(aNode) {
      * @exception TP.sig.InvalidNode
      * @returns {Node} The node.
      */
-
-    var elemTagName;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');

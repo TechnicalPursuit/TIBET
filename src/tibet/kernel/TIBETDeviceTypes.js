@@ -1338,7 +1338,6 @@ function(nativeEvent) {
      */
 
     var ev,
-        lastEvent,
         lastEventName,
         timer;
 

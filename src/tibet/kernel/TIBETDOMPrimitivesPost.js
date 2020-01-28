@@ -6837,8 +6837,6 @@ function(aNode) {
      * @exception TP.sig.InvalidNode Raised when the node is an invalid node.
      */
 
-    var normalizeFunc;
-
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
