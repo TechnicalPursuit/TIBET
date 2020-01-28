@@ -75,10 +75,6 @@ TP.sys.defineMethod('isWin', TP.sys.isWin);
 
 TP.sys.defineMethod('isUA', TP.sys.isUA);
 
-if (TP.sys.isUA('IE')) {
-    TP.sys.defineMethod('isMSXML', TP.sys.isMSXML);
-}
-
 TP.sys.defineMethod('isObsolete', TP.sys.isObsolete);
 TP.sys.defineMethod('isSupported', TP.sys.isSupported);
 
@@ -261,18 +257,6 @@ TP.sys.defineGlobal(TP.ID, null);
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesBase.js';
 
 //  ---
-//  TIBETPrimitives[IE/Gecko/Webkit].js
-//  ---
-
-if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesGecko.js';
-} else if (TP.sys.isUA('IE')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesIE.js';
-} else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesWebkit.js';
-}
-
-//  ---
 //  TIBETPrimitivesPost.js
 //  ---
 
@@ -299,18 +283,6 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesPre.js';
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesBase.js';
 
 //  ---
-//  TIBETDOMPrimitives[IE/Gecko/Webkit].js
-//  ---
-
-if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesGecko.js';
-} else if (TP.sys.isUA('IE')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesIE.js';
-} else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDOMPrimitivesWebkit.js';
-}
-
-//  ---
 //  TIBETDOMPrimitivesPost.js
 //  ---
 
@@ -329,18 +301,6 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesPre.js';
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesBase.js';
 
 //  ---
-//  TIBETDevicePrimitives[IE/Gecko/Webkit].js
-//  ---
-
-if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesGecko.js';
-} else if (TP.sys.isUA('IE')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesIE.js';
-} else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDevicePrimitivesWebkit.js';
-}
-
-//  ---
 //  TIBETDevicePrimitivesPost.js
 //  ---
 
@@ -357,18 +317,6 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesPre.js';
 //  ---
 
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesBase.js';
-
-//  ---
-//  TIBETDHTMLPrimitives[IE/Gecko/Webkit].js
-//  ---
-
-if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesGecko.js';
-} else if (TP.sys.isUA('IE')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesIE.js';
-} else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETDHTMLPrimitivesWebkit.js';
-}
 
 //  ---
 //  TIBETDHTMLPrimitivesPost.js
@@ -393,24 +341,6 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesPre.js';
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesBase.js';
 
 //  ---
-//  TIBETGraphicsPrimitives[IE/Gecko/Webkit].js
-//  ---
-
-if (TP.sys.isUA('IE', 8, TP.UP)) {
-    TP.boot[TP.SOURCE_PATH] =
-        '~lib_src/tibet/kernel/TIBETGraphicsPrimitivesIE.js';
-}
-
-//  ---
-//  TIBETStringPrimitivesIE.js
-//  ---
-
-if (TP.sys.isUA('IE')) {
-    TP.boot[TP.SOURCE_PATH] =
-        '~lib_src/tibet/kernel/TIBETStringPrimitivesIE.js';
-}
-
-//  ---
 //  TIBETStringPrimitivesPost.js
 //  ---
 
@@ -427,18 +357,6 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesPre.js';
 //  ---
 
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesBase.js';
-
-//  ---
-//  TIBETCSSPrimitives[IE/Gecko/Webkit].js
-//  ---
-
-if (TP.sys.isUA('GECKO')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesGecko.js';
-} else if (TP.sys.isUA('IE', 8, TP.UP)) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesIE.js';
-} else if (TP.sys.isUA('WEBKIT')) {
-    TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETCSSPrimitivesWebkit.js';
-}
 
 //  ---
 //  TIBETCSSPrimitivesPost.js
