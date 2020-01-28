@@ -3646,7 +3646,7 @@ if (TP.sys.isUA('GECKO')) {
     TP.sig.DOMMouseWheel.Type.defineConstant('NATIVE_NAME', 'DOMMouseScroll');
 }
 
-if (TP.sys.isUA('IE') || TP.sys.isUA('WEBKIT')) {
+if (TP.sys.isUA('WEBKIT')) {
     TP.sig.DOMMouseWheel.Type.defineConstant('NATIVE_NAME', 'mousewheel');
 }
 

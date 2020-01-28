@@ -79,16 +79,6 @@ function() {
         //  document.
         TP.nodeAppendChild(TP.documentGetBody(document), measuringDiv, false);
 
-        //  On IE, we need to make sure that the document element has a font
-        //  size. This won't normally cause problems since the 'html'
-        //  element in html documents don't have a font size assigned (or
-        //  used).
-        if (TP.sys.isUA('IE')) {
-            docStyleObj = TP.elementGetStyleObj(document.documentElement);
-            oldFontSize = docStyleObj.fontSize;
-            docStyleObj.fontSize = '100%';
-        }
-
         //  Loop over all of the keys of the hash
         keys = TP.keys(TP.FONT_HEIGHTS);
         len = keys.getSize();
@@ -110,14 +100,6 @@ function() {
 
         //  Make sure and remove the measuring div from where we stuck it.
         TP.nodeDetach(measuringDiv);
-
-        //  If we're in IE, we need to put the document element's font size
-        //  back to what it was.
-        if (TP.sys.isUA('IE')) {
-            //  docStyleObj is set above in the first 'if we're in IE'
-            //  code.
-            docStyleObj.fontSize = oldFontSize;
-        }
     }
 
     //  Inspired by Morris John's scrollbar measurer.
@@ -843,13 +825,6 @@ function(aDocument, aFontSize) {
     //  application run in the 'TP.FONT_HEIGHTS' variable. Check to see if
     //  this computation has already been done.
     if (TP.notValid(numPixels = TP.FONT_HEIGHTS.at(aFontSize))) {
-        //  We need to adjust the font size in IE
-        if (TP.sys.isUA('IE')) {
-            docStyleObj = TP.elementGetStyleObj(aDocument.documentElement);
-            oldFontSize = docStyleObj.fontSize;
-            docStyleObj.fontSize = '100%';
-        }
-
         //  Create a 'div' that will be used to do the measuring.
         measuringDiv = aDocument.createElement('div');
         TP.elementSetStyleString(
@@ -878,13 +853,6 @@ function(aDocument, aFontSize) {
         //  Cache the result so that we don't have to do this again for this
         //  font size
         TP.FONT_HEIGHTS.atPut(aFontSize, numPixels);
-
-        //  If we're in IE, we need to put the document element's font size
-        //  back to what it was.
-        if (TP.sys.isUA('IE')) {
-            //  docStyleObj is set above in the first 'if we're in IE' code.
-            docStyleObj.fontSize = oldFontSize;
-        }
     }
 
     return numPixels;
@@ -1484,12 +1452,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     } else if (TP.isString(strContent)) {
         //  We already made sure that the String is HTML above.
         str = strContent;
-    }
-
-    if (TP.sys.isUA('IE')) {
-        //  IE doesn't do a good job of handling '&apos;' - but it can
-        //  handle the numeric version.
-        str = str.replace(/&apos;/g, '&#39;');
     }
 
     str = TP.documentRewriteHacks(str);
@@ -6437,256 +6399,98 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
                 }
         }
     } else if (TP.isString(strContent)) {
-        //  Otherwise, if we have String content, then we can try to use the
-        //  native call, insertAdjacentHTML, if we're on IE or we create a
-        //  contextual fragment and use the DOM, if we're on a W3C compliant
-        //  browser.
-        if (TP.sys.isUA('IE')) {
-            //  IE doesn't do a good job of handling '&apos;' - but it can
-            //  handle the numeric version.
-            strContent = strContent.replace(/&apos;/g, '&#39;');
+        //  Create a contextual fragment and use the DOM.
+        range = doc.createRange();
 
-            //  Grab the current firstChild and lastChild nodes. These come
-            //  in very handy later when determining which new nodes need to
-            //  be awakened.
-            prevFirstChild = anElement.firstChild;
-            prevLastChild = anElement.lastChild;
+        switch (thePosition) {
+            case TP.AFTER_END:
 
-            elemTagName = anElement.tagName.toLowerCase();
+                range.setStartAfter(anElement);
 
-            elemParent = anElement.parentNode;
+                break;
 
-            //  We can use 'insertAdjacentHTML' here to insert new content
-            //  around the element, unless we're on IE and its one of the
-            //  'table' elements that doesn't support insertAdjacentHTML:
-            //      table, thead, tbody, tfoot, tr, th, td.
-            if (/(table|thead|tbody|tfoot|tr|th|td)/.test(elemTagName)) {
-                //  The trick here is to build a DOM using the table markup
-                //  we are given and then get that and insert it into the
-                //  proper place.
+            case TP.BEFORE_BEGIN:
 
-                //  NOTE: IE-ONLY DEFINED CALL HERE!!
+                range.setStartBefore(anElement);
 
-                if (thePosition === TP.AFTER_BEGIN ||
-                    thePosition === TP.BEFORE_END) {
-                    childContainer = TP.$$buildTableDOM(elemTagName,
-                                                        doc,
-                                                        strContent,
-                                                        true);
-                } else {
-                    childContainer = TP.$$buildTableDOM(elemTagName,
-                                                        doc,
-                                                        strContent,
-                                                        false);
-                }
+                break;
 
-                //  Loop over the nodes contained in the returned DOM made
-                //  from the table markup. Note how each insertion plucks
-                //  out 'firstChild' (which continues to shift) through each
-                //  iteration of the loop.
-                while (childContainer.hasChildNodes()) {
-                    //  Based on the value of the position, we insert the
-                    //  node at the proper place in the DOM. We'll awaken it
-                    //  later.
-                    switch (thePosition) {
-                        case TP.AFTER_END:
+            case TP.AFTER_BEGIN:
 
-                            elemParent.insertBefore(
-                                            childContainer.firstChild,
-                                            anElement.nextSibling);
+                range.selectNodeContents(anElement);
+                range.collapse(true);
 
-                            break;
+                break;
 
-                        case TP.BEFORE_BEGIN:
+            case TP.BEFORE_END:
 
-                            elemParent.insertBefore(
-                                            childContainer.firstChild,
-                                            anElement);
+                range.selectNodeContents(anElement);
+                range.collapse(false);
 
-                            break;
+                break;
 
-                        case TP.AFTER_BEGIN:
+            default:
+                break;
+        }
 
-                            anElement.insertBefore(
-                                            childContainer.firstChild,
-                                            anElement.firstChild);
+        //  Try to create a contextual fragment from the String content.
+        //  If this fails (probably because of a parsing bug), then we
+        //  just create a text node from the String.
+        try {
+            node = range.createContextualFragment(strContent);
 
-                            break;
+            //  Make sure to 'repair' anything like SVG that might exist
+            //  in the fragment. See the '$htmlFragmentRepair' method
+            //  for more details.
+            TP.$htmlFragmentRepair(node);
+        } catch (e) {
+            node = doc.createTextNode(strContent);
 
-                        case TP.BEFORE_END:
+            //  NB: We don't bother awakening this, since we're just
+            //  inserting a Node.TEXT_NODE.
+            awakenContent = false;
+        }
 
-                            anElement.appendChild(
-                                            childContainer.firstChild);
+        //  Based on the value of the position, we insert the node at
+        //  the proper place in the DOM. We awaken it based on the value
+        //  of awakenContent.
+        switch (thePosition) {
+            case TP.AFTER_END:
 
-                            break;
+                TP.nodeInsertBefore(anElement.parentNode,
+                                    node,
+                                    anElement.nextSibling,
+                                    awakenContent);
+                break;
 
-                        default:
-                            break;
-                    }
-                }
-            } else {
-                //  Otherwise, it wasn't table markup so we can just use
-                //  'insertAdjacentHTML'.
-                anElement.insertAdjacentHTML(thePosition, strContent);
-            }
+            case TP.BEFORE_BEGIN:
 
-            if (awakenContent) {
-                switch (thePosition) {
-                    case TP.AFTER_END:
-
-                        childIndex = TP.nodeGetChildIndex(
-                                    anElement.parentNode, anElement) + 1;
-
-                        TP.nodeAwakenChildNodesFromTo(
-                                    anElement.parentNode,
-                                    childIndex,
-                                    TP.LAST);
-
-                        break;
-
-                    case TP.BEFORE_BEGIN:
-
-                        childIndex = TP.nodeGetChildIndex(
-                                    anElement.parentNode, anElement) - 1;
-
-                        TP.nodeAwakenChildNodesFromTo(
-                                    anElement.parentNode,
-                                    TP.FIRST,
-                                    childIndex);
-
-                        break;
-
-                    case TP.AFTER_BEGIN:
-
-                        if (TP.isNode(prevFirstChild)) {
-                            childIndex = TP.nodeGetChildIndex(
-                                    anElement, prevFirstChild) - 1;
-                        } else {
-                            childIndex = anElement.childNodes.length - 1;
-                        }
-
-                        TP.nodeAwakenChildNodesFromTo(
+                TP.nodeInsertBefore(anElement.parentNode,
+                                    node,
                                     anElement,
-                                    TP.FIRST,
-                                    childIndex);
+                                    awakenContent);
 
-                        break;
+                break;
 
-                    case TP.BEFORE_END:
+            case TP.AFTER_BEGIN:
 
-                        if (TP.isNode(prevLastChild)) {
-                            childIndex = TP.nodeGetChildIndex(
-                                    anElement, prevLastChild) + 1;
-                        } else {
-                            childIndex = 0;
-                        }
+                TP.nodeInsertBefore(anElement,
+                                    node,
+                                    anElement.firstChild,
+                                    awakenContent);
 
-                        TP.nodeAwakenChildNodesFromTo(
-                                    anElement,
-                                    childIndex,
-                                    TP.LAST);
+                break;
 
-                        break;
+            case TP.BEFORE_END:
 
-                    default:
-                        break;
-                }
-            }
-        } else {
-            //  We're in a W3C-compliant browser, so we can create a
-            //  contextual fragment and use that.
-            range = doc.createRange();
+                TP.nodeAppendChild(anElement,
+                                    node,
+                                    awakenContent);
 
-            switch (thePosition) {
-                case TP.AFTER_END:
+                break;
 
-                    range.setStartAfter(anElement);
-
-                    break;
-
-                case TP.BEFORE_BEGIN:
-
-                    range.setStartBefore(anElement);
-
-                    break;
-
-                case TP.AFTER_BEGIN:
-
-                    range.selectNodeContents(anElement);
-                    range.collapse(true);
-
-                    break;
-
-                case TP.BEFORE_END:
-
-                    range.selectNodeContents(anElement);
-                    range.collapse(false);
-
-                    break;
-
-                default:
-                    break;
-            }
-
-            //  Try to create a contextual fragment from the String content.
-            //  If this fails (probably because of a parsing bug), then we
-            //  just create a text node from the String.
-            try {
-                node = range.createContextualFragment(strContent);
-
-                //  Make sure to 'repair' anything like SVG that might exist
-                //  in the fragment. See the '$htmlFragmentRepair' method
-                //  for more details.
-                TP.$htmlFragmentRepair(node);
-            } catch (e) {
-                node = doc.createTextNode(strContent);
-
-                //  NB: We don't bother awakening this, since we're just
-                //  inserting a Node.TEXT_NODE.
-                awakenContent = false;
-            }
-
-            //  Based on the value of the position, we insert the node at
-            //  the proper place in the DOM. We awaken it based on the value
-            //  of awakenContent.
-            switch (thePosition) {
-                case TP.AFTER_END:
-
-                    TP.nodeInsertBefore(anElement.parentNode,
-                                        node,
-                                        anElement.nextSibling,
-                                        awakenContent);
-                    break;
-
-                case TP.BEFORE_BEGIN:
-
-                    TP.nodeInsertBefore(anElement.parentNode,
-                                        node,
-                                        anElement,
-                                        awakenContent);
-
-                    break;
-
-                case TP.AFTER_BEGIN:
-
-                    TP.nodeInsertBefore(anElement,
-                                        node,
-                                        anElement.firstChild,
-                                        awakenContent);
-
-                    break;
-
-                case TP.BEFORE_END:
-
-                    TP.nodeAppendChild(anElement,
-                                        node,
-                                        awakenContent);
-
-                    break;
-
-                default:
-                    break;
-            }
+            default:
+                break;
         }
     }
 
@@ -6821,96 +6625,37 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
                                 anElement,
                                 awakenContent);
     } else if (TP.isString(strContent)) {
-        //  Otherwise, if we have String content, then we can try to use the
-        //  native call, insertAdjacentHTML, if we're on IE or we create a
-        //  contextual fragment and use the DOM, if we're on a W3C compliant
-        //  browser.
-        if (TP.sys.isUA('IE')) {
-            //  IE doesn't do a good job of handling '&apos;' - but it can
-            //  handle the numeric version.
-            strContent = strContent.replace(/&apos;/g, '&#39;');
+        //  Create a contextual fragment and use the DOM.
+        range = doc.createRange();
+        range.setStartBefore(anElement);
 
-            elemTagName = anElement.tagName.toLowerCase();
+        //  Try to create a contextual fragment from the String content.
+        //  If this fails (probably because of a parsing bug), then we
+        //  just create a text node from the String.
+        try {
+            node = range.createContextualFragment(strContent);
 
-            elemParent = anElement.parentNode;
-            childIndex = TP.nodeGetChildIndex(elemParent, anElement);
+            //  Make sure to 'repair' anything like SVG that might exist
+            //  in the fragment. See the '$htmlFragmentRepair' method
+            //  for more details.
+            TP.$htmlFragmentRepair(node);
 
-            //  We can use 'outerHTML' here to set the new replacement of
-            //  the element, unless we're on IE and its one of the 'table'
-            //  elements that doesn't support outerHTML:
-            //      table, thead, tbody, tfoot, tr, th, td.
-            if (/(table|thead|tbody|tfoot|tr|th|td)/.test(elemTagName)) {
-                //  The trick here is to build a DOM using the table markup
-                //  we are given and then get that and insert it into the
-                //  proper place.
-
-                //  NOTE: IE-ONLY DEFINED CALL HERE!!
-                childContainer = TP.$$buildTableDOM(elemTagName,
-                                                    doc,
-                                                    strContent,
-                                                    false);
-
-                //  Loop over the nodes contained in the returned DOM made
-                //  from the table markup. Note how each insertion plucks
-                //  out 'firstChild' (which continues to shift) through each
-                //  iteration of the loop.
-                while (childContainer.hasChildNodes()) {
-                    elemParent.insertBefore(childContainer.firstChild,
-                                            anElement);
-                }
-
-                //  Remove anElement from its parent - we're replacing it.
-                TP.nodeRemoveChild(elemParent, anElement);
-            } else {
-                //  Otherwise, it wasn't table markup so we can just use
-                //  'outerHTML'.
-                anElement.outerHTML = strContent;
-            }
-
-            //  The return node is the 'new node', which can be found at the
-            //  same index in the parent as anElement was.
-            returnNode = elemParent.childNodes[childIndex];
-
-            if (awakenContent) {
-                //  Awaken any newly added content. Note here how we hand
-                //  the whole element to the awakening function to awaken
-                //  itself and all descendant content underneath it.
-                TP.nodeAwakenContent(returnNode);
-            }
-        } else {
-            //  We're in a W3C-compliant browser, so we can create a
-            //  contextual fragment and use that.
-            range = doc.createRange();
-            range.setStartBefore(anElement);
-
-            //  Try to create a contextual fragment from the String content.
-            //  If this fails (probably because of a parsing bug), then we
-            //  just create a text node from the String.
-            try {
-                node = range.createContextualFragment(strContent);
-
-                //  Make sure to 'repair' anything like SVG that might exist
-                //  in the fragment. See the '$htmlFragmentRepair' method
-                //  for more details.
-                TP.$htmlFragmentRepair(node);
-
-                //  The contextual fragment is a DocumentFragment and we
-                //  need to capture the element that was really created,
-                //  which is the element represented by strContent, before
-                //  we do the replace.
-                returnNode = node.firstChild;
-            } catch (e) {
-                returnNode = doc.createTextNode(strContent);
-            }
-
-            //  Note reassignment since the node we're adding might have
-            //  come from another document.
-            returnNode = TP.nodeReplaceChild(
-                                    anElement.parentNode,
-                                    returnNode,
-                                    anElement,
-                                    awakenContent);
+            //  The contextual fragment is a DocumentFragment and we
+            //  need to capture the element that was really created,
+            //  which is the element represented by strContent, before
+            //  we do the replace.
+            returnNode = node.firstChild;
+        } catch (e) {
+            returnNode = doc.createTextNode(strContent);
         }
+
+        //  Note reassignment since the node we're adding might have
+        //  come from another document.
+        returnNode = TP.nodeReplaceChild(
+                                anElement.parentNode,
+                                returnNode,
+                                anElement,
+                                awakenContent);
     }
 
     //  Execute any loaded function that we were handed.
@@ -6997,24 +6742,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     if (TP.isNode(nodeContent)) {
         //  Clear the node
 
-        if (TP.sys.isUA('IE')) {
-            elemTagName = anElement.tagName.toLowerCase();
-
-            //  We can use 'innerHTML' here to clear out the old content of
-            //  the element, unless we're on IE and its one of the 'table'
-            //  elements that doesn't support innerHTML:
-            //      table, thead, tbody, tfoot, tr, th, td.
-            if (/(table|thead|tbody|tfoot|tr|th|td)/.test(elemTagName)) {
-                //  Clear it out manually using DOM methods and looping.
-                while (anElement.hasChildNodes()) {
-                    TP.nodeRemoveChild(anElement, anElement.lastChild);
-                }
-            } else {
-                anElement.innerHTML = '';
-            }
-        } else {
-            anElement.innerHTML = '';
-        }
+        anElement.innerHTML = '';
 
         //  Append the nodeContent which makes it the sole child node.
 
@@ -7022,47 +6750,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         //  come from another document.
         nodeContent = TP.nodeAppendChild(anElement, nodeContent, false);
     } else if (TP.isString(strContent)) {
-        if (TP.sys.isUA('IE')) {
-            //  IE doesn't do a good job of handling '&apos;' - but it can
-            //  handle the numeric version.
-            strContent = strContent.replace(/&apos;/g, '&#39;');
-
-            elemTagName = anElement.tagName.toLowerCase();
-
-            //  We can use 'innerHTML' here to clear out the old content of
-            //  the element, unless we're on IE and its one of the 'table'
-            //  elements that doesn't support innerHTML:
-            //      table, thead, tbody, tfoot, tr, th, td.
-            if (/(table|thead|tbody|tfoot|tr|th|td)/.test(elemTagName)) {
-                //  Clear it out manually using DOM methods and looping.
-                while (anElement.hasChildNodes()) {
-                    TP.nodeRemoveChild(anElement, anElement.lastChild);
-                }
-
-                //  The trick here is to build a DOM using the table markup
-                //  we are given and then get that and insert it into the
-                //  proper place.
-
-                //  NOTE: IE-ONLY DEFINED CALL HERE!!
-                childContainer = TP.$$buildTableDOM(
-                                            elemTagName,
-                                            TP.nodeGetDocument(anElement),
-                                            strContent,
-                                            true);
-
-                //  Loop over the nodes contained in the returned DOM made
-                //  from the table markup. Note how each insertion plucks
-                //  out 'firstChild' (which continues to shift) through each
-                //  iteration of the loop.
-                while (childContainer.hasChildNodes()) {
-                    anElement.appendChild(childContainer.firstChild);
-                }
-            } else {
-                anElement.innerHTML = strContent;
-            }
-        } else {
-            anElement.innerHTML = strContent;
-        }
+        anElement.innerHTML = strContent;
     }
 
     if (awakenContent) {
@@ -8474,26 +8162,7 @@ function(aNode) {
         case Node.ELEMENT_NODE:
 
             if (TP.isHTMLNode(aNode)) {
-                if (TP.sys.isUA('IE')) {
-                    elemTagName = aNode.tagName.toLowerCase();
-
-                    //  We can use 'innerHTML' here to clear out the old
-                    //  content of the element, unless we're on IE and its
-                    //  one of the 'table' elements that doesn't support
-                    //  innerHTML: table, thead, tbody, tfoot, tr, th, td.
-                    if (/(table|thead|tbody|tfoot|tr|th|td)/.test(
-                                                            elemTagName)) {
-                        //  Clear it out manually using DOM methods and
-                        //  looping.
-                        while (aNode.hasChildNodes()) {
-                            TP.nodeRemoveChild(aNode, aNode.lastChild);
-                        }
-                    } else {
-                        aNode.innerHTML = '';
-                    }
-                } else {
-                    aNode.innerHTML = '';
-                }
+                aNode.innerHTML = '';
             } else {
                 while (aNode.hasChildNodes()) {
                     //  NB: Note how we remove from the back... this helps when

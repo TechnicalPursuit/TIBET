@@ -2345,9 +2345,6 @@ function(aStyleRule, sourceASTs, aStyleURI) {
     if (TP.sys.isUA('GECKO')) {
         vendorPrefix = '-moz-';
         nonPlatformMatcher = /-ms-|-webkit-/;
-    } else if (TP.sys.isUA('IE')) {
-        vendorPrefix = '-ms-';
-        nonPlatformMatcher = /-moz-|-webkit-/;
     } else if (TP.sys.isUA('WEBKIT')) {
         vendorPrefix = '-webkit-';
         nonPlatformMatcher = /-moz-|-ms-/;

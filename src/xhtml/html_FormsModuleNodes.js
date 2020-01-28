@@ -799,12 +799,6 @@ function(toStart) {
 
     node = this.getNativeNode();
 
-    if (TP.sys.isUA('IE')) {
-        //  Nasty code to get the current indices of the selection in IE,
-        //  which is going away in IE9... so why bother?
-        return this;
-    }
-
     if (toStart) {
         node.setSelectionRange(node.selectionStart, node.selectionStart);
     } else {
@@ -830,14 +824,6 @@ function() {
 
     node = this.getNativeNode();
 
-    if (TP.sys.isUA('IE')) {
-        if (TP.notValid(sel = this.getNativeDocument().selection)) {
-            return '';
-        }
-
-        return sel.createRange().text;
-    }
-
     return node.value.substring(node.selectionStart, node.selectionEnd);
 });
 
@@ -858,16 +844,6 @@ function() {
         start,
         end;
 
-    if (TP.sys.isUA('IE')) {
-        range = this.getNativeDocument().selection.createRange();
-
-        rangeDup = range.duplicate();
-        start = 0 - rangeDup.moveStart('character', -100000) - 1;
-        end = start + range.text.length;
-
-        return end;
-    }
-
     return this.getNativeNode().selectionEnd;
 });
 
@@ -886,15 +862,6 @@ function() {
         rangeDup,
 
         start;
-
-    if (TP.sys.isUA('IE')) {
-        range = this.getNativeDocument().selection.createRange();
-
-        rangeDup = range.duplicate();
-        start = 0 - rangeDup.moveStart('character', -100000) - 1;
-
-        return start;
-    }
 
     return this.getNativeNode().selectionStart;
 });
@@ -1070,16 +1037,6 @@ function(aStartIndex, anEndIndex) {
         range;
 
     node = this.getNativeNode();
-
-    if (TP.sys.isUA('IE')) {
-        range = node.createTextRange();
-        range.collapse(true);
-        range.moveStart('character', aStartIndex);
-        range.moveEnd('character', anEndIndex - aStartIndex);
-        range.select();
-
-        return this;
-    }
 
     node.setSelectionRange(aStartIndex, anEndIndex);
 

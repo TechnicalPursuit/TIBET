@@ -20,30 +20,6 @@ Platform-specific functionality related to CSS operations.
 
 TP.definePrimitive('$elementCSSFlush',
 TP.hc(
-    'test',
-    'trident',
-    'true',
-    function(anElement) {
-
-        /**
-         * @method $elementCSSFlush
-         * @summary Jiggers the element to flush out any CSS changes. IE should
-         *     do this automatically, but won't sometimes, especially for
-         *     'custom' attributes.
-         * @param {Element} anElement The element to flush the CSS style changes
-         *     for.
-         * @exception TP.sig.InvalidElement
-         */
-
-        //  Just setting the className to its own value causes the flush to
-        //  happen. I guess it's just if the slot is touched.
-
-        /* eslint-disable no-self-assign */
-        anElement.className = anElement.className;
-        /* eslint-enable no-self-assign */
-
-        return;
-    },
     TP.DEFAULT,
     function(anElement) {
 
@@ -72,36 +48,6 @@ TP.hc(
 
 TP.definePrimitive('elementClearStyleProperty',
 TP.hc(
-    'test',
-    'trident',
-    'true',
-    function(anElement, propertyName) {
-
-        /**
-         * @method elementClearStyleProperty
-         * @summary Clears the style property on the element provided.
-         * @param {Element} anElement The element to clear the style property
-         *     on.
-         * @param {String} propertyName The name of the CSS property to clear on
-         *     the provided element.
-         */
-
-        //  On IE9, trying to clear the 'clip' property in the normal way
-        //  doesn't work. The only other way to do it is to use a RegExp
-        //  that strips the 'clip' (and IE variants cliptop, etc.)
-        //  declaration out of the elements local 'cssText' property.
-        if (propertyName === 'clip') {
-            TP.elementGetStyleObj(anElement).cssText =
-                anElement.style.cssText.strip(
-                            /\s*clip(top|right|bottom|left)?:.+?(;\s*|$)/i);
-
-            return;
-        }
-
-        TP.elementGetStyleObj(anElement)[propertyName] = '';
-
-        return;
-    },
     TP.DEFAULT,
     function(anElement, propertyName) {
 

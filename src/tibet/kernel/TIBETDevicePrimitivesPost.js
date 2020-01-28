@@ -611,28 +611,15 @@ function(anEvent) {
 
     switch (button) {
         case 0:
-            if (!TP.sys.isUA('IE')) {
-                return TP.LEFT;
-            }
-
-            break;
+            return TP.LEFT;
 
         case 1:
-            if (TP.sys.isUA('IE')) {
-                return TP.LEFT;
-            } else {
-                return TP.MIDDLE;
-            }
+            return TP.MIDDLE;
 
         case 2:
             return TP.RIGHT;
 
         case 4:
-            if (TP.sys.isUA('IE')) {
-                return TP.MIDDLE;
-            }
-            break;
-
         default:
             break;
     }
@@ -1237,23 +1224,6 @@ function(nativeEvt) {
     if (TP.isEmpty(sourceElement.id) &&
         sourceElement !== sourceWindow.document) {
         sourceElement = currentElement;
-    }
-
-    if (TP.sys.isUA('IE')) {
-        //  If the object that has the handler (the 'this' object) is
-        //  window's document and the source of the event is not the
-        //  document's body, then that means it was a bubbled event. If it's
-        //  not one of the events that we install on all elements, then that
-        //  means that this handler is one on the document that was not
-        //  meant to be a catch all (it was placed as an individual handler
-        //  on document) and IE automatically bubbled the event here. In any
-        //  case, we don't want it.
-        if (currentElement === sourceWindow.document &&
-            sourceElement !== TP.documentGetBody(sourceWindow.document) &&
-            !sourceWindow.$$allElementEvents.containsString(
-                                TP.DOM_SIGNAL_TYPE_MAP.at(nativeEvt.type))) {
-            return;
-        }
     }
 
     //  Looks like we're going to signal it so we need names

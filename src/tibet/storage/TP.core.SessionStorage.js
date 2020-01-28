@@ -33,13 +33,6 @@ function() {
      *     platform.
      */
 
-    //  Webkit-based and Mozilla-based browsers actually support 'sessionStorage'
-    //  when TIBET is booted from the 'file://' system, but IE doesn't support
-    //  this.
-    if (TP.sys.isUA('IE') && !TP.sys.isHTTPBased()) {
-        return false;
-    }
-
     return true;
 });
 

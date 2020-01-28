@@ -1358,18 +1358,6 @@ function(nativeEvent) {
     switch (TP.eventGetType(ev)) {
         case 'keydown':
 
-            //  suppress dups for IE...we manage repeat differently
-            //  Note that we only do this if the event is not synthetic
-            //  (otherwise it causes problems with our test harness).
-            if (TP.sys.isUA('IE') && !ev.synthetic) {
-
-                lastEvent = TP.core.Keyboard.get('lastDown');
-                if (TP.isEvent(lastEvent) &&
-                    TP.eventIsDuplicate(lastEvent, ev)) {
-                    return this;
-                }
-            }
-
             //  Clear all history to avoid confusion in state.
             TP.core.Keyboard.$set('lastPress', null);
             TP.core.Keyboard.$set('lastUp', null);
@@ -1392,18 +1380,6 @@ function(nativeEvent) {
 
         case 'keypress':
 
-            //  suppress dups for IE...we manage repeat differently
-            //  Note that we only do this if the event is not synthetic
-            //  (otherwise it causes problems with our test harness).
-            if (TP.sys.isUA('IE') && !ev.synthetic) {
-
-                lastEvent = TP.core.Keyboard.get('lastPress');
-                if (TP.isEvent(lastEvent) &&
-                    TP.eventIsDuplicate(lastEvent, ev)) {
-                    return this;
-                }
-            }
-
             //  Capture the event into a variable that will keep a reference
             //  to the last time this event happened. This is used in a
             //  variety of ways in the $$handle* calls, and both the event
@@ -1416,18 +1392,6 @@ function(nativeEvent) {
             break;
 
         case 'keyup':
-
-            //  suppress dups for IE...we manage repeat differently
-            //  Note that we only do this if the event is not synthetic
-            //  (otherwise it causes problems with our test harness).
-            if (TP.sys.isUA('IE') && !ev.synthetic) {
-
-                lastEvent = TP.core.Keyboard.get('lastUp');
-                if (TP.isEvent(lastEvent) &&
-                    TP.eventIsDuplicate(lastEvent, ev)) {
-                    return this;
-                }
-            }
 
             //  Capture the event into a variable that will keep a reference
             //  to the last time this event happened. This is used in a

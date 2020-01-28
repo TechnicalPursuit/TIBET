@@ -190,7 +190,7 @@ if (TP.notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
                                         'TP.sig.DOMMouseWheel');
     }
 
-    if (TP.sys.isUA('IE') || TP.sys.isUA('WEBKIT')) {
+    if (TP.sys.isUA('WEBKIT')) {
         TP.DOM_SIGNAL_TYPE_MAP.atPut('mousewheel',
                                         'TP.sig.DOMMouseWheel');
     }

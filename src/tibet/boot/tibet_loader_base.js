@@ -757,8 +757,6 @@ TP.$browserUIMinor = null;
 TP.$browserUIBuild = null;
 TP.$browserUIPatch = null;
 
-TP.$msxml = null;
-
 //  NOTE that these 3 are temporary and will be deleted once detect is done.
 TP.$versions = null;
 TP.$major = null;
@@ -1392,80 +1390,6 @@ TP.sys.needsLoadingIndicator = function() {
 };
 
 //  ----------------------------------------------------------------------------
-//  IE MSXML VERSION TRACKING
-//  ----------------------------------------------------------------------------
-
-/*
-Various tasks such as document creation etc. can be sensitive to the MSXML
-and JScript versions available in IE. We test for that information here.
-*/
-
-//  ----------------------------------------------------------------------------
-
-if (TP.sys.isUA('IE')) {
-
-    //  NB: Put this in an enclosing function so that we can use local vars
-    //  without them being hoisted into the global space
-    (function() {
-
-        //  NB: MSXML versions 4 and 5 are not recommended by Microsoft, but
-        //  we go ahead and set the TP.$msxml variable to the real version of
-        //  MSXML that is installed. It's just that this shouldn't be used for
-        //  creating documents, etc.
-        /* eslint-disable no-new */
-        try {
-            new ActiveXObject('Msxml2.DOMDocument.6.0');
-            TP.$msxml = 6;
-        } catch (e) {
-            try {
-                new ActiveXObject('Msxml2.DOMDocument.5.0');
-                TP.$msxml = 5;
-            } catch (e2) {
-                try {
-                    new ActiveXObject('Msxml2.DOMDocument.4.0');
-                    TP.$msxml = 4;
-                } catch (e3) {
-                    try {
-                        new ActiveXObject('Msxml2.DOMDocument.3.0');
-                        TP.$msxml = 3;
-                    } catch (e4) {
-                        try {
-                            new ActiveXObject('Msxml2.DOMDocument.2.0');
-                            TP.$msxml = 2;
-                        } catch (e5) {
-                            //  empty
-                        }
-                    }
-                }
-            }
-        }
-        /* eslint-enable no-new */
-    }());
-}
-
-//  ----------------------------------------------------------------------------
-
-TP.sys.isMSXML = function(version, comparison) {
-
-    /**
-     * @method isMSXML
-     * @summary Tests IE's MSXML version for an explicit version, or a version
-     *     equal-to-or-above (TP.UP) or equal-to-or-below (TP.DOWN) a specified
-     *     version number.
-     * @param {Number} version The version number for comparison.
-     * @param {String} comparison TP.UP or TP.DOWN.
-     */
-
-    if (comparison === TP.UP) {
-        return TP.$msxml >= version;
-    } else if (comparison === TP.DOWN) {
-        return TP.$msxml <= version;
-    } else {
-        return TP.$msxml === version;
-    }
-};
-
-//  ----------------------------------------------------------------------------
 //  SUPPORTED PLATFORM TRACKING
 //  ----------------------------------------------------------------------------
 
@@ -2069,41 +1993,9 @@ TP.boot.$httpConstruct = function() {
      * @returns {XMLHttpRequest} A new XMLHttpRequest object.
      */
 
-    var request,
-        versions,
-        len,
-        i;
+    var request;
 
-    if (TP.sys.isUA('IE')) {
-        //  first check here _should be_ for IE's built-in, however...
-        //  TIBET doesn't use this object by default, because of the
-        //  following limitations on calls made by using this object:
-        //      - Limited to http:// or https:// protocols
-        //      - Limited to same port, host and domain
-
-        //  try to create the most recent version possible
-
-        //  NB: MSXML versions 4 and 5 are not recommended by Microsoft,
-        //  so we don't create them and have them commented out here.
-        versions = ['Msxml2.XMLHTTP.6.0',
-                        // 'Msxml2.XMLHTTP.5.0',
-                        // 'Msxml1.XMLHTTP.4.0',
-                        'Msxml2.XMLHTTP.3.0',
-                        'Msxml2.XMLHTTP',
-                        'Microsoft.XMLHTTP'];
-        len = versions.length;
-
-        for (i = 0; i < len; i++) {
-            try {
-                request = new ActiveXObject(versions[i]);
-                break;
-            } catch (e) {
-                //  empty
-            }
-        }
-    } else {
-        request = new XMLHttpRequest();
-    }
+    request = new XMLHttpRequest();
 
     if (request == null) {
         TP.boot.shouldStop('HTTP request creation failure.');
@@ -3180,9 +3072,7 @@ TP.boot.$uriLoad = async function(targetUrl, resultType, targetType) {
     returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
     if (targetUrl.toLowerCase().indexOf('file') === 0) {
-        if (TP.sys.isUA('IE')) {
-            result = TP.boot.$uriLoadIEFile(targetUrl, returnType);
-        } else if (TP.sys.cfg('boot.moz_xpcom')) {
+        if (TP.sys.cfg('boot.moz_xpcom')) {
             //  if the uriLoadCommonFile has to switch into privilege mode
             //  for Moz/FF3+ then the flag will redirect so we don't waste
             //  time trying HTTP, we'll go straight to XPCOM
@@ -3757,24 +3647,19 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
         //  and report properly.
         newNode.onerror = TP.boot.$$nodeAppendError;
 
-        if (TP.sys.isUA('IE')) {
-            aNode.appendChild(newNode);
-            theNode = newNode;
+        if (aNode.nodeType === Node.DOCUMENT_NODE) {
+            nodeDoc = aNode;
         } else {
-            if (aNode.nodeType === Node.DOCUMENT_NODE) {
-                nodeDoc = aNode;
-            } else {
-                nodeDoc = aNode.ownerDocument;
-            }
-
-            if (nodeDoc !== newNode.ownerDocument) {
-                theNode = nodeDoc.importNode(newNode, true);
-            } else {
-                theNode = newNode;
-            }
-
-            aNode.appendChild(theNode);
+            nodeDoc = aNode.ownerDocument;
         }
+
+        if (nodeDoc !== newNode.ownerDocument) {
+            theNode = nodeDoc.importNode(newNode, true);
+        } else {
+            theNode = newNode;
+        }
+
+        aNode.appendChild(theNode);
     } catch (e) {
         $ERROR = e;
     } finally {
@@ -3816,23 +3701,19 @@ TP.boot.$nodeInsertBefore = function(aNode, newNode, insertionPointNode) {
     var nodeDoc,
         theNode;
 
-    if (TP.sys.isUA('IE')) {
-        aNode.insertBefore(newNode, insertionPointNode);
+    if (aNode.nodeType === Node.DOCUMENT_NODE) {
+        nodeDoc = aNode;
     } else {
-        if (aNode.nodeType === Node.DOCUMENT_NODE) {
-            nodeDoc = aNode;
-        } else {
-            nodeDoc = aNode.ownerDocument;
-        }
-
-        if (nodeDoc !== newNode.ownerDocument) {
-            theNode = nodeDoc.importNode(newNode, true);
-        } else {
-            theNode = newNode;
-        }
-
-        aNode.insertBefore(theNode, insertionPointNode);
+        nodeDoc = aNode.ownerDocument;
     }
+
+    if (nodeDoc !== newNode.ownerDocument) {
+        theNode = nodeDoc.importNode(newNode, true);
+    } else {
+        theNode = newNode;
+    }
+
+    aNode.insertBefore(theNode, insertionPointNode);
 
     return theNode;
 };
@@ -3854,23 +3735,19 @@ TP.boot.$nodeReplaceChild = function(aNode, newNode, oldNode) {
     var nodeDoc,
         theNode;
 
-    if (TP.sys.isUA('IE')) {
-        aNode.replaceChild(newNode, oldNode);
+    if (aNode.nodeType === Node.DOCUMENT_NODE) {
+        nodeDoc = aNode;
     } else {
-        if (aNode.nodeType === Node.DOCUMENT_NODE) {
-            nodeDoc = aNode;
-        } else {
-            nodeDoc = aNode.ownerDocument;
-        }
-
-        if (nodeDoc !== newNode.ownerDocument) {
-            theNode = nodeDoc.importNode(newNode, true);
-        } else {
-            theNode = newNode;
-        }
-
-        aNode.replaceChild(theNode, oldNode);
+        nodeDoc = aNode.ownerDocument;
     }
+
+    if (nodeDoc !== newNode.ownerDocument) {
+        theNode = nodeDoc.importNode(newNode, true);
+    } else {
+        theNode = newNode;
+    }
+
+    aNode.replaceChild(theNode, oldNode);
 
     return theNode;
 };
@@ -8525,9 +8402,6 @@ TP.boot.$configureEnvironment = function() {
     TP.boot.$$setenv('tibet.browserUIMinor', TP.$browserUIMinor);
     TP.boot.$$setenv('tibet.browserUIBuild', TP.$browserUIBuild);
     TP.boot.$$setenv('tibet.browserUIPatch', TP.$browserUIPatch);
-
-    //  xml processing
-    TP.boot.$$setenv('tibet.msxml', TP.$msxml);
 
     //  language
     TP.boot.$$setenv('tibet.xmllang',
