@@ -2612,8 +2612,10 @@ TP.hc(
                 return;
             }
 
+            //  On Electron, we always return true, thereby triggering the
+            //  'will-prevent-unload' event which we handle in the main process.
             if (TP.sys.cfg('boot.context') === 'electron') {
-                return;
+                return true;
             }
 
             //  If there is no body, there is nothing to protect, so we can
