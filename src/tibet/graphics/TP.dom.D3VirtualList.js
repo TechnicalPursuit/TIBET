@@ -651,6 +651,8 @@ TP.extern.d3.VirtualScroller = function() {
         control,
         dispatch,
 
+        lastScrollTop,
+
         rowsAdjustment,
 
         scrollerFunc;
@@ -673,6 +675,8 @@ TP.extern.d3.VirtualScroller = function() {
     delta = 0;
     control = null;
     dispatch = TP.extern.d3.dispatch('pageDown', 'pageUp');
+
+    lastScrollTop = 0;
 
     scrollerFunc = function(container) {
 
@@ -717,11 +721,21 @@ TP.extern.d3.VirtualScroller = function() {
 
             delta = position - lastPosition;
 
-            //  Make the scrolling render function itself run after the next
-            //  repaint for less flicker.
-            (function() {
+            //  If there was no difference in scroll position, then we're
+            //  probably re-rendering because something like a selection has
+            //  changed. We do that directly right here.
+            if (Math.abs(scrollTop - lastScrollTop) === 0) {
                 scrollRenderFrame(position);
-            }).queueAfterNextRepaint();
+            } else {
+                //  Otherwise, there was a change in scroll position. Make the
+                //  scrolling render function itself run after the next repaint
+                //  for less flicker.
+                (function() {
+                    scrollRenderFrame(position);
+                }).queueAfterNextRepaint();
+            }
+
+            lastScrollTop = scrollTop;
         };
 
         control.$internalRender = render;
