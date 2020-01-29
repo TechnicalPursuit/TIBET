@@ -125,10 +125,6 @@ helpers.linkup_app = function(make, options) {
             return;
         }
 
-        /*
-        sh.ln(lnflags, linksrc, linkdest);
-        */
-
         //  Grab the directories of the link source and destination.
         linksrcdir = path.dirname(linksrc);
         linkdestdir = path.dirname(linkdest);
