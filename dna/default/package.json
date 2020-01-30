@@ -2,20 +2,19 @@
     "name": "{{appname}}",
     "version": "0.1.0",
     "dependencies": {
-        "bluebird": "*",
+        "bluebird": "^3.7.2",
         "body-parser": "*",
-        "chokidar": "^1.4.0",
+        "chokidar": "^3.3.1",
         "compression": "*",
         "cookie-parser": "*",
         "cookies": "*",
-        "crypto": "0.0.3",
-        "express": "*",
+        "express": "^4.17.1",
         "express-handlebars": "^2.0.1",
         "express-session": "*",
         "express-winston": "*",
         "helmet": "*",
-        "ip": "*",
-        "js-beautify": "*",
+        "ip": "^1.1.5",
+        "js-beautify": "^1.10.3",
         "jsonwebtoken": "*",
         "keygrip": "*",
         "marked-man": "^0.2.1",
@@ -30,8 +29,8 @@
         "winston": "github:TechnicalPursuit/winston"
     },
     "devDependencies": {
-        "stylelint": "^9.10.1",
-        "stylelint-config-standard": "^18.3.0"
+        "stylelint": "^13.0.0",
+        "stylelint-config-standard": "^19.0.0"
     },
     "engines": {
         "node": ">=8",
