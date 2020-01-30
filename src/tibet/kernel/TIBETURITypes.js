@@ -6996,7 +6996,7 @@ function(shouldBePatched) {
 //  ------------------------------------------------------------------------
 
 TP.uri.URL.Inst.defineMethod('refreshFromRemoteResource',
-function() {
+async function() {
 
     /**
      * @method refreshFromRemoteResource
@@ -7010,7 +7010,9 @@ function() {
     var callback,
         secondaryURIs,
         changedLoc,
-        normalizedLoc;
+        normalizedLoc,
+
+        isLoadableScript;
 
     if (this.isWatched()) {
         this.isLoaded(false);
@@ -7089,18 +7091,22 @@ function() {
 
         callback();
 
-    } else if (TP.boot.$isLoadableScript(changedLoc)) {
-        //  If the receiver refers to a file that was loaded (meaning it's
-        //  mentioned in a TIBET package config) we source it back in rather
-        //  than just loading via simple XHR.
-        TP.debug('Sourcing in updates to ' + changedLoc);
-
-        return TP.sys.importSourceText(changedLoc).then(callback, callback);
     } else {
-        TP.debug('Reading in changes to ' + changedLoc);
+        isLoadableScript = await TP.boot.$isLoadableScript(changedLoc);
 
-        return this.getResource(TP.hc('signalChange', false)).then(
-                                                    callback, callback);
+       if (isLoadableScript) {
+            //  If the receiver refers to a file that was loaded (meaning it's
+            //  mentioned in a TIBET package config) we source it back in rather
+            //  than just loading via simple XHR.
+            TP.debug('Sourcing in updates to ' + changedLoc);
+
+            return TP.sys.importSourceText(changedLoc).then(callback, callback);
+        } else {
+            TP.debug('Reading in changes to ' + changedLoc);
+
+            return this.getResource(TP.hc('signalChange', false)).then(
+                                                        callback, callback);
+        }
     }
 });
 
