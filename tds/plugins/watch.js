@@ -233,7 +233,7 @@
                         escaper(fullpath);
                 }, '');
 
-                pattern += '|\\.git|\\.svn|node_modules';
+                pattern += '|\\.git|\\.svn|node_modules|[\\/\\\\]\\..';
 
                 try {
                     pattern = new RegExp(pattern);
@@ -242,7 +242,7 @@
                         e.message);
                 }
             } else {
-                pattern = /\.git|\.svn|node_modules/;
+                pattern = /\.git|\.svn|node_modules|[\/\\]\../;
             }
 
             watcher = chokidar.watch(include, {

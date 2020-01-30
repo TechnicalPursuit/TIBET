@@ -970,7 +970,7 @@
                     return str ? str + '|' + escaper(item) : escaper(item);
                 }, '');
 
-                pattern += '|\\.git|\\.svn';
+                pattern += '|\\.git|\\.svn|[\\/\\\\]\\..';
 
                 try {
                     pattern = new RegExp(pattern);
@@ -979,7 +979,7 @@
                         e.message);
                 }
             } else {
-                pattern = /\.git|\.svn/;
+                pattern = /\.git|\.svn|[\/\\]\../;
             }
 
             TDS.ifDebug() ?
