@@ -73,7 +73,7 @@
         "minimist": "*",
         "moment": "^2.24.0",
         "nano": "^8.1.0",
-        "node-forge": "^0.7.6",
+        "node-forge": "^0.9.1",
         "npm": "^6.13.7",
         "open-editor": "^1.2.0",
         "opener": "^1.5.1",
@@ -104,7 +104,7 @@
         "mutation-summary": "github:TechnicalPursuit/mutation-summary",
         "node-sass": "^4.13.1",
         "puppeteer": "^1.20.0",
-        "sinon": "^7.5.0",
+        "sinon": "^8.1.1",
         "stylelint": "^13.0.0",
         "stylelint-config-standard": "^19.0.0",
         "syn": "github:TechnicalPursuit/syn"
