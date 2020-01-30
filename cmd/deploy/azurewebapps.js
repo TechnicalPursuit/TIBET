@@ -96,7 +96,7 @@
             dockerpath = sh.which(DOCKER_COMMAND);
             if (dockerpath) {
                 this.info('found Docker...');
-                return dockerpath;
+                return dockerpath.toString();
             }
 
             this.info('Docker not installed');
@@ -115,7 +115,7 @@
             azureclipath = sh.which(AZURE_COMMAND);
             if (azureclipath) {
                 this.info('found Azure CLI tools...');
-                return azureclipath;
+                return azureclipath.toString();
             }
 
             this.info('Azure CLI tools not installed. See: ' +

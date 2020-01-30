@@ -1036,14 +1036,17 @@ CLI.getCommands = function() {
     for (i = 0; i < len; i++) {
         base = this._package.expandPath(roots[i]);
         if (sh.test('-d', base)) {
-            files = files.concat(sh.find(base).filter(function(fname) {
-                var name;
+            files = files.concat(sh.find(base).filter(function(file) {
+                var filename,
+                    name;
 
-                if (sh.test('-d', fname)) {
+                filename = file.toString();
+
+                if (sh.test('-d', filename)) {
                     return false;
                 }
 
-                name = path.basename(fname, '.js');
+                name = path.basename(filename, '.js');
                 if (name.charAt(0) === '_') {
                     return false;
                 }
@@ -1053,8 +1056,11 @@ CLI.getCommands = function() {
         }
     }
 
-    files = files.map(function(fname) {
-        return path.basename(fname, '.js');
+    files = files.map(function(file) {
+        var filename;
+
+        filename = file.toString();
+        return path.basename(filename, '.js');
     });
 
     return files.sort();

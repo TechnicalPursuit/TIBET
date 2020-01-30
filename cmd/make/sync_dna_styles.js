@@ -31,7 +31,7 @@
                 dest = dest + make.path.sep;
 
                 make.log(dest);
-                make.sh.cp('-rf', srcpath, dest);
+                make.sh.cp('-r', make.path.join(srcpath, '*'), dest);
             });
         }
 

@@ -212,8 +212,12 @@ Cmd.prototype.executeForCommand = function(command) {
         list = sh.ls(htmldir);
         pattern = new RegExp('^' + command + '\\.' + '(\\d)\\.html');
         list.some(function(file) {
-            if (pattern.test(file)) {
-                htmlpath = file;
+            var filename;
+
+            filename = file.toString();
+
+            if (pattern.test(filename)) {
+                htmlpath = filename;
                 return true;
             }
             return false;
@@ -411,43 +415,55 @@ Cmd.prototype.executeMissingCheck = function() {
     //  Built-ins
     //  ---
 
-    mans = sh.ls(path.join(CLI.expandPath('~lib'), 'doc', 'markdown')).map(function(name) {
-        return name.slice(6, -5);
-    });
+    mans = sh.ls(path.join(CLI.expandPath('~lib'), 'doc', 'markdown')).map(
+        function(name) {
+            return name.toString().slice(6, -5);
+        });
 
-    cmds = sh.ls(__dirname).filter(function(name) {
-        return name.charAt(0) !== '_' && name.slice(-3) === '.js';
-    }).map(function(name) {
-        return name.slice(0, -3);
-    });
+    cmds = sh.ls(__dirname).filter(
+        function(name) {
+            var filename;
 
-    missing = cmds.filter(function(name) {
-        return mans.indexOf(name) === -1;
-    });
+            filename = name.toString();
 
-    missing.forEach(function(name) {
-        thisref.info(name + ' (built-in command)');
-    });
+            return filename.charAt(0) !== '_' && filename.slice(-3) === '.js';
+        }).map(function(name) {
+            return name.slice(0, -3);
+        });
+
+    missing = cmds.filter(
+        function(name) {
+            return mans.indexOf(name) === -1;
+        });
+
+    missing.forEach(
+        function(name) {
+            thisref.info(name + ' (built-in command)');
+        });
 
     //  ---
     //  Custom commands
     //  ---
 
-    mans = sh.ls(path.join(CLI.expandPath('~'), 'doc', 'markdown')).map(function(name) {
-        return name.slice(6, -5);
-    });
+    mans = sh.ls(path.join(CLI.expandPath('~'), 'doc', 'markdown')).map(
+            function(name) {
+                return name.toString().slice(6, -5);
+            });
 
-    cmds = this.getCommands(CLI.expandPath('~app_cmd')).filter(function(name) {
-        return name.charAt(0) !== '_';
-    });
+    cmds = this.getCommands(CLI.expandPath('~app_cmd')).filter(
+            function(name) {
+                return name.charAt(0) !== '_';
+            });
 
-    missing = cmds.filter(function(name) {
-        return mans.indexOf(name) === -1;
-    });
+    missing = cmds.filter(
+            function(name) {
+                return mans.indexOf(name) === -1;
+            });
 
-    missing.forEach(function(name) {
-        thisref.info(name + ' (project command)');
-    });
+    missing.forEach(
+            function(name) {
+                thisref.info(name + ' (project command)');
+            });
 
     //  ---
     //  Makefile targets
@@ -498,11 +514,14 @@ Cmd.prototype.executeTopics = function(silent) {
     paths.forEach(function(root, index) {
 
         sh.ls('-R', root).forEach(function(file) {
-            var filepath,
+            var filename,
+                filepath,
                 name,
                 parts;
 
-            filepath = path.join(root, file);
+            filename = file.toString();
+
+            filepath = path.join(root, filename);
             if (sh.test('-d', filepath)) {
                 return;
             }
@@ -510,7 +529,7 @@ Cmd.prototype.executeTopics = function(silent) {
             //  By convention man pages look like {project}-{topic}.{section}
             //  and they will lay out into different section subdirectories. We
             //  want to trim all that off and just list the topic.
-            name = path.basename(file).replace(path.extname(file), '');
+            name = path.basename(filename).replace(path.extname(filename), '');
             parts = name.split('-');
             if (parts.length > 1) {
                 name = parts.slice(1).join('-');
@@ -560,13 +579,17 @@ Cmd.prototype.getCommands = function(aPath) {
     // exist, so check that first.
     if (sh.test('-d', aPath)) {
         files = sh.ls(aPath);
-        files.sort().forEach(function(file) {
-            if (file.indexOf(CLI.MAKE_FILE) !== -1) {
+        files = files.map(function(file) {
+            return file.toString();
+        });
+
+        files.sort().forEach(function(filename) {
+            if (filename.indexOf(CLI.MAKE_FILE) !== -1) {
                 return;
             }
 
-            if (file.charAt(0) !== '_' && /\.js$/.test(file)) {
-                cmds.push(file.replace(/\.js$/, ''));
+            if (filename.charAt(0) !== '_' && /\.js$/.test(filename)) {
+                cmds.push(filename.replace(/\.js$/, ''));
             }
         });
     }

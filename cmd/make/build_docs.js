@@ -13,6 +13,7 @@
             htmlpath,
             index,
             indexbody,
+            finalstr,
             indexpath,
             list,
             cmdopts,
@@ -63,9 +64,9 @@
 
         //  HTML generation uses common header/footer since output from the
         //  conversion process doesn't include html/body, just "content".
-        header = make.sh.cat(make.path.join(rootpath, 'template', 'header.html'));
+        header = make.sh.cat(make.path.join(rootpath, 'template', 'header.html')).toString();
         header = make.template.compile(header);
-        footer = make.sh.cat(make.path.join(rootpath, 'template', 'footer.html'));
+        footer = make.sh.cat(make.path.join(rootpath, 'template', 'footer.html')).toString();
         footer = make.template.compile(footer);
 
         //  ---
@@ -114,7 +115,7 @@
                     section + '.html">' + topic + '(' + section + ')' + '</a>';
             });
 
-            html.to(destfile);
+            (new make.sh.ShellString(html)).to(destfile);
         };
 
         genMan = function(file, params) {
@@ -145,7 +146,7 @@
             }
 
             man = result.output;
-            man.to(destfile);
+            (new make.sh.ShellString(man)).to(destfile);
         };
 
         //  ---
@@ -171,7 +172,9 @@
 
         //  Process each file, producing both a man page and HTML document.
         list.forEach(function(file) {
-            var parts,
+            var filename,
+
+                parts,
                 section,
                 srcfile,
                 template,
@@ -179,16 +182,18 @@
                 destfile,
                 topic;
 
+            filename = file.toString();
+
             //  Skip directories, just process individual files.
-            srcfile = make.path.join(srcpath, file);
+            srcfile = make.path.join(srcpath, filename);
             if (make.sh.test('-d', srcfile)) {
                 return;
             }
 
             //  Pull file name apart. Should be topic.section.md.
-            parts = splitter.exec(file);
+            parts = splitter.exec(filename);
             if (!parts) {
-                make.warn('Filename ' + file + ' missing topic or section.');
+                make.warn('Filename ' + filename + ' missing topic or section.');
                 return;
             }
             topic = parts[1];
@@ -202,11 +207,11 @@
             };
 
             //  Check target file and if it's more current skip this file.
-            destfile = make.path.join(manpath, 'man' + options.section, file);
+            destfile = make.path.join(manpath, 'man' + options.section, filename);
             destfile = destfile.slice(0, destfile.lastIndexOf('.'));
 
             try {
-                content = make.sh.cat(srcfile);
+                content = make.sh.cat(srcfile).toString();
                 template = make.template.compile(content);
                 content = template(options);
 
@@ -218,16 +223,16 @@
                     return;
                 } else {
                     make.info('processing ' +
-                        file.slice(0, file.lastIndexOf('.')));
+                        filename.slice(0, filename.lastIndexOf('.')));
                 }
 
                 tempfile = srcfile + '.tmp';
-                content.to(tempfile);
+                (new make.sh.ShellString(content)).to(tempfile);
 
-                genMan(file, options);
-                genHtml(file, options);
+                genMan(filename, options);
+                genHtml(filename, options);
             } catch (e) {
-                make.error('Error processing ' + file + ': ' + e.message);
+                make.error('Error processing ' + filename + ': ' + e.message);
             } finally {
                 if (tempfile) {
                     make.sh.rm('-f', tempfile);
@@ -282,12 +287,13 @@
 
         //  Assemble the final index.html page content by using the same
         //  header/footer as all other pages and our indexbody for content.
-        (header(options) +
-         '<dl class="toc">\n' +
-         indexbody.join('<br/>') +
-         '</dl>\n' +
-         footer(options)).to(
-            indexpath);
+        finalstr = header(options) +
+                     '<dl class="toc">\n' +
+                     indexbody.join('<br/>') +
+                     '</dl>\n' +
+                     footer(options);
+
+        (new make.sh.ShellString(finalstr)).to(indexpath);
 
         //  ---
         //  manpage index

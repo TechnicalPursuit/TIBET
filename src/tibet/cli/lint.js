@@ -605,6 +605,7 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
     if (CLI.sh.test('-e', lastpath)) {
         data = CLI.sh.cat(lastpath);
         if (data) {
+            data = data.toString();
             try {
                 data = JSON.parse(data);
                 lastrun = data.lastrun;
@@ -671,7 +672,7 @@ Cmd.prototype.getScannedAssetList = function() {
 
     file = CLI.expandPath('~/.eslintignore');
     if (sh.test('-e', file)) {
-        ignores = sh.cat(file);
+        ignores = sh.cat(file).toString();
     } else {
         ignores = '';
     }
@@ -693,15 +694,19 @@ Cmd.prototype.getScannedAssetList = function() {
     this.verbose('scanning ' + dir + '...');
 
     lib = CLI.inLibrary();
-    list = sh.find(dir).filter(function(fname) {
-        if (sh.test('-d', fname) ||
-            fname.match(/node_modules|.git|.svn/)) {
+    list = sh.find(dir).filter(function(aFile) {
+        var filename;
+
+        filename = aFile.toString();
+
+        if (sh.test('-d', filename) ||
+            filename.match(/node_modules|.git|.svn/)) {
             return false;
         }
 
         //  Don't scan into frozen library source when in a project.
         if (!lib) {
-            return !fname.match(/TIBET-INF\/tibet/);
+            return !filename.match(/TIBET-INF\/tibet/);
         }
 
         //  TODO:   add glob checks against ignores list
@@ -969,7 +974,8 @@ Cmd.prototype.processStylelintResult = function(result) {
 Cmd.prototype.summarize = function(results) {
 
     var msg,
-        lastpath;
+        lastpath,
+        str;
 
     if (!this.options.list) {
         this.log('');
@@ -1002,7 +1008,9 @@ Cmd.prototype.summarize = function(results) {
 
     results.lastrun = Date.now();
     lastpath = CLI.expandPath(Cmd.LAST_RUN_DATA);
-    CLI.beautify(JSON.stringify(results)).to(lastpath);
+
+    str = CLI.beautify(JSON.stringify(results));
+    (new sh.ShellString(str)).to(lastpath);
 
     //  If any errors the ultimate return value will be non-zero.
     return results.errors;
@@ -1051,13 +1059,17 @@ Cmd.prototype.validateConfigFiles = function() {
     cfgdir = CLI.expandPath(cfg);
 
     files = sh.find(cfgdir).filter(function(file) {
+        var filename;
+
+        filename = file.toString();
+
         if (CLI.notEmpty(pattern)) {
-            return pattern.test(file) &&
-                !sh.test('-d', file) &&
-                file.match(/\.xml$/);
+            return pattern.test(filename) &&
+                    !sh.test('-d', filename) &&
+                    filename.match(/\.xml$/);
         } else {
-            return !sh.test('-d', file) &&
-                file.match(/\.xml$/);
+            return !sh.test('-d', filename) &&
+                    filename.match(/\.xml$/);
         }
     });
 
@@ -1099,6 +1111,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
                 res.recheck.push(file);
                 cmd.error('Unable to read ' + file);
             } else {
+                text = text.toString();
                 //  Watch out for files that serve as templates. These will have
                 //  \{{blah}} forms which won't parse correctly.
                 if (/\\{{/.test(text)) {
@@ -1249,7 +1262,7 @@ Cmd.prototype.validateStyleFiles = function(files, results) {
             return;
         }
 
-        config.code = sh.cat(file);
+        config.code = sh.cat(file).toString();
         config.codeFilename = file;
 
         stylelint.lint(config).then(function(result) {
@@ -1316,27 +1329,28 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
 
             text = sh.cat(file);
             if (!text) {
+                res.linty += 1;
+                res.errors += 1;
+                res.recheck.push(file);
                 cmd.error('Unable to read ' + file);
-                res.linty += 1;
-                res.errors += 1;
-                res.recheck.push(file);
-            }
-
-            try {
-                parseString(text, function(err, result) {
-                    if (err) {
-                        res.linty += 1;
-                        res.errors += 1;
-                        cmd.error('Error in ' + file + ': ' + err);
-                        res.recheck.push(file);
-                    }
-                });
-            } catch (e) {
-                cmd.error(file);
-                cmd.error(e.message);
-                res.linty += 1;
-                res.errors += 1;
-                res.recheck.push(file);
+            } else {
+                text = text.toString();
+                try {
+                    parseString(text, function(err, result) {
+                        if (err) {
+                            res.linty += 1;
+                            res.errors += 1;
+                            cmd.error('Error in ' + file + ': ' + err);
+                            res.recheck.push(file);
+                        }
+                    });
+                } catch (e) {
+                    cmd.error(file);
+                    cmd.error(e.message);
+                    res.linty += 1;
+                    res.errors += 1;
+                    res.recheck.push(file);
+                }
             }
 
             // True will end the loop but we only do that if we're doing

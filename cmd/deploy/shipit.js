@@ -107,6 +107,7 @@
                 if (shipitpath) {
                     this.info('found shipit...');
                     foundexe = true;
+                    shipitpath = shipitpath.toString();
                 }
             }
 

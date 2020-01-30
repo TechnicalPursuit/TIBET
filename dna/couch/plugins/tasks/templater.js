@@ -91,7 +91,7 @@
                         templatePath));
                 }
 
-                template = TDS.shell.cat(templatePath);
+                template = TDS.shell.cat(templatePath).toString();
             } else {
                 template = params.template;
             }

@@ -1342,6 +1342,7 @@
         var cfg,
             parts,
             part,
+            str,
             chunk;
 
         if (property.indexOf('tds.') !== 0) {
@@ -1374,7 +1375,8 @@
         }
 
         //  Save the file content back out via shelljs interface.
-        TDS.beautify(JSON.stringify(cfg)).to(TDS.expandPath('~/tds.json'));
+        str = TDS.beautify(JSON.stringify(cfg));
+        (new sh.ShellString(str)).to(TDS.expandPath('~/tds.json'));
     };
 
     /**

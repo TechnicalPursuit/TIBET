@@ -55,15 +55,19 @@
 
         //  * means load them all...but we need to build the list via scan.
         if (plugins === '*') {
-            plugins = sh.find(pluginDir).filter(function(fname) {
-                var base;
+            plugins = sh.find(pluginDir).filter(
+                function(file) {
+                    var filename,
+                        base;
 
-                base = path.basename(fname);
-                return !base.match(/^(\.|_)/) &&
-                    !base.match(/~$/) &&            //  tilde files for vi etc.
-                    !base.match(/\.sw(.{1})$/) &&   //  swap files for vi etc.
-                    !sh.test('-d', fname);
-            });
+                    filename = file.toString();
+
+                    base = path.basename(filename);
+                    return !base.match(/^(\.|_)/) &&
+                        !base.match(/~$/) &&        //  tilde files for vi etc.
+                        !base.match(/\.sw(.{1})$/) && //  swap files for vi etc.
+                        !sh.test('-d', filename);
+                });
         } else {
             //  Plugin list won't have the directory path, just basename minus
             //  extension, so adjust to be full paths.

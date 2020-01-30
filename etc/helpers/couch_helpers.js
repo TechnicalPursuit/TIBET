@@ -55,26 +55,30 @@ helpers.gatherDesignDocFunctions = function(target, root) {
     obj = target || {};
 
     files = sh.ls(root);
-    files.sort().forEach(function(file) {
+    files = files.map(function(file) {
+        return file.toString();
+    });
+
+    files.sort().forEach(function(filename) {
         var fullpath,
             dat;
 
-        if (file.charAt(0) === '_') {
+        if (filename.charAt(0) === '_') {
             return;
         }
 
-        if (path.extname(file) !== '.js') {
+        if (path.extname(filename) !== '.js') {
             return;
         }
 
         try {
-            fullpath = path.join(root, file);
+            fullpath = path.join(root, filename);
             dat = require(fullpath);
             if (typeof dat !== 'function') {
                 throw new Error('No function found in ' + fullpath);
             } else {
                 //  Slice here is to remove '.js' from view name.
-                obj[file.slice(0, -3)] = dat.toString();
+                obj[filename.slice(0, -3)] = dat.toString();
             }
         } catch (e) {
             throw new Error(e.message);
@@ -101,25 +105,29 @@ helpers.gatherDesignDocObjects = function(target, root) {
     obj = target || {};
 
     files = sh.ls(root);
-    files.sort().forEach(function(file) {
+    files = files.map(function(file) {
+        return file.toString();
+    });
+
+    files.sort().forEach(function(filename) {
         var fullpath,
             gathered,
             dat;
 
-        if (file.charAt(0) === '_') {
+        if (filename.charAt(0) === '_') {
             return;
         }
 
-        if (path.extname(file) !== '.js') {
+        if (path.extname(filename) !== '.js') {
             return;
         }
 
         try {
-            fullpath = path.join(root, file);
+            fullpath = path.join(root, filename);
             dat = require(fullpath);
 
             gathered = {};
-            obj[file.slice(0, -3)] = gathered;
+            obj[filename.slice(0, -3)] = gathered;
 
             Object.keys(dat).forEach(function(key) {
                 gathered[key] = dat[key].toString();

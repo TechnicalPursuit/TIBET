@@ -228,7 +228,8 @@ Cmd.prototype.executeDisableEngine = function() {
     var file,
         json,
         env,
-        enabled;
+        enabled,
+        str;
 
     this.reparse({
         string: ['env'],
@@ -257,7 +258,8 @@ Cmd.prototype.executeDisableEngine = function() {
         env.use_tasks = false;
 
         this.log('Updating ' + this.options.env + ' configuration.');
-        CLI.beautify(JSON.stringify(json)).to(file);
+        str = CLI.beautify(JSON.stringify(json));
+        (new sh.ShellString(str)).to(file);
     }
 
     this.info('TWS disabled in ' + this.options.env + '.');
@@ -340,7 +342,8 @@ Cmd.prototype.executeEnableEngine = function() {
     var file,
         json,
         env,
-        enabled;
+        enabled,
+        str;
 
     this.reparse({
         string: ['env'],
@@ -369,7 +372,8 @@ Cmd.prototype.executeEnableEngine = function() {
         env.use_tasks = true;
 
         this.log('Updating ' + this.options.env + ' configuration.');
-        CLI.beautify(JSON.stringify(json)).to(file);
+        str = CLI.beautify(JSON.stringify(json));
+        (new sh.ShellString(str)).to(file);
     }
 
     this.info('TWS enabled in ' + this.options.env + '.');
@@ -1063,7 +1067,7 @@ Cmd.prototype.executeSubmit = function() {
         }
     }
 
-    dat = sh.cat(fullpath);
+    dat = sh.cat(fullpath).toString();
     if (!dat) {
         this.error('No content read for file: ' + fullpath);
     }

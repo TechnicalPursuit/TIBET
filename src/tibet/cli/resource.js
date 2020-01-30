@@ -371,6 +371,11 @@ Cmd.prototype.generateResourceList = function() {
         }
 
         list = sh.ls('-R', src);
+        list = list.map(
+                function(entry) {
+                    return entry.toString();
+                });
+
         if (filter) {
             list = list.filter(filter);
         }

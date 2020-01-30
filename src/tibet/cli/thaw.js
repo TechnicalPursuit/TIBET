@@ -92,7 +92,9 @@ Cmd.prototype.execute = function() {
 
         file,
         json,
-        list;
+        list,
+
+        str;
 
     path = require('path');
     sh = require('shelljs');
@@ -128,8 +130,8 @@ Cmd.prototype.execute = function() {
     }
 
     err = sh.rm('-rf', infroot);
-    if (err) {
-        this.error('Error removing ~app_inf/tibet directory: ' + err);
+    if (sh.error()) {
+        this.error('Error removing ~app_inf/tibet directory: ' + err.stderr);
         return 1;
     }
 
@@ -141,19 +143,23 @@ Cmd.prototype.execute = function() {
 
     this.log('relinking development library resources...');
 
-    sh.ln(lnflags, path.join(app_npm, 'tibet'), infroot);
-    lnerr = sh.error();
-    if (lnerr) {
-        this.error('Error relinking library resources: ' + lnerr);
+    lnerr = sh.ln(lnflags, path.join(app_npm, 'tibet'), infroot);
+    if (sh.error()) {
+        this.error('Error relinking library resources: ' + lnerr.stderr);
     }
 
     this.log('updating embedded lib_root references...');
 
-    list = sh.find('.').filter(function(fname) {
-        return !fname.match('node_modules/tibet') &&
-            !fname.match('TIBET-INF/tibet');
+    list = sh.find('.').filter(function(aFile) {
+        var filename;
+
+        filename = aFile.toString();
+
+        return !filename.match('node_modules/tibet') &&
+                !filename.match('TIBET-INF/tibet');
     });
-    list = sh.grep('-l', 'TIBET-INF/tibet', list);
+
+    list = sh.grep('-l', 'TIBET-INF/tibet', list).toString();
 
     list.split('\n').forEach(function(fname) {
         if (fname) {
@@ -176,7 +182,8 @@ Cmd.prototype.execute = function() {
     }
 
     //  SAVE the file (note the 'to()' call here...
-    CLI.beautify(JSON.stringify(json)).to(file);
+    str = CLI.beautify(JSON.stringify(json));
+    (new sh.ShellString(str)).to(file);
 
     this.info('Application thawed. TIBET now boots from ~/node_modules/tibet.');
 

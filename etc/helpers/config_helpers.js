@@ -270,22 +270,20 @@
              */
             Cmd.prototype.$readPackageFile = function(pkgfile) {
                 var file,
-                    text,
-                    err;
+                    text;
 
                 this.trace('reading package file:' + pkgfile);
 
                 file = CLI.expandPath(pkgfile);
 
                 text = sh.cat(file);
-
-                err = sh.error();
-                if (err) {
-                    this.error('Error reading package file: ' + pkgfile);
+                if (sh.error()) {
+                    this.error('Error reading package file: \'' + pkgfile +
+                                '\': ' + text.stderr);
                     return null;
                 }
 
-                return text;
+                return text.toString();
             };
 
 
@@ -416,7 +414,7 @@
                 try {
                     //  'to' is a shelljs extension to String - we're assuming
                     //  that shelljs is loaded here.
-                    data.to(file);
+                    (new sh.ShellString(data)).to(file);
                 } catch (e) {
                     this.error('Unable to save package data: ' + e.message);
                     return false;

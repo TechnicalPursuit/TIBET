@@ -108,9 +108,7 @@ helpers.linkup_app = function(make, options) {
 
             srcdir,
 
-            rellinksrc,
-
-            lnerr;
+            rellinksrc;
 
         if (item.indexOf('tibet') === 0) {
             linksrc = path.join(source, item);
@@ -136,14 +134,15 @@ helpers.linkup_app = function(make, options) {
         //  will produce a relative path to the destination.
         rellinksrc = path.join(srcdir, item);
 
-        //  NB: The source path to the command here is used as a raw argument.
-        //  In other words, the '../..' is *not* evaluated against the current
-        //  working directory. It is used as is to create the link.
-        fs.symlinkSync(rellinksrc, linkdest);
-
-        lnerr = sh.error();
-        if (lnerr) {
-            throw new Error('Error linking \'' + linksrc + '\': ' + lnerr);
+        try {
+            //  NB: The source path to the command here is used as a raw
+            //  argument. In other words, the '../..' is *not* evaluated against
+            //  the current working directory. It is used as is to create the
+            //  link.
+            fs.symlinkSync(rellinksrc, linkdest);
+        } catch (e) {
+            throw new Error('Error linking \'' + linksrc + '\': ' +
+                            e.toString());
         }
     });
 
@@ -456,7 +455,7 @@ helpers.rollup = function(make, options) {
 
             try {
                 make.log('writing ' + buffer.length + ' chars to: ' + file);
-                buffer.to(file);
+                (new sh.ShellString(buffer)).to(file);
 
                 resolver();
                 return;

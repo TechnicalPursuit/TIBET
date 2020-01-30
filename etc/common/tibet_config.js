@@ -382,9 +382,12 @@
         //  so try to locate it in a direct subdirectory.
         list = sh.ls(head);
         found = list.some(function(file) {
-            var testhead;
+            var filename,
+                testhead;
 
-            testhead = path.join(head, file);
+            filename = file.toString();
+
+            testhead = path.join(head, filename);
             if (!sh.test('-d', testhead)) {
                 return false;
             }

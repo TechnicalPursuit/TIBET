@@ -239,8 +239,12 @@ Cmd.prototype.pushDir = function(dir, options) {
     }
 
     sh.ls(path.join(fullpath, '*.json')).forEach(function(file) {
-        if (path.basename(file).charAt(0) === '_') {
-            thisref.warn('ignoring: ' + file);
+        var filename;
+
+        filename = file.toString();
+
+        if (path.basename(filename).charAt(0) === '_') {
+            thisref.warn('ignoring: ' + filename);
             return;
         }
 
@@ -274,6 +278,8 @@ Cmd.prototype.pushFile = function(file, options) {
     if (!dat) {
         this.error('No content read for file: ' + fullpath);
     }
+
+    dat = dat.toString();
 
     try {
         doc = JSON.parse(dat);
@@ -384,7 +390,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
                 //  Set the document ID to the response ID so we know it.
                 doc._id = response2.id;
                 delete doc._rev;
-                CLI.beautify(doc).to(fullpath);
+                (new sh.ShellString(CLI.beautify(doc))).to(fullpath);
             });
 
         });
@@ -405,7 +411,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             //  Set the document ID to the response ID so we know it.
             doc._id = response.id;
             delete doc._rev;
-            CLI.beautify(doc).to(fullpath);
+            (new sh.ShellString(CLI.beautify(doc))).to(fullpath);
         });
     }
 

@@ -143,6 +143,7 @@ Cmd.prototype.getBootData = function() {
     info.package = pkg;
 
     if (text) {
+        text = text.toString();
         doc = parser.parseFromString(text);
         if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
             this.error('Error parsing ' + cfg + '. Not well-formed?');

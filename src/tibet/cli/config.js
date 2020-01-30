@@ -220,6 +220,7 @@ Cmd.prototype.setConfig = function(path, value) {
         file,
         parts,
         root,
+        str,
         text,
         key,
         val;
@@ -279,12 +280,14 @@ Cmd.prototype.setConfig = function(path, value) {
         root[parts[0]] = val;
     }
 
-    CLI.beautify(JSON.stringify(json)).to(file);
+    str = CLI.beautify(JSON.stringify(json));
+    (new sh.ShellString(str)).to(file);
 
     //  Read the JSON back in. But we can't use require without a bunch of noise
     //  around cache cleansing etc.
     text = sh.cat(file);
     if (text) {
+        text = text.toString();
         json = JSON.parse(text);
         /* eslint-disable no-eval */
         if (/^tds\./.test(path)) {

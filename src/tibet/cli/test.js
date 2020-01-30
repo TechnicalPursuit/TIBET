@@ -173,7 +173,7 @@ Cmd.prototype.executeViaKarma = function() {
     //  ---
 
     proc = require('child_process');
-    child = proc.spawn(sh.which(Cmd.KARMA_COMMAND), args);
+    child = proc.spawn(sh.which(Cmd.KARMA_COMMAND).toString(), args);
 
     child.stdout.on('data', function(data) {
         var msg;

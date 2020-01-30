@@ -1304,15 +1304,17 @@
             //  so try to locate it in a direct subdirectory.
             list = sh.ls(head);
             list.some(function(file) {
-                var full;
+                var full,
+                    filename;
 
-                full = path.join(head, file);
+                filename = file.toString();
+                full = path.join(head, filename);
                 if (!sh.test('-d', full)) {
                     fullpath = null;
                     return false;
                 }
 
-                approot = file;
+                approot = filename;
                 fullpath = path.join(full, tibet);
                 return sh.test('-f', fullpath);
             });
@@ -2098,13 +2100,17 @@
                     list = sh.ls(cwd);
                     /* eslint-disable no-loop-func */
                     list.some(function(file) {
+                        var filename;
+
                         if (!sh.test('-d', file)) {
                             fullpath = null;
                             return false;
                         }
 
-                        approot = file;
-                        fullpath = path.join(cwd, file, tibet);
+                        filename = file.toString();
+
+                        approot = filename;
+                        fullpath = path.join(cwd, filename, tibet);
                         return sh.test('-f', fullpath);
                     });
                     /* eslint-enable no-loop-func */

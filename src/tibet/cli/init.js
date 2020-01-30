@@ -103,6 +103,7 @@ Cmd.prototype.execute = function() {
         cmd,    // Closure'd var providing access to the command object.
         dna,
         wrapup,
+        str,
         pkgpath,
         version,
         data,
@@ -186,10 +187,9 @@ Cmd.prototype.execute = function() {
             }
 
             //  force the link by removing here and falling through...
-            sh.rm('-f', linkfrom);
-            lnerr = sh.error();
-            if (lnerr) {
-                cmd.error('Error removing ' + linkfrom + ': ' + lnerr);
+            lnerr = sh.rm('-f', linkfrom);
+            if (sh.error()) {
+                cmd.error('Error removing ' + linkfrom + ': ' + lnerr.stderr);
                 return 1;
             }
         }
@@ -231,15 +231,15 @@ Cmd.prototype.execute = function() {
 
             this.warn('--force specified...removing and rebuilding dependencies.');
             rmerr = sh.rm('-rf', CLI.MODULE_FILE);
-            if (rmerr) {
+            if (sh.error()) {
                 this.error('Error removing ' + CLI.MODULE_FILE +
-                    ' directory: ' + rmerr);
+                    ' directory: ' + rmerr.stderr);
                 return 1;
             }
             rmerr = sh.rm('-rf', CLI.NPM_LOCK_FILE);
-            if (rmerr) {
+            if (sh.error()) {
                 this.error('Error removing ' + CLI.NPM_LOCK_FILE +
-                    ' file: ' + rmerr);
+                    ' file: ' + rmerr.stderr);
                 return 1;
             }
         } else {
@@ -305,7 +305,9 @@ Cmd.prototype.execute = function() {
         void 0;
     }
 
-    CLI.beautify(JSON.stringify(data)).to(pkgpath);
+    str = CLI.beautify(JSON.stringify(data));
+    (new sh.ShellString(str)).to(pkgpath);
+
 
     //  ---
     //  npm install...etc.
@@ -336,16 +338,17 @@ Cmd.prototype.execute = function() {
 
             //  We already have a global installation, we can just copy that
             //  into place rather than undergoing all the npm overhead again.
-            sh.cp('-R', libbase, npmbase);
-            cperr = sh.error();
-            if (cperr) {
-                cmd.error('Error cloning ' + libbase + ': ' + cperr);
+            cperr = sh.cp('-Rn', path.join(libbase, '*'), npmbase);
+            if (sh.error()) {
+                cmd.error('Error cloning ' + libbase + ': ' + cperr.stderr);
                 return 1;
             }
 
             //  Save version into package.json for reference etc.
             data.dependencies.tibet = version;
-            CLI.beautify(JSON.stringify(data)).to(pkgpath);
+
+            str = CLI.beautify(JSON.stringify(data));
+            (new sh.ShellString(str)).to(pkgpath);
 
             wrapup();
 

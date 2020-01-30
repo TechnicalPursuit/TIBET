@@ -95,6 +95,7 @@ Cmd.prototype.USAGE = 'tibet user <username> [--pass <password>] ' +
  */
 Cmd.prototype.execute = function() {
     var data,
+        str,
         env,
         file,
         encrypted,
@@ -186,7 +187,8 @@ Cmd.prototype.execute = function() {
             if (this.options.pass === '*') {
                 encrypted = this.options.pass;
             } else {
-                //  NOTE leave salt undefined to force generation of a random value.
+                //  NOTE leave salt undefined to force generation of a random
+                //  value.
                 encrypted = crypto.encrypt(this.options.pass, undefined, CLI);
             }
         } else {
@@ -221,7 +223,8 @@ Cmd.prototype.execute = function() {
         data.pass = encrypted;
 
         //  Write out the changes from the top-level json object.
-        CLI.beautify(JSON.stringify(json)).to(file);
+        str = CLI.beautify(JSON.stringify(json));
+        (new CLI.sh.ShellString(str)).to(file);
 
         this.info('User updated.');
 
@@ -276,7 +279,8 @@ Cmd.prototype.execute = function() {
         this.generateDefaultVCard(user, data, fullpath);
 
         //  Write out the changes from the top-level json object.
-        CLI.beautify(JSON.stringify(json)).to(file);
+        str = CLI.beautify(JSON.stringify(json));
+        (new CLI.sh.ShellString(str)).to(file);
 
         this.info('User added.');
     }
@@ -297,7 +301,7 @@ Cmd.prototype.generateDefaultVCard = function(user, userData, fullpath) {
     this.info('Generating vcard in ' + fullpath);
 
     file = path.join(module.filename, this.DNA_ROOT, 'vcard.xml.hb');
-    data = CLI.sh.cat(file);
+    data = CLI.sh.cat(file).toString();
     try {
         template = hb.compile(data);
         if (!template) {
@@ -342,7 +346,7 @@ Cmd.prototype.generateDefaultVCard = function(user, userData, fullpath) {
         return 1;
     }
 
-    content.to(fullpath);
+    (new CLI.sh.ShellString(content)).to(fullpath);
 };
 
 module.exports = Cmd;

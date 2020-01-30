@@ -87,15 +87,18 @@
 
             //  Find all files in the directory, filtering out hidden files.
             list = sh.find(path.join(TDS.expandPath('~'), dir)).filter(
-            function(fname) {
-                var base;
+            function(file) {
+                var filename,
+                    base;
 
-                base = path.basename(fname);
+                filename = file.toString();
+
+                base = path.basename(filename);
 
                 return !base.match(/^(\.|_)/) &&
                     !base.match(/~$/) &&            //  tilde files for vi etc.
                     !base.match(/\.sw(.{1})$/) &&   //  swap files for vi etc.
-                    !sh.test('-d', fname);
+                    !sh.test('-d', filename);
             });
 
             //  Adjust list by cross-referencing against any specific load order

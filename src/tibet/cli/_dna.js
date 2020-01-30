@@ -202,7 +202,7 @@ Cmd.prototype.executeCleanup = function(code, force) {
     list = CLI.sh.ls('-RA', working).filter(function(file) {
         var fullpath;
 
-        fullpath = path.join(working, file);
+        fullpath = path.join(working, file.toString());
         return !CLI.sh.test('-d', fullpath);
     });
 
@@ -217,8 +217,8 @@ Cmd.prototype.executeCleanup = function(code, force) {
     }
 
     err = CLI.sh.rm('-rf', working);
-    if (err) {
-        this.error('Error removing working directory: ' + err);
+    if (CLI.sh.error()) {
+        this.error('Error removing working directory: ' + err.stderr);
         return 1;
     }
 
@@ -246,22 +246,18 @@ Cmd.prototype.executeClone = function() {
 
     // NOTE there are some minor quirks/deviations from how the same command
     // might work at the command line depending on your shell etc.
-    flags = options.force ? '-rf' : '-r';
+    flags = options.force ? '-r' : '-rn';
 
-    // NOTE: a trailing slash says to copy source content, not source directory.
-    CLI.sh.cp(flags, dna + path.sep, working);
-    err = CLI.sh.error();
-    if (err) {
-        this.error('Error cloning dna directory: ' + err);
+    err = CLI.sh.cp(flags, path.join(dna, '*'), working);
+    if (CLI.sh.error()) {
+        this.error('Error cloning dna directory: ' + err.stderr);
         this.executeCleanup(1);
         return 1;
     }
 
-    // HACK: due to a bug in shelljs with hidden files copy any at the root.
-    CLI.sh.cp(flags, path.join(dna, '.*'), working);
-    err = CLI.sh.error();
-    if (err) {
-        this.error('Error copying hidden files: ' + err);
+    err = CLI.sh.cp(flags, path.join(dna, '.*'), working);
+    if (CLI.sh.error()) {
+        this.error('Error cloning dna directory: ' + err.stderr);
         this.executeCleanup(1);
         return 1;
     }
@@ -279,7 +275,6 @@ Cmd.prototype.executeClone = function() {
 Cmd.prototype.executeList = function() {
     var dir,
         list,
-        err,
         cmd;
 
     cmd = this;
@@ -287,9 +282,8 @@ Cmd.prototype.executeList = function() {
     dir = path.join(module.filename, this.DNA_ROOT);
     if (CLI.sh.test('-d', dir)) {
         list = CLI.sh.ls('-A', dir);
-        err = CLI.sh.error();
         if (CLI.sh.error()) {
-            this.error('Error checking dna directory: ' + err);
+            this.error('Error checking dna directory: ' + list.stderr);
             return 1;
         }
     } else {
@@ -298,7 +292,11 @@ Cmd.prototype.executeList = function() {
 
     if (list) {
         list.forEach(function(item) {
-            if (item.charAt(0) === '.' || item.charAt(0) === '_') {
+            var itemStr;
+
+            itemStr = item.toString();
+
+            if (itemStr.charAt(0) === '.' || itemStr.charAt(0) === '_') {
                 return;
             }
             cmd.log(item);
@@ -335,10 +333,9 @@ Cmd.prototype.executeMakeWorkingDir = function() {
         }
     }
 
-    CLI.sh.mkdir('-p', working);
-    err = CLI.sh.error();
-    if (err) {
-        this.error('Error creating working directory: ' + err);
+    err = CLI.sh.mkdir('-p', working);
+    if (CLI.sh.error()) {
+        this.error('Error creating working directory: ' + err.stderr);
         return 1;
     } else {
         this.log('working in: ' + working);
@@ -397,10 +394,9 @@ Cmd.prototype.executePosition = function() {
     //  iterate across the working dir files via the logic below.
     if (!CLI.sh.test('-e', dest)) {
         cmd.verbose('creating target directory: ' + dest);
-        CLI.sh.mkdir('-p', dest);
-        err = CLI.sh.error();
-        if (err) {
-            this.error('Error creating destination directory: ' + err);
+        err = CLI.sh.mkdir('-p', dest);
+        if (CLI.sh.error()) {
+            this.error('Error creating destination directory: ' + err.stderr);
             this.executeCleanup(code);
             return 1;
         }
@@ -413,20 +409,24 @@ Cmd.prototype.executePosition = function() {
     //  Move any directories that don't exist in target location. This will bulk
     //  move as many files as possible without interaction overhead.
     list.forEach(function(file) {
-        var fullpath,
+        var filename,
+
+            fullpath,
             target;
 
-        fullpath = path.join(working, file);
+        filename = file.toString();
+
+        fullpath = path.join(working, filename);
         if (!CLI.sh.test('-d', fullpath)) {
             return;
         }
 
         //  Check for target directories and create as needed.
-        target = path.join(dest, file);
+        target = path.join(dest, filename);
         cmd.verbose('checking directory: ' + target);
         if (!CLI.sh.test('-d', target)) {
-            cmd.debug('moving directory: ' + file);
-            CLI.sh.mv(fullpath, target);
+            cmd.debug('moving directory: ' + filename);
+            CLI.sh.mv('-n', fullpath, target);
         } else {
             cmd.verbose('directory exists');
         }
@@ -436,7 +436,9 @@ Cmd.prototype.executePosition = function() {
     list = CLI.sh.ls('-RA', working);
 
     list.forEach(function(file) {
-        var fullpath,
+        var filename,
+
+            fullpath,
             target,
             skipped,
             exists,
@@ -445,7 +447,9 @@ Cmd.prototype.executePosition = function() {
             answer,
             err2;
 
-        fullpath = path.join(working, file);
+        filename = file.toString();
+
+        fullpath = path.join(working, filename);
         if (CLI.sh.test('-d', fullpath)) {
             //  Skip directories. We've moved any that didn't already exist. The
             //  remaining ones will hopefully be emptied by the time we invoke
@@ -460,24 +464,24 @@ Cmd.prototype.executePosition = function() {
         }
 
         //  Ignore any configuration file we see.
-        if (path.basename(file) === cmd.DNA_CONFIG) {
+        if (path.basename(filename) === cmd.DNA_CONFIG) {
             //  Remove it so it doesn't make working dir look dirty.
-            cmd.verbose('cleansing marker file: ' + file);
+            cmd.verbose('cleansing marker file: ' + filename);
             CLI.sh.rm('-rf', fullpath);
             return;
         }
 
-        cmd.verbose('positioning file: ' + file);
+        cmd.verbose('positioning file: ' + filename);
 
         skipped = false;
-        target = path.join(dest, file.replace(working, ''));
+        target = path.join(dest, filename.replace(working, ''));
         exists = CLI.sh.test('-e', target);
 
         if (exists) {
             //  If they're the same we can provide a clearer set of messaging
             //  and avoid making it sound like we replaced/updated content.
-            olddat = CLI.sh.cat(target);
-            newdat = CLI.sh.cat(fullpath);
+            olddat = CLI.sh.cat(target).toString();
+            newdat = CLI.sh.cat(fullpath).toString();
             if (olddat === newdat) {
                 cmd.verbose('ignoring duplicate file: ' + fullpath);
                 CLI.sh.rm('-rf', fullpath);
@@ -488,29 +492,28 @@ Cmd.prototype.executePosition = function() {
             //  working dir but then rely on update for file positioning.
             if (options.update) {
                 answer = CLI.prompt.question(
-                    'Replace ' + file + ' ? [n] ');
+                    'Replace ' + filename + ' ? [n] ');
                 if (answer.toLowerCase().charAt(0) === 'y') {
                     cmd.warn('updating existing file: ' + target);
-                    CLI.sh.mv('-f', fullpath, target);
+                    err2 = CLI.sh.mv(fullpath, target);
                 } else {
                     cmd.log('skipping conflicted file: ' + target);
                     skipped = true;
                 }
             } else if (options.force) {
                 cmd.warn('replacing existing file: ' + target);
-                CLI.sh.mv('-f', fullpath, target);
+                err2 = CLI.sh.mv(fullpath, target);
             } else {
                 cmd.log('skipping existing file: ' + target);
                 skipped = true;
             }
         } else {
-            CLI.sh.mv(fullpath, target);
+            err2 = CLI.sh.mv('-n', fullpath, target);
         }
 
         if (!skipped) {
-            err2 = CLI.sh.error();
             if (CLI.sh.error()) {
-                cmd.error('Error positioning file: ' + err2);
+                cmd.error('Error positioning file: ' + err2.stderr);
                 return 1;
             }
 
@@ -518,7 +521,7 @@ Cmd.prototype.executePosition = function() {
             //  pattern add it to the products list used by updatePackage.
             if (cmd.PACKAGED_RESOURCE.test(target)) {
                 cmd.verbose('tracking ' + target);
-                cmd.products.push([file, target]);
+                cmd.products.push([filename, target]);
             }
         }
     });
@@ -576,14 +579,18 @@ Cmd.prototype.executeProcess = function() {
 
     //  Get the list of files which are potential templating targets.
     list = CLI.sh.ls('-RA', working).filter(function(file) {
-        var fullpath;
+        var filename,
 
-        if (badexts.indexOf(path.extname(file)) !== -1 ||
-            badpaths.indexOf(path.basename(file)) !== -1) {
+            fullpath;
+
+        filename = file.toString();
+
+        if (badexts.indexOf(path.extname(filename)) !== -1 ||
+            badpaths.indexOf(path.basename(filename)) !== -1) {
             return false;
         }
 
-        fullpath = path.join(working, file);
+        fullpath = path.join(working, filename);
 
         return CLI.sh.test('-f', fullpath);
     });
@@ -591,13 +598,17 @@ Cmd.prototype.executeProcess = function() {
     code = 0;
 
     list.forEach(function(file) {
-        var fullpath,   //  Complete file name.
+        var filename,
+
+            fullpath,   //  Complete file name.
             content,    //  File content after template injection.
             data,       //  File data.
             template,   //  The compiled template content.
             fileparam;  //  adjusted filename for template params.
 
-        fullpath = path.join(working, file);
+        filename = file.toString();
+
+        fullpath = path.join(working, filename);
 
         cmd.verbose('processing file: ' + fullpath);
 
@@ -624,8 +635,8 @@ Cmd.prototype.executeProcess = function() {
             return;
         }
 
-        fileparam = path.basename(file);
-        fileparam = fileparam.replace(path.extname(file), '');
+        fileparam = path.basename(filename);
+        fileparam = fileparam.replace(path.extname(filename), '');
         fileparam = fileparam.split('_')[0] || fileparam.split('_')[1];
         params.filename = fileparam;
 
@@ -705,11 +716,15 @@ Cmd.prototype.executeProcessDirs = function() {
     params = this.getTemplateParameters();
     keys = Object.keys(params);
 
-    dirs = CLI.sh.ls('-RA', working).filter(function(fname) {
-        var passed,
+    dirs = CLI.sh.ls('-RA', working).filter(function(file) {
+        var filename,
+
+            passed,
             fullpath;
 
-        fullpath = path.join(working, fname);
+        filename = file.toString();
+
+        fullpath = path.join(working, filename);
         if (!CLI.sh.test('-d', fullpath)) {
             return false;
         }
@@ -771,7 +786,7 @@ Cmd.prototype.executeRename = function(file) {
         try {
             if (regex.test(fname)) {
                 newname = fname.replace(regex, value);
-                CLI.sh.mv(fname, newname);
+                CLI.sh.mv('-n', fname, newname);
                 fname = newname;
             }
         } catch (e) {
@@ -890,9 +905,8 @@ Cmd.prototype.verifyDestination = function() {
         options.dir = dirname;
 
         list = CLI.sh.ls('-RA', dest);
-        err = CLI.sh.error();
         if (CLI.sh.error()) {
-            this.error('Error checking destination directory: ' + err);
+            this.error('Error checking destination directory: ' + list.stderr);
             return 1;
         }
 
@@ -916,8 +930,9 @@ Cmd.prototype.verifyDestination = function() {
             } else if (options.force) {
                 this.warn('--force specified, removing and rebuilding ' + dest);
                 err = CLI.sh.rm('-rf', dest);
-                if (err) {
-                    this.error('Error removing destination directory: ' + err);
+                if (CLI.sh.error()) {
+                    this.error('Error removing destination directory: ' +
+                                err.stderr);
                     return 1;
                 }
             } else {

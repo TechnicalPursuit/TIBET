@@ -1502,29 +1502,33 @@
 
         if (sh.test('-d', taskdir)) {
             files = sh.ls(taskdir);
-            files.sort().forEach(function(file) {
+            files = files.map(function(file) {
+                return file.toString();
+            });
+
+            files.sort().forEach(function(filename) {
                 var taskMeta,
                     taskModule,
                     taskFunction,
                     taskName;
 
                 //  Ignore directories
-                if (TDS.shell.test('-d', path.join(taskdir, file))) {
+                if (TDS.shell.test('-d', path.join(taskdir, filename))) {
                     return;
                 }
 
                 //  Ignore files that aren't js source
-                if (!/\./.test(file)) {
+                if (!/\./.test(filename)) {
                     return;
                 }
 
-                name = file.slice(0, file.lastIndexOf('.'));
+                name = filename.slice(0, filename.lastIndexOf('.'));
 
                 //  Ignore hidden or 'sample/helper' files.
                 if (name.match(/^(\.|_)/) ||
-                        name.match(/~$/) ||            //  tilde files for vi etc.
-                        name.match(/\.sw(.{1})$/) ||   //  swap files for vi etc.
-                        sh.test('-d', file)) {
+                    name.match(/~$/) ||            //  tilde files for vi etc.
+                    name.match(/\.sw(.{1})$/) ||   //  swap files for vi etc.
+                    sh.test('-d', filename)) {
                     return;
                 }
 
@@ -1539,7 +1543,7 @@
                 options.logger = logger.getContextualLogger(taskMeta);
 
                 try {
-                    taskModule = require(path.join(taskdir, file));
+                    taskModule = require(path.join(taskdir, filename));
                     taskFunction = taskModule(options);
 
                     //  name is the module name that we found it in the

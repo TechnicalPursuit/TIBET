@@ -51,13 +51,16 @@
 
             //  sh.ls here means only top-level files are processed/filtered.
             list = sh.ls(rootDir).filter(function(fname) {
-                var ok;
+                var filename,
+                    ok;
+
+                filename = fname.toString();
 
                 //  Never vend hidden or 'helper' files.
-                if (fname.match(/^(\.|_)/) ||
-                        fname.match(/~$/) ||            //  tilde files for vi etc.
-                        fname.match(/\.sw(.{1})$/) ||   //  swap files for vi etc.
-                        sh.test('-d', fname)) {
+                if (filename.match(/^(\.|_)/) ||
+                    filename.match(/~$/) ||            //  tilde files for vi etc.
+                    filename.match(/\.sw(.{1})$/) ||   //  swap files for vi etc.
+                        sh.test('-d', filename)) {
                     return false;
                 }
 
@@ -66,7 +69,7 @@
                 //  default the 'src' directory requires login to access code.
                 ok = true;
                 skips.forEach(function(priv) {
-                    if (priv === fname) {
+                    if (priv === filename) {
                         ok = false;
                     }
                 });
@@ -76,21 +79,25 @@
 
             //  activate handlers for the files which made it past the root tests.
             list.forEach(function(fname) {
-                var full;
+                var filename,
+                    full;
+
+                filename = fname.toString();
 
                 //  note we use metadata passed in to allow for invocation via
                 //  the private-static module which reports correctly.
                 if (options.argv.verbose) {
                     if (metadata) {
                         opts.logger.system('enabling public static path: ' +
-                            fname, metadata);
+                            filename, metadata);
                     } else {
                         opts.logger.system('enabling public static path: ' +
-                            fname);
+                            filename);
                     }
                 }
-                full = path.join(rootDir, fname);
-                opts.app.use('/' + fname, express.static(full));
+
+                full = path.join(rootDir, filename);
+                opts.app.use('/' + filename, express.static(full));
             });
         };
 

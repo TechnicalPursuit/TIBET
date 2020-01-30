@@ -368,22 +368,25 @@ Cmd.loadTasks = function() {
     list = sh.ls(fullpath);
 
     list.forEach(function(file) {
-        var name,
+        var filename,
+            name,
             task,
             filepath;
 
+        filename = file.toString();
+
         //  Don't load old (deprecated) makefile*.js content files.
-        if (/^makefile.*\.js$/.test(file)) {
+        if (/^makefile.*\.js$/.test(filename)) {
             return;
         }
 
         //  Treat double-underscore as a "helper" and don't load as a task.
-        if (/^__/.test(file)) {
+        if (/^__/.test(filename)) {
             return;
         }
 
-        filepath = path.join(fullpath, file);
-        name = path.basename(file).replace(path.extname(file), '');
+        filepath = path.join(fullpath, filename);
+        name = path.basename(filename).replace(path.extname(filename), '');
 
         try {
             task = require(filepath);

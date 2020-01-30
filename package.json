@@ -83,7 +83,7 @@
         "readline-sync": "^1.4.10",
         "safe-eval": "^0.4.1",
         "semver": "^5.7.1",
-        "shelljs": "github:TechnicalPursuit/shelljs",
+        "shelljs": "^0.8.3",
         "shelljs-nodecli": "*",
         "socket.io": "^2.3.0",
         "sprintf-js": "^1.1.2",

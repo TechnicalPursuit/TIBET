@@ -140,7 +140,7 @@
             dockerpath = sh.which(DOCKER_COMMAND);
             if (dockerpath) {
                 this.info('found Docker...');
-                return dockerpath;
+                return dockerpath.toString();
             }
 
             this.info('Docker not installed');
@@ -160,7 +160,7 @@
             zippath = sh.which(ZIP_COMMAND);
             if (zippath) {
                 this.info('found zip...');
-                return zippath;
+                return zippath.toString();
             }
 
             this.info('zip not installed');
@@ -179,7 +179,7 @@
             awsclipath = sh.which(AWS_COMMAND);
             if (awsclipath) {
                 this.info('found AWS CLI tools...');
-                return awsclipath;
+                return awsclipath.toString();
             }
 
             this.info('AWS CLI tools not installed. See: ' +
@@ -207,7 +207,7 @@
 
             if (configpath) {
                 this.info('found AWS configuration file...');
-                return configpath;
+                return configpath.toString();
             }
 
             this.info('Cannot find AWS configuration file. See: ' +
@@ -240,7 +240,7 @@
                                 DNA_ROOT,
                                 'Dockerrun.aws.json.hb');
 
-            data = CLI.sh.cat(file);
+            data = sh.cat(file).toString();
             try {
                 template = hb.compile(data);
                 if (!template) {
@@ -266,7 +266,7 @@
                 return 1;
             }
 
-            content.to(fullpath);
+            (new sh.ShellString(content)).to(fullpath);
 
             return fullpath;
         };
@@ -522,7 +522,7 @@
 
             cmd.log('Generating Dockerrun.aws.json file.');
 
-            currentDir = sh.pwd();
+            currentDir = sh.pwd().toString();
 
             infoFilePath =
                 this.generateDockerrunFile({

@@ -392,7 +392,7 @@ Cmd.prototype.executeClone = function() {
         }
 
         //  Capture content of current dna file.
-        content = CLI.sh.cat(fullpath);
+        content = CLI.sh.cat(fullpath).toString();
 
         //  Rename embedded root.ns.name references of various forms.
         content = renamer(content);
@@ -407,7 +407,7 @@ Cmd.prototype.executeClone = function() {
         target = base.replace(dnaroot, root).
             replace(dnans, ns).replace(dnaname, name);
 
-        content.to(path.join(options.tmpdir, target));
+        (new CLI.sh.ShellString(content)).to(path.join(options.tmpdir, target));
     });
 
     return 0;
@@ -805,7 +805,7 @@ Cmd.prototype.overlayStyle = function() {
             return 1;
         }
 
-        content = CLI.sh.cat(fullpath);
+        content = CLI.sh.cat(fullpath).toString();
         if (!content) {
             this.error('Unable to read stylesheet: ' + options.style);
             return 1;
@@ -820,7 +820,7 @@ Cmd.prototype.overlayStyle = function() {
         path.join(options.tmpdir, options.typename + ext));
 
     try {
-        content.to(fullpath);
+        (new CLI.sh.ShellString(content)).to(fullpath);
         code = 0;
     } catch (e) {
         code = 1;
@@ -854,7 +854,7 @@ Cmd.prototype.overlayTemplate = function() {
             return 1;
         }
 
-        content = CLI.sh.cat(fullpath);
+        content = CLI.sh.cat(fullpath).toString();
         if (!content) {
             this.error('Unable to read template: ' + options.template);
             return 1;
@@ -867,7 +867,7 @@ Cmd.prototype.overlayTemplate = function() {
         path.join(options.tmpdir, options.typename + '.xhtml'));
 
     try {
-        content.to(fullpath);
+        (new CLI.sh.ShellString(content)).to(fullpath);
         code = 0;
     } catch (e) {
         code = 1;

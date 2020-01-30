@@ -394,27 +394,32 @@
 
             if (TDS.shell.test('-d', procdir)) {
                 files = TDS.shell.ls(procdir);
-                files.sort().forEach(function(file) {
+                files = files.map(
+                        function(file) {
+                            return file.toString();
+                        });
+
+                files.sort().forEach(function(filename) {
                     var procMeta,
                         name;
 
                     //  Ignore directories
-                    if (TDS.shell.test('-d', path.join(procdir, file))) {
+                    if (TDS.shell.test('-d', path.join(procdir, filename))) {
                         return;
                     }
 
                     //  Ignore files that aren't js source
-                    if (!/\./.test(file)) {
+                    if (!/\./.test(filename)) {
                         return;
                     }
 
-                    name = file.slice(0, file.lastIndexOf('.'));
+                    name = filename.slice(0, filename.lastIndexOf('.'));
 
                     //  Ignore hidden or 'sample/helper' files.
                     if (name.match(/^(\.|_)/) ||
-                            name.match(/~$/) ||            //  tilde files for vi etc.
-                            name.match(/\.sw(.{1})$/) ||   //  swap files for vi etc.
-                            TDS.shell.test('-d', file)) {
+                        name.match(/~$/) ||            //  tilde files for vi etc.
+                        name.match(/\.sw(.{1})$/) ||   //  swap files for vi etc.
+                        TDS.shell.test('-d', filename)) {
                         return;
                     }
 
@@ -432,7 +437,7 @@
                         //  NOTE the processors themselves should register
                         //  such that they can be invoked when a file with
                         //  a matching extension changes.
-                        require(path.join(procdir, file))(options);
+                        require(path.join(procdir, filename))(options);
                     } catch (e) {
                         logger.error('Error loading processor: ' + name);
                         logger.error(e.message);

@@ -304,7 +304,6 @@ Cmd.prototype.executePushapp = function() {
         insertAll,
         updateAll,
         list,
-        err,
         couchAttachment,
         couchDigest,
         couchMime,
@@ -684,19 +683,26 @@ Cmd.prototype.executePushapp = function() {
     //  Scan application directory and get the full list of files.
     target = CLI.expandPath('~app');
     if (sh.test('-d', target)) {
-        list = sh.find(target).filter(function(fname) {
-            //  TODO:   add configuration-driven ignore checks here.
-            //  Remove any files which don't pass our ignore criteria.
-            return !sh.test('-d', fname) &&
-                !fname.match(/node_modules/) &&
-                !fname.match(/tds\/tds_cfg/) &&
-                !fname.match(/\.DS_Store/);
-        });
-        err = sh.error();
+
+        list = sh.find(target);
         if (sh.error()) {
-            cmd.error('Error checking ~app directory: ' + err);
+            cmd.error('Error checking ~app directory: ' + list.stderr);
             return -1;
         }
+
+        list = list.filter(function(file) {
+            var filename;
+
+            filename = file.toString();
+
+            //  TODO:   add configuration-driven ignore checks here.
+            //  Remove any files which don't pass our ignore criteria.
+            return !sh.test('-d', filename) &&
+                    !filename.match(/node_modules/) &&
+                    !filename.match(/tds\/tds_cfg/) &&
+                    !filename.match(/\.DS_Store/);
+        });
+
     } else {
         cmd.error(target + ' is not a directory.');
         return -1;
