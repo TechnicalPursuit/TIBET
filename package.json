@@ -105,8 +105,8 @@
         "node-sass": "^4.13.1",
         "puppeteer": "^1.20.0",
         "sinon": "^7.5.0",
-        "stylelint": "^9.10.1",
-        "stylelint-config-standard": "^18.3.0",
+        "stylelint": "^13.0.0",
+        "stylelint-config-standard": "^19.0.0",
         "syn": "github:TechnicalPursuit/syn"
     },
     "engines": {
