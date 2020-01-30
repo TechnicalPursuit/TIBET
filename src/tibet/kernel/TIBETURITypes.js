@@ -5829,10 +5829,10 @@ function(aContent, alternateContent) {
                             'This URI is not patchable: ' + this.getLocation());
     }
 
-    //  Without the JsDiff library, we can't compute a patch in any case
-    if (TP.notValid(TP.extern.JsDiff)) {
+    //  Without the Diff library, we can't compute a patch in any case
+    if (TP.notValid(TP.extern.Diff)) {
         return this.raise('TP.sig.InvalidObject',
-                            'The JsDiff library is not loaded.');
+                            'The Diff library is not loaded.');
     }
 
     if (TP.isEmpty(aContent)) {
@@ -5916,8 +5916,8 @@ function(aContent, alternateContent) {
                     patchLoc = virtualLoc.slice(
                                     virtualLoc.lastIndexOf('/') + 1);
 
-                    //  Generate the patch using the TP.extern.JsDiff library.
-                    patch = TP.extern.JsDiff.createPatch(
+                    //  Generate the patch using the TP.extern.Diff library.
+                    patch = TP.extern.Diff.createPatch(
                                         patchLoc, currentContent, newContent);
 
                     return patch;
@@ -5925,7 +5925,7 @@ function(aContent, alternateContent) {
 
     return promise;
 }, {
-    dependencies: [TP.extern.JsDiff]
+    dependencies: [TP.extern.Diff]
 });
 
 //  ------------------------------------------------------------------------

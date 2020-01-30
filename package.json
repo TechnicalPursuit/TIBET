@@ -50,7 +50,7 @@
         "d3-dispatch": "^1.0.6",
         "d3-interpolate": "^1.4.0",
         "d3-selection": "^1.4.1",
-        "diff": "^3.5.0",
+        "diff": "^4.0.2",
         "express": "^4.17.1",
         "faye-websocket": "^0.11.3",
         "findit": "*",

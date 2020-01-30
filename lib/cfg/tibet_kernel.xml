@@ -112,7 +112,7 @@
         unless="boot.minified" no-lint="no-lint"/>
     <script>
         <![CDATA[
-        TP.registerExternalObject('JsDiff', window.JsDiff);
+        TP.registerExternalObject('Diff', window.Diff);
         ]]>
     </script>
 

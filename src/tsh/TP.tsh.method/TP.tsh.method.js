@@ -214,7 +214,7 @@ function(aRequest) {
 
                 //  Apply the patch to the source URI's current content and set
                 //  the result as the URI's new content.
-                finalContent = TP.extern.JsDiff.applyPatch(aResult, patchText);
+                finalContent = TP.extern.Diff.applyPatch(aResult, patchText);
                 sourceURI.setResource(finalContent);
 
                 //  If the '--push' flag was supplied, then save the URI

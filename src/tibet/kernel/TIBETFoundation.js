@@ -1033,8 +1033,8 @@ function(newMethodText, loadedFromSourceFile) {
     /**
      * @method getMethodPatch
      * @summary Returns patch information suitable for applying to the
-     *     receiver's source file. The JsDiff package must be loaded for this
-     *     operation to work. The JsDiff package is typically loaded by the
+     *     receiver's source file. The Diff package must be loaded for this
+     *     operation to work. The Diff package is typically loaded by the
      *     Sherpa config.
      * @param {String} newMethodText The new method text.
      * @param {Boolean} [loadedFromSourceFile=true] Whether or not the receiver
@@ -1063,9 +1063,9 @@ function(newMethodText, loadedFromSourceFile) {
 
     obj = TP.getRealFunction(this);
 
-    if (TP.notValid(TP.extern.JsDiff)) {
+    if (TP.notValid(TP.extern.Diff)) {
         TP.ifWarn() ?
-            TP.warn('Unable to generate method patch. JsDiff not loaded.') : 0;
+            TP.warn('Unable to generate method patch. Diff not loaded.') : 0;
         return;
     }
 
@@ -1149,11 +1149,11 @@ function(newMethodText, loadedFromSourceFile) {
     }
 
     //  NOTE we use the original srcPath string here to retain relative address.
-    patch = TP.extern.JsDiff.createPatch(path, currentContent, newContent);
+    patch = TP.extern.Diff.createPatch(path, currentContent, newContent);
 
     return TP.ac(patch, newContent);
 }, {
-    dependencies: [TP.extern.JsDiff]
+    dependencies: [TP.extern.Diff]
 });
 
 //  ------------------------------------------------------------------------

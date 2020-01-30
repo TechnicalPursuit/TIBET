@@ -1939,8 +1939,8 @@ function(aSignal) {
 
     //  Generate a patch against the existing content and then immediately apply
     //  the patch.
-    patch = TP.extern.JsDiff.createPatch(loc, currentContent, newContent);
-    finalContent = TP.extern.JsDiff.applyPatch(currentContent, patch);
+    patch = TP.extern.Diff.createPatch(loc, currentContent, newContent);
+    finalContent = TP.extern.Diff.applyPatch(currentContent, patch);
 
     //  Stamp the owner element with a 'tibet:no-reload' attribute so that the
     //  style element will *not* reload when it receives a change notification

@@ -109,7 +109,7 @@ function() {
         function(aResult) {
             var finalContent;
 
-            finalContent = TP.extern.JsDiff.applyPatch(aResult, diffPatch);
+            finalContent = TP.extern.Diff.applyPatch(aResult, diffPatch);
 
             //  This will mark our source URI as dirty.
             sourceURI.setResource(finalContent);
