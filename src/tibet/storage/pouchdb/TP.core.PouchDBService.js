@@ -34,8 +34,6 @@
  *     myPouchDBService.register();
  */
 
-/* JSHint checking */
-
 //  ------------------------------------------------------------------------
 
 TP.core.IOService.defineSubtype('PouchDBService');

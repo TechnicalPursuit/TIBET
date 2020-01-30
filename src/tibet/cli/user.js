@@ -224,7 +224,7 @@ Cmd.prototype.execute = function() {
 
         //  Write out the changes from the top-level json object.
         str = CLI.beautify(JSON.stringify(json));
-        (new CLI.sh.ShellString(str)).to(file);
+        new CLI.sh.ShellString(str).to(file);
 
         this.info('User updated.');
 
@@ -280,7 +280,7 @@ Cmd.prototype.execute = function() {
 
         //  Write out the changes from the top-level json object.
         str = CLI.beautify(JSON.stringify(json));
-        (new CLI.sh.ShellString(str)).to(file);
+        new CLI.sh.ShellString(str).to(file);
 
         this.info('User added.');
     }
@@ -346,7 +346,7 @@ Cmd.prototype.generateDefaultVCard = function(user, userData, fullpath) {
         return 1;
     }
 
-    (new CLI.sh.ShellString(content)).to(fullpath);
+    new CLI.sh.ShellString(content).to(fullpath);
 };
 
 module.exports = Cmd;

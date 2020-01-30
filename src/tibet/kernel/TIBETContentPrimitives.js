@@ -1247,7 +1247,7 @@ function(anObject, rootName) {
     jsonObjAsXMLStr(dataRoot, name);
 
     //  Try to turn that a real XML DOM.
-    doc = (new DOMParser()).parseFromString(str, 'application/xml');
+    doc = new DOMParser().parseFromString(str, 'application/xml');
 
     if (TP.isXMLDocument(doc) &&
         TP.notValid(doc.getElementsByTagName('parsererror')[0])) {

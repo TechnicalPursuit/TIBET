@@ -204,8 +204,6 @@
  *     combined into TSH-specific operators.
  */
 
-/* JSHint checking */
-
 /* global netscape:false
 */
 

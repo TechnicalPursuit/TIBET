@@ -716,13 +716,13 @@ function() {
 
         if (!TP.sys.hasFeature('sherpa')) {
 
-            /* eslint-disable no-wrap-func,no-extra-parens */
+            /* eslint-disable no-extra-parens */
             //  set up keyboard toggle to show/hide the boot UI
             (function() {
                 TP.boot.toggleUI();
                 TP.boot.$scrollLog();
             }).observe(TP.core.Keyboard, toggleKey);
-            /* eslint-enable no-wrap-func,no-extra-parens */
+            /* eslint-enable no-extra-parens */
 
         } else {
 

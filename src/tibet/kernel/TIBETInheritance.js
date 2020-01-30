@@ -4398,9 +4398,6 @@ function(target, targetPropName, track, initialValue, wantsImmediate) {
             //  represents the resolved trait.
             retVal = mainType.$resolveTraitedProperty(propName, propTrack);
 
-        } catch (e) {
-            //  Throw it up to the caller
-            throw e;
         } finally {
             //  Now that composition and resolution are done, flip the flag back
             //  off.

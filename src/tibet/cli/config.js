@@ -281,7 +281,7 @@ Cmd.prototype.setConfig = function(path, value) {
     }
 
     str = CLI.beautify(JSON.stringify(json));
-    (new sh.ShellString(str)).to(file);
+    new sh.ShellString(str).to(file);
 
     //  Read the JSON back in. But we can't use require without a bunch of noise
     //  around cache cleansing etc.

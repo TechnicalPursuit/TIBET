@@ -12,8 +12,6 @@
 Platform-specific functionality related to CSS operations.
 */
 
-/* JSHint checking */
-
 //  ------------------------------------------------------------------------
 //  ELEMENT PRIMITIVES
 //  ------------------------------------------------------------------------

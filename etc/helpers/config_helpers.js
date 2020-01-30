@@ -379,7 +379,7 @@
                     str;
 
                 dom = require('xmldom');
-                str = (new dom.XMLSerializer()).serializeToString(node);
+                str = new dom.XMLSerializer().serializeToString(node);
 
                 return str;
             };
@@ -414,7 +414,7 @@
                 try {
                     //  'to' is a shelljs extension to String - we're assuming
                     //  that shelljs is loaded here.
-                    (new sh.ShellString(data)).to(file);
+                    new sh.ShellString(data).to(file);
                 } catch (e) {
                     this.error('Unable to save package data: ' + e.message);
                     return false;

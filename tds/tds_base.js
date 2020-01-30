@@ -1376,7 +1376,7 @@
 
         //  Save the file content back out via shelljs interface.
         str = TDS.beautify(JSON.stringify(cfg));
-        (new sh.ShellString(str)).to(TDS.expandPath('~/tds.json'));
+        new sh.ShellString(str).to(TDS.expandPath('~/tds.json'));
     };
 
     /**

@@ -16,8 +16,6 @@
  *     package configuration property tags.
  */
 
-/* global TP:true */
-
 (function(root) {
 
 //  ----------------------------------------------------------------------------

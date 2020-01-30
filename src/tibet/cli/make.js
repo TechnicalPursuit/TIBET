@@ -748,8 +748,10 @@ Cmd.prototype.execute = function() {
                     }
                 }
 
+                /* eslint-disable no-extra-parens */
                 msg = 'Task complete: ' +
                     ((new Date()).getTime() - start) + 'ms.';
+                /* eslint-enable no-extra-parens */
                 cmd.system(msg);
 
                 process.exit(0);
@@ -767,8 +769,10 @@ Cmd.prototype.execute = function() {
                     }
                 }
 
+                /* eslint-disable no-extra-parens */
                 msg = 'Task failure: ' +
                     ((new Date()).getTime() - start) + 'ms.';
+                /* eslint-enable no-extra-parens */
                 cmd.error(msg);
 
                 process.exit(1);
@@ -776,8 +780,10 @@ Cmd.prototype.execute = function() {
             }).catch(function(err) {
                 var msg;
 
+                /* eslint-disable no-extra-parens */
                 msg = 'Task exception: ' + err + ' ' +
                     ((new Date()).getTime() - start) + 'ms.';
+                /* eslint-enable no-extra-parens */
                 cmd.error(msg);
 
                 process.exit(1);

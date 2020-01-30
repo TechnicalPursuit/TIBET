@@ -17,8 +17,6 @@ Over time we'll be migrating the registration methods lower and lower into the
 kernel so we can reduce the amount of housekeeping required here.
 */
 
-/* JSHint checking */
-
 //  ------------------------------------------------------------------------
 
 //  ---

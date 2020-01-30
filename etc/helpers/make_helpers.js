@@ -455,7 +455,7 @@ helpers.rollup = function(make, options) {
 
             try {
                 make.log('writing ' + buffer.length + ' chars to: ' + file);
-                (new sh.ShellString(buffer)).to(file);
+                new sh.ShellString(buffer).to(file);
 
                 resolver();
                 return;

@@ -306,7 +306,7 @@ Cmd.prototype.execute = function() {
     }
 
     str = CLI.beautify(JSON.stringify(data));
-    (new sh.ShellString(str)).to(pkgpath);
+    new sh.ShellString(str).to(pkgpath);
 
 
     //  ---
@@ -348,7 +348,7 @@ Cmd.prototype.execute = function() {
             data.dependencies.tibet = version;
 
             str = CLI.beautify(JSON.stringify(data));
-            (new sh.ShellString(str)).to(pkgpath);
+            new sh.ShellString(str).to(pkgpath);
 
             wrapup();
 

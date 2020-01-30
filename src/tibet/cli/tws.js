@@ -259,7 +259,7 @@ Cmd.prototype.executeDisableEngine = function() {
 
         this.log('Updating ' + this.options.env + ' configuration.');
         str = CLI.beautify(JSON.stringify(json));
-        (new sh.ShellString(str)).to(file);
+        new sh.ShellString(str).to(file);
     }
 
     this.info('TWS disabled in ' + this.options.env + '.');
@@ -373,7 +373,7 @@ Cmd.prototype.executeEnableEngine = function() {
 
         this.log('Updating ' + this.options.env + ' configuration.');
         str = CLI.beautify(JSON.stringify(json));
-        (new sh.ShellString(str)).to(file);
+        new sh.ShellString(str).to(file);
     }
 
     this.info('TWS enabled in ' + this.options.env + '.');

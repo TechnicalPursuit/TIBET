@@ -384,7 +384,7 @@ Cmd.prototype.execute = function() {
     json.path.lib_root = '~app/TIBET-INF/tibet';
 
     str = CLI.beautify(JSON.stringify(json));
-    (new sh.ShellString(str)).to(file);
+    new sh.ShellString(str).to(file);
 
     this.info('Application frozen. TIBET now boots from ' +
         CLI.getVirtualPath(infroot) + '.');

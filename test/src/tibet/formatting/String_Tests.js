@@ -395,11 +395,11 @@ function() {
 
         //  ---
 
-        /* eslint-disable no-wrap-func,no-extra-parens */
+        /* eslint-disable no-extra-parens */
         testRep = (function(object, formatParams) {
             return 'Your name is: ' + object.at('firstName');
         }).transform(TP.hc('firstName', 'Bill'));
-        /* eslint-enable no-wrap-func,no-extra-parens */
+        /* eslint-enable no-extra-parens */
 
         correctRep = 'Your name is: Bill';
 

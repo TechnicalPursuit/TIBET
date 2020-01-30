@@ -1164,7 +1164,7 @@ function(anObject) {
     }
 
     //  only one possible argument for a Boolean
-    return (new Boolean(anObject)).valueOf();
+    return new Boolean(anObject).valueOf();
 });
 
 //  ------------------------------------------------------------------------
@@ -1380,7 +1380,7 @@ function(anObject) {
     }
 
     //  number only takes one argument so we can invoke directly
-    return (new Number(anObject)).valueOf();
+    return new Number(anObject).valueOf();
 });
 
 //  ------------------------------------------------------------------------

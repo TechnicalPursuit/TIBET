@@ -10,8 +10,6 @@
  */
 //  ========================================================================
 
-/* global TP:true */
-
 /* eslint no-console:0, consistent-this:0 */
 
 (function() {

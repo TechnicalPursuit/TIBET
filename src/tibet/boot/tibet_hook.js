@@ -13,9 +13,6 @@
  *     reference if they will be calling on TIBET code from within the page.
  */
 
-/* global TP:true
-*/
-
 /* eslint indent:0 */
 
 //  ----------------------------------------------------------------------------

@@ -16,8 +16,7 @@
  *     provide default UI during the startup process.
  */
 
-/* global TP:true,
-          ActiveXObject:false,
+/* global ActiveXObject:false,
           netscape:false,
           Components:false,
           $ERROR:true,
@@ -3239,11 +3238,11 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
                     '@mozilla.org/file/local;1',
                     'nsILocalFile', 'initWithPath');
 
-        /* eslint-disable space-in-brackets */
+        /* eslint-disable array-bracket-spacing */
         IOS = Components.classes[
             '@mozilla.org/network/io-service;1'].getService(
                     Components.interfaces.nsIIOService);
-        /* eslint-enable space-in-brackets */
+        /* eslint-enable array-bracket-spacing */
 
         IS = new Components.Constructor(
                     '@mozilla.org/scriptableinputstream;1',
@@ -3908,7 +3907,7 @@ TP.boot.$nodeAsStringCommon = function(aNode) {
     }
 
     try {
-        str = (new XMLSerializer()).serializeToString(aNode);
+        str = new XMLSerializer().serializeToString(aNode);
 
         return str;
     } catch (e) {

@@ -13077,7 +13077,7 @@ function() {
 
     info = TP.hc();
 
-    info.atPut('CURRENT_LTIME', (new Date()).toString());
+    info.atPut('CURRENT_LTIME', new Date().toString());
     info.atPut('TIBET_VERSION', TP.sys.$VERSION);
     info.atPut('TIBET_LICENSE', TP.sys.$LICENSE);
     info.atPut('BROWSER_AGENT', TP.$agent);

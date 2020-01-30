@@ -390,7 +390,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
                 //  Set the document ID to the response ID so we know it.
                 doc._id = response2.id;
                 delete doc._rev;
-                (new sh.ShellString(CLI.beautify(doc))).to(fullpath);
+                new sh.ShellString(CLI.beautify(doc)).to(fullpath);
             });
 
         });
@@ -411,7 +411,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             //  Set the document ID to the response ID so we know it.
             doc._id = response.id;
             delete doc._rev;
-            (new sh.ShellString(CLI.beautify(doc))).to(fullpath);
+            new sh.ShellString(CLI.beautify(doc)).to(fullpath);
         });
     }
 

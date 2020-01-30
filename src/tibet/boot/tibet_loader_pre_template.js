@@ -10,8 +10,6 @@
  *     rest of the tibet_loader boot script.
  */
 
-/* global TP:true, APP:true */
-
 //  ----------------------------------------------------------------------------
 
 /* eslint indent:0 */

@@ -115,7 +115,7 @@
                     section + '.html">' + topic + '(' + section + ')' + '</a>';
             });
 
-            (new make.sh.ShellString(html)).to(destfile);
+            new make.sh.ShellString(html).to(destfile);
         };
 
         genMan = function(file, params) {
@@ -146,7 +146,7 @@
             }
 
             man = result.output;
-            (new make.sh.ShellString(man)).to(destfile);
+            new make.sh.ShellString(man).to(destfile);
         };
 
         //  ---
@@ -227,7 +227,7 @@
                 }
 
                 tempfile = srcfile + '.tmp';
-                (new make.sh.ShellString(content)).to(tempfile);
+                new make.sh.ShellString(content).to(tempfile);
 
                 genMan(filename, options);
                 genHtml(filename, options);
@@ -293,7 +293,7 @@
                      '</dl>\n' +
                      footer(options);
 
-        (new make.sh.ShellString(finalstr)).to(indexpath);
+        new make.sh.ShellString(finalstr).to(indexpath);
 
         //  ---
         //  manpage index

@@ -1010,7 +1010,7 @@ Cmd.prototype.summarize = function(results) {
     lastpath = CLI.expandPath(Cmd.LAST_RUN_DATA);
 
     str = CLI.beautify(JSON.stringify(results));
-    (new sh.ShellString(str)).to(lastpath);
+    new sh.ShellString(str).to(lastpath);
 
     //  If any errors the ultimate return value will be non-zero.
     return results.errors;

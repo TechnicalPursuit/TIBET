@@ -92,7 +92,7 @@ function(aString, sourceLocale) {
 //  Patches
 //  ------------------------------------------------------------------------
 
-if ((new Date()).getYear() > 1900) {
+if (new Date().getYear() > 1900) {
     Date.Inst.defineMethod('getYear',
     function() {
 

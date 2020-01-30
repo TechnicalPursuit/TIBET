@@ -2171,7 +2171,7 @@ function(aPayload) {
 
             'type', this.getType().NATIVE_NAME,
 
-            'timeStamp', (new Date()).getTime(),
+            'timeStamp', new Date().getTime(),
 
             'clientX', 0,
             'clientY', 0,

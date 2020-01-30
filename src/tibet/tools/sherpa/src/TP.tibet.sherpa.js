@@ -76,11 +76,11 @@ function(aRequest) {
     //  NOTE: We wait for the next repaint here to allow the Mutation Observer
     //  machinery to settle down. Otherwise, strange things start happening
     //  around parentNodes, etc.
-    /* eslint-disable no-wrap-func,no-extra-parens */
+    /* eslint-disable no-extra-parens */
     (function() {
         TP.wrap(elemWin).setContent(sherpaURI, request);
     }).queueBeforeNextRepaint(elemWin);
-    /* eslint-enable no-wrap-func,no-extra-parens */
+    /* eslint-enable no-extra-parens */
 
     return this;
 });

@@ -14,8 +14,6 @@ These cover features like animation, drag-and-drop, on-the-fly css, runtime
 DOM manipulation, etc.
 */
 
-/* JSHint checking */
-
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('computeCommonSizes',

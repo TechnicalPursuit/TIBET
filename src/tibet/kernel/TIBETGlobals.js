@@ -1962,7 +1962,6 @@ NOTE: the collection is sparse and relies on default values of:
                         prototype and they do *not* have the *identical* value.
 */
 
-/* eslint-disable no-reserved-keys */
 TP.SLOT_FILTERS = {
     //  Visibility
     public: {
@@ -2242,7 +2241,6 @@ TP.SLOT_FILTERS = {
         public: true
     }
 };
-/* eslint-enable no-reserved-keys */
 
 //  ------------------------------------------------------------------------
 //  PRE-BUILT FUNCTION PARAMETERS

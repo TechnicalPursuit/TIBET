@@ -183,7 +183,7 @@ Cmd.prototype.execute = function() {
 
     //  SAVE the file (note the 'to()' call here...
     str = CLI.beautify(JSON.stringify(json));
-    (new sh.ShellString(str)).to(file);
+    new sh.ShellString(str).to(file);
 
     this.info('Application thawed. TIBET now boots from ~/node_modules/tibet.');
 

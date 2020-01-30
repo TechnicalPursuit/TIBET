@@ -281,7 +281,7 @@ TP.hc(
         }
 
         //  Turn it back into a String.
-        outputStr = (new XMLSerializer()).serializeToString(workingDoc);
+        outputStr = new XMLSerializer().serializeToString(workingDoc);
 
         return outputStr;
     }
@@ -679,7 +679,7 @@ TP.hc(
         if (TP.sys.isUA('safari')) {
 
             xmlDoc = parser.parseFromString(
-                                (new XMLSerializer()).serializeToString(xmlDoc),
+                                new XMLSerializer().serializeToString(xmlDoc),
                                 TP.XML_ENCODED);
         }
 
@@ -1317,7 +1317,7 @@ TP.hc(
                 //  document fragments, we just shortstop the process here
                 //  and create a String from it the best we can.
                 try {
-                    str = (new XMLSerializer()).serializeToString(node);
+                    str = new XMLSerializer().serializeToString(node);
                 } catch (e) {
                     TP.raise(this, 'TP.sig.SerializationException',
                                 TP.ec(e));
@@ -1383,7 +1383,7 @@ TP.hc(
 
                 //  Try to serialize the node. If it fails, report an error.
                 try {
-                    str = (new XMLSerializer()).serializeToString(node);
+                    str = new XMLSerializer().serializeToString(node);
 
                     //  NB: we check for a space after the 'xml' part here
                     //  to avoid finding PIs. We only want the XML
@@ -1589,7 +1589,7 @@ TP.hc(
             case Node.DOCUMENT_FRAGMENT_NODE:
 
                 try {
-                    str = (new XMLSerializer()).serializeToString(node);
+                    str = new XMLSerializer().serializeToString(node);
                 } catch (e) {
                     TP.raise(this, 'TP.sig.SerializationException',
                                 TP.ec(e));
@@ -1661,7 +1661,7 @@ TP.hc(
 
                 //  Try to serialize the node. If it fails, report an error.
                 try {
-                    str = (new XMLSerializer()).serializeToString(node);
+                    str = new XMLSerializer().serializeToString(node);
 
                     //  IE's XMLSerializer insists on putting a space before the
                     //  close of an 'empty' tag: <foo />. We don't want that and

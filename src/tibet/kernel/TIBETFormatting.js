@@ -16,8 +16,6 @@ NOTE: The functionality here is integrated with TP.i18n.Locale support to enable
 formatters to be driven by the current locale.
 */
 
-/* JSHint checking */
-
 //  ========================================================================
 //  Object Formatters
 //  ========================================================================

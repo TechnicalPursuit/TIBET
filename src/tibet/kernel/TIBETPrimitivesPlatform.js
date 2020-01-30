@@ -11,8 +11,6 @@
 /*
 */
 
-/* JSHint checking */
-
 /* global netscape:false
 */
 

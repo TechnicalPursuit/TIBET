@@ -572,7 +572,6 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
         }
     };
 
-    /* eslint-disable no-reserved-keys */
     commands = {
         comment: function() {
             //  For comments, just return a Function returning the empty string.
@@ -943,7 +942,6 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
                         '{return ' + generators.loop(block) + '}';
         }
     };
-    /* eslint-enable no-reserved-keys */
 
     //  Loop over all of the tokens and generate expressions. Then take any
     //  newlines and returns and converted them to escaped newlines.

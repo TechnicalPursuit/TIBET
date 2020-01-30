@@ -407,7 +407,7 @@ Cmd.prototype.executeClone = function() {
         target = base.replace(dnaroot, root).
             replace(dnans, ns).replace(dnaname, name);
 
-        (new CLI.sh.ShellString(content)).to(path.join(options.tmpdir, target));
+        new CLI.sh.ShellString(content).to(path.join(options.tmpdir, target));
     });
 
     return 0;
@@ -820,7 +820,7 @@ Cmd.prototype.overlayStyle = function() {
         path.join(options.tmpdir, options.typename + ext));
 
     try {
-        (new CLI.sh.ShellString(content)).to(fullpath);
+        new CLI.sh.ShellString(content).to(fullpath);
         code = 0;
     } catch (e) {
         code = 1;
@@ -867,7 +867,7 @@ Cmd.prototype.overlayTemplate = function() {
         path.join(options.tmpdir, options.typename + '.xhtml'));
 
     try {
-        (new CLI.sh.ShellString(content)).to(fullpath);
+        new CLI.sh.ShellString(content).to(fullpath);
         code = 0;
     } catch (e) {
         code = 1;

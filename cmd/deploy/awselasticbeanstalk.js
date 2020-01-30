@@ -266,7 +266,7 @@
                 return 1;
             }
 
-            (new sh.ShellString(content)).to(fullpath);
+            new sh.ShellString(content).to(fullpath);
 
             return fullpath;
         };

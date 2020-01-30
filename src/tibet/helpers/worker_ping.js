@@ -1,5 +1,4 @@
 /* eslint-disable no-global-assign, no-unused-vars, no-console */
-/* globals onmessage, postMessage */
 (function() {
     'use strict';
 

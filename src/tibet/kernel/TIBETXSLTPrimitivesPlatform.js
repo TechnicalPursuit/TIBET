@@ -12,11 +12,6 @@
 Platform-specific functionality related to XSLT operations.
 */
 
-/* JSHint checking */
-
-/* global XSLTProcessor:false
-*/
-
 //  ------------------------------------------------------------------------
 //  XSLT PRIMITIVES
 //  ------------------------------------------------------------------------

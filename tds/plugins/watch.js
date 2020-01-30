@@ -116,7 +116,7 @@
                 return function(name, data, id) {
                     var sseId;
 
-                    sseId = id || (new Date()).getTime();
+                    sseId = id || new Date().getTime();
 
                     if (name !== 'sse-heartbeat') {
                         logger.info('Sending SSE data for ' + name + '#' +

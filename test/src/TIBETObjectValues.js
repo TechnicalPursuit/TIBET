@@ -26,25 +26,7 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 */
 //  ========================================================================
 
-/* JSHint checking */
-
-/* global Document: true,
-          HTMLDocument: true,
-          XMLDocument: true,
-          Attr: true,
-          CharacterData: true,
-          Text: true,
-          CDATASection: true,
-          ProcessingInstruction: true,
-          Comment: true,
-          DocumentFragment: true,
-          NodeList: true,
-          NamedNodeMap: true,
-          CSSStyleSheet: true,
-          CSSStyleRule: true,
-          CSSStyleDeclaration: true,
-          UIEvent: true,
-          MouseEvent: true
+/* global CDATASection: true
 */
 
 //  ------------------------------------------------------------------------
