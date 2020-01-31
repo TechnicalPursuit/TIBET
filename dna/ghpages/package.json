@@ -2,7 +2,7 @@
     "name": "{{appname}}",
     "version": "0.1.0",
     "dependencies": {
-        "marked-man": "^0.2.1",
+        "marked-man": "^0.7.0",
         "minimist": "*",
         "shelljs": "^0.8.3"
     },
