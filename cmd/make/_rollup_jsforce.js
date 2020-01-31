@@ -9,8 +9,13 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'jsforce'));
 
-        make.sh.exec('cp -f build/jsforce.js  ../../deps/jsforce-tpi.js');
-        make.sh.exec('cp -f build/jsforce.min.js  ../../deps/jsforce-tpi.min.js');
+        make.sh.cp(
+            make.path.join('.', 'build', 'jsforce.js'),
+            make.path.join('..', '..', 'deps', 'jsforce-tpi.js'));
+
+        make.sh.cp(
+            make.path.join('.', 'build', 'jsforce.min.js'),
+            make.path.join('..', '..', 'deps', 'jsforce-tpi.min.js'));
 
         resolve();
     };

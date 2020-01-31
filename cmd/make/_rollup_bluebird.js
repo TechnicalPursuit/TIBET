@@ -9,8 +9,13 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'bluebird'));
 
-        make.sh.exec('cp -f js/browser/bluebird.js  ../../deps/bluebird-tpi.js');
-        make.sh.exec('cp -f js/browser/bluebird.min.js  ../../deps/bluebird-tpi.min.js');
+        make.sh.cp(
+            make.path.join('.', 'js', 'browser', 'bluebird.js'),
+            make.path.join('..', '..', 'deps', 'bluebird-tpi.js'));
+
+        make.sh.cp(
+            make.path.join('.', 'js', 'browser', 'bluebird.min.js'),
+            make.path.join('..', '..', 'deps', 'bluebird-tpi.min.js'));
 
         resolve();
     };

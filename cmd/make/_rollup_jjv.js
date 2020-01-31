@@ -12,8 +12,13 @@
         //  Need this to build minified jjv package
         make.sh.exec('npm install -d');
 
-        make.sh.exec('cp -f lib/jjv.js  ../../deps/jjv-tpi.js');
-        make.sh.exec('cp -f build/jjv.min.js  ../../deps/jjv-tpi.min.js');
+        make.sh.cp(
+            make.path.join('.', 'lib', 'jjv.js'),
+            make.path.join('..', '..', 'deps', 'jjv-tpi.js'));
+
+        make.sh.cp(
+            make.path.join('.', 'build', 'jjv.min.js'),
+            make.path.join('..', '..', 'deps', 'jjv-tpi.min.js'));
 
         resolve();
     };

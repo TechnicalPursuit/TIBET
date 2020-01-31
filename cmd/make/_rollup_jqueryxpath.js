@@ -9,9 +9,13 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'jquery-xpath'));
 
-        make.sh.exec('cp -f ./jquery.xpath.js ../../deps/jquery.xpath-tpi.js');
-        make.sh.exec(
-            'cp -f ./jquery.xpath.min.js ../../deps/jquery.xpath-tpi.min.js');
+        make.sh.cp(
+            make.path.join('.', 'jquery.xpath.js'),
+            make.path.join('..', '..', 'deps', 'jquery.xpath-tpi.js'));
+
+        make.sh.cp(
+            make.path.join('.', 'jquery.xpath.min.js'),
+            make.path.join('..', '..', 'deps', 'jquery.xpath-tpi.min.js'));
 
         resolve();
     };

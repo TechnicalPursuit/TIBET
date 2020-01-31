@@ -9,8 +9,13 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'less'));
 
-        make.sh.exec('cp -f dist/less.js  ../../deps/less-tpi.js');
-        make.sh.exec('cp -f dist/less.min.js  ../../deps/less-tpi.min.js');
+        make.sh.cp(
+            make.path.join('.', 'dist', 'less.js'),
+            make.path.join('..', '..', 'deps', 'less-tpi.js'));
+
+        make.sh.cp(
+            make.path.join('.', 'dist', 'less.min.js'),
+            make.path.join('..', '..', 'deps', 'less-tpi.min.js'));
 
         resolve();
     };

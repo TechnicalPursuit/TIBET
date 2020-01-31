@@ -9,8 +9,13 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'aws-sdk'));
 
-        make.sh.exec('cp -f ./dist/aws-sdk.js ../../deps/aws-sdk-tpi.js');
-        make.sh.exec('cp -f ./dist/aws-sdk.min.js ../../deps/aws-sdk-tpi.min.js');
+        make.sh.cp(
+            make.path.join('.', 'dist', 'aws-sdk.js'),
+            make.path.join('..', '..', 'deps', 'aws-sdk-tpi.js'));
+
+        make.sh.cp(
+            make.path.join('.', 'dist', 'aws-sdk.min.js'),
+            make.path.join('..', '..', 'deps', 'aws-sdk-tpi.min.js'));
 
         resolve();
     };

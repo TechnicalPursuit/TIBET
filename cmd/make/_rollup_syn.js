@@ -7,7 +7,9 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'syn'));
 
-        make.sh.exec('cp -f ./dist/global/syn.js ../../deps/syn-tpi.js');
+        make.sh.cp(
+            make.path.join('.', 'dist', 'global', 'syn.js'),
+            make.path.join('..', '..', 'deps', 'syn-tpi.js'));
 
         resolve();
     };

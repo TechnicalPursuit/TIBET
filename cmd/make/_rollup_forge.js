@@ -9,7 +9,9 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'node-forge'));
 
-        make.sh.exec('cp -f dist/forge.min.js ../../deps/forge-tpi.min.js');
+        make.sh.cp(
+            make.path.join('.', 'dist', 'forge.min.js'),
+            make.path.join('..', '..', 'deps', 'forge-tpi.min.js'));
 
         resolve();
     };

@@ -16,7 +16,7 @@
 
         //  Some npm modules that we use have leftover '.git' directories, which
         //  causes 'npm install' fits. Get rid of the them.
-        make.sh.exec('rm -rf ./node_modules/*/.git/');
+        make.sh.rm('-rf', make.path.join('.', 'node_modules', '*', '.git'));
 
         make.chain(
             '_rollup_ace',

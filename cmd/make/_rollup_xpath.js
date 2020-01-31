@@ -9,7 +9,9 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'xpath.js'));
 
-        make.sh.exec('cp -f xpath.js ../../deps/xpath-tpi.js');
+        make.sh.cp(
+            make.path.join('.', 'xpath.js'),
+            make.path.join('..', '..', 'deps', 'xpath-tpi.js'));
 
         resolve();
     };

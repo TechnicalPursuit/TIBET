@@ -9,7 +9,9 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'jsonpath'));
 
-        make.sh.exec('cp -f ./jsonpath.js ../../deps/jsonpath-tpi.js');
+        make.sh.cp(
+            make.path.join('.', 'jsonpath.js'),
+            make.path.join('..', '..', 'deps', 'jsonpath-tpi.js'));
 
         resolve();
     };

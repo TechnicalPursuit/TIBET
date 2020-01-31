@@ -9,7 +9,9 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'sinon'));
 
-        make.sh.exec('cp -f ./pkg/sinon-no-sourcemaps.js ../../deps/sinon-tpi.js');
+        make.sh.cp(
+            make.path.join('.', 'pkg', 'sinon-no-sourcemaps.js'),
+            make.path.join('..', '..', 'deps', 'sinon-tpi.js'));
 
         resolve();
     };

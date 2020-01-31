@@ -9,8 +9,15 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'amazon-cognito-identity-js'));
 
-        make.sh.exec('cp -f ./dist/amazon-cognito-identity.js ../../deps/amazon-cognito-identity-tpi.js');
-        make.sh.exec('cp -f ./dist/amazon-cognito-identity.min.js ../../deps/amazon-cognito-identity-tpi.min.js');
+        make.sh.cp(
+            make.path.join('.', 'dist', 'amazon-cognito-identity.js'),
+            make.path.join(
+                '..', '..', 'deps', 'amazon-cognito-identity-tpi.js'));
+
+        make.sh.cp(
+            make.path.join('.', 'dist', 'amazon-cognito-identity.min.js'),
+            make.path.join(
+                '..', '..', 'deps', 'amazon-cognito-identity-tpi.min.js'));
 
         resolve();
     };

@@ -9,25 +9,63 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'ace-builds'));
 
-        make.sh.exec('mkdir ../../deps/ace');
+        make.sh.mkdir(
+            make.path.join('..', '..', 'deps', 'ace'));
 
-        make.sh.exec('cp -f -R src-min-noconflict/ace.js ../../deps/ace/ace-tpi.js');
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'ace.js'),
+            make.path.join('..', '..', 'deps', 'ace', 'ace-tpi.js'));
 
-        make.sh.exec('cp -f -R src-min-noconflict/mode-javascript.js ../../deps/ace');
-        make.sh.exec('cp -f -R src-min-noconflict/worker-javascript.js ../../deps/ace');
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'mode-javascript.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
 
-        make.sh.exec('cp -f -R src-min-noconflict/mode-jsx.js ../../deps/ace');
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'worker-javascript.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
 
-        make.sh.exec('cp -f -R src-min-noconflict/mode-css.js ../../deps/ace');
-        make.sh.exec('cp -f -R src-min-noconflict/worker-css.js ../../deps/ace');
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'mode-jsx.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
 
-        make.sh.exec('cp -f -R src-min-noconflict/mode-xml.js ../../deps/ace');
-        make.sh.exec('cp -f -R src-min-noconflict/worker-xml.js ../../deps/ace');
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'mode-css.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
 
-        make.sh.exec('cp -f -R src-min-noconflict/mode-json.js ../../deps/ace');
-        make.sh.exec('cp -f -R src-min-noconflict/worker-json.js ../../deps/ace');
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'worker-css.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
 
-        make.sh.exec('cp -f -R src-min-noconflict/theme-dawn.js ../../deps/ace');
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'mode-xml.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
+
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'worker-xml.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
+
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'mode-json.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
+
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'worker-json.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
+
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'src-min-noconflict', 'theme-dawn.js'),
+            make.path.join('..', '..', 'deps', 'ace'));
 
         resolve();
     };

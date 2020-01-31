@@ -12,8 +12,13 @@
         make.sh.sed('-i', /\/\/# sourceMappingURL/g,
             '\n//**no source maps!**', './dist/diff.js');
 
-        make.sh.exec('cp -f dist/diff.js  ../../deps/diff-tpi.js');
-        make.sh.exec('cp -f dist/diff.min.js  ../../deps/diff-tpi.min.js');
+        make.sh.cp(
+            make.path.join('.', 'dist', 'diff.js'),
+            make.path.join('..', '..', 'deps', 'diff-tpi.js'));
+
+        make.sh.cp(
+            make.path.join('.', 'dist', 'diff.min.js'),
+            make.path.join('..', '..', 'deps', 'diff-tpi.min.js'));
 
         resolve();
     };

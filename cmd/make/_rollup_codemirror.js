@@ -9,19 +9,44 @@
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.path.join(npmdir, 'codemirror'));
 
-        make.sh.exec('mkdir ../../deps/codemirror');
-        make.sh.exec('cp -f -R lib ../../deps/codemirror/');
+        make.sh.mkdir(
+            make.path.join('..', '..', 'deps', 'codemirror'));
 
-        make.sh.exec('mkdir ../../deps/codemirror/mode');
-        make.sh.exec('cp -f -R mode/javascript ../../deps/codemirror/mode');
-        make.sh.exec('cp -f -R mode/xml ../../deps/codemirror/mode');
-        make.sh.exec('cp -f -R mode/css ../../deps/codemirror/mode');
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'lib'),
+            make.path.join('..', '..', 'deps', 'codemirror'));
 
-        make.sh.exec('mkdir ../../deps/codemirror/addon');
+        make.sh.mkdir(
+            make.path.join('..', '..', 'deps', 'codemirror', 'mode'));
 
-        make.sh.exec('mkdir ../../deps/codemirror/addon/runmode');
-        make.sh.exec('cp -f -R addon/runmode/runmode.js ' +
-                '../../deps/codemirror/addon/runmode');
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'mode', 'javascript'),
+            make.path.join('..', '..', 'deps', 'codemirror', 'mode'));
+
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'mode', 'xml'),
+            make.path.join('..', '..', 'deps', 'codemirror', 'mode'));
+
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'mode', 'css'),
+            make.path.join('..', '..', 'deps', 'codemirror', 'mode'));
+
+        make.sh.mkdir(
+            make.path.join('..', '..', 'deps', 'codemirror', 'addon'));
+
+        make.sh.mkdir(
+            make.path.join(
+                '..', '..', 'deps', 'codemirror', 'addon', 'runmode'));
+
+        make.sh.cp(
+            '-R',
+            make.path.join('.', 'addon', 'runmode', 'runmode.js'),
+            make.path.join(
+                '..', '..', 'deps', 'codemirror', 'addon', 'runmode'));
 
         resolve();
     };
