@@ -30,7 +30,7 @@
         "serve-static": "*",
         "sessionstore": "github:TechnicalPursuit/sessionstore",
         "shelljs": "^0.8.3",
-        "winston": "github:TechnicalPursuit/winston"
+        "winston": "^2.4.4"
     },
     "devDependencies": {
         "stylelint": "^13.0.0",
