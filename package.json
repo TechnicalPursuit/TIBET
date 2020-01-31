@@ -66,6 +66,7 @@
         "jsforce": "^1.9.3",
         "jsonpath": "github:TechnicalPursuit/jsonpath",
         "less": "github:TechnicalPursuit/less.js",
+        "marked": "^0.7.0",
         "marked-man": "^0.7.0",
         "mime-types": "^2.1.26",
         "minimatch": "^3.0.3",

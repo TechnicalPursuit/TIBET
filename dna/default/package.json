@@ -17,6 +17,7 @@
         "js-beautify": "^1.10.3",
         "jsonwebtoken": "*",
         "keygrip": "*",
+        "marked": "^0.7.0",
         "marked-man": "^0.7.0",
         "minimist": "*",
         "passport": "*",
