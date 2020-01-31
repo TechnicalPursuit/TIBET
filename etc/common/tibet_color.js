@@ -141,7 +141,7 @@
             color = this._colors[key];
             if (!color) {
                 //  Some spec segments are modifiers, not colors, so check.
-                cfg = ansiStyles.modifiers[parts[i]];
+                cfg = ansiStyles.modifier[parts[i]];
                 if (cfg) {
                     open = cfg.open;
                     close = cfg.close;
