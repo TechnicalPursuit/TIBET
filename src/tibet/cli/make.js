@@ -298,7 +298,7 @@ Cmd.getTargets = function() {
     }
 
     fullpath = CLI.expandPath(CLI.MAKE_FILE);
-    if (!CLI.sh.test('-f', fullpath)) {
+    if (!sh.test('-f', fullpath)) {
         CLI.error('Unable to find TIBET make file: ' + fullpath);
         return [];
     }

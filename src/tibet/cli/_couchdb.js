@@ -212,12 +212,12 @@ Cmd.prototype.pushDir = function(dir, options) {
     thisref = this;
 
     fullpath = CLI.expandPath(dir);
-    if (!CLI.sh.test('-e', fullpath)) {
+    if (!sh.test('-e', fullpath)) {
         this.error('Unable to find ' + fullpath);
         return;
     }
 
-    if (!CLI.sh.test('-d', fullpath)) {
+    if (!sh.test('-d', fullpath)) {
         this.error('Target is not a directory: ' + fullpath);
         return;
     }
@@ -269,7 +269,7 @@ Cmd.prototype.pushFile = function(file, options) {
 
     fullpath = CLI.expandPath(file);
 
-    if (!CLI.sh.test('-e', fullpath)) {
+    if (!sh.test('-e', fullpath)) {
         this.error('Unable to find ' + fullpath);
         return;
     }

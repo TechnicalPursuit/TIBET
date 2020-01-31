@@ -602,8 +602,8 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
     //  If we're not forcing lint we can skip files not changed since the last
     //  run...if we know when the last run occurred.
     lastpath = CLI.expandPath(Cmd.LAST_RUN_DATA);
-    if (CLI.sh.test('-e', lastpath)) {
-        data = CLI.sh.cat(lastpath);
+    if (sh.test('-e', lastpath)) {
+        data = sh.cat(lastpath);
         if (data) {
             data = data.toString();
             try {

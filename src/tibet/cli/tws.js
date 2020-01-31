@@ -521,7 +521,7 @@ Cmd.prototype.executeInit = function() {
         //  and load them into the design doc if they're missing. We don't
         //  delete anything from the doc during init processing.
         fullpath = CLI.expandPath(CLI.getcfg('path.tds_task_defs'));
-        if (CLI.sh.test('-e', fullpath)) {
+        if (sh.test('-e', fullpath)) {
             doc = couch.populateDesignDoc(doc, fullpath, params, true);
         }
 
@@ -916,7 +916,7 @@ Cmd.prototype.executePushDesign = function() {
             docStr;
 
         fullpath = CLI.expandPath(CLI.getcfg('path.tws'));
-        if (CLI.sh.test('-e', fullpath)) {
+        if (sh.test('-e', fullpath)) {
             resultStr = JSON.stringify(result);
             doc = couch.populateDesignDoc(result, fullpath, params, true);
             docStr = JSON.stringify(doc);
