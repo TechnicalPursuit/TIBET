@@ -1098,6 +1098,7 @@
      */
     Package.prototype.expandPath = function(aPath, silent) {
         var nvpath,
+            splitter,
             parts,
             virtual;
 
@@ -1114,7 +1115,9 @@
         // TIBET virtual paths all start with '~'
         if (aPath.indexOf('~') === 0) {
 
-            parts = aPath.split(/\\|\//);
+            splitter = new RegExp('\\' + path.sep);
+
+            parts = aPath.split(splitter);
             virtual = parts.shift();
 
             // If the path was ~/...something it's app_head prefixed.
@@ -1142,7 +1145,7 @@
             }
 
             parts.unshift(nvpath);
-            nvpath = parts.join('/');
+            nvpath = parts.join(path.sep);
 
             // Paths can expand into other virtual paths, so keep going until we
             // no longer get back a virtual path.
@@ -1150,7 +1153,7 @@
 
                 // If the newly constructed path has the same virtual component
                 // then we're going to recurse.
-                if (virtual === nvpath.split(/\\|\//)[0]) {
+                if (virtual === nvpath.split(splitter)[0]) {
                     throw new Error('Recursive virtual path: ' + aPath);
                 }
 
@@ -2182,15 +2185,8 @@
             return true;
         }
 
-        if (aPath.indexOf(path.sep) === 0) {
-            return true;
-        }
-
-        if (/^[a-zA-Z]+:/.test(aPath)) {
-            return true;
-        }
-
-        return false;
+        //  Use the built-in NodeJS call.
+        return path.isAbsolute(aPath);
     };
 
 

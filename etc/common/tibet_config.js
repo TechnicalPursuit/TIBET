@@ -584,15 +584,8 @@
             return true;
         }
 
-        if (aPath.indexOf('/') === 0) {
-            return true;
-        }
-
-        if (/^[a-zA-Z]+:/.test(aPath)) {
-            return true;
-        }
-
-        return false;
+        //  Use the built-in NodeJS call.
+        return path.isAbsolute(aPath);
     };
 
 
