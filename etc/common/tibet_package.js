@@ -1115,7 +1115,9 @@
         // TIBET virtual paths all start with '~'
         if (aPath.indexOf('~') === 0) {
 
-            splitter = new RegExp('\\' + path.sep);
+            //  NB: We need to look for both '/' and '\' here - can't assume
+            //  path.sep value.
+            splitter = /\\|\//;
 
             parts = aPath.split(splitter);
             virtual = parts.shift();
@@ -1145,7 +1147,9 @@
             }
 
             parts.unshift(nvpath);
-            nvpath = parts.join(path.sep);
+
+            //  NB: This should always be '/' - not the value of path.sep.
+            nvpath = parts.join('/');
 
             // Paths can expand into other virtual paths, so keep going until we
             // no longer get back a virtual path.
