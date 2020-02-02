@@ -10976,7 +10976,8 @@ function() {
      * @returns {Function[]}
      */
 
-    var own;
+    var own,
+        thisref;
 
     //  Grab all of the objects that *own* an implementation of initialize.
 
@@ -10987,6 +10988,9 @@ function() {
         TP.TRACE);
 
     if (TP.isValid(own)) {
+
+        thisref = this;
+
         //  Loop over each one of those owners (each of which should be a
         //  type), and if it hasn't already been initialized, send it an
         //  initialize message and set its initialized flag to true.
@@ -11026,7 +11030,7 @@ function() {
                         obj.initialize();
                         obj.isInitialized(true);
                     } catch (e) {
-                        this.raise(
+                        thisref.raise(
                             'TP.sig.InitializationException',
                             TP.ec(e, 'Unable to initialize: ' + obj.getName()));
                     }
