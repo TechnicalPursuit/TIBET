@@ -2189,8 +2189,18 @@
             return true;
         }
 
-        //  Use the built-in NodeJS call.
-        return path.isAbsolute(aPath);
+        //  NB: We don't use NodeJS's path.isAbsolute() call since it is
+        //  OS-specific and we actually want OS-independent behavior here.
+
+        if (aPath.indexOf('/') === 0) {
+            return true;
+        }
+
+        if (/^[a-zA-Z]+:/.test(aPath)) {
+            return true;
+        }
+
+        return false;
     };
 
 
