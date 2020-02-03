@@ -99,9 +99,9 @@
 
     /*
      * tibet_cfg.js needs to actually _run_ when required. If we don't clear the
-     * cache of any prior version before loading it via require() we don't get the
-     * configuration data in any but the first package instance. The routines here
-     * are from:
+     * cache of any prior version before loading it via require() we don't get
+     * the configuration data in any but the first package instance. The
+     * routines here are from:
      * http://stackoverflow.com/questions/9210542/node-js-require-cache-possible-to-invalidate
      */
 
@@ -109,8 +109,8 @@
      * Removes a module from the npm require cache.
      */
     require.uncache = function(moduleName) {
-        // Run over the cache looking for the files
-        // loaded by the specified module name
+        //  Run over the cache looking for the files
+        //  loaded by the specified module name
         require.searchCache(moduleName, function(mod) {
             delete require.cache[mod.id];
         });
@@ -120,24 +120,24 @@
      * Runs over the npm cache to search for a cached module.
      */
     require.searchCache = function(moduleName, callback) {
-        // Resolve the module identified by the specified name
+        //  Resolve the module identified by the specified name
         var module;
 
         module = require.resolve(moduleName);
 
-        // Check if the module has been resolved and found within
-        // the cache
+        //  Check if the module has been resolved and found within
+        //  the cache
         if (module && (module = require.cache[module]) !== undefined) {
-            // Recursively go over the results
+            //  Recursively go over the results
             (function run(mod) {
-                // Go over each of the module's children and
-                // run over it
+                //  Go over each of the module's children and
+                //  run over it
                 mod.children.forEach(function(child) {
                     run(child);
                 });
 
-                // Call the specified callback providing the
-                // found module
+                //  Call the specified callback providing the
+                //  found module
                 callback(mod);
             }(module));
         }
@@ -175,8 +175,9 @@
 
         pkg = this;
 
-        // NOTE, this is a global. Defined so we can load tibet_cfg.js via require()
-        // and have it work. Also used to process tibet.json properties.
+        //  NOTE, this is a global. Defined so we can load tibet_cfg.js via
+        //  require() and have it work. Also used to process tibet.json
+        //  properties.
         origTP = global.TP;
         TP = {};
         TP.sys = {};
@@ -219,24 +220,25 @@
         };
         this.setcfg = TP.sys.setcfg;
 
-        // For get requests we rely on the instance copy.
+        //  For get requests we rely on the instance copy.
         TP.sys.getcfg = function(property, aDefault) {
             return pkg.getcfg(property, aDefault);
         };
         TP.sys.cfg = TP.sys.getcfg;
 
-        // NOTE we do this early so command-line can affect debugging output etc
-        // for the later steps and a second time after loading config etc.
+        //  NOTE we do this early so command-line can affect debugging output
+        //  etc. for the later steps and a second time after loading config etc.
         this.setRuntimeOptions(this.options);
 
         try {
-            // Load remaining TIBET configuration data for paths/virtual paths
-            // etc.
+            //  Load remaining TIBET configuration data for paths/virtual paths
+            //  etc.
             this.loadTIBETBaseline();
         } catch (e) {
-            // If loading the baseline failed it's typically due to one of two
-            // issues, either we don't have a valid lib_root or there's a syntax
-            // error or other path issue relative to the baseline config file.
+            //  If loading the baseline failed it's typically due to one of two
+            //  issues, either we don't have a valid lib_root or there's a
+            //  syntax error or other path issue relative to the baseline config
+            //  file.
             if (this.getLibRoot()) {
                 this.error('Error loading baseline config: ' +
                     e.message);
@@ -246,21 +248,22 @@
             TP = origTP;
         }
 
-        // Process local project file content into proper configuration data.
-        // This step overwrites initial options with npm, default, tibet, and
-        // tds config in that order. This allows config file content to override
-        // "defaults" from the inbound options.
+        //  Process local project file content into proper configuration data.
+        //  This step overwrites initial options with npm, default, tibet, and
+        //  tds config in that order. This allows config file content to
+        //  override "defaults" from the inbound options.
         this.setProjectOptions();
 
-        // Reapply any configuration data specifically defined on the command line.
-        // This final step lets the command line override config data file content.
+        //  Reapply any configuration data specifically defined on the command
+        //  line. This final step lets the command line override config data
+        //  file content.
         this.setRuntimeOptions(this.options, '', true);
 
         //  Reset color and reconfigure logger now that we have baseline cfg.
         this.options.color = color;
         this.logger = new Logger(this.options);
 
-        // Expand final option values into working properties.
+        //  Expand final option values into working properties.
         this.expandOptions();
 
         this.initialized = true;
@@ -334,35 +337,35 @@
 
 
     /**
-     * A list of the options which are considered standard. Any option values not in
-     * this list are treated as configuration parameters.
+     * A list of the options which are considered standard. Any option values
+     * not in this list are treated as configuration parameters.
      */
     Package.STANDARD_OPTIONS = [
-        '$0', // From command-line parsing process.
-        '_', // From command-line parsing process.
+        '$0',           //  From command-line parsing process.
+        '_',            //  From command-line parsing process.
 
-        'app_root', // Where is the application root? Normally computed.
-        'lib_root', // Where is the library root? Normally computed.
+        'app_root',     //  Where is the application root? Normally computed.
+        'lib_root',     //  Where is the library root? Normally computed.
 
-        'include', // Space-separated list of asset types to process.
-        'exclude', // Space-separated list of asset types to exclude.
+        'include',      //  Space-separated list of asset types to process.
+        'exclude',      //  Space-separated list of asset types to exclude.
 
-        'scripts', // Shorthand for include="echo property script"
-        'images', // Shorthand for include="image img"
-        'resources', // Shorthand for include="resource"
+        'scripts',      //  Shorthand for include="echo property script"
+        'images',       //  Shorthand for include="image img"
+        'resources',    //  Shorthand for include="resource"
 
-        'nodes', // Output nodes (vs. urls). Default is true.
+        'nodes',        //  Output nodes (vs. urls). Default is true.
 
-        'package', // TIBET manifest/package file path.
-        'config', // Config to expand/list. Computable from package.
-        'strict', // Force name/version checks in manifests?
+        'package',      //  TIBET manifest/package file path.
+        'config',       //  Config to expand/list. Computable from package.
+        'strict',       //  Force name/version checks in manifests?
 
-        'color', // Log in color? Default is false.
-        'silent', // Suppress normal logging? Default is false.
-        'verbose', // Output verbose-level messages?
+        'color',        //  Log in color? Default is false.
+        'silent',       //  Suppress normal logging? Default is false.
+        'verbose',      //  Output verbose-level messages?
 
-        'debug', // Output debugging-level messages?
-        'stack' // Display stack on errors? Default is false.
+        'debug',        //  Output debugging-level messages?
+        'stack'         //  Display stack on errors? Default is false.
     ];
 
 
@@ -390,16 +393,16 @@
 
 
     /**
-     * A cache of asset_paths which have already been listed. This is cleared with
-     * each listing run and is used to unique the asset listings returned.
+     * A cache of asset_paths which have already been listed. This is cleared
+     * with each listing run and is used to unique the asset listings returned.
      * @type {Object.<string, string>}
      */
     Package.prototype.asset_paths = null;
 
 
     /**
-     * Container for configuration parameter data similar to TP.sys.setcfg storage.
-     * This ends up holding settings from tibet.json etc.
+     * Container for configuration parameter data similar to
+     * TP.sys.setcfg storage. This ends up holding settings from tibet.json etc.
      */
     Package.prototype.cfg = null;
 
@@ -412,8 +415,8 @@
 
 
     /**
-     * A cache of configurations which have been processed. Used to ensure we don't
-     * have circular references or perform duplicate work.
+     * A cache of configurations which have been processed. Used to ensure we
+     * don't have circular references or perform duplicate work.
      */
     Package.prototype.configs = null;
 
@@ -447,15 +450,16 @@
 
 
     /**
-     * A cache of packages which have already been processed. This helps ensure we
-     * don't do work twice and don't have cirular references.
+     * A cache of packages which have already been processed. This helps ensure
+     * we don't do work twice and don't have cirular references.
      * @type {Object.<string, string>}
      */
     Package.prototype.packages = null;
 
 
     /**
-     * A stack whose 0-th element represents the currently processing package file.
+     * A stack whose 0-th element represents the currently processing package
+     * file.
      */
     Package.prototype.packageStack = null;
 
@@ -475,14 +479,16 @@
 
 
     /**
-     * A dictionary of processing options for package/config expansion and listing.
+     * A dictionary of processing options for package/config expansion and
+     * listing.
      * @type {Object.<string, object>}
      */
     Package.prototype.options = null;
 
 
     /**
-     * Contents of any PROJECT_FILE (tibet.json) relative to the processed project.
+     * Contents of any PROJECT_FILE (tibet.json) relative to the processed
+     * project.
      * @type {Object.<string, object>}
      */
     Package.prototype.tibet = null;
@@ -509,7 +515,8 @@
      * Copies attributes from a source Element to a target Element.
      * @param {Element} sourceElem The source element to copy from.
      * @param {Element} targetElem The target element to copy to.
-     * @param {Boolean} overwrite Whether to overwrite matching attributes [false].
+     * @param {Boolean} overwrite Whether to overwrite matching attributes
+     *                              [false].
      */
     Package.prototype.copyAttributes = function(
         sourceElem, targetElem, overwrite) {
@@ -552,20 +559,22 @@
 
 
     /**
-     * Expands all configs within a particular package. This is useful as a way to
-     * get a full list of all resources relative to a particular application. As a
-     * result the resource list can help drive TIBET's command line tools.
-     * @param {String} aPath The path to the package manifest file to be processed.
-     * @returns {Document} An xml document containing the expanded configuration.
+     * Expands all configs within a particular package. This is useful as a way
+     * to get a full list of all resources relative to a particular application.
+     * As a result the resource list can help drive TIBET's command line tools.
+     * @param {String} aPath The path to the package manifest file to be
+     *                          processed.
+     * @returns {Document} An xml document containing the expanded
+     *                          configuration.
      */
     Package.prototype.expandAll = function(aPath) {
 
-        var expanded, // The expanded path equivalent.
-            doc, // The xml DOM document object after parse.
-            xml, // The xml string read from the top-level manifest.
-            package, // The package node from the XML doc.
-            configs, // The ultimate config ID being used.
-            pkg, //
+        var expanded,   //  The expanded path equivalent.
+            doc,        //  The xml DOM document object after parse.
+            xml,        //  The xml string read from the top-level manifest.
+            package,    //  The package node from the XML doc.
+            configs,    //  The ultimate config ID being used.
+            pkg,
             msg;
 
         /* eslint-disable no-extra-parens */
@@ -574,7 +583,7 @@
             Package.PACKAGE);
         /* eslint-enable no-extra-parens */
 
-        // Default to ~app_cfg/{package}[.xml] as needed.
+        //  Default to ~app_cfg/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
             expanded = path.join('~app_cfg', expanded);
         }
@@ -588,8 +597,9 @@
         this.pushPackage(expanded);
 
         try {
-            // If we've been through this package once before we can skip reading
-            // and parsing the XML and jump directly to processing the config.
+            //  If we've been through this package once before we can skip
+            //  reading and parsing the XML and jump directly to processing the
+            //  config.
             doc = this.packages[expanded];
             if (!doc) {
                 if (!sh.test('-e', expanded)) {
@@ -614,13 +624,13 @@
                 this.packages[expanded] = doc;
             }
 
-            // If the package isn't valid stop right here.
+            //  If the package isn't valid stop right here.
             package = doc.getElementsByTagName('package')[0];
             if (!package) {
                 return;
             }
 
-            // Verify package has a name and version, otherwise it's not valid.
+            //  Verify package has a name and version, otherwise it's not valid.
             if (this.getcfg('strict') &&
                 (isEmpty(package.getAttribute('name')) ||
                     isEmpty(package.getAttribute('version')))) {
@@ -725,10 +735,12 @@
                                 config.setAttribute('id', ref + '_' + cfg);
                                 config.setAttribute('config', cfg);
                                 config = pkg.getPackageNode(
-                                    anElement.ownerDocument).appendChild(config);
+                                    anElement.ownerDocument).appendChild(
+                                                                    config);
                             }
                         } else {
-                            config = anElement.ownerDocument.getElementById(ref);
+                            config = anElement.ownerDocument.getElementById(
+                                                                    ref);
                         }
 
                         if (notValid(config)) {
@@ -744,8 +756,8 @@
                         }
 
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.trace('Ignoring duplicate config reference to: ' +
-                                key, true);
+                            pkg.trace('Ignoring duplicate config reference' +
+                                        ' to: ' + key, true);
                             break;
                         }
 
@@ -811,8 +823,8 @@
                     case 'img':
                         /* falls through */
                     case 'image':
-                        // similar to default case but we need to avoid messing with
-                        // data urls.
+                        //  similar to default case but we need to avoid messing
+                        //  with data urls.
                         src = child.getAttribute('src');
                         if (notEmpty(src) && src.indexOf('data:') !== 0) {
                             src = pkg.getFullPath(child, src);
@@ -846,10 +858,11 @@
                             config = pkg.expandReference(config);
                         }
 
-                        key = src + '@' + config; // may be undefined, that's ok.
+                        key = src + '@' + config;   //  may be undefined, that's
+                                                    //  ok.
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.trace('Ignoring duplicate package reference to: ' +
-                                key, true);
+                            pkg.trace('Ignoring duplicate package reference' +
+                                        ' to: ' + key, true);
                             break;
                         }
 
@@ -976,20 +989,21 @@
     /**
      * Expands a package, resolving any embedded package references and virtual
      * paths which might be included.
-     * @param {String} aPath The path to the package manifest file to be processed.
+     * @param {String} aPath The path to the package manifest file to be
+     *     processed.
      * @param {String} aConfig The config ID within the package to be expanded.
      * @param {Element} anElement The optional package element being processed.
      * @returns {Document} An xml document containing the expanded configuration.
      */
     Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
 
-        var expanded, // The expanded path equivalent.
-            xml, // The xml string read from the top-level manifest.
-            doc, // The xml DOM document object after parse.
-            config, // The ultimate config ID being used.
-            node, // Result of searching for our config by ID.
-            package, // The package node from the XML doc.
-            msg; // Error message construction variable.
+        var expanded,   //  The expanded path equivalent.
+            xml,        //  The xml string read from the top-level manifest.
+            doc,        //  The xml DOM document object after parse.
+            config,     //  The ultimate config ID being used.
+            node,       //  Result of searching for our config by ID.
+            package,    //  The package node from the XML doc.
+            msg;        //  Error message construction variable.
 
         /* eslint-disable no-extra-parens */
         expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
@@ -997,7 +1011,7 @@
             Package.PACKAGE);
         /* eslint-enable no-extra-parens */
 
-        // Default to ~app_cfg/{package}[.xml] as needed.
+        //  Default to ~app_cfg/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
             expanded = path.join('~app_cfg', expanded);
         }
@@ -1011,8 +1025,9 @@
         this.pushPackage(expanded);
 
         try {
-            // If we've been through this package once before we can skip reading
-            // and parsing the XML and jump directly to processing the config.
+            //  If we've been through this package once before we can skip
+            //  reading and parsing the XML and jump directly to processing the
+            //  config.
             doc = this.packages[expanded];
             if (!doc) {
                 if (!sh.test('-e', expanded)) {
@@ -1037,13 +1052,13 @@
                 this.packages[expanded] = doc;
             }
 
-            // If the package isn't valid stop right here.
+            //  If the package isn't valid stop right here.
             package = doc.getElementsByTagName('package')[0];
             if (!package) {
                 return;
             }
 
-            // Verify package has a name and version, otherwise it's not valid.
+            //  Verify package has a name and version, otherwise it's not valid.
             if (this.getcfg('strict') &&
                 (isEmpty(package.getAttribute('name')) ||
                     isEmpty(package.getAttribute('version')))) {
@@ -1067,14 +1082,15 @@
                 throw new Error(msg);
             }
 
-            // Any properties on the current package element (if available) should
-            // be carried over to the config in question.
+            //  Any properties on the current package element (if available)
+            //  should be carried over to the config in question.
             if (isValid(anElement)) {
                 this.copyAttributes(anElement, node);
             }
 
-            // Note that this may ultimately result in calls back into this routine
-            // if the config in question has embedded package references.
+            //  Note that this may ultimately result in calls back into this
+            //  routine if the config in question has embedded package
+            //  references.
             this.expandConfig(node, config);
         } catch (e) {
             msg = e.message;
@@ -1106,13 +1122,13 @@
             throw new Error('Invalid or empty path.');
         }
 
-        // If we've done this one before just return it.
+        //  If we've done this one before just return it.
         nvpath = this.paths[aPath];
         if (nvpath) {
             return nvpath;
         }
 
-        // TIBET virtual paths all start with '~'
+        //  TIBET virtual paths all start with '~'
         if (aPath.indexOf('~') === 0) {
 
             //  NB: We need to look for both '/' and '\' here - can't assume
@@ -1122,7 +1138,7 @@
             parts = aPath.split(splitter);
             virtual = parts.shift();
 
-            // If the path was ~/...something it's app_head prefixed.
+            //  If the path was ~/...something it's app_head prefixed.
             if (virtual === '~') {
                 nvpath = this.getAppHead();
             } else if (virtual === '~app' ||
@@ -1133,7 +1149,7 @@
                 virtual === '~lib_root') {
                 nvpath = this.getLibRoot();
             } else {
-                // Keys are of the form: path.app_root etc. so adjust.
+                //  Keys are of the form: path.app_root etc. so adjust.
                 nvpath = this.getcfg('path.' + virtual.slice(1));
                 if (nvpath === undefined) {
                     if (!silent) {
@@ -1151,12 +1167,12 @@
             //  NB: This should always be '/' - not the value of path.sep.
             nvpath = parts.join('/');
 
-            // Paths can expand into other virtual paths, so keep going until we
-            // no longer get back a virtual path.
+            //  Paths can expand into other virtual paths, so keep going until
+            //  we no longer get back a virtual path.
             if (nvpath.indexOf('~') === 0) {
 
-                // If the newly constructed path has the same virtual component
-                // then we're going to recurse.
+                //  If the newly constructed path has the same virtual component
+                //  then we're going to recurse.
                 if (virtual === nvpath.split(splitter)[0]) {
                     throw new Error('Recursive virtual path: ' + aPath);
                 }
@@ -1168,7 +1184,7 @@
             nvpath = aPath;
         }
 
-        // Cache the result so we avoid doing any path more than once.
+        //  Cache the result so we avoid doing any path more than once.
         this.paths[aPath] = nvpath;
 
         return nvpath;
@@ -1221,13 +1237,13 @@
             return this.app_head;
         }
 
-        // One tricky aspect is that we don't want to confuse lib root and app
-        // head. That means for the app head computation we don't work from the
-        // module filename, but only from the current working directory.
+        //  One tricky aspect is that we don't want to confuse lib root and app
+        //  head. That means for the app head computation we don't work from the
+        //  module filename, but only from the current working directory.
 
         cwd = process.cwd();
 
-        // Don't allow this value to be computed for a nested node_modules dir.
+        //  Don't allow this value to be computed for a nested node_modules dir.
         if (/node_modules/.test(cwd)) {
             cwd = cwd.slice(0, cwd.indexOf('node_modules'));
         }
@@ -1262,10 +1278,10 @@
 
 
     /**
-     * Returns the application root directory. If path.app_root is set via command
-     * line options that value is used. When not provided app_root typically
-     * defaults to app_head since the majority of application structures don't
-     * separate the two (TIBET's couchapp dna is an exception).
+     * Returns the application root directory. If path.app_root is set via
+     * command line options that value is used. When not provided app_root
+     * typically defaults to app_head since the majority of application
+     * structures don't separate the two (TIBET's couchapp dna is an exception).
      * @returns {String} The application root.
      */
     Package.prototype.getAppRoot = function() {
@@ -1275,14 +1291,15 @@
             fullpath,
             list;
 
-        // Return cached value if available.
+        //  Return cached value if available.
         if (this.app_root) {
             this.trace('getAppRoot via cache: ' + this.app_root, true);
             return this.app_root;
         }
 
-        // Check command line options and tibet.json configuration data. NOTE that
-        // we can't use getcfg() here due to ordering/bootstrapping considerations.
+        //  Check command line options and tibet.json configuration data. NOTE
+        //  that we can't use getcfg() here due to ordering/bootstrapping
+        //  considerations.
         if (this.options && this.options.app_root) {
             this.app_root = this.options.app_root;
             this.trace('getAppRoot via options: ' + this.app_root, true);
@@ -1298,9 +1315,9 @@
             return;
         }
 
-        //  Found the project file for NPM, now to find the TIBET
-        //  project file, which is allowed to be in either the same
-        //  location or in an immediate subdirectory.
+        //  Found the project file for NPM, now to find the TIBET project file,
+        //  which is allowed to be in either the same location or in an
+        //  immediate subdirectory.
         tibet = Package.PROJECT_FILE;
         approot = head;
         fullpath = path.join(head, tibet);
@@ -1333,7 +1350,8 @@
             approot = path.join('~', approot);
         }
         this.app_root = approot;
-        this.trace('getAppRoot defaulted to launch root: ' + this.app_root, true);
+        this.trace('getAppRoot defaulted to launch root: ' + this.app_root,
+                    true);
 
         return this.app_root;
     };
@@ -1342,8 +1360,9 @@
     /**
      * Returns the library root directory, the path where the tibet library is
      * found. The search is a bit complex because we want to give precedence to
-     * option settings and application-specific settings rather than simply working
-     * from the assumption that we're using the library containing the current CLI.
+     * option settings and application-specific settings rather than simply
+     * working from the assumption that we're using the library containing the
+     * current CLI.
      * @returns {String} The library root.
      */
     Package.prototype.getLibRoot = function() {
@@ -1360,14 +1379,15 @@
             dir,
             file;
 
-        // Return cached value if available.
+        //  Return cached value if available.
         if (this.lib_root) {
             this.trace('getLibRoot via cache: ' + this.lib_root, true);
             return this.lib_root;
         }
 
-        // Check command line options and tibet.json configuration data. NOTE that
-        // we can't use getcfg() here due to ordering/bootstrapping considerations.
+        //  Check command line options and tibet.json configuration data. NOTE
+        //  that we can't use getcfg() here due to ordering/bootstrapping
+        //  considerations.
         if (this.options && this.options.lib_root) {
             this.lib_root = this.options.lib_root;
             this.trace('getLibRoot via options: ' + this.lib_root, true);
@@ -1378,17 +1398,17 @@
             return this.lib_root;
         }
 
-        // Our base options here are a little different. We want to use app root as
-        // our first choice followed by the module directory where the CLI is
-        // running. This latter path gives us a fallback when we're being run
-        // outside a project, or in a non-node project.
+        //  Our base options here are a little different. We want to use app
+        //  root as our first choice followed by the module directory where the
+        //  CLI is running. This latter path gives us a fallback when we're
+        //  being run outside a project, or in a non-node project.
         app_root = this.getAppRoot();
         moduleDir = module.filename.slice(0,
             module.filename.lastIndexOf(path.sep));
 
-        // Our file checks are looking for the library so we need to leverage the
-        // standard boot settings for tibet_dir, tibet_inf, and tibet_lib just as
-        // the boot system would.
+        //  Our file checks are looking for the library so we need to leverage
+        //  the standard boot settings for tibet_dir, tibet_inf, and tibet_lib
+        //  just as the boot system would.
 
         if (this.options && this.options.tibet_dir) {
             tibet_dir = this.options.tibet_dir;
@@ -1397,8 +1417,8 @@
         } else if (this.tibet.path && this.tibet.path.npm_dir) {
             tibet_dir = this.tibet.path.npm_dir;
         } else {
-            // Hard-coded fallback, but we don't have a choice if no other setting
-            // is provided.
+            //  Hard-coded fallback, but we don't have a choice if no other
+            //  setting is provided.
             tibet_dir = 'node_modules';
         }
 
@@ -1409,8 +1429,8 @@
         } else if (this.tibet.path && this.tibet.path.tibet_inf) {
             tibet_inf = this.tibet.path.tibet_inf;
         } else {
-            // Hard-coded fallback, but we don't have a choice if no other setting
-            // is provided.
+            //  Hard-coded fallback, but we don't have a choice if no other
+            //  setting is provided.
             tibet_inf = 'TIBET-INF';
         }
 
@@ -1421,10 +1441,11 @@
         } else if (this.tibet.path && this.tibet.path.tibet_lib) {
             tibet_lib = this.tibet.path.tibet_lib;
         } else {
-            tibet_lib = 'tibet'; // lowercase due to npm being default install
+            tibet_lib = 'tibet';    //  lowercase due to npm being default
+                                    //  install
         }
 
-        // How far is this file from the library root?
+        //  How far is this file from the library root?
         offset = path.join('..', '..', '..');
 
         checks = [
@@ -1437,8 +1458,8 @@
             //  unable to find the node_modules directory which should exist.
             checks.unshift([app_root, path.join(tibet_inf, tibet_lib)]);
 
-            // NOTE node_modules does not float with app_root, it's always found
-            // at the application head.
+            //  NOTE node_modules does not float with app_root, it's always
+            //  found at the application head.
             if (tibet_dir === 'node_modules') {
                 checks.unshift([this.getAppHead(),
                     path.join(tibet_dir, tibet_lib)]);
@@ -1455,19 +1476,20 @@
             file = check[1];
 
             this.trace('getLibRoot checking: ' + path.join(dir, file), true);
-            // NOTE we're using -d here since we're doing a directory check.
+
+            //  NOTE we're using -d here since we're doing a directory check.
             if (sh.test('-d', path.join(dir, file))) {
                 if (dir === moduleDir) {
-                    // Have to adjust dir by offset but we need to watch for
-                    // upper/lower case issues depending on whether we're dealing
-                    // with a Git clone vs. an npm install (which is always
-                    // lowercase).
+                    //  Have to adjust dir by offset but we need to watch for
+                    //  upper/lower case issues depending on whether we're
+                    //  dealing with a Git clone vs. an npm install (which is
+                    //  always lowercase).
                     if (file.indexOf(tibet_lib) === -1) {
                         tibet_lib = tibet_lib.toUpperCase();
                     }
                     dir = path.join(dir, offset, tibet_lib);
                 } else {
-                    // Have to adjust dir without offset
+                    //  Have to adjust dir without offset
                     dir = path.join(dir, file);
                 }
                 this.lib_root = dir;
@@ -1476,8 +1498,9 @@
         }
 
         if (notValid(this.lib_root)) {
-            // Usually means a) running outside a project, b) didn't call the TIBET
-            // library 'tibet' or 'TIBET'. Just default based on current file path.
+            //  Usually means a) running outside a project, b) didn't call the
+            //  TIBET library 'tibet' or 'TIBET'. Just default based on current
+            //  file path.
             this.lib_root = path.join(module.filename, offset);
         }
 
@@ -1497,7 +1520,7 @@
             return value;
         }
 
-        // Try to convert to number, boolean, regex,
+        //  Try to convert to number, boolean, regex,
         if (Package.NUMBER_REGEX.test(value)) {
             return Number(value);
         } else if (Package.BOOLEAN_REGEX.test(value)) {
@@ -1517,9 +1540,10 @@
 
 
     /**
-     * A simple alternative to TP.sys.getcfg() used in the boot system and elsewhere
-     * in TIBET. This version will look in command line options followed by any
-     * loaded TIBET configuration data for the property in question.
+     * A simple alternative to TP.sys.getcfg() used in the boot system and
+     * elsewhere in TIBET. This version will look in command line options
+     * followed by any loaded TIBET configuration data for the property in
+     * question.
      * @param {string} property The name of the property to look up.
      * @param {Object} [aDefault] Optional value to default the lookup to.
      * @param {Boolean} [asNestedObj=false] Optional flag to convert the result
@@ -1542,15 +1566,15 @@
             return this.cfg;
         }
 
-        // Make simple access as fast as possible.
+        //  Make simple access as fast as possible.
         if (this.cfg.hasOwnProperty(property)) {
             return ifInvalid(this.cfg[property], aDefault);
         }
 
-        // Secondary check is for prefixed lookups.
+        //  Secondary check is for prefixed lookups.
         if (/\./.test(property)) {
-            // Simple conversions from dotted to underscore should be checked
-            // first.
+            //  Simple conversions from dotted to underscore should be checked
+            //  first.
             name = property.replace(/\./g, '_');
             if (this.cfg.hasOwnProperty(name)) {
                 return ifInvalid(this.cfg[name], aDefault);
@@ -1657,7 +1681,8 @@
 
     /**
      * Returns the default configuration from the package document provided.
-     * @param {Document} aPackageDoc The XML package document to use for defaulting.
+     * @param {Document} aPackageDoc The XML package document to use for
+     *     defaulting.
      * @returns {String} The configuration ID which is the default.
      */
     Package.prototype.getDefaultConfig = function(aPackageDoc) {
@@ -1670,7 +1695,7 @@
             msg = 'package tag missing: ' + path;
             throw new Error(msg);
         }
-        // TODO: rename to 'all' in config files etc?
+        //  TODO: rename to 'all' in config files etc?
         return package.getAttribute('default') || Package.CONFIG;
     };
 
@@ -1678,7 +1703,8 @@
     /**
      * Returns a full path by using any basedir information in anElement and
      * blending it with any virtual or relative path information from aPath.
-     * @param {Element} anElement The element from which to begin basedir lookups.
+     * @param {Element} anElement The element from which to begin basedir
+     *     lookups.
      * @param {String} aPath The path to resolve into a full path.
      * @returns {String} The fully-expanded path.
      */
@@ -1757,10 +1783,10 @@
 
 
     /**
-     * Return the primitive value from a string value in "source code" form meaning
-     * numbers, booleans, regular expressions etc. are returns as those values but
-     * string values are returned with quotes and appropriate escaping of any
-     * embedded quotes.
+     * Return the primitive value from a string value in "source code" form
+     * meaning numbers, booleans, regular expressions etc. are returns as those
+     * values but string values are returned with quotes and appropriate
+     * escaping of any embedded quotes.
      * @param {String} value The value to convert.
      * @returns {Object} The converted value.
      */
@@ -1769,7 +1795,7 @@
             return value;
         }
 
-        // Try to convert to number, boolean, regex,
+        //  Try to convert to number, boolean, regex,
         if (Package.NUMBER_REGEX.test(value)) {
             return Number(value);
         } else if (Package.BOOLEAN_REGEX.test(value)) {
@@ -1777,9 +1803,9 @@
         } else if (Package.REGEX_REGEX.test(value)) {
             return new RegExp(value.slice(1, -1));
         } else if (Package.OBJECT_REGEX.test(value)) {
-            // We could JSON.parse here but that won't work because any values which
-            // are strings won't be quoted in source code form. It's a small use
-            // case in any case so we just return a quoted string.
+            //  We could JSON.parse here but that won't work because any values
+            //  which are strings won't be quoted in source code form. It's a
+            //  small use case in any case so we just return a quoted string.
             return this.quote(value);
         } else {
             return this.quote(value);
@@ -1807,7 +1833,7 @@
         app_root = this.getAppRoot();
         lib_root = this.getLibRoot();
 
-        // Don't try to do this until we've computed the proper root paths.
+        //  Don't try to do this until we've computed the proper root paths.
         if (!app_root || !lib_root) {
             return aPath;
         }
@@ -1870,7 +1896,7 @@
         vpath = vpath.replace(this.expandPath('~app'), '~app');
         vpath = vpath.replace(this.expandPath('~'), '~');
 
-        if (vpath.indexOf('/') !== -1 && vpath !== aPath) {
+        if (vpath.indexOf(path.sep) !== -1 && vpath !== aPath) {
             return this.getVirtualPath(vpath);
         }
 
@@ -1901,9 +1927,9 @@
 
 
     /**
-     * Returns true if the element's tag name passes any asset-type filtering which
-     * is in place. Asset filtering is done via tag name and controlled by the
-     * include and exclude options and their content (or lack of it).
+     * Returns true if the element's tag name passes any asset-type filtering
+     * which is in place. Asset filtering is done via tag name and controlled by
+     * the include and exclude options and their content (or lack of it).
      * @param {Element} anElement The element to filter.
      */
     Package.prototype.ifAssetPassed = function(anElement) {
@@ -1914,17 +1940,17 @@
         }
         tag = anElement.tagName;
 
-        // Can't traverse if we don't always clear these two.
+        //  Can't traverse if we don't always clear these two.
         if (tag === 'package' || tag === 'config') {
             return true;
         }
 
-        // Specifically excluded? That's simple enough.
+        //  Specifically excluded? That's simple enough.
         if (this.excludes.indexOf(tag) !== -1) {
             return false;
         }
 
-        // Not excluded and we have no specific includes data? Passed.
+        //  Not excluded and we have no specific includes data? Passed.
         if (isEmpty(this.includes)) {
             return true;
         }
@@ -1938,8 +1964,8 @@
     Package.prototype.ifUnlessPassed = function(anElement) {
 
         /**
-         * Tests if and unless conditions on the node, returning true if the node
-         * passes and should be retained based on those conditions.
+         * Tests if and unless conditions on the node, returning true if the
+         * node passes and should be retained based on those conditions.
          * @param {Node} anElement The element to test.
          * @returns {Boolean} True if the element passes the filtering tests.
          */
@@ -2012,7 +2038,8 @@
 
     /**
      * Returns true if the current context is the TIBET library.
-     * @returns {Boolean} True if the current context is inside the TIBET library.
+     * @returns {Boolean} True if the current context is inside the TIBET
+     *     library.
      */
     Package.prototype.inLibrary = function() {
         var dir,
@@ -2025,9 +2052,9 @@
             return this.npm.name === 'tibet';
         }
 
-        // Since the CLI can be invoked from anywhere we need to be explicit here
-        // relative to the cwd. If we find a project file, and it's 'tibet' we're
-        // truly _inside_ the library.
+        //  Since the CLI can be invoked from anywhere we need to be explicit
+        //  here relative to the cwd. If we find a project file, and it's
+        //  'tibet' we're truly _inside_ the library.
         dir = process.cwd();
         file = Package.NPM_FILE;
         while (dir.length > 0) {
@@ -2052,12 +2079,12 @@
      * @returns {Boolean} True if the current context is inside a TIBET project.
      */
     Package.prototype.inProject = function(silent) {
-        var cwd,            // Where are we being run?
-            list,           // List of potential public directories
-            approot,        // Where did we find the actual file?
-            package,        // What package file are we looking for?
-            tibet,          // What tibet file are we looking for?
-            fullpath;       // What full path are we checking?
+        var cwd,            //  Where are we being run?
+            list,           //  List of potential public directories
+            approot,        //  Where did we find the actual file?
+            package,        //  What package file are we looking for?
+            tibet,          //  What tibet file are we looking for?
+            fullpath;       //  What full path are we checking?
 
         //  We can essentially act in a "cached result" form by looking at any
         //  npm package info and checking the name.
@@ -2069,27 +2096,27 @@
         tibet = Package.PROJECT_FILE;
         package = Package.NPM_FILE;
 
-        // Walk the directory path from cwd "up" checking for the signifying
-        // file which tells us we're in a TIBET project.
+        //  Walk the directory path from cwd "up" checking for the signifying
+        //  file which tells us we're in a TIBET project.
         while (cwd.length > 0) {
             fullpath = path.join(cwd, package);
             if (sh.test('-f', fullpath)) {
 
-                // Relocate cwd to the new root so our paths for things like
-                // grunt and gulp work without requiring global installs etc.
+                //  Relocate cwd to the new root so our paths for things like
+                //  grunt and gulp work without requiring global installs etc.
                 process.chdir(cwd);
 
-                // Load the package.json file so we can access current
-                // project configuration info specific to npm.
+                //  Load the package.json file so we can access current project
+                //  configuration info specific to npm.
                 try {
                     this.npm = require(path.join(cwd, package));
                 } catch (e) {
-                    // Make sure we default to some value.
+                    //  Make sure we default to some value.
                     this.npm = this.npm || {};
                 }
 
-                // One check. The TIBET library will have a package and project
-                // file but we don't consider it to be a "project" per se.
+                //  One check. The TIBET library will have a package and project
+                //  file but we don't consider it to be a "project" per se.
                 if (this.npm.name === 'tibet') {
                     return false;
                 }
@@ -2127,16 +2154,16 @@
 
                 this.cfg.app_root = approot;
 
-                // Once we find the directory of a project root load any
-                // tibet.json configuration found there.
+                //  Once we find the directory of a project root load any
+                //  tibet.json configuration found there.
                 try {
                     this.tibet = require(fullpath);
                 } catch (e) {
-                    // Make sure we default to some value.
+                    //  Make sure we default to some value.
                     this.tibet = this.tibet || {};
 
-                    // Don't output warnings about project issues when
-                    // providing help text.
+                    //  Don't output warnings about project issues when
+                    //  providing help text.
                     if (!silent) {
                         this.warn('Error loading project file: ' +
                             e.message);
@@ -2162,10 +2189,10 @@
             return false;
         }
 
-        // NOTE that node_modules never "floats", it's always relative to the
-        // top-level directory. TIBET-INF on the other hand will float based on
-        // whether the app is frozen or not (or a couchdb template with an
-        // attachments directory or similar "substructure).
+        //  NOTE that node_modules never "floats", it's always relative to the
+        //  top-level directory. TIBET-INF on the other hand will float based on
+        //  whether the app is frozen or not (or a couchdb template with an
+        //  attachments directory or similar "substructure).
         return fs.existsSync(
                 path.join(this.getAppHead(),
                     this.getcfg('path.npm_dir'),
@@ -2178,9 +2205,9 @@
 
 
     /**
-     * Returns true if the path provided appears to be an aboslute path. Note that
-     * this will return true for TIBET virtual paths since they are absolute paths
-     * when expanded.
+     * Returns true if the path provided appears to be an aboslute path. Note
+     * that this will return true for TIBET virtual paths since they are
+     * absolute paths when expanded.
      * @param {string} aPath The path to be tested.
      * @returns {Boolean} True if the path is absolute.
      */
@@ -2215,8 +2242,8 @@
 
 
     /**
-     * Lists assets from a package. The assets will be concatenated into aList if
-     * the list is provided (aList is used during recursive calls from within
+     * Lists assets from a package. The assets will be concatenated into aList
+     * if the list is provided (aList is used during recursive calls from within
      * this routine to build up the list).
      * @param {string} aPath The path to the package manifest to list.
      * @param {Array.<>} aList The array of asset descriptions to expand upon.
@@ -2237,7 +2264,7 @@
             Package.PACKAGE);
         /* eslint-enable no-extra-parens */
 
-        // Default to ~app_cfg/{package}[.xml] as needed.
+        //  Default to ~app_cfg/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
             expanded = path.join('~app_cfg', expanded);
         }
@@ -2257,8 +2284,8 @@
                 throw new Error(msg);
             }
 
-            // If aList is empty we're starting fresh which means we need a fresh
-            // asset-uniquing dictionary.
+            //  If aList is empty we're starting fresh which means we need a
+            //  fresh asset-uniquing dictionary.
             if (!aList) {
                 this.assets = {};
             }
@@ -2282,16 +2309,17 @@
 
 
     /**
-     * Lists assets from a package configuration. The assets will be concatenated
-     * into aList if the list is provided (aList is used during recursive calls from
-     * within this routine to build up the list).
+     * Lists assets from a package configuration. The assets will be
+     * concatenated into aList if the list is provided (aList is used during
+     * recursive calls from within this routine to build up the list).
      * @param {Element} anElement The config element to begin listing from.
      * @param {Array.<>} aList The array of asset descriptions to expand upon.
      * @param {String} [configName] Specific config name to expand, if any.
      * @param {Boolean} listAll True to cause full listing of nested packages.
      * @returns {Array.<>} The asset array.
      */
-    Package.prototype.listConfigAssets = function(anElement, aList, configName, listAll) {
+    Package.prototype.listConfigAssets = function(anElement, aList, configName,
+    listAll) {
 
         var pkg,
             list,
@@ -2299,14 +2327,14 @@
 
         pkg = this;
 
-        // If aList is empty we're starting fresh which means we need a fresh
-        // asset-uniquing dictionary.
+        //  If aList is empty we're starting fresh which means we need a fresh
+        //  asset-uniquing dictionary.
         if (notValid(aList)) {
             this.assets = {};
         }
         result = aList || [];
 
-        // Don't assume the config itself shouldn't be filtered.
+        //  Don't assume the config itself shouldn't be filtered.
         if (!pkg.ifUnlessPassed(anElement)) {
             return result;
         }
@@ -2364,10 +2392,12 @@
                                 config.setAttribute('id', ref + '_' + cfg);
                                 config.setAttribute('config', cfg);
                                 config = pkg.getPackageNode(
-                                    anElement.ownerDocument).appendChild(config);
+                                    anElement.ownerDocument).appendChild(
+                                                                        config);
                             }
                         } else {
-                            config = anElement.ownerDocument.getElementById(ref);
+                            config = anElement.ownerDocument.getElementById(
+                                                                        ref);
                         }
 
                         if (notValid(config)) {
@@ -2382,7 +2412,8 @@
                         }
 
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.trace('Ignoring duplicate config reference to: ' +
+                            pkg.trace(
+                                'Ignoring duplicate config reference to: ' +
                                 key, true);
                             break;
                         }
@@ -2396,8 +2427,8 @@
                         pkg.listConfigAssets(config, result, cfg, listAll);
                         break;
                     case 'echo':
-                        // Shouldn't exist, these should have been converted into
-                        // <script> tags calling TP.boot.$stdout.
+                        //  Shouldn't exist, these should have been converted
+                        //  into <script> tags calling TP.boot.$stdout.
                         break;
                     case 'package':
                         src = child.getAttribute('src');
@@ -2425,9 +2456,11 @@
                             throw new Error(msg);
                         }
 
-                        key = src + '@' + config; // may be undefined, that's ok.
+                        key = src + '@' + config;   //  may be undefined, that's
+                                                    //  ok.
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.trace('Ignoring duplicate package reference to: ' +
+                            pkg.trace(
+                                'Ignoring duplicate package reference to: ' +
                                 key, true);
                             break;
                         }
@@ -2445,9 +2478,10 @@
                         }
                         break;
                     case 'property':
-                        // Shouldn't exist, these should have been converted into
-                        // <script> tags calling TP.boot.$stdout. If it's still here
-                        // then it's missing either a name or value attribute.
+                        //  Shouldn't exist, these should have been converted
+                        //  into <script> tags calling TP.boot.$stdout. If it's
+                        //  still here then it's missing either a name or value
+                        //  attribute.
                         break;
                     case 'img':
                         /* falls through */
@@ -2461,8 +2495,8 @@
                         src = child.getAttribute('src') ||
                             child.getAttribute('href');
                         if (notEmpty(src)) {
-                            // Unique the things we push by checking and caching
-                            // entries as we go.
+                            //  Unique the things we push by checking and
+                            //  caching entries as we go.
                             if (notValid(pkg.asset_paths[src])) {
                                 pkg.asset_paths[src] = src;
                                 if (nodes) {
@@ -2475,7 +2509,8 @@
                                     result.push(src);
                                 }
                             } else {
-                                pkg.trace('Skipping duplicate asset: ' + src, true);
+                                pkg.trace(
+                                    'Skipping duplicate asset: ' + src, true);
                             }
                         } else {
                             if (nodes) {
@@ -2496,9 +2531,9 @@
 
 
     /**
-     * Lists assets from a package configuration. The assets will be concatenated
-     * into aList if the list is provided (aList is used during recursive calls from
-     * within this routine to build up the list).
+     * Lists assets from a package configuration. The assets will be
+     * concatenated into aList if the list is provided (aList is used during
+     * recursive calls from within this routine to build up the list).
      * @param {string} aPath The path to the package manifest to list.
      * @param {string} aConfig The ID of the config in the package to list.
      * @param {Array.<>} aList The array of asset descriptions to expand upon.
@@ -2519,7 +2554,7 @@
             Package.PACKAGE);
         /* eslint-enable no-extra-parens */
 
-        // Default to ~app_cfg/{package}[.xml] as needed.
+        //  Default to ~app_cfg/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
             expanded = path.join('~app_cfg', expanded);
         }
@@ -2553,8 +2588,8 @@
                 throw new Error(msg);
             }
 
-            // If aList is empty we're starting fresh which means we need a fresh
-            // asset-uniquing dictionary.
+            //  If aList is empty we're starting fresh which means we need a
+            //  fresh asset-uniquing dictionary.
             if (!aList) {
                 this.asset_paths = {};
             }
@@ -2569,8 +2604,8 @@
 
 
     /**
-     * Loads baseline TIBET configuration data including default property settings
-     * and virtual path definitions.
+     * Loads baseline TIBET configuration data including default property
+     * settings and virtual path definitions.
      */
     Package.prototype.loadTIBETBaseline = function() {
         this.loadTIBETProperties();
@@ -2578,9 +2613,10 @@
 
 
     /**
-     * Loads TIBET's baseline properties. The settings of these properties can be
-     * involved in filtering for if/unless testing. Properties loaded via this
-     * approach can be overwritten by the tibet.json file and/or command line.
+     * Loads TIBET's baseline properties. The settings of these properties can
+     * be involved in filtering for if/unless testing. Properties loaded via
+     * this approach can be overwritten by the tibet.json file and/or command
+     * line.
      */
     Package.prototype.loadTIBETProperties = function() {
         var lib_root,
@@ -2589,10 +2625,10 @@
         lib_root = this.getLibRoot();
         lib_path = path.join(lib_root, 'src/tibet/boot/tibet_cfg');
 
-        // Uncache so this is sure to load with each new Package instance.
+        //  Uncache so this is sure to load with each new Package instance.
         require.uncache(lib_path);
 
-        // NOTE this relies upon TP.sys.setcfg having been properly configured.
+        //  NOTE this relies upon TP.sys.setcfg having been properly configured.
         require(lib_path);
 
         //  Repeat for the TDS configuration data. NOTE we have to pass in the
@@ -2604,11 +2640,12 @@
 
 
     /**
-     * Recursively traverses a potentially nested set of properties and values and
-     * ensures they are set as the current config values. Typically called with the
-     * tibet.json and package.json content to overlay tibet_cfg baseline settings.
-     * @param {Object} dict The dictionary of key/value pairs in primitive object
-     *     form.
+     * Recursively traverses a potentially nested set of properties and values
+     * and ensures they are set as the current config values. Typically called
+     * with the tibet.json and package.json content to overlay
+     * tibet_cfg baseline settings.
+     * @param {Object} dict The dictionary of key/value pairs in primitive
+     *     object form.
      * @param {String} prefix An optional prefix for any properties being set.
      */
     Package.prototype.overlayProperties = function(dict, prefix) {
@@ -2641,8 +2678,8 @@
 
 
     /**
-     * Pops an entry off the current stack of packages which are being processed as
-     * part of an expansion.
+     * Pops an entry off the current stack of packages which are being processed
+     * as part of an expansion.
      */
     Package.prototype.popPackage = function() {
 
@@ -2650,8 +2687,9 @@
 
         pkgpath = this.packageStack.shift();
 
-        // When we pop the last package off the stack we clear the config list. This
-        // allows the expand and listing phases to both do uniquing via configs.
+        //  When we pop the last package off the stack we clear the config list.
+        //  This allows the expand and listing phases to both do uniquing via
+        //  configs.
         if (this.packageStack.length === 0) {
             this.configs.length = 0;
         }
@@ -2675,17 +2713,17 @@
 
 
     /**
-     * Returns the value provided as a string with embedded single quotes escaped
-     * and with enclosing single quotes.
+     * Returns the value provided as a string with embedded single quotes
+     * escaped and with enclosing single quotes.
      * @param {string} value The string to return in quoted source format.
      */
     Package.prototype.quote = function(value) {
 
         var val;
 
-        // Not a robust implementation for all cases, but it should work well
-        // enough for the types of values found in property tags which are the
-        // main source of data for this call.
+        //  Not a robust implementation for all cases, but it should work well
+        //  enough for the types of values found in property tags which are the
+        //  main source of data for this call.
         val = value.toString();
         val = val.replace(/'/g, '\\\'');
 
@@ -2694,8 +2732,8 @@
 
 
     /**
-     * Processes any content from the local project file into proper configuration
-     * parameter values.
+     * Processes any content from the local project file into proper
+     * configuration parameter values.
      */
     Package.prototype.setProjectOptions = function() {
 
@@ -2706,20 +2744,20 @@
             fullpath,
             tibet_npm;
 
-        // We use app head to load package.json and tds.json since those live at
-        // the top of the project outside the app root (which is often 'public'
-        // below the app head.
+        //  We use app head to load package.json and tds.json since those live
+        //  at the top of the project outside the app root (which is often
+        //  'public' below the app head.
         head = this.getAppHead();
         if (isEmpty(head)) {
             return;
         }
 
-        // We need app root to load tibet.json, which hopefully has additional
-        // configuration information we can leverage such as the lib_root path.
+        //  We need app root to load tibet.json, which hopefully has additional
+        //  configuration information we can leverage such as the lib_root path.
         root = this.getAppRoot();
         if (isEmpty(root)) {
-            // We can use package and project data from the library for some
-            // features such as the CLI's version command.
+            //  We can use package and project data from the library for some
+            //  features such as the CLI's version command.
             root = this.getLibRoot();
         }
 
@@ -2730,9 +2768,9 @@
         fullpath = this.expandPath(path.join(root, Package.PROJECT_FILE));
         if (sh.test('-f', fullpath)) {
             try {
-                // Load project file, or default to an object we can test to see
-                // that we are not in a project (see inProject).
-                // TODO: this key should be a constant somewhere.
+                //  Load project file, or default to an object we can test to
+                //  see that we are not in a project (see inProject).
+                //  TODO: this key should be a constant somewhere.
                 this.tibet = require(fullpath) || {
                     tibet_project: false
                 };
@@ -2822,10 +2860,10 @@
             }
         }
 
-        // Clear this so the value from above doesn't affect our next steps.
+        //  Clear this so the value from above doesn't affect our next steps.
         root = null;
 
-        // Update any cached values based on what we've read in from tibet.json
+        //  Update any cached values based on what we've read in from tibet.json
         if (isValid(this.tibet.path) && isValid(this.tibet.path.app_root)) {
             root = this.tibet.path.app_root;
         }
@@ -2865,11 +2903,11 @@
 
 
     /**
-     * Processes any command line options and maps them into the configuration map.
-     * This allows getcfg to be used as the single source of information on what
-     * flags are set. Note that only parameters that are either a) missing or b)
-     * explicitly set on the command line will be used. Properties which defaulted
-     * for which a prior value exists (non-null) will not be set.
+     * Processes any command line options and maps them into the configuration
+     * map. This allows getcfg to be used as the single source of information on
+     * what flags are set. Note that only parameters that are either a) missing
+     * or b) explicitly set on the command line will be used. Properties which
+     * defaulted for which a prior value exists (non-null) will not be set.
      */
     Package.prototype.setRuntimeOptions = function(options, prefix, filter) {
         var pkg,

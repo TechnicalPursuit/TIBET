@@ -81,7 +81,7 @@
         };
         this.setcfg = TP.sys.setcfg;
 
-        // For get requests we rely on the instance copy.
+        //  For get requests we rely on the instance copy.
         TP.sys.getcfg = function(property) {
             return my.getcfg(property);
         };
@@ -94,8 +94,8 @@
          * Removes a module from the npm require cache.
          */
         require.uncache = function(moduleName) {
-            // Run over the cache looking for the files
-            // loaded by the specified module name
+            //  Run over the cache looking for the files loaded by the specified
+            //  module name
             require.searchCache(moduleName, function(mod) {
                 delete require.cache[mod.id];
             });
@@ -105,24 +105,21 @@
          * Runs over the npm cache to search for a cached module.
          */
         require.searchCache = function(moduleName, callback) {
-            // Resolve the module identified by the specified name
+            //  Resolve the module identified by the specified name
             var module;
 
             module = require.resolve(moduleName);
 
-            // Check if the module has been resolved and found within
-            // the cache
+            //  Check if the module has been resolved and found within the cache
             if (module && (module = require.cache[module]) !== undefined) {
-                // Recursively go over the results
+                //  Recursively go over the results
                 (function run(mod) {
-                    // Go over each of the module's children and
-                    // run over it
+                    //  Go over each of the module's children and run over it
                     mod.children.forEach(function(child) {
                         run(child);
                     });
 
-                    // Call the specified callback providing the
-                    // found module
+                    //  Call the specified callback providing the found module
                     callback(mod);
                 }(module));
             }
@@ -143,21 +140,21 @@
             fullpath = path.join(head, Config.NPM_FILE);
             this.npm = require(fullpath);
         } catch (e) {
-            // Make sure we default to some value.
+            //  Make sure we default to some value.
             this.npm = this.npm || {};
         }
         try {
             fullpath = path.join(app, Config.PROJECT_FILE);
             this.tibet = require(fullpath);
         } catch (e) {
-            // Make sure we default to some value.
+            //  Make sure we default to some value.
             this.tibet = this.tibet || {};
         }
         try {
             fullpath = path.join(head, Config.SERVER_FILE);
             this.tds = require(fullpath);
         } catch (e) {
-            // Make sure we default to some value.
+            //  Make sure we default to some value.
             this.tds = this.tds || {};
         }
 
@@ -167,8 +164,9 @@
         //  TIBET project file (mostly client but some shared values).
         this.overlayProperties(this.tibet);
 
-        //  Process the TDS configuration data last. We do this in two steps to load
-        //  any default section followed by any data that's environment-specific.
+        //  Process the TDS configuration data last. We do this in two steps to
+        //  load any default section followed by any data that's
+        //  environment-specific.
         if (this.tds) {
             if (this.tds.default) {
                 this.overlayProperties(this.tds.default, 'tds');
@@ -206,9 +204,10 @@
 
 
     /**
-     * A simple alternative to TP.sys.getcfg() used in the boot system and elsewhere
-     * in TIBET. This version will look in command line options followed by any
-     * loaded TIBET configuration data for the property in question.
+     * A simple alternative to TP.sys.getcfg() used in the boot system and
+     * elsewhere in TIBET. This version will look in command line options
+     * followed by any loaded TIBET configuration data for the property in
+     * question.
      * @param {string} property The name of the property to look up.
      * @returns {Object} The property value.
      */
@@ -223,14 +222,15 @@
             return this.cfg;
         }
 
-        // Make simple access as fast as possible.
+        //  Make simple access as fast as possible.
         if (this.cfg.hasOwnProperty(property)) {
             return this.cfg[property];
         }
 
-        // Secondary check is for prefixed lookups.
+        //  Secondary check is for prefixed lookups.
         if (/\./.test(property)) {
-            // Simple conversions from dotted to underscore should be checked first.
+            //  Simple conversions from dotted to underscore should be checked
+            //  first.
             name = property.replace(/\./g, '_');
             if (this.cfg.hasOwnProperty(name)) {
                 return this.cfg[name];
@@ -292,13 +292,13 @@
             return this.app_head;
         }
 
-        // One tricky aspect is that we don't want to confuse lib root and app
-        // head. That means for the app head computation we don't work from the
-        // module filename, but only from the current working directory.
+        //  One tricky aspect is that we don't want to confuse lib root and app
+        //  head. That means for the app head computation we don't work from the
+        //  module filename, but only from the current working directory.
 
         cwd = process.cwd();
 
-        // Don't allow this value to be computed for a nested node_modules dir.
+        //  Don't allow this value to be computed for a nested node_modules dir.
         if (/node_modules/.test(cwd)) {
             cwd = cwd.slice(0, cwd.indexOf('node_modules'));
         }
@@ -345,14 +345,14 @@
             list,
             found;
 
-        // Return cached value if available.
+        //  Return cached value if available.
         if (this.app_root) {
             return this.app_root;
         }
 
-        // Check command line options and tibet.json configuration data. NOTE
-        // that we can't use getcfg() here due to ordering/bootstrapping
-        // considerations.
+        //  Check command line options and tibet.json configuration data. NOTE
+        //  that we can't use getcfg() here due to ordering/bootstrapping
+        //  considerations.
         if (this.options && this.options.app_root) {
             this.app_root = this.options.app_root;
             return this.app_root;
@@ -407,8 +407,9 @@
     /**
      * Returns the library root directory, the path where the tibet library is
      * found. The search is a bit complex because we want to give precedence to
-     * option settings and application-specific settings rather than simply working
-     * from the assumption that we're using the library containing the current CLI.
+     * option settings and application-specific settings rather than simply
+     * working from the assumption that we're using the library containing the
+     * current CLI.
      * @returns {String} The library root.
      */
     Config.prototype.getLibRoot = function() {
@@ -425,13 +426,14 @@
             dir,
             file;
 
-        // Return cached value if available.
+        //  Return cached value if available.
         if (this.lib_root) {
             return this.lib_root;
         }
 
-        // Check command line options and tibet.json configuration data. NOTE that
-        // we can't use getcfg() here due to ordering/bootstrapping considerations.
+        //  Check command line options and tibet.json configuration data. NOTE
+        //  that we can't use getcfg() here due to ordering/bootstrapping
+        //  considerations.
         if (this.options && this.options.lib_root) {
             this.lib_root = this.options.lib_root;
             return this.lib_root;
@@ -440,16 +442,16 @@
             return this.lib_root;
         }
 
-        // Our base options here are a little different. We want to use app root as
-        // our first choice followed by the module directory where the CLI is
-        // running. This latter path gives us a fallback when we're being run
-        // outside a project, or in a non-node project.
+        //  Our base options here are a little different. We want to use app
+        //  root as our first choice followed by the module directory where the
+        //  CLI is running. This latter path gives us a fallback when we're
+        //  being run outside a project, or in a non-node project.
         app_root = this.getAppRoot();
         moduleDir = module.filename.slice(0, module.filename.lastIndexOf('/'));
 
-        // Our file checks are looking for the library so we need to leverage the
-        // standard boot settings for tibet_dir, tibet_inf, and tibet_lib just as
-        // the boot system would.
+        //  Our file checks are looking for the library so we need to leverage
+        //  the standard boot settings for tibet_dir, tibet_inf, and tibet_lib
+        //  just as the boot system would.
 
         if (this.options && this.options.tibet_dir) {
             tibet_dir = this.options.tibet_dir;
@@ -458,8 +460,8 @@
         } else if (this.tibet.path && this.tibet.path.npm_dir) {
             tibet_dir = this.tibet.path.npm_dir;
         } else {
-            // Hard-coded fallback, but we don't have a choice if no other setting
-            // is provided.
+            //  Hard-coded fallback, but we don't have a choice if no other
+            //  setting is provided.
             tibet_dir = 'node_modules';
         }
 
@@ -470,8 +472,8 @@
         } else if (this.tibet.path && this.tibet.path.tibet_inf) {
             tibet_inf = this.tibet.path.tibet_inf;
         } else {
-            // Hard-coded fallback, but we don't have a choice if no other setting
-            // is provided.
+            //  Hard-coded fallback, but we don't have a choice if no other
+            //  setting is provided.
             tibet_inf = 'TIBET-INF';
         }
 
@@ -482,10 +484,11 @@
         } else if (this.tibet.path && this.tibet.path.tibet_lib) {
             tibet_lib = this.tibet.path.tibet_lib;
         } else {
-            tibet_lib = 'tibet'; // lowercase due to npm being default install
+            tibet_lib = 'tibet';    //  lowercase due to npm being default
+                                    //  install
         }
 
-        // How far is this file from the library root?
+        //  How far is this file from the library root?
         offset = path.join('..', '..', '..');
 
         checks = [
@@ -498,8 +501,8 @@
             //  unable to find the node_modules directory which should exist.
             checks.unshift([app_root, path.join(tibet_inf, tibet_lib)]);
 
-            // NOTE node_modules does not float with app_root, it's always found
-            // at the application head.
+            //  NOTE node_modules does not float with app_root, it's always
+            //  found at the application head.
             if (tibet_dir === 'node_modules') {
                 checks.unshift([this.getAppHead(),
                     path.join(tibet_dir, tibet_lib)]);
@@ -515,19 +518,19 @@
             dir = check[0];
             file = check[1];
 
-            // NOTE we're using -d here since we're doing a directory check.
+            //  NOTE we're using -d here since we're doing a directory check.
             if (sh.test('-d', path.join(dir, file))) {
                 if (dir === moduleDir) {
-                    // Have to adjust dir by offset but we need to watch for
-                    // upper/lower case issues depending on whether we're dealing
-                    // with a Git clone vs. an npm install (which is always
-                    // lowercase).
+                    //  Have to adjust dir by offset but we need to watch for
+                    //  upper/lower case issues depending on whether we're
+                    //  dealing with a Git clone vs. an npm install (which is
+                    //  always lowercase).
                     if (file.indexOf(tibet_lib) === -1) {
                         tibet_lib = tibet_lib.toUpperCase();
                     }
                     dir = path.join(dir, offset, tibet_lib);
                 } else {
-                    // Have to adjust dir without offset
+                    //  Have to adjust dir without offset
                     dir = path.join(dir, file);
                 }
                 this.lib_root = dir;
@@ -536,8 +539,9 @@
         }
 
         if (!this.lib_root) {
-            // Usually means a) running outside a project, b) didn't call the TIBET
-            // library 'tibet' or 'TIBET'. Just default based on current file path.
+            //  Usually means a) running outside a project, b) didn't call the
+            //  TIBET library 'tibet' or 'TIBET'. Just default based on current
+            //  file path.
             this.lib_root = path.join(module.filename, offset);
         }
 
@@ -573,9 +577,9 @@
 
 
     /**
-     * Returns true if the path provided appears to be an aboslute path. Note that
-     * this will return true for TIBET virtual paths since they are absolute paths
-     * when expanded.
+     * Returns true if the path provided appears to be an aboslute path. Note
+     * that this will return true for TIBET virtual paths since they are
+     * absolute paths when expanded.
      * @param {string} aPath The path to be tested.
      * @returns {Boolean} True if the path is absolute.
      */
@@ -600,11 +604,12 @@
 
 
     /**
-     * Recursively traverses a potentially nested set of properties and values and
-     * ensures they are set as the current config values. Typically called with the
-     * tibet.json and tds.json content to overlay tibet_cfg baseline settings.
-     * @param {Object} dict The dictionary of key/value pairs in primitive object
-     *     form.
+     * Recursively traverses a potentially nested set of properties and values
+     * and ensures they are set as the current config values. Typically called
+     * with the tibet.json and tds.json content to overlay tibet_cfg baseline
+     * settings.
+     * @param {Object} dict The dictionary of key/value pairs in primitive
+     *     object form.
      * @param {String} prefix An optional prefix for any properties being set.
      */
     Config.prototype.overlayProperties = function(dict, prefix) {
