@@ -2169,7 +2169,7 @@ TP.boot.$uriExpandPath = function(aPath) {
         return TP.sys.getLaunchRoot();
     }
 
-    if (aPath.indexOf('/') === 0) {
+    if (aPath.indexOf('/') === 0 || /^[a-zA-Z]{1}:/.test(aPath)) {
         //  Launch root doesn't include a trailing slash, so avoid possible
         //  recursion via uriJoinPaths and just concatenate.
         return TP.sys.getLaunchRoot() + aPath;
@@ -2534,7 +2534,7 @@ TP.boot.$uriJoinPaths = function(firstPath, secondPath) {
     }
 
     //  'typical' absolute paths can be expanded.
-    if (secondPath.indexOf('/') === 0) {
+    if (secondPath.indexOf('/') === 0 || /^[a-zA-Z]{1}:/.test(secondPath)) {
         return TP.boot.$uriExpandPath(secondPath);
     }
 
@@ -2886,6 +2886,11 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
         path = second.replace(first, '');
         if (path.indexOf('/') === 0) {
             path = path.slice(1);
+        }
+
+        if (/^[a-zA-Z]{1}:/.test(path)) {
+            //  NB: We start after the colon
+            path = path.slice(2);
         }
 
         path = path.split('/');

@@ -525,7 +525,7 @@ function(aPath) {
 
     path = TP.str(aPath);
 
-    if (path.indexOf('/') === 0) {
+    if (path.indexOf('/') === 0 || /^[a-zA-Z]{1}:/.test(path)) {
         //  Launch root doesn't include a trailing slash, so avoid possible
         //  recursion via uriJoinPaths and just concatenate.
         return TP.sys.getLaunchRoot() + path;
