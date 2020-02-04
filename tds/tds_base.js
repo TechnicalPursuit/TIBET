@@ -16,7 +16,6 @@
     var beautify,
         crypto,
         cors,
-        path,
         handlebars,
         util,
         couch,
@@ -31,7 +30,6 @@
 
     beautify = require('js-beautify');
     cors = require('cors');
-    path = require('path');
     handlebars = require('handlebars');
     Promise = require('bluebird');
     util = require('util');
@@ -953,6 +951,18 @@
         this.color = new Color(opts);
     };
 
+
+    /**
+     * Returns the joined path in an *OS independent* manner (i.e. with '/' as the
+     * only separator).
+     * @param {varargs} paths The paths to be joined.
+     * @returns {String} The supplied paths joined together with a '/'.
+     */
+    TDS.joinPaths = function(paths) {
+        return TDS._package.joinPaths.apply(TDS._package, arguments);
+    };
+
+
     /**
      * Loads a specified list of plugins by scanning the plugin directory at the
      * root location provided. NOTE that this routine is not used to load
@@ -974,7 +984,7 @@
                 name: plugin
             };
 
-            fullpath = path.join(rootpath, plugin);
+            fullpath = TDS.joinPaths(rootpath, plugin);
 
             //  Skip directories
             if (TDS.shell.test('-d', fullpath)) {

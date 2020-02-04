@@ -284,7 +284,7 @@
                 }
             }
 
-            fullpath = path.join(watchRoot, file);
+            fullpath = TDS.joinPaths(watchRoot, file);
             tibetpath = TDS.getVirtualPath(fullpath);
             extname = path.extname(fullpath);
             extname = extname.charAt(0) === '.' ? extname.slice(1) : extname;
@@ -404,7 +404,7 @@
                         name;
 
                     //  Ignore directories
-                    if (TDS.shell.test('-d', path.join(procdir, filename))) {
+                    if (TDS.shell.test('-d', TDS.joinPaths(procdir, filename))) {
                         return;
                     }
 
@@ -437,7 +437,7 @@
                         //  NOTE the processors themselves should register
                         //  such that they can be invoked when a file with
                         //  a matching extension changes.
-                        require(path.join(procdir, filename))(options);
+                        require(TDS.joinPaths(procdir, filename))(options);
                     } catch (e) {
                         logger.error('Error loading processor: ' + name);
                         logger.error(e.message);

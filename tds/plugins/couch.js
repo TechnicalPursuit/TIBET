@@ -215,7 +215,7 @@
             list.forEach(function(item) {
                 // var fullpath;
 
-                // fullpath = path.join(appRoot, item.name);
+                // fullpath = TDS.joinPaths(appRoot, item.name);
 
                 logger.info('CouchDB item: ' + JSON.stringify(item));
 
@@ -605,7 +605,7 @@
                         return;
                     }
 
-                    fullpath = path.join(appRoot, file);
+                    fullpath = TDS.joinPaths(appRoot, file);
 
                     readFile(fullpath).then(function(data) {
                         var type,
@@ -732,7 +732,7 @@
                     }
 
                     //  Read the file content in preparation for a push.
-                    fullpath = path.join(appRoot, file);
+                    fullpath = TDS.joinPaths(appRoot, file);
                     readFile(fullpath).then(
                     function(data) {
                         var type,

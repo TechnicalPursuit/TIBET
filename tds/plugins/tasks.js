@@ -75,7 +75,6 @@
             logger,
             name,
             meta,
-            path,
             Promise,
             server,
             sh,
@@ -160,7 +159,6 @@
         //  Requires
         //  ---
 
-        path = require('path');
         sh = require('shelljs');
         Promise = require('bluebird');
         follow = require('follow');
@@ -1513,7 +1511,7 @@
                     taskName;
 
                 //  Ignore directories
-                if (TDS.shell.test('-d', path.join(taskdir, filename))) {
+                if (TDS.shell.test('-d', TDS.joinPaths(taskdir, filename))) {
                     return;
                 }
 
@@ -1543,7 +1541,7 @@
                 options.logger = logger.getContextualLogger(taskMeta);
 
                 try {
-                    taskModule = require(path.join(taskdir, filename));
+                    taskModule = require(TDS.joinPaths(taskdir, filename));
                     taskFunction = taskModule(options);
 
                     //  name is the module name that we found it in the
