@@ -7,11 +7,11 @@
         make.sh.exec('npm update xpath');
 
         npmdir = make.CLI.expandPath('~npm_dir');
-        make.sh.cd(make.path.join(npmdir, 'xpath.js'));
+        make.sh.cd(make.CLI.joinPaths(npmdir, 'xpath.js'));
 
         make.sh.cp(
-            make.path.join('.', 'xpath.js'),
-            make.path.join('..', '..', 'deps', 'xpath-tpi.js'));
+            make.CLI.joinPaths('.', 'xpath.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'xpath-tpi.js'));
 
         resolve();
     };

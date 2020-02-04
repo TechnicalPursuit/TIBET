@@ -46,7 +46,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.NONLIB;
  * with the current file's load path to create the absolute root path.
  * @type {string}
  */
-Cmd.prototype.DNA_ROOT = path.join('..', '..', '..', '..', 'dna');
+Cmd.prototype.DNA_ROOT = CLI.joinPaths('..', '..', '..', '..', 'dna');
 
 /**
  * The command name for this type.
@@ -92,7 +92,7 @@ Cmd.prototype.configure = function() {
         options.dir = options._[2] || options.dir || './' + options.name;
     }
 
-    cwd = process.cwd();
+    cwd = CLI.getCurrentDirectory();
 
     //  If we're targeting the current directory we allow for scanning any
     //  existing project information for name and dna values.

@@ -111,11 +111,11 @@ helpers.linkup_app = function(make, options) {
             rellinksrc;
 
         if (item.indexOf('tibet') === 0) {
-            linksrc = path.join(source, item);
+            linksrc = make.CLI.joinPaths(source, item);
         } else {
-            linksrc = path.join(target, item);
+            linksrc = make.CLI.joinPaths(target, item);
         }
-        linkdest = path.join(target, item.replace('_' + config, ''));
+        linkdest = make.CLI.joinPaths(target, item.replace('_' + config, ''));
 
         if (!sh.test('-e', linksrc)) {
             make.warn('skipping link for missing file \'' +
@@ -132,7 +132,7 @@ helpers.linkup_app = function(make, options) {
 
         //  Join the supplied item onto the relative source directory. This
         //  will produce a relative path to the destination.
-        rellinksrc = path.join(srcdir, item);
+        rellinksrc = make.CLI.joinPaths(srcdir, item);
 
         try {
             //  NB: The source path to the command here is used as a raw
@@ -191,10 +191,11 @@ helpers.package_check = function(make, options) {
 
     make.log('verifying package@config');
 
-    // The big path construction here is to locate the tibet command relative to
-    // the current module. This is necessary for the npm prepublish step (used
-    // by TravisCI etc) so they can build tibet without having it installed yet.
-    cmd = path.join(module.filename, '..', '..', '..', 'bin', 'tibet') +
+    //  The big path construction here is to locate the tibet command relative
+    //  to the current module. This is necessary for the npm prepublish step
+    //  (used by TravisCI etc) so they can build tibet without having it
+    //  installed yet.
+    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet') +
         ' package --missing' +
         (pkg ? ' --package \'' + pkg : '') +
         (config ? '\' --config ' + config : '') +
@@ -262,7 +263,7 @@ helpers.resource_build = function(make, options) {
 
     deferred = Promise.pending();
 
-    // version bump if requested
+    //  version bump if requested
     if (options.bumppatch) {
 
         versionNums = CLI.config.npm.version.split('.');
@@ -285,10 +286,11 @@ helpers.resource_build = function(make, options) {
 
     make.log('generating resources');
 
-    // The big path construction here is to locate the tibet command relative to
-    // the current module. This is necessary for the npm prepublish step (used
-    // by TravisCI etc) so they can build tibet without having it installed yet.
-    cmd = path.join(module.filename, '..', '..', '..', 'bin', 'tibet') +
+    //  The big path construction here is to locate the tibet command relative
+    //  to the current module. This is necessary for the npm prepublish step
+    //  (used by TravisCI etc) so they can build tibet without having it
+    //  installed yet.
+    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet') +
         ' resource --build' +
         (pkg ? ' --package \'' + pkg : '') +
         (config ? '\' --config ' + config : '') +
@@ -387,10 +389,11 @@ helpers.rollup = function(make, options) {
 
     make.log('rolling up ' + prefix + root);
 
-    // The big path construction here is to locate the tibet command relative to
-    // the current module. This is necessary for the npm prepublish step (used
-    // by TravisCI etc) so they can build tibet without having it installed yet.
-    cmd = path.join(module.filename, '..', '..', '..', 'bin', 'tibet') +
+    //  The big path construction here is to locate the tibet command relative
+    //  to the current module. This is necessary for the npm prepublish step
+    //  (used by TravisCI etc) so they can build tibet without having it
+    //  installed yet.
+    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet') +
         ' rollup --package \'' + pkg +
         '\' --config ' + config +
         ' --phase ' + phase +
@@ -408,7 +411,7 @@ helpers.rollup = function(make, options) {
         ext = '.js';
     }
 
-    file = path.join(dir, prefix + root + ext);
+    file = make.CLI.joinPaths(dir, prefix + root + ext);
 
     promise = new Promise(function(resolver, rejector) {
         var proc;
@@ -468,7 +471,7 @@ helpers.rollup = function(make, options) {
         });
     });
 
-    // gzip as well...
+    //  gzip as well...
     if (options.zip) {
 
         promise = promise.then(
@@ -505,7 +508,7 @@ helpers.rollup = function(make, options) {
         });
     }
 
-    // brotli as well...
+    //  brotli as well...
     if (options.brotli) {
 
         if (!iltorb) {
@@ -629,13 +632,13 @@ helpers.rollup_lib = function(make, options) {
  */
 helpers.transform = function(make, options) {
 
-    var content,  // File content after template injection.
-        source,   // The source file path.
-        target,   // The target file path.
-        text,     // File text.
-        data,     // File injection data.
-        template, // The compiled template content.
-        deferred; // Promise support object for returns.
+    var content,  //    File content after template injection.
+        source,   //    The source file path.
+        target,   //    The target file path.
+        text,     //    File text.
+        data,     //    File injection data.
+        template, //    The compiled template content.
+        deferred; //    Promise support object for returns.
 
     if (CLI.notValid(options)) {
         throw new Error('InvalidOptions');

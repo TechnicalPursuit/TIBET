@@ -25,7 +25,6 @@
             logger,
             TDS,
             privs,
-            path,
             sh;
 
         app = options.app;
@@ -39,7 +38,6 @@
         //  ---
 
         express = require('express');
-        path = require('path');
         sh = require('shelljs');
 
         //  ---
@@ -84,7 +82,7 @@
         privs.forEach(function(priv) {
             var full;
 
-            full = path.join(appRoot, priv);
+            full = TDS.joinPaths(appRoot, priv);
             if (sh.test('-e', full)) {
                 if (options.argv.verbose) {
                     logger.system('enabling private static path: ' + priv);

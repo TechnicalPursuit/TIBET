@@ -456,7 +456,8 @@
                             containerRegistryPassword
                         ];
 
-            cmd.log('Configuring the webapp with registry credentials on Azure');
+            cmd.log('Configuring the webapp with registry credentials on' +
+                    ' Azure');
 
             await CLI.spawnAsync(this, azuretoolspath, spawnArgs);
 
@@ -477,7 +478,8 @@
                             'WEBSITES_PORT=1407'
                         ];
 
-            cmd.log('Configuring the webapp with environment variables on Azure');
+            cmd.log('Configuring the webapp with environment variables on' +
+                    ' Azure');
 
             await CLI.spawnAsync(this, azuretoolspath, spawnArgs);
         };

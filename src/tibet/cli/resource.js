@@ -186,9 +186,9 @@ Cmd.prototype.execute = function() {
     //  Get the list of resources from the package. These are explicit values.
     this.specified = this.generateResourceList();
 
-    //  To work with computed resources we have to run our script via
-    //  TSH using our parent's implementation. We'll then blend that with info
-    //  from the package metadata.
+    //  To work with computed resources we have to run our script via TSH using
+    //  our parent's implementation. We'll then blend that with info from the
+    //  package metadata.
     Cmd.Parent.prototype.execute.call(this);
 
     return 0;
@@ -383,7 +383,7 @@ Cmd.prototype.generateResourceList = function() {
         list.forEach(function(file) {
             var fullpath;
 
-            fullpath = path.join(src, file);
+            fullpath = CLI.joinPaths(src, file);
             //  remove any directories in the list due to -R option
             if (sh.test('-d', fullpath)) {
                 return;
@@ -597,7 +597,7 @@ Cmd.prototype.processResources = function() {
             // base = res.slice(res.indexOf(path.sep) + 1).replace(
             //    /\//g, '-');
             base = resource.replace(/^~/, '').replace(/\//g, '-');
-            file = path.join(buildpath, base);
+            file = CLI.joinPaths(buildpath, base);
             if (path.extname(file) !== '.js') {
                 file += '.js';
             }
@@ -656,7 +656,7 @@ Cmd.prototype.processResources = function() {
             // base = resource.slice(resource.indexOf(path.sep) + 1).replace(
             //      /\//g, '-');
             base = resource.replace(/^~/, '').replace(/\//g, '-');
-            file = path.join(buildpath, base);
+            file = CLI.joinPaths(buildpath, base);
             if (path.extname(file) !== '.js') {
                 file += '.js';
             }
@@ -769,8 +769,12 @@ Cmd.prototype.processLessResource = function(options) {
                 //  ('.') in the key are then replaced with '-'. Then, quote the
                 //  value so that LESS doesn't have issues with spaces, etc.
                 if (CLI.notEmpty(val = cfg[aKey])) {
-                    vars[aKey.slice(5).replace(/\./g, '-')] =
-                        '"' + CLI.expandPath(val) + '"';
+                    //  NB: We don't map keys that point to values that are
+                    //  Arrays.
+                    if (!Array.isArray(val)) {
+                        vars[aKey.slice(5).replace(/\./g, '-')] =
+                            '"' + CLI.expandPath(val) + '"';
+                    }
                 }
             });
 
@@ -859,8 +863,12 @@ Cmd.prototype.processScssResource = function(options) {
                 //  ('.') in the key are then replaced with '-'. Then, quote the
                 //  value so that LESS doesn't have issues with spaces, etc.
                 if (CLI.notEmpty(val = cfg[aKey])) {
-                    vars[aKey.slice(5).replace(/\./g, '-')] =
-                        '"' + CLI.expandPath(val) + '"';
+                    //  NB: We don't map keys that point to values that are
+                    //  Arrays.
+                    if (!Array.isArray(val)) {
+                        vars[aKey.slice(5).replace(/\./g, '-')] =
+                            '"' + CLI.expandPath(val) + '"';
+                    }
                 }
             });
 
@@ -1123,9 +1131,9 @@ Cmd.prototype.updatePackage = function() {
     //  the config.
     if (pkgName.charAt(0) !== '~') {
         if (CLI.inProject()) {
-            pkgName = path.join('~app_cfg', pkgName);
+            pkgName = CLI.joinPaths('~app_cfg', pkgName);
         } else {
-            pkgName = path.join('~lib_cfg', pkgName);
+            pkgName = CLI.joinPaths('~lib_cfg', pkgName);
         }
     }
 
@@ -1153,7 +1161,7 @@ Cmd.prototype.updatePackage = function() {
         cond = 'boot.phase_two';
 
         if (this.options.build) {
-            mainName = path.join('~app_cfg', 'main.xml');
+            mainName = CLI.joinPaths('~app_cfg', 'main.xml');
             mainNode = cmd.readPackageNode(mainName);
 
             version = mainNode.getAttribute('version');
@@ -1325,7 +1333,8 @@ Cmd.prototype.updatePackage = function() {
     if (dirty) {
         cmd.writePackageNode(pkgName, pkgNode);
 
-        this.warn('New configuration entries created. Review/Rebuild as needed.');
+        this.warn(
+            'New configuration entries created. Review/Rebuild as needed.');
     }
 };
 

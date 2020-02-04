@@ -18,7 +18,7 @@
             config.default.brotli = true;
         }
 
-        fullpath = make.path.join(make.CLI.expandPath('~'), 'lib', 'src');
+        fullpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'lib', 'src');
         if (!make.sh.test('-d', fullpath)) {
             make.sh.mkdir(fullpath);
         }

@@ -7,15 +7,15 @@
         make.sh.exec('npm update aws-sdk');
 
         npmdir = make.CLI.expandPath('~npm_dir');
-        make.sh.cd(make.path.join(npmdir, 'aws-sdk'));
+        make.sh.cd(make.CLI.joinPaths(npmdir, 'aws-sdk'));
 
         make.sh.cp(
-            make.path.join('.', 'dist', 'aws-sdk.js'),
-            make.path.join('..', '..', 'deps', 'aws-sdk-tpi.js'));
+            make.CLI.joinPaths('.', 'dist', 'aws-sdk.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'aws-sdk-tpi.js'));
 
         make.sh.cp(
-            make.path.join('.', 'dist', 'aws-sdk.min.js'),
-            make.path.join('..', '..', 'deps', 'aws-sdk-tpi.min.js'));
+            make.CLI.joinPaths('.', 'dist', 'aws-sdk.min.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'aws-sdk-tpi.min.js'));
 
         resolve();
     };

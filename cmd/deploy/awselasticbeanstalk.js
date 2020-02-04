@@ -29,7 +29,6 @@
     'use strict';
 
     var os,
-        path,
         hb,
 
         CLI,
@@ -46,7 +45,6 @@
         DNA_ROOT;
 
     os = require('os');
-    path = require('path');
     hb = require('handlebars');
 
     CLI = require('../../src/tibet/cli/_cli');
@@ -69,21 +67,22 @@
     ZIP_COMMAND = 'zip';
 
     /**
-     * The name of the Azure CLI executable we look for to confirm installation.
+     * The name of the AWS CLI executable we look for to confirm installation.
      * @type {string}
      */
     AWS_COMMAND = 'aws';
 
     /**
-     * The
+     * The location of the AWS credentials configuration.
      * @type {string}
      */
     AWS_CONFIG_PATH = '.aws';
     AWS_CONFIG_FILE = 'credentials';
 
     /**
-     * Where are the dna templates we should clone from? This value will be joined
-     * with the current file's load path to create the absolute root path.
+     * Where are the dna templates we should clone from? This value will be
+     * joined with the current file's load path to create the absolute root
+     * path.
      * @type {string}
      */
     DNA_ROOT = 'src/tibet/cli/dna/deploy';
@@ -202,7 +201,7 @@
 
             homedir = os.homedir();
 
-            configpath = path.join(homedir, AWS_CONFIG_PATH, AWS_CONFIG_FILE);
+            configpath = CLI.joinPaths(homedir, AWS_CONFIG_PATH, AWS_CONFIG_FILE);
             configpath = sh.which(configpath);
 
             if (configpath) {
@@ -236,7 +235,7 @@
 
             this.info('Generating Dockerrun in ' + destpath);
 
-            file = path.join(CLI.getLibRoot(),
+            file = CLI.joinPaths(CLI.getLibRoot(),
                                 DNA_ROOT,
                                 'Dockerrun.aws.json.hb');
 
@@ -252,7 +251,7 @@
                 return 1;
             }
 
-            fullpath = path.join(destpath, 'Dockerrun.aws.json');
+            fullpath = CLI.joinPaths(destpath, 'Dockerrun.aws.json');
 
             try {
                 content = template(paramdata);

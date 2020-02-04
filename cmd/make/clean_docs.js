@@ -9,14 +9,14 @@
 
         CLI = make.CLI;
 
-        fullpath = make.path.join(CLI.expandPath('~'), 'doc', 'html');
+        fullpath = make.CLI.joinPaths(CLI.expandPath('~'), 'doc', 'html');
         if (make.sh.test('-d', fullpath)) {
-            make.sh.rm('-rf', make.path.join(fullpath, '*'));
+            make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
         }
 
-        fullpath = make.path.join(CLI.expandPath('~'), 'doc', 'man');
+        fullpath = make.CLI.joinPaths(CLI.expandPath('~'), 'doc', 'man');
         if (make.sh.test('-d', fullpath)) {
-            make.sh.rm('-rf', make.path.join(fullpath, '*'));
+            make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
         }
 
         resolve();

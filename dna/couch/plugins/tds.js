@@ -72,7 +72,7 @@
             //  Plugin list won't have the directory path, just basename minus
             //  extension, so adjust to be full paths.
             plugins = plugins.map(function(plugin) {
-                return path.join(pluginDir, plugin);
+                return TDS.joinPaths(pluginDir, plugin);
             });
         }
 

@@ -17,13 +17,11 @@
 
 var CLI,
     Cmd,
-    path,
     sh,
     semver;
 
 
 CLI = require('./_cli');
-path = require('path');
 sh = require('shelljs');
 semver = require('semver');
 
@@ -117,13 +115,13 @@ Cmd.prototype.execute = function() {
 
     //  Library version is always at ~lib/package.json.
     root = CLI.getLibRoot();
-    fullpath = CLI.expandPath(path.join(root, CLI.NPM_FILE));
+    fullpath = CLI.expandPath(CLI.joinPaths(root, CLI.NPM_FILE));
     if (!sh.test('-f', fullpath)) {
         //  When frozen we can often have a lib root reference where the
         //  package.json file isn't linked/copied. When that's true we have to
         //  work from app head and add in the node_modules/tibet dir.
         root = CLI.getAppHead();
-        fullpath = CLI.expandPath(path.join(root,
+        fullpath = CLI.expandPath(CLI.joinPaths(root,
             'node_modules', 'tibet', CLI.NPM_FILE));
     }
 

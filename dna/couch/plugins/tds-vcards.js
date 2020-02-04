@@ -19,13 +19,11 @@
     module.exports = function(options) {
         var app,
             TDS,
-            path,
             sh;
 
         app = options.app;
         TDS = app.TDS;
 
-        path = require('path');
         sh = require('shelljs');
 
         //  ---
@@ -60,7 +58,7 @@
 
             //  Build a path to a vCard that may exist per user (typically, if the
             //  user has been created using TIBET CLI tools, a card will exist).
-            fullpath = path.join(
+            fullpath = TDS.joinPaths(
                     TDS.expandPath(TDS.getcfg('tds.vcard_root', '~app_dat')),
                     req.user.id +
                     '_vcard.xml');

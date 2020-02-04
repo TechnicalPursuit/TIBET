@@ -49,7 +49,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * the dna is below a command-specific subdirectory of dna/type.
  * @type {string}
  */
-Cmd.prototype.DNA_ROOT = path.join('..', 'dna', 'type');
+Cmd.prototype.DNA_ROOT = CLI.joinPaths('..', 'dna', 'type');
 
 /**
  * The command name for this type.
@@ -209,9 +209,9 @@ Cmd.prototype.configureForDNA = function(config) {
 
     if (options.pkgname.charAt(0) !== '~') {
         if (CLI.inProject()) {
-            options.pkgname = path.join('~app_cfg', options.pkgname);
+            options.pkgname = CLI.joinPaths('~app_cfg', options.pkgname);
         } else {
-            options.pkgname = path.join('~lib_cfg', options.pkgname);
+            options.pkgname = CLI.joinPaths('~lib_cfg', options.pkgname);
         }
     }
 
@@ -243,7 +243,7 @@ Cmd.prototype.configureForDNA = function(config) {
         options.dir = inProj ? '~app_src/' :
             '~lib_src/' + options.nsname;
 
-        options.dir = path.join(options.dir,
+        options.dir = CLI.joinPaths(options.dir,
             options.nsname + '.' + options.name);
 
         dest = CLI.expandPath(options.dir);
@@ -407,7 +407,7 @@ Cmd.prototype.executeClone = function() {
         target = base.replace(dnaroot, root).
             replace(dnans, ns).replace(dnaname, name);
 
-        new CLI.sh.ShellString(content).to(path.join(options.tmpdir, target));
+        new CLI.sh.ShellString(content).to(CLI.joinPaths(options.tmpdir, target));
     });
 
     return 0;
@@ -463,9 +463,9 @@ Cmd.prototype.executePackageBundled = function() {
     //  the dir and type name are a match.
     dir = options.dir.slice(options.dir.lastIndexOf('/') + 1);
     if (dir === options.nsroot + '.' + options.nsname + '.' + options.name) {
-        file = path.join(options.dir, path.sep);
+        file = CLI.joinPaths(options.dir, '/');
     } else {
-        file = path.join(options.dir,
+        file = CLI.joinPaths(options.dir,
             options.nsroot + '.' + options.nsname + '.' + options.name +
             '.xml');
     }
@@ -782,12 +782,12 @@ Cmd.prototype.overlayStyle = function() {
         //  Since we'll potentially be overlaying file content from a clone
         //  operation we want to see whether there's a current less/css file.
         fullpath = CLI.expandPath(
-            path.join(options.tmpdir, options.typename + '.less'));
+            CLI.joinPaths(options.tmpdir, options.typename + '.less'));
         if (CLI.sh.test('-e', fullpath)) {
             ext = '.less';
         } else {
             fullpath = CLI.expandPath(
-                path.join(options.tmpdir, options.typename + '.css'));
+                CLI.joinPaths(options.tmpdir, options.typename + '.css'));
             if (CLI.sh.test('-e', fullpath)) {
                 ext = '.css';
             } else {
@@ -817,7 +817,7 @@ Cmd.prototype.overlayStyle = function() {
     //  We rely on a fairly strict naming convention to determine target file
     //  names. Use that here to get the target file.
     fullpath = CLI.expandPath(
-        path.join(options.tmpdir, options.typename + ext));
+        CLI.joinPaths(options.tmpdir, options.typename + ext));
 
     try {
         new CLI.sh.ShellString(content).to(fullpath);
@@ -864,7 +864,7 @@ Cmd.prototype.overlayTemplate = function() {
     //  We rely on a fairly strict naming convention to determine target file
     //  names. Use that here to get the target file.
     fullpath = CLI.expandPath(
-        path.join(options.tmpdir, options.typename + '.xhtml'));
+        CLI.joinPaths(options.tmpdir, options.typename + '.xhtml'));
 
     try {
         new CLI.sh.ShellString(content).to(fullpath);

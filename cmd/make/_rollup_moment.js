@@ -5,15 +5,15 @@
         var npmdir;
 
         npmdir = make.CLI.expandPath('~npm_dir');
-        make.sh.cd(make.path.join(npmdir, 'moment'));
+        make.sh.cd(make.CLI.joinPaths(npmdir, 'moment'));
 
         make.sh.cp(
-            make.path.join('.', 'moment.js'),
-            make.path.join('..', '..', 'deps', 'moment-tpi.js'));
+            make.CLI.joinPaths('.', 'moment.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'moment-tpi.js'));
 
         make.sh.cp(
-            make.path.join('.', 'min', 'moment.min.js'),
-            make.path.join('..', '..', 'deps', 'moment-tpi.min.js'));
+            make.CLI.joinPaths('.', 'min', 'moment.min.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'moment-tpi.min.js'));
 
         resolve();
     };

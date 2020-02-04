@@ -478,6 +478,7 @@ Cmd.prototype.getCompletionOptions = function() {
  */
 Cmd.prototype.filterAssetList = function(list) {
     var filter,
+        cwd,
         pattern,
         prefix,
         cmd;
@@ -497,9 +498,12 @@ Cmd.prototype.filterAssetList = function(list) {
     }
 
     if (CLI.notEmpty(filter)) {
+
+        cwd = CLI.getCurrentDirectory();
+
         //  Simple directory search requires a leading '.' to signify.
         if (filter.charAt(0) === '.') {
-            filter = filter === '.' ? process.cwd() : path.join(process.cwd(), filter);
+            filter = filter === '.' ? cwd : CLI.joinPaths(cwd, filter);
         }
         pattern = CLI.stringAsRegExp(filter);
     }
@@ -659,7 +663,8 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
  */
 Cmd.prototype.getScannedAssetList = function() {
 
-    var dir,
+    var cwd,
+        dir,
         file,
         /* eslint-disable no-unused-vars */
         ignores,
@@ -681,13 +686,16 @@ Cmd.prototype.getScannedAssetList = function() {
     //  path to be scanned. we allow this to be a virtual path provided that the
     //  user properly quoted it to get it past shell expansion.
     root = this.options._[1];
+
+    cwd = CLI.getCurrentDirectory();
+
     if (CLI.notEmpty(root)) {
         if (root === '.') {
-            dir = process.cwd();
+            dir = cwd;
         } else {
             dir = CLI.expandPath(root);
             if (dir.charAt(0) !== '/') {
-                dir = path.join(process.cwd(), root);
+                dir = CLI.joinPaths(cwd, root);
             }
         }
     }

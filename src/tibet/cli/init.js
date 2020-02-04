@@ -27,12 +27,10 @@
 
 var CLI,
     Cmd,
-    fs,
-    path;
+    fs;
 
 
 CLI = require('./_cli');
-path = require('path');
 fs = require('fs');
 
 //  ---
@@ -160,19 +158,18 @@ Cmd.prototype.execute = function() {
         //  We'll ultimately need to use the distance from the INF directory to
         //  the shared root as the offset "count" e.g. how many ".." segments do
         //  we need?
-        infpath = infpath.replace(toppath, '').slice(1); // slice off path.sep
-        npmpath = npmpath.replace(toppath, '').slice(1); // slice off path.sep
+        infpath = infpath.replace(toppath, '').slice(1); // slice off '/'
+        npmpath = npmpath.replace(toppath, '').slice(1); // slice off '/'
 
         //  something like public/TIBET-INF/tibet
-        linkfrom = path.join(infpath, 'tibet');
+        linkfrom = CLI.joinPaths(infpath, 'tibet');
         //  something like node_modules/tibet
-        linkto = path.join(npmpath, 'tibet');
+        linkto = CLI.joinPaths(npmpath, 'tibet');
 
-        steps = linkfrom.split(path.sep).length -
-            linkto.split(path.sep).length + 1;
+        steps = linkfrom.split('/').length - linkto.split('/').length + 1;
 
         for (i = 0; i < steps; i++) {
-            linkto = path.join('..', linkto);
+            linkto = CLI.joinPaths('..', linkto);
         }
 
         cmd.debug('linkfrom: ' + linkfrom);
@@ -198,7 +195,9 @@ Cmd.prototype.execute = function() {
         //  In other words, the '../..' is *not* evaluated against the current
         //  working directory. It is used as is to create the link.
         try {
-            fs.symlinkSync(linkto, linkfrom);
+            //  Note: the 3rd argument here, 'junction', is needed for NTFS and
+            //  is ignored for other file systems.
+            fs.symlinkSync(linkto, linkfrom, 'junction');
             cmd.log('TIBET development dependency linked.');
         } catch (e) {
             cmd.error('Error linking library launch directory: ' + e.message);
@@ -221,7 +220,7 @@ Cmd.prototype.execute = function() {
 
         //  If tibet directory is in place it's not unlinked by npm so we want
         //  to request a specific '--force' flag before we reinitialize.
-        if (sh.test('-e', path.join(CLI.MODULE_FILE, 'tibet'))) {
+        if (sh.test('-e', CLI.joinPaths(CLI.MODULE_FILE, 'tibet'))) {
 
             if (!this.options.force) {
                 this.warn('Project already initialized. ' +
@@ -251,7 +250,7 @@ Cmd.prototype.execute = function() {
 
     dna = this.getcfg('tibet.dna');
     if (CLI.notEmpty(dna)) {
-        dna = dna.slice(dna.lastIndexOf(path.sep) + 1);
+        dna = dna.slice(dna.lastIndexOf('/') + 1);
         cmd.info('Initializing \'' + this.getcfg('npm.name') +
             '\' project with \'' + dna + '\' dna...');
     } else {
@@ -267,7 +266,7 @@ Cmd.prototype.execute = function() {
     if (this.options.freeze) {
         //  NOTE this is looking for the TIBET library package.json, not an
         //  application/project one so we root from __dirname and climb up.
-        pkgpath = path.join(__dirname, '..', '..', '..', CLI.NPM_FILE);
+        pkgpath = CLI.joinPaths(__dirname, '..', '..', '..', CLI.NPM_FILE);
         if (sh.test('-e', pkgpath)) {
             try {
                 data = require(pkgpath);
@@ -291,7 +290,7 @@ Cmd.prototype.execute = function() {
     //  remove any references to the library in package.json. If we're using
     //  the freeze flag they'll be re-injected _after_ npm install.
     try {
-        pkgpath = path.join(CLI.expandPath('~'), CLI.NPM_FILE);
+        pkgpath = CLI.joinPaths(CLI.expandPath('~'), CLI.NPM_FILE);
         data = require(pkgpath);
     } catch (e) {
         cmd.error('Invalid project ' + CLI.NPM_FILE + ': ' + e.message);
@@ -327,18 +326,14 @@ Cmd.prototype.execute = function() {
 
             //  Locate the library path, and normalize to lowercase to match
             //  standard npm expectations.
-            libbase = path.join(__dirname, '..', '..', '..');
-            if (path.sep === '/') {
-                libbase = libbase.replace(/\/TIBET$/, '/tibet');
-            } else {
-                libbase = libbase.replace(/\\TIBET$/, '\\tibet');
-            }
+            libbase = CLI.joinPaths(__dirname, '..', '..', '..');
+            libbase = libbase.replace(/\/TIBET$/, '/tibet');
 
             npmbase = CLI.expandPath('~app_npm');
 
             //  We already have a global installation, we can just copy that
             //  into place rather than undergoing all the npm overhead again.
-            cperr = sh.cp('-Rn', path.join(libbase, '*'), npmbase);
+            cperr = sh.cp('-Rn', CLI.joinPaths(libbase, '*'), npmbase);
             if (sh.error()) {
                 cmd.error('Error cloning ' + libbase + ': ' + cperr.stderr);
                 return 1;

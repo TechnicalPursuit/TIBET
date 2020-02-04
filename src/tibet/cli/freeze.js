@@ -90,8 +90,7 @@ Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw
  */
 Cmd.prototype.execute = function() {
 
-    var path,
-        sh,
+    var sh,
 
         cmd,
         err,
@@ -110,7 +109,6 @@ Cmd.prototype.execute = function() {
 
         str;
 
-    path = require('path');
     sh = require('shelljs');
 
     cmd = this;
@@ -132,14 +130,14 @@ Cmd.prototype.execute = function() {
     }
 
     // Make sure we can find the bundled TIBET source packages.
-    libbase = path.join(app_npm, 'tibet', 'lib');
+    libbase = CLI.joinPaths(app_npm, 'tibet', 'lib');
     if (!sh.test('-e', libbase)) {
         this.error('Cannot find library root: ' + libbase);
         return 1;
     }
 
     // Make sure we can find the bundled TIBET source packages.
-    libsrc = path.join(libbase, 'src');
+    libsrc = CLI.joinPaths(libbase, 'src');
     if (!sh.test('-e', libsrc)) {
         this.error('Cannot find library source: ' + libsrc);
         this.warn('Run `tibet build` in TIBET library to build packages.');
@@ -150,7 +148,7 @@ Cmd.prototype.execute = function() {
     //  freeze (aka copy or link)
     //  ---
 
-    infroot = path.join(app_inf, 'tibet');
+    infroot = CLI.joinPaths(app_inf, 'tibet');
 
     //  If the target is a link that's the `tibet init` state, so we'll skip
     //  prompting and move directly to removing it so we can mkdir below.
@@ -185,13 +183,13 @@ Cmd.prototype.execute = function() {
     }
 
     this.log('freezing packaged library resources...');
-    err = sh.cp('-Rn', path.join(libbase, '*'), infroot);
+    err = sh.cp('-Rn', CLI.joinPaths(libbase, '*'), infroot);
     if (sh.error()) {
         this.error('Error cloning ' + libbase + ': ' + err.stderr);
         return 1;
     }
 
-    srcroot = path.join(infroot, 'lib', 'src');
+    srcroot = CLI.joinPaths(infroot, 'lib', 'src');
     list = sh.ls('-A', srcroot);
     if (sh.error()) {
         this.error('Error listing ' + srcroot + ': ' + list.stderr);
@@ -200,21 +198,21 @@ Cmd.prototype.execute = function() {
     }
 
     this.log('freezing library dependencies...');
-    err = sh.cp('-Rn', path.join(app_npm, 'tibet', 'deps', '*'), infroot);
+    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'deps', '*'), infroot);
     if (sh.error()) {
         this.error('Error cloning tibet/deps: ' + err.stderr);
         return 1;
     }
 
     this.log('freezing library support resources...');
-    err = sh.cp('-Rn', path.join(app_npm, 'tibet', 'etc', '*'), infroot);
+    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'etc', '*'), infroot);
     if (sh.error()) {
         this.error('Error cloning tibet/etc: ' + err.stderr);
         return 1;
     }
 
     this.log('freezing standard library docs...');
-    err = sh.cp('-Rn', path.join(app_npm, 'tibet', 'doc', '*'), infroot);
+    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'doc', '*'), infroot);
     if (sh.error()) {
         this.error('Error cloning tibet/doc: ' + err.stderr);
         return 1;
@@ -222,41 +220,41 @@ Cmd.prototype.execute = function() {
 
     if (this.options.raw) {
         this.log('freezing raw library source...');
-        err = sh.cp('-Rn', path.join(app_npm, 'tibet', 'src', '*'), infroot);
+        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'src', '*'), infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/src: ' + err.stderr);
             return 1;
         }
 
         this.log('freezing raw library tests...');
-        err = sh.cp('-Rn', path.join(app_npm, 'tibet', 'test', '*'), infroot);
+        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'test', '*'), infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/test: ' + err.stderr);
             return 1;
         }
 
         this.log('freezing raw library demos...');
-        err = sh.cp('-Rn', path.join(app_npm, 'tibet', 'demo', '*'), infroot);
+        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'demo', '*'), infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/demo: ' + err.stderr);
             return 1;
         }
     } else {
         this.log('freezing developer boot resources...');
-        sh.mkdir('-p', path.join(infroot, 'src', 'tibet', 'boot'));
+        sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'boot'));
         err = sh.cp('-Rn',
-                    path.join(app_npm, 'tibet', 'src', 'tibet', 'boot', '*'),
-                    path.join(infroot, 'src', 'tibet'));
+                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'boot', '*'),
+                    CLI.joinPaths(infroot, 'src', 'tibet'));
         if (sh.error()) {
             this.error('Error cloning tibet boot: ' + err.stderr);
             return 1;
         }
 
         this.log('freezing developer tool resources...');
-        sh.mkdir('-p', path.join(infroot, 'src', 'tibet', 'tools'));
+        sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'tools'));
         err = sh.cp('-Rn',
-                    path.join(app_npm, 'tibet', 'src', 'tibet', 'tools', '*'),
-                    path.join(infroot, 'src', 'tibet'));
+                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'tools', '*'),
+                    CLI.joinPaths(infroot, 'src', 'tibet'));
         if (sh.error()) {
             this.error('Error cloning tibet tools: ' + err.stderr);
             return 1;
@@ -274,8 +272,8 @@ Cmd.prototype.execute = function() {
     //  We want the project's node_modules/tibet/node_modules dir linked into
     //  place so CLI commands consistently find their dependencies.
     lnerr = sh.ln(lnflags,
-                    path.join(app_npm, 'tibet', 'node_modules'),
-                    path.join(infroot, 'node_modules'));
+                    CLI.joinPaths(app_npm, 'tibet', 'node_modules'),
+                    CLI.joinPaths(infroot, 'node_modules'));
     if (sh.error()) {
         this.error('Error relinking npm resources: ' + lnerr.stderr);
     }
@@ -301,7 +299,7 @@ Cmd.prototype.execute = function() {
             // since the various tsh-related commands use that one.
             if (/tibet_developer\.min\.js/.test(filename)) {
                 if (/\.gz$/.test(filename)) {
-                    sh.rm('-f', path.join(srcroot, filename));
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
                 }
                 return;
             }
@@ -309,22 +307,22 @@ Cmd.prototype.execute = function() {
             // Remove any minified/unminified copies we don't want.
             if (cmd.options.minify) {
                 if (/\.min\./.test(filename) !== true) {
-                    sh.rm('-f', path.join(srcroot, filename));
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
                 }
             } else {
                 if (/\.min\./.test(filename) === true) {
-                    sh.rm('-f', path.join(srcroot, filename));
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
                 }
             }
 
             // Remove any zipped/unzipped copies we don't want.
             if (cmd.options.zipped) {
                 if (/\.gz$/.test(filename) !== true) {
-                    sh.rm('-f', path.join(srcroot, filename));
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
                 }
             } else {
                 if (/\.gz$/.test(filename) === true) {
-                    sh.rm('-f', path.join(srcroot, filename));
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
                 }
             }
 
@@ -337,9 +335,9 @@ Cmd.prototype.execute = function() {
             // kept, only the hook and loader files which are always pulled from
             // bundles.
             if (cmd.options.raw) {
-                sh.rm('-f', path.join(srcroot, filename));
+                sh.rm('-f', CLI.joinPaths(srcroot, filename));
             } else if (filename.indexOf('tibet_' + bundle + '.') === -1) {
-                sh.rm('-f', path.join(srcroot, filename));
+                sh.rm('-f', CLI.joinPaths(srcroot, filename));
             }
         });
     }

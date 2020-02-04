@@ -5,11 +5,11 @@
         var npmdir;
 
         npmdir = make.CLI.expandPath('~npm_dir');
-        make.sh.cd(make.path.join(npmdir, 'mutation-summary'));
+        make.sh.cd(make.CLI.joinPaths(npmdir, 'mutation-summary'));
 
         make.sh.cp(
-            make.path.join('.', 'src', 'mutation-summary.js'),
-            make.path.join('..', '..', 'deps', 'mutation-summary-tpi.js'));
+            make.CLI.joinPaths('.', 'src', 'mutation-summary.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'mutation-summary-tpi.js'));
 
         resolve();
     };

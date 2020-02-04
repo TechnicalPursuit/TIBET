@@ -10,7 +10,6 @@
         var app,
             logger,
             TDS,
-            path,
             meta,
             fullpath;
 
@@ -18,8 +17,6 @@
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
-
-        path = require('path');
 
         meta = {
             type: 'route',
@@ -41,7 +38,7 @@
          * curl -XGET -k https://127.0.0.1:1443/mockget
          */
         app.get('/mockget', function(req, res) {
-            fullpath = path.join(__dirname, '..', 'mocks', 'mockjson_get.json');
+            fullpath = TDS.joinPaths(__dirname, '..', 'mocks', 'mockjson_get.json');
 
             //  Log something nice for auditing and/or debugging later.
             logger.info('Sending ' + fullpath, meta);

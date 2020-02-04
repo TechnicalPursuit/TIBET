@@ -21,13 +21,11 @@
 
 var CLI,
     crypto,
-    path,
     hb,
     Cmd;
 
 CLI = require('./_cli');
 crypto = require('../../../etc/helpers/crypto_helpers');
-path = require('path');
 hb = require('handlebars');
 
 //  ---
@@ -54,7 +52,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
  * with the current file's load path to create the absolute root path.
  * @type {string}
  */
-Cmd.prototype.DNA_ROOT = path.join('..', 'dna', 'user');
+Cmd.prototype.DNA_ROOT = CLI.joinPaths('..', 'dna', 'user');
 
 /**
  * The command name for this type.
@@ -154,7 +152,7 @@ Cmd.prototype.execute = function() {
     pass = this.options.pass;
 
     //  Create vcard path for later checks/generation.
-    fullpath = path.join(CLI.expandPath(
+    fullpath = CLI.joinPaths(CLI.expandPath(
         CLI.getcfg('tds.vcard_root', '~app_dat')), user + '_vcard.xml');
 
     //  User lookup. If the user is found this will be an 'update' operation as
@@ -300,7 +298,7 @@ Cmd.prototype.generateDefaultVCard = function(user, userData, fullpath) {
 
     this.info('Generating vcard in ' + fullpath);
 
-    file = path.join(module.filename, this.DNA_ROOT, 'vcard.xml.hb');
+    file = CLI.joinPaths(module.filename, this.DNA_ROOT, 'vcard.xml.hb');
     data = CLI.sh.cat(file).toString();
     try {
         template = hb.compile(data);

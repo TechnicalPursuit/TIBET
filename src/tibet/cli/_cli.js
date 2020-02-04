@@ -907,14 +907,14 @@ CLI.getNpmPath = function() {
         current;
 
     base = this.expandPath(this.getAppRoot());
-    current = path.join(base, CLI.MODULE_FILE);
+    current = this.joinPaths(base, CLI.MODULE_FILE);
 
     while (current && current !== CLI.MODULE_FILE) {
         if (sh.test('-e', current)) {
             return current;
         }
-        base = base.slice(0, base.lastIndexOf(path.sep));
-        current = path.join(base, CLI.MODULE_FILE);
+        base = base.slice(0, base.lastIndexOf('/'));
+        current = this.joinPaths(base, CLI.MODULE_FILE);
     }
     return;
 };
@@ -992,7 +992,7 @@ CLI.getCommandPath = function(command) {
     // First check is for "built-in" commands. If it's one of those we'll use
     // that without troubling ourselves with trying to load Package etc.
     base = __dirname;
-    file = path.join(base, command + '.js');
+    file = this.joinPaths(base, command + '.js');
     if (sh.test('-f', file)) {
         return file;
     }
@@ -1009,7 +1009,7 @@ CLI.getCommandPath = function(command) {
 
     for (i = 0; i < len; i++) {
         base = this._package.expandPath(roots[i]);
-        file = path.join(base, command + '.js');
+        file = this.joinPaths(base, command + '.js');
         if (sh.test('-f', file)) {
             return file;
         }
@@ -1064,6 +1064,21 @@ CLI.getCommands = function() {
     });
 
     return files.sort();
+};
+
+
+/**
+ * Returns the path to the current working directory in an *OS independent*
+ * manner (i.e. with '/' as the only separator).
+ * @returns {String} The package file name.
+ */
+CLI.getCurrentDirectory = function() {
+    var cwd;
+
+    cwd = process.cwd();
+    cwd = cwd.replace(/\\/g, '/');
+
+    return cwd;
 };
 
 
@@ -1154,7 +1169,7 @@ CLI.inGitProject = function() {
     base = this.expandPath(this.getAppRoot());
     file = this.GIT_FILE;
 
-    return sh.test('-f', path.join(base, file)) && sh.which('git');
+    return sh.test('-f', this.joinPaths(base, file)) && sh.which('git');
 };
 
 
@@ -1170,9 +1185,9 @@ CLI.inGruntProject = function() {
     base = this.expandPath(this.getAppRoot());
     file = this.GRUNT_FILE;
 
-    return sh.test('-f', path.join(base, file)) &&
+    return sh.test('-f', this.joinPaths(base, file)) &&
         (sh.which('grunt') ||
-         sh.test('-f', path.join(base, CLI.MODULE_FILE, '.bin', 'grunt')));
+         sh.test('-f', this.joinPaths(base, CLI.MODULE_FILE, '.bin', 'grunt')));
 };
 
 
@@ -1188,9 +1203,9 @@ CLI.inGulpProject = function() {
     base = this.expandPath(this.getAppRoot());
     file = this.GULP_FILE;
 
-    return sh.test('-f', path.join(base, file)) &&
+    return sh.test('-f', this.joinPaths(base, file)) &&
         (sh.which('gulp') ||
-        sh.test('-f', path.join(base, CLI.MODULE_FILE, '.bin', 'gulp')));
+        sh.test('-f', this.joinPaths(base, CLI.MODULE_FILE, '.bin', 'gulp')));
 };
 
 
@@ -1262,7 +1277,7 @@ CLI.isAbsolutePath = function(aPath) {
         return true;
     }
 
-    if (aPath.indexOf(path.sep) === 0) {
+    if (aPath.indexOf('/') === 0) {
         return true;
     }
 
@@ -1285,6 +1300,17 @@ CLI.isInitialized = function() {
     }
 
     return this._package.isInitialized();
+};
+
+
+/**
+ * Returns the joined path in an *OS independent* manner (i.e. with '/' as the
+ * only separator).
+ * @param {varargs} paths The paths to be joined.
+ * @returns {String} The supplied paths joined together with a '/'.
+ */
+CLI.joinPaths = function(paths) {
+    return this._package.joinPaths.apply(this._package, arguments);
 };
 
 
@@ -1693,7 +1719,7 @@ CLI.run = function(config) {
     if (this.options.initpath) {
         /* eslint-disable no-console */
         console.log(
-            path.join(__dirname,
+            this.joinPaths(__dirname,
                 '..', '..', '..',
                 'bin', 'tibetinit.sh'));
         /* eslint-enable no-console */
@@ -1722,7 +1748,7 @@ CLI.run = function(config) {
             command = 'version';
         } else if (this.options.initpath) {
             this.log(
-                path.join(__dirname,
+                this.joinPaths(__dirname,
                     '..', '..', '..',
                     'bin', 'tibetinit.sh'),
                 'no-color');    //  NOTE we turn off any colorizing since this
@@ -2003,7 +2029,7 @@ CLI.runFallback = function(command) {
  * @param {string} topic The help topic to display, if available.
  */
 CLI.runHelp = function(topic) {
-    return this.runCommand('help', path.join(__dirname, 'help.js'));
+    return this.runCommand('help', this.joinPaths(__dirname, 'help.js'));
 };
 
 
@@ -2116,7 +2142,7 @@ CLI.runViaMake = function(command) {
     // command name here to allow for redispatch.
     args = process.argv.slice(3);
     this.runCommand('make ' + command + (args ? ' ' + args.join(' ') : ''),
-        path.join(__dirname, 'make.js'));
+        this.joinPaths(__dirname, 'make.js'));
 };
 
 

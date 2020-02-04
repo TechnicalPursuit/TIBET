@@ -676,9 +676,9 @@ Cmd.prototype.processDeltas = function() {
 
     if (pkgName.charAt(0) !== '~') {
         if (CLI.inProject()) {
-            pkgName = path.join('~app_cfg', pkgName);
+            pkgName = CLI.joinPaths('~app_cfg', pkgName);
         } else {
-            pkgName = path.join('~lib_cfg', pkgName);
+            pkgName = CLI.joinPaths('~lib_cfg', pkgName);
         }
     }
 

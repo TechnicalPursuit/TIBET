@@ -7,18 +7,18 @@
         make.sh.exec('npm update jjv');
 
         npmdir = make.CLI.expandPath('~npm_dir');
-        make.sh.cd(make.path.join(npmdir, 'jjv'));
+        make.sh.cd(make.CLI.joinPaths(npmdir, 'jjv'));
 
         //  Need this to build minified jjv package
         make.sh.exec('npm install -d');
 
         make.sh.cp(
-            make.path.join('.', 'lib', 'jjv.js'),
-            make.path.join('..', '..', 'deps', 'jjv-tpi.js'));
+            make.CLI.joinPaths('.', 'lib', 'jjv.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'jjv-tpi.js'));
 
         make.sh.cp(
-            make.path.join('.', 'build', 'jjv.min.js'),
-            make.path.join('..', '..', 'deps', 'jjv-tpi.min.js'));
+            make.CLI.joinPaths('.', 'build', 'jjv.min.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'jjv-tpi.min.js'));
 
         resolve();
     };

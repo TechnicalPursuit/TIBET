@@ -208,7 +208,7 @@ Cmd.prototype.executeForCommand = function(command) {
     if (viewer === 'browser') {
         //  All html files live in the same directory, but we need to identify a
         //  specific section for the topic/page.
-        htmldir = path.join(CLI.expandPath('~lib'), 'doc', 'html');
+        htmldir = CLI.joinPaths(CLI.expandPath('~lib'), 'doc', 'html');
         list = sh.ls(htmldir);
         pattern = new RegExp('^' + command + '\\.' + '(\\d)\\.html');
         list.some(function(file) {
@@ -224,7 +224,7 @@ Cmd.prototype.executeForCommand = function(command) {
         });
 
         if (htmlpath) {
-            opener(path.join(htmldir, htmlpath));
+            opener(CLI.joinPaths(htmldir, htmlpath));
         } else {
             CLI.warn('Help not found for ' + command);
         }
@@ -241,11 +241,11 @@ Cmd.prototype.executeForCommand = function(command) {
     //  Set up the man path. The trick here is that if someone overrides a
     //  command in their project we want to show that first, so ensure we add
     //  project to the front if we add it.
-    manpath = path.join(CLI.expandPath('~lib'), 'doc', 'man');
+    manpath = CLI.joinPaths(CLI.expandPath('~lib'), 'doc', 'man');
     env.MANPATH = manpath;
 
     if (CLI.inProject()) {
-        manpath = path.join(CLI.expandPath('~'), 'doc', 'man');
+        manpath = CLI.joinPaths(CLI.expandPath('~'), 'doc', 'man');
         //  NOTE the addition on the front of the path here so project docs are
         //  first in the lookup order.
         env.MANPATH = manpath + ':' + env.MANPATH;
@@ -415,7 +415,7 @@ Cmd.prototype.executeMissingCheck = function() {
     //  Built-ins
     //  ---
 
-    mans = sh.ls(path.join(CLI.expandPath('~lib'), 'doc', 'markdown')).map(
+    mans = sh.ls(CLI.joinPaths(CLI.expandPath('~lib'), 'doc', 'markdown')).map(
         function(name) {
             return name.toString().slice(6, -5);
         });
@@ -445,7 +445,7 @@ Cmd.prototype.executeMissingCheck = function() {
     //  Custom commands
     //  ---
 
-    mans = sh.ls(path.join(CLI.expandPath('~'), 'doc', 'markdown')).map(
+    mans = sh.ls(CLI.joinPaths(CLI.expandPath('~'), 'doc', 'markdown')).map(
             function(name) {
                 return name.toString().slice(6, -5);
             });
@@ -501,12 +501,12 @@ Cmd.prototype.executeTopics = function(silent) {
     cmd = this;
 
     if (CLI.inProject()) {
-        fullpath = path.join(CLI.expandPath('~'), 'doc', 'man');
+        fullpath = CLI.joinPaths(CLI.expandPath('~'), 'doc', 'man');
         if (sh.test('-d', fullpath)) {
             paths.push(fullpath);
         }
     }
-    fullpath = path.join(CLI.expandPath('~lib'), 'doc', 'man');
+    fullpath = CLI.joinPaths(CLI.expandPath('~lib'), 'doc', 'man');
     if (sh.test('-d', fullpath)) {
         paths.push(fullpath);
     }
@@ -521,7 +521,7 @@ Cmd.prototype.executeTopics = function(silent) {
 
             filename = file.toString();
 
-            filepath = path.join(root, filename);
+            filepath = CLI.joinPaths(root, filename);
             if (sh.test('-d', filepath)) {
                 return;
             }

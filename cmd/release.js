@@ -346,7 +346,7 @@ Cmd.prototype.phaseOne = function() {
     //  Prep the version update data so we can ask the user to confirm...
     //  ---
 
-    // Read the current version...should be in npm.version unless provided
+    // Read the current version... should be in npm.version unless provided
     // explicitly on the command line.
     version = this.options.version || this.getcfg('npm.version');
     match = version.match(/(v)*(\d+)\.(\d+)\.(\d+)(.*)/);

@@ -238,7 +238,7 @@ Cmd.prototype.pushDir = function(dir, options) {
         }));
     }
 
-    sh.ls(path.join(fullpath, '*.json')).forEach(function(file) {
+    sh.ls(CLI.joinPaths(fullpath, '*.json')).forEach(function(file) {
         var filename;
 
         filename = file.toString();

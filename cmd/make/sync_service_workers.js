@@ -14,7 +14,7 @@
         ];
 
         root = make.CLI.expandPath('~');
-        srcpath = make.path.join(root, 'lib', 'src',
+        srcpath = make.CLI.joinPaths(root, 'lib', 'src',
             'tibet_service_worker.min.js');
 
         if (make.sh.test('-e', srcpath)) {
@@ -24,8 +24,8 @@
 
                 parts = target;
                 parts.unshift(root);
-                dest = make.path.join.apply(make.path, parts);
-                dest = dest + make.path.sep;
+                dest = make.CLI.joinPaths.apply(make.CLI, parts);
+                dest = dest + '/';
 
                 make.sh.cp('-r', srcpath, dest);
             });

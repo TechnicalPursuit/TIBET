@@ -424,10 +424,10 @@ Cmd.prototype.executePushapp = function() {
             //  Ensure we also capture any views, shows, lists, etc...
             //  NOTE we add appname if actual app directory isn't found.
             fullpath = CLI.expandPath(CLI.getcfg('path.tds_couch_defs'));
-            if (sh.test('-d', path.join(fullpath, db_app))) {
-                fullpath = path.join(fullpath, db_app);
+            if (sh.test('-d', CLI.joinPaths(fullpath, db_app))) {
+                fullpath = CLI.joinPaths(fullpath, db_app);
             } else {
-                fullpath = path.join(fullpath, CLI.getProjectName());
+                fullpath = CLI.joinPaths(fullpath, CLI.getProjectName());
             }
             newdoc = couch.populateDesignDoc(newdoc, fullpath, params, true);
 
@@ -647,10 +647,10 @@ Cmd.prototype.executePushapp = function() {
                 //  Ensure we also capture any views, shows, lists, etc...
                 //  NOTE we add 'default' if the actual app directory isn't found.
                 fullpath = CLI.expandPath(CLI.getcfg('path.tds_couch_defs'));
-                if (sh.test('-d', path.join(fullpath, db_app))) {
-                    fullpath = path.join(fullpath, db_app);
+                if (sh.test('-d', CLI.joinPaths(fullpath, db_app))) {
+                    fullpath = CLI.joinPaths(fullpath, db_app);
                 } else {
-                    fullpath = path.join(fullpath, 'default');
+                    fullpath = CLI.joinPaths(fullpath, 'default');
                 }
                 newdoc = couch.populateDesignDoc(existing, fullpath, params, true);
 

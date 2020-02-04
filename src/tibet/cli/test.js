@@ -19,13 +19,11 @@
 
 var CLI,
     Cmd,
-    sh,
-    path;
+    sh;
 
 CLI = require('./_cli');
 
 sh = require('shelljs');
-path = require('path');
 
 //  ---
 //  Type Construction
@@ -108,7 +106,7 @@ Cmd.prototype.execute = function() {
     if (this.options.karma) {
         //  Not really checking as much as calling when available and falling
         //  through when not so we default back down to a headless option.
-        karmafile = path.join(CLI.getAppHead(), Cmd.KARMA_FILE);
+        karmafile = CLI.joinPaths(CLI.getAppHead(), Cmd.KARMA_FILE);
         if (sh.test('-e', karmafile) && sh.which(Cmd.KARMA_COMMAND)) {
             return this.executeViaKarma();
         }
@@ -362,7 +360,7 @@ Cmd.prototype.prereqs = function() {
 
     if (this.options.karma) {
         this.info('Checking project for karma configuration...');
-        karmafile = path.join(CLI.getAppHead(), Cmd.KARMA_FILE);
+        karmafile = CLI.joinPaths(CLI.getAppHead(), Cmd.KARMA_FILE);
         if (sh.test('-e', karmafile) && sh.which(Cmd.KARMA_COMMAND)) {
             return 0;
         }

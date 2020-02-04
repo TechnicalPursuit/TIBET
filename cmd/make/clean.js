@@ -8,9 +8,9 @@
         function() {
             var fullpath;
 
-            fullpath = make.path.join(make.CLI.expandPath('~'), 'lib', 'src');
+            fullpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'lib', 'src');
             if (make.sh.test('-d', fullpath)) {
-                make.sh.rm('-rf', make.path.join(fullpath, '*'));
+                make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
             }
         }).then(resolve, reject);
     };

@@ -71,7 +71,7 @@ Cmd.prototype.DNA_DEFAULT = 'default';
  * with the current file's load path to create the absolute root path.
  * @type {string}
  */
-Cmd.prototype.DNA_ROOT = path.join('..', '..', '..', '..', 'dna');
+Cmd.prototype.DNA_ROOT = CLI.joinPaths('..', '..', '..', '..', 'dna');
 
 /**
  * Whether the command needs --force when a destination directory already
@@ -202,7 +202,7 @@ Cmd.prototype.executeCleanup = function(code, force) {
     list = CLI.sh.ls('-RA', working).filter(function(file) {
         var fullpath;
 
-        fullpath = path.join(working, file.toString());
+        fullpath = CLI.joinPaths(working, file.toString());
         return !CLI.sh.test('-d', fullpath);
     });
 
@@ -248,14 +248,14 @@ Cmd.prototype.executeClone = function() {
     // might work at the command line depending on your shell etc.
     flags = options.force ? '-r' : '-rn';
 
-    err = CLI.sh.cp(flags, path.join(dna, '*'), working);
+    err = CLI.sh.cp(flags, CLI.joinPaths(dna, '*'), working);
     if (CLI.sh.error()) {
         this.error('Error cloning dna directory: ' + err.stderr);
         this.executeCleanup(1);
         return 1;
     }
 
-    err = CLI.sh.cp(flags, path.join(dna, '.*'), working);
+    err = CLI.sh.cp(flags, CLI.joinPaths(dna, '.*'), working);
     if (CLI.sh.error()) {
         this.error('Error cloning dna directory: ' + err.stderr);
         this.executeCleanup(1);
@@ -279,7 +279,7 @@ Cmd.prototype.executeList = function() {
 
     cmd = this;
 
-    dir = path.join(module.filename, this.DNA_ROOT);
+    dir = CLI.joinPaths(module.filename, this.DNA_ROOT);
     if (CLI.sh.test('-d', dir)) {
         list = CLI.sh.ls('-A', dir);
         if (CLI.sh.error()) {
@@ -314,14 +314,17 @@ Cmd.prototype.executeList = function() {
 Cmd.prototype.executeMakeWorkingDir = function() {
     var options,
         name,
+        cwd,
         working,
         err;
 
     options = this.options;
     name = options.name;
 
+    cwd = CLI.getCurrentDirectory();
+
     //  Start locally so it's easy to diff/merge from same parent.
-    working = path.join(process.cwd(), '_' + name + '_');
+    working = CLI.joinPaths(cwd, '_' + name + '_');
     options.tmpdir = working;
 
     if (CLI.sh.test('-e', working)) {
@@ -416,13 +419,13 @@ Cmd.prototype.executePosition = function() {
 
         filename = file.toString();
 
-        fullpath = path.join(working, filename);
+        fullpath = CLI.joinPaths(working, filename);
         if (!CLI.sh.test('-d', fullpath)) {
             return;
         }
 
         //  Check for target directories and create as needed.
-        target = path.join(dest, filename);
+        target = CLI.joinPaths(dest, filename);
         cmd.verbose('checking directory: ' + target);
         if (!CLI.sh.test('-d', target)) {
             cmd.debug('moving directory: ' + filename);
@@ -449,7 +452,7 @@ Cmd.prototype.executePosition = function() {
 
         filename = file.toString();
 
-        fullpath = path.join(working, filename);
+        fullpath = CLI.joinPaths(working, filename);
         if (CLI.sh.test('-d', fullpath)) {
             //  Skip directories. We've moved any that didn't already exist. The
             //  remaining ones will hopefully be emptied by the time we invoke
@@ -474,7 +477,7 @@ Cmd.prototype.executePosition = function() {
         cmd.verbose('positioning file: ' + filename);
 
         skipped = false;
-        target = path.join(dest, filename.replace(working, ''));
+        target = CLI.joinPaths(dest, filename.replace(working, ''));
         exists = CLI.sh.test('-e', target);
 
         if (exists) {
@@ -590,7 +593,7 @@ Cmd.prototype.executeProcess = function() {
             return false;
         }
 
-        fullpath = path.join(working, filename);
+        fullpath = CLI.joinPaths(working, filename);
 
         return CLI.sh.test('-f', fullpath);
     });
@@ -608,7 +611,7 @@ Cmd.prototype.executeProcess = function() {
 
         filename = file.toString();
 
-        fullpath = path.join(working, filename);
+        fullpath = CLI.joinPaths(working, filename);
 
         cmd.verbose('processing file: ' + fullpath);
 
@@ -724,7 +727,7 @@ Cmd.prototype.executeProcessDirs = function() {
 
         filename = file.toString();
 
-        fullpath = path.join(working, filename);
+        fullpath = CLI.joinPaths(working, filename);
         if (!CLI.sh.test('-d', fullpath)) {
             return false;
         }
@@ -740,7 +743,7 @@ Cmd.prototype.executeProcessDirs = function() {
     });
 
     dirs.forEach(function(dir) {
-        cmd.executeRename(path.join(working, dir));
+        cmd.executeRename(CLI.joinPaths(working, dir));
     });
 
     return 0;
@@ -824,7 +827,7 @@ Cmd.prototype.getTemplateParameters = function() {
     //  embedding real paths in the output.
     obj = {};
     obj[this.TEMPLATE_KEY] = name;
-    obj.dna = dna.slice(dna.lastIndexOf(path.sep) + 1);
+    obj.dna = dna.slice(dna.lastIndexOf('/') + 1);
 
     params = CLI.blend(obj, options);
     this.params = params;
@@ -884,6 +887,7 @@ Cmd.prototype.summarize = function() {
 Cmd.prototype.verifyDestination = function() {
     var options,
         dirname,
+        cwd,
         dest,
         list,
         err;
@@ -896,12 +900,14 @@ Cmd.prototype.verifyDestination = function() {
     //  ---
 
     if (dirname === '.') {
+        cwd = CLI.getCurrentDirectory();
+
         // Destination will be our current directory, and we'll end up adjusting
         // our dirname to be whatever the current directory name is.
-        dest = process.cwd();
+        dest = cwd;
         options.dest = dest;
 
-        dirname = dest.slice(dest.lastIndexOf(path.sep) + 1);
+        dirname = dest.slice(dest.lastIndexOf('/') + 1);
         options.dir = dirname;
 
         list = CLI.sh.ls('-RA', dest);
@@ -954,6 +960,7 @@ Cmd.prototype.verifyDestination = function() {
  */
 Cmd.prototype.verifyDNA = function() {
     var dna,
+        cwd,
         options,
         config,
         dnaconfig,
@@ -988,7 +995,8 @@ Cmd.prototype.verifyDNA = function() {
         // Try to resolve as an absolute reference.
         if (!CLI.sh.test('-e', dna)) {
             // Try to resolve as a relative reference.
-            dna = path.join(process.cwd(), dna);
+            cwd = CLI.getCurrentDirectory();
+            dna = CLI.joinPaths(cwd, dna);
             if (!CLI.sh.test('-e', dna)) {
                 this.error('Unable to locate dna: ' + dna);
                 return 1;
@@ -997,7 +1005,7 @@ Cmd.prototype.verifyDNA = function() {
         }
     } else {
         // Try to resolve as pre-built library dna.
-        dna = path.join(module.filename, this.DNA_ROOT, dna);
+        dna = CLI.joinPaths(module.filename, this.DNA_ROOT, dna);
         if (!CLI.sh.test('-e', dna)) {
             this.error('Unable to locate dna: ' + dna);
             return 1;
@@ -1007,7 +1015,7 @@ Cmd.prototype.verifyDNA = function() {
 
     //  Once we've verified the DNA we can try to load any DNA-specific
     //  configuration which is used to refine remaining processes.
-    config = path.join(dna, this.DNA_CONFIG);
+    config = CLI.joinPaths(dna, this.DNA_CONFIG);
     if (CLI.sh.test('-e', config)) {
         try {
             dnaconfig = require(config);

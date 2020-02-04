@@ -27,6 +27,7 @@ const electron = require('electron'),
     Package = require('./TIBET-INF/tibet/etc/common/tibet_package.js'),
 
     app = electron.app, // Module to control application life.
+    dialog = electron.dialog, // Module to create dialog.
     BrowserWindow = electron.BrowserWindow, // Module to create browser window.
     PARSE_OPTIONS = CLI.PARSE_OPTIONS;
 
@@ -113,7 +114,10 @@ createWindow = function() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 1024,
-        height: 768
+        height: 768,
+        webPreferences: {
+            preload: CLI.joinPaths(__dirname, './preload.js')
+        }
     });
 
     mainWindow.loadURL(fileUrl);
@@ -131,6 +135,29 @@ createWindow = function() {
         //  Use process.stdout here to avoid extra newlines in output stream.
         if (options.verbose) {
             process.stdout.write(message);
+        }
+    });
+
+    mainWindow.webContents.on('will-prevent-unload',
+    function(event) {
+
+        var choice,
+            leave;
+
+        choice = dialog.showMessageBoxSync(
+                mainWindow,
+                {
+                    type: 'question',
+                    buttons: ['Yes', 'No'],
+                    title: 'Confirm',
+                    message: 'Are you sure you want to quit?',
+                    defaultId: 0,
+                    cancelId: 1
+                });
+
+        leave = choice === 0;
+        if (leave) {
+            event.preventDefault();
         }
     });
 

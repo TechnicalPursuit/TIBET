@@ -156,7 +156,7 @@ Cmd.defineTask = function(name, task, options) {
         if (CLI.isAbsolutePath(taskname)) {
             fullpath = CLI.expandPath(taskname);
         } else {
-            fullpath = path.join(CLI.expandPath('~app_cmd'), 'make', taskname);
+            fullpath = CLI.joinPaths(CLI.expandPath('~app_cmd'), 'make', taskname);
         }
         taskfunc = require(fullpath);
     } else {
@@ -385,7 +385,7 @@ Cmd.loadTasks = function() {
             return;
         }
 
-        filepath = path.join(fullpath, filename);
+        filepath = CLI.joinPaths(fullpath, filename);
         name = path.basename(filename).replace(path.extname(filename), '');
 
         try {

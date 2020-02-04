@@ -92,13 +92,13 @@ Cmd.loadSubcommands = function(cmdType) {
     fullpath = CLI.expandPath('~lib_cmd/' + cmdname);
     liblist = sh.ls(fullpath);
     liblist = liblist.map(function(file) {
-        return path.join(fullpath, file.toString());
+        return CLI.joinPaths(fullpath, file.toString());
     });
 
     fullpath = CLI.expandPath('~app_cmd/' + cmdname);
     applist = sh.ls(fullpath);
     applist = applist.map(function(file) {
-        return path.join(fullpath, file.toString());
+        return CLI.joinPaths(fullpath, file.toString());
     });
 
     //  NOTE we put lib first so app updates can override baseline.

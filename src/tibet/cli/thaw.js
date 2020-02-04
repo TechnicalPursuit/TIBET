@@ -79,8 +79,7 @@ Cmd.prototype.USAGE = 'tibet thaw [--force]';
  */
 Cmd.prototype.execute = function() {
 
-    var path,
-        sh,
+    var sh,
 
         err,
         app_inf,
@@ -96,7 +95,6 @@ Cmd.prototype.execute = function() {
 
         str;
 
-    path = require('path');
     sh = require('shelljs');
 
     app_inf = CLI.expandPath('~app_inf');
@@ -111,7 +109,7 @@ Cmd.prototype.execute = function() {
     }
 
     //  Verify target subdir/link exists.
-    infroot = path.join(app_inf, 'tibet');
+    infroot = CLI.joinPaths(app_inf, 'tibet');
     if (!sh.test('-e', infroot)) {
         this.warn('Application not frozen.');
         return 0;
@@ -143,7 +141,7 @@ Cmd.prototype.execute = function() {
 
     this.log('relinking development library resources...');
 
-    lnerr = sh.ln(lnflags, path.join(app_npm, 'tibet'), infroot);
+    lnerr = sh.ln(lnflags, CLI.joinPaths(app_npm, 'tibet'), infroot);
     if (sh.error()) {
         this.error('Error relinking library resources: ' + lnerr.stderr);
     }

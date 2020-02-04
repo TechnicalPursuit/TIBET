@@ -516,7 +516,7 @@
      * @param {Element} sourceElem The source element to copy from.
      * @param {Element} targetElem The target element to copy to.
      * @param {Boolean} overwrite Whether to overwrite matching attributes
-     *                              [false].
+     *     [false].
      */
     Package.prototype.copyAttributes = function(
         sourceElem, targetElem, overwrite) {
@@ -563,9 +563,9 @@
      * to get a full list of all resources relative to a particular application.
      * As a result the resource list can help drive TIBET's command line tools.
      * @param {String} aPath The path to the package manifest file to be
-     *                          processed.
+     *     processed.
      * @returns {Document} An xml document containing the expanded
-     *                          configuration.
+     *     configuration.
      */
     Package.prototype.expandAll = function(aPath) {
 
@@ -585,7 +585,7 @@
 
         //  Default to ~app_cfg/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
-            expanded = path.join('~app_cfg', expanded);
+            expanded = this.joinPaths('~app_cfg', expanded);
         }
 
         if (/\.xml$/.test(expanded) !== true) {
@@ -1013,7 +1013,7 @@
 
         //  Default to ~app_cfg/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
-            expanded = path.join('~app_cfg', expanded);
+            expanded = this.joinPaths('~app_cfg', expanded);
         }
 
         if (/\.xml$/.test(expanded) !== true) {
@@ -1241,7 +1241,7 @@
         //  head. That means for the app head computation we don't work from the
         //  module filename, but only from the current working directory.
 
-        cwd = process.cwd();
+        cwd = this.getCurrentDirectory();
 
         //  Don't allow this value to be computed for a nested node_modules dir.
         if (/node_modules/.test(cwd)) {
@@ -1259,12 +1259,13 @@
             file = check[1];
 
             while (dir.length > 0) {
-                this.trace('getAppHead checking: ' + path.join(dir, file), true);
-                if (sh.test('-f', path.join(dir, file))) {
+                this.trace('getAppHead checking: ' + this.joinPaths(dir, file),
+                            true);
+                if (sh.test('-f', this.joinPaths(dir, file))) {
                     this.app_head = dir;
                     break;
                 }
-                dir = dir.slice(0, dir.lastIndexOf(path.sep));
+                dir = dir.slice(0, dir.lastIndexOf('/'));
             }
 
             if (isValid(this.app_head)) {
@@ -1320,7 +1321,7 @@
         //  immediate subdirectory.
         tibet = Package.PROJECT_FILE;
         approot = head;
-        fullpath = path.join(head, tibet);
+        fullpath = this.joinPaths(head, tibet);
         if (!sh.test('-f', fullpath)) {
             //  Not found in the immediate location of package file
             //  so try to locate it in a direct subdirectory.
@@ -1330,16 +1331,16 @@
                     filename;
 
                 filename = file.toString();
-                full = path.join(head, filename);
+                full = this.joinPaths(head, filename);
                 if (!sh.test('-d', full)) {
                     fullpath = null;
                     return false;
                 }
 
                 approot = filename;
-                fullpath = path.join(full, tibet);
+                fullpath = this.joinPaths(full, tibet);
                 return sh.test('-f', fullpath);
-            });
+            }.bind(this));
         }
 
         if (!fullpath) {
@@ -1347,7 +1348,7 @@
         }
 
         if (!this.isAbsolutePath(approot)) {
-            approot = path.join('~', approot);
+            approot = this.joinPaths('~', approot);
         }
         this.app_root = approot;
         this.trace('getAppRoot defaulted to launch root: ' + this.app_root,
@@ -1404,7 +1405,7 @@
         //  being run outside a project, or in a non-node project.
         app_root = this.getAppRoot();
         moduleDir = module.filename.slice(0,
-            module.filename.lastIndexOf(path.sep));
+            module.filename.lastIndexOf('/'));
 
         //  Our file checks are looking for the library so we need to leverage
         //  the standard boot settings for tibet_dir, tibet_inf, and tibet_lib
@@ -1446,26 +1447,27 @@
         }
 
         //  How far is this file from the library root?
-        offset = path.join('..', '..', '..');
+        offset = this.joinPaths('..', '..', '..');
 
         checks = [
-            [moduleDir, path.join(offset, tibet_lib.toUpperCase())],
-            [moduleDir, path.join(offset, tibet_lib)]
+            [moduleDir, this.joinPaths(offset, tibet_lib.toUpperCase())],
+            [moduleDir, this.joinPaths(offset, tibet_lib)]
         ];
 
         if (app_root) {
             //  Frozen variant. This comes first so it's found only if we're
             //  unable to find the node_modules directory which should exist.
-            checks.unshift([app_root, path.join(tibet_inf, tibet_lib)]);
+            checks.unshift([app_root, this.joinPaths(tibet_inf, tibet_lib)]);
 
             //  NOTE node_modules does not float with app_root, it's always
             //  found at the application head.
             if (tibet_dir === 'node_modules') {
                 checks.unshift([this.getAppHead(),
-                    path.join(tibet_dir, tibet_lib)]);
+                    this.joinPaths(tibet_dir, tibet_lib)]);
 
             } else {
-                checks.unshift([app_root, path.join(tibet_dir, tibet_lib)]);
+                checks.unshift([app_root,
+                                this.joinPaths(tibet_dir, tibet_lib)]);
             }
         }
 
@@ -1475,10 +1477,11 @@
             dir = check[0];
             file = check[1];
 
-            this.trace('getLibRoot checking: ' + path.join(dir, file), true);
+            this.trace('getLibRoot checking: ' + this.joinPaths(dir, file),
+                        true);
 
             //  NOTE we're using -d here since we're doing a directory check.
-            if (sh.test('-d', path.join(dir, file))) {
+            if (sh.test('-d', this.joinPaths(dir, file))) {
                 if (dir === moduleDir) {
                     //  Have to adjust dir by offset but we need to watch for
                     //  upper/lower case issues depending on whether we're
@@ -1487,10 +1490,10 @@
                     if (file.indexOf(tibet_lib) === -1) {
                         tibet_lib = tibet_lib.toUpperCase();
                     }
-                    dir = path.join(dir, offset, tibet_lib);
+                    dir = this.joinPaths(dir, offset, tibet_lib);
                 } else {
                     //  Have to adjust dir without offset
-                    dir = path.join(dir, file);
+                    dir = this.joinPaths(dir, file);
                 }
                 this.lib_root = dir;
                 break;
@@ -1501,7 +1504,7 @@
             //  Usually means a) running outside a project, b) didn't call the
             //  TIBET library 'tibet' or 'TIBET'. Just default based on current
             //  file path.
-            this.lib_root = path.join(module.filename, offset);
+            this.lib_root = this.joinPaths(module.filename, offset);
         }
 
         return this.lib_root;
@@ -1670,6 +1673,22 @@
         return resultObj;
     };
 
+
+    /**
+     * Returns the path to the current working directory in an *OS independent*
+     * manner (i.e. with '/' as the only separator).
+     * @returns {String} The package file name.
+     */
+    Package.prototype.getCurrentDirectory = function() {
+        var cwd;
+
+        cwd = process.cwd();
+        cwd = cwd.replace(/\\/g, '/');
+
+        return cwd;
+    };
+
+
     /**
      * Returns the file name of the currently processing package.
      * @returns {String} The package file name.
@@ -1729,7 +1748,7 @@
         while (elem) {
             base = elem.getAttribute('basedir');
             if (notEmpty(base)) {
-                return this.expandPath(path.join(base, aPath));
+                return this.expandPath(this.joinPaths(base, aPath));
             }
             elem = elem.parentNode;
         }
@@ -1896,7 +1915,7 @@
         vpath = vpath.replace(this.expandPath('~app'), '~app');
         vpath = vpath.replace(this.expandPath('~'), '~');
 
-        if (vpath.indexOf(path.sep) !== -1 && vpath !== aPath) {
+        if (vpath.indexOf('/') !== -1 && vpath !== aPath) {
             return this.getVirtualPath(vpath);
         }
 
@@ -2042,7 +2061,7 @@
      *     library.
      */
     Package.prototype.inLibrary = function() {
-        var dir,
+        var cwd,
             file,
             found;
 
@@ -2055,16 +2074,19 @@
         //  Since the CLI can be invoked from anywhere we need to be explicit
         //  here relative to the cwd. If we find a project file, and it's
         //  'tibet' we're truly _inside_ the library.
-        dir = process.cwd();
+
+        cwd = this.getCurrentDirectory();
+
         file = Package.NPM_FILE;
-        while (dir.length > 0) {
-            this.trace('checking for library context in ' + path.join(dir, file),
-                true);
-            if (sh.test('-f', path.join(dir, file))) {
+        while (cwd.length > 0) {
+            this.trace('checking for library context in ' +
+                        this.joinPaths(cwd, file),
+                        true);
+            if (sh.test('-f', this.joinPaths(cwd, file))) {
                 found = true;
                 break;
             }
-            dir = dir.slice(0, dir.lastIndexOf(path.sep));
+            cwd = cwd.slice(0, cwd.lastIndexOf('/'));
         }
 
         return found === true && this.npm.name === 'tibet';
@@ -2092,14 +2114,15 @@
             return this.npm.name !== 'tibet';
         }
 
-        cwd = process.cwd();
+        cwd = this.getCurrentDirectory();
+
         tibet = Package.PROJECT_FILE;
         package = Package.NPM_FILE;
 
         //  Walk the directory path from cwd "up" checking for the signifying
         //  file which tells us we're in a TIBET project.
         while (cwd.length > 0) {
-            fullpath = path.join(cwd, package);
+            fullpath = this.joinPaths(cwd, package);
             if (sh.test('-f', fullpath)) {
 
                 //  Relocate cwd to the new root so our paths for things like
@@ -2109,7 +2132,7 @@
                 //  Load the package.json file so we can access current project
                 //  configuration info specific to npm.
                 try {
-                    this.npm = require(path.join(cwd, package));
+                    this.npm = require(this.joinPaths(cwd, package));
                 } catch (e) {
                     //  Make sure we default to some value.
                     this.npm = this.npm || {};
@@ -2125,7 +2148,7 @@
                 //  project file, which is allowed to be in either the same
                 //  location or in an immediate subdirectory.
                 approot = cwd;
-                fullpath = path.join(cwd, tibet);
+                fullpath = this.joinPaths(cwd, tibet);
                 if (!sh.test('-f', fullpath)) {
                     //  Not found in the immediate location of package file
                     //  so try to locate it in a direct subdirectory.
@@ -2142,9 +2165,9 @@
                         filename = file.toString();
 
                         approot = filename;
-                        fullpath = path.join(cwd, filename, tibet);
+                        fullpath = this.joinPaths(cwd, filename, tibet);
                         return sh.test('-f', fullpath);
-                    });
+                    }.bind(this));
                     /* eslint-enable no-loop-func */
                 }
 
@@ -2172,7 +2195,7 @@
 
                 return true;
             }
-            cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
+            cwd = cwd.slice(0, cwd.lastIndexOf('/'));
         }
 
         return false;
@@ -2194,11 +2217,11 @@
         //  whether the app is frozen or not (or a couchdb template with an
         //  attachments directory or similar "substructure).
         return fs.existsSync(
-                path.join(this.getAppHead(),
+                this.joinPaths(this.getAppHead(),
                     this.getcfg('path.npm_dir'),
                     this.getcfg('path.tibet_lib'))) ||
             fs.existsSync(
-                path.join(this.getAppRoot(),
+                this.joinPaths(this.getAppRoot(),
                     this.getcfg('path.tibet_inf'),
                     this.getcfg('path.tibet_lib')));
     };
@@ -2242,6 +2265,23 @@
 
 
     /**
+     * Returns the joined path in an *OS independent* manner (i.e. with '/' as
+     * the only separator).
+     * @param {varargs} paths The paths to be joined.
+     * @returns {String} The supplied paths joined together with a '/'.
+     */
+    Package.prototype.joinPaths = function(paths) {
+
+        var joined;
+
+        joined = path.join.apply(path, arguments);
+        joined = joined.replace(/\\/g, '/');
+
+        return joined;
+    };
+
+
+    /**
      * Lists assets from a package. The assets will be concatenated into aList
      * if the list is provided (aList is used during recursive calls from within
      * this routine to build up the list).
@@ -2266,7 +2306,7 @@
 
         //  Default to ~app_cfg/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
-            expanded = path.join('~app_cfg', expanded);
+            expanded = this.joinPaths('~app_cfg', expanded);
         }
 
         if (/\.xml$/.test(expanded) !== true) {
@@ -2556,7 +2596,7 @@
 
         //  Default to ~app_cfg/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
-            expanded = path.join('~app_cfg', expanded);
+            expanded = this.joinPaths('~app_cfg', expanded);
         }
 
         if (/\.xml$/.test(expanded) !== true) {
@@ -2623,7 +2663,7 @@
             lib_path;
 
         lib_root = this.getLibRoot();
-        lib_path = path.join(lib_root, 'src/tibet/boot/tibet_cfg');
+        lib_path = this.joinPaths(lib_root, 'src/tibet/boot/tibet_cfg');
 
         //  Uncache so this is sure to load with each new Package instance.
         require.uncache(lib_path);
@@ -2633,7 +2673,7 @@
 
         //  Repeat for the TDS configuration data. NOTE we have to pass in the
         //  setcfg call to force actual execution/setting of TDS config data.
-        lib_path = path.join(lib_root, 'tds/tds_cfg');
+        lib_path = this.joinPaths(lib_root, 'tds/tds_cfg');
         require.uncache(lib_path);
         require(lib_path)(this.setcfg.bind(this));
     };
@@ -2765,7 +2805,7 @@
             return;
         }
 
-        fullpath = this.expandPath(path.join(root, Package.PROJECT_FILE));
+        fullpath = this.expandPath(this.joinPaths(root, Package.PROJECT_FILE));
         if (sh.test('-f', fullpath)) {
             try {
                 //  Load project file, or default to an object we can test to
@@ -2783,7 +2823,7 @@
             }
         }
 
-        fullpath = this.expandPath(path.join(head, Package.SERVER_FILE));
+        fullpath = this.expandPath(this.joinPaths(head, Package.SERVER_FILE));
         if (sh.test('-f', fullpath)) {
             try {
                 this.tds = require(fullpath) || {
@@ -2798,7 +2838,7 @@
             }
         }
 
-        fullpath = this.expandPath(path.join(head, Package.USER_FILE));
+        fullpath = this.expandPath(this.joinPaths(head, Package.USER_FILE));
         if (sh.test('-f', fullpath)) {
             try {
                 this.users = require(fullpath) || {
@@ -2813,7 +2853,7 @@
             }
         }
 
-        fullpath = this.expandPath(path.join(head, Package.NPM_FILE));
+        fullpath = this.expandPath(this.joinPaths(head, Package.NPM_FILE));
         if (sh.test('-f', fullpath)) {
             try {
                 this.npm = require(fullpath) || {};
@@ -2884,7 +2924,8 @@
 
         //  With lib_root hopefully ready we want to access the package.json
         //  from the library to get the version of TIBET being used.
-        fullpath = this.expandPath(path.join(this.lib_root, Package.NPM_FILE));
+        fullpath = this.expandPath(
+                        this.joinPaths(this.lib_root, Package.NPM_FILE));
         if (sh.test('-f', fullpath)) {
             try {
                 tibet_npm = require(fullpath) || {};

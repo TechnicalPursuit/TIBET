@@ -4,9 +4,9 @@
     module.exports = function(make, resolve, reject) {
         make.log('building dependency packages...');
 
-        if (!make.sh.test('-d', make.path.join('.', 'lib', 'src'))) {
+        if (!make.sh.test('-d', make.CLI.joinPaths('.', 'lib', 'src'))) {
             make.sh.mkdir(
-                make.path.join('.', 'lib', 'src'));
+                make.CLI.joinPaths('.', 'lib', 'src'));
         }
 
         if (!make.sh.which('grunt')) {
@@ -17,7 +17,7 @@
 
         //  Some npm modules that we use have leftover '.git' directories, which
         //  causes 'npm install' fits. Get rid of the them.
-        make.sh.rm('-rf', make.path.join('.', 'node_modules', '*', '.git'));
+        make.sh.rm('-rf', make.CLI.joinPaths('.', 'node_modules', '*', '.git'));
 
         make.chain(
             '_rollup_ace',

@@ -1059,7 +1059,7 @@ Cmd.prototype.executeSubmit = function() {
 
     fullpath = CLI.expandPath(file);
     if (!sh.test('-e', fullpath)) {
-        file = path.join('~tws', 'jobs', file);
+        file = CLI.joinPaths('~tws', 'jobs', file);
         fullpath = CLI.expandPath(file);
         if (!sh.test('-e', fullpath)) {
             this.error('Source path not found: ' + fullpath);

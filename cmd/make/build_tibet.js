@@ -7,9 +7,9 @@
 
         make.log('building TIBET packages...');
 
-        if (!make.sh.test('-d', make.path.join('.', 'lib', 'src'))) {
+        if (!make.sh.test('-d', make.CLI.joinPaths('.', 'lib', 'src'))) {
             make.sh.mkdir(
-                make.path.join('.', 'lib', 'src'));
+                make.CLI.joinPaths('.', 'lib', 'src'));
         }
 
         targets = ['_rollup_loader',

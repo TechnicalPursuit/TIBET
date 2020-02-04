@@ -36,7 +36,6 @@
         meta,               // Logger metadata.
         minimist,           // Argument processing.
         options,            // Common options block.
-        path,               // Path utility module.
         plugins,            // TDS server plugin list to load.
         port,               // Port to listen on.
         protocol,           // HTTP or HTTPS.
@@ -54,7 +53,6 @@
     https = require('https');
     minimist = require('minimist');
     fs = require('fs');
-    path = require('path');
 
     //  Always bring in the baseline TDS, even if we don't load the 'tds' plugin
     //  (which loads any tds.plugins.tds list which might be defined). This
@@ -130,7 +128,7 @@
     };
 
     //  Should always be a preload plugin we can load/run ourselves.
-    require(path.join(__dirname, 'plugins', 'preload'))(options);
+    require(TDS.joinPaths(__dirname, 'plugins', 'preload'))(options);
 
     //  Some environments will use HTTPS in front and HTTP behind, meaning the
     //  server doesn't know it's HTTPS but it should force redirects that way.
@@ -145,7 +143,7 @@
     }
 
     //  Trigger loading of all the individual plugins in the list.
-    TDS.loadPlugins(path.join(__dirname, 'plugins'), plugins, options);
+    TDS.loadPlugins(TDS.joinPaths(__dirname, 'plugins'), plugins, options);
 
     //  Capture logger reference now that plugins have loaded.
     logger = options.logger;
@@ -338,14 +336,14 @@
             '\'localhost\') and \'Email Address\'\n\n';
 
         try {
-            certKey = path.join(certPath, certKey);
+            certKey = TDS.joinPaths(certPath, certKey);
             key = fs.readFileSync(certKey);
         } catch (e) {
             TDS.logger.error('Missing cert key for HTTPS: ' + certKey, meta);
         }
 
         try {
-            certFile = path.join(certPath, certFile);
+            certFile = TDS.joinPaths(certPath, certFile);
             cert = fs.readFileSync(certFile);
         } catch (e) {
             TDS.logger.error('Missing cert file for HTTPS: ' + certFile, meta);

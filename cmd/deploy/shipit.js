@@ -25,7 +25,6 @@
     'use strict';
 
     var CLI,
-        path,
         sh,
         fs,
 
@@ -34,7 +33,6 @@
         SHIPIT_ROOT;
 
     CLI = require('../../src/tibet/cli/_cli');
-    path = require('path');
     sh = require('shelljs');
     fs = require('fs');
 
@@ -96,7 +94,7 @@
 
             this.info('checking for shipit support...');
 
-            shipitpath = path.join(CLI.getAppHead(),
+            shipitpath = CLI.joinPaths(CLI.getAppHead(),
                                     SHIPIT_ROOT,
                                     SHIPIT_COMMAND);
             if (sh.test('-e', shipitpath)) {
@@ -111,7 +109,7 @@
                 }
             }
 
-            shipitfilepath = path.join(CLI.getAppHead(),
+            shipitfilepath = CLI.joinPaths(CLI.getAppHead(),
                                         SHIPIT_FILE);
 
             if (!fs.existsSync(shipitfilepath)) {

@@ -22,7 +22,6 @@
         var app,
             appRoot,
             express,
-            path,
             sh,
             pubs,
             privs,
@@ -36,7 +35,6 @@
         //  Requires
         //  ---
 
-        path = require('path');
         express = require('express');
         sh = require('shelljs');
 
@@ -96,7 +94,7 @@
                     }
                 }
 
-                full = path.join(rootDir, filename);
+                full = TDS.joinPaths(rootDir, filename);
                 opts.app.use('/' + filename, express.static(full));
             });
         };
@@ -120,7 +118,7 @@
                 pubs.push('src');
             }
             pubs.forEach(function(pub) {
-                app.use('/' + pub, express.static(path.join(appRoot, pub)));
+                app.use('/' + pub, express.static(TDS.joinPaths(appRoot, pub)));
             });
             return;
         }
@@ -132,7 +130,7 @@
             app.use('/', express.static(appRoot));
 
             //  Map HTML directory to the root so you don't see /html/foo.xhtml
-            app.use('/', express.static(path.join(appRoot, 'html')));
+            app.use('/', express.static(TDS.joinPaths(appRoot, 'html')));
             return;
         }
 

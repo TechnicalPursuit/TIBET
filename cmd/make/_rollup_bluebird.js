@@ -7,15 +7,15 @@
         make.sh.exec('npm update bluebird');
 
         npmdir = make.CLI.expandPath('~npm_dir');
-        make.sh.cd(make.path.join(npmdir, 'bluebird'));
+        make.sh.cd(make.CLI.joinPaths(npmdir, 'bluebird'));
 
         make.sh.cp(
-            make.path.join('.', 'js', 'browser', 'bluebird.js'),
-            make.path.join('..', '..', 'deps', 'bluebird-tpi.js'));
+            make.CLI.joinPaths('.', 'js', 'browser', 'bluebird.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'bluebird-tpi.js'));
 
         make.sh.cp(
-            make.path.join('.', 'js', 'browser', 'bluebird.min.js'),
-            make.path.join('..', '..', 'deps', 'bluebird-tpi.min.js'));
+            make.CLI.joinPaths('.', 'js', 'browser', 'bluebird.min.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'bluebird-tpi.min.js'));
 
         resolve();
     };

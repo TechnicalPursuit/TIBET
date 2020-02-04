@@ -19,14 +19,12 @@
 
 var CLI,
     Cmd,
-    TDS,
-    path;
+    TDS;
 
 //  Bring in the TDS code so we can reference command line options.
 TDS = require('../../../tds/tds_base');
 
 CLI = require('./_cli');
-path = require('path');
 
 //  ---
 //  Type Construction
@@ -116,7 +114,7 @@ Cmd.prototype.execute = function() {
         args = process.argv.slice(3);
         return CLI.runCommand('electron' +
             (args ? ' ' + args.join(' ') : ''),
-            path.join(__dirname, 'electron.js'));
+            CLI.joinPaths(__dirname, 'electron.js'));
     }
 
     //  If there's no server.js test to see if Electron is available.

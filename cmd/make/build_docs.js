@@ -33,40 +33,40 @@
 
         clean = make.getArgument('clean');
         if (clean) {
-            fullpath = make.path.join(make.CLI.expandPath('~'), 'doc', 'html');
+            fullpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc', 'html');
             if (make.sh.test('-d', fullpath)) {
-                make.sh.rm('-rf', make.path.join(fullpath, '*'));
+                make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
             }
 
-            fullpath = make.path.join(make.CLI.expandPath('~'), 'doc', 'man');
+            fullpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc', 'man');
             if (make.sh.test('-d', fullpath)) {
-                make.sh.rm('-rf', make.path.join(fullpath, '*'));
+                make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
             }
         }
 
-        rootpath = make.path.join(make.CLI.expandPath('~'), 'doc');
-        srcpath = make.path.join(rootpath, 'markdown');
+        rootpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc');
+        srcpath = make.CLI.joinPaths(rootpath, 'markdown');
 
         if (!make.sh.test('-d', srcpath)) {
             reject('Unable to find doc source directory.');
             return;
         }
 
-        htmlpath = make.path.join(rootpath, 'html');
+        htmlpath = make.CLI.joinPaths(rootpath, 'html');
         if (!make.sh.test('-d', htmlpath)) {
             make.sh.mkdir(htmlpath);
         }
 
-        manpath = make.path.join(rootpath, 'man');
+        manpath = make.CLI.joinPaths(rootpath, 'man');
         if (!make.sh.test('-d', manpath)) {
             make.sh.mkdir(manpath);
         }
 
         //  HTML generation uses common header/footer since output from the
         //  conversion process doesn't include html/body, just "content".
-        header = make.sh.cat(make.path.join(rootpath, 'template', 'header.html')).toString();
+        header = make.sh.cat(make.CLI.joinPaths(rootpath, 'template', 'header.html')).toString();
         header = make.template.compile(header);
-        footer = make.sh.cat(make.path.join(rootpath, 'template', 'footer.html')).toString();
+        footer = make.sh.cat(make.CLI.joinPaths(rootpath, 'template', 'footer.html')).toString();
         footer = make.template.compile(footer);
 
         //  ---
@@ -80,10 +80,10 @@
                 result,
                 srcfile;
 
-            srcfile = make.path.join(srcpath, file + '.tmp');
+            srcfile = make.CLI.joinPaths(srcpath, file + '.tmp');
 
             //  Compute the HTML target file path, removing .md extension.
-            destfile = make.path.join(htmlpath, file);
+            destfile = make.CLI.joinPaths(htmlpath, file);
             destfile = destfile.slice(0, destfile.lastIndexOf('.')) + '.html';
 
             //  Compute target directory value and make sure it exists.
@@ -125,14 +125,14 @@
                 result,
                 srcfile;
 
-            srcfile = make.path.join(srcpath, file + '.tmp');
+            srcfile = make.CLI.joinPaths(srcpath, file + '.tmp');
 
             //  Compute the manpage target file path, removing .md extension.
-            destfile = make.path.join(manpath, 'man' + params.section, file);
+            destfile = make.CLI.joinPaths(manpath, 'man' + params.section, file);
             destfile = destfile.slice(0, destfile.lastIndexOf('.'));
 
             //  Compute target directory value and make sure it exists.
-            destdir = make.path.join(manpath, 'man' + params.section);
+            destdir = make.CLI.joinPaths(manpath, 'man' + params.section);
             if (!make.sh.test('-d', destdir)) {
                 make.sh.mkdir(destdir);
             }
@@ -185,7 +185,7 @@
             filename = file.toString();
 
             //  Skip directories, just process individual files.
-            srcfile = make.path.join(srcpath, filename);
+            srcfile = make.CLI.joinPaths(srcpath, filename);
             if (make.sh.test('-d', srcfile)) {
                 return;
             }
@@ -207,7 +207,7 @@
             };
 
             //  Check target file and if it's more current skip this file.
-            destfile = make.path.join(manpath, 'man' + options.section, filename);
+            destfile = make.CLI.joinPaths(manpath, 'man' + options.section, filename);
             destfile = destfile.slice(0, destfile.lastIndexOf('.'));
 
             try {
@@ -244,7 +244,7 @@
         //  index.html
         //  ---
 
-        indexpath = make.path.join(htmlpath, 'index.html');
+        indexpath = make.CLI.joinPaths(htmlpath, 'index.html');
 
         options = {
             topic: 'TIBET',

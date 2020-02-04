@@ -16,8 +16,8 @@
         ];
 
         root = make.CLI.expandPath('~');
-        srcpath = make.path.join(root, 'lib', 'styles');
-        srcpath = srcpath + make.path.sep;
+        srcpath = make.CLI.joinPaths(root, 'lib', 'styles');
+        srcpath = srcpath + '/';
 
         if (make.sh.test('-d', srcpath)) {
             targets.forEach(function(target) {
@@ -27,11 +27,11 @@
                 parts = target;
                 parts.unshift(root);
                 parts = parts.concat(['TIBET-INF', 'boot', 'styles']);
-                dest = make.path.join.apply(make.path, parts);
-                dest = dest + make.path.sep;
+                dest = make.CLI.joinPaths.apply(make.CLI, parts);
+                dest = dest + '/';
 
                 make.log(dest);
-                make.sh.cp('-r', make.path.join(srcpath, '*'), dest);
+                make.sh.cp('-r', make.CLI.joinPaths(srcpath, '*'), dest);
             });
         }
 

@@ -126,7 +126,7 @@
             //  If there is a key file, read it into the 'privateKey' field of
             //  the params.
             if (params.keyfile) {
-                fullpath = path.join(rootPath, params.keyfile);
+                fullpath = TDS.joinPaths(rootPath, params.keyfile);
                 sftpOpts.privateKey = fs.readFileSync(fullpath);
             } else {
                 sftpOpts.password = TDS.decrypt(params.password);
@@ -170,14 +170,14 @@
                 targetFileName += '.zip';
                 targetFileName = targetFileName.replace(/:/g, '_');
 
-                targetFullFilePath = path.join(
+                targetFullFilePath = TDS.joinPaths(
                                         params.targetpath,
                                         targetFileName);
 
                 //  Compute the local file name that will be temporarily used to
                 //  create the .zip archive. We will delete this when it's all
                 //  done.
-                sourceFullFilePath = path.join(rootPath, 'zips', targetFileName);
+                sourceFullFilePath = TDS.joinPaths(rootPath, 'zips', targetFileName);
                 sourceFile = fs.createWriteStream(sourceFullFilePath);
 
                 //  Create the .zip archive object.
@@ -244,7 +244,7 @@
 
                 targetFileName = targetFileName.replace(/:/g, '_');
 
-                targetFullFilePath = path.join(
+                targetFullFilePath = TDS.joinPaths(
                                         params.targetpath,
                                         targetFileName);
 

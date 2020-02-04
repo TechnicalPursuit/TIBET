@@ -86,7 +86,7 @@
             style = dir === 'mocks' ? 'mock' : 'route';
 
             //  Find all files in the directory, filtering out hidden files.
-            list = sh.find(path.join(TDS.expandPath('~'), dir)).filter(
+            list = sh.find(TDS.joinPaths(TDS.expandPath('~'), dir)).filter(
             function(file) {
                 var filename,
                     base;
@@ -106,7 +106,7 @@
             //  first, then any "leftovers" in sort order.
             order = TDS.getcfg('tds.route.order', []);
             order = order.map(function(item) {
-                return path.join(TDS.expandPath('~'), dir, item);
+                return TDS.joinPaths(TDS.expandPath('~'), dir, item);
             });
             list = list.filter(function(item) {
                 return order.indexOf(item) === -1;

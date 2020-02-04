@@ -137,21 +137,21 @@
         app = this.getAppRoot();
 
         try {
-            fullpath = path.join(head, Config.NPM_FILE);
+            fullpath = this.joinPaths(head, Config.NPM_FILE);
             this.npm = require(fullpath);
         } catch (e) {
             //  Make sure we default to some value.
             this.npm = this.npm || {};
         }
         try {
-            fullpath = path.join(app, Config.PROJECT_FILE);
+            fullpath = this.joinPaths(app, Config.PROJECT_FILE);
             this.tibet = require(fullpath);
         } catch (e) {
             //  Make sure we default to some value.
             this.tibet = this.tibet || {};
         }
         try {
-            fullpath = path.join(head, Config.SERVER_FILE);
+            fullpath = this.joinPaths(head, Config.SERVER_FILE);
             this.tds = require(fullpath);
         } catch (e) {
             //  Make sure we default to some value.
@@ -296,7 +296,7 @@
         //  head. That means for the app head computation we don't work from the
         //  module filename, but only from the current working directory.
 
-        cwd = process.cwd();
+        cwd = this.getCurrentDirectory();
 
         //  Don't allow this value to be computed for a nested node_modules dir.
         if (/node_modules/.test(cwd)) {
@@ -314,11 +314,11 @@
             file = check[1];
 
             while (dir.length > 0) {
-                if (sh.test('-f', path.join(dir, file))) {
+                if (sh.test('-f', this.joinPaths(dir, file))) {
                     this.app_head = dir;
                     break;
                 }
-                dir = dir.slice(0, dir.lastIndexOf(path.sep));
+                dir = dir.slice(0, dir.lastIndexOf('/'));
             }
 
             if (this.app_head) {
@@ -371,7 +371,7 @@
         //  location or in an immediate subdirectory.
         tibet = Config.PROJECT_FILE;
         approot = head;
-        fullpath = path.join(head, tibet);
+        fullpath = this.joinPaths(head, tibet);
         if (sh.test('-f', fullpath)) {
             return head;
         }
@@ -385,16 +385,16 @@
 
             filename = file.toString();
 
-            testhead = path.join(head, filename);
+            testhead = this.joinPaths(head, filename);
             if (!sh.test('-d', testhead)) {
                 return false;
             }
 
             approot = testhead;
-            fullpath = path.join(testhead, tibet);
+            fullpath = this.joinPaths(testhead, tibet);
 
             return sh.test('-f', fullpath);
-        });
+        }.bind(this));
 
         if (found) {
             this.app_root = approot;
@@ -403,6 +403,20 @@
         return this.app_root;
     };
 
+
+    /**
+     * Returns the path to the current working directory in an *OS independent*
+     * manner (i.e. with '/' as the only separator).
+     * @returns {String} The package file name.
+     */
+    Config.prototype.getCurrentDirectory = function() {
+        var cwd;
+
+        cwd = process.cwd();
+        cwd = cwd.replace(/\\/g, '/');
+
+        return cwd;
+    };
 
     /**
      * Returns the library root directory, the path where the tibet library is
@@ -489,26 +503,26 @@
         }
 
         //  How far is this file from the library root?
-        offset = path.join('..', '..', '..');
+        offset = this.joinPaths('..', '..', '..');
 
         checks = [
-            [moduleDir, path.join(offset, tibet_lib.toUpperCase())],
-            [moduleDir, path.join(offset, tibet_lib)]
+            [moduleDir, this.joinPaths(offset, tibet_lib.toUpperCase())],
+            [moduleDir, this.joinPaths(offset, tibet_lib)]
         ];
 
         if (app_root) {
             //  Frozen variant. This comes first so it's found only if we're
             //  unable to find the node_modules directory which should exist.
-            checks.unshift([app_root, path.join(tibet_inf, tibet_lib)]);
+            checks.unshift([app_root, this.joinPaths(tibet_inf, tibet_lib)]);
 
             //  NOTE node_modules does not float with app_root, it's always
             //  found at the application head.
             if (tibet_dir === 'node_modules') {
                 checks.unshift([this.getAppHead(),
-                    path.join(tibet_dir, tibet_lib)]);
+                    this.joinPaths(tibet_dir, tibet_lib)]);
 
             } else {
-                checks.unshift([app_root, path.join(tibet_dir, tibet_lib)]);
+                checks.unshift([app_root, this.joinPaths(tibet_dir, tibet_lib)]);
             }
         }
 
@@ -519,7 +533,7 @@
             file = check[1];
 
             //  NOTE we're using -d here since we're doing a directory check.
-            if (sh.test('-d', path.join(dir, file))) {
+            if (sh.test('-d', this.joinPaths(dir, file))) {
                 if (dir === moduleDir) {
                     //  Have to adjust dir by offset but we need to watch for
                     //  upper/lower case issues depending on whether we're
@@ -528,10 +542,10 @@
                     if (file.indexOf(tibet_lib) === -1) {
                         tibet_lib = tibet_lib.toUpperCase();
                     }
-                    dir = path.join(dir, offset, tibet_lib);
+                    dir = this.joinPaths(dir, offset, tibet_lib);
                 } else {
                     //  Have to adjust dir without offset
-                    dir = path.join(dir, file);
+                    dir = this.joinPaths(dir, file);
                 }
                 this.lib_root = dir;
                 break;
@@ -542,7 +556,7 @@
             //  Usually means a) running outside a project, b) didn't call the
             //  TIBET library 'tibet' or 'TIBET'. Just default based on current
             //  file path.
-            this.lib_root = path.join(module.filename, offset);
+            this.lib_root = this.joinPaths(module.filename, offset);
         }
 
         return this.lib_root;
@@ -600,6 +614,23 @@
         }
 
         return false;
+    };
+
+
+    /**
+     * Returns the joined path in an *OS independent* manner (i.e. with '/' as
+     * the only separator).
+     * @param {varargs} paths The paths to be joined.
+     * @returns {String} The supplied paths joined together with a '/'.
+     */
+    Config.prototype.joinPaths = function(paths) {
+
+        var joined;
+
+        joined = path.join.apply(path, arguments);
+        joined = joined.replace(/\\/g, '/');
+
+        return joined;
     };
 
 
