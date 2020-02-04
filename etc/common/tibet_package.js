@@ -2246,7 +2246,7 @@
             return true;
         }
 
-        if (/^[a-zA-Z]+:/.test(aPath)) {
+        if (/^[a-zA-Z]{1}:/.test(aPath)) {
             return true;
         }
 
