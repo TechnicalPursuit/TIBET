@@ -10987,9 +10987,9 @@ function() {
     TP.boot.$stdout('Preparing to initialize: ' + own.getValues().join('\n'),
         TP.TRACE);
 
-    if (TP.isValid(own)) {
+    thisref = this;
 
-        thisref = this;
+    if (TP.isValid(own)) {
 
         //  Loop over each one of those owners (each of which should be a
         //  type), and if it hasn't already been initialized, send it an
