@@ -44,7 +44,7 @@
         "init-declarations": [2, "never"],
         "key-spacing": [1, { "beforeColon": false, "afterColon": true }],
         "keyword-spacing": [2, {"before": true, "after": true, "overrides": {}}],
-        "linebreak-style": 2,
+        "linebreak-style": 0,
         "lines-between-class-members": [1, "always"],
         "max-len": [0, 80, 4],
         "max-statements-per-line": 1,
