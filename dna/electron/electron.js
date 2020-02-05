@@ -5,7 +5,7 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The main electron application file for a TIBET-based project.
+ * @overview The main Electron application file for a TIBET-based project.
  *     This file handles command line argument and package configuration to
  *     support and manage the Electron main process. The Electron renderer
  *     process ends up running the TIBET client (including Sherpa et. al.).
@@ -26,7 +26,8 @@ const electron = require('electron'),
     Logger = require('./TIBET-INF/tibet/etc/common/tibet_logger'),
     Package = require('./TIBET-INF/tibet/etc/common/tibet_package.js'),
 
-    app = electron.app, // Module to control application life.
+    app = electron.app,                     //  Module to control application
+                                            //  life.
     dialog = electron.dialog, // Module to create dialog.
     BrowserWindow = electron.BrowserWindow, // Module to create browser window.
     PARSE_OPTIONS = CLI.PARSE_OPTIONS;
@@ -138,6 +139,10 @@ createWindow = function() {
         }
     });
 
+    //  When the user tries to quit or close the main window running TIBET. Note
+    //  that the code in TIBET has a special case for the 'onbeforeunload' event
+    //  handler for Electron that always returns a value that causes this event
+    //  to be thrown.
     mainWindow.webContents.on('will-prevent-unload',
     function(event) {
 
@@ -175,6 +180,11 @@ createWindow = function() {
 //  Event Handlers
 //  ---
 
+/**
+ * This method will be called when code running in Electron's NodeJS process has
+ * thrown an exception that has not been caught and has bubbled all of the way
+ * up to the event loop.
+ */
 process.on('uncaughtException', function(err) {
     var str,
         code;
@@ -201,6 +211,7 @@ process.on('uncaughtException', function(err) {
     }
 });
 
+
 /**
  * This method will be called when Electron has finished initialization and is
  * ready to create browser windows. Some APIs can only be used after this event
@@ -210,7 +221,7 @@ app.on('ready', createWindow);
 
 
 /**
- * Quit when all windows are closed.
+ * This method will be called when all windows are closed.
  */
 app.on('window-all-closed', function() {
     // On OS X it is common for applications and their menu bar
@@ -222,10 +233,10 @@ app.on('window-all-closed', function() {
 
 
 /**
- *
+ * This method will be called when the user launches the app, clicks on the Mac
+ * OS X dock or Windows taskbar or tries to relaunch when already running.
  */
 app.on('activate', function() {
-
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
