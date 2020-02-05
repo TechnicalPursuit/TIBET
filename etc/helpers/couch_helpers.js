@@ -16,10 +16,12 @@
 
 'use strict';
 
-var helpers,
+var CLI,
+    helpers,
     path,
     sh;
 
+CLI = require('../../src/tibet/cli/_cli');
 sh = require('shelljs');
 path = require('path');
 
@@ -72,7 +74,7 @@ helpers.gatherDesignDocFunctions = function(target, root) {
         }
 
         try {
-            fullpath = path.join(root, filename);
+            fullpath = CLI.joinPaths(root, filename);
             dat = require(fullpath);
             if (typeof dat !== 'function') {
                 throw new Error('No function found in ' + fullpath);
@@ -123,7 +125,7 @@ helpers.gatherDesignDocObjects = function(target, root) {
         }
 
         try {
-            fullpath = path.join(root, filename);
+            fullpath = CLI.joinPaths(root, filename);
             dat = require(fullpath);
 
             gathered = {};
@@ -477,7 +479,7 @@ helpers.populateDesignDoc = function(doc, root, params) {
     //  Start with files which represent a single value rather than a set.
 
     //  rewrites.js: an array of objects with 4 keys: from, to, method, query
-    fullpath = path.join(root, 'rewrites.js');
+    fullpath = CLI.joinPaths(root, 'rewrites.js');
     if (sh.test('-e', fullpath)) {
         try {
             dat = require(fullpath);
@@ -489,7 +491,7 @@ helpers.populateDesignDoc = function(doc, root, params) {
     }
 
     //  validate_doc_update.js: function(newDoc, oldDoc, userCtx, secObj)
-    fullpath = path.join(root, 'validate_doc_update.js');
+    fullpath = CLI.joinPaths(root, 'validate_doc_update.js');
     if (sh.test('-e', fullpath)) {
         try {
             dat = require(fullpath);
@@ -509,39 +511,39 @@ helpers.populateDesignDoc = function(doc, root, params) {
     //  toString invoked on them automatically.
 
     //  filters: function
-    fullpath = path.join(root, 'filters');
+    fullpath = CLI.joinPaths(root, 'filters');
     if (sh.test('-d', fullpath)) {
         obj.filters = helpers.gatherDesignDocFunctions(obj.filters, fullpath);
     }
 
     //  fulltext: obj with 'index' key and optional 'analyzer' and 'defaults'
     //      keys pointing to obj/string data.
-    fullpath = path.join(root, 'fulltext');
+    fullpath = CLI.joinPaths(root, 'fulltext');
     if (sh.test('-d', fullpath)) {
         obj.fulltext = helpers.gatherDesignDocObjects(obj.fulltext, fullpath);
     }
 
     //  lists: function
-    fullpath = path.join(root, 'lists');
+    fullpath = CLI.joinPaths(root, 'lists');
     if (sh.test('-d', fullpath)) {
         obj.lists = helpers.gatherDesignDocFunctions(obj.lists, fullpath);
     }
 
     //  shows: function
-    fullpath = path.join(root, 'shows');
+    fullpath = CLI.joinPaths(root, 'shows');
     if (sh.test('-d', fullpath)) {
         obj.shows = helpers.gatherDesignDocFunctions(obj.shows, fullpath);
     }
 
     //  updates: function
-    fullpath = path.join(root, 'updates');
+    fullpath = CLI.joinPaths(root, 'updates');
     if (sh.test('-d', fullpath)) {
         obj.updates = helpers.gatherDesignDocFunctions(obj.updates, fullpath);
     }
 
     //  views: obj with 'map' and optional 'reduce' keys with function instances
     //      as their values.
-    fullpath = path.join(root, 'views');
+    fullpath = CLI.joinPaths(root, 'views');
     if (sh.test('-d', fullpath)) {
         obj.views = helpers.gatherDesignDocObjects(obj.views, fullpath);
     }
