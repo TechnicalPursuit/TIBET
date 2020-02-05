@@ -24,8 +24,7 @@ var CLI,
     Promise,
     zlib,
     iltorb,
-    helpers,
-    child;
+    helpers;
 
 
 CLI = require('../../src/tibet/cli/_cli');
@@ -35,7 +34,6 @@ sh = require('shelljs');
 path = require('path');
 Promise = require('bluebird');
 zlib = require('zlib');
-child = require('child_process');
 
 //  Conditionally load iltorb. If this fails don't make a fuss, we just won't
 //  output brotli-compressed content.
@@ -164,12 +162,15 @@ helpers.linkup_app = function(make, options) {
  */
 helpers.package_check = function(make, options) {
 
-    var cmd,
-        pkg,
+    var pkg,
         config,
         phase,
-        proc,
-        deferred;
+        deferred,
+
+        cmd,
+        args,
+
+        proc;
 
     if (CLI.notValid(options)) {
         throw new Error('InvalidOptions');
@@ -195,22 +196,47 @@ helpers.package_check = function(make, options) {
     //  to the current module. This is necessary for the npm prepublish step
     //  (used by TravisCI etc) so they can build tibet without having it
     //  installed yet.
-    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet') +
-        ' package --missing' +
-        (pkg ? ' --package \'' + pkg : '') +
-        (config ? '\' --config ' + config : '') +
-        (phase ? ' --phase ' + phase : '') +
-        (make.options.debug ? ' --debug' : '') +
-        (make.options.verbose ? ' --verbose' : '') +
-        (make.options.color ? '' : ' --no-color') +
-        (make.options['tds-cli'] ? ' --tds-cli' : '') +
-        (make.options.silent ? '' : ' --no-silent');
+    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet');
 
-    make.log('executing ' + cmd);
+    args = ['package', '--missing'];
+
+    if (pkg) {
+        args.push('--package', pkg);
+    }
+
+    if (config) {
+        args.push('--config', config);
+    }
+
+    if (phase) {
+        args.push('--phase', phase);
+    }
+
+    if (make.options.debug) {
+        args.push('--debug');
+    }
+
+    if (make.options.verbose) {
+        args.push('--verbose');
+    }
+
+    if (!make.options.color) {
+        args.push('--no-color');
+    }
+
+    if (make.options['tds-cli']) {
+        args.push('--tds-cli');
+    }
+
+    if (!make.options.silent) {
+        args.push('--no-silent');
+    }
+
+    make.log('executing ' + cmd + ' ' + args.join(' '));
 
     //  Use our wrapper function here, it'll log via the make object's logging
     //  hooks so we get properly processed stdout and stderr data.
-    proc = make.spawn(cmd);
+    proc = make.spawn(cmd, args);
 
     proc.on('exit', function(code) {
         if (code !== 0) {
@@ -234,12 +260,14 @@ helpers.package_check = function(make, options) {
  */
 helpers.resource_build = function(make, options) {
 
-    var cmd,
-        pkg,
+    var pkg,
         config,
         phase,
         proc,
         deferred,
+
+        cmd,
+        args,
 
         file,
         content,
@@ -293,23 +321,51 @@ helpers.resource_build = function(make, options) {
     //  to the current module. This is necessary for the npm prepublish step
     //  (used by TravisCI etc) so they can build tibet without having it
     //  installed yet.
-    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet') +
-        ' resource --build' +
-        (pkg ? ' --package \'' + pkg : '') +
-        (config ? '\' --config ' + config : '') +
-        (phase ? ' --phase ' + phase : '') +
-        (make.options.debug ? ' --debug' : '') +
-        (make.options.verbose ? ' --verbose' : '') +
-        (make.options.color ? '' : ' --no-color') +
-        (make.options['tds-cli'] ? ' --tds-cli' : '') +
-        (make.options.silent ? '' : ' --no-silent') +
-        (make.options.timeout ? ' --timeout ' + make.options.timeout : '');
+    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet');
 
-    make.log('executing ' + cmd);
+    args = ['resource', '--build'];
+
+    if (pkg) {
+        args.push('--package', pkg);
+    }
+
+    if (config) {
+        args.push('--config', config);
+    }
+
+    if (phase) {
+        args.push('--phase', phase);
+    }
+
+    if (make.options.debug) {
+        args.push('--debug');
+    }
+
+    if (make.options.verbose) {
+        args.push('--verbose');
+    }
+
+    if (!make.options.color) {
+        args.push('--no-color');
+    }
+
+    if (make.options['tds-cli']) {
+        args.push('--tds-cli');
+    }
+
+    if (!make.options.silent) {
+        args.push('--no-silent');
+    }
+
+    if (make.options.timeout) {
+        args.push('--timeout', make.options.timeout);
+    }
+
+    make.log('executing ' + cmd + ' ' + args.join(' '));
 
     //  Use our wrapper function here, it'll log via the make object's logging
     //  hooks so we get properly processed stdout and stderr data.
-    proc = make.spawn(cmd);
+    proc = make.spawn(cmd, args);
 
     proc.on('exit', function(code) {
         if (code !== 0) {
@@ -342,6 +398,7 @@ helpers.rollup = function(make, options) {
 
     var buffer,
         cmd,
+        args,
         ext,
         file,
         pkg,
@@ -396,17 +453,37 @@ helpers.rollup = function(make, options) {
     //  to the current module. This is necessary for the npm prepublish step
     //  (used by TravisCI etc) so they can build tibet without having it
     //  installed yet.
-    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet') +
-        ' rollup --package \'' + pkg +
-        '\' --config ' + config +
-        ' --phase ' + phase +
-        (make.options.debug ? ' --debug' : '') +
-        (make.options.verbose ? ' --verbose' : '') +
-        (make.options.color ? '' : ' --no-color') +
-        (make.options['tds-cli'] ? ' --tds-cli' : '') +
-        (make.options.silent ? '' : ' --no-silent') +
-        (headers ? '' : ' --no-headers') +
-        (minify ? ' --minify' : '');
+    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet');
+
+    args = ['rollup', '--package', pkg, '--config', config, '--phase', phase];
+
+    if (make.options.debug) {
+        args.push('--debug');
+    }
+
+    if (make.options.verbose) {
+        args.push('--verbose');
+    }
+
+    if (!make.options.color) {
+        args.push('--no-color');
+    }
+
+    if (make.options['tds-cli']) {
+        args.push('--tds-cli');
+    }
+
+    if (!make.options.silent) {
+        args.push('--no-silent');
+    }
+
+    if (!headers) {
+        args.push('--no-headers');
+    }
+
+    if (minify) {
+        args.push('--minify');
+    }
 
     if (minify) {
         ext = '.min.js';
@@ -419,11 +496,9 @@ helpers.rollup = function(make, options) {
     promise = new Promise(function(resolver, rejector) {
         var proc;
 
-        make.log('executing ' + cmd);
+        make.log('executing ' + cmd + ' ' + args.join(' '));
 
-        proc = child.spawn(cmd, {
-            shell: true
-        });
+        proc = make.spawn(cmd, args, {stdio: 'pipe'});
 
         proc.stdout.on('data', function(data) {
             if (!buffer) {
