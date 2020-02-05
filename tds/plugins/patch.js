@@ -177,6 +177,8 @@
                     ignoreChangedFiles.push(localPath);
                 }
 
+                text = TDS.normalizeLineEndings(text);
+
                 writeFile(url + '.bak', buffer).then(
                 writeFile(url, text).then(function() {
                     res.send(url + ' successfully patched.');

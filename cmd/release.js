@@ -512,6 +512,7 @@ Cmd.prototype.phaseTwo = function(source) {
     } else {
         this.info('Updating target version file: ' + file);
         try {
+            content = CLI.normalizeLineEndings(content);
             fs.writeFileSync(file, content);
         } catch (e) {
             this.error('Error writing file ' + file + ': ' + e.message);
@@ -533,7 +534,9 @@ Cmd.prototype.phaseTwo = function(source) {
     } else {
         this.info('Updating npm version in: ' + file);
         try {
-            fs.writeFileSync(file, CLI.beautify(JSON.stringify(CLI.config.npm)));
+            content = CLI.beautify(JSON.stringify(CLI.config.npm));
+            content = CLI.normalizeLineEndings(content);
+            fs.writeFileSync(file, content);
         } catch (e) {
             this.error('Error writing file ' + file + ': ' + e.message);
             return;

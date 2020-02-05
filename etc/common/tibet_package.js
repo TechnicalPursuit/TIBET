@@ -2680,6 +2680,17 @@
 
 
     /**
+     * Normalizes line endings on the supplied content. This deals with
+     * situations where content on Windows has a carriage return and newline.
+     * @param {String} content The content to be normalized
+     * @returns {String} The normalized content.
+     */
+    Package.prototype.normalizeLineEndings = function(content) {
+        return content.replace(/\\r\\n/g, '\n');
+    };
+
+
+    /**
      * Recursively traverses a potentially nested set of properties and values
      * and ensures they are set as the current config values. Typically called
      * with the tibet.json and package.json content to overlay

@@ -688,6 +688,8 @@ Cmd.prototype.processResources = function() {
                 content += CLI.quoted(data);
                 content += '\n);';
 
+                content = CLI.normalizeLineEndings(content);
+
                 fs.writeFileSync(file, content);
 
                 return resolve();
@@ -815,6 +817,9 @@ Cmd.prototype.processLessResource = function(options) {
         content = 'TP.uc(\'' + rname + '\').setContent(\n';
         content += CLI.quoted(finaloutput);
         content += '\n);';
+
+        content = CLI.normalizeLineEndings(content);
+
         fs.writeFileSync(fname, content);
 
         return options.resolve();
@@ -922,6 +927,9 @@ Cmd.prototype.processScssResource = function(options) {
         content = 'TP.uc(\'' + rname + '\').setContent(\n';
         content += CLI.quoted(finaloutput);
         content += '\n);';
+
+        content = CLI.normalizeLineEndings(content);
+
         fs.writeFileSync(fname, content);
 
         return options.resolve();
@@ -964,6 +972,9 @@ Cmd.prototype.processXmlResource = function(options) {
     content = 'TP.uc(\'' + resource + '\').setContent(\n';
     content += CLI.quoted(data);
     content += '\n);';
+
+    content = CLI.normalizeLineEndings(content);
+
     fs.writeFileSync(file, content);
 
     return options.resolve();

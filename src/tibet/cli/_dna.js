@@ -660,6 +660,7 @@ Cmd.prototype.executeProcess = function() {
         } else {
             cmd.verbose('updating file: ' + fullpath);
             try {
+                content = CLI.normalizeLineEndings(content);
                 fs.writeFileSync(fullpath, content);
             } catch (e) {
                 cmd.error('Error writing file ' + fullpath + ': ' + e.message);

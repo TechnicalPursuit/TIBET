@@ -1227,6 +1227,18 @@
         return couch.maskCouchAuth(url);
     };
 
+
+    /**
+     * Normalizes line endings on the supplied content. This deals with
+     * situations where content on Windows has a carriage return and newline.
+     * @param {String} content The content to be normalized
+     * @returns {String} The normalized content.
+     */
+    TDS.normalizeLineEndings = function(content) {
+        return TDS._package.normalizeLineEndings(content);
+    };
+
+
     /**
      * Pushes an ordered pair of log level and message into the temporary log
      * buffer. This buffer is cleared once the logger plugin has loaded fully.

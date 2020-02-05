@@ -1373,6 +1373,17 @@ CLI.lpad = function(obj, length, padChar) {
 
 
 /**
+ * Normalizes line endings on the supplied content. This deals with
+ * situations where content on Windows has a carriage return and newline.
+ * @param {String} content The content to be normalized
+ * @returns {String} The normalized content.
+ */
+CLI.normalizeLineEndings = function(content) {
+    return this._package.normalizeLineEndings(content);
+};
+
+
+/**
  * Outputs a standard error message and exits. This function is typically called
  * by commands that require project initialization to run properly.
  */

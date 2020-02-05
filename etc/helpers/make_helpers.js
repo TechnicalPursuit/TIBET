@@ -242,6 +242,7 @@ helpers.resource_build = function(make, options) {
         deferred,
 
         file,
+        content,
         versionNums,
         lastIndex;
 
@@ -275,9 +276,11 @@ helpers.resource_build = function(make, options) {
         make.info('Updating npm version in package.json to: ' +
                     CLI.config.npm.version);
 
+        content = CLI.beautify(JSON.stringify(CLI.config.npm));
+        content = CLI.normalizeLineEndings(content);
+
         try {
-            fs.writeFileSync(
-                    file, CLI.beautify(JSON.stringify(CLI.config.npm)));
+            fs.writeFileSync(file, content);
         } catch (e) {
             make.error('Error writing package.json file: ' + e.message);
             return;
@@ -703,6 +706,7 @@ helpers.transform = function(make, options) {
     } else {
         make.trace('Updating file: ' + target);
         try {
+            content = CLI.normalizeLineEndings(content);
             fs.writeFileSync(target, content);
         } catch (e) {
             make.error('Error writing file ' + target + ': ' + e.message);
