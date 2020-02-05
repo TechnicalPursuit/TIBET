@@ -19,6 +19,7 @@
 var CLI,
     hb,
     fs,
+    os,
     sh,
     path,
     Promise,
@@ -29,6 +30,7 @@ var CLI,
 
 CLI = require('../../src/tibet/cli/_cli');
 fs = require('fs');
+os = require('os');
 hb = require('handlebars');
 sh = require('shelljs');
 path = require('path');
@@ -195,8 +197,15 @@ helpers.package_check = function(make, options) {
     //  The big path construction here is to locate the tibet command relative
     //  to the current module. This is necessary for the npm prepublish step
     //  (used by TravisCI etc) so they can build tibet without having it
-    //  installed yet.
-    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet');
+    //  installed yet. Note that we don't run CI, etc. on Windows and it seems
+    //  to have problems with finding binaries, but not with an installed TIBET,
+    //  so we just set it to 'tibet' here.
+    if (os.platform === 'win32') {
+        cmd = 'tibet';
+    } else {
+        cmd = make.CLI.joinPaths(
+                    module.filename, '..', '..', '..', 'bin', 'tibet');
+    }
 
     args = ['package', '--missing'];
 
@@ -320,8 +329,15 @@ helpers.resource_build = function(make, options) {
     //  The big path construction here is to locate the tibet command relative
     //  to the current module. This is necessary for the npm prepublish step
     //  (used by TravisCI etc) so they can build tibet without having it
-    //  installed yet.
-    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet');
+    //  installed yet. Note that we don't run CI, etc. on Windows and it seems
+    //  to have problems with finding binaries, but not with an installed TIBET,
+    //  so we just set it to 'tibet' here.
+    if (os.platform === 'win32') {
+        cmd = 'tibet';
+    } else {
+        cmd = make.CLI.joinPaths(
+                    module.filename, '..', '..', '..', 'bin', 'tibet');
+    }
 
     args = ['resource', '--build'];
 
@@ -452,8 +468,15 @@ helpers.rollup = function(make, options) {
     //  The big path construction here is to locate the tibet command relative
     //  to the current module. This is necessary for the npm prepublish step
     //  (used by TravisCI etc) so they can build tibet without having it
-    //  installed yet.
-    cmd = make.CLI.joinPaths(module.filename, '..', '..', '..', 'bin', 'tibet');
+    //  installed yet. Note that we don't run CI, etc. on Windows and it seems
+    //  to have problems with finding binaries, but not with an installed TIBET,
+    //  so we just set it to 'tibet' here.
+    if (os.platform === 'win32') {
+        cmd = 'tibet';
+    } else {
+        cmd = make.CLI.joinPaths(
+                    module.filename, '..', '..', '..', 'bin', 'tibet');
+    }
 
     args = ['rollup', '--package', pkg, '--config', config, '--phase', phase];
 
