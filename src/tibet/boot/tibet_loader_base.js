@@ -2169,10 +2169,16 @@ TP.boot.$uriExpandPath = function(aPath) {
         return TP.sys.getLaunchRoot();
     }
 
-    if (aPath.indexOf('/') === 0 || /^[a-zA-Z]{1}:/.test(aPath)) {
+    if (aPath.indexOf('/') === 0) {
         //  Launch root doesn't include a trailing slash, so avoid possible
         //  recursion via uriJoinPaths and just concatenate.
         return TP.sys.getLaunchRoot() + aPath;
+    }
+
+    if (/^[a-zA-Z]{1}:/.test(aPath)) {
+        //  Launch root doesn't include a trailing slash, so avoid possible
+        //  recursion via uriJoinPaths and just concatenate.
+        return TP.sys.getLaunchRoot() + aPath.slice(2);
     }
 
     if (aPath.indexOf('~') !== 0) {
