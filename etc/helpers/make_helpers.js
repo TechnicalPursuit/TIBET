@@ -200,7 +200,7 @@ helpers.package_check = function(make, options) {
     //  installed yet. Note that we don't run CI, etc. on Windows and it seems
     //  to have problems with finding binaries, but not with an installed TIBET,
     //  so we just set it to 'tibet' here.
-    if (os.platform === 'win32') {
+    if (os.platform() === 'win32') {
         cmd = 'tibet';
     } else {
         cmd = make.CLI.joinPaths(
@@ -332,7 +332,7 @@ helpers.resource_build = function(make, options) {
     //  installed yet. Note that we don't run CI, etc. on Windows and it seems
     //  to have problems with finding binaries, but not with an installed TIBET,
     //  so we just set it to 'tibet' here.
-    if (os.platform === 'win32') {
+    if (os.platform() === 'win32') {
         cmd = 'tibet';
     } else {
         cmd = make.CLI.joinPaths(
@@ -471,7 +471,7 @@ helpers.rollup = function(make, options) {
     //  installed yet. Note that we don't run CI, etc. on Windows and it seems
     //  to have problems with finding binaries, but not with an installed TIBET,
     //  so we just set it to 'tibet' here.
-    if (os.platform === 'win32') {
+    if (os.platform() === 'win32') {
         cmd = 'tibet';
     } else {
         cmd = make.CLI.joinPaths(
