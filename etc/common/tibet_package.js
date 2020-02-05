@@ -2686,7 +2686,7 @@
      * @returns {String} The normalized content.
      */
     Package.prototype.normalizeLineEndings = function(content) {
-        return content.replace(/\\r\\n/g, '\n');
+        return content.replace(/\\r/g, '');
     };
 
 
