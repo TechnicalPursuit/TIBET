@@ -4771,26 +4771,12 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                         TP.apc(repeatFragExpr).executeGet(primarySource);
                     }
 
-                    //  If branchVal is a POJO, make it into a TP.core.Hash.
-                    if (TP.isPlainObject(branchVal)) {
-                        branchVal = TP.hc(branchVal);
-                    }
+                    //  Normalize the value for repeat purposes (we're
+                    //  interested in an Array of key,value pairs).
+                    branchVal = this.$normalizeRepeatValue(branchVal);
 
                     //  Make sure that branchVal is a collection.
                     if (TP.isCollection(branchVal)) {
-
-                        //  If repeatResult is a TP.core.Hash, then convert it
-                        //  into an Array of key/value pairs. Binding repeats
-                        //  need a collection they can index numerically.
-                        if (TP.isHash(branchVal)) {
-                            branchVal = branchVal.getKVPairs();
-                        }
-
-                        //  If the branchVal isn't an Array, then make it be the
-                        //  single item in an Array.
-                        if (!TP.isArray(branchVal)) {
-                            branchVal = TP.ac(branchVal);
-                        }
 
                         //  NB: This modifies the supplied 'boundElems' Array to
                         //  add the newly generated elements. They will be
@@ -5426,6 +5412,49 @@ function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, changeSourc
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('$normalizeRepeatValue',
+function(aRepeatValue) {
+
+    /**
+     * @method $normalizeRepeatValue
+     * @summary Normalizes the supplied value into something that can be
+     *     iterated over by a 'bind:repeat'. This is usually an Array.
+     * @param {Object} aRepeatValue The value to normalize.
+     * @returns {Object[]} An Array of objects that a bind:repeat can iterate
+     *     over.
+     */
+
+    var repeatVal;
+
+    repeatVal = aRepeatValue;
+
+    //  If repeatVal is a POJO, make it into a TP.core.Hash.
+    if (TP.isPlainObject(repeatVal)) {
+        repeatVal = TP.hc(repeatVal);
+    }
+
+    //  Make sure that repeatVal is a collection.
+    if (TP.isCollection(repeatVal)) {
+
+        //  If repeatResult is a TP.core.Hash, then convert it
+        //  into an Array of key/value pairs. Binding repeats
+        //  need a collection they can index numerically.
+        if (TP.isHash(repeatVal)) {
+            repeatVal = repeatVal.getKVPairs();
+        }
+
+        //  If the repeatVal isn't an Array, then make it be the
+        //  single item in an Array.
+        if (!TP.isArray(repeatVal)) {
+            repeatVal = TP.ac(repeatVal);
+        }
+    }
+
+    return repeatVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$refreshRepeatData',
 function(regenerateIfNecessary) {
 
@@ -5474,6 +5503,14 @@ function(regenerateIfNecessary) {
     if (TP.notValid(repeatResult)) {
         return this;
     }
+
+    if (!TP.regex.SIMPLE_NUMERIC_PATH.test(repeatFullExpr)) {
+        repeatResult = TP.collapse(repeatResult);
+    }
+
+    //  Normalize the value for repeat purposes (we're interested in an Array of
+    //  key,value pairs).
+    repeatResult = this.$normalizeRepeatValue(repeatResult);
 
     //  Make sure that repeatResult is a collection.
     if (TP.isCollection(repeatResult)) {
