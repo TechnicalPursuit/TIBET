@@ -86,6 +86,12 @@ TP.hc(
         //  expand to support virtual uri input
         path = TP.uriExpandPath(targetUrl);
 
+        //  make sure that any fragments ('#' followed by word characters)
+        //  is trimmed off
+        if (/#/.test(path)) {
+            path = path.slice(0, path.indexOf('#'));
+        }
+
         request = TP.request(aRequest);
 
         //  by default we fail silently
@@ -256,6 +262,12 @@ TP.hc(
         //  expand to support virtual uri input
         path = TP.uriExpandPath(targetUrl);
 
+        //  make sure that any fragments ('#' followed by word characters)
+        //  is trimmed off
+        if (/#/.test(path)) {
+            path = path.slice(0, path.indexOf('#'));
+        }
+
         request = TP.request(aRequest);
 
         try {
@@ -300,6 +312,12 @@ TP.hc(
 
         //  expand to support virtual uri input
         path = TP.uriExpandPath(targetUrl);
+
+        //  make sure that any fragments ('#' followed by word characters)
+        //  is trimmed off
+        if (/#/.test(path)) {
+            path = path.slice(0, path.indexOf('#'));
+        }
 
         request = TP.request(aRequest);
 
@@ -379,6 +397,12 @@ TP.hc(
 
         //  expand to support virtual uri input
         path = TP.uriExpandPath(targetUrl);
+
+        //  make sure that any fragments ('#' followed by word characters)
+        //  is trimmed off
+        if (/#/.test(path)) {
+            path = path.slice(0, path.indexOf('#'));
+        }
 
         request = TP.request(aRequest);
 
@@ -855,6 +879,12 @@ TP.hc(
 
         //  expand to support virtual uri input
         path = TP.uriExpandPath(targetUrl);
+
+        //  make sure that any fragments ('#' followed by word characters)
+        //  is trimmed off
+        if (/#/.test(path)) {
+            path = path.slice(0, path.indexOf('#'));
+        }
 
         //  following operation uses local name, not web format
         fname = TP.uriInLocalFormat(targetUrl);
