@@ -1310,7 +1310,7 @@ function(aSignal) {
     //  Set up a Mutation Summary observer on the document. This will process
     //  changes made to the UI document and propagate them to the correct source
     //  document for saving.
-    this.setupMutationSummaryOn(currentCanvasDoc);
+    this.setupMutationSummaryOn(currentCanvasDoc.getNativeNode());
 
     return this;
 });
@@ -2074,7 +2074,7 @@ function(aSignal) {
     //  Set up a Mutation Summary observer on the document. This will process
     //  changes made to the UI document and propagate them to the correct source
     //  document for saving.
-    this.setupMutationSummaryOn(newCanvasDoc);
+    this.setupMutationSummaryOn(newCanvasDoc.getNativeNode());
 
     return this;
 });
