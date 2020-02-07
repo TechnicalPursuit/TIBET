@@ -4723,6 +4723,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
             //  different scope - but one we need to refresh anyway.
             if (TP.regex.ALL_SCHEMES.test(attrVal) &&
                 !primaryLocMatcher.test(attrVal)) {
+                /*
                 if (isScopingElement) {
                     str = TP.str(ownerElem);
                     if (!primaryLocMatcher.test(str)) {
@@ -4731,6 +4732,8 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                 } else {
                     continue;
                 }
+                */
+                continue;
             }
 
             ownerTPElem = TP.wrap(ownerElem);
