@@ -206,12 +206,54 @@ TP.hc(
          * @returns {Boolean} True if the delete appears successful.
          */
 
-        var request;
+        var request,
+
+            path,
+            fname,
+
+            result,
+
+            msg;
+
+        if (!TP.isString(targetUrl)) {
+            return TP.raise(this, 'TP.sig.InvalidURI');
+        }
 
         request = TP.request(aRequest);
 
-        TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail('Unsupported operation.');
+        if (TP.sys.cfg('boot.context') === 'electron') {
+            //  expand to support virtual uri input
+            path = TP.uriExpandPath(targetUrl);
+
+            //  make sure that any fragments ('#' followed by word characters)
+            //  is trimmed off
+            if (/#/.test(path)) {
+                path = path.slice(0, path.indexOf('#'));
+            }
+
+            //  following operation uses local name, not web format
+            fname = TP.uriInLocalFormat(path);
+
+            //  Call the external Electron utilities to delete the file
+            result = TP.extern.electron_lib_utils.fileDelete(fname);
+
+            if (result.ok === false) {
+                TP.raise(this, 'TP.sig.IOFailed');
+
+                msg = TP.sc('File could not be deleted: ', path);
+                request.fail(msg);
+
+                return false;
+            } else {
+                request.complete(true);
+
+                return true;
+            }
+
+        } else {
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
+            request.fail('Unsupported operation.');
+        }
 
         return false;
     }
