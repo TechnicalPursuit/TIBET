@@ -17,6 +17,15 @@
     <script src="TIBETGlobals.js"/>
     <script src="TIBETVersion.js"/>
 
+    <script>
+        <![CDATA[
+            if (TP.sys.cfg('boot.context') === 'electron') {
+                TP.registerExternalObject('electron_lib_utils', window.preload_lib_utils);
+                TP.registerExternalObject('electron_app_utils', window.preload_app_utils);
+            };
+        ]]>
+    </script>
+
     <script src="~lib_deps/bluebird-tpi.min.js"
         if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/bluebird-tpi.js"

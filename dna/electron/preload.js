@@ -12,13 +12,32 @@
  */
 //  ========================================================================
 
-const {remote} = require('electron');
+const { remote } = require('electron');
 
-let currentWindow;
+//  ---
+//  Common TIBET utilities that will be made available inside of TIBET under
+//  the TP.extern.electron_lib_utils object.
+//  ---
 
-currentWindow = remote.BrowserWindow.getFocusedWindow();
+const lib_preload = require('./TIBET-INF/tibet/etc/electron/preload_lib.js');
+window.preload_lib_utils = lib_preload();
 
-//  A utility that will close the current window.
-window.closeCurrentWindow = function() {
+//  ---
+//  Other app-level utils. We recommend putting other application-level
+//  utilities on this object. These will be made available inside of TIBET under
+//  the TP.extern.electron_app_utils object.
+//  ---
+
+//  NB: Do *NOT* remove this object definition.
+const app_preload = {};
+window.preload_app_utils = app_preload;
+
+//  A sample utility that will close the current window. This can be safely
+//  removed if not required.
+app_preload.closeCurrentWindow = function() {
+    let currentWindow;
+
+    currentWindow = remote.BrowserWindow.getFocusedWindow();
     currentWindow.close();
-};
+}
+
