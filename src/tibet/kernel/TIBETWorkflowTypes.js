@@ -7909,6 +7909,45 @@ function(anOffset) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.History.Type.defineMethod('isLocationRoutable',
+function(aLocation) {
+
+    /**
+     * @method isLocationRoutable
+     * @summary Returns true if the supplied location is routable, that is, if
+     *     the TIBET router is going to handle it. Otherwise, its just a link
+     *     traversla.
+     * @param {String} aLocation The location to check.
+     * @returns {Boolean} Whether or not the supplied location is routable.
+     */
+
+    var loc,
+        appHead;
+
+    if (!TP.isString(aLocation)) {
+        return this.raise('InvalidParameter', aLocation);
+    }
+
+    //  The route has a '#/' or '#?', so return true
+    if (/#(\/|\?)/.test(aLocation)) {
+        return true;
+    }
+
+    //  Normalize the location with a trailing slash.
+    loc = aLocation;
+    if (!loc.endsWith('/')) {
+        loc += '/';
+    }
+
+    //  Grab the appHead. This will be the head of the URL before any fragment
+    //  identifiers.
+    appHead = TP.getAppHead();
+
+    return loc === appHead;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.History.Type.defineMethod('onpopstate',
 function(anEvent) {
 
@@ -7966,9 +8005,8 @@ function(anEvent) {
     //  ensure we get the right index adjustments in our internal history.
     this.updateIndex(anEvent);
 
-    //  A route has to be '#/' or '#?', so only trigger the router if we see
-    //  that pattern.
-    if (/#(\/|\?)/.test(loc)) {
+    //  A route has to be routable so only trigger the router if it is.
+    if (this.isLocationRoutable(loc)) {
         router = TP.sys.getRouter();
         if (TP.isValid(router)) {
             router.route(TP.ifInvalid(state, loc));
