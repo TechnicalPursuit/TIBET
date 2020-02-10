@@ -5156,6 +5156,10 @@ function(anObject) {
     //  potential for endless recursions is high. Therefore, we need to use 'low
     //  level' primitives to do processing here.
 
+    //  NB: We do *not* wrap POJOs (to become TP.core.Hashes) here since
+    //  wrapping the 'big 8' doesn't do anything (and a POJO is, after all, a
+    //  'new Object()'
+
     //  fail on null/undefined content...although it would have been fun to
     //  return a TP.lang.Null or TP.lang.Undefined wouldn't it ;)
     if (TP.notDefined(anObject)) {
