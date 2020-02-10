@@ -2624,7 +2624,9 @@ function(anObject, aFormat, formatParams) {
      * @returns {Object} Typically a string, but not required.
      */
 
-    var obj;
+    var params,
+
+        obj;
 
     //  no format means no work
     if (TP.isEmpty(aFormat)) {
@@ -2644,23 +2646,32 @@ function(anObject, aFormat, formatParams) {
         return;
     }
 
+    params = TP.ifInvalid(formatParams, TP.hc());
+
     //  If the 'shouldWrap' flag in the format params isn't false, wrap the
     //  object so that we ensure we're talking to TIBET objects.
-    if (TP.isValid(formatParams) &&
-        TP.notFalse(formatParams.at('shouldWrap'))) {
+    if (TP.notFalse(params.at('shouldWrap'))) {
         obj = TP.wrap(anObject);
     } else {
         obj = anObject;
     }
 
+    if (TP.isTrue(params.at('collapse'))) {
+        obj = TP.collapse(obj);
+    }
+
     //  as() leads to format() in many cases, so we start with that given
     //  that it's the common TIBET entry point
     if (TP.canInvoke(obj, 'as')) {
+        //  NB: We pass the original format params here to let code further
+        //  downstream handle this parameter how they want to.
         return obj.as(aFormat, formatParams);
     }
 
     //  Otherwise, see if we can use 'transform' with the unwrapped object
     if (TP.canInvoke(aFormat, 'transform')) {
+        //  NB: We pass the original format params here to let code further
+        //  downstream handle this parameter how they want to.
         return aFormat.transform(anObject, formatParams);
     }
 
