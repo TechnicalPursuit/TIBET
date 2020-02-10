@@ -8133,6 +8133,97 @@ function() {
             });
     });
 
+    //  ---
+
+    this.it('whole and partial attribute expression, multi-level fragment, mixed scoping, all types', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsMixedScoping.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+
+                    field1,
+                    field2,
+                    field3,
+                    field4;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                field1 = TP.byId('fieldXML1', windowContext);
+                field2 = TP.byId('fieldXML2', windowContext);
+                field3 = TP.byId('fieldXML3', windowContext);
+                field4 = TP.byId('fieldXML4', windowContext);
+
+                test.assert.isEqualTo(
+                    field1.get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    field2.get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    field3.get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    field4.get('value'),
+                    'Joe');
+
+                field1 = TP.byId('fieldJSObj1', windowContext);
+                field2 = TP.byId('fieldJSObj2', windowContext);
+                field3 = TP.byId('fieldJSObj3', windowContext);
+                field4 = TP.byId('fieldJSObj4', windowContext);
+
+                test.assert.isEqualTo(
+                    field1.get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    field2.get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    field3.get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    field4.get('value'),
+                    'Joe');
+
+                field1 = TP.byId('fieldJSON1', windowContext);
+                field2 = TP.byId('fieldJSON2', windowContext);
+                field3 = TP.byId('fieldJSON3', windowContext);
+                field4 = TP.byId('fieldJSON4', windowContext);
+
+                test.assert.isEqualTo(
+                    field1.get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    field2.get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    field3.get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    field4.get('value'),
+                    'Joe');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
 }).timeout(45000);
 
 //  ------------------------------------------------------------------------

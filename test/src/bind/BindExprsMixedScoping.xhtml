@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_person_xml">
+        <person xmlns="">
+            <lastname>Smith</lastname>
+            <firstname>Joe</firstname>
+        </person>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_person_json">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_person_jsobj" content="TP.core.Hash">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Bind expressions with variables and literal content embedded</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a test where elements are bound using both absolute and relative scoping. The absolute scoped data will be embedded underneath the relative scopes.
+    <br/>
+    <br/>
+    They also test using mixed scoping within different source data types.
+    <br/>
+    <br/>
+
+    <label>Relatively scoped XML data with absolutely scoped JSObj and JSON data:</label>
+    <br/>
+    <br/>
+
+    <!-- Set up a span to define the first part of the binding scope -->
+    <span bind:scope="urn:tibet:test_person_xml">
+
+        <!-- Set up a span to define the second part of the binding scope -->
+        <span bind:scope="#xpath1(/person)">
+
+        <!-- Use a relative path to bind Joe's last name -->
+        Joe's Last XML Name (relative): <input type="text" id="fieldXML1" value="[[lastname]]" tabindex="0"/><br/>
+
+        <!-- Use an absolute path to bind Joe's first name -->
+        Joe's First XML Name (absolute): <input type="text" id="fieldXML2" value="[[urn:tibet:test_person_xml#xpath1(/person/firstname)]]" tabindex="0"/><br/>
+
+        <!-- Use an absolute path to bind Joe's first name (JSObj) -->
+        Joe's First JSObj Name (absolute): <input type="text" id="fieldXML3" value="[[urn:tibet:test_person_jsobj#tibet(person.firstname)]]" tabindex="0"/><br/>
+
+        <!-- Use an absolute path to bind Joe's first name (JSON) -->
+        Joe's First JSON Name (absolute): <input type="text" id="fieldXML4" value="[[urn:tibet:test_person_json#jpath($.person.firstname)]]" tabindex="0"/><br/>
+
+        </span>
+    </span>
+
+    <br/>
+
+    <label>Relatively scoped JSObj data with absolutely scoped XML and JSON data:</label>
+    <br/>
+
+    <!-- Set up a span to define the binding scope -->
+    <span bind:scope="urn:tibet:test_person_jsobj">
+
+        <!-- Set up a span to define the second part of the binding scope -->
+        <span bind:scope="#tibet(person)">
+
+        <!-- Use a relative path to bind Joe's last name -->
+        Joe's Last JSObj Name (relative): <input type="text" id="fieldJSObj1" value="[[lastname]]" tabindex="0"/><br/>
+
+        <!-- Use an absolute path to bind Joe's first name -->
+        Joe's First JSObj Name (absolute): <input type="text" id="fieldJSObj2" value="[[urn:tibet:test_person_jsobj#tibet(person.firstname)]]" tabindex="0"/><br/>
+
+        <!-- Use an absolute path to bind Joe's first name (XML) -->
+        Joe's First XML Name (absolute): <input type="text" id="fieldJSObj3" value="[[urn:tibet:test_person_xml#xpath1(/person/firstname)]]" tabindex="0"/><br/>
+
+        <!-- Use an absolute path to bind Joe's first name (JSON) -->
+        Joe's First JSON Name (absolute): <input type="text" id="fieldJSObj4" value="[[urn:tibet:test_person_json#jpath($.person.firstname)]]" tabindex="0"/><br/>
+
+        </span>
+    </span>
+
+    <br/>
+
+    <label>Relatively scoped JSON data with absolutely scoped XML and JSObj data:</label>
+    <br/>
+
+    <!-- Set up a span to define the binding scope -->
+    <span bind:scope="urn:tibet:test_person_json">
+
+        <!-- Set up a span to define the second part of the binding scope -->
+        <span bind:scope="#jpath($.person)">
+
+        <!-- Use a relative path to bind Joe's last name -->
+        Joe's Last JSON Name (relative): <input type="text" id="fieldJSON1" value="[[lastname]]" tabindex="0"/><br/>
+
+        <!-- Use an absolute path to bind Joe's first name -->
+        Joe's First JSON Name (absolute): <input type="text" id="fieldJSON2" value="[[urn:tibet:test_person_json#jpath($.person.firstname)]]" tabindex="0"/><br/>
+
+        <!-- Use an absolute path to bind Joe's first name (XML) -->
+        Joe's First XML Name (absolute): <input type="text" id="fieldJSON3" value="[[urn:tibet:test_person_xml#xpath1(/person/firstname)]]" tabindex="0"/><br/>
+
+        <!-- Use an absolute path to bind Joe's first name -->
+        Joe's First JSObj Name (absolute): <input type="text" id="fieldJSON4" value="[[urn:tibet:test_person_jsobj#tibet(person.firstname)]]" tabindex="0"/><br/>
+
+        </span>
+
+    </span>
+
+</body>
+</html>
