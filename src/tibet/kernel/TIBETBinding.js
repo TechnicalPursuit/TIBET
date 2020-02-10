@@ -2591,7 +2591,7 @@ function(attributeName, attributeValue, flushCache) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('getBindingScopeValues',
-function() {
+function(trimFormatExprs) {
 
     /**
      * @method getBindingScopeValues
@@ -2599,6 +2599,8 @@ function() {
      *      and traversing the DOM tree up to the #document node, gathering
      *      'bind:scope' attribute values along the way. This will be used to
      *      qualify binding expressions on the receiver.
+     * @param {Boolean} [trimFormatExprs=true] Whether or not to trim formatting
+     *     expressions from the scoping values.
      * @returns {String[]} An Array of binding scope values.
      */
 
@@ -2674,6 +2676,18 @@ function() {
     //  Make sure to reverse the scope values, since we want the 'most
     //  significant' to be first.
     scopeVals.reverse();
+
+    //  Trim off formatting expressions if the caller explicitly asked for it.
+    if (TP.notFalse(trimFormatExprs)) {
+        scopeVals = scopeVals.map(
+                        function(aVal) {
+                            if (TP.regex.ACP_FORMAT.test(aVal)) {
+                                return aVal.slice(0, aVal.indexOf('.%')).trim();
+                            }
+
+                            return aVal;
+                        });
+    }
 
     //  Cache the values. Note here how we supply false to *not* broadcast a
     //  change signal - otherwise, the binding machinery will get involved and
