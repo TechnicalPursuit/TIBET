@@ -120,6 +120,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('asKvPairs',
+function() {
+
+    /**
+     * @method asKvPairs
+     * @summary Returns the receiver's keys and values as key/value pairs.
+     * @returns {Array[]} The receivers key/value pairs.
+     */
+
+    return this.getKVPairs();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaInstMethod('asXHTMLNode',
 function() {
 
