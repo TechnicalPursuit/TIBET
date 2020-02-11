@@ -4394,8 +4394,6 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
 
         ownerElem,
 
-        str,
-
         isScopingElement,
 
         valueAndPath,
