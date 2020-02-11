@@ -484,6 +484,11 @@ function(anElement) {
             }
         });
 
+    //  Unique this Array to avoid multiple entries of the same information.
+    //  This will be used during binding refresh to generate matching RegExps
+    //  and we don't want to make them needlessly complex.
+    originalLocationInfos.unique();
+
     return;
 });
 
