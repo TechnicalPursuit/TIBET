@@ -2592,7 +2592,7 @@ function(attributeName, attributeValue, flushCache) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('getBindingScopeValues',
-function(trimFormatExprs) {
+function(trimFormatExprs, ignoreCache, setCache) {
 
     /**
      * @method getBindingScopeValues
@@ -2602,6 +2602,10 @@ function(trimFormatExprs) {
      *      qualify binding expressions on the receiver.
      * @param {Boolean} [trimFormatExprs=true] Whether or not to trim formatting
      *     expressions from the scoping values.
+     * @param {Boolean} [ignoreCache=false] Whether or not to ignore the
+     *     receiver's cache of scope values.
+     * @param {Boolean} [setCache=true] Whether or not to cache the computed
+     *     scope values in the receiver's cache.
      * @returns {String[]} An Array of binding scope values.
      */
 
@@ -2613,7 +2617,8 @@ function(trimFormatExprs) {
 
     //  If we've already cached our scope values, then there's no need to
     //  recompute them - just return the cached values.
-    if (TP.notEmpty(scopeVals = this.get('scopeValues'))) {
+    if (TP.notTrue(ignoreCache) &&
+        TP.notEmpty(scopeVals = this.get('scopeValues'))) {
         return scopeVals;
     }
 
@@ -2691,10 +2696,12 @@ function(trimFormatExprs) {
                         });
     }
 
-    //  Cache the values. Note here how we supply false to *not* broadcast a
-    //  change signal - otherwise, the binding machinery will get involved and
-    //  send extra notifications.
-    this.$set('scopeValues', scopeVals, false);
+    if (TP.notFalse(setCache)) {
+        //  Cache the values. Note here how we supply false to *not* broadcast a
+        //  change signal - otherwise, the binding machinery will get involved
+        //  and send extra notifications.
+        this.$set('scopeValues', scopeVals, false);
+    }
 
     return scopeVals;
 });
@@ -5512,8 +5519,9 @@ function(regenerateIfNecessary) {
         allRefreshedElements;
 
     //  Grab our binding scoping values and compute a 'binding repeat'
-    //  expression from them and any local value on us.
-    scopeVals = this.getBindingScopeValues(false);
+    //  expression from them and any local value on us. Note here how we both
+    //  ignore the cache and do *not* cache these values on the receiver.
+    scopeVals = this.getBindingScopeValues(false, true, false);
 
     //  Grab the last of the scope values and see if it contains a formatting
     //  expression. If so, slice it off and copy & alter the scope values array
