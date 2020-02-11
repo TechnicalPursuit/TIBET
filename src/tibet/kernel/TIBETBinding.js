@@ -4508,23 +4508,22 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
     nextElems = boundElems.filter(
             function(anElem) {
 
-                var bindValue,
+                var bindIOValue,
+                    bindInValue,
+                    bindOutValue,
 
                     k;
 
-                bindValue = TP.ifEmpty(
-                                anElem.getAttributeNS(
-                                    TP.w3.Xmlns.BIND, 'io'),
-                                    TP.ifEmpty(
-                                        anElem.getAttributeNS(
-                                        TP.w3.Xmlns.BIND, 'in'),
-                                        anElem.getAttributeNS(
-                                        TP.w3.Xmlns.BIND, 'out')));
+                bindIOValue = anElem.getAttributeNS(TP.w3.Xmlns.BIND, 'io');
+                bindInValue = anElem.getAttributeNS(TP.w3.Xmlns.BIND, 'in');
+                bindOutValue = anElem.getAttributeNS(TP.w3.Xmlns.BIND, 'out');
 
                 //  We don't want ourself in the list unless we have a value for
                 //  'bind:io', 'bind:in' or 'bind:out'
                 if (anElem === elem) {
-                    if (TP.notEmpty(bindValue)) {
+                    if (TP.notEmpty(bindIOValue) ||
+                        TP.notEmpty(bindInValue) ||
+                        TP.notEmpty(bindOutValue)) {
                         return true;
                     }
 
@@ -4542,9 +4541,21 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                         //  absolute path.
                         if (subscopes[k].contains(anElem)) {
 
-                            if (TP.notEmpty(bindValue) &&
-                                (bindValue.contains('urn:') ||
-                                    bindValue.contains('://'))) {
+                            if (TP.notEmpty(bindIOValue) &&
+                                (bindIOValue.contains('urn:') ||
+                                    bindIOValue.contains('://'))) {
+                                    return true;
+                            }
+
+                            if (TP.notEmpty(bindInValue) &&
+                                (bindInValue.contains('urn:') ||
+                                    bindInValue.contains('://'))) {
+                                    return true;
+                            }
+
+                            if (TP.notEmpty(bindOutValue) &&
+                                (bindOutValue.contains('urn:') ||
+                                    bindOutValue.contains('://'))) {
                                     return true;
                             }
 
