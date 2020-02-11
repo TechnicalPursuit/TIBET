@@ -4729,24 +4729,10 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
             //  If the attribute value contains a URI scheme, but it's primary
             //  location doesn't match the primary location that changed and
             //  that we're refreshing from (which may happen because we're
-            //  querying from the *document* down), then do a further check to
-            //  see if the element is scoping element. If it's not, just
-            //  continue and move on. If it is and the primary location being
-            //  refreshed does *not* occur in its content, then again just move
-            //  on. Otherwise, it will be an absolute URI that exists under a
-            //  different scope - but one we need to refresh anyway.
+            //  querying from the *document* down), then just continue and move
+            //  on,
             if (TP.regex.ALL_SCHEMES.test(attrVal) &&
                 !primaryLocMatcher.test(attrVal)) {
-                /*
-                if (isScopingElement) {
-                    str = TP.str(ownerElem);
-                    if (!primaryLocMatcher.test(str)) {
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
-                */
                 continue;
             }
 
