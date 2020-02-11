@@ -4751,6 +4751,14 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                 //  If the facet is not 'value', then we just use what is
                 //  supplied.
                 if (aFacet === 'value') {
+
+                    //  If the attribute is a 'bind:repeat' and the path isn't a
+                    //  simple numeric path, then collapse the value.
+                    if (attrName === 'repeat' &&
+                        !TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal)) {
+                        theVal = TP.collapse(theVal);
+                    }
+
                     valueAndPath = this.$getBranchValueAndPathType(
                                                 attrVal, theVal, aPathType);
 
