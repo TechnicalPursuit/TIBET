@@ -3027,10 +3027,6 @@ function(branchExpr, initialVal, initialPathType) {
 
         if (TP.isValid(theVal)) {
 
-            if (!TP.regex.SIMPLE_NUMERIC_PATH.test(branchExpr)) {
-                theVal = TP.collapse(theVal);
-            }
-
             if (TP.isArray(theVal) &&
                 theVal.first() !== TP.NULL &&
                 TP.isXMLNode(TP.unwrap(theVal.first()))) {
