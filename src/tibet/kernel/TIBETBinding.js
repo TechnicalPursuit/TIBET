@@ -3027,6 +3027,12 @@ function(branchExpr, initialVal, initialPathType) {
 
         if (TP.isValid(theVal)) {
 
+            //  Adjust for the fact that, if it's an Array of XML nodes, that
+            //  the extraction expression will be done in XPath (i.e. 1-based),
+            //  but the Array is, of course, 0-based. So unshift a TP.NULL as a
+            //  first value onto the front of the Array (but only if we haven't
+            //  been here before and there's already a TP.NULL in the first
+            //  position).
             if (TP.isArray(theVal) &&
                 theVal.first() !== TP.NULL &&
                 TP.isXMLNode(TP.unwrap(theVal.first()))) {
