@@ -5489,6 +5489,12 @@ function(regenerateIfNecessary) {
      */
 
     var scopeVals,
+
+        lastExpr,
+        sigilIndex,
+        formatExpr,
+        uriValueExpr,
+
         repeatFullExpr,
 
         repeatURI,
@@ -5503,7 +5509,26 @@ function(regenerateIfNecessary) {
 
     //  Grab our binding scoping values and compute a 'binding repeat'
     //  expression from them and any local value on us.
-    scopeVals = this.getBindingScopeValues();
+    scopeVals = this.getBindingScopeValues(false);
+
+    //  Grab the last of the scope values and see if it contains a formatting
+    //  expression. If so, slice it off and copy & alter the scope values array
+    //  to contain a last segment with no formatting expression. Retain the
+    //  formatting expression for later use in this method.
+    lastExpr = scopeVals.last();
+
+    if (TP.regex.ACP_FORMAT.test(lastExpr)) {
+        sigilIndex = lastExpr.indexOf('.%');
+
+        formatExpr = lastExpr.slice(sigilIndex + 2).trim();
+        uriValueExpr = lastExpr.slice(0, sigilIndex).trim();
+
+        scopeVals = TP.copy(scopeVals);
+
+        scopeVals.pop();
+        scopeVals.push(uriValueExpr);
+    }
+
     repeatFullExpr = TP.uriJoinFragments.apply(TP, scopeVals);
 
     //  Grab both the URI that is computed from our binding expression and it's
@@ -5524,8 +5549,17 @@ function(regenerateIfNecessary) {
         return this;
     }
 
-    if (!TP.regex.SIMPLE_NUMERIC_PATH.test(repeatFullExpr)) {
-        repeatResult = TP.collapse(repeatResult);
+    //  If we successfully extracted a formatting expression, use it here.
+    if (TP.isValid(formatExpr)) {
+        if (!TP.regex.SIMPLE_NUMERIC_PATH.test(repeatFullExpr)) {
+            repeatResult = TP.collapse(repeatResult);
+        }
+
+        if (TP.isPlainObject(repeatResult)) {
+            repeatResult = TP.hc(repeatResult);
+        }
+
+        repeatResult = TP.format(repeatResult, formatExpr);
     }
 
     //  Normalize the value for repeat purposes (we're interested in an Array of
