@@ -1098,7 +1098,13 @@ function() {
      */
 
     var arg,
-        arr;
+        arr,
+
+        i;
+
+    //  NB: The approaches shown here to copy an existing supplied Array (or
+    //  arguments object, or NodeList/NamedNodeMap) have been proven to be up to
+    //  3X faster than trying to use Array.slice or ECMA6 constructs.
 
     switch (arguments.length) {
         case 0:
@@ -1109,13 +1115,23 @@ function() {
             if (TP.isArgArray(arg) ||
                 TP.isNodeList(arg) ||
                 TP.isNamedNodeMap(arg)) {
-                return TP.ArrayProto.slice.call(arg, 0);
+                i = arg.length;
+                arr = new Array(i);
+                while (i--) {
+                    arr[i] = arg[i];
+                }
+                return arr;
             }
             arr = [];
             arr.push(arg);
             return arr;
         default:
-            return TP.ArrayProto.slice.call(arguments, 0);
+            i = arguments.length;
+            arr = new Array(i);
+            while (i--) {
+                arr[i] = arguments[i];
+            }
+            return arr;
     }
 });
 
