@@ -12,7 +12,9 @@
  */
 //  ========================================================================
 
-const { remote } = require('electron');
+/* eslint-disable one-var */
+
+const {remote} = require('electron');
 
 //  ---
 //  Common TIBET utilities that will be made available inside of TIBET under
@@ -39,5 +41,6 @@ app_preload.closeCurrentWindow = function() {
 
     currentWindow = remote.BrowserWindow.getFocusedWindow();
     currentWindow.close();
-}
+};
 
+/* eslint-enable one-var */
