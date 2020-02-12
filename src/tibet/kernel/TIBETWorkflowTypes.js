@@ -6480,6 +6480,7 @@ function(aSignal) {
         //  Send a custom native event to allow 3rd party libraries to know
         //  that the router has transitioned to a new route that has been
         //  finalized.
+
         evt = contentTPElem.getNativeDocument().createEvent('Event');
         evt.initEvent('TIBETRouteFinalized', true, true);
 

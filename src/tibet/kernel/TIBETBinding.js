@@ -5667,7 +5667,12 @@ function(aCollection, elems) {
 
         newElems,
         elemIndex,
-        args;
+        args,
+
+        descendants,
+
+        doc,
+        evt;
 
     if (TP.notValid(aCollection)) {
         //  TODO: Raise an exception
@@ -5772,8 +5777,22 @@ function(aCollection, elems) {
     //  body' (i.e. the element containing the repeating content).
     TP.elementSetAttribute(elem, 'tibet:no-mutations', true, true);
 
+    //  Grab all of the descendants under ourself.
+    descendants = TP.nodeGetDescendants(elem);
+
     //  Make sure to empty the repeat element of any existing content
     TP.nodeEmptyContent(elem);
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  content has been removed.
+
+    doc = TP.doc(elem);
+
+    evt = doc.createEvent('Event');
+    evt.initEvent('TIBETContentRemoved', true, true);
+    evt.data = descendants;
+
+    elem.dispatchEvent(evt);
 
     //  Finally, append the whole fragment under the receiver element
     TP.nodeAppendChild(elem, bodyFragment, false);
@@ -5800,6 +5819,20 @@ function(aCollection, elems) {
     elemIndex = elems.indexOf(elem);
     args = TP.ac(elemIndex + 1, 0).concat(newElems);
     Array.prototype.splice.apply(elems, args);
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  content has been added.
+
+    //  Grab all of the descendants under ourself.
+    descendants = TP.nodeGetDescendants(elem);
+
+    doc = TP.doc(elem);
+
+    evt = doc.createEvent('Event');
+    evt.initEvent('TIBETContentAdded', true, true);
+    evt.data = descendants;
+
+    elem.dispatchEvent(evt);
 
     return true;
 });
@@ -5940,8 +5973,9 @@ function() {
         evt,
         refreshedElements;
 
-    //  Send a custom DOM-level event to allow 3rd party libraries to
-    //  know that the bindings have been refreshed.
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed.
+
     allRefreshedElements = this.getDocument().get('$refreshedElements');
     if (TP.notEmpty(allRefreshedElements)) {
         evt = this.getNativeDocument().createEvent('Event');

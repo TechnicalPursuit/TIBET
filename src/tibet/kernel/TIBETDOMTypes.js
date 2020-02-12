@@ -11683,7 +11683,10 @@ function(anElement, nodesAdded) {
 
         root,
 
-        beforeProcessingDescendants;
+        beforeProcessingDescendants,
+
+        doc,
+        evt;
 
     if (!TP.isElement(anElement)) {
         return this.raise('TP.sig.InvalidElement');
@@ -11809,6 +11812,17 @@ function(anElement, nodesAdded) {
                     TP.hc('mutatedNodeIDs', mutatedGIDs));
     }
 
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  content has been added.
+
+    doc = TP.doc(anElement);
+
+    evt = doc.createEvent('Event');
+    evt.initEvent('TIBETContentAdded', true, true);
+    evt.data = rootNodesAdded;
+
+    doc.body.dispatchEvent(evt);
+
     //  Signal from our target element's document that we attached nodes due to
     //  a mutation.
     TP.signal(TP.tpdoc(anElement),
@@ -11859,7 +11873,10 @@ function(anElement, nodesRemoved) {
 
         root,
 
-        tpElement;
+        tpElement,
+
+        doc,
+        evt;
 
     if (!TP.isElement(anElement)) {
         return this.raise('TP.sig.InvalidElement');
@@ -11920,7 +11937,7 @@ function(anElement, nodesRemoved) {
 
             if (TP.isElement(root.parentNode)) {
                 parentHasNoAwaken = TP.nodeGetFirstAncestorByAttribute(
-                                            root, 'tibet:no-awaken', null, true);
+                                        root, 'tibet:no-awaken', null, true);
             }
 
             targetHasNoAwaken = TP.elementHasAttribute(
@@ -11956,6 +11973,17 @@ function(anElement, nodesRemoved) {
     }
 
     tpElement = TP.wrap(anElement);
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  content has been added.
+
+    doc = TP.doc(anElement);
+
+    evt = doc.createEvent('Event');
+    evt.initEvent('TIBETContentRemoved', true, true);
+    evt.data = rootNodesRemoved;
+
+    doc.body.dispatchEvent(evt);
 
     //  Signal from our target element's document that we detached nodes due to
     //  a mutation.
