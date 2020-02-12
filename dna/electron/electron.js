@@ -117,18 +117,37 @@ createWindow = function() {
         width: 1024,
         height: 768,
         webPreferences: {
-            preload: CLI.joinPaths(__dirname, './preload.js')
+            preload: CLI.joinPaths(__dirname, './preload.js'),
+            webSecurity: false
         }
     });
 
     mainWindow.loadURL(fileUrl);
 
-    // NOTE this is a TIBET-specific if block. The `tibet electron` command will
-    // pass --devtools along so this flag is set, otherwise it's likely not there.
+    //  NOTE this is a TIBET-specific if block. The `tibet electron` command
+    //  will pass --devtools along so this flag is set, otherwise it's likely
+    //  not there.
     if (process.argv.indexOf('--devtools') !== -1) {
         // Open the DevTools.
         mainWindow.webContents.openDevTools();
     }
+
+    //  It is important when performing tasks like scraping web pages, to ignore
+    //  the 'x-frame-options' header and allow access to iframe content.
+    mainWindow.webContents.session.webRequest.onHeadersReceived(
+        function(details, callback) {
+            var entries;
+
+            //  Filter out the 'x-frame-options' header.
+            entries = Object.entries(details.responseHeaders).filter(
+                        function(header) {
+                            return !/x-frame-options/i.test(header[0]);
+                        });
+
+            callback({
+                responseHeaders: Object.fromEntries(entries)
+            });
+    });
 
     //  Log client console to main console...
     mainWindow.webContents.on('console-message',
@@ -211,6 +230,11 @@ process.on('uncaughtException', function(err) {
     }
 });
 
+/*
+ * Add a command line switch (to command line of the embedded Chrome engine) to
+ * bypass Chrome's site isolation testing
+ */
+app.commandLine.appendSwitch('disable-site-isolation-trials');
 
 /**
  * This method will be called when Electron has finished initialization and is
