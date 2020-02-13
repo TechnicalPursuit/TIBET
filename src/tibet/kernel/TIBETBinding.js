@@ -2370,8 +2370,6 @@ function(indexes) {
                         TP.hc('target', thisref, 'indexes', indexes));
     }).queueBeforeNextRepaint(this.getNativeWindow());
 
-    TP.$elementCSSFlush(elem);
-
     return this;
 });
 
@@ -3942,7 +3940,6 @@ function(indexes) {
                         TP.hc('target', thisref, 'indexes', indexes));
     }).queueBeforeNextRepaint(this.getNativeWindow());
 
-    TP.$elementCSSFlush(elem);
 
     return newElement;
 });
