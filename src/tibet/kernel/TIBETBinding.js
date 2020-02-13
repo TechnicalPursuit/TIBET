@@ -2274,7 +2274,9 @@ function(indexes) {
         scopedSibling,
         scopeVal,
 
-        thisref;
+        thisref,
+
+        evt;
 
     elem = this.getNativeNode();
 
@@ -2369,6 +2371,15 @@ function(indexes) {
         thisref.signal('TP.sig.UIDidDelete',
                         TP.hc('target', thisref, 'indexes', indexes));
     }).queueBeforeNextRepaint(this.getNativeWindow());
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  content has been removed.
+
+    evt = this.getNativeDocument().createEvent('Event');
+    evt.initEvent('TIBETContentRemoved', true, true);
+    evt.data = TP.ac(deletionElement);
+
+    wrapperElement.dispatchEvent(evt);
 
     return this;
 });
@@ -3796,7 +3807,9 @@ function(indexes) {
 
         firstRow,
 
-        thisref;
+        thisref,
+
+        evt;
 
     elem = this.getNativeNode();
 
@@ -3940,6 +3953,14 @@ function(indexes) {
                         TP.hc('target', thisref, 'indexes', indexes));
     }).queueBeforeNextRepaint(this.getNativeWindow());
 
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  content has been added.
+
+    evt = this.getNativeDocument().createEvent('Event');
+    evt.initEvent('TIBETContentAdded', true, true);
+    evt.data = TP.ac(newElement);
+
+    wrapperElement.dispatchEvent(evt);
 
     return newElement;
 });
