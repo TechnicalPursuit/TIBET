@@ -2049,7 +2049,10 @@ function(aNode) {
 
         //  Run an XPath query to find text within either attributes or elements
         //  that has ACP expressions *and return their parent Element* (i.e.
-        //  either ownerElement or parentNode, depending on node type).
+        //  either ownerElement or parentNode, depending on node type). Note
+        //  that this filters out any content under elements with a
+        //  'bind:repeat', since ACP expressions in those contexts need to be
+        //  evaluated each time content is (re)generated under those elements.
 
         //  NB: The attribute portion of this query does *not* pick attributes
         //  in the TP.w3.Xmlns.UI namespace - they might contain runtime
@@ -2057,7 +2060,11 @@ function(aNode) {
         queriedNodes = TP.nodeEvaluateXPath(
             aNode,
             './/@*[contains(.,"{{") and ' +
-                        'namespace-uri() != "' + TP.w3.Xmlns.UI + '"]/..' +
+                        'namespace-uri() != "' + TP.w3.Xmlns.UI +
+                        '" and (not(../ancestor::*[@*[local-name() = "repeat"' +
+                        ' and namespace-uri() = "' +
+                                    TP.w3.Xmlns.BIND + '"]]))]' +
+                        '/..' +
             ' | ' +
             './/text()[contains(.,"{{")]/..',
             TP.NODESET);
