@@ -3766,7 +3766,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$insertRepeatRowAt',
-function(indexes) {
+function(indexes, aCollection) {
 
     /**
      * @method $insertRepeatRowAt
@@ -3778,6 +3778,10 @@ function(indexes) {
      *     '0-based' (like JSONPath).
      * @param {Number[]} indexes An Array of Numbers that indicate the indexes
      *     of the items to insert new items at.
+     * @param {Object} aCollection The collection data model that will be used
+     *     for the repeating content. Note that this method merely generates the
+     *     blank repeating row for the single insertion - it is up to other
+     *     methods to refresh the data bindings within them.
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
@@ -3790,12 +3794,25 @@ function(indexes) {
 
         wrapperElement,
 
-        index,
+        tpDoc,
+
+        isXMLResource,
+
+        str,
 
         len,
         i,
 
+        index,
+
         newElement,
+
+        scopeIndex,
+        last,
+
+        info,
+
+        result,
 
         insertionPoint,
 
@@ -3856,6 +3873,20 @@ function(indexes) {
         return this;
     }
 
+    tpDoc = this.getDocument();
+
+    if (TP.canInvoke(aCollection, 'first')) {
+        //  Detect whether we're drawing GUI for model which is a chunk of XML
+        //  data - we'll use this information later.
+        isXMLResource = TP.isXMLNode(TP.unwrap(aCollection.first()));
+    } else {
+        isXMLResource = false;
+    }
+
+    //  Get the String representation of the repeat content. We'll use this
+    //  later to check for ACP expressions.
+    str = TP.str(repeatContent);
+
     //  Loop over all of the supplied indices
     len = indexes.getSize();
     for (i = 0; i < len; i++) {
@@ -3865,6 +3896,59 @@ function(indexes) {
         //  Make sure to clone the content and set it's 'bind:scope' to the
         //  index that we're inserting at.
         newElement = TP.nodeCloneNode(repeatContent);
+
+        //  NB: We don't do index adjustment here for XML resources since the
+        //  changed indices were supplied to this call already having been
+        //  adjusted for the supplied data source.
+        scopeIndex = index;
+
+        if (TP.regex.HAS_ACP.test(str)) {
+            if (isXMLResource) {
+
+                last = aCollection.getSize();
+
+                info = TP.hc(
+                        '$REQUEST', null,
+                        'TP', TP,
+                        'APP', APP,
+                        '$SOURCE', null,
+                        '$TAG', this,
+                        '$TARGET', tpDoc,
+                        '$_', aCollection.at(scopeIndex),
+                        '$INPUT', aCollection,
+                        '$INDEX', scopeIndex,
+                        '$FIRST', scopeIndex === 1,
+                        '$MIDDLE', scopeIndex > 1 && scopeIndex < last,
+                        '$LAST', scopeIndex !== last,
+                        '$EVEN', scopeIndex % 2 === 0,
+                        '$ODD', scopeIndex % 2 !== 0,
+                        '$#', scopeIndex);
+            } else {
+
+                last = aCollection.getSize() - 1;
+
+                info = TP.hc(
+                        '$REQUEST', null,
+                        'TP', TP,
+                        'APP', APP,
+                        '$SOURCE', null,
+                        '$TAG', this,
+                        '$TARGET', tpDoc,
+                        '$_', aCollection.at(scopeIndex),
+                        '$INPUT', aCollection,
+                        '$INDEX', scopeIndex,
+                        '$FIRST', scopeIndex === 0,
+                        '$MIDDLE', scopeIndex > 0 && scopeIndex < last,
+                        '$LAST', scopeIndex !== last,
+                        '$EVEN', scopeIndex % 2 === 0,
+                        '$ODD', scopeIndex % 2 !== 0,
+                        '$#', scopeIndex);
+            }
+
+            result = str.transform(newElement, info);
+            newElement = TP.elem(result);
+        }
+
         TP.elementSetAttribute(newElement,
                                 'bind:scope',
                                 '[' + index + ']',
@@ -5191,7 +5275,8 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                                 if (TP.notEmpty(updateIndexes)) {
                                     newRowElem =
                                         ownerTPElem.$insertRepeatRowAt(
-                                                                updateIndexes);
+                                                                updateIndexes,
+                                                                branchVal);
                                 } else {
 
                                     ownerTPElem.empty();
@@ -5333,7 +5418,8 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                 (pathAction === TP.CREATE || pathAction === TP.INSERT)) {
 
                 if (TP.notEmpty(updateIndexes)) {
-                    newRowElem = this.$insertRepeatRowAt(updateIndexes);
+                    newRowElem = this.$insertRepeatRowAt(updateIndexes,
+                                                            branchVal);
 
                     TP.wrap(newRowElem).refreshBoundDescendants();
                 } else {
@@ -5672,9 +5758,18 @@ function(aCollection, elems) {
 
         chunkCount,
 
+        doc,
+
         bodyFragment,
 
         isXMLResource,
+
+        str,
+        last,
+        info,
+        result,
+
+        tpDoc,
 
         scopeIndex,
 
@@ -5689,7 +5784,6 @@ function(aCollection, elems) {
 
         descendants,
 
-        doc,
         evt;
 
     if (TP.notValid(aCollection)) {
@@ -5724,13 +5818,23 @@ function(aCollection, elems) {
         pagingSize = resourceLength;
     }
 
+    //  If the repeat content's child element list has a size of 1, then we
+    //  reach under there and use that element as the repeat content
+    if (TP.nodeGetChildElements(repeatContent).getSize() === 1) {
+        repeatContent = repeatContent.firstElementChild;
+    }
+
+    //  Get the String representation of the repeat content. We'll use this
+    //  later to check for ACP expressions.
+    str = TP.str(repeatContent);
+
     //  Use either the resource length or the paging size, whichever is smaller.
     chunkCount = resourceLength.min(pagingSize);
 
     //  If we have already generated chunks and the count of those generated
     //  items is the same as the chunks we're going to produce, then we don't
     //  need to regenerate so we can just exit here.
-    if (existingChunkCount === chunkCount) {
+    if (existingChunkCount === chunkCount && !TP.regex.HAS_ACP.test(str)) {
 
         //  Clear any repeat source or repeat index on any descendant elements.
         //  Just because we're reusing the chunk doesn't mean that we're using
@@ -5744,17 +5848,14 @@ function(aCollection, elems) {
         return false;
     }
 
-    bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
+    tpDoc = this.getDocument();
+    doc = tpDoc.getNativeNode();
+
+    bodyFragment = doc.createDocumentFragment();
 
     //  Detect whether we're drawing GUI for model which is a chunk of XML data
     //  - we'll use this information later.
     isXMLResource = TP.isXMLNode(TP.unwrap(aCollection.first()));
-
-    //  If the repeat content's child element list has a size of 1, then we
-    //  reach under there and use that element as the repeat content
-    if (TP.nodeGetChildElements(repeatContent).getSize() === 1) {
-        repeatContent = repeatContent.firstElementChild;
-    }
 
     //  Iterate over the chunkCount and build out a chunk of markup for each
     //  repeat chunk.
@@ -5770,6 +5871,53 @@ function(aCollection, elems) {
             scopeIndex = i + 1;
         } else {
             scopeIndex = i;
+        }
+
+        if (TP.regex.HAS_ACP.test(str)) {
+            if (isXMLResource) {
+
+                last = aCollection.getSize();
+
+                info = TP.hc(
+                        '$REQUEST', null,
+                        'TP', TP,
+                        'APP', APP,
+                        '$SOURCE', null,
+                        '$TAG', this,
+                        '$TARGET', tpDoc,
+                        '$_', aCollection.at(scopeIndex),
+                        '$INPUT', aCollection,
+                        '$INDEX', scopeIndex,
+                        '$FIRST', scopeIndex === 1,
+                        '$MIDDLE', scopeIndex > 1 && scopeIndex < last,
+                        '$LAST', scopeIndex !== last,
+                        '$EVEN', scopeIndex % 2 === 0,
+                        '$ODD', scopeIndex % 2 !== 0,
+                        '$#', scopeIndex);
+            } else {
+
+                last = aCollection.getSize() - 1;
+
+                info = TP.hc(
+                        '$REQUEST', null,
+                        'TP', TP,
+                        'APP', APP,
+                        '$SOURCE', null,
+                        '$TAG', this,
+                        '$TARGET', tpDoc,
+                        '$_', aCollection.at(scopeIndex),
+                        '$INPUT', aCollection,
+                        '$INDEX', scopeIndex,
+                        '$FIRST', scopeIndex === 0,
+                        '$MIDDLE', scopeIndex > 0 && scopeIndex < last,
+                        '$LAST', scopeIndex !== last,
+                        '$EVEN', scopeIndex % 2 === 0,
+                        '$ODD', scopeIndex % 2 !== 0,
+                        '$#', scopeIndex);
+            }
+
+            result = str.transform(newElement, info);
+            newElement = TP.elem(result);
         }
 
         //  Stamp a 'bind:scope' with an attribute containing the numeric
@@ -5798,13 +5946,13 @@ function(aCollection, elems) {
     //  Grab all of the descendants under ourself.
     descendants = TP.nodeGetDescendants(elem);
 
-    //  Make sure to empty the repeat element of any existing content
+    //  Make sure to empty the repeat element of any existing content. Note that
+    //  we do this *before* sending the event in order to be consistent with
+    //  when this event is sent from the MutationObserver machinery.
     TP.nodeEmptyContent(elem);
 
     //  Send a custom DOM-level event to allow 3rd party libraries to know that
     //  content has been removed.
-
-    doc = TP.doc(elem);
 
     evt = doc.createEvent('Event');
     evt.initEvent('TIBETContentRemoved', true, true);
@@ -5847,8 +5995,6 @@ function(aCollection, elems) {
 
     //  Grab all of the descendants under ourself.
     descendants = TP.nodeGetDescendants(elem);
-
-    doc = TP.doc(elem);
 
     evt = doc.createEvent('Event');
     evt.initEvent('TIBETContentAdded', true, true);
