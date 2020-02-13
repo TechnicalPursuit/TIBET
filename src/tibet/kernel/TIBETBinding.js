@@ -5826,6 +5826,10 @@ function(aCollection, elems) {
     //  above.
     TP.nodeAwakenContent(elem);
 
+    //  Bubble any xmlns attributes that are found on descendants upward to
+    //  avoid markup clutter.
+    TP.elementBubbleXMLNSAttributesOnDescendants(elem);
+
     //  Grab any bound elements under this element. We will need to splice them
     //  into the list of elements that the engine is processing, of which we are
     //  one. This ensures that any nested binding constructs (i.e. nested
