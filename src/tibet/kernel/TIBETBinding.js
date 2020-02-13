@@ -5213,7 +5213,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                                     }
                                 }
 
-                                ownerTPElem.$refresh(true);
+                                ownerTPElem.$refreshRepeatData(false);
 
                                 needsRefresh = false;
 
