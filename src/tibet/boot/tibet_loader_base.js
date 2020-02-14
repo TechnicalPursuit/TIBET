@@ -9432,7 +9432,7 @@ TP.boot.$$importComplete = async function() {
                 //  NOTE that this test relies on the hook file for a
                 //  "phase two page" to _NOT_ update the cfg parameter.
                 //  When they load these pages set a window global in
-                //  the UI frame and queue a monitor to observe the boot
+                //  the UI frame and queue a monitor to observe the boot.
                 if (TP.sys.cfg('boot.phase_two') === true) {
 
                     TP.boot.$stdout('', TP.SYSTEM);
@@ -11438,9 +11438,12 @@ TP.boot.configureAndPopulateCaches = function() {
                 return caches.open('TIBET_APP_CACHE');
             }).then(function(cache) {
                 if (appCacheNeedsPopulating) {
-                    //  Store the project version number into local storage so
-                    //  that we can find and compare against it in future
-                    //  loadings of this application.
+                    //  Store the project name and version number into local
+                    //  storage so that we can find and compare against them in
+                    //  future loadings of this application.
+                    top.localStorage.setItem(
+                        'TIBET.boot.cached_project_name',
+                        TP.sys.cfg('project.name'));
                     top.localStorage.setItem(
                         'TIBET.boot.cached_project_version',
                         TP.sys.cfg('project.version'));
@@ -11489,6 +11492,9 @@ TP.boot.configureAndPopulateCaches = function() {
 
                     projectProfile,
                     cachedProjectProfile,
+
+                    projectName,
+                    cachedProjectName,
 
                     projectVersion,
                     cachedProjectVersion;
@@ -11543,10 +11549,15 @@ TP.boot.configureAndPopulateCaches = function() {
                     removeAppCache = true;
                 }
 
-                //  Grab the project version and an optional cached project
-                //  version (which will have been put into localStorage when the
-                //  app cache was populated). By comparing these, we'll know
-                //  whether we need to flush the app cache and reload it.
+                //  Grab the project name and version and an optional cached
+                //  project name and version (which will have been put into
+                //  localStorage when the app cache was populated). By comparing
+                //  these, we'll know whether we need to flush the app cache
+                //  and reload it.
+
+                projectName = TP.sys.cfg('project.name');
+                cachedProjectName = top.localStorage.getItem(
+                                        'TIBET.boot.cached_project_name');
 
                 projectVersion = TP.sys.cfg('project.version');
                 cachedProjectVersion = top.localStorage.getItem(
@@ -11555,10 +11566,14 @@ TP.boot.configureAndPopulateCaches = function() {
                 //  If there was no cached version or it doesn't match the
                 //  current version, set the flag that says the project is
                 //  out of date and finally delete the app cache.
-                if (TP.boot.$notValid(cachedProjectVersion) ||
+                if (TP.boot.$notValid(cachedProjectName) ||
+                    cachedProjectName !== projectName ||
+                    TP.boot.$notValid(cachedProjectVersion) ||
                     cachedProjectVersion !== projectVersion) {
 
                     appOutOfDate = true;
+                    top.localStorage.removeItem(
+                                        'TIBET.boot.cached_project_name');
                     top.localStorage.removeItem(
                                         'TIBET.boot.cached_project_version');
 
