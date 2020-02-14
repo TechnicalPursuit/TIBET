@@ -176,6 +176,20 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     resize: none;
 }
 
+/* hide scrollbars on all platforms, but especially Windows */
+
+/* specific to Webkit */
+*|*::-webkit-scrollbar {
+
+    width: 0;
+}
+
+/* W3C standards track */
+*|* {
+
+    scrollbar-width: none;
+}
+
 /*
   ========================================================================
   'Built-in' 'tibet:' elements
