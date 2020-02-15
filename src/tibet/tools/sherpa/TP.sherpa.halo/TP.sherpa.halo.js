@@ -899,6 +899,8 @@ function(aSignal) {
     var signalGlobalPoint,
         haloGlobalRect,
 
+        uiCanvasRootElement,
+
         triggerTPDoc;
 
     //  If the Shift key is down, then change our focus based on a variety of
@@ -926,6 +928,14 @@ function(aSignal) {
 
         signalGlobalPoint = aSignal.getGlobalPoint();
         haloGlobalRect = this.getGlobalRect();
+
+        //  Grab the root element of the UI canvas root element and subtract
+        //  it's scroll offsets from the global point. If the canvas has
+        //  scrolled, this will account for that when testing for the inside of
+        //  the global rectangle.
+        uiCanvasRootElement = TP.sys.uidoc(true).documentElement;
+        signalGlobalPoint.subtractFromX(uiCanvasRootElement.scrollLeft);
+        signalGlobalPoint.subtractFromY(uiCanvasRootElement.scrollTop);
 
         if (haloGlobalRect.containsPoint(signalGlobalPoint)) {
 
