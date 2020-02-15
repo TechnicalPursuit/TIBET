@@ -48,7 +48,7 @@
 .sherpa-outliner::before,
 .sherpa-outliner *::before {
 
-    position: absolute;
+    position: inherit;
 
     font-family: "Lucida Sans", "Lucida Grande", "Verdana", "Arial", sans-serif;
     font-size: 10px;
