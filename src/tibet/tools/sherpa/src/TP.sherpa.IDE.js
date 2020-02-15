@@ -5419,7 +5419,16 @@ function() {
      * @returns {TP.sherpa.IDE} The receiver.
      */
 
-    this.$get('$builderMutationSummary').disconnect();
+    var builderMutationSummary;
+
+    builderMutationSummary = this.$get('$builderMutationSummary');
+
+    //  Only disconnect if we're still connected. If TIBET is being reloaded,
+    //  this will not be the case and the MutationSummary machinery will already
+    //  have been disconnected.
+    if (builderMutationSummary.connected) {
+        builderMutationSummary.disconnect();
+    }
 
     return this;
 });
