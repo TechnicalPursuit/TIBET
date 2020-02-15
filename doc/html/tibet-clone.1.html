@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-clone-1-clones-a-project-from-a-template-directory">tibet-clone(1) -- clones a project from a template directory</h1>
+<h1 id="tibet-clone1----clones-a-project-from-a-template-directory">tibet-clone(1) -- clones a project from a template directory</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet clone &lt;target&gt;|[--name &lt;appname&gt;] [--dir &lt;dirname&gt;] [--dna &lt;template&gt;] [--list] [--force] [--update]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -88,31 +88,25 @@ this value doesn&#39;t exist then <code>default</code> is the name used.</p>
 couch
 default
 electron
-ghpages
-</code></pre><h3 id="create-a-new-project-with-code-default-code-dna">Create a new project with <code>default</code> dna</h3>
+ghpages</code></pre><h3 id="create-a-new-project-with-codedefaultcode-dna">Create a new project with <code>default</code> dna</h3>
 <pre><code>$ tibet clone helloworld
 
-TIBET dna &#39;default&#39; cloned to helloworld as app &#39;helloworld&#39;.
-</code></pre><h3 id="create-a-new-project-with-code-couch-code-dna">Create a new project with <code>couch</code> dna</h3>
+TIBET dna &#39;default&#39; cloned to helloworld as app &#39;helloworld&#39;.</code></pre><h3 id="create-a-new-project-with-codecouchcode-dna">Create a new project with <code>couch</code> dna</h3>
 <pre><code>$ tibet clone hellocouch --dna couch
 
-TIBET dna &#39;couch&#39; cloned to hellocouch as app &#39;hellocouch&#39;.
-</code></pre><h3 id="create-a-new-project-in-an-existing-directory">Create a new project in an existing directory</h3>
+TIBET dna &#39;couch&#39; cloned to hellocouch as app &#39;hellocouch&#39;.</code></pre><h3 id="create-a-new-project-in-an-existing-directory">Create a new project in an existing directory</h3>
 <pre><code>$ tibet clone .
 
-TIBET dna &#39;default&#39; cloned to . as app &#39;hellolocal&#39;
-</code></pre><h3 id="create-a-named-project-in-an-existing-directory-empty-">Create a named project in an existing directory (empty)</h3>
+TIBET dna &#39;default&#39; cloned to . as app &#39;hellolocal&#39;</code></pre><h3 id="create-a-named-project-in-an-existing-directory-empty">Create a named project in an existing directory (empty)</h3>
 <pre><code>$ tibet clone --name hello .
 
-TIBET dna &#39;default&#39; cloned to . as app &#39;hello&#39;.
-</code></pre><h3 id="create-a-named-project-in-an-existing-directory-not-empty-">Create a named project in an existing directory (not empty)</h3>
+TIBET dna &#39;default&#39; cloned to . as app &#39;hello&#39;.</code></pre><h3 id="create-a-named-project-in-an-existing-directory-not-empty">Create a named project in an existing directory (not empty)</h3>
 <p>NOTE NOTE NOTE!!! This command can overlay files and is potentially
 destructive!!! Future versions of the <code>clone</code> command may use <code>yeoman</code> to help
 avoid file conflicts, allowing this operation to be done safely.</p>
 <pre><code>$ tibet clone --name hello . --force
 
-TIBET dna &#39;default&#39; cloned to . as app &#39;hello&#39;.
-</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+TIBET dna &#39;default&#39; cloned to . as app &#39;hello&#39;.</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>

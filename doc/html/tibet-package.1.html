@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-package-1-list-package-assets-either-as-asset-paths-or-nodes">tibet-package(1) -- list package assets either as asset paths or nodes</h1>
+<h1 id="tibet-package1----list-package-assets-either-as-asset-paths-or-nodes">tibet-package(1) -- list package assets either as asset paths or nodes</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet package [ [--profile] &lt;pkg_cfg&gt; | [--package &lt;package&gt;] [--config &lt;cfg&gt;] ]
     [--phase &lt;phase&gt;] [--all] [--scripts] [--styles] [--images] [--resources]
@@ -114,17 +114,15 @@ trying to package anything from PouchDB.</p>
 
 ~app_src/APP.sample.js
 ~app_src/APP.sample.Application.js
-~app_tags/APP.sample.app/APP.sample.app.js
-</code></pre><h3 id="list-resources-from-a-specific-package-config-pair">List resources from a specific package@config pair</h3>
+~app_tags/APP.sample.app/APP.sample.app.js</code></pre><h3 id="list-resources-from-a-specific-packageconfig-pair">List resources from a specific package@config pair</h3>
 <pre><code>$ tibet package --profile development@developer
 
 ~app_src/APP.sample.js
 ~app_src/APP.sample.Application.js
 ~app_tags/APP.sample.app/APP.sample.app.js
 ~app_test/APP_test.js
-~app_tags/APP.sample.app/APP.sample.app_test.js
-</code></pre><p>Here we see that the test files for our application are now listed.</p>
-<h3 id="list-resources-from-a-specific-package-config-pair-for-app-and-lib">List resources from a specific package@config pair for APP and LIB</h3>
+~app_tags/APP.sample.app/APP.sample.app_test.js</code></pre><p>Here we see that the test files for our application are now listed.</p>
+<h3 id="list-resources-from-a-specific-packageconfig-pair-for-app-and-lib">List resources from a specific package@config pair for APP and LIB</h3>
 <pre><code>$ tibet package --profile development@developer --context all
 
 ~lib_build/tibet_developer.min.js
@@ -132,8 +130,7 @@ trying to package anything from PouchDB.</p>
 ~app_src/APP.sample.Application.js
 ~app_tags/APP.sample.app/APP.sample.app.js
 ~app_test/APP_test.js
-~app_tags/APP.sample.app/APP.sample.app_test.js
-</code></pre><p>Note that with <code>--context all</code> we now see library resources (in this case
+~app_tags/APP.sample.app/APP.sample.app_test.js</code></pre><p>Note that with <code>--context all</code> we now see library resources (in this case
 <code>tibet_developer.min.js</code>) as well as our application&#39;s resources.</p>
 <h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>

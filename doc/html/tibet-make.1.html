@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-make-1-runs-a-function-as-a-task">tibet-make(1) -- runs a function as a task</h1>
+<h1 id="tibet-make1----runs-a-function-as-a-task">tibet-make(1) -- runs a function as a task</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet make &lt;target&gt; [--list] [--private] [--timeout &lt;ms&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -63,7 +63,7 @@ operations.</p>
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>
-<h3 id="sample-function-the-lint-task-in-make-">Sample function (the lint task in make):</h3>
+<h3 id="sample-function-the-lint-task-in-make">Sample function (the lint task in make):</h3>
 <pre><code>(function() {
     &#39;use strict&#39;;
 
@@ -83,25 +83,21 @@ operations.</p>
     task.options = {timeout: 1000 * 60 * 5};
 
     module.exports = task;
-}());
-</code></pre><h3 id="list-available-targets">List available targets</h3>
+}());</code></pre><h3 id="list-available-targets">List available targets</h3>
 <pre><code>$ tibet make
 
 Available targets:
 
-    build checkup clean deploy resources rollup
-</code></pre><h3 id="run-a-make-target-explicitly">Run a make target explicitly</h3>
+    build checkup clean deploy resources rollup</code></pre><h3 id="run-a-make-target-explicitly">Run a make target explicitly</h3>
 <pre><code>$ tibet make clean
 
 cleaning...
-Task complete: 7ms.
-</code></pre><h3 id="run-a-make-target-implicitly">Run a make target implicitly</h3>
+Task complete: 7ms.</code></pre><h3 id="run-a-make-target-implicitly">Run a make target implicitly</h3>
 <pre><code>$ tibet clean
 
 Delegating to &#39;tibet make clean&#39;
 cleaning...
-Task complete: 4ms.
-</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+Task complete: 4ms.</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>

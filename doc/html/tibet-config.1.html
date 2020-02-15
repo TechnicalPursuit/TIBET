@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-config-1-manages-and-displays-tibet-configuration-data">tibet-config(1) -- manages and displays TIBET configuration data</h1>
+<h1 id="tibet-config1----manages-and-displays-tibet-configuration-data">tibet-config(1) -- manages and displays TIBET configuration data</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet config [property[=value]] [--env &lt;env&gt;] [--users]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -64,15 +64,13 @@ read and/or update any value with a string, number, or boolean value.</p>
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>
-<h3 id="list-a-single-value-">List a single value:</h3>
+<h3 id="list-a-single-value">List a single value:</h3>
 <pre><code>$ tibet config boot.level
 
-INFO
-</code></pre><h3 id="set-a-value-foo-bar-to-true-here-">Set a value (foo.bar to true here):</h3>
+INFO</code></pre><h3 id="set-a-value-foobar-to-true-here">Set a value (foo.bar to true here):</h3>
 <pre><code>$ tibet config foo.bar=true
 
-true
-</code></pre><h3 id="list-all-configuration-values-">List all configuration values:</h3>
+true</code></pre><h3 id="list-all-configuration-values">List all configuration values:</h3>
 <pre><code>$ tibet config
 
 {
@@ -80,8 +78,7 @@ true
     &quot;~app&quot;: &quot;~/public&quot;,
     ...
     ...
-}
-</code></pre><h3 id="list-all-path-code-code-values-">List all path <code>~*</code> values:</h3>
+}</code></pre><h3 id="list-all-path-codecode-values">List all path <code>~*</code> values:</h3>
 <pre><code>$ tibet config path
 
 {
@@ -94,8 +91,7 @@ true
     &quot;path.app_build&quot;: &quot;~app/build&quot;,
     ...
     ...
-}
-</code></pre><h3 id="list-all-code-boot-code-values-">List all <code>boot.*</code> values:</h3>
+}</code></pre><h3 id="list-all-codebootcode-values">List all <code>boot.*</code> values:</h3>
 <pre><code>$ tibet config boot
 
 {
@@ -107,8 +103,7 @@ true
     &quot;boot.fatalistic&quot;: false,
     ...
     ...
-}
-</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+}</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>There is a client-side TSH command <code>:config</code> which mirrors the core
 functionality of this command in that it can be used to view or update
 configuration settings.</p>

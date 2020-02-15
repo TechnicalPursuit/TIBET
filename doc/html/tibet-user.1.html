@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-user-1-adds-updates-user-configuration-data">tibet-user(1) -- adds/updates user configuration data</h1>
+<h1 id="tibet-user1----addsupdates-user-configuration-data">tibet-user(1) -- adds/updates user configuration data</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet user &lt;username&gt; &lt;password&gt; [--env &lt;env&gt;]
     [--role &lt;role|roles&gt;] [--org &lt;org|orgs&gt;] [--unit unit]</code></p>
@@ -72,12 +72,10 @@ A unit name. If you&#39;re using a unit you should supply only a single org.</p>
 <h3 id="check-to-see-if-a-particular-user-has-been-defined">Check to see if a particular user has been defined</h3>
 <pre><code>$ tibet user fluffy
 
-User was found.
-</code></pre><h3 id="define-a-new-user">Define a new user</h3>
+User was found.</code></pre><h3 id="define-a-new-user">Define a new user</h3>
 <pre><code>$ tibet user fuzzy --pass tooeasytoguess
 
-User added.
-</code></pre><p>Note that passwords are hashed and encrypted in the <code>users.json</code> file so they
+User added.</code></pre><p>Note that passwords are hashed and encrypted in the <code>users.json</code> file so they
 are not stored in plain text.</p>
 <pre><code>$ cat users.json
 {
@@ -87,8 +85,7 @@ are not stored in plain text.</p>
         &quot;fluffy&quot;: &quot;a468ebdb2000c154dad108949333a588d7545efa86d3beb673349223e43cb9ed&quot;,
         &quot;testy&quot;: &quot;e9381a7cef0756c6c57c41e80ac491a48b37df21300b0180a635117061c9e9fd&quot;
     }
-}
-</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+}</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>

@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-type-1-creates-a-new-tibet-type">tibet-type(1) -- creates a new TIBET type</h1>
+<h1 id="tibet-type1----creates-a-new-tibet-type">tibet-type(1) -- creates a new TIBET type</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet type [--name] [[&lt;root&gt;.]&lt;namespace&gt;:]&lt;typename&gt; [--supertype &lt;typename] [--dir &lt;dirname&gt;] [--dna &lt;template&gt;] [--package &lt;pkgname&gt;] [--config &lt;cfgname&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -93,8 +93,7 @@ adjusting package entries...
 &lt;script src=&quot;~app_src/APP.test.testing_test.js&quot;/&gt; (added)
 New configuration entries created. Review/Rebuild as needed.
 Cleaning up working directory.
-Type DNA &#39;default&#39; cloned to ~app_src as &#39;testing&#39;.
-</code></pre><p>In this case we can see TIBET has generated a type as well as an associated
+Type DNA &#39;default&#39; cloned to ~app_src as &#39;testing&#39;.</code></pre><p>In this case we can see TIBET has generated a type as well as an associated
 unit test file.</p>
 <h3 id="create-a-new-custom-type-in-a-specific-namespace">Create a new custom type in a specific namespace</h3>
 <pre><code>$ tibet type APP.special.Type
@@ -109,8 +108,7 @@ adjusting package entries...
 &lt;script src=&quot;~app_src/APP.special.Type_test.js&quot;/&gt; (added)
 New configuration entries created. Review/Rebuild as needed.
 Cleaning up working directory.
-Type DNA &#39;default&#39; cloned to ~app_src as &#39;Type&#39;.
-</code></pre><p>Note that the current <code>type</code> command does not define new namespaces so if you
+Type DNA &#39;default&#39; cloned to ~app_src as &#39;Type&#39;.</code></pre><p>Note that the current <code>type</code> command does not define new namespaces so if you
 use this approach you should be referring to an existing namespace or you should
 be prepared to define the namespace as part of your application startup
 sequence.</p>
@@ -120,15 +118,13 @@ sequence.</p>
     ...
 
     &lt;script src=&quot;~app_src/APP.special.Type.js&quot;/&gt;
-&lt;/config&gt;
-</code></pre><p>...and so do their tests:</p>
+&lt;/config&gt;</code></pre><p>...and so do their tests:</p>
 <pre><code>&lt;config id=&quot;tests&quot;&gt;
     &lt;!-- put your test scripts here --&gt;
     ...
 
     &lt;script src=&quot;~app_src/APP.special.Type_test.js&quot;/&gt;
-&lt;/config&gt;
-</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+&lt;/config&gt;</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>

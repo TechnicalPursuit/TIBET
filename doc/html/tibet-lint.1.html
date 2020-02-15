@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-lint-1-runs-various-lint-tools-on-package-files">tibet-lint(1) -- runs various lint tools on package files</h1>
+<h1 id="tibet-lint1----runs-various-lint-tools-on-package-files">tibet-lint(1) -- runs various lint tools on package files</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet lint [[--filter] &lt;filter&gt;] [--force] [--nodes] [[--style] [--js] [--json] [--xml] [--only]] [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -117,27 +117,23 @@ checked:</p>
 &quot;filtered&quot;: 1,
 &quot;files&quot;: 14,
 &quot;recheck&quot;: [&quot;/Users/ss/temporary/hello/public/src/tags/APP.hello.app/APP.hello.app.js&quot;],
-&quot;lastrun&quot;: 1564939681906
-</code></pre><p>}</p>
+&quot;lastrun&quot;: 1564939681906</code></pre><p>}</p>
 </li>
 </ul>
 <h2 id="examples">EXAMPLES</h2>
 <h3 id="lint-all-package-referenced-files-in-an-application">Lint all package-referenced files in an application</h3>
 <pre><code>$ tibet lint
 
-0 errors, 0 warnings in 14 of 14 files.
-</code></pre><h3 id="lint-all-files-in-an-application-directory-tree">Lint all files in an application directory tree</h3>
+0 errors, 0 warnings in 14 of 14 files.</code></pre><h3 id="lint-all-files-in-an-application-directory-tree">Lint all files in an application directory tree</h3>
 <pre><code>$ tibet lint --scan
 
-0 errors, 0 warnings in 97 of 97 files.
-</code></pre><h3 id="lint-a-specific-file-package-mentioned-or-otherwise">Lint a specific file, package-mentioned or otherwise</h3>
+0 errors, 0 warnings in 97 of 97 files.</code></pre><h3 id="lint-a-specific-file-package-mentioned-or-otherwise">Lint a specific file, package-mentioned or otherwise</h3>
 <pre><code>$ tibet lint --scan --filter /makefile/
 
 /Users/ss/temporary/todomvc/public/TIBET-INF/cmd/makefile.js
   106:13   warn    &#39;dir&#39; is defined but never used                                no-unused-vars
   112:27   error   Unexpected trailing comma.                                     comma-dangle
-1 errors, 1 warnings in 1 of 1 files.
-</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+1 errors, 1 warnings in 1 of 1 files.</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>

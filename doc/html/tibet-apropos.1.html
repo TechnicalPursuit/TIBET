@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-apropos-1-list-objects-methods-related-to-one-or-more-terms">tibet-apropos(1) -- list objects/methods related to one or more terms</h1>
+<h1 id="tibet-apropos1----list-objectsmethods-related-to-one-or-more-terms">tibet-apropos(1) -- list objects/methods related to one or more terms</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet apropros &lt;terms&gt; [--comments] [--limit=N] [--ignorecase]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -59,7 +59,7 @@ term at least <code>--limit</code> number of times will be discarded. The defaul
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>
-<h3 id="search-for-methods-whose-name-matches-a-regular-expression-">Search for methods whose name matches a regular expression:</h3>
+<h3 id="search-for-methods-whose-name-matches-a-regular-expression">Search for methods whose name matches a regular expression:</h3>
 <pre><code>$ tibet apropos &#39;/nodeGetFirst/&#39;
 
 # Loading TIBET platform at 2019-11-09T17:43:17.668Z
@@ -77,8 +77,7 @@ TP.nodeGetFirstElementByAttribute
 TP.nodeGetFirstElementByTagName
 TP.nodeGetFirstElementChildByAttribute
 TP.nodeGetFirstElementChildByTagName
-TP.nodeGetFirstSiblingElement
-</code></pre><h3 id="search-for-methods-whose-name-includes-a-particular-string-">Search for methods whose name includes a particular string:</h3>
+TP.nodeGetFirstSiblingElement</code></pre><h3 id="search-for-methods-whose-name-includes-a-particular-string">Search for methods whose name includes a particular string:</h3>
 <pre><code>$ tibet apropos clip
 
 # Loading TIBET platform at 2019-11-09T17:43:17.668Z
@@ -87,16 +86,14 @@ TP.nodeGetFirstSiblingElement
 # by name
 #
 TP.elementSetClipRect
-TP.elementGetClipRect
-</code></pre><h3 id="search-with-case-sensitivity-">Search with case-sensitivity:</h3>
+TP.elementGetClipRect</code></pre><h3 id="search-with-case-sensitivity">Search with case-sensitivity:</h3>
 <pre><code>$ tibet apropos clip --no-ignorecase
 
 # Loading TIBET platform at 2019-11-09T17:43:17.668Z
 # TIBET reflection suite loaded and active in 5219ms
 
 # by name
-#
-</code></pre><h3 id="expand-the-case-insensitive-search-to-include-method-comment-text-">Expand the case-insensitive search to include method comment text:</h3>
+#</code></pre><h3 id="expand-the-case-insensitive-search-to-include-method-comment-text">Expand the case-insensitive search to include method comment text:</h3>
 <pre><code>$ tibet apropos clip --comments
 
 # Loading TIBET platform at 2019-11-09T17:43:17.668Z
@@ -108,8 +105,7 @@ TP.elementSetClipRect (8)
 TP.elementGetClipRect (7)
 #
 # by comment
-#
-</code></pre><h3 id="expand-that-search-to-include-method-comments-and-lower-match-counts-">Expand that search to include method comments and lower match counts:</h3>
+#</code></pre><h3 id="expand-that-search-to-include-method-comments-and-lower-match-counts">Expand that search to include method comments and lower match counts:</h3>
 <pre><code>$ tibet apropos clip --comments --limit 1
 
 # Loading TIBET platform at 2019-11-09T17:43:17.668Z
@@ -124,8 +120,7 @@ TP.elementGetClipRect (7)
 #
 TP.gui.MultiTransition.Inst.step (1)
 TP.xctrls.clipbox.Inst.setDisplayValue (1)
-TP.elementWrapToContent (1)
-</code></pre><h3 id="reflect-on-a-resulting-method-directly-">Reflect on a resulting method directly:</h3>
+TP.elementWrapToContent (1)</code></pre><h3 id="reflect-on-a-resulting-method-directly">Reflect on a resulting method directly:</h3>
 <pre><code>$ tibet reflect TP.elementGetClipRect
 
 # Loading TIBET platform at 2019-08-03T17:11:29.832Z
@@ -153,8 +148,7 @@ function elementGetClipRect(anElement)
  *     in the following order: top, right, bottom, left.
  */
 
-./public/TIBET-INF/tibet/src/tibet/kernel/TIBETDHTMLPrimitivesPost.js
-</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+./public/TIBET-INF/tibet/src/tibet/kernel/TIBETDHTMLPrimitivesPost.js</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command invokes the client-side <code>:apropos</code> command, passing all flags and
 command line arguments to that command for processing.</p>
 <p>Command invocation is done via the <code>tibet tsh</code> command machinery, which is

@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-couch-1-manage-couchdb-databases-and-applications">tibet-couch(1) -- manage CouchDB databases and applications</h1>
+<h1 id="tibet-couch1----manage-couchdb-databases-and-applications">tibet-couch(1) -- manage CouchDB databases and applications</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet couch &lt;compactdb|createdb|listall|pushapp|removeapp|removedb|view&gt; [&lt;args&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -49,8 +49,7 @@ Database name [dbtest_tasks] ?
 Application name [tws] ?
 
 [&quot;s3::Team TIBET&quot;, &quot;sample::DEFAULT&quot;, &quot;sample::Team TIBET&quot;, &quot;sendmail::Team TIBET&quot;,
-&quot;smtp::Team TIBET&quot;]
-</code></pre><h2 id="options">OPTIONS</h2>
+&quot;smtp::Team TIBET&quot;]</code></pre><h2 id="options">OPTIONS</h2>
 <ul>
 <li><code>--confirm</code> :
 Should database URL and other parameters be confirmed when provided. Default
@@ -113,16 +112,14 @@ exported as a URL-encoded value.</p>
 
 $ tibet couch createdb dbtest
 creating database: http://127.0.0.1:5984/dbtest
-database ready at http://127.0.0.1:5984/dbtest
-</code></pre><h3 id="compacting-a-database">Compacting a database</h3>
+database ready at http://127.0.0.1:5984/dbtest</code></pre><h3 id="compacting-a-database">Compacting a database</h3>
 <pre><code>Use the `tibet couch compactdb` command:
 
 $ tibet couch compactdb dbtest
 Compact database [http://127.0.0.1:5984/dbtest] ?
 Enter database name to confirm: dbtest
 compacting database: http://127.0.0.1:5984/dbtest
-database compacted.
-</code></pre><h3 id="list-all-databases">List all databases</h3>
+database compacted.</code></pre><h3 id="list-all-databases">List all databases</h3>
 <pre><code>Use the `tibet couch listall` command:
 
 $ tibet couch listall
@@ -133,8 +130,7 @@ _metadata
 _replicator
 _users
 d2d
-dbtest
-</code></pre><h3 id="pushing-updating-a-couchdb-application">Pushing/updating a CouchDB application</h3>
+dbtest</code></pre><h3 id="pushingupdating-a-couchdb-application">Pushing/updating a CouchDB application</h3>
 <pre><code>TIBET can push content to a CouchDB design document to create a TIBET-an
 variant of a &quot;couchapp&quot;. TIBET+CouchDB applications do not use show or list
 functions, they rely on pure Client/Server communication between CouchDB and
@@ -177,24 +173,21 @@ Application frozen. TIBET now boots from ~app_inf/tibet.
 tibet couch pushapp sample
 marshalling content for: http://127.0.0.1:5984/dbtest/_design/sample
 ...
-application ready at http://127.0.0.1:5984/dbtest/_design/sample/index.html
-</code></pre><h3 id="removing-a-couchdb-application">Removing a CouchDB application</h3>
+application ready at http://127.0.0.1:5984/dbtest/_design/sample/index.html</code></pre><h3 id="removing-a-couchdb-application">Removing a CouchDB application</h3>
 <pre><code>Use the `tibet couch removeapp` command:
 
 $ tibet couch removeapp sample
 Delete [http://127.0.0.1:5984/dbtest/_design/sample] ?
 Enter database name to confirm: sample
 deleting http://127.0.0.1:5984/dbtest/_design/sample
-application removed.
-</code></pre><h3 id="removing-a-couchdb-database">Removing a CouchDB database</h3>
+application removed.</code></pre><h3 id="removing-a-couchdb-database">Removing a CouchDB database</h3>
 <pre><code>Use the `tibet couch removedb` command:
 
 $ tibet couch removedb dbtest
 Delete ENTIRE database [http://127.0.0.1:5984/dbtest] ?
 Enter database name to confirm: dbtest
 deleting database: http://127.0.0.1:5984/dbtest
-database removed.
-</code></pre><h3 id="querying-a-couchdb-view">Querying a CouchDB view</h3>
+database removed.</code></pre><h3 id="querying-a-couchdb-view">Querying a CouchDB view</h3>
 <pre><code>Use the `couch view` subcommand, which takes a dot-separated specifier for
 database.appname.viewname:
 
@@ -205,8 +198,7 @@ Database name [dbtest_tasks] ?
 Application name [tws] ?
 
 [&quot;s3::Team TIBET&quot;, &quot;sample::DEFAULT&quot;, &quot;sample::Team TIBET&quot;, &quot;sendmail::Team TIBET&quot;,
-&quot;smtp::Team TIBET&quot;]
-</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+&quot;smtp::Team TIBET&quot;]</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <p>During any operation if you receive a message including output to the effect

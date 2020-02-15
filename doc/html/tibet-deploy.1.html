@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-deploy-1-deploys-an-application">tibet-deploy(1) -- deploys an application</h1>
+<h1 id="tibet-deploy1----deploys-an-application">tibet-deploy(1) -- deploys an application</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet deploy &lt;helper&gt; [&lt;options&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -52,14 +52,11 @@ can be accessed from within your <code>deploy</code> helper or make target.</li>
 2 Install the shipit `deploy` task via `npm install --save-dev shipit-deploy`.
 3 Create a `shipitfile.js` file containing your specific deployment tasks.
 
-To run a `shipit`-based deployment via the `tibet deploy` command
-</code></pre><p>enter <code>tibet deploy shipit &lt;environment&gt;</code> along with any options you require.</p>
-<h3 id="using-code-tibet-make-deploy-code-for-deployments">Using <code>tibet make deploy</code> for deployments</h3>
-<pre><code>To use a `tibet make` target you need to edit the `_deploy` task in your
-</code></pre><p>project&#39;s <code>~app_cmd/make</code> directory. The default version of this file simply
+To run a `shipit`-based deployment via the `tibet deploy` command</code></pre><p>enter <code>tibet deploy shipit &lt;environment&gt;</code> along with any options you require.</p>
+<h3 id="using-codetibet-make-deploycode-for-deployments">Using <code>tibet make deploy</code> for deployments</h3>
+<pre><code>To use a `tibet make` target you need to edit the `_deploy` task in your</code></pre><p>project&#39;s <code>~app_cmd/make</code> directory. The default version of this file simply
 outputs a message regarding concrete deployment logic.</p>
-<pre><code>Deploying via your `makefile.js`-based `deploy` target is as simple as
-</code></pre><p>entering <code>tibet deploy make</code> once you&#39;ve updated your make target file to
+<pre><code>Deploying via your `makefile.js`-based `deploy` target is as simple as</code></pre><p>entering <code>tibet deploy make</code> once you&#39;ve updated your make target file to
 contain your deployment logic.</p>
 <h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>

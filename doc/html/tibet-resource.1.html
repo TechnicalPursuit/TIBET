@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-resource-1-builds-template-css-resource-files-and-config-entries">tibet-resource(1) -- builds template/css/resource files and config entries</h1>
+<h1 id="tibet-resource1----builds-templatecssresource-files-and-config-entries">tibet-resource(1) -- builds template/css/resource files and config entries</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet resource [--build] [--list] [--raw] [--type] [&lt;package-opts&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -96,8 +96,7 @@ Configuration Entries (not saved):
     &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js&quot;/&gt;
     &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.css.js&quot;/&gt;
     &lt;script src=&quot;~app_build/app_tags.test.less.js&quot;/&gt;
-&lt;/config&gt;
-</code></pre><h3 id="building-application-resources">Building application resources</h3>
+&lt;/config&gt;</code></pre><h3 id="building-application-resources">Building application resources</h3>
 <p>To build resources add the <code>--build</code> flag:</p>
 <pre><code>$ tibet resource --build
 # Loading TIBET platform at 2019-11-09T17:43:17.668Z
@@ -110,8 +109,7 @@ Building 3 concrete resources...
 Writing package resource entries...
 &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.xhtml.js&quot;/&gt; (added)
 &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.app.css.js&quot;/&gt; (added)
-&lt;script src=&quot;~app_build/app_tags.test.css.js&quot;/&gt; (added)
-</code></pre><p>Note that if you build multiple times the <code>(added)</code> qualifier will show
+&lt;script src=&quot;~app_build/app_tags.test.css.js&quot;/&gt; (added)</code></pre><p>Note that if you build multiple times the <code>(added)</code> qualifier will show
 <code>(exists)</code> for any resources the package already contains.</p>
 <h3 id="modularizing-application-resources">Modularizing application resources</h3>
 <p>For larger applications or applications which need to load resources in
@@ -131,10 +129,9 @@ resources, then partition them into separate <code>&lt;config/&gt;</code> elemen
 &lt;config id=&quot;extra-resources&quot;&gt;
     &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.specialsauce.xhtml.js&quot;/&gt;
     &lt;script src=&quot;~app_build/app_tags.APP.hello.app.APP.hello.specialsauce.css.js&quot;/&gt;
-&lt;/config&gt;
-</code></pre><p>When you use a configuration like the one above TIBET will automatically
+&lt;/config&gt;</code></pre><p>When you use a configuration like the one above TIBET will automatically
 recognize that nested entries do not need to be added.</p>
-<p>You can then refer to the individual &lt;config/&gt; elements in your other
+<p>You can then refer to the individual <config/> elements in your other
 package configurations to adjust loading as you require.</p>
 <h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This server-side CLI command builds a command line for execution by the

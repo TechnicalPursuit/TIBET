@@ -19,7 +19,7 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-tws-1-manage-the-tibet-workflow-system-tws-">tibet-tws(1) -- manage the TIBET Workflow System (TWS)</h1>
+<h1 id="tibet-tws1----manage-the-tibet-workflow-system-tws">tibet-tws(1) -- manage the TIBET Workflow System (TWS)</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet tws &lt;cancel|disable|enable|init|list|push|remove|restart|retry|submit|validate&gt; [&lt;flags&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
@@ -47,8 +47,7 @@ mailtest::Team TIBET =&gt; [&quot;smtp&quot;] (31ee427eac51b94470bdfd14da00715e)
 mailtest::Team TIBET =&gt; [&quot;mailer&quot;] (e52b072b50c597298c310ea9c8004abd)
 mailtest::Team TIBET =&gt; [&quot;mailer&quot;] (e52b072b50c597298c310ea9c8004d32)
 mailtwo::Team TIBET =&gt; [&quot;formatter&quot;,&quot;mailer&quot;] (e52b072b50c597298c310ea9c80050b2)
-sample::Team TIBET =&gt; [&quot;sample&quot;,&quot;smtp&quot;] (e52b072b50c597298c310ea9c800af06)
-</code></pre><h2 id="options">OPTIONS</h2>
+sample::Team TIBET =&gt; [&quot;sample&quot;,&quot;smtp&quot;] (e52b072b50c597298c310ea9c800af06)</code></pre><h2 id="options">OPTIONS</h2>
 <ul>
 <li><code>--confirm</code> :
 Should database URL and other parameters be confirmed when provided. Default
@@ -127,16 +126,14 @@ inserting TWS jobs_cancelled view
 inserting TWS jobs_failed view
 inserting TWS jobs_complete view
 inserting TWS tasks view
-TWS initialized
-</code></pre><h3 id="enable-disable-the-workflow-engine">Enable / Disable The Workflow Engine</h3>
+TWS initialized</code></pre><h3 id="enable--disable-the-workflow-engine">Enable / Disable The Workflow Engine</h3>
 <pre><code>$ tibet tws enable --engine
 Updating development configuration.
 TWS enabled in development.
 
 $ tibet tws disable --engine
 Updating development configuration.
-TWS disabled in development.
-</code></pre><h3 id="enable-disable-a-flow">Enable / Disable A Flow</h3>
+TWS disabled in development.</code></pre><h3 id="enable--disable-a-flow">Enable / Disable A Flow</h3>
 <pre><code>To enable or disable a flow you need to access the flow document&#39;s ID. You
 can get this information by listing the flows. Each flow&#39;s ID will be shown
 in parenthesis behind the flow.
@@ -162,8 +159,7 @@ $ tibet tws enable --flow e52b072b50c597298c310ea9c8004abd
     &quot;ok&quot;: true,
     &quot;id&quot;: &quot;e52b072b50c597298c310ea9c8004abd&quot;,
     &quot;rev&quot;: &quot;3-502d6a76bf49442e8fe822b95c39a178&quot;
-}
-</code></pre><h3 id="list-flows-jobs-tasks-views">List Flows/Jobs/Tasks/Views</h3>
+}</code></pre><h3 id="list-flowsjobstasksviews">List Flows/Jobs/Tasks/Views</h3>
 <pre><code>$ tibet tws list --flows
 mailtest::Team TIBET =&gt; [&quot;smtp&quot;] (31ee427eac51b94470bdfd14da00715e)
 mailtest::Team TIBET =&gt; [&quot;mailer&quot;] (e52b072b50c597298c310ea9c8004abd)
@@ -192,11 +188,9 @@ jobs_cancelled
 jobs_failed
 jobs_active
 everything
-sample
-</code></pre><h3 id="push-workflow-design-document">Push Workflow Design Document</h3>
+sample</code></pre><h3 id="push-workflow-design-document">Push Workflow Design Document</h3>
 <pre><code>$ tibet tws push --design
-Design document is already up to date.
-</code></pre><h3 id="push-core-tasks-flows-and-views">Push Core Tasks, Flows, and Views</h3>
+Design document is already up to date.</code></pre><h3 id="push-core-tasks-flows-and-views">Push Core Tasks, Flows, and Views</h3>
 <pre><code>Pushing the &quot;map&quot; uploads the latest version of all the defined tasks and
 flows for the current tws project. Note that any files with a leading
 underscore are considered private and are ignored by this command.
@@ -231,13 +225,11 @@ uploading: /Users/ss/temporary/dbtest/couch/tws/flows/mailtest.json
     &quot;ok&quot;: true,
     &quot;id&quot;: &quot;30692839999368e55ac62c52b600144f&quot;,
     &quot;rev&quot;: &quot;1-ce25bc7f6540153d4eb6f51220fa08ee&quot;
-}
-</code></pre><h3 id="push-flows-jobs-tasks-views">Push Flows/Jobs/Tasks/Views</h3>
+}</code></pre><h3 id="push-flowsjobstasksviews">Push Flows/Jobs/Tasks/Views</h3>
 <pre><code>Use the `tibet tws push` command and provide either a specific document path
 or one of the flags intended to push a particular class of document:
 
-$ tibet tws push [&lt;path&gt;|--design|--flows|--map|--tasks|--views]
-</code></pre><h3 id="cancel-a-job">Cancel a Job</h3>
+$ tibet tws push [&lt;path&gt;|--design|--flows|--map|--tasks|--views]</code></pre><h3 id="cancel-a-job">Cancel a Job</h3>
 <pre><code>Cancelling a job requires a job id. You can view these in the output from
 the `tibet tws list --jobs` command or you can use `tibet tws view` to run a
 view to help limit the output so you find the job ID you need.
@@ -247,8 +239,7 @@ $ tibet tws cancel e52b072b50c597298c310ea9c8011ce9
     &quot;ok&quot;: true,
     &quot;id&quot;: &quot;e52b072b50c597298c310ea9c8011ce9&quot;,
     &quot;rev&quot;: &quot;3-2c46abf2b79be87f7be0fbb7056a5e92&quot;
-}
-</code></pre><h3 id="submit-a-job">Submit a Job</h3>
+}</code></pre><h3 id="submit-a-job">Submit a Job</h3>
 <pre><code>The `tibet tws submit` command lets you specify a job document from the
 ~/couch/tws/jobs directory for your project. Any entries in the JSON
 document delimited by `[[` and `]]` will be replaced after you are prompted
@@ -278,8 +269,7 @@ $ tibet tws submit sample
     &quot;ok&quot;: true,
     &quot;id&quot;: &quot;30692839999368e55ac62c52b6001d60&quot;,
     &quot;rev&quot;: &quot;1-64cbec7b86393bcf02ef81db283f721f&quot;
-}
-</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+}</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <p>During any operation if you receive a message including output to the effect

@@ -144,7 +144,7 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 }
 
 /* new in Gecko 2.0 / Firefox 4.X+ */
-*[hidefocus="true"]:-moz-focusring {
+*|*[hidefocus="true"]:-moz-focusring {
 
     outline: none !important;
 }
@@ -160,7 +160,7 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 /* emulate IE's 'hidefocus' attribute for Webkit */
 
-*[hidefocus="true"] {
+*|*[hidefocus="true"] {
 
     outline: none !important;
 }
@@ -171,9 +171,23 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 /* do not show the built-in resizer */
 
-* {
+*|* {
 
     resize: none;
+}
+
+/* hide scrollbars on all platforms, but especially Windows */
+
+/* specific to Webkit */
+*|*::-webkit-scrollbar {
+
+    width: 0;
+}
+
+/* W3C standards track */
+*|* {
+
+    scrollbar-width: none;
 }
 
 /*
