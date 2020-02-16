@@ -1145,6 +1145,10 @@ function(aURL, aRequest) {
         blank,
         win,
         thisref,
+
+        request,
+        processContent,
+
         frame,
         needsPrivileges,
         handler,
@@ -1172,15 +1176,18 @@ function(aURL, aRequest) {
 
     thisref = this;
 
+    request = TP.request(aRequest);
+    processContent = request.atIfInvalid('processContent', true);
+
     //  If the target is an XML rendering surface, which it normally should be,
     //  we can setContent directly. If not we can attempt to "double pump" it by
     //  loading a blank.xhtml file and hooking into the onload (which works if
     //  we're dealing with an iframe).
-    if (TP.isXMLDocument(this.getNativeDocument())) {
+    if (TP.isXMLDocument(this.getNativeDocument()) && processContent) {
         //  NOTE that we strip any fragment here to avoid having the setContent
         //  call attempt to resolve XPointer content slices etc. We're setting a
         //  location so the key is the root URL value.
-        this.setContent(url, aRequest);
+        this.setContent(url, request);
     } else if (TP.isIFrameWindow(win)) {
 
         //  Capture variable binding references.
@@ -1194,26 +1201,28 @@ function(aURL, aRequest) {
             frame.removeEventListener('load', handler, false);
 
             //  If it wasn't the blank xhtml file URL and it didn't need
-            //  privileges, then use setContent() to set its content. Note that
-            //  this will invoke any callback Function in the request's
-            //  TP.ONLOAD slot, so we don't have to do it here.
-            if (!blank && !needsPrivileges) {
-                thisref.setContent(url, aRequest);
-            } else if (TP.isValid(aRequest)) {
+            //  privileges but we're processing content, then use setContent()
+            //  to set its content. Note that this will invoke any callback
+            //  Function in the request's TP.ONLOAD slot, so we don't have to do
+            //  it here.
+            if (!blank && !needsPrivileges && processContent) {
+                thisref.setContent(url, request);
+            } else if (TP.isValid(request)) {
                 //  If there was a callback Function defined, make sure to
                 //  invoke it.
-                if (TP.isCallable(reqLoadFunc = aRequest.at(TP.ONLOAD))) {
+                if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
                     reqLoadFunc(evt);
                 }
             }
 
-            aRequest.complete();
+            request.complete();
         };
         frame.addEventListener('load', handler, false);
 
-        //  If the URL points to the blank xhtml file.or needs privileges, then
-        //  just use 'window.location' to load it.
-        if (blank || needsPrivileges) {
+        //  If the URL points to the blank xhtml file.or needs privileges or
+        //  we're *not* processing content, then just use 'window.location' to
+        //  load it.
+        if (blank || needsPrivileges || !processContent) {
             win.location = url.getLocation();
         } else {
             blankURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -1226,8 +1235,8 @@ function(aURL, aRequest) {
         //  A bit optimistic but we don't have a choice really. Hopefully the
         //  request completion processing doesn't rely on rendering being
         //  complete since it may not be.
-        if (TP.isValid(aRequest)) {
-            aRequest.complete();
+        if (TP.isValid(request)) {
+            request.complete();
         }
     }
 
