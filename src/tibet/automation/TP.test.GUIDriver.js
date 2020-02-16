@@ -422,7 +422,7 @@ function(aURI, aWindow) {
 //  ------------------------------------------------------------------------
 
 TP.test.GUIDriver.Inst.defineMethod('setLocation',
-function(aURI, aWindow) {
+function(aURI, aWindow, aRequest) {
 
     /**
      * @method setLocation
@@ -431,6 +431,8 @@ function(aURI, aWindow) {
      * @param {TP.uri.URI} The URI to fetch content from.
      * @param {TP.core.Window} The Window to load the content into. This will
      *     default to the current UI canvas.
+     * @param {TP.sig.Request} [aRequest] A request containing control
+     *     parameters.
      * @exception TP.sig.InvalidURI
      * @returns {Promise} A Promise which completes when the resource is
      *     available.
@@ -462,7 +464,7 @@ function(aURI, aWindow) {
                             function(resolver, rejector) {
                                 var request;
 
-                                request = TP.request();
+                                request = TP.request(aRequest);
 
                                 request.atPut(TP.ONLOAD, resolver);
                                 request.atPut(TP.ONFAIL, rejector);
