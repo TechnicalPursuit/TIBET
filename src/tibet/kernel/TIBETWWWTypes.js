@@ -682,6 +682,8 @@ TP.ietf.mime.Type.defineAttribute('extensionInfo', TP.hc());
                         'alias', 'XHTML',
                         'extensions', 'xhtml xht',
                         'tshtag', 'html:html',
+                        'objectNodeType',
+                                'TP.html.iframe',
                         'tpDocNodeType', 'TP.dom.XHTMLDocumentNode'),
             TP.ietf.mime.TSH,
                 TP.hc('mimetype', TP.ietf.mime.TSH,
