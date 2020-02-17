@@ -28,12 +28,12 @@ const electron = require('electron'),
 
     app = electron.app,                     //  Module to control application
                                             //  life.
-    dialog = electron.dialog, // Module to create dialog.
-    BrowserWindow = electron.BrowserWindow, // Module to create browser window.
+    dialog = electron.dialog,               //  Module to create dialog.
+    BrowserWindow = electron.BrowserWindow, //  Module to create browser window.
     PARSE_OPTIONS = CLI.PARSE_OPTIONS;
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
+//  Keep a global reference of the window object, if you don't, the window will
+//  be closed automatically when the JavaScript object is garbage collected.
 let configure,
     createWindow,
     mainWindow,
@@ -99,7 +99,7 @@ createWindow = function() {
         }
     }
 
-    // and load the index.html of the app.
+    //  and load the index.html of the app.
     fileUrl = 'file://' + __dirname + '/index.html';
 
     //  Loop over params and add them to the URL
@@ -112,7 +112,7 @@ createWindow = function() {
         fileUrl += '#?' + paramStr.slice(0, -1);
     }
 
-    // Create the browser window.
+    //  Create the browser window.
     mainWindow = new BrowserWindow({
         width: 1024,
         height: 768,
@@ -128,7 +128,7 @@ createWindow = function() {
     //  will pass --devtools along so this flag is set, otherwise it's likely
     //  not there.
     if (process.argv.indexOf('--devtools') !== -1) {
-        // Open the DevTools.
+        //  Open the DevTools.
         mainWindow.webContents.openDevTools();
     }
 
@@ -185,11 +185,11 @@ createWindow = function() {
         }
     });
 
-    // Emitted when the window is closed.
+    //  Emitted when the window is closed.
     mainWindow.on('closed', function() {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
+        //  Dereference the window object, usually you would store windows in an
+        //  array if your app supports multi windows, this is the time when you
+        //  should delete the corresponding element.
         mainWindow = null;
     });
 };
@@ -231,8 +231,13 @@ process.on('uncaughtException', function(err) {
 });
 
 /*
+ * Set this flag to true for forward compatibility (and to quiet log messages).
+ */
+app.allowRendererProcessReuse = true;
+
+/*
  * Add a command line switch (to command line of the embedded Chrome engine) to
- * bypass Chrome's site isolation testing
+ * bypass Chrome's site isolation testing.
  */
 app.commandLine.appendSwitch('disable-site-isolation-trials');
 
@@ -248,8 +253,8 @@ app.on('ready', createWindow);
  * This method will be called when all windows are closed.
  */
 app.on('window-all-closed', function() {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
+    //  On OS X it is common for applications and their menu bar
+    //  to stay active until the user quits explicitly with Cmd + Q.
     if (process.platform !== 'darwin') {
         app.quit();
     }
@@ -261,8 +266,8 @@ app.on('window-all-closed', function() {
  * OS X dock or Windows taskbar or tries to relaunch when already running.
  */
 app.on('activate', function() {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
+    //  On OS X it's common to re-create a window in the app when the
+    //  dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
         createWindow();
     }
