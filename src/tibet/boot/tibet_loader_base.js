@@ -11479,6 +11479,8 @@ TP.boot.configureAndPopulateCaches = function() {
 
                     promise,
 
+                    usingLogin,
+
                     libOutOfDate,
                     appOutOfDate,
 
@@ -11607,6 +11609,25 @@ TP.boot.configureAndPopulateCaches = function() {
                         function() {
                             return caches.delete('TIBET_APP_CACHE');
                         });
+                }
+
+                //  If we're an app that logs in, then we definitely do *not*
+                //  want to populate the caches right now. The reason is that
+                //  manifest files will be recursively fetched and that will
+                //  include app-level manifest files that will *not* be vended
+                //  until we actually log in (we will get the login page XHTML
+                //  content instead). So we defer populating *both* caches right
+                //  now until we have logged in.
+                usingLogin = TP.sys.cfg('boot.use_login');
+
+                if (usingLogin) {
+                    TP.boot.$libCacheNeedsPopulatingAfterLogin =
+                        libCacheNeedsPopulating;
+                    TP.boot.$appCacheNeedsPopulatingAfterLogin =
+                        appCacheNeedsPopulating;
+
+                    libCacheNeedsPopulating = false;
+                    appCacheNeedsPopulating = false;
                 }
 
                 //  If the cache doesn't need populating, we'll send a message
@@ -12504,6 +12525,13 @@ TP.boot.$uiRootReady = function() {
             //  option when authentication passes. So two phase booting (aka
             //  parallel booting) means we want the phase_two flag turned off.
             win.$$phase_two = !TP.sys.cfg('boot.parallel');
+
+            if (TP.boot.$libCacheNeedsPopulatingAfterLogin ||
+                TP.boot.$appCacheNeedsPopulatingAfterLogin) {
+                TP.boot.populateCaches(TP.boot.$libCacheNeedsPopulating,
+                                        TP.boot.$appCacheNeedsPopulating);
+            }
+
             TP.boot.boot();
         }
     } else {
