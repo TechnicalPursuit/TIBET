@@ -12526,12 +12526,6 @@ TP.boot.$uiRootReady = function() {
             //  parallel booting) means we want the phase_two flag turned off.
             win.$$phase_two = !TP.sys.cfg('boot.parallel');
 
-            if (TP.boot.$libCacheNeedsPopulatingAfterLogin ||
-                TP.boot.$appCacheNeedsPopulatingAfterLogin) {
-                TP.boot.populateCaches(TP.boot.$libCacheNeedsPopulating,
-                                        TP.boot.$appCacheNeedsPopulating);
-            }
-
             TP.boot.boot();
         }
     } else {

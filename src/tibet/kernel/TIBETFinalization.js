@@ -358,6 +358,27 @@ function() {
 
     (function() {
 
+        msg = 'Populating deferred caches...';
+
+        //  If the app uses logins, then the caches will *not* have been
+        //  populated (due to issues around trying to retrieve all of the
+        //  package XML files and not being able to retrieve the app-level ones
+        //  since we weren't logged in). In that case, either one of these flags
+        //  may be true and we need to call into the boot system to populate
+        //  those caches.
+        if (TP.sys.cfg('boot.use_login')) {
+            if (TP.boot.$libCacheNeedsPopulatingAfterLogin ||
+                TP.boot.$appCacheNeedsPopulatingAfterLogin) {
+                TP.boot.populateCaches(
+                            TP.boot.$libCacheNeedsPopulatingAfterLogin,
+                            TP.boot.$appCacheNeedsPopulatingAfterLogin);
+            }
+        }
+
+    }).queueAfterNextRepaint(rootWindow);
+
+    (function() {
+
         msg = 'Initializing type proxies...';
 
         //  Initialize type proxies for types we didn't load as a result of the
