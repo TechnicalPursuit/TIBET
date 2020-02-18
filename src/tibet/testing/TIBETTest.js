@@ -97,8 +97,9 @@ function(options) {
         context,
         pattern;
 
-    //  Ensure we have a consistent Hash for parameter lookups later on.
-    params = TP.hc(options);
+    //  Ensure we have a consistent Hash for parameter lookups later on. Note
+    //  here that we make a copy because we alter it below.
+    params = TP.copy(TP.hc(options));
 
     //  Get the array of all suites. We'll be filtering this based on options.
     suites = TP.test.Suite.$get('suites');
