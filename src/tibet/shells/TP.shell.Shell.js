@@ -3364,7 +3364,7 @@ function(aRequest, forms) {
                         TP.isPlainObject(expandedVal)) {
                         expandedVal = TP.js2json(expandedVal);
                     } else {
-                        expandedVal = TP.tostr(expandedVal);
+                        expandedVal = TP.str(expandedVal);
                     }
 
                     //  The value we use for the 'original' value depends on
