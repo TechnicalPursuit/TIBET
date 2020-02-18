@@ -2008,8 +2008,7 @@ CLI.runFallback = function(command) {
     // If there's no node_modules in place (and hence no tibet, grunt, or gulp
     // that are local) suggest they run `tibet init` first.
     if (!CLI.getNpmPath()) {
-        this.notInitialized();
-        return;
+        return this.notInitialized();
     }
 
     // Make option is our first choice for non-command operations.

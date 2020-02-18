@@ -675,7 +675,7 @@ Cmd.prototype.execute = function() {
         start;
 
     if (CLI.inProject() && !CLI.isInitialized()) {
-        CLI.notInitialized();
+        return CLI.notInitialized();
     }
 
     targets = Cmd.getTargets();
