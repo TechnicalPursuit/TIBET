@@ -11209,6 +11209,222 @@ TP.boot.$importApplication = async function() {
 //  CACHE FUNCTIONS
 //  ============================================================================
 
+TP.boot.populateCaches = async function(libCacheNeedsPopulating,
+    appCacheNeedsPopulating) {
+
+    var prebootLibPaths,
+        prebootAppPaths,
+
+        phaseOne,
+        phaseTwo,
+
+        package,
+        config,
+
+        nonTeamTIBETEnv,
+
+        packageAssets,
+        teamTIBETAssets,
+        loadableAssets,
+
+        loadablePaths,
+        packagePaths,
+
+        i,
+
+        allPaths,
+
+        libResourcePath,
+        libPaths,
+
+        appResourcePath,
+        appPaths;
+
+    //  Grab the 'built-in' preboot lib paths that were in the cfg() system and
+    //  expand them.
+    prebootLibPaths = TP.sys.cfg('path.preboot_lib_paths');
+    prebootLibPaths = prebootLibPaths.map(
+                        function(aPath) {
+                            return TP.boot.$uriExpandPath(aPath);
+                        });
+
+    //  Grab the 'built-in' preboot app paths that were in the cfg() system and
+    //  expand them.
+    prebootAppPaths = TP.sys.cfg('path.preboot_app_paths');
+    prebootAppPaths = prebootAppPaths.map(
+                        function(aPath) {
+                            return TP.boot.$uriExpandPath(aPath);
+                        });
+
+    //  Next, grab the paths of the module package files themselves.
+
+    //  Grab the current values of 'boot.phase_one' and 'boot.phase_two' and
+    //  then set them to true, so that the list of assets we get in the
+    //  following steps think that we're obtaining resources for both phases.
+
+    phaseOne = TP.sys.cfg('boot.phase_one');
+    phaseTwo = TP.sys.cfg('boot.phase_two');
+
+    TP.sys.setcfg('boot.phase_one', true);
+    TP.sys.setcfg('boot.phase_two', true);
+
+    //  Grab the package and config that the user booted with.
+    package = TP.sys.cfg('boot.package');
+    config = TP.sys.cfg('boot.config');
+
+    //  Grab the list of resources using that package and config.
+    packageAssets = await TP.boot.$listPackageAssets(package, config);
+
+    //  If we're running in a non-Team TIBET environment, that means that we're
+    //  running with at least the lib (and possibly the app) in a form where
+    //  some of the resources are inlined. We need to get a list of all the
+    //  'resource' tags using the package and config that the user booted with,
+    //  but acting as if we're a member of Team TIBET so that we can traverse
+    //  all of the applicable manifest entries to find applicable 'resource'
+    //  tags.
+    nonTeamTIBETEnv = TP.sys.getcfg('boot.teamtibet') !== true;
+    if (nonTeamTIBETEnv) {
+
+        //  Set the flag that members of Team TIBET use to load individual,
+        //  non-inlined, resources.
+        TP.sys.setcfg('boot.teamtibet', true);
+
+        //  'production' means that we're interested in what the manifest
+        //  system calls 'base'.
+        if (config === 'production') {
+            config = 'base';
+        }
+
+        //  Grab the list of resources using that package and config.
+        teamTIBETAssets = await TP.boot.$listPackageAssets(package, config);
+
+        //  Filter out the assets that are not 'resource' tags.
+        teamTIBETAssets = teamTIBETAssets.filter(
+                    function(anElem) {
+                        return anElem.tagName === 'resource';
+                    });
+
+        //  Add those assets to the list of assets we already have.
+        packageAssets = packageAssets.concat(teamTIBETAssets);
+
+        //  Put the Team TIBET flag back.
+        TP.sys.setcfg('boot.teamtibet', false);
+    }
+
+    //  Restore the previous values for 'boot.phase_one' and 'boot.phase_two'.
+    TP.sys.setcfg('boot.phase_one', phaseOne);
+    TP.sys.setcfg('boot.phase_two', phaseTwo);
+
+    //  Grab the paths of the actual package manifest files themselves that were
+    //  populated into TP.boot.$$packages when we did the processing above.
+    packagePaths = Object.keys(TP.boot.$$packages);
+
+    //  Remove the 'main.xml' package file from the list of files to cache. It's
+    //  the one with the version number in it, so we never want to cache it (in
+    //  our controlled cache anyway - we'll let the browser handle
+    //  caching/re-fetching it based on regular browser heuristics).
+    for (i = 0; i < packagePaths.length; i++) {
+        if (/main\.xml$/.test(packagePaths[i])) {
+            packagePaths.splice(i, 1);
+            break;
+        }
+    }
+
+    //  Next, grab the files referenced in those package files. These must be
+    //  assets that have a 'src' or 'href' attribute and then a path is obtained
+    //  and expanded from there.
+
+    loadableAssets = packageAssets.filter(
+                        function(anElem) {
+                            return anElem.hasAttribute('src') ||
+                                    anElem.hasAttribute('href');
+                        });
+
+    loadablePaths = loadableAssets.map(
+                        function(anElem) {
+                            var rawPath;
+
+                            rawPath = anElem.getAttribute('src') ||
+                                        anElem.getAttribute('href');
+                            return TP.boot.$uriExpandPath(rawPath);
+                        });
+
+    //  Make sure that we're dealing with absolute paths.
+    loadablePaths = loadablePaths.filter(
+                        function(aPath) {
+                            return TP.boot.$uriIsAbsolute(
+                                    TP.boot.$uriExpandPath(aPath));
+                        });
+
+    //  Concatenate all of the paths together.
+    allPaths = prebootLibPaths.concat(prebootAppPaths,
+                                        packagePaths,
+                                        loadablePaths);
+
+    //  Separate lib vs. app paths into two groups to load into the two
+    //  different caches.
+
+    //  NOTE: We *include* the TIBET library file here, even though it's loaded
+    //  from a link in the app directory and, therefore, has an app path prefix,
+    //  not a lib path prefix. We do this so that the TIBET library file is
+    //  cached with the rest of the library, not cached with the rest of the
+    //  app. This is important in developer mode when the app developer wants
+    //  the TIBET library to cache, but not their application source.
+
+    //  Separate out the lib paths. These will be loaded into the lib file
+    //  cache.
+    libResourcePath = TP.sys.cfg('boot.lib_resource_path');
+    libPaths = allPaths.filter(
+                function(aPath) {
+                    /* eslint-disable no-extra-parens */
+                    return (aPath.startsWith(libResourcePath) &&
+                            /\.\w+$/.test(aPath)) ||
+                            /tibet.*\.min.js$/.test(aPath);
+                    /* eslint-enable no-extra-parens */
+                });
+
+    //  Separate out the app paths. These will be loaded into the app file
+    //  cache.
+    appResourcePath = TP.sys.cfg('boot.app_resource_path');
+    appPaths = allPaths.filter(
+                function(aPath) {
+                    return aPath.startsWith(appResourcePath) &&
+                            !aPath.startsWith(libResourcePath) &&
+                            /\.\w+$/.test(aPath) &&
+                            !/tibet.*\.min.js$/.test(aPath);
+                });
+
+    return caches.open('TIBET_LIB_CACHE').then(
+        function(cache) {
+            var projectProfile;
+
+            projectProfile = TP.sys.cfg('boot.profile') || 'main@production';
+            top.localStorage.setItem(
+                'TIBET.boot.cached_project_profile', projectProfile);
+
+            if (libCacheNeedsPopulating) {
+                return cache.addAll(libPaths);
+            }
+        }).then(function() {
+            return caches.open('TIBET_APP_CACHE');
+        }).then(function(cache) {
+            if (appCacheNeedsPopulating) {
+                //  Store the project name and version number into local storage
+                //  so that we can find and compare against them in future
+                //  loadings of this application.
+                top.localStorage.setItem(
+                    'TIBET.boot.cached_project_name',
+                    TP.sys.cfg('project.name'));
+                top.localStorage.setItem(
+                    'TIBET.boot.cached_project_version',
+                    TP.sys.cfg('project.version'));
+                return cache.addAll(appPaths);
+            }
+        });
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.configureAndPopulateCaches = function() {
 
     /**
@@ -11226,231 +11442,10 @@ TP.boot.configureAndPopulateCaches = function() {
      * 3. Application user - Both caches are used.
      */
 
-    var populateCaches,
-
-        path,
+    var path,
 
         libCacheRequests,
         appCacheRequests;
-
-    populateCaches = async function(
-        libCacheNeedsPopulating, appCacheNeedsPopulating) {
-
-        var prebootLibPaths,
-            prebootAppPaths,
-
-            phaseOne,
-            phaseTwo,
-
-            package,
-            config,
-
-            nonTeamTIBETEnv,
-
-            packageAssets,
-            teamTIBETAssets,
-            loadableAssets,
-
-            loadablePaths,
-            packagePaths,
-
-            i,
-
-            allPaths,
-
-            libResourcePath,
-            libPaths,
-
-            appResourcePath,
-            appPaths;
-
-        //  Grab the 'built-in' preboot lib paths that were in the cfg() system
-        //  and expand them.
-        prebootLibPaths = TP.sys.cfg('path.preboot_lib_paths');
-        prebootLibPaths = prebootLibPaths.map(
-                            function(aPath) {
-                                return TP.boot.$uriExpandPath(aPath);
-                            });
-
-        //  Grab the 'built-in' preboot app paths that were in the cfg() system
-        //  and expand them.
-        prebootAppPaths = TP.sys.cfg('path.preboot_app_paths');
-        prebootAppPaths = prebootAppPaths.map(
-                            function(aPath) {
-                                return TP.boot.$uriExpandPath(aPath);
-                            });
-
-        //  Next, grab the paths of the module package files themselves.
-
-        //  Grab the current values of 'boot.phase_one' and 'boot.phase_two' and
-        //  then set them to true, so that the list of assets we get in the
-        //  following steps think that we're obtaining resources for both
-        //  phases.
-
-        phaseOne = TP.sys.cfg('boot.phase_one');
-        phaseTwo = TP.sys.cfg('boot.phase_two');
-
-        TP.sys.setcfg('boot.phase_one', true);
-        TP.sys.setcfg('boot.phase_two', true);
-
-        //  Grab the package and config that the user booted with.
-        package = TP.sys.cfg('boot.package');
-        config = TP.sys.cfg('boot.config');
-
-        //  Grab the list of resources using that package and config.
-        packageAssets = await TP.boot.$listPackageAssets(package, config);
-
-        //  If we're running in a non-Team TIBET environment, that means that
-        //  we're running with at least the lib (and possibly the app) in a form
-        //  where some of the resources are inlined. We need to get a list of
-        //  all the 'resource' tags using the package and config that the user
-        //  booted with, but acting as if we're a member of Team TIBET so that
-        //  we can traverse all of the applicable manifest entries to find
-        //  applicable 'resource' tags.
-        nonTeamTIBETEnv = TP.sys.getcfg('boot.teamtibet') !== true;
-        if (nonTeamTIBETEnv) {
-
-            //  Set the flag that members of Team TIBET use to load individual,
-            //  non-inlined, resources.
-            TP.sys.setcfg('boot.teamtibet', true);
-
-            //  'production' means that we're interested in what the manifest
-            //  system calls 'base'.
-            if (config === 'production') {
-                config = 'base';
-            }
-
-            //  Grab the list of resources using that package and config.
-            teamTIBETAssets = await TP.boot.$listPackageAssets(package, config);
-
-            //  Filter out the assets that are not 'resource' tags.
-            teamTIBETAssets = teamTIBETAssets.filter(
-                        function(anElem) {
-                            return anElem.tagName === 'resource';
-                        });
-
-            //  Add those assets to the list of assets we already have.
-            packageAssets = packageAssets.concat(teamTIBETAssets);
-
-            //  Put the Team TIBET flag back.
-            TP.sys.setcfg('boot.teamtibet', false);
-        }
-
-        //  Restore the previous values for 'boot.phase_one' and
-        //  'boot.phase_two'.
-        TP.sys.setcfg('boot.phase_one', phaseOne);
-        TP.sys.setcfg('boot.phase_two', phaseTwo);
-
-        //  Grab the paths of the actual package manifest files themselves that
-        //  were populated into TP.boot.$$packages when we did the processing
-        //  above.
-        packagePaths = Object.keys(TP.boot.$$packages);
-
-        //  Remove the 'main.xml' package file from the list of files to cache.
-        //  It's the one with the version number in it, so we never want to
-        //  cache it (in our controlled cache anyway - we'll let the browser
-        //  handle caching/re-fetching it based on regular browser heuristics).
-        for (i = 0; i < packagePaths.length; i++) {
-            if (/main\.xml$/.test(packagePaths[i])) {
-                packagePaths.splice(i, 1);
-                break;
-            }
-        }
-
-        //  Next, grab the files referenced in those package files. These must
-        //  be assets that have a 'src' or 'href' attribute and then a path is
-        //  obtained and expanded from there.
-
-        loadableAssets = packageAssets.filter(
-                            function(anElem) {
-                                return anElem.hasAttribute('src') ||
-                                        anElem.hasAttribute('href');
-                            });
-
-        loadablePaths = loadableAssets.map(
-                            function(anElem) {
-                                var rawPath;
-
-                                rawPath = anElem.getAttribute('src') ||
-                                            anElem.getAttribute('href');
-                                return TP.boot.$uriExpandPath(rawPath);
-                            });
-
-        //  Make sure that we're dealing with absolute paths.
-        loadablePaths = loadablePaths.filter(
-                            function(aPath) {
-                                return TP.boot.$uriIsAbsolute(
-                                        TP.boot.$uriExpandPath(aPath));
-                            });
-
-        //  Concatenate all of the paths together.
-        allPaths = prebootLibPaths.concat(prebootAppPaths,
-                                            packagePaths,
-                                            loadablePaths);
-
-        //  Separate lib vs. app paths into two groups to load into the two
-        //  different caches.
-
-        //  NOTE: We *include* the TIBET library file here, even though it's
-        //  loaded from a link in the app directory and, therefore, has an app
-        //  path prefix, not a lib path prefix. We do this so that the TIBET
-        //  library file is cached with the rest of the library, not cached with
-        //  the rest of the app. This is important in developer mode when the
-        //  app developer wants the TIBET library to cache, but not their
-        //  application source.
-
-        //  Separate out the lib paths. These will be loaded into the lib file
-        //  cache.
-        libResourcePath = TP.sys.cfg('boot.lib_resource_path');
-        libPaths = allPaths.filter(
-                    function(aPath) {
-                        /* eslint-disable no-extra-parens */
-                        return (aPath.startsWith(libResourcePath) &&
-                                /\.\w+$/.test(aPath)) ||
-                                /tibet.*\.min.js$/.test(aPath);
-                        /* eslint-enable no-extra-parens */
-                    });
-
-        //  Separate out the app paths. These will be loaded into the app file
-        //  cache.
-        appResourcePath = TP.sys.cfg('boot.app_resource_path');
-        appPaths = allPaths.filter(
-                    function(aPath) {
-                        return aPath.startsWith(appResourcePath) &&
-                                !aPath.startsWith(libResourcePath) &&
-                                /\.\w+$/.test(aPath) &&
-                                !/tibet.*\.min.js$/.test(aPath);
-                    });
-
-        return caches.open('TIBET_LIB_CACHE').then(
-            function(cache) {
-                var projectProfile;
-
-                projectProfile = TP.sys.cfg('boot.profile') ||
-                                    'main@production';
-                top.localStorage.setItem(
-                    'TIBET.boot.cached_project_profile', projectProfile);
-
-                if (libCacheNeedsPopulating) {
-                    return cache.addAll(libPaths);
-                }
-            }).then(function() {
-                return caches.open('TIBET_APP_CACHE');
-            }).then(function(cache) {
-                if (appCacheNeedsPopulating) {
-                    //  Store the project name and version number into local
-                    //  storage so that we can find and compare against them in
-                    //  future loadings of this application.
-                    top.localStorage.setItem(
-                        'TIBET.boot.cached_project_name',
-                        TP.sys.cfg('project.name'));
-                    top.localStorage.setItem(
-                        'TIBET.boot.cached_project_version',
-                        TP.sys.cfg('project.version'));
-                    return cache.addAll(appPaths);
-                }
-            });
-    };
 
     //  Grab the lib resource path, defaulting it to the lib root and make sure
     //  it's expanded.
@@ -11648,7 +11643,7 @@ TP.boot.configureAndPopulateCaches = function() {
                                 });
                     }).then(function() {
                         //  Populate one or both caches.
-                        return populateCaches(
+                        return TP.boot.populateCaches(
                                     libCacheNeedsPopulating,
                                     appCacheNeedsPopulating);
                     }).then(function() {
