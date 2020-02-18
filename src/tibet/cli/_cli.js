@@ -1388,8 +1388,38 @@ CLI.normalizeLineEndings = function(content) {
  * by commands that require project initialization to run properly.
  */
 CLI.notInitialized = function() {
-    this.error('Project missing dependencies. Run `tibet init` and retry.');
-    process.exit(1);
+
+    var npmdir,
+        child;
+
+    //  First, check to see if the node_modules directory exists at all. If not,
+    //  tell the user to run 'tibet init'.
+    npmdir = this.expandPath('~npm_dir');
+    if (!sh.test('-d', npmdir)) {
+        this.error('Project missing dependencies. Run `tibet init` and retry.');
+        process.exit(1);
+    } else {
+        //  Otherwise, what (probably) happened is that they ran 'npm install'
+        //  inside of their project and it unlinked TIBET (sigh). Tell them that
+        //  you're relinking TIBET, do that and then tell them to try again.
+
+        child = require('child_process');
+
+        this.warn('Project missing TIBET link. Currently relinking tibet.');
+
+        child.exec('npm link tibet', function(linkerr, linkstdout, linkstderr) {
+
+            if (linkerr) {
+                this.error('Failed to relink: ' + linkstderr);
+                this.warn(
+                    '`git clone` TIBET, `npm link .` it, and retry.');
+                throw new Error();
+            }
+
+            this.warn('TIBET relinked. Try command again.');
+            process.exit(1);
+        }.bind(this));
+    }
 };
 
 
