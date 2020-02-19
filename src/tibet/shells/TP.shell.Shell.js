@@ -3356,10 +3356,9 @@ function(aRequest, forms) {
 
                     //  If the expanded value is an Array or a plain Object,
                     //  then we use the JSON representation as the final
-                    //  expanded value. Otherwise, if we use toString(), an
-                    //  empty Array will produce an empty string, rather than
-                    //  '[]' and plain Objects will always produce '[object
-                    //  Object]'.
+                    //  expanded value. Otherwise, if we use asString(), an
+                    //  empty Array and a plain Object will produce empty
+                    //  strings, rather than '[]' and '{}', respectively.
                     if (TP.isArray(expandedVal) ||
                         TP.isPlainObject(expandedVal)) {
                         expandedVal = TP.js2json(expandedVal);
