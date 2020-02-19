@@ -303,6 +303,7 @@ function(suites, targetIDs) {
         suiteName,
         suiteID,
         ownerID,
+        ownerType,
         targetID,
         leni,
         i,
@@ -339,8 +340,20 @@ function(suites, targetIDs) {
                 break;
             }
 
+            //  If the owner ID ends with '.Type' or '.Inst', then slice that
+            //  off, leaving the pure type name. This is important for the test
+            //  below so that we don't end up matching local tests for a type
+            //  with the '.Inst' versions ('TP.foo.bar' + '.' when all the owner
+            //  has is a trailing 'Inst').
+            if (ownerID.endsWith('.Type') || ownerID.endsWith('.Inst')) {
+                ownerType = ownerID.slice(0, ownerID.lastIndexOf('.'));
+            } else {
+                ownerType = ownerID;
+            }
+
             //  Namespace or "ancestor"? Implied "wildcard" test...
-            if (ownerID.indexOf(targetID + '.') === 0) {
+            if (ownerID.indexOf(targetID + '.') === 0 &&
+                ownerType !== targetID) {
                 matchedSuites.push(suite);
                 break;
             }
