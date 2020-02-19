@@ -12304,6 +12304,35 @@ function(fullName) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.Namespace.Inst.defineMethod('asSource',
+function() {
+
+    /**
+     * @method asSource
+     * @summary Returns the receiver as a TIBET source code string, capable of
+     *     recreating the namespace.
+     * @returns {String} The receiver in valid source code form.
+     */
+
+    return 'TP.defineNamespace(\'' + this.getName() + '\')';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * @method asString
+     * @summary Returns the receiver as a simple string.
+     * @returns {String} The simple string form of the receiver.
+     */
+
+    return this.getName();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Namespace.Inst.defineMethod('definePseudoNativeModule',
 function(typeNamesToExport) {
 
@@ -12474,6 +12503,37 @@ function() {
     }
 
     return keys;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('getLocalName',
+function() {
+
+    /**
+     * @method getLocalName
+     * @summary Returns the local (aka short) name of the receiver without any
+     *     namespace prefix. For namespace objects, this is the same as the
+     *     'namespace prefix'.
+     * @returns {String} The receiver's local name.
+     */
+
+    return this.getNamespacePrefix();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Namespace.Inst.defineMethod('getNamespaceObject',
+function() {
+
+    /**
+     * @method getNamespaceObject
+     * @summary Returns the namespace object of the receiver. For namespace
+     *     objects themselves, this is the root namespace object.
+     * @returns {TP.lang.Namespace} The receiver's namespace object.
+     */
+
+    return TP.sys.getObjectById(this.getNamespaceRoot());
 });
 
 //  ------------------------------------------------------------------------
