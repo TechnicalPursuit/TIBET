@@ -845,8 +845,8 @@ function() {
     /**
      * @method getNamespaceObject
      * @summary Returns the namespace object of the receiver. For example, the
-     * namespace object for TP.lang.RootObject is TP.lang etc.
-     * @returns {String} The receiver's namespace object.
+     *     namespace object for TP.lang.RootObject is TP.lang etc.
+     * @returns {TP.lang.Namespace} The receiver's namespace object.
      */
 
     var name;
