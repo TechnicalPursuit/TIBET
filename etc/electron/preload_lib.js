@@ -24,7 +24,6 @@
     module.exports = function(options) {
 
         var fs,
-            path,
 
             fileDelete,
             fileExists,
@@ -32,7 +31,6 @@
             fileSave;
 
         fs = require('fs');
-        path = require('path');
 
         //  ---
 
@@ -40,20 +38,20 @@
          *
          */
         fileDelete = function(filePath) {
-            console.log('DELETING FILE: ' + filePath);
-            console.log('TODO: IMPLEMENT FILE DELETE.');
 
-            return {
-                ok: true
-            };
+            try {
+                fs.unlinkSync(filePath);
 
-            //  If error, return this:
-            /*
-            return {
-                ok: false,
-                msg: <errMsg>
+                return {
+                    ok: true
+                };
+
+            } catch (e) {
+                return {
+                    ok: false,
+                    msg: e.name + ' : ' + e.message
+                };
             }
-            */
         };
 
         //  ---
@@ -62,20 +60,23 @@
          *
          */
         fileExists = function(filePath) {
-            console.log('TESTING FILE FOR EXISTENCE: ' + filePath);
-            console.log('TODO: IMPLEMENT FILE EXISTS.');
 
-            return {
-                ok: true
-            };
+            var doesExist;
 
-            //  If error, return this:
-            /*
-            return {
-                ok: false,
-                msg: <errMsg>
+            try {
+                doesExist = fs.existsSync(filePath);
+
+                return {
+                    ok: true,
+                    exists: doesExist
+                };
+
+            } catch (e) {
+                return {
+                    ok: false,
+                    msg: e.name + ' : ' + e.message
+                };
             }
-            */
         };
 
         //  ---
@@ -84,20 +85,23 @@
          *
          */
         fileLoad = function(filePath) {
-            console.log('LOADING FILE: ' + filePath);
-            console.log('TODO: IMPLEMENT FILE LOAD.');
 
-            return {
-                ok: true
-            };
+            var data;
 
-            //  If error, return this:
-            /*
-            return {
-                ok: false,
-                msg: <errMsg>
+            try {
+                data = fs.readFileSync(filePath, 'utf8');
+
+                return {
+                    ok: true,
+                    content: data
+                };
+
+            } catch (e) {
+                return {
+                    ok: false,
+                    msg: e.name + ' : ' + e.message
+                };
             }
-            */
         };
 
         //  ---
@@ -106,20 +110,24 @@
          *
          */
         fileSave = function(filePath, body, mode) {
-            console.log('SAVING FILE: ' + filePath);
-            console.log('TODO: IMPLEMENT FILE SAVE.');
 
-            return {
-                ok: true
-            };
+            try {
 
-            //  If error, return this:
-            /*
-            return {
-                ok: false,
-                msg: <errMsg>
+                //  NB: we take the mode, either 'a' or 'w', and append a '+' to
+                //  it so that this call will automatically create the file if
+                //  it doesn't exist.
+                fs.writeFileSync(filePath, body, {flag: mode + '+'});
+
+                return {
+                    ok: true
+                };
+
+            } catch (e) {
+                return {
+                    ok: false,
+                    msg: e.name + ' : ' + e.message
+                };
             }
-            */
         };
 
         //  ---
