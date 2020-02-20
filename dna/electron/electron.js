@@ -105,7 +105,11 @@ createWindow = function() {
     //  Loop over params and add them to the URL
     paramStr = '';
     Object.keys(electronOpts).forEach(function(item) {
-        paramStr += item + '=' + electronOpts[item] + '&';
+        if (electronOpts[item] === true) {
+            paramStr += item + '&';
+        } else {
+            paramStr += item + '=' + electronOpts[item] + '&';
+        }
     });
 
     if (paramStr.length > 0) {
