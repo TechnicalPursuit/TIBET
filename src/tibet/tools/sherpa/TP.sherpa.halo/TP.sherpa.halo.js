@@ -1448,8 +1448,6 @@ function(newTargetTPElem, shouldUnhide) {
             handler.observe(newTargetTPElem, 'TP.sig.DOMReady');
 
             return this;
-        } else {
-            newTargetTPElem.render();
         }
 
         //  Grab rect for the new target. Note that this will be supplied in
