@@ -490,7 +490,7 @@ Cmd.prototype.shexec = function(cmd) {
         throw new Error(result.output);
     }
 
-    return result;
+    return result.toString();
 };
 
 
