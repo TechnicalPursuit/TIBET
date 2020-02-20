@@ -288,7 +288,7 @@ Cmd.prototype.phaseOne = function() {
     cmd = 'git rev-parse --abbrev-ref HEAD';
     result = this.shexec(cmd);
 
-    if (/^\s*develop\s*$/.test(result.output) !== true) {
+    if (/^\s*develop\s*$/.test(result.stdout.trim()) !== true) {
         throw new Error('Releases must be done from develop branch.');
     }
 
@@ -302,7 +302,7 @@ Cmd.prototype.phaseOne = function() {
     result = this.shexec(cmd);
     cmd = 'git rev-parse @{u}';
     result2 = this.shexec(cmd);
-    if (result.output !== result2.output &&
+    if (result.stdout.trim() !== result2.stdout.trim() &&
         !this.options.local &&
         !this.options.dirty) {
         throw new Error('Cannot release from out-of-date local branch.');
@@ -320,15 +320,15 @@ Cmd.prototype.phaseOne = function() {
 
     // Undocumented flag here...unless you count this comment :) Here only for
     // development of the initial release command. TODO: delete this flag.
-    if (/dirty/.test(result.output) && !this.options.dirty) {
+    if (/dirty/.test(result.stdout.trim()) && !this.options.dirty) {
         throw new Error('Cannot release a dirty branch. Stash or commit.');
     }
 
     source = {};
     source.time = new Date().getTime();
 
-    source.describe = result.output.slice(0, -1);
-    // Describe output should always be of the form:
+    source.describe = result.stdout.trim().slice(0, -1);
+    // Describe stdout should always be of the form:
     //      {last_tag}-{commits_since}-g{parent_commit}
     match = source.describe.match(/^(.*)-(\d+)-g([a-zA-Z0-9]+)(-dirty)*$/);
     if (CLI.isValid(match)) {
@@ -415,9 +415,9 @@ Cmd.prototype.phaseOne = function() {
         cmd = 'tibet build --release';
         release = this;
 
-        sh.exec(cmd, function(code, output) {
+        sh.exec(cmd, function(code, stdout) {
             if (code !== 0) {
-                // release.error(output);
+                // release.error(stdout.trim());
                 return;
             }
 
@@ -555,9 +555,9 @@ Cmd.prototype.phaseTwo = function(source) {
 
         release = this;
 
-        sh.exec(cmd, function(code, output) {
+        sh.exec(cmd, function(code, stdout) {
             if (code !== 0) {
-                // release.error(output);
+                // release.error(stdout.trim());
                 return;
             }
 
@@ -568,9 +568,9 @@ Cmd.prototype.phaseTwo = function(source) {
             cmd = 'tibet test';
 
             if (release.options.test && !release.options.quick) {
-                sh.exec(cmd, function(code2, output2) {
+                sh.exec(cmd, function(code2, stdout2) {
                     if (code2 !== 0) {
-                        release.error(output2);
+                        release.error(stdout2.trim());
                         result = release.prompt.question(
                             'tibet test detected errors. Continue anyway?' +
                             ' Enter \'yes\' after inspection: ');
@@ -657,8 +657,8 @@ Cmd.prototype.phaseThree = function(meta) {
             res = release.shexec(cmd);
         }
 
-        if (res && res.output.slice(0, -1)) {
-            release.info(res.output);
+        if (res && res.stdout.trim().slice(0, -1)) {
+            release.info(res.stdout.trim());
         }
     });
 
@@ -699,8 +699,8 @@ Cmd.prototype.phaseThree = function(meta) {
             res = release.shexec(cmd);
         }
 
-        if (res && res.output.slice(0, -1)) {
-            release.info(res.output);
+        if (res && res.stdout.trim().slice(0, -1)) {
+            release.info(res.stdout.trim());
         }
     });
 
@@ -736,8 +736,8 @@ Cmd.prototype.phaseThree = function(meta) {
             res = release.shexec(cmd);
         }
 
-        if (res && res.output.slice(0, -1)) {
-            release.info(res.output);
+        if (res && res.stdout.trim().slice(0, -1)) {
+            release.info(res.stdout.trim());
         }
     });
 
@@ -787,8 +787,8 @@ Cmd.prototype.phaseThree = function(meta) {
             res = release.shexec(cmd);
         }
 
-        if (res && res.output.slice(0, -1)) {
-            release.info(res.output);
+        if (res && res.stdout.trim().slice(0, -1)) {
+            release.info(res.stdout.trim());
         }
     });
 

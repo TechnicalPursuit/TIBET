@@ -158,7 +158,7 @@ Cmd.prototype.execute = function() {
     if (this.options.check) {
 
         result = this.shexec('npm info tibet --json');
-        result = JSON.parse(result.output);
+        result = JSON.parse(result.stdout.trim());
         npmver = result.version;
 
         if (semver.lt(libver, npmver)) {
