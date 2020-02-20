@@ -1048,7 +1048,7 @@ function(options) {
                                     //  assertion (if it isn't being ignored).
                                     if (!testcase.get('$executedAssertion') &&
                                         !testcase.get('ignored')) {
-                                        testcase.fail('No assertions found');
+                                        testcase.fail('No assertions executed');
                                     } else {
                                         testcase.pass();
                                     }
@@ -1095,7 +1095,7 @@ function(options) {
                             //  isn't being ignored).
                             if (!testcase.get('$executedAssertion') &&
                                 !testcase.get('ignored')) {
-                                testcase.fail('No assertions found');
+                                testcase.fail('No assertions executed');
                             } else {
                                 testcase.pass();
                             }
@@ -1134,7 +1134,7 @@ function(options) {
                                     //  assertion (if it isn't being ignored).
                                     if (!testcase.get('$executedAssertion') &&
                                         !testcase.get('ignored')) {
-                                        testcase.fail('No assertions found');
+                                        testcase.fail('No assertions executed');
                                     } else {
                                         testcase.pass();
                                     }
@@ -1183,7 +1183,7 @@ function(options) {
                                     //  'todo' and fail it.
                                     if (!testcase.get('$executedAssertion') &&
                                         !testcase.get('ignored')) {
-                                        testcase.fail('No assertions found');
+                                        testcase.fail('No assertions executed');
                                     } else {
                                         testcase.pass();
                                     }
