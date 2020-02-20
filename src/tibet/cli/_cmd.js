@@ -473,7 +473,8 @@ Cmd.prototype.run = function(argv) {
  * A synchronous call to shelljs's exec utility which standardizes silent flag
  * and error handling to simplify usage for command subtypes.
  * @param {String} cmd The command string to run.
- * @returns {Object} A shelljs return value containing a 'code' and 'output'.
+ * @returns {Object} A shelljs return value containing a 'code', 'stdout' and
+ * 'stderr'.
  */
 Cmd.prototype.shexec = function(cmd) {
 
@@ -487,10 +488,10 @@ Cmd.prototype.shexec = function(cmd) {
     });
 
     if (result.code !== 0) {
-        throw new Error(result.output);
+        throw new Error(result.stderr.trim());
     }
 
-    return result.toString();
+    return result;
 };
 
 
