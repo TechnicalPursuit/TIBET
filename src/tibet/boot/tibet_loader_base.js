@@ -1378,6 +1378,7 @@ TP.sys.needsLoadingIndicator = function() {
      *     loading.
      */
 
+    /*
     var profile;
 
     //  We currently only show a loading indicator during boot if we're running
@@ -1386,6 +1387,12 @@ TP.sys.needsLoadingIndicator = function() {
     profile = TP.sys.cfg('boot.profile') || '';
 
     return /(developer|contributor)/.test(profile);
+    */
+
+    //  It turns out that, on very slow connections, even the non-developer boot
+    //  is slow enough that, especially if the app is using logins, we need to
+    //  show this screen.
+    return true;
 };
 
 //  ----------------------------------------------------------------------------
