@@ -65,8 +65,8 @@ TP.hc(
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
-         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-         *     with call parameters.
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+         *     call parameters.
          * @exception TP.sig.InvalidURI
          * @exception TP.sig.InvalidOperation
          * @exception TP.sig.URIException
@@ -74,7 +74,6 @@ TP.hc(
          */
 
         var path,
-            report,
             msg,
             retVal,
             request;
@@ -93,9 +92,6 @@ TP.hc(
         }
 
         request = TP.request(aRequest);
-
-        //  by default we fail silently
-        report = TP.ifKeyInvalid(request, 'reportErrors', false);
 
         if (TP.regex.HTTP_SCHEME.test(path.toLowerCase())) {
             msg = TP.sc('Local file deletion not supported for HTTP URI ',
@@ -141,11 +137,7 @@ TP.hc(
                     file.remove(false);
                 } catch (e) {
                     message = TP.sc('Unable to delete ', fname);
-                    if (report) {
-                        TP.raise(this,
-                                    'TP.sig.URIException',
-                                    TP.ec(e, message));
-                    }
+                    TP.raise(this, 'TP.sig.URIException', TP.ec(e, message));
 
                     retVal = false;
                     request.fail(message);
@@ -171,9 +163,8 @@ TP.hc(
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
-         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-         *     with call parameters.
-         * @exception TP.sig.InvalidURI
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+         *     call parameters.
          * @exception TP.sig.InvalidOperation
          * @exception TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
@@ -198,8 +189,8 @@ TP.hc(
          *     directly, but it is used indirectly by the TP.$fileExecute() call
          *     to clean up temporary files.
          * @param {String} targetUrl The file URI to remove.
-         * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-         *     with call parameters.
+         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+         *     call parameters.
          * @exception TP.sig.InvalidURI
          * @exception TP.sig.InvalidOperation
          * @exception TP.sig.URIException
@@ -221,16 +212,16 @@ TP.hc(
 
         request = TP.request(aRequest);
 
+        //  expand to support virtual uri input
+        path = TP.uriExpandPath(targetUrl);
+
+        //  make sure that any fragments ('#' followed by word characters)
+        //  is trimmed off
+        if (/#/.test(path)) {
+            path = path.slice(0, path.indexOf('#'));
+        }
+
         if (TP.sys.cfg('boot.context') === 'electron') {
-            //  expand to support virtual uri input
-            path = TP.uriExpandPath(targetUrl);
-
-            //  make sure that any fragments ('#' followed by word characters)
-            //  is trimmed off
-            if (/#/.test(path)) {
-                path = path.slice(0, path.indexOf('#'));
-            }
-
             //  following operation uses local name, not web format
             fname = TP.uriInLocalFormat(path);
 
@@ -240,7 +231,8 @@ TP.hc(
             if (result.ok === false) {
                 TP.raise(this, 'TP.sig.IOFailed');
 
-                msg = TP.sc('File could not be deleted: ', path);
+                msg = TP.sc('File could not be deleted: ', path,
+                                '. Reason: ' + result.msg);
                 request.fail(msg);
 
                 return false;
@@ -290,7 +282,7 @@ TP.hc(
          * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI
-         * @returns {Boolean}
+         * @returns {Boolean} True if the file exists.
          */
 
         var path,
@@ -341,7 +333,7 @@ TP.hc(
          * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI
-         * @returns {Boolean}
+         * @returns {Boolean} True if the file exists.
          */
 
         var path,
@@ -426,11 +418,18 @@ TP.hc(
          * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
          * @exception TP.sig.InvalidURI
-         * @returns {Boolean}
+         * @returns {Boolean} True if the file exists.
          */
 
         var path,
+
             request,
+
+            fname,
+            result,
+
+            msg,
+
             httpObj;
 
         if (!TP.isString(targetUrl)) {
@@ -448,36 +447,70 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        try {
-            httpObj = TP.httpConstruct(path);
-            if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('commObj', httpObj);
+        if (TP.sys.cfg('boot.context') === 'electron') {
+            //  following operation uses local name, not web format
+            fname = TP.uriInLocalFormat(path);
+
+            //  Call the external Electron utilities to test the file for
+            //  existence.
+            result = TP.extern.electron_lib_utils.fileExists(fname);
+
+            if (result.ok === false) {
+                TP.raise(this, 'TP.sig.IOFailed');
+
+                msg = TP.sc('File could not be tested for existence: ', path,
+                            '. Reason: ' + result.msg);
+                request.fail(msg);
+
+                return false;
+            } else {
+                //  The file check completed successfully - complete the request
+                //  with the value of the 'exists' field of the result.
+                request.complete(result.exists);
+
+                //  And return that value.
+                return result.exists;
             }
 
-            httpObj.open(TP.HTTP_GET, path, false);
-            httpObj.send(null);
-        } catch (e) {
-            //  It threw an exception, which means that it definitely didn't
-            //  find it so we always return false if we get here.
-            request.fail(e);
+        } else {
 
-            return false;
+            try {
+                httpObj = TP.httpConstruct(path);
+                if (TP.canInvoke(request, 'atPut')) {
+                    request.atPut('commObj', httpObj);
+                }
+
+                httpObj.open(TP.HTTP_GET, path, false);
+                httpObj.send(null);
+            } catch (e) {
+                //  It threw an exception, which means that it definitely didn't
+                //  find it so we always return false if we get here.
+                request.fail(e);
+
+                return false;
+            }
+
+            //  Webkit usually won't throw an exception if it can't find a URI,
+            //  but will return a variety of status codes, depending on the
+            //  exact browser (i.e. Safari or Chrome).
+
+            //  Chrome workaround -- sigh.
+            if (httpObj.status === 0 && httpObj.responseText === '') {
+
+                //  The file didn't exist - complete the request with a value of
+                //  false.
+                request.complete(false);
+
+                //  And return false.
+                return false;
+            }
+
+            //  The file did exist - complete the request with a value of true.
+            request.complete(true);
+
+            //  And return true.
+            return true;
         }
-
-        //  Webkit usually won't throw an exception if it can't find a URI,
-        //  but will return a variety of status codes, depending on the
-        //  exact browser (i.e. Safari or Chrome).
-
-        //  Chrome workaround -- sigh.
-        if (httpObj.status === 0 && httpObj.responseText === '') {
-            request.complete(false);
-
-            return false;
-        }
-
-        request.complete(true);
-
-        return true;
     }
 ));
 
@@ -499,26 +532,19 @@ TP.hc(
 
         /**
          * @method $fileLoad
-         * @summary Loads the content of targetUrl, returning data in the form
-         *     defined by the 'resultType' property of aRequest.
+         * @summary Loads the content of targetUrl, returning data as text.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-         *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT. The
-         *     default is based on the probable data type of the URI based on
-         *     its extension. shouldReport Boolean False to turn off exception
-         *     reporting. This defaults to false.
+         *     call parameters.
          * @exception TP.sig.InvalidURI
          * @exception TP.sig.PrivilegeViolation
          * @exception TP.sig.IOException
-         * @returns {XMLDocument|String|OrderedPair}
+         * @returns {String}
          */
 
         var request,
             path,
             text,
-            resultType,
-            report,
             httpObj,
             msg,
 
@@ -530,9 +556,7 @@ TP.hc(
             fname,
 
             channel,
-            stream,
-
-            result;
+            stream;
 
         if (!TP.isString(targetUrl)) {
             return TP.raise(this, 'TP.sig.InvalidURI');
@@ -548,11 +572,6 @@ TP.hc(
         }
 
         request = TP.request(aRequest);
-
-        resultType = TP.ifKeyInvalid(request, 'resultType', null);
-        resultType = TP.uriResultType(path, resultType);
-
-        report = TP.ifKeyInvalid(request, 'shouldReport', false);
 
         //  NOTE this flag is set during boot if the system detects that the
         //  xpcom interface must be used for local file access
@@ -645,39 +664,30 @@ TP.hc(
             }
         }
 
-        result = TP.uriResult(text, resultType, report);
-        request.complete(result);
+        request.complete(text);
 
-        return result;
+        return text;
     },
     'safari',
     function(targetUrl, aRequest) {
 
         /**
          * @method $fileLoad
-         * @summary Loads the content of targetUrl, returning data in the form
-         *     defined by the 'resultType' property of aRequest.
+         * @summary Loads the content of targetUrl, returning data as text.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-         *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT. The
-         *     default is based on the probable data type of the URI based on
-         *     its extension. shouldReport Boolean False to turn off exception
-         *     reporting. This defaults to false.
+         *     call parameters.
          * @exception TP.sig.InvalidURI
          * @exception TP.sig.PrivilegeViolation
          * @exception TP.sig.IOException
-         * @returns {XMLDocument|String|OrderedPair}
+         * @returns {String}
          */
 
         var path,
             request,
             msg,
             text,
-            resultType,
-            report,
-            httpObj,
-            result;
+            httpObj;
 
         if (!TP.isString(targetUrl)) {
             return TP.raise(this, 'TP.sig.InvalidURI');
@@ -693,11 +703,6 @@ TP.hc(
         }
 
         request = TP.request(aRequest);
-
-        resultType = TP.ifKeyInvalid(request, 'resultType', null);
-        resultType = TP.uriResultType(path, resultType);
-
-        report = TP.ifKeyInvalid(request, 'shouldReport', false);
 
         try {
             httpObj = TP.httpConstruct(path);
@@ -765,37 +770,30 @@ TP.hc(
             return;
         }
 
-        result = TP.uriResult(text, resultType, report);
-        request.complete(result);
+        request.complete(text);
 
-        return result;
+        return text;
     },
     'chrome',
     function(targetUrl, aRequest) {
 
         /**
          * @method $fileLoad
-         * @summary Loads the content of targetUrl, returning data in the form
-         *     defined by the 'resultType' property of aRequest.
+         * @summary Loads the content of targetUrl, returning data as text.
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-         *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT. The
-         *     default is based on the probable data type of the URI based on
-         *     its extension. shouldReport Boolean False to turn off exception
-         *     reporting. This defaults to false.
+         *     call parameters.
          * @exception TP.sig.InvalidURI
          * @exception TP.sig.PrivilegeViolation
          * @exception TP.sig.IOException
-         * @returns {XMLDocument|String|OrderedPair}
+         * @returns {String}
          */
 
         var path,
             request,
+            fname,
             msg,
             text,
-            resultType,
-            report,
             httpObj,
             result;
 
@@ -814,50 +812,67 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        resultType = TP.ifKeyInvalid(request, 'resultType', null);
-        resultType = TP.uriResultType(path, resultType);
+        if (TP.sys.cfg('boot.context') === 'electron') {
+            //  following operation uses local name, not web format
+            fname = TP.uriInLocalFormat(path);
 
-        report = TP.ifKeyInvalid(request, 'shouldReport', false);
+            //  Call the external Electron utilities to load the file
+            result = TP.extern.electron_lib_utils.fileLoad(fname);
 
-        try {
-            httpObj = TP.httpConstruct(path);
-            if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('commObj', httpObj);
+            if (result.ok === false) {
+                TP.raise(this, 'TP.sig.IOFailed');
+
+                msg = TP.sc('File could not be loaded: ', path,
+                            '. Reason: ' + result.msg);
+                request.fail(msg);
+
+                return;
             }
 
-            httpObj.open(TP.HTTP_GET, path, false);
-            httpObj.send(null);
+            text = result.content;
 
-            text = httpObj.responseText;
-        } catch (e) {
-            //  It threw an exception, which means that it definitely didn't
-            //  find it so we always return null if we get here.
-            msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg) : 0;
+        } else {
 
-            request.fail(msg);
+            try {
+                httpObj = TP.httpConstruct(path);
+                if (TP.canInvoke(request, 'atPut')) {
+                    request.atPut('commObj', httpObj);
+                }
 
-            return;
+                httpObj.open(TP.HTTP_GET, path, false);
+                httpObj.send(null);
+
+                text = httpObj.responseText;
+
+            } catch (e) {
+                //  It threw an exception, which means that it definitely didn't
+                //  find it so we always return null if we get here.
+                msg = TP.sc('Unable to locate: ', path);
+                TP.ifInfo() ? TP.info(msg) : 0;
+
+                request.fail(msg);
+
+                return;
+            }
+
+            //  Webkit usually won't throw an exception if it can't find a URI,
+            //  but will return a variety of status codes, depending on the
+            //  exact browser (i.e. Safari or Chrome).
+
+            //  Chrome workaround -- sigh.
+            if (httpObj.status === 0 && httpObj.responseText === '') {
+                msg = TP.sc('Unable to locate: ', path);
+                TP.ifInfo() ? TP.info(msg) : 0;
+
+                request.fail(msg);
+
+                return;
+            }
         }
 
-        //  Webkit usually won't throw an exception if it can't find a URI,
-        //  but will return a variety of status codes, depending on the
-        //  exact browser (i.e. Safari or Chrome).
+        request.complete(text);
 
-        //  Chrome workaround -- sigh.
-        if (httpObj.status === 0 && httpObj.responseText === '') {
-            msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg) : 0;
-
-            request.fail(msg);
-
-            return;
-        }
-
-        result = TP.uriResult(text, resultType, report);
-        request.complete(result);
-
-        return result;
+        return text;
     }
 ));
 
@@ -1147,678 +1162,63 @@ TP.hc(
          * @returns {Boolean} True on success, false on failure.
          */
 
-        var request;
-
-        request = TP.request(aRequest);
-
-        TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail('Unsupported operation.');
-
-        return false;
-    }
-));
-
-//  ------------------------------------------------------------------------
-//  FILE EXECUTION
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('$fileExecute',
-TP.hc(
-    'test',
-    TP.sys.getBrowser,
-    'firefox',
-    function(shellUrl, aRequest) {
-
-        /**
-         * @method $fileExecute
-         * @summary Executes a command (e.g. a file found on the current OS
-         *     platform), passing it any command arguments provided. The command
-         *     is executed by the shell provided where that shell is being
-         *     invoked with any flags given by shellFlags.
-         * @description The best way to think about this command is to imagine
-         *     that you had a batch file or shell script on the local platform
-         *     that was composed of the command line 'shell flags cmd args' in
-         *     that order. (In point of fact, this is what TIBET builds for you
-         *     during operation of this function for Windows).
-         *
-         *     The shell in this case is the first element of the command line,
-         *     but not the "root shell" as it were. In other words, on Windows
-         *     you're always starting from cmd.exe (or perhaps hstart.exe on
-         *     Mozilla if available to avoid popup windows). On *NIX platforms
-         *     you're always starting from /bin/sh.
-         * @param {String} shellUrl URL of the command shell you want to use.
-         *     Examples are file:///bin/bash or perhaps
-         *     file:///c:/.../powershell.exe.
-         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-         *     keys which can/should include: shellFlags String One or more
-         *     shell arguments or flags such as "/c" (cmd.exe), "-c" (bash),
-         *     "-Command" (powershell), or "/NOWINDOW" (hstart.exe). These
-         *     precede the command itself. commandName String The command name
-         *     you want to run in the context of the shell. commandArgs Object
-         *     An optional set of command arguments either in string, array or
-         *     hash form. stdOut String A URI defining where output from the
-         *     command should be placed. Defaults to a temp file used to provide
-         *     access to result data. stdErr String A URI defining where to
-         *     place error output. Defaults to a temp file used to capture
-         *     errors. stdIn String A URI defining a file to use for standard
-         *     input. No default. async Boolean True to run non-blocking.
-         *     Default is false.
-         * @exception TP.sig.InvalidURI
-         * @exception TP.sig.InvalidShell
-         * @exception TP.sig.ProcessException
-         * @exception TP.sig.ExecutionException
-         * @returns {Array<Number,String,String>} An array containing the result
-         *     code (0 on success), the command output, and any error output, in
-         *     string form.
-         */
-
         var request,
-            shellFlags,
-            commandName,
-            commandArgs,
-            stdIn,
-            stdOut,
-            stdErr,
-            async,
 
-            shell,
-            retVal,
+            path,
+
+            append,
+            mode,
+
+            body,
+
+            fname,
+
+            result,
+
             msg;
 
-        if (!TP.isString(shellUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI');
-        }
-
         request = TP.request(aRequest);
 
-        shellFlags = request.at('shellFlags');
-        commandName = request.at('commandName');
-        commandArgs = request.at('commandArgs');
+        //  expand to support virtual uri input
+        path = TP.uriExpandPath(targetUrl);
 
-        stdIn = request.at('stdIn');
-        stdOut = request.at('stdOut');
-        stdErr = request.at('stdErr');
-
-        async = request.atIfInvalid('async', false);
-
-        //  command name is required or there's nothing to do
-        if (!TP.isString(commandName)) {
-            msg = TP.sc('Must supply a commandName to execute.');
-            TP.raise(this, 'TP.sig.InvalidParameter', msg);
-
-            request.fail(msg);
-
-            return TP.ac(TP.FAILED, null, msg);
+        //  make sure that any fragments ('#' followed by word characters)
+        //  is trimmed off
+        if (/#/.test(path)) {
+            path = path.slice(0, path.indexOf('#'));
         }
 
-        //  when not a real value we'll just default to an empty prefix value
-        if (TP.sys.isWin()) {
-            shell = TP.uriInLocalFormat(TP.ifInvalid(shellUrl, ''));
-        } else {
-            //  on *NIX we'll use the comspec, so we'll try to exec the same
-            //  shell we'll be using for the overall process unless told
-            //  otherwise
-            shell = TP.uriInLocalFormat(
-                    TP.ifInvalid(shellUrl, TP.sys.cfg('os.comspec_path')));
-        }
+        //  default is to blow away old copy if any and create a new file
+        append = TP.ifKeyInvalid(request, 'append', false);
+        mode = append ? TP.APPEND : TP.WRITE;
 
-        if (/ /.test(shell)) {
-            if (TP.sys.isWin()) {
-                //  on Windows we can quote the path
-                shell = '"' + shell + '"';
+        body = TP.ifKeyInvalid(request, 'body', '');
+
+        if (TP.sys.cfg('boot.context') === 'electron') {
+            //  following operation uses local name, not web format
+            fname = TP.uriInLocalFormat(path);
+
+            //  Call the external Electron utilities to save the file
+            result = TP.extern.electron_lib_utils.fileSave(fname, body, mode);
+
+            if (result.ok === false) {
+                TP.raise(this, 'TP.sig.IOFailed');
+
+                msg = TP.sc('File could not be saved: ', path,
+                                '. Reason: ' + result.msg);
+                request.fail(msg);
+
+                return false;
             } else {
-                //  on *NIX we escape via backslashed spaces
-                shell = shell.replace(/ /g, '\\ ');
+                request.complete(true);
+
+                return true;
             }
+
+        } else {
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
+            request.fail('Unsupported operation.');
         }
-
-        //  We need to request privileges from Mozilla to perform this
-        //  operation. We don't bother trying this operation without
-        //  privileges because we still need them, even if we were launched
-        //  from the 'same domain' (i.e. the file system).
-
-        TP.executePrivileged(
-            TP.HOST_CMD_EXEC,
-            TP.sc('This TIBET-based application would like to execute ' +
-                        'the following command on the host system: ',
-                        commandName, ' ', commandArgs),
-            TP.sc('This TIBET-based application cannot execute the ' +
-                        'following command on the host system: ',
-                        commandName, ' ', commandArgs),
-            false,      //  don't even attempt this this without privileges
-            function() {
-
-                var flags,
-                    cmd,
-                    args,
-                    message,
-
-                    cmdline,
-                    cmdext,
-                    cmdarr,
-
-                //  the batch file content and file s
-                    cmdText,    //  content we'll write to the file
-                    cmdFile,    //  generated batch file name
-                    doneFile,   //  semaphore file for async calling
-                    inFile,
-                    errFile,
-                    outFile,
-                    loadFile,   //  file currently being read back in for
-                                //  data
-
-                //  processing
-                    process,
-                    result,
-
-                //  results
-                    output,
-                    errors,
-
-                //  sync/async support flag/functions
-                    listen,
-                    cleanup,
-                    sig,
-                    id,
-
-                //  moz util/component elements
-                    cls,
-                    svc,
-                    file,
-                    pid,
-                    params;
-
-                //  note the "invalid" here, not "empty" to allow setting
-                //  empty flags
-                if (TP.sys.isWin()) {
-                    flags = TP.ifInvalid(shellFlags, '');
-                } else {
-                    flags = TP.ifInvalid(shellFlags,
-                                            TP.sys.cfg('os.comspec_flags'));
-                }
-
-                if (TP.isString(flags)) {
-                    flags = flags.split(' ');
-                }
-
-                //  command name, normally not even a URI, but might be one,
-                //  in which case we'll need to quote it if there are spaces
-                //  in the path.
-                //  NOTE that because of this you can't pass full commands
-                //  with args in this fashion when the command itself has
-                //  spaces in it.
-                cmd = TP.uriInLocalFormat(commandName);
-                if (/ /.test(cmd)) {
-                    if (TP.sys.isWin()) {
-                        cmd = '"' + cmd + '"';
-                    } else {
-                        cmd = cmd.replace(/ /g, '\\ ');
-                    }
-                }
-
-                //  process the command arguments into something we can put
-                //  on the end of the command name. NOTE that we don't
-                //  attempt to process any of these for potential quoting
-                //  issues so if they reference files it'll be up to the
-                //  caller to manage that
-                if (TP.isString(commandArgs)) {
-                    args = commandArgs;
-                } else if (TP.isArray(commandArgs)) {
-                    args = commandArgs.join(' ');
-                } else if (TP.isHash(commandArgs)) {
-                    args = commandArgs.asArray().flatten().join(' ');
-                } else {
-                    args = '';
-                }
-
-                //  don't default input since that's very specific to a
-                //  command
-                if (TP.notEmpty(inFile = TP.ifInvalid(stdIn, ''))) {
-                    inFile = TP.uriInLocalFormat(inFile);
-                    if (/ /.test(inFile)) {
-                        if (TP.sys.isWin()) {
-                            inFile = '"' + inFile + '"';
-                        } else {
-                            inFile = inFile.replace(/ /g, '\\ ');
-                        }
-                    }
-                }
-
-                //  stderr and stdout have to be constructed if we're going
-                //  to capture any of the response from the command. when
-                //  overridden it means the user has something else in
-                //  mind... and that'll be taken into account when we get to
-                //  the delete stage
-                errFile = TP.uriInLocalFormat(
-                                TP.ifInvalid(stdErr, TP.uriTempFileName()));
-
-                if (/ /.test(errFile)) {
-                    if (TP.sys.isWin()) {
-                        errFile = '"' + errFile + '"';
-                    } else {
-                        errFile = errFile.replace(/ /g, '\\ ');
-                    }
-                }
-
-                outFile = TP.uriInLocalFormat(
-                                TP.ifInvalid(stdOut, TP.uriTempFileName()));
-
-                if (/ /.test(outFile)) {
-                    if (TP.sys.isWin()) {
-                        outFile = '"' + outFile + '"';
-                    } else {
-                        outFile = outFile.replace(/ /g, '\\ ');
-                    }
-                }
-
-                //  all the parts are ready. now build a valid command line
-                //  for the platform in question based on the various
-                //  elements we've got
-                cmdarr = TP.ac(shell, flags, cmd, args);
-
-                if (TP.notEmpty(inFile)) {
-                    cmdarr.push(
-                        TP.sys.cfg('os.comspec_redirect_in') + inFile);
-                }
-
-                if (TP.notEmpty(outFile)) {
-                    cmdarr.push(
-                        TP.sys.cfg('os.comspec_redirect_out') + outFile);
-                }
-
-                if (TP.notEmpty(errFile)) {
-                    cmdarr.push(
-                        TP.sys.cfg('os.comspec_redirect_err') + errFile);
-                }
-
-                //  expand out the actual command line text
-                cmdline = cmdarr.join(' ').trim();
-
-                //  to help avoid problems with async we use a temp file
-                //  name for our generated batch file as well
-                cmdext = TP.sys.isWin() ? 'bat' : 'sh';
-                cmdFile = TP.uriExpandPath(TP.uriTempFileName(
-                                                null, null, cmdext));
-                cmdFile = TP.uriInLocalFormat(cmdFile);
-
-                if (TP.sys.isWin()) {
-                    cmdText = TP.join('@echo off\n', cmdline);
-                    if (async) {
-                        //  when async we need a semaphore file 'touch' to
-                        //  signal it, so we'll touch a file named the same
-                        //  as the bat file, but with '.done' on the tail
-                        doneFile = TP.join(cmdFile, '.done');
-                        if (/ /.test(doneFile)) {
-                            doneFile = TP.join('"', doneFile, '"');
-                        }
-
-                        //  echoing to our done file will create it and
-                        //  trigger the callback
-                        cmdText = TP.join(cmdText, '\necho "', cmdFile,
-                                            ' done." >', doneFile);
-                    }
-
-                    cmdText = TP.join(cmdText, '\nexit /B\n');
-                } else {
-                    cmdText = TP.join('#!', TP.sys.cfg('os.comspec_path'),
-                                        '\n', cmdline);
-                    if (async) {
-                        //  when async we need a semaphore file 'touch' to
-                        //  signal it, so we'll touch a file named the same
-                        //  as the bat file, but with '.done' on the tail
-                        doneFile = TP.join(cmdFile, '.done');
-                        if (/ /.test(doneFile)) {
-                            doneFile = TP.join('"', doneFile, '"');
-                        }
-
-                        //  echoing to our done file will create it and
-                        //  trigger the callback
-                        cmdText = TP.join(cmdText, '\ntouch ', doneFile);
-                    }
-                }
-
-                if (/ /.test(cmdFile)) {
-                    if (TP.sys.isWin()) {
-                        cmdFile = TP.join('"', cmdFile, '"');
-                    } else {
-                        cmdFile = cmdFile.replace(/ /g, '\\ ');
-                    }
-                }
-
-                //  write out our batch file content
-                /* eslint-disable no-octal */
-                TP.$fileSave(TP.uriInWebFormat(cmdFile),
-                                TP.hc('body', cmdText, 'permissions', 0755,
-                                    'backup', false));
-                /* eslint-enable no-octal */
-
-                //  having built a batch file that contains our command line
-                //  the batch file name now becomes our command line
-                cmdline = cmdFile;
-
-                //  we'll need to clean up all our files when we finish, but
-                //  since we may be run async we want a function we can call
-                //  from the callback wrapper we'll build below
-                cleanup = function() {
-
-                    try {
-                        if (!TP.$$DEBUG) {
-                            //  always remove the command file...it's part
-                            //  of our internal machinery
-                            setTimeout(
-                                function() {
-
-                                    TP.$fileDelete(
-                                        TP.uriInWebFormat(cmdFile));
-                                }, 10);
-
-                            //  and any 'done' file that may also exist
-                            if (TP.notEmpty(doneFile)) {
-                                setTimeout(
-                                    function() {
-
-                                        TP.$fileDelete(
-                                            TP.uriInWebFormat(doneFile));
-                                    }, 10);
-                            }
-
-                            //  only remove the output file if we built it
-                            //  as a temp
-                            if (TP.isEmpty(stdOut)) {
-                                setTimeout(
-                                    function() {
-
-                                        TP.$fileDelete(
-                                            TP.uriInWebFormat(outFile));
-                                    }, 10);
-                            }
-
-                            //  only remove the error file if we built it
-                            //  as a temp
-                            if (TP.isEmpty(stdErr)) {
-                                setTimeout(
-                                    function() {
-
-                                        TP.$fileDelete(
-                                            TP.uriInWebFormat(errFile));
-                                    }, 10);
-                            }
-                        }
-                    } catch (e) {
-                        TP.ifError() ?
-                            TP.error(
-                                TP.ec(e, 'Error deleting file')) :
-                            0;
-                    }
-                };
-
-                //  get a local file instance representing the cmd
-                try {
-                    cls = '@mozilla.org/file/local;1';
-                    svc = Components.interfaces.nsILocalFile;
-
-                    file = Components.classes[cls].createInstance(svc);
-
-                    //  NOTE that our "root shell" isn't provided in this
-                    //  call, it's a configuration parameter that's set
-                    //  once for the application.
-                    //  This is typically either cmd.exe, or hstart.exe for
-                    //  those willing to install it to avoid seeing window
-                    //  popups
-                    file.initWithPath(
-                            TP.uriInLocalFormat(
-                                TP.sys.cfg('os.comspec_path')));
-                } catch (e) {
-                    message = TP.sc('Unable to init shell file: ',
-                                    TP.uriInLocalFormat(
-                                        TP.sys.cfg('os.comspec_path')));
-
-                    TP.raise(this, 'InvalidShell',
-                                TP.ec(e, message));
-
-                    request.fail(message);
-
-                    retVal = TP.ac(TP.FAILED, null, message);
-
-                    return retVal;
-                }
-
-                //  now get a process wrapper for the file
-                try {
-                    cls = '@mozilla.org/process/util;1';
-                    svc = Components.interfaces.nsIProcess;
-
-                    process = Components.classes[cls].createInstance(svc);
-                    process.init(file);
-                } catch (e) {
-                    message = TP.sc('Unable to init process for: ',
-                                TP.uriInLocalFormat(
-                                    TP.sys.cfg('os.comspec_path')));
-
-                    TP.raise(this, 'ProcessException',
-                                TP.ec(e, message));
-
-                    retVal = TP.ac(TP.FAILED, null, message);
-
-                    return retVal;
-                }
-
-                //  sync or not we'll be invoking TP.sig.IOCompleted when
-                //  done
-                sig = TP.sig.Response.construct(request);
-                sig.setSignalName('TP.sig.IOCompleted');
-                id = request.getID();
-
-                sig.atPut('cmdFile', TP.uriInWebFormat(cmdFile));
-                sig.atPut('outFile', TP.uriInWebFormat(outFile));
-                sig.atPut('errFile', TP.uriInWebFormat(errFile));
-
-                if (async) {
-                    //  when async we return the response object so there's
-                    //  a handle to it
-                    retVal = sig;
-
-                    //  if we're not running sync we'll need to set up a
-                    //  'listener' for the touch file we create in our batch
-                    //  file. when that file appears we know the true
-                    //  command has exited
-                    listen = function() {
-
-                        if (TP.$fileExists(TP.uriInWebFormat(doneFile))) {
-                            try {
-                                request.complete();
-                                sig.fire(id);
-                            } finally {
-                                cleanup();
-                            }
-
-                            return;
-                        }
-
-                        //  TODO:   come up with better computations here
-                        if (listen.$$count++ < TP.sys.cfg('os.exec_interval')) {
-                            setTimeout(listen, TP.sys.cfg('os.exec_delay'));
-                        }
-                    };
-
-                    listen.$$count = 0;
-
-                    //  queue the callback listener
-                    setTimeout(listen, 10);
-                }
-
-                pid = {};
-
-                //  the Mozilla process API requires our root shell as the
-                //  process's file and the flags to be passed in an array.
-                //  NOTE: we have to pass each flag separately so we copy
-                //  whatever array of flags was defined and simply add the
-                //  command line pointing to our batch file
-                params = TP.sys.cfg('os.comspec_flags').copy().add(
-                                                        cmdFile.unquoted());
-                try {
-                    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                        TP.trace(
-                            TP.join(
-                                'Launching ',
-                                TP.uriInLocalFormat(
-                                    TP.sys.cfg('os.comspec_path')),
-                                ' ',
-                                TP.sys.cfg('os.comspec_flags').join(' '),
-                                ' for command line: ',
-                                cmdline),
-                            TP.DEBUG) : 0;
-
-                    //  TODO:   older versions use PID, what about newer?
-                    //  run(blocking, args, arg size[, pidObj])
-                    result = process.run(!async, params, params.getSize(),
-                                            pid);
-
-                    if (TP.notTrue(async)) {
-                        //  at this point we should be able to read in the
-                        //  output and error content, remove those files,
-                        //  and return the overall results
-                        loadFile = TP.uriInWebFormat(outFile);
-
-                        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                            TP.trace('outFile: ' + loadFile) : 0;
-
-                        output = TP.$fileLoad(loadFile);
-
-                        loadFile = TP.uriInWebFormat(errFile);
-                        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                            TP.trace('errFile: ' + loadFile) : 0;
-
-                        errors = TP.$fileLoad(loadFile);
-                    }
-                } catch (e) {
-                    message = TP.str(e);
-                    TP.raise(this, 'ExecutionException',
-                                TP.ec(e));
-
-                    request.fail(message);
-
-                    retVal = TP.ac(TP.FAILED, null, message);
-                } finally {
-                    if (TP.notTrue(async)) {
-                        retVal = TP.ac(result, output, errors);
-                        request.complete(retVal);
-                        sig.fire(id);
-
-                        cleanup();
-                    }
-                }
-            });
-
-        return retVal;
-    },
-    'safari',
-    function(shellUrl, aRequest) {
-
-        /**
-         * @method $fileExecute
-         * @summary Executes a command (e.g. a file found on the current OS
-         *     platform), passing it any command arguments provided. The command
-         *     is executed by the shell provided where that shell is being
-         *     invoked with any flags given by shellFlags.
-         * @description The best way to think about this command is to imagine
-         *     that you had a batch file or shell script on the local platform
-         *     that was composed of the command line 'shell flags cmd args' in
-         *     that order. (In point of fact, this is what TIBET builds for you
-         *     during operation of this function for Windows).
-         *
-         *     The shell in this case is the first element of the command line,
-         *     but not the "root shell" as it were. In other words, on Windows
-         *     you're always starting from cmd.exe (or perhaps hstart.exe on
-         *     Mozilla if available to avoid popup windows). On *NIX platforms
-         *     you're always starting from /bin/sh.
-         * @param {String} shellUrl URL of the command shell you want to use.
-         *     Examples are file:///bin/bash or perhaps
-         *     file:///c:/.../powershell.exe.
-         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-         *     keys which can/should include: shellFlags String One or more
-         *     shell arguments or flags such as "/c" (cmd.exe), "-c" (bash),
-         *     "-Command" (powershell), or "/NOWINDOW" (hstart.exe). These
-         *     precede the command itself. commandName String The command name
-         *     you want to run in the context of the shell. commandArgs Object
-         *     An optional set of command arguments either in string, array or
-         *     hash form. stdOut String A URI defining where output from the
-         *     command should be placed. Defaults to a temp file used to provide
-         *     access to result data. stdErr String A URI defining where to
-         *     place error output. Defaults to a temp file used to capture
-         *     errors. stdIn String A URI defining a file to use for standard
-         *     input. No default. async Boolean True to run non-blocking.
-         *     Default is false.
-         * @exception TP.sig.InvalidURI
-         * @exception TP.sig.InvalidShell
-         * @exception TP.sig.ProcessException
-         * @exception TP.sig.ExecutionException
-         * @returns {Array<Number,String,String>} An array containing the result
-         *     code (0 on success), the command output, and any error output, in
-         *     string form.
-         */
-
-        var request;
-
-        request = TP.request(aRequest);
-
-        TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail('Unsupported operation.');
-
-        return false;
-    },
-    'chrome',
-    function(shellUrl, aRequest) {
-
-        /**
-         * @method $fileExecute
-         * @summary Executes a command (e.g. a file found on the current OS
-         *     platform), passing it any command arguments provided. The command
-         *     is executed by the shell provided where that shell is being
-         *     invoked with any flags given by shellFlags.
-         * @description The best way to think about this command is to imagine
-         *     that you had a batch file or shell script on the local platform
-         *     that was composed of the command line 'shell flags cmd args' in
-         *     that order. (In point of fact, this is what TIBET builds for you
-         *     during operation of this function for Windows).
-         *
-         *     The shell in this case is the first element of the command line,
-         *     but not the "root shell" as it were. In other words, on Windows
-         *     you're always starting from cmd.exe (or perhaps hstart.exe on
-         *     Mozilla if available to avoid popup windows). On *NIX platforms
-         *     you're always starting from /bin/sh.
-         * @param {String} shellUrl URL of the command shell you want to use.
-         *     Examples are file:///bin/bash or perhaps
-         *     file:///c:/.../powershell.exe.
-         * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-         *     keys which can/should include: shellFlags String One or more
-         *     shell arguments or flags such as "/c" (cmd.exe), "-c" (bash),
-         *     "-Command" (powershell), or "/NOWINDOW" (hstart.exe). These
-         *     precede the command itself. commandName String The command name
-         *     you want to run in the context of the shell. commandArgs Object
-         *     An optional set of command arguments either in string, array or
-         *     hash form. stdOut String A URI defining where output from the
-         *     command should be placed. Defaults to a temp file used to provide
-         *     access to result data. stdErr String A URI defining where to
-         *     place error output. Defaults to a temp file used to capture
-         *     errors. stdIn String A URI defining a file to use for standard
-         *     input. No default. async Boolean True to run non-blocking.
-         *     Default is false.
-         * @exception TP.sig.InvalidURI
-         * @exception TP.sig.InvalidShell
-         * @exception TP.sig.ProcessException
-         * @exception TP.sig.ExecutionException
-         * @returns {Array<Number,String,String>} An array containing the result
-         *     code (0 on success), the command output, and any error output, in
-         *     string form.
-         */
-
-        var request;
-
-        request = TP.request(aRequest);
-
-        TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail('Unsupported operation.');
 
         return false;
     }
