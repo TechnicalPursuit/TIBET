@@ -2397,6 +2397,70 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.TIBETURN.Inst.describe('values',
+function() {
+
+    var objURI1,
+        objURI2;
+
+    //  ---
+
+    this.beforeEach(function() {
+
+        objURI1 = TP.uc('urn:tibet:objData');
+        objURI2 = TP.uc('urn:tibet:objData#tibet(.)');
+    });
+
+    this.afterEach(function() {
+
+        TP.uri.URI.removeInstance(objURI1);
+        TP.uri.URI.removeInstance(objURI2);
+    });
+
+    //  ---
+
+    this.it('scalar values', function(test, options) {
+
+        var obj,
+
+            uri1Result,
+            uri2Result;
+
+        obj = 42;
+
+        objURI1.setResource(obj);
+
+        uri1Result = objURI1.getResource().get('result');
+        uri2Result = objURI2.getResource().get('result');
+
+        //  The URI should consider itself loaded.
+        test.assert.isEqualTo(uri1Result, obj);
+        test.assert.isEqualTo(uri2Result, obj);
+
+        obj = 'hi';
+
+        objURI1.setResource(obj);
+
+        uri1Result = objURI1.getResource().get('result');
+        uri2Result = objURI2.getResource().get('result');
+
+        //  The URI should consider itself loaded.
+        test.assert.isEqualTo(uri1Result, obj);
+        test.assert.isEqualTo(uri2Result, obj);
+
+        obj = true;
+
+        objURI1.setResource(obj);
+
+        uri1Result = objURI1.getResource().get('result');
+        uri2Result = objURI2.getResource().get('result');
+
+        //  The URI should consider itself loaded.
+        test.assert.isEqualTo(uri1Result, obj);
+        test.assert.isEqualTo(uri2Result, obj);
+    });
+});
+
 //  ------------------------------------------------------------------------
 
 TP.uri.TIBETURN.Inst.describe('value collapsing - XML content',
@@ -3607,6 +3671,168 @@ function() {
         server.respond();
     });
 });// .skip(!TP.sys.isHTTPBased());
+
+//  ========================================================================
+//  FileURL
+//  ========================================================================
+
+TP.uri.FileURL.Inst.describe('getResource',
+function() {
+
+    var params,
+        locStr,
+        resultElem;
+
+    params = TP.request('refresh', true, 'resultType', TP.WRAP);
+    locStr = '~lib_test/src/tibet/uri/fileurl_read_results.xml';
+
+    resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
+
+    //  ---
+
+    this.it('FileURL: Retrieve resource synchronously', function(test, options) {
+        var url,
+            request;
+
+        url = TP.uc(locStr);
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        request = TP.request(params);
+        request.defineMethod('complete',
+            function(aResult) {
+                var result;
+
+                result = aResult;
+
+                if (TP.notValid(result)) {
+                    result = request.get('result');
+                }
+                test.assert.isEqualTo(
+                        result.get('html|body'),
+                        resultElem.get('html|body'));
+
+                //  Make sure to clear the cache for this URL since we use it
+                //  again in later tests.
+                url.clearCaches();
+                url.unregister();
+            });
+
+        url.getResource(request);
+    });
+}).skip(TP.sys.isHTTPBased());
+
+//  ------------------------------------------------------------------------
+
+TP.uri.FileURL.Inst.describe('setResource',
+function() {
+
+    var params,
+        locStr;
+
+    params = TP.hc('refresh', true);
+    locStr = '~lib_test/src/tibet/uri/fileurl_write_results.xml';
+
+    //  ---
+
+    this.it('FileURL: Set resource to object with virtual URI', function(test, options) {
+
+        var request,
+
+            url,
+            obj;
+
+        request = TP.request(params);
+
+        url = TP.uc(locStr);
+        url.setResource('foo');
+        url.save(request);
+
+        //  Make sure to clear the cache for this URL since we want the
+        //  getResource below to fetch the content from disk.
+        url.clearCaches();
+
+        obj = url.getResource().get('result');
+
+        test.assert.isEqualTo(
+                obj,
+                'foo',
+                TP.sc('Expected: ', '"foo"',
+                        ' and got instead: ', obj, '.'));
+    });
+
+    //  ---
+
+    this.it('FileURL: Delete resource', function(test, options) {
+
+        var request,
+
+            url,
+            exists;
+
+        url = TP.uc(locStr);
+
+        request = TP.request(params);
+        exists = TP.$fileExists(url.getLocation(), request);
+
+        test.assert.isTrue(exists);
+
+        request = TP.request(params);
+        url.delete(request);
+
+        request = TP.request(params);
+        exists = TP.$fileExists(url.getLocation(), request);
+
+        test.assert.isFalse(exists);
+    });
+
+}).skip(TP.sys.cfg('boot.context') !== 'electron');
+
+//  ------------------------------------------------------------------------
+
+TP.uri.FileURL.Inst.describe('getResource matrix',
+function() {
+
+    var params,
+        locStr;
+
+    params = TP.request('refresh', true, 'resultType', TP.WRAP);
+    locStr = '~lib_test/src/tibet/uri/fileurl_read_results.xml';
+
+    //  ---
+
+    /*
+     * getResource success when not loaded should:
+     *      signal change (provided new value differs from null/undefined)
+     *      set loaded flag to true
+     *      set dirty flag to false
+     */
+    this.it('FileURL: getResource !loaded success', function(test, options) {
+        var url,
+            request;
+
+        url = TP.uc(locStr);
+
+        //  Verify initial state, not loaded, not dirty.
+        test.assert.isFalse(url.isLoaded());
+        test.assert.isFalse(url.isDirty());
+
+        request = TP.request(params);
+
+        url.getResource(request).then(function(result) {
+            test.assert.didSignal(url, 'ValueChange');
+            test.assert.isTrue(url.isLoaded(), 'loaded');
+            test.assert.isFalse(url.isDirty(), 'dirty');
+        },
+        function(err) {
+            test.fail(err);
+        }).catch(function(err) {
+            test.fail(err);
+        });
+    });
+}).skip(TP.sys.isHTTPBased());
 
 //  ========================================================================
 //  JSONPURL
