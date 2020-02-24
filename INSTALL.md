@@ -35,7 +35,7 @@
 
 # Installation
 
-Before you install TIBET we recommend you check our <a href="#supported">supported platform chart</a> for your platforms/browsers. Microsoft Windows users may need to use Docker, for example.
+Before you install TIBET we recommend you check our <a href="#supported">supported platform chart</a> for your platforms/browsers.
 
 There are a number of ways to install TIBET...
 
@@ -211,9 +211,7 @@ With TIBET cloned, initialized, linked, and built you're ready to rock.
 ###### TIBET CLI / Server
 
 The TIBET CLI, TIBET Data Server (TDS), TIBET Workflow System (TWS) and other server-side
-components are **fully-supported on MacOS and common Linux variants**.
-
-For Microsoft Windows we recommend using Docker or similar container technology. Pre-built <a href="https://hub.docker.com/r/technicalpursuit/tibet">Docker images are available</a>. Native Windows support is being considered but has no release date planned. <a href="http://www.technicalpursuit.com/contact.xhtml">Contact us</a> if you require native Windows TDS, TWS, or CLI components.
+components are **fully-supported on Windows, MacOS and common Linux variants**.
 
 
 ###### TIBET Client / Sherpa
