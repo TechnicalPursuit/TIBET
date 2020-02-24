@@ -186,9 +186,7 @@ function() {
      */
 
     var uiBootIFrameElem,
-        win,
-
-        allDrawers;
+        win;
 
     //  Manually 'display: none' the boot iframe. It's already
     //  'visibility:hidden', but we need to get it out of the way.

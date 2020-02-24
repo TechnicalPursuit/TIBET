@@ -8146,8 +8146,6 @@ function() {
 
                 var windowContext,
 
-                    modelObj,
-
                     field1,
                     field2,
                     field3,
