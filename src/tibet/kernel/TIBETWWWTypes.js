@@ -2545,8 +2545,19 @@ function(anNSURI, aHash) {
      */
 
     var uriStr,
-        info,
+
+        allInfos,
+
+        newPrefix,
+
+        allKeys,
+
+        len,
+        i,
+
         prefix,
+
+        info,
         constName;
 
     if (TP.notValid(anNSURI)) {
@@ -2574,10 +2585,31 @@ function(anNSURI, aHash) {
     //  clear the xmlns definitions used for qualifying markup
     this.$set('XMLNSDefs', null);
 
-    info = TP.w3.Xmlns.get('info').at(uriStr);
+    allInfos = TP.w3.Xmlns.get('info');
+
+    //  If the caller is trying to define a new prefix, make sure one hasn't
+    //  already been defined.
+    newPrefix = aHash.at('prefix');
+
+    if (TP.notEmpty(newPrefix)) {
+
+        allKeys = TP.keys(allInfos);
+        len = allKeys.getSize();
+
+        for (i = 0; i < len; i++) {
+            prefix = allInfos.at(allKeys.at(i)).at('prefix');
+            if (TP.notEmpty(prefix) && prefix === newPrefix) {
+                return this.raise(
+                        'TP.sig.InvalidParameter',
+                        'Namespace prefix already defined: ' + prefix);
+            }
+        }
+    }
+
+    info = allInfos.at(uriStr);
     if (TP.notValid(info)) {
         info = aHash;
-        TP.w3.Xmlns.get('info').atPut(uriStr, info);
+        allInfos.atPut(uriStr, info);
     } else {
         //  merge in the keys we need
         TP.w3.Xmlns.$KEYS.perform(
@@ -2595,13 +2627,13 @@ function(anNSURI, aHash) {
     info.atPut('uri', uriStr);
 
     //  update the prefix list so we can do reverse lookups by prefix
-    if (TP.isValid(prefix = info.at('prefix'))) {
-        TP.w3.Xmlns.get('prefixes').atPut(prefix, uriStr);
+    if (TP.notEmpty(newPrefix)) {
+        TP.w3.Xmlns.get('prefixes').atPut(newPrefix, uriStr);
 
         //  as a final step, register an uppercase version of the prefix with
         //  the TP.w3.Xmlns type.
 
-        constName = prefix.toUpperCase();
+        constName = newPrefix.toUpperCase();
         if (TP.notValid(TP.w3.Xmlns[constName])) {
             TP.w3.Xmlns.Type.defineConstant(constName, uriStr);
         }
