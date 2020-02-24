@@ -2941,13 +2941,13 @@ function() {
      */
 
     var groupName,
-        allNames,
 
         win,
+        groupElem,
 
-        currentGroupName,
-        currentGroupElem,
-        currentGroupTPElem;
+        allNames,
+
+        allElemsWithGroupNames;
 
     //  First, get our group name
     groupName = this.getGroupName();
@@ -2956,24 +2956,50 @@ function() {
         return null;
     }
 
-    allNames = TP.ac();
-
+    //  Next, get the element that is associated with that group.
     win = this.getNativeWindow();
+    groupElem = TP.byId(groupName, win, false);
 
-    currentGroupName = groupName;
-    while (TP.isElement(currentGroupElem =
-                        TP.byId(currentGroupName, win, false))) {
-        allNames.push(currentGroupName);
-
-        currentGroupTPElem = TP.wrap(currentGroupElem);
-
-        if (TP.notValid(currentGroupName =
-                        currentGroupTPElem.getGroupName())) {
-            break;
-        }
+    //  Our group name doesn't correspond to a real Element - it might have been
+    //  removed. Remove our attribute and return null.
+    if (!TP.isElement(groupElem)) {
+        this.removeAttribute('tibet:group');
+        return null;
     }
 
-    return allNames;
+    //  Start collecting our group names by pushing our own group name onto the
+    //  list.
+    allNames = TP.ac();
+    allNames.push(groupName);
+
+    //  If we had a hard group name placed on us, either by the author or by the
+    //  system, then we need to start searching 'upward' *from the group
+    //  element* (not ourself) for ancestors that have 'tibet:group' attributes
+    //  on them.
+    if (this.hasAttribute('tibet:group')) {
+        allElemsWithGroupNames = TP.nodeSelectAncestorsMatchingCSS(
+                                        groupElem,
+                                        'tibet|group');
+    } else {
+        //  Otherwise, search from ourself for ancestors that have 'tibet:group'
+        //  attributes.
+        allElemsWithGroupNames = TP.nodeSelectAncestorsMatchingCSS(
+                                        this.getNativeNode(),
+                                        'tibet|group');
+    }
+
+    //  Iterate over the ancestors and collect the names.
+    allElemsWithGroupNames.forEach(
+        function(aGroupingElem) {
+            allNames.push(
+                TP.elementGetAttribute(aGroupingElem, 'id', true));
+        });
+
+    //  Sometimes we'll have duplicate group names (if we had a hard group name,
+    //  but our grouping ancestor also had that group name - which usually means
+    //  that element was responsible for us having the hard name), so we unique
+    //  the returned group names here.
+    return allNames.unique();
 });
 
 //  ------------------------------------------------------------------------
@@ -2985,16 +3011,31 @@ function() {
      * @method getGroupName
      * @summary Returns the 'tibet:group' element name that the receiver is a
      *     member of.
-     * @returns {String} The 'tibet:group' name that the receiver is a member of
-     *     or null.
+     * @returns {String|null} The 'tibet:group' name that the receiver is a
+     *     member of or null.
      */
 
-    //  If we don't have a 'tibet:group' attribute, then just return a null
-    if (!this.hasAttribute('tibet:group')) {
-        return null;
+    var groupName,
+        ancestorWithGroupName;
+
+    groupName = this.getAttribute('tibet:group');
+
+    //  If we don't have a 'tibet:group' attribute, then check 'up' our
+    //  hierarchy to see if one of our ancestors does.
+    if (TP.isEmpty(groupName)) {
+        ancestorWithGroupName = TP.nodeDetectAncestorMatchingCSS(
+                                        this.getNativeNode(),
+                                        '*[tibet|group]');
+        if (TP.notValid(ancestorWithGroupName)) {
+            return null;
+        }
+
+        groupName = TP.elementGetAttribute(ancestorWithGroupName,
+                                            'tibet:group',
+                                            true);
     }
 
-    return this.getAttribute('tibet:group');
+    return groupName;
 });
 
 //  ------------------------------------------------------------------------

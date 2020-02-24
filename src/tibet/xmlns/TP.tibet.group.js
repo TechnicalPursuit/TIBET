@@ -77,26 +77,18 @@ function(aRequest) {
 
     //  If we provided a query, then build a path object from it and set the
     //  context to be the whole document (since this probably what the author is
-    //  going to be thinking when they write the query).
+    //  going to be thinking when they write the query). Finally, register a
+    //  'subtree query' with the mutation machinery so that any new content is
+    //  assigned a group according to the query.
     if (TP.notEmpty(query = elemTPNode.getAttribute('query'))) {
         query = TP.apc(query);
         context = elemTPNode.getNativeDocument();
-    } else {
-        //  Otherwise, generate an XPath query that will get all nodes under the
-        //  current content element or any Element from the whole document that
-        //  has a 'tibet:group' attribute on it that matches the group element's
-        //  local ID. Also, set the context to the group element.
-        query =
-            TP.xpc('.//node()' +
-                    '|' +
-                    '//*[@tibet:group = "' + elemTPNode.getLocalID() + '"]');
-        context = elem;
-    }
 
-    TP.sig.MutationSignalSource.addSubtreeQuery(
-            elem,
-            query,
-            context);
+        TP.sig.MutationSignalSource.addSubtreeQuery(
+                elem,
+                query,
+                context);
+    }
 
     return;
 });
