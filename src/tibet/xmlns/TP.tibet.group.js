@@ -385,7 +385,7 @@ function(includesGroups) {
     noIntermediateGroups = noIntermediateGroups.filter(
                             function(focusableElem) {
                                 return !TP.isElement(
-                                            TP.nodeAncestorMatchingCSS(
+                                            TP.nodeDetectAncestorMatchingCSS(
                                                 focusableElem,
                                                 'tibet|group',
                                                 elem));

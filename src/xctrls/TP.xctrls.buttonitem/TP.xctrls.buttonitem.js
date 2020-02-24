@@ -68,7 +68,7 @@ function(anElement, aSignal) {
 
     var groupingAncestor;
 
-    groupingAncestor = TP.nodeAncestorMatchingCSS(
+    groupingAncestor = TP.nodeDetectAncestorMatchingCSS(
                                         anElement,
                                         'xctrls|itemgroup,' +
                                         'xctrls|list,' +

@@ -95,11 +95,11 @@ function(anElement, aSelector) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('nodeAncestorMatchingCSS',
+TP.definePrimitive('nodeDetectAncestorMatchingCSS',
 function(aNode, aSelector, stopAncestor) {
 
     /**
-     * @method nodeAncestorMatchingCSS
+     * @method nodeDetectAncestorMatchingCSS
      * @summary Returns the first ancestor of aNode for which aSelector matches.
      * @param {Node} aNode The DOM node to operate on.
      * @param {String} aSelector The selector to match.

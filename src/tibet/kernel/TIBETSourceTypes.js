@@ -1983,7 +1983,7 @@ function() {
 
             //  Search for an ancestor that has the 'tibet:no-mutations'
             //  attribute.
-            ans = TP.nodeAncestorMatchingCSS(
+            ans = TP.nodeDetectAncestorMatchingCSS(
                             target,
                             '*[tibet|no-mutations]');
 
@@ -2459,9 +2459,9 @@ function(aMutationRecord) {
                             //  data set.
                             if (TP.isElement(aNode) &&
                                 TP.isElement(
-                                    ans = TP.nodeAncestorMatchingCSS(
-                                            aNode,
-                                            '*[tibet|no-mutations]'))) {
+                                    ans = TP.nodeDetectAncestorMatchingCSS(
+                                                aNode,
+                                                '*[tibet|no-mutations]'))) {
 
                                 val = TP.elementGetAttribute(
                                         ans, 'tibet:no-mutations', true);
@@ -2540,9 +2540,9 @@ function(aMutationRecord) {
                             //  data set.
                             if (TP.isElement(aNode) &&
                                 TP.isElement(
-                                    ans = TP.nodeAncestorMatchingCSS(
-                                            aNode,
-                                            '*[tibet|no-mutations]'))) {
+                                    ans = TP.nodeDetectAncestorMatchingCSS(
+                                                aNode,
+                                                '*[tibet|no-mutations]'))) {
 
                                 val = TP.elementGetAttribute(
                                         ans, 'tibet:no-mutations', true);

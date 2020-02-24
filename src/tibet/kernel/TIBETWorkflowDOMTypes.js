@@ -2807,7 +2807,8 @@ function(aNode) {
             function(anElem) {
                 var ans;
 
-                ans = TP.nodeAncestorMatchingCSS(anElem, '*[tibet|no-awaken]');
+                ans = TP.nodeDetectAncestorMatchingCSS(anElem,
+                                                        '*[tibet|no-awaken]');
 
                 if (TP.isElement(ans) ||
                     TP.elementHasAttribute(anElem, 'tibet:no-awaken', true)) {
@@ -2824,8 +2825,8 @@ function(aNode) {
                 var ans,
                     textContent;
 
-                ans = TP.nodeAncestorMatchingCSS(aTextNode.parentNode,
-                                                    '*[tibet|no-awaken]');
+                ans = TP.nodeDetectAncestorMatchingCSS(aTextNode.parentNode,
+                                                        '*[tibet|no-awaken]');
 
                 if (TP.isElement(ans) ||
                     TP.elementHasAttribute(aTextNode.parentNode,
@@ -3455,7 +3456,8 @@ function(aNode) {
             function(anElem) {
                 var ans;
 
-                ans = TP.nodeAncestorMatchingCSS(anElem, '*[tibet|no-awaken]');
+                ans = TP.nodeDetectAncestorMatchingCSS(anElem,
+                                                        '*[tibet|no-awaken]');
 
                 if (TP.isElement(ans) ||
                     TP.elementHasAttribute(anElem, 'tibet:no-awaken', true)) {
@@ -3472,8 +3474,8 @@ function(aNode) {
                 var ans,
                     textContent;
 
-                ans = TP.nodeAncestorMatchingCSS(aTextNode.parentNode,
-                                                    '*[tibet|no-awaken]');
+                ans = TP.nodeDetectAncestorMatchingCSS(aTextNode.parentNode,
+                                                        '*[tibet|no-awaken]');
 
                 if (TP.isElement(ans) ||
                     TP.elementHasAttribute(aTextNode.parentNode,

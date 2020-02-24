@@ -2599,7 +2599,7 @@ TP.core.Mouse.Type.defineAttribute(
 
                     //  Otherwise, search up the ancestor chain looking for an
                     //  element with a hover repeat attribute.
-                    repeatAncestor = TP.nodeAncestorMatchingCSS(
+                    repeatAncestor = TP.nodeDetectAncestorMatchingCSS(
                                             targetElem, '*[tibet|hoverrepeat]');
 
                     //  If we found an ancestor that had a hover repeat
@@ -3806,7 +3806,7 @@ function(normalizedEvent) {
 
             //  Otherwise, search up the ancestor chain looking for an element
             //  with a over delay attribute.
-            overAncestor = TP.nodeAncestorMatchingCSS(
+            overAncestor = TP.nodeDetectAncestorMatchingCSS(
                                         targetElem, '*[tibet|overdelay]');
 
             //  If we found an ancestor that had a over delay attribute, then
@@ -3867,7 +3867,7 @@ function(normalizedEvent) {
 
                 //  Otherwise, search up the ancestor chain looking for an
                 //  element with a hover delay attribute.
-                hoverAncestor = TP.nodeAncestorMatchingCSS(
+                hoverAncestor = TP.nodeDetectAncestorMatchingCSS(
                                             targetElem, '*[tibet|hoverdelay]');
 
                 //  If we found an ancestor that had a hover delay attribute,
@@ -4045,7 +4045,7 @@ function(normalizedEvent) {
         }
 
         if (TP.isElement(
-            ans = TP.nodeAncestorMatchingCSS(
+            ans = TP.nodeDetectAncestorMatchingCSS(
                         target,
                         '*[tibet|no-dragtrap]'))) {
 

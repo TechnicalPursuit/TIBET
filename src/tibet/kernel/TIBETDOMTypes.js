@@ -5346,7 +5346,7 @@ function() {
     }
 
     //  Or if one of our ancestors is being recast.
-    ans = TP.nodeAncestorMatchingCSS(elem, '*[tibet|recasting]');
+    ans = TP.nodeDetectAncestorMatchingCSS(elem, '*[tibet|recasting]');
 
     return TP.isElement(ans);
 });
@@ -5945,9 +5945,9 @@ function(aSelector, stopAncestor) {
      *     the CSS.
      */
 
-    return TP.wrap(TP.nodeAncestorMatchingCSS(this.getNativeNode(),
-                                                aSelector,
-                                                stopAncestor));
+    return TP.wrap(TP.nodeDetectAncestorMatchingCSS(this.getNativeNode(),
+                                                    aSelector,
+                                                    stopAncestor));
 });
 
 //  ------------------------------------------------------------------------

@@ -100,7 +100,7 @@ function(anEvent) {
     //  Couldn't find a hint element. Go up the ancestor chain looking for an
     //  'on:mouseover' containing the 'OpenTooltip' signal name.
     if (TP.notValid(hintTPElem)) {
-        targetElem = TP.nodeAncestorMatchingCSS(
+        targetElem = TP.nodeDetectAncestorMatchingCSS(
                             targetElem, '*[on|mouseover*="OpenTooltip"]');
 
         if (TP.isElement(targetElem)) {
