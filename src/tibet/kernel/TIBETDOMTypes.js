@@ -5952,6 +5952,28 @@ function(aSelector, stopAncestor) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.CollectionNode.Inst.defineMethod('getAncestorsBySelector',
+function(aSelector, stopAncestor) {
+
+    /**
+     * @method getAncestorsBySelector
+     * @summary Returns all ancestors of the receiver for which aSelector
+     *     matches.
+     * @param {String} aSelector The selector to match.
+     * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
+     *     this would be identical to the document node of the document that
+     *     the receiver is contained in.
+     * @returns {TP.dom.ElementNode[]|undefined} The ancestor elements that
+     *     match the CSS.
+     */
+
+    return TP.wrap(TP.nodeSelectAncestorsMatchingCSS(this.getNativeNode(),
+                                                        aSelector,
+                                                        stopAncestor));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.CollectionNode.Inst.defineMethod('getChildIndex',
 function(aChild) {
 
