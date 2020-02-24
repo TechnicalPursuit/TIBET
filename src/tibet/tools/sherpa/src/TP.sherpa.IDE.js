@@ -211,28 +211,20 @@ function() {
     //  Set up the World
     this.setupWorld();
 
+    //  Because of the setTimeout below, need to flag ourself not loaded yet.
+    this.set('setupComplete', false);
+
     //  Based on the setting of this flag, we show or hide the center area and
     //  the drawers (the HUD isn't real until we finish setup, so we show or
     //  hide it manually here).
     if (TP.sys.cfg('boot.show_ide')) {
 
-        TP.elementRemoveClass(TP.byId('center', win, false), 'fullscreen');
-
-        allDrawers = TP.byCSSPath('.north, .south, .east, .west',
-                                    win,
-                                    false,
-                                    false);
-
-        allDrawers.perform(
-                    function(anElem) {
-                        TP.elementRemoveAttribute(
-                                    anElem, 'pclass:hidden', true);
-                    });
+        //  NB: Give the user a bit of time to see the app canvas before
+        //  bringing in the HUD.
+        setTimeout(
+            this.setup.bind(this),
+            500);
     }
-
-    //  Even if we showed our drawers above because of the 'boot.show_ide' flag,
-    //  we need to flag ourself not completely loaded yet.
-    this.set('setupComplete', false);
 
     return this;
 });
@@ -3697,111 +3689,92 @@ function() {
     );
     this.set('connectorCollectors', connectorCollectors);
 
-    //  If we didn't show the IDE when we first started, the trigger has now
-    //  been fired to show it.
-    if (!TP.sys.cfg('boot.show_ide')) {
+    drawerElement = TP.byId('south', win, false);
 
-        drawerElement = TP.byId('south', win, false);
+    sherpaFinishSetupFunc = function(aSignal) {
 
-        sherpaFinishSetupFunc = function(aSignal) {
+        var hookElem,
+            logoFinishDisplayFunc;
 
-            var hookElem,
-                logoFinishDisplayFunc;
+        //  Turn off any future notifications.
+        sherpaFinishSetupFunc.ignore(
+            drawerElement, 'TP.sig.DOMTransitionEnd');
 
-            //  Turn off any future notifications.
-            sherpaFinishSetupFunc.ignore(
-                drawerElement, 'TP.sig.DOMTransitionEnd');
+        //  After the drawers have finished animating in, delay,
+        //  giving the animation a chance to finish cleanly before
+        //  proceeding.
+        hookElem = TP.byCSSPath('.right_hook', win, true, false);
+        logoFinishDisplayFunc = function() {
 
-            //  After the drawers have finished animating in, delay,
-            //  giving the animation a chance to finish cleanly before
-            //  proceeding.
-            hookElem = TP.byCSSPath('.right_hook', win, true, false);
-            logoFinishDisplayFunc = function() {
-
-                //  The basic Sherpa framing has been set up, but we complete
-                //  the setup here (after the drawers animate in). Note that
-                //  this will exit but want to service part of its code after
-                //  a short delay.
-                thisref.finishSetup(
-                        function() {
-                            thisref.sherpaSetupComplete();
-                        });
-            };
-
-            //  NB: Because we're bringing in the SVG elements without IDs, we
-            //  need to make sure that the hook element has an ID before
-            //  observing it.
-            TP.lid(hookElem, true);
-
-            logoFinishDisplayFunc.observe(hookElem, 'TP.sig.DOMAnimationEnd');
-        };
-        sherpaFinishSetupFunc.observe(drawerElement, 'TP.sig.DOMTransitionEnd');
-
-        //  Show the center area and the drawers.
-
-        //  First, we remove the 'fullscreen' class from the center element.
-        //  This allows the 'content' element below to properly size it's 'busy
-        //  message layer'.
-        TP.elementRemoveClass(TP.byId('center', win, false),
-                                'fullscreen');
-
-        //  Grab the existing 'content' element, which is now unused since the
-        //  world element moved the screens out of it, and use it to show the
-        //  'loading' element. The HUD will use it later for a 'tools layer'.
-        contentElem = TP.byId('content', win, false);
-
-        loadingImageLoc = TP.uc('~lib_media/tibet_logo.svg').getLocation();
-
-        loadingImageReq = TP.request('uri', loadingImageLoc);
-        loadingImageReq.defineHandler('IOCompleted',
-            function(aSignal) {
-                var loadingSVGElem;
-
-                loadingSVGElem = aSignal.getResult().documentElement;
-
-                (function() {
-
-                    //  Show the content element, only so that we can size its
-                    //  'busy' message layer properly.
-                    TP.elementShow(contentElem);
-                    TP.elementShowBusyMessage(
-                                contentElem,
-                                null,
-                                loadingSVGElem);
-                    TP.elementHide(contentElem);
-
-                }).queueBeforeNextRepaint(TP.nodeGetWindow(contentElem));
-            });
-
-        TP.httpGet(loadingImageLoc, loadingImageReq);
-
-        //  Grab all of the drawer - north, south, east and west
-        allDrawers = TP.byCSSPath('.north, .south, .east, .west',
-                                    win,
-                                    false,
-                                    false);
-
-        //  Show the drawers.
-        allDrawers.forEach(
-                    function(anElem) {
-                        TP.elementRemoveAttribute(
-                                    anElem, 'pclass:hidden', true);
+            //  The basic Sherpa framing has been set up, but we complete
+            //  the setup here (after the drawers animate in). Note that
+            //  this will exit but want to service part of its code after
+            //  a short delay.
+            thisref.finishSetup(
+                    function() {
+                        thisref.sherpaSetupComplete();
                     });
-    } else {
+        };
 
-        //  The basic Sherpa framing has been drawn (because of the setting of
-        //  the 'boot.show_ide' flag), but we complete the setup here.
-        this.finishSetup();
+        //  NB: Because we're bringing in the SVG elements without IDs, we
+        //  need to make sure that the hook element has an ID before
+        //  observing it.
+        TP.lid(hookElem, true);
 
-        TP.byId('SherpaHUD', win).toggle('closed');
+        logoFinishDisplayFunc.observe(hookElem, 'TP.sig.DOMAnimationEnd');
+    };
+    sherpaFinishSetupFunc.observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
-        //  Refresh the input area after waiting for the next repaint. This
-        //  ensures that animations and other layout will happen before the
-        //  editor component tries to compute its layout.
-        (function() {
-            TP.byId('SherpaConsole', win).render();
-        }).queueAfterNextRepaint();
-    }
+    //  Show the center area and the drawers.
+
+    //  First, we remove the 'fullscreen' class from the center element.
+    //  This allows the 'content' element below to properly size it's 'busy
+    //  message layer'.
+    TP.elementRemoveClass(TP.byId('center', win, false),
+                            'fullscreen');
+
+    //  Grab the existing 'content' element, which is now unused since the
+    //  world element moved the screens out of it, and use it to show the
+    //  'loading' element. The HUD will use it later for a 'tools layer'.
+    contentElem = TP.byId('content', win, false);
+
+    loadingImageLoc = TP.uc('~lib_media/tibet_logo.svg').getLocation();
+
+    loadingImageReq = TP.request('uri', loadingImageLoc);
+    loadingImageReq.defineHandler('IOCompleted',
+        function(aSignal) {
+            var loadingSVGElem;
+
+            loadingSVGElem = aSignal.getResult().documentElement;
+
+            (function() {
+
+                //  Show the content element, only so that we can size its
+                //  'busy' message layer properly.
+                TP.elementShow(contentElem);
+                TP.elementShowBusyMessage(
+                            contentElem,
+                            null,
+                            loadingSVGElem);
+                TP.elementHide(contentElem);
+
+            }).queueBeforeNextRepaint(TP.nodeGetWindow(contentElem));
+        });
+
+    TP.httpGet(loadingImageLoc, loadingImageReq);
+
+    //  Grab all of the drawer - north, south, east and west
+    allDrawers = TP.byCSSPath('.north, .south, .east, .west',
+                                win,
+                                false,
+                                false);
+
+    //  Show the drawers.
+    allDrawers.forEach(
+                function(anElem) {
+                    TP.elementRemoveAttribute(
+                                anElem, 'pclass:hidden', true);
+                });
 
     //  ---
 
