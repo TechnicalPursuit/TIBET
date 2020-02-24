@@ -3364,6 +3364,11 @@ function(aRequest, forms) {
                         expandedVal = TP.js2json(expandedVal);
                     } else {
                         expandedVal = TP.str(expandedVal);
+                        if (expandedVal === 'null') {
+                            expandedVal = null;
+                        } else if (expandedVal === 'undefined') {
+                            expandedVal = undefined;
+                        }
                     }
 
                     //  The value we use for the 'original' value depends on
