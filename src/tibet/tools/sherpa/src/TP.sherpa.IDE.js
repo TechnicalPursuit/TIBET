@@ -1111,7 +1111,7 @@ function(aSignal) {
 
                 //  We already processed ARGV above, which includes all ARG*
                 //  arguments.
-                if (/^ARG/.test(argName)) {
+                if (/(^ARG|^tsh:ARG)/.test(argName)) {
                     return;
                 }
 
