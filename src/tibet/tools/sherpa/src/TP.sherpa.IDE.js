@@ -1084,15 +1084,19 @@ function(aSignal) {
     cmdText = ':cli ' + cmdText;
 
     //  Gather up the arguments from the original request (using the
-    //  consoleService's 'model' - i.e. the TSH).
-    originalArgs = consoleService.get('model').getArguments(originalRequest);
+    //  consoleService's 'model' - i.e. the TSH). Note here how we ask for all
+    //  forms of the argument, because we want to use the *original* values.
+    originalArgs = consoleService.get('model').getArguments(originalRequest,
+                                                            TP.ALLFORMS);
 
     //  Iterate over the ARGV, processing any unnamed arguments
     originalArgs.at('ARGV').forEach(
-            function(argName) {
+            function(argValPair) {
                 var val;
 
-                val = argName;
+                //  The 'original' (not expanded) value will be the first value
+                //  in the pair.
+                val = argValPair.first();
                 if (TP.isJSONString(val)) {
                     val = val.quoted();
                 }
@@ -1101,13 +1105,17 @@ function(aSignal) {
             });
 
     //  This is a TP.core.Hash - iterate over it and gather up the arguments.
+    //  These will be key/value pairs where the value is another pair..
     originalArgs.perform(
             function(kvPair) {
                 var argName,
                     argValue;
 
                 argName = kvPair.first();
-                argValue = kvPair.last();
+
+                //  The 'original' (not expanded) value will be the first value
+                //  in the value pair.
+                argValue = kvPair.last().first();
 
                 //  We already processed ARGV above, which includes all ARG*
                 //  arguments.
@@ -1122,7 +1130,7 @@ function(aSignal) {
                     //  Slice off the 'tsh:'
                     argName = argName.slice(4);
 
-                    cmdText += ' --' + argName + '=\'' + argValue + '\'';
+                    cmdText += ' --' + argName + '=' + argValue;
                 }
             });
 
