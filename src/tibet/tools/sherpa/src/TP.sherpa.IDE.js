@@ -1116,6 +1116,9 @@ function(aSignal) {
                 //  The 'original' (not expanded) value will be the first value
                 //  in the value pair.
                 argValue = kvPair.last().first();
+                if (TP.isJSONString(argValue)) {
+                    argValue = argValue.quoted();
+                }
 
                 //  We already processed ARGV above, which includes all ARG*
                 //  arguments.
