@@ -41,7 +41,8 @@ let configure,
     options,
     pkg,
     json,
-    electronOpts;
+    electronOpts,
+    scraping;
 
 //  ---
 //  Main Functions
@@ -65,6 +66,11 @@ configure = function() {
     //  Load JSON to acquire any params for the file URL we'll try to launch.
     json = require('./tibet.json');
     electronOpts = json.electron || {};
+
+    scraping = electronOpts.scraping;
+    if (!scraping) {
+        scraping = false;
+    }
 };
 
 /**
@@ -77,10 +83,6 @@ createWindow = function() {
         fileUrl,
         paramStr,
         profile;
-
-    if (!pkg) {
-        configure();
-    }
 
     //  Verify build directory and add a development profile if not found.
     builddir = pkg.expandPath('~app_build');
@@ -122,7 +124,7 @@ createWindow = function() {
         height: 768,
         webPreferences: {
             preload: CLI.joinPaths(__dirname, './preload.js'),
-            webSecurity: false
+            webSecurity: scraping ? false : true
         }
     });
 
@@ -136,22 +138,27 @@ createWindow = function() {
         mainWindow.webContents.openDevTools();
     }
 
-    //  It is important when performing tasks like scraping web pages, to ignore
-    //  the 'x-frame-options' header and allow access to iframe content.
-    mainWindow.webContents.session.webRequest.onHeadersReceived(
-        function(details, callback) {
-            var entries;
+    //  If we're configured for scraping, then remove 'x-frame-options' headers
+    //  from network responses that this window is managing.
+    if (scraping) {
+        //  It is important when performing tasks like scraping web pages, to
+        //  ignore the 'x-frame-options' header and allow access to iframe
+        //  content.
+        mainWindow.webContents.session.webRequest.onHeadersReceived(
+            function(details, callback) {
+                var entries;
 
-            //  Filter out the 'x-frame-options' header.
-            entries = Object.entries(details.responseHeaders).filter(
-                        function(header) {
-                            return !/x-frame-options/i.test(header[0]);
-                        });
+                //  Filter out the 'x-frame-options' header.
+                entries = Object.entries(details.responseHeaders).filter(
+                            function(header) {
+                                return !/x-frame-options/i.test(header[0]);
+                            });
 
-            callback({
-                responseHeaders: Object.fromEntries(entries)
-            });
-    });
+                callback({
+                    responseHeaders: Object.fromEntries(entries)
+                });
+        });
+    }
 
     //  Log client console to main console...
     mainWindow.webContents.on('console-message',
@@ -198,6 +205,10 @@ createWindow = function() {
     });
 };
 
+/*
+ * Configure the environment
+ */
+configure();
 
 //  ---
 //  Event Handlers
@@ -240,10 +251,12 @@ process.on('uncaughtException', function(err) {
 app.allowRendererProcessReuse = true;
 
 /*
- * Add a command line switch (to command line of the embedded Chrome engine) to
- * bypass Chrome's site isolation testing.
+ * If we're scraping, add a command line switch (to command line of the embedded
+ * Chrome engine) to bypass Chrome's site isolation testing.
  */
-app.commandLine.appendSwitch('disable-site-isolation-trials');
+if (scraping) {
+    app.commandLine.appendSwitch('disable-site-isolation-trials');
+}
 
 /**
  * This method will be called when Electron has finished initialization and is
