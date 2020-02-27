@@ -735,7 +735,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
                     //  RegExp matched (we default to enclosing the value in
                     //  double quotes - the RegExp strips all quoting anyway).
                     return ': ' +
-                            'url("' + importedStyleLocation + '");';
+                            'url("' + importedStyleLocation + '")';
                 });
     }
 
