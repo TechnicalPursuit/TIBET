@@ -1013,6 +1013,56 @@ function(targetUrl) {
 });
 
 //  ------------------------------------------------------------------------
+//  Package Information
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getPackagePaths',
+function(aTypeName) {
+
+    /**
+     * @method getPackagePaths
+     * @summary Returns a 'hierarchical' set of paths (location urls and
+     *     configs) that loaded the supplied type name, from the 'root' package
+     *     that the app is currently loading all the way down to the package
+     *     that had the script entry that contained the supplied type.
+     * @param {String} aTypeName The type name to resolve to a type and list the
+     *     package paths for.
+     * @exception TP.sig.InvalidType Raised when a valid type cannot be resolved
+     *     from the type name provided to the method.
+     * @returns {String[]|null} A list of package paths that loaded the type of
+     *     the supplied type name.
+     */
+
+    var type,
+
+        leafPackage,
+
+        packagePaths;
+
+    type = TP.sys.getTypeByName(aTypeName);
+
+    if (!TP.isType(type)) {
+        this.raise('TP.sig.InvalidType');
+        return null;
+    }
+
+    //  Grab the package that the actual script entry that loaded the type was a
+    //  part of.
+    leafPackage = type[TP.LOAD_PACKAGE];
+    if (TP.notEmpty(leafPackage)) {
+        //  Grab the set of 'package paths' all the way from the 'root' down
+        //  that loaded the type.
+        packagePaths = TP.boot.$$packages[leafPackage].PACKAGE_PATHS;
+    }
+
+    if (TP.notValid(packagePaths)) {
+        return TP.ac();
+    }
+
+    return packagePaths;
+});
+
+//  ------------------------------------------------------------------------
 //  Synchronous Loading
 //  ------------------------------------------------------------------------
 

@@ -9986,6 +9986,7 @@ TP.boot.$$importPhaseTwo = async function(manifest) {
 //  ============================================================================
 
 TP.boot.$$configs = [];
+TP.boot.$$packagePathsStack = [];
 TP.boot.$$packageStack = [];
 TP.boot.$$postImports = [];
 
@@ -10113,6 +10114,7 @@ TP.boot.$expandConfig = async function(anElement, configName) {
         config,
         cfg,
         key,
+        pkg,
         name,
         elem,
         value,
@@ -10186,7 +10188,17 @@ TP.boot.$expandConfig = async function(anElement, configName) {
                     }
 
                     TP.boot.$$configs.push(key);
+
+                    //  Push the current package path onto the stack that we're
+                    //  keeping.
+                    TP.boot.$pushPackagePath(key);
+
+                    //  Expand the config.
                     await TP.boot.$expandConfig(config, cfg);
+
+                    //  Pop the last pushed package path - this is important to
+                    //  keep a 'hierarchy' of paths as we go through.
+                    TP.boot.$popPackagePath();
 
                     break;
 
@@ -10293,7 +10305,21 @@ TP.boot.$expandConfig = async function(anElement, configName) {
                     }
 
                     TP.boot.$$configs.push(key);
-                    await TP.boot.$expandPackage(src, config);
+
+                    //  Push the current package path onto the stack that we're
+                    //  keeping.
+                    TP.boot.$pushPackagePath(key);
+
+                    //  Expand the package and capture the package element.
+                    pkg = await TP.boot.$expandPackage(src, config);
+
+                    //  Capture the set of package paths onto the package
+                    //  element.
+                    pkg.PACKAGE_PATHS = TP.boot.$$packagePathsStack.slice();
+
+                    //  Pop the last pushed package path - this is important to
+                    //  keep a 'hierarchy' of paths as we go through.
+                    TP.boot.$popPackagePath();
 
                     break;
 
@@ -11106,6 +11132,32 @@ includePkgs) {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$popPackagePath = function() {
+
+    /**
+     * @method popPackagePath
+     * @summary Pops an entry off the current stack of packages which are being
+     *     processed as part of an expansion and returns it.
+     */
+
+    return TP.boot.$$packagePathsStack.pop();
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$pushPackagePath = function(aPath) {
+
+    /**
+     * @method $pushPackagePath
+     * @summary Pushes a package path onto the currently processing package name
+     *     stack.
+     * @param {string} aPath The package's full path.
+     */
+
+    TP.boot.$$packagePathsStack.push(aPath);
+};
+
+//  ----------------------------------------------------------------------------
 TP.boot.$popPackage = function() {
 
     /**
