@@ -11908,6 +11908,12 @@ TP.boot.shouldCacheFiles = function() {
      * @returns {Boolean} Whether or not to cache files at all.
      */
 
+    //  If the 'master' cache flag is false, then we definitely return false
+    //  here.
+    if (TP.sys.cfg('boot.use_cache') === false) {
+        return false;
+    }
+
     //  If we're headless, even if we've been launched over HTTP, then we don't
     //  cache any files.
     if (TP.sys.cfg('boot.context') === 'headless') {
@@ -11933,6 +11939,12 @@ TP.boot.shouldCacheAppFiles = function() {
      * @returns {Boolean} Whether or not to cache app files.
      */
 
+    //  If the 'master' cache flag is false, then we definitely return false
+    //  here.
+    if (TP.sys.cfg('boot.use_cache') === false) {
+        return false;
+    }
+
     //  If we're caching files at all, we cache app files as long as we're not
     //  in developer mode.
     if (TP.sys.inDeveloperMode() === true) {
@@ -11952,6 +11964,12 @@ TP.boot.shouldCacheLibFiles = function() {
      * @summary Whether or not we should cache lib files.
      * @returns {Boolean} Whether or not to cache lib files.
      */
+
+    //  If the 'master' cache flag is false, then we definitely return false
+    //  here.
+    if (TP.sys.cfg('boot.use_cache') === false) {
+        return false;
+    }
 
     //  If we're caching files at all, we cache lib files as long as we're HTTP
     //  based.

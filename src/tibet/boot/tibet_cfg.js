@@ -229,6 +229,11 @@
     //  typically leveraged during rollup for production.
     TP.sys.setcfg('boot.inlined', true);
 
+    //  Do we want to use the programmable browser cache? This cache is
+    //  controlled by code in the boot system and driven by the same the package
+    //  config files used for booting..
+    TP.sys.setcfg('boot.use_cache', true);
+
     //  ---
     //  obsolete ???
     //  ---
