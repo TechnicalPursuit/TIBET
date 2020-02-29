@@ -11097,7 +11097,7 @@ includePkgs) {
         result = aList || [];
         await TP.boot.$listConfigAssets(node, result, config, includePkgs);
     } finally {
-        TP.boot.$popPackage(path);
+        TP.boot.$popPackage();
     }
 
     return result;
