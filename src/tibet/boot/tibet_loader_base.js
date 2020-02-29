@@ -9724,9 +9724,9 @@ TP.boot.$importComponents = async function(loadSync) {
 
         //  if we've reached this point then we're not deferring the node so
         //  get the logging and prep work done in anticipation of having the
-        //  source to actually load. Doing this here avoids having to have
-        //  an overly complex callback function when we've got to go over
-        //  the wire to get the actual source before we can import.
+        //  source actually load. Doing this here avoids having to have an
+        //  overly complex callback function when we've got to go over the wire
+        //  to get the actual source before we can import.
         TP.boot.$stdout('Loading ' +
             TP.boot.$uriInTIBETFormat(srcpath ? srcpath : logpath),
             TP.DEBUG);
@@ -10141,9 +10141,9 @@ TP.boot.$expandConfig = async function(anElement, configName) {
                     cfg = child.getAttribute('config') ||
                             anElement.getAttribute('config');
 
-                    //  First try to find one qualified by the config.
-                    //  We have to clone them if qualified so they can
-                    //  live in the same document.
+                    //  First try to find one qualified by the config. We have
+                    //  to clone them if qualified so they can live in the same
+                    //  document.
                     if (TP.boot.$notEmpty(cfg)) {
                         config = anElement.ownerDocument.getElementById(
                             ref + '_' + cfg);
@@ -10245,8 +10245,8 @@ TP.boot.$expandConfig = async function(anElement, configName) {
                     /* falls through */
               case 'image':
 
-                    //  similar to default case but we need to avoid
-                    //  messing with data urls.
+                    //  similar to default case but we need to avoid messing
+                    //  with data urls.
                     src = child.getAttribute('src');
                     if (TP.boot.$notEmpty(src) &&
                         src.indexOf('data:') !== 0) {
@@ -10260,11 +10260,11 @@ TP.boot.$expandConfig = async function(anElement, configName) {
 
                     src = child.getAttribute('src');
 
-                    //  For packages we allow a kind of shorthand where
-                    //  you can specify a directory (with a trailing /)
-                    //  and have that imply a file in that directory
-                    //  with a '.xml' extension and name matching the
-                    //  directory name. This is largely for bundles.
+                    //  For packages we allow a kind of shorthand where you can
+                    //  specify a directory (with a trailing /) and have that
+                    //  imply a file in that directory with a '.xml' extension
+                    //  and name matching the directory name. This is largely
+                    //  for bundles.
                     if (src.charAt(src.length - 1) === '/') {
                         src = src.slice(0, -1);
                         text = src.slice(src.lastIndexOf('/'));
@@ -10307,8 +10307,8 @@ TP.boot.$expandConfig = async function(anElement, configName) {
 
                         value = TP.boot.$getArgumentPrimitive(value);
 
-                        //  If the property is a boot property we need
-                        //  to set it right now or it won't take effect.
+                        //  If the property is a boot property we need to set it
+                        //  right now or it won't take effect.
                         if (name.indexOf('boot.') === 0) {
                             TP.sys.setcfg(name, value);
                         } else {
@@ -10892,7 +10892,8 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
                         throw new Error('config not found: ' + ref);
                     }
 
-                    await TP.boot.$listConfigAssets(config, result, cfg, includePkgs);
+                    await TP.boot.$listConfigAssets(
+                                config, result, cfg, includePkgs);
 
                     break;
 
@@ -11777,7 +11778,8 @@ TP.boot.setupServiceWorker = function() {
      *     ready.
      */
 
-    return navigator.serviceWorker.register('/tibet_service_worker.min.js').then(
+    return navigator.serviceWorker.register(
+        '/tibet_service_worker.min.js').then(
             function(registration) {
                 //  Registration was successful
                 TP.trace('TIBET ServiceWorker' +
