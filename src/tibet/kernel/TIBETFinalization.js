@@ -358,27 +358,6 @@ function() {
 
     (function() {
 
-        msg = 'Populating deferred caches...';
-
-        //  If the app uses logins, then the caches will *not* have been
-        //  populated (due to issues around trying to retrieve all of the
-        //  package XML files and not being able to retrieve the app-level ones
-        //  since we weren't logged in). In that case, either one of these flags
-        //  may be true and we need to call into the boot system to populate
-        //  those caches.
-        if (TP.sys.cfg('boot.use_login')) {
-            if (TP.boot.$libCacheNeedsPopulatingAfterLogin ||
-                TP.boot.$appCacheNeedsPopulatingAfterLogin) {
-                TP.boot.populateCaches(
-                            TP.boot.$libCacheNeedsPopulatingAfterLogin,
-                            TP.boot.$appCacheNeedsPopulatingAfterLogin);
-            }
-        }
-
-    }).queueAfterNextRepaint(rootWindow);
-
-    (function() {
-
         msg = 'Initializing type proxies...';
 
         //  Initialize type proxies for types we didn't load as a result of the
@@ -529,6 +508,33 @@ function() {
 
         //  Load the UI. This will ultimately trigger UIReady.
         TP.sys.loadUIRoot();
+    }).queueAfterNextRepaint(rootWindow);
+
+    //  If caching of the app has been deferred (probably because this is a
+    //  'login based' application), then populate the caches.
+    //  NOTE!!! NOTE!! We *MUST* do this *after* loading the UI root. This
+    //  process turns on and off cfg flags (like 'boot.teamtibet') that will
+    //  interfere with the normal booting operations, so we must wait for all of
+    //  that to have completed.
+    (function() {
+
+        msg = 'Populating deferred caches...';
+
+        //  If the app uses logins, then the caches will *not* have been
+        //  populated (due to issues around trying to retrieve all of the
+        //  package XML files and not being able to retrieve the app-level ones
+        //  since we weren't logged in). In that case, either one of these flags
+        //  may be true and we need to call into the boot system to populate
+        //  those caches.
+        if (TP.sys.cfg('boot.use_login')) {
+            if (TP.boot.$libCacheNeedsPopulatingAfterLogin ||
+                TP.boot.$appCacheNeedsPopulatingAfterLogin) {
+                TP.boot.populateCaches(
+                            TP.boot.$libCacheNeedsPopulatingAfterLogin,
+                            TP.boot.$appCacheNeedsPopulatingAfterLogin);
+            }
+        }
+
     }).queueAfterNextRepaint(rootWindow);
 
     return this;
