@@ -167,7 +167,7 @@ function(aDocument, sheetElemID, aStyleURI) {
 
     //  If the system is running with inlined resources we create 'style'
     //  elements rather than 'link' elements for CSS files.
-    inlined = TP.uriIsInlined(styleLoc);
+    inlined = TP.uriIsInlined(styleLoc, this);
 
     //  If we're inlined and pointed at LESS files redirect to their CSS
     //  counterpart. Part of inlining is that we serve compiled/cached CSS.

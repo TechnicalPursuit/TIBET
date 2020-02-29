@@ -1162,7 +1162,7 @@ function(aPath) {
 //  ----------------------------------------------------------------------------
 
 TP.definePrimitive('uriIsInlined',
-function(aPath) {
+function(aPath, aType) {
 
     /**
      * @method uriIsInlined
@@ -1170,10 +1170,17 @@ function(aPath) {
      *     will be different depending on whether the supplied path points to a
      *     'lib' resource or an 'app' resource.
      * @param {String} aPath The path to be tested.
+     * @param {TP.meta.lang.RootObject} [aType] An optional type that will allow
+     *     this method to be smarter around determining whether something is
+     *     truly a lib or app resource (i.e. if it loads 'alacarte', it will
+     *     report as a lib resource, but it is really an app resource).
      * @returns {Boolean} True if the path points to an inlined resource.
      */
 
-    var inlined;
+    var inlined,
+
+        packagePaths,
+        packagePathStr;
 
     if (TP.isEmpty(aPath)) {
         return false;
@@ -1182,7 +1189,35 @@ function(aPath) {
     //  If the system is running with inlined resources we create 'style'
     //  elements rather than 'link' elements for CSS files.
     if (TP.uriIsLibResource(aPath)) {
-        inlined = !TP.sys.cfg('boot.teamtibet');
+
+        //  If a real type was supplied, use a smarter mechanism to determine
+        //  whether it is inlined or not.
+        if (TP.isType(aType)) {
+
+            //  If the type's package itself is 'alacarte' or in investigating
+            //  it's 'package paths' it can be determined to be an 'alacarte'
+            //  resoure, then it is really an app resource and should refer to
+            //  the 'boot.inlined' flag.
+
+            if (aType[TP.LOAD_CONFIG] === 'alacarte') {
+                inlined = TP.sys.cfg('boot.inlined');
+            } else {
+                packagePaths = TP.sys.getPackagePaths(aType.getName());
+                if (TP.notEmpty(packagePaths)) {
+                    packagePathStr = TP.str(packagePaths);
+                    if (/alacarte/.test(packagePathStr)) {
+                        inlined = TP.sys.cfg('boot.inlined');
+                    }
+                }
+            }
+        }
+
+        //  If the inlined local variable still doesn't have a value, then it
+        //  wasn't an alacarte resource - use the lib-level logic, which is to
+        //  determine whether we're running with the 'boot.teamtibet' flag on.
+        if (TP.notValid(inlined)) {
+            inlined = !TP.sys.cfg('boot.teamtibet');
+        }
     } else if (TP.uriIsAppResource(aPath)) {
         inlined = TP.sys.cfg('boot.inlined');
     } else {
