@@ -1118,6 +1118,9 @@ TP.EXIT = Number.NEGATIVE_INFINITY;
 TP.TRANSITION = 0;
 TP.INPUT = 1;
 
+//  The minimum and maximum date that JavaScript can handle (in milliseconds).
+TP.MIN_DATE = -8640000000000000;
+TP.MAX_DATE = 8640000000000000;
 
 //  result and/or indexing errors
 TP.BAD_INDEX = -1;                          //  bad array/hash index
