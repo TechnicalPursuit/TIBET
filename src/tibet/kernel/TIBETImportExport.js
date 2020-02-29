@@ -941,6 +941,8 @@ function(targetUrl) {
      *     that script source as inlined script source text that integrates the
      *     *text* of that with the JS with the currently running "image".
      * @param {String} targetUrl URL of the target resource.
+     * @exception TP.sig.InvalidURI Raised when a valid URI has not been
+     *     supplied to the method.
      * @returns {Element} The script element that was created to contain the
      *     source.
      */

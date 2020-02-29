@@ -11158,12 +11158,13 @@ TP.boot.$pushPackagePath = function(aPath) {
 };
 
 //  ----------------------------------------------------------------------------
+
 TP.boot.$popPackage = function() {
 
     /**
      * @method popPackage
      * @summary Pops an entry off the current stack of packages which are being
-     *     processed as part of an expansion.
+     *     processed as part of an expansion and returns it.
      */
 
     return TP.boot.$$packageStack.shift();
@@ -11271,6 +11272,19 @@ TP.boot.$importApplication = async function() {
 
 TP.boot.populateCaches = async function(libCacheNeedsPopulating,
     appCacheNeedsPopulating) {
+
+    /**
+     * @method populateCaches
+     * @summary Populates the lib and app caches with content by using the
+     *     manifest files to determine what assets should be cached and which
+     *     cache they should go into.
+     * @param {boolean} libCacheNeedsPopulating Whether or not the lib cache
+     *     needs to be populated.
+     * @param {boolean} appCacheNeedsPopulating Whether or not the app cache
+     *     needs to be populated.
+     * @returns {Promise} A Promise that will resolve when the caches have
+     *     finished populating.
+     */
 
     var prebootLibPaths,
         prebootAppPaths,
