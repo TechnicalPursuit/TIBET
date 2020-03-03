@@ -1018,28 +1018,28 @@ function(targetUrl) {
 //  Package Information
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('getPackagePaths',
+TP.sys.defineMethod('getPackageChainPaths',
 function(aTypeName) {
 
     /**
-     * @method getPackagePaths
-     * @summary Returns a 'hierarchical' set of paths (location urls and
+     * @method getPackageChainPaths
+     * @summary Returns a 'hierarchical' chain of paths (location urls and
      *     configs) that loaded the supplied type name, from the 'root' package
      *     that the app is currently loading all the way down to the package
      *     that had the script entry that contained the supplied type.
      * @param {String} aTypeName The type name to resolve to a type and list the
-     *     package paths for.
+     *     package chain paths for.
      * @exception TP.sig.InvalidType Raised when a valid type cannot be resolved
      *     from the type name provided to the method.
-     * @returns {String[]|null} A list of package paths that loaded the type of
-     *     the supplied type name.
+     * @returns {String[]|null} A list of the chain of package paths that loaded
+     *     the type of the supplied type name.
      */
 
     var type,
 
         leafPackage,
 
-        packagePaths;
+        packageChainPaths;
 
     type = TP.sys.getTypeByName(aTypeName);
 
@@ -1054,14 +1054,14 @@ function(aTypeName) {
     if (TP.notEmpty(leafPackage)) {
         //  Grab the set of 'package paths' all the way from the 'root' down
         //  that loaded the type.
-        packagePaths = TP.boot.$$packages[leafPackage].PACKAGE_PATHS;
+        packageChainPaths = TP.boot.$$packages[leafPackage].PACKAGE_CHAIN_PATHS;
     }
 
-    if (TP.notValid(packagePaths)) {
+    if (TP.notValid(packageChainPaths)) {
         return TP.ac();
     }
 
-    return packagePaths;
+    return packageChainPaths;
 });
 
 //  ------------------------------------------------------------------------

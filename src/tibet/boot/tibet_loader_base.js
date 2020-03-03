@@ -10313,9 +10313,10 @@ TP.boot.$expandConfig = async function(anElement, configName) {
                     //  Expand the package and capture the package element.
                     pkg = await TP.boot.$expandPackage(src, config);
 
-                    //  Capture the set of package paths onto the package
+                    //  Capture the set of package chain paths onto the package
                     //  element.
-                    pkg.PACKAGE_PATHS = TP.boot.$$packagePathsStack.slice();
+                    pkg.PACKAGE_CHAIN_PATHS =
+                                TP.boot.$$packagePathsStack.slice();
 
                     //  Pop the last pushed package path - this is important to
                     //  keep a 'hierarchy' of paths as we go through.
@@ -10762,6 +10763,56 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$isAlacarteResource = function(aPath, pkgChainPaths) {
+
+    /**
+     * @method $isAlacarteResource
+     * @summary Tests whether or not the supplied path points to an alacarte
+     *     resource - which is a resource that, although it is a TIBET library
+     *     resource, is loaded piecemeal by the TIBET application.
+     * @param {String} aPath The path to the resource being tested.
+     * @param {String[]} pkgChainPaths The array of the 'chain' of package paths
+     *     that loaded the resource.
+     * @returns {boolean} Returns true if the supplied path points to an
+     *     alacarte resource.
+     */
+
+    var path,
+
+        isLibResource,
+
+        len,
+        i;
+
+    if (!pkgChainPaths) {
+        return false;
+    }
+
+    path = TP.boot.$expandPath(aPath);
+
+    isLibResource = path.indexOf(TP.boot.$expandPath('~lib')) === 0;
+    if (!isLibResource) {
+        return false;
+    }
+
+    //  Iterate over the chain of package paths. If the 'tibet.xml' package
+    //  is found somewhere in the chain, then it's being loaded as a regular
+    //  library resource.
+    len = pkgChainPaths.length;
+    for (i = 0; i < len; i++) {
+        if (pkgChainPaths[i].indexOf('tibet.xml') !== -1) {
+            return false;
+        }
+    }
+
+    //  Otherwise, it was a library resource but is not being loaded from a
+    //  chain of paths that include 'tibet.xml', so it must be being loaded
+    //  alacarte in the app.
+    return true;
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$isLoadableScript = async function(aURI) {
 
     /**
@@ -10823,7 +10874,7 @@ TP.boot.$isLoadedScript = function(aURI) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$listConfigAssets = async function(anElement, aList, configName, includePkgs) {
+TP.boot.$listConfigAssets = async function(anElement, aList, configName, includePkgs, includeAlacarte) {
 
     /**
      * @method $listConfigAssets
@@ -10835,11 +10886,16 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
      * @param {String} [configName] Specific config name to expand, if any.
      * @param {Boolean} [includePkgs=false] Whether or not to include nested
      *     package nodes.
+     * @param {Boolean} [includeAlacarte=true] Whether or not to include
+     *     alacarte package entries.
      * @returns {String[]} The asset array.
      */
 
-    var list,
-        result,
+    var result,
+
+        doc,
+
+        list,
 
         len,
         i,
@@ -10863,6 +10919,8 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
     if (!TP.boot.$ifUnlessPassed(anElement)) {
         return result;
     }
+
+    doc = anElement.ownerDocument;
 
     list = Array.prototype.slice.call(anElement.childNodes, 0);
 
@@ -10894,11 +10952,9 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
                     //  have to clone them if qualified so they can live in
                     //  the same document.
                     if (TP.boot.$notEmpty(cfg)) {
-                        config = anElement.ownerDocument.getElementById(
-                            ref + '_' + cfg);
+                        config = doc.getElementById(ref + '_' + cfg);
                         if (TP.boot.$notValid(config)) {
-                            config =
-                                anElement.ownerDocument.getElementById(ref);
+                            config = doc.getElementById(ref);
                             if (TP.boot.$notValid(config)) {
                                 msg = 'config not found: ' +
                                     TP.boot.$getCurrentPackage() + '@' + ref;
@@ -10907,11 +10963,11 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
                             config = config.cloneNode(true);
                             config.setAttribute('id', ref + '_' + cfg);
                             config.setAttribute('config', cfg);
-                            config = TP.boot.$getPackageNode(
-                                anElement.ownerDocument).appendChild(config);
+                            config = TP.boot.$getPackageNode(doc).appendChild(
+                                                                    config);
                         }
                     } else {
-                        config = anElement.ownerDocument.getElementById(ref);
+                        config = doc.getElementById(ref);
                     }
 
                     if (TP.boot.$notValid(config)) {
@@ -10919,7 +10975,7 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
                     }
 
                     await TP.boot.$listConfigAssets(
-                                config, result, cfg, includePkgs);
+                            config, result, cfg, includePkgs, includeAlacarte);
 
                     break;
 
@@ -10963,7 +11019,7 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
                     }
 
                     await TP.boot.$listPackageAssets(
-                                src, config, result, includePkgs);
+                            src, config, result, includePkgs, includeAlacarte);
 
                     break;
 
@@ -10998,6 +11054,16 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
                         child.getAttribute('href');
 
                     if (TP.boot.$notEmpty(src)) {
+
+                        //  If we're not supposed to include alacarte resources
+                        //  and it can be determined that the source path leads
+                        //  to one, then just continue, skipping this resource.
+                        if (includeAlacarte === false &&
+                            TP.boot.$isAlacarteResource(
+                                src, child.ownerDocument.PACKAGE_CHAIN_PATHS)) {
+                            continue;
+                        }
+
                         //  Make sure to fully expand the path.
                         src = TP.boot.$getFullPath(child, src);
 
@@ -11051,7 +11117,7 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
 //  ----------------------------------------------------------------------------
 
 TP.boot.$listPackageAssets = async function(aPackage, aConfig, aList,
-includePkgs) {
+includePkgs, includeAlacarte) {
 
     /**
      * @method $listPackageAssets
@@ -11061,9 +11127,11 @@ includePkgs) {
      *     list).
      * @param {string} aPackage The package name or path to list.
      * @param {string} aConfig The ID of the config in the package to list.
-     * @param {String[]} aList The array of asset descriptions to expand upon.
+     * @param {String[]} [aList] The array of asset descriptions to expand upon.
      * @param {Boolean} [includePkgs=false] Whether or not to include nested
      *     package nodes.
+     * @param {Boolean} [includeAlacarte=true] Whether or not to include
+     *     alacarte package entries.
      * @returns {String[]} The asset array.
      */
 
@@ -11122,7 +11190,8 @@ includePkgs) {
             TP.boot.$$assets = {};
         }
         result = aList || [];
-        await TP.boot.$listConfigAssets(node, result, config, includePkgs);
+        await TP.boot.$listConfigAssets(
+                        node, result, config, includePkgs, includeAlacarte);
     } finally {
         TP.boot.$popPackage();
     }
@@ -11304,6 +11373,8 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         loadablePaths,
         packagePaths,
 
+        path,
+
         i,
 
         allPaths,
@@ -11347,7 +11418,8 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
     config = TP.sys.cfg('boot.config');
 
     //  Grab the list of resources using that package and config.
-    packageAssets = await TP.boot.$listPackageAssets(package, config);
+    packageAssets = await TP.boot.$listPackageAssets(
+                                    package, config, null, false, false);
 
     //  If we're running in a non-Team TIBET environment, that means that we're
     //  running with at least the lib (and possibly the app) in a form where
@@ -11370,7 +11442,11 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         }
 
         //  Grab the list of resources using that package and config.
-        teamTIBETAssets = await TP.boot.$listPackageAssets(package, config);
+        teamTIBETAssets = await TP.boot.$listPackageAssets(
+                                    package, config, null, false, false);
+
+        //  Reset config in case we want to use it later.
+        config = TP.sys.cfg('boot.config');
 
         //  Filter out the assets that are not 'resource' tags.
         teamTIBETAssets = teamTIBETAssets.filter(
@@ -11389,19 +11465,36 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
     TP.sys.setcfg('boot.phase_one', phaseOne);
     TP.sys.setcfg('boot.phase_two', phaseTwo);
 
-    //  Grab the paths of the actual package manifest files themselves that were
-    //  populated into TP.boot.$$packages when we did the processing above.
-    packagePaths = Object.keys(TP.boot.$$packages);
+    //  If the config isn't 'production', then we also cache the package
+    //  definition files themselves. We don't do this in a production situation
+    //  since the package definitions are unnecessary (everything has been
+    //  inlined and/or flattened) and the package chain paths aren't available
+    //  anyway.
+    if (config !== 'production') {
+        //  Grab the paths of the actual package manifest files themselves that
+        //  were populated into TP.boot.$$packages when we did the processing
+        //  above.
+        packagePaths = Object.keys(TP.boot.$$packages);
 
-    //  Remove the 'main.xml' package file from the list of files to cache. It's
-    //  the one with the version number in it, so we never want to cache it (in
-    //  our controlled cache anyway - we'll let the browser handle
-    //  caching/re-fetching it based on regular browser heuristics).
-    for (i = 0; i < packagePaths.length; i++) {
-        if (/main\.xml$/.test(packagePaths[i])) {
-            packagePaths.splice(i, 1);
-            break;
+        //  Remove the 'main.xml' package file from the list of files to cache.
+        //  It's the one with the version number in it, so we never want to
+        //  cache it (in our controlled cache anyway - we'll let the browser
+        //  handle caching/re-fetching it based on regular browser heuristics).
+        //  Also, we filter out 'alacarte resources' which are app-level
+        //  resources but have lib-level paths since they are loaded in an
+        //  alacarte fashion in the app config.
+        for (i = 0; i < packagePaths.length; i++) {
+            path = packagePaths[i];
+
+            if (/main\.xml$/.test(path) ||
+                TP.boot.$isAlacarteResource(
+                    path, TP.boot.$$packages[path].PACKAGE_CHAIN_PATHS)) {
+                packagePaths.splice(i, 1);
+                i--;
+            }
         }
+    } else {
+        packagePaths = [];
     }
 
     //  Next, grab the files referenced in those package files. These must be
