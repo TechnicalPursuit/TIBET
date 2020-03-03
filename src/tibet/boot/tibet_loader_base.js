@@ -10862,7 +10862,7 @@ TP.boot.$isLoadedScript = function(aURI) {
      * @method $isLoadedScript
      * @summary Returns true if the URI provided is a script loaded as part of
      *     the current application's package@config settings.
-     * @returns {String[]} The array of loaded scripts.
+     * @returns {boolean} Whether or not the URI points to a loaded script.
      */
 
     var uri;
