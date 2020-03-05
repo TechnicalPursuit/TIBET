@@ -2691,7 +2691,7 @@ function(anObject, aProperty) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('go2',
-function(aURIOrRoute, linkContext) {
+function(aURIOrRoute, winContext) {
 
     /**
      * @method go2
@@ -2702,7 +2702,7 @@ function(aURIOrRoute, linkContext) {
      *     route you must provide a value with a leading '#' to force this call
      *     to recognize the path as a 'client path' rather than a server path.
      * @param {TP.uri.URI|String} aURIOrRoute The URI or route to go to.
-     * @param {Window} linkContext The window with the original link element.
+     * @param {Window} winContext The window with the original link element.
      * @exception TP.sig.InvalidURI
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
      */
@@ -2760,7 +2760,8 @@ function(aURIOrRoute, linkContext) {
         return false;
     }
 
-    if (TP.notValid(context = linkContext)) {
+    context = winContext;
+    if (TP.notValid(context)) {
         //  NB: We go after the native Window here to match this call's API.
         context = TP.sys.getUICanvas(true);
     }
