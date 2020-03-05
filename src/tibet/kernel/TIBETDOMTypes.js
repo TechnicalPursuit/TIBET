@@ -3734,7 +3734,9 @@ function(aDocument) {
         allInstances,
 
         world,
-        screenDocs;
+        screenDocs,
+
+        canvasDoc;
 
     //  Grab our 'originals' registry. This is where we store clones of the
     //  original node.
@@ -3756,21 +3758,30 @@ function(aDocument) {
 
     allInstances = TP.ac();
 
-    //  Get all of the world's documents
+    //  Get the Sherpa world (if we're running the Sherpa).
     world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
-    screenDocs = world.getScreenDocuments();
 
-    //  Go through each document in the world and query it for elements that
-    //  match the instance we're replacing.
-    screenDocs.forEach(
-        function(aTPDoc) {
-            var docInstances;
+    //  If we have a valid Sherpa world, then scan its documents for instances.
+    if (TP.isValid(world)) {
+        //  Get all of the world's documents
+        screenDocs = world.getScreenDocuments();
 
-            //  Find any instances that are currently drawn on the document.
-            docInstances = TP.byCSSPath(cssQuery, aTPDoc.getNativeNode());
+        //  Go through each document in the world and query it for elements that
+        //  match the instance we're replacing.
+        screenDocs.forEach(
+            function(aTPDoc) {
+                var docInstances;
 
-            allInstances = allInstances.concat(docInstances);
-        });
+                //  Find any instances that are currently drawn on the document.
+                docInstances = TP.byCSSPath(cssQuery, aTPDoc.getNativeNode());
+
+                allInstances = allInstances.concat(docInstances);
+            });
+    } else {
+        //  Otherwise, go to the UI canvas and scan it.
+        canvasDoc = TP.sys.getUICanvas();
+        allInstances = TP.byCSSPath(cssQuery, canvasDoc.getNativeNode());
+    }
 
     if (TP.isEmpty(allInstances)) {
         return this;
