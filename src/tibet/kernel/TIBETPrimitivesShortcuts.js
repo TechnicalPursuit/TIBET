@@ -2691,7 +2691,7 @@ function(anObject, aProperty) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('go2',
-function(aURIOrRoute, winContext) {
+function(aURIOrRoute, winContext, event) {
 
     /**
      * @method go2
@@ -2703,11 +2703,17 @@ function(aURIOrRoute, winContext) {
      *     to recognize the path as a 'client path' rather than a server path.
      * @param {TP.uri.URI|String} aURIOrRoute The URI or route to go to.
      * @param {Window} winContext The window with the original link element.
+     * @param {Event} [event] An optional event when this method is called from
+     *     a native event handler. If this parameter is a keyboard or mouse
+     *     event, then the proper TIBET object will be called upon to invoke its
+     *     observers.
      * @exception TP.sig.InvalidURI
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
      */
 
-    var context,
+    var evtProps,
+
+        context,
         loc,
         head,
         tail,
@@ -2717,6 +2723,23 @@ function(aURIOrRoute, winContext) {
     if (TP.notValid(aURIOrRoute)) {
         TP.raise(this, 'TP.sig.InvalidURI');
         return false;
+    }
+
+    if (TP.isEvent(event)) {
+        //  NB: We don't really use these keys, but testing to see which set
+        //  they are in is a useful way to tell whether they are mouse or
+        //  keyboard events. We ignore other types of events here.
+        evtProps = TP.eventGetPropertyKeys(event);
+        switch (evtProps) {
+            case TP.DOM_KEY_PROPERTIES:
+                TP.core.Keyboard.invokeObservers(TP.evtGetType(event), event);
+                break;
+            case TP.DOM_MOUSE_PROPERTIES:
+                TP.core.Mouse.invokeObservers(TP.evtGetType(event), event);
+                break;
+            default:
+                break;
+        }
     }
 
     //  If we get a "route" rather than a full URI update the hash and let the

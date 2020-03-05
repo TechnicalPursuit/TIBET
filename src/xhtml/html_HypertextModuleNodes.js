@@ -175,12 +175,13 @@ function(aRequest) {
 
     //  Then add an 'onclick' that will service any TIBET click handling
     //  machinery and then trigger TIBET's go2 call to process the link at
-    //  runtime. Note the '; return false' to help ensure no traversal.
+    //  runtime. Note that we pass the event object so that the proper observers
+    //  can be invoked and also 'return false' to help ensure no traversal from
+    //  the link.
     TP.elementSetAttribute(
         elem,
         'onclick',
-        'TP.core.Mouse.invokeObservers(\'click\', event);' +
-        ' TP.go2(\'' + href + '\', window);' +
+        ' TP.go2(\'' + href + '\', window, event);' +
         ' return false;',
         true);
 
@@ -267,12 +268,13 @@ function(value) {
 
     //  Then add an 'onclick' that will service any TIBET click handling
     //  machinery and then trigger TIBET's go2 call to process the link at
-    //  runtime. Note the '; return false' to help ensure no traversal.
+    //  runtime. Note that we pass the event object so that the proper observers
+    //  can be invoked and also 'return false' to help ensure no traversal from
+    //  the link.
     TP.elementSetAttribute(
         elem,
         'onclick',
-        'TP.core.Mouse.invokeObservers(\'click\', event);' +
-        ' TP.go2(\'' + value + '\', window);' +
+        ' TP.go2(\'' + value + '\', window, event);' +
         ' return false;',
         true);
 
