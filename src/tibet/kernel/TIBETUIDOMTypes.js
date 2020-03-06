@@ -3805,7 +3805,10 @@ function() {
     var styleURI,
 
         head,
-        loc,
+        styleLoc,
+
+        inlined,
+
         styleElems,
 
         gids;
@@ -3824,17 +3827,27 @@ function() {
         //  stylesheet. Check to see if it is in the head of our document
         //  already.
         head = TP.documentEnsureHeadElement(this.getNativeDocument());
-        loc = styleURI.getLocation();
+        styleLoc = styleURI.getLocation();
+
+        //  If the system is running with inlined resources we create 'style'
+        //  elements rather than 'link' elements for CSS files.
+        inlined = TP.uriIsInlined(styleLoc, this.getType());
+
+        //  If we're inlined and pointed at LESS files redirect to their CSS
+        //  counterpart. Part of inlining is that we serve compiled/cached CSS.
+        if (inlined && styleLoc.endsWith('less')) {
+            styleLoc = styleLoc.replace(/less$/, 'css');
+        }
 
         //  Generate a CSS query that looks under the head for any style
         //  elements that have an 'originalhref' attribute that contains
         //  (anywhere in its path) our styleURI's location. Note that we make
         //  sure to go after only HTML style elements here.
         styleElems = TP.byCSSPath(
-                            '> html|style[tibet|originalhref~="' + loc + '"]',
-                            head,
-                            false,
-                            false);
+                        '> html|style[tibet|originalhref~="' + styleLoc + '"]',
+                        head,
+                        false,
+                        false);
 
         //  If we found at least one matching stylesheet, then we're ready to
         //  render.
