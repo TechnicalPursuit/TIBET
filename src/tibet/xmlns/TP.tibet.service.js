@@ -95,8 +95,16 @@ function(aValue, shouldSignal) {
      *     had before this method was called.
      */
 
+    var elem;
+
+    elem = this.getNativeNode();
+
+    //  If we're setting this value due to an update from the binding machinery
+    //  and we have awakened, then go ahead and activate.
     if (TP.isTrue(TP.$$settingFromBindMachinery)) {
-        this.activate();
+        if (elem[TP.AWAKENED]) {
+            this.activate();
+        }
     }
 
     //  This node type never changes its 'value'.

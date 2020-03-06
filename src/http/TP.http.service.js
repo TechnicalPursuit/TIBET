@@ -699,11 +699,18 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @returns {TP.http.service} The receiver.
      */
 
+    var elem;
+
+    elem = this.getNativeNode();
+
+    //  If we're setting this value due to an update from the binding machinery
+    //  and we have awakened and the aspect name isn't one our 'special' ones,
+    //  then go ahead and activate.
     if (TP.isTrue(TP.$$settingFromBindMachinery)) {
-        if (aspectName !== 'watched' &&
+        if (elem[TP.AWAKENED] &&
+            aspectName !== 'watched' &&
             aspectName !== 'href') {
             this.activate();
-            return this;
         }
     }
 
