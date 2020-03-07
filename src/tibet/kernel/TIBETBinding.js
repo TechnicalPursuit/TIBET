@@ -3806,6 +3806,7 @@ function(indexes, aCollection) {
         index,
 
         newElement,
+        newTPElem,
 
         scopeIndex,
         last,
@@ -3896,6 +3897,7 @@ function(indexes, aCollection) {
         //  Make sure to clone the content and set it's 'bind:scope' to the
         //  index that we're inserting at.
         newElement = TP.nodeCloneNode(repeatContent);
+        newTPElem = TP.wrap(newElement);
 
         //  NB: We don't do index adjustment here for XML resources since the
         //  changed indices were supplied to this call already having been
@@ -3911,8 +3913,8 @@ function(indexes, aCollection) {
                         '$REQUEST', null,
                         'TP', TP,
                         'APP', APP,
-                        '$SOURCE', null,
-                        '$TAG', this,
+                        '$SOURCE', this,
+                        '$TAG', newTPElem,
                         '$TARGET', tpDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
@@ -3931,8 +3933,8 @@ function(indexes, aCollection) {
                         '$REQUEST', null,
                         'TP', TP,
                         'APP', APP,
-                        '$SOURCE', null,
-                        '$TAG', this,
+                        '$SOURCE', this,
+                        '$TAG', newTPElem,
                         '$TARGET', tpDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
@@ -3945,7 +3947,7 @@ function(indexes, aCollection) {
                         '$#', scopeIndex);
             }
 
-            result = str.transform(newElement, info);
+            result = str.transform(null, info);
             newElement = TP.elem(result);
         }
 
@@ -5777,6 +5779,7 @@ function(aCollection, elems) {
         i,
 
         newElement,
+        newTPElem,
 
         newElems,
         elemIndex,
@@ -5864,6 +5867,7 @@ function(aCollection, elems) {
 
         //  Make sure to clone the content.
         newElement = TP.nodeCloneNode(repeatContent);
+        newTPElem = TP.wrap(newElement);
 
         //  If this is an XML resource, then we need to bump the number by 1
         //  because XPath is 1-based.
@@ -5882,8 +5886,8 @@ function(aCollection, elems) {
                         '$REQUEST', null,
                         'TP', TP,
                         'APP', APP,
-                        '$SOURCE', null,
-                        '$TAG', this,
+                        '$SOURCE', this,
+                        '$TAG', newTPElem,
                         '$TARGET', tpDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
@@ -5902,8 +5906,8 @@ function(aCollection, elems) {
                         '$REQUEST', null,
                         'TP', TP,
                         'APP', APP,
-                        '$SOURCE', null,
-                        '$TAG', this,
+                        '$SOURCE', this,
+                        '$TAG', newTPElem,
                         '$TARGET', tpDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
@@ -5916,7 +5920,7 @@ function(aCollection, elems) {
                         '$#', scopeIndex);
             }
 
-            result = str.transform(newElement, info);
+            result = str.transform(null, info);
             newElement = TP.elem(result);
         }
 
