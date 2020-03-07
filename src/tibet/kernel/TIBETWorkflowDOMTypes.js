@@ -2066,7 +2066,10 @@ function(aNode) {
                                     TP.w3.Xmlns.BIND + '"]]))]' +
                         '/..' +
             ' | ' +
-            './/text()[contains(.,"{{")]/..',
+            './/text()[contains(.,"{{")' +
+                        ' and (not(../ancestor::*[@*[local-name() = "repeat"' +
+                        ' and namespace-uri() = "' +
+                                    TP.w3.Xmlns.BIND + '"]]))]/..',
             TP.NODESET);
     }
 
