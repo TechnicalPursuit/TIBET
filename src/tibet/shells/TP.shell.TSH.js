@@ -2582,6 +2582,12 @@ function(aRequest) {
      * @returns {TP.sig.Request} The request.
      */
 
+    if (TP.sys.cfg('boot.context') === 'electron') {
+        this.$processRequestUsingElectron(aRequest);
+    } else {
+        this.$processRequestUsingTDS(aRequest);
+    }
+
     return aRequest;
 });
 
