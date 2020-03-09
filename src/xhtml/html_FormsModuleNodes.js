@@ -2560,6 +2560,24 @@ TP.html.inputSelectable.defineSubtype('inputFile');
 
 TP.html.input.defineSubtype('inputHidden');
 
+TP.html.inputHidden.addTraits(TP.html.textUtilities);
+
+TP.html.inputHidden.Type.resolveTraits(
+        TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
+        TP.html.inputHidden);
+
+TP.html.inputHidden.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
+
+TP.html.inputHidden.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.dom.EmptyElementNode);
+
+TP.html.inputHidden.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue'),
+        TP.html.inputSelectable);
+
 //  ========================================================================
 //  TP.html.inputNumber
 //  ========================================================================
