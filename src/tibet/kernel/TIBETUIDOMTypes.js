@@ -3506,11 +3506,11 @@ function(anAncestor, wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.UIElementNode.Inst.defineMethod('getScrollOffsetPoint',
+TP.dom.UIElementNode.Inst.defineMethod('getScrollOffset',
 function() {
 
     /**
-     * @method getScrollOffsetPoint
+     * @method getScrollOffset
      * @summary Returns the receiver's scroll offset position (i.e. scrollLeft &
      *     scrollTop) as a TP.gui.Point.
      * @returns {TP.gui.Point} The receiver's scroll offset position.
