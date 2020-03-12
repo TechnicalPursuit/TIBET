@@ -3073,7 +3073,7 @@ function(branchExpr, initialVal, initialPathType) {
                 branchVal = this.$extractValue(theVal,
                                                 branchExpr,
                                                 TP.jpc,
-                                                TP.hc('shouldCollapse', true));
+                                                TP.hc('shouldCollapse', false));
 
                 pathType = TP.ifInvalid(initialPathType, TP.JSON_PATH_TYPE);
             } else if (TP.isKindOf(theVal, TP.core.JSONContent) &&
@@ -5213,7 +5213,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                                                 theVal,
                                                 attrVal,
                                                 TP.jpc,
-                                                TP.hc('shouldCollapse', true));
+                                                TP.hc('shouldCollapse', false));
 
                                     pathType = TP.ifInvalid(aPathType,
                                                             TP.JSON_PATH_TYPE);
