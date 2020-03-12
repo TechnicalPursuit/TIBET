@@ -5110,6 +5110,8 @@ function() {
 
     toolsLayerTPElem = this.getToolsLayer();
 
+    //  Dimensioning tool
+
     toolTPElem = TP.sherpa.dimensionsManipulator.
                             getResourceElement('template', TP.ietf.mime.XHTML);
 
@@ -5117,6 +5119,8 @@ function() {
     toolTPElem.compile();
 
     toolsLayerTPElem.addContent(toolTPElem);
+
+    //  Positioning tool
 
     toolTPElem = TP.sherpa.positionManipulator.
                             getResourceElement('template', TP.ietf.mime.XHTML);
@@ -5126,6 +5130,8 @@ function() {
 
     toolsLayerTPElem.addContent(toolTPElem);
 
+    //  Gridding tool
+
     toolTPElem = TP.sherpa.gridManipulator.
                             getResourceElement('template', TP.ietf.mime.XHTML);
 
@@ -5133,6 +5139,8 @@ function() {
     toolTPElem.compile();
 
     toolsLayerTPElem.addContent(toolTPElem);
+
+    //  Grouping tool
 
     toolTPElem = TP.sherpa.groupingTool.
                             getResourceElement('template', TP.ietf.mime.XHTML);

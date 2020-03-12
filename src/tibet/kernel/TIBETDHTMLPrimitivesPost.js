@@ -4148,10 +4148,10 @@ function(anElement, anAncestor, wantsTransformed) {
      *     the supplied element's document.
      * @param {HTMLElement} anElement The element to compute the scroll offset
      *     from.
-     * @param {HTMLElement} anAncestor The ancestor element to use as the
+     * @param {HTMLElement} [anAncestor] The ancestor element to use as the
      *     'outermost' element to compute the scroll offset from. This is an
      *     optional parameter that defaults to the document.
-     * @param {Boolean} wantsTransformed An optional parameter that determines
+     * @param {Boolean} [wantsTransformed] An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
