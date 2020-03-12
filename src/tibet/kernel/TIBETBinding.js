@@ -5620,9 +5620,30 @@ function(regenerateIfNecessary) {
         repeatWholeResult,
         repeatResult,
 
+        repeatResultSize,
+
         boundElems,
 
-        allRefreshedElements;
+        allRefreshedElements,
+
+        elem,
+        isXMLResource,
+
+        templatedElems,
+        repeatIndex,
+        repeatSize,
+
+        groupingSize,
+        repeatResultSlice,
+
+        remainderTPElems,
+
+        last,
+        tpDoc,
+
+        templateRefreshedElems,
+
+        existingValueRefreshedElems;
 
     //  Grab our binding scoping values and compute a 'binding repeat'
     //  expression from them and any local value on us. Note here how we both
@@ -5683,9 +5704,14 @@ function(regenerateIfNecessary) {
     //  Normalize the value for repeat purposes (we're interested in an Array of
     //  key,value pairs).
     repeatResult = this.$normalizeRepeatValue(repeatResult);
+    repeatResultSize = repeatResult.getSize();
 
     //  Make sure that repeatResult is a collection.
     if (TP.isCollection(repeatResult)) {
+
+        //  Grab the hash of refreshed elements. This will be updated by the
+        //  binding machinery if there are bound elements to be refreshed.
+        allRefreshedElements = this.getDocument().get('$refreshedElements');
 
         //  If this flag is true, then go ahead and regenerate (if necessary).
         //  Note how we pass any empty Array in here, since we're not adding or
@@ -5698,23 +5724,201 @@ function(regenerateIfNecessary) {
 
         boundElems = this.$getBoundElements();
 
-        this.$refreshBranches(
-                repeatWholeResult,
-                'value',
-                repeatResult,
-                boundElems,
-                null,
-                null,
-                null,
-                false,
-                repeatWholeURI,
-                true,
-                this,
-                null);
+        if (TP.notEmpty(boundElems)) {
+            this.$refreshBranches(
+                    repeatWholeResult,
+                    'value',
+                    repeatResult,
+                    boundElems,
+                    null,
+                    null,
+                    null,
+                    false,
+                    repeatWholeURI,
+                    true,
+                    this,
+                    null);
+        }
+
+        //  Grab any templated elements and refresh their values.
+
+        elem = this.getNativeNode();
+        templatedElems = TP.byCSSPath('*[tibet|templateexpr]',
+                                        elem,
+                                        false,
+                                        true);
+
+        if (TP.notEmpty(templatedElems)) {
+
+            isXMLResource = TP.isXMLNode(TP.unwrap(repeatResult.first()));
+
+            //  Grab the repeat index. If one isn't available, we just use
+            //  either 0 or 1, depending on whether we're dealing with an XML
+            //  resource or not.
+            repeatIndex = this.getAttribute('bind:repeatindex');
+            if (!TP.isNumber(repeatIndex)) {
+                if (isXMLResource) {
+                    repeatIndex = 1;
+                } else {
+                    repeatIndex = 0;
+                }
+            }
+
+            //  Grab the repeat size. If one isn't available, just use the whole
+            //  size of the group.
+            repeatSize = this.getAttribute('bind:repeatsize');
+            if (!TP.isNumber(repeatSize)) {
+                repeatSize = repeatResultSize;
+            }
+
+            //  We have the total number of templated elements. We now need to
+            //  compute how many are in each 'group' by dividing that into the
+            //  size of the repeat result.
+            groupingSize =
+                (repeatResultSize / templatedElems.getSize()).floor();
+
+            //  Slice off the chunk of the repeat result that corresponds to the
+            //  initial repeat index and size.
+            repeatResultSlice = repeatResult.slice(repeatIndex,
+                                                    repeatIndex + repeatSize);
+
+            //  Whatever is left over of the templated elements are ones that we
+            //  need to set to blank.
+            remainderTPElems = templatedElems.slice(
+                                groupingSize * repeatResultSlice.getSize());
+
+            if (isXMLResource) {
+                last = repeatResultSlice.getSize();
+            } else {
+                last = repeatResultSlice.getSize() - 1;
+            }
+
+            tpDoc = this.getDocument();
+
+            //  Use this Array to keep track of the elements that we refresh
+            //  using the templating machinery below.
+            templateRefreshedElems = TP.ac();
+
+            repeatResultSlice.forEach(
+                function(aData, scopeIndex) {
+                    var startIndex,
+                        endIndex,
+                        nearestScopeElem,
+                        nearestScopeTPElem,
+                        i,
+                        templatedElem,
+                        info,
+                        template,
+                        val;
+
+                    //  Set the starting index to the current scope index times
+                    //  the number of elements in each group and the end index to
+                    //  that plus the number of elements in each group.
+                    startIndex = scopeIndex * groupingSize;
+                    endIndex = startIndex + groupingSize;
+
+                    //  Grab the nearest ancestor to the first templated element
+                    //  in this group that has a scope.
+                    nearestScopeElem =
+                        TP.nodeDetectAncestorMatchingCSS(
+                                templatedElems.at(startIndex).getNativeNode(),
+                                '*[bind|scope]',
+                                elem);
+                    nearestScopeTPElem = TP.wrap(nearestScopeElem);
+
+                    for (i = startIndex; i < endIndex; i++) {
+
+                        templatedElem = templatedElems.at(i);
+
+                        if (isXMLResource) {
+                            info = TP.hc(
+                                    '$REQUEST', null,
+                                    'TP', TP,
+                                    'APP', APP,
+                                    '$SOURCE', this,
+                                    '$TAG', nearestScopeTPElem,
+                                    '$TARGET', tpDoc,
+                                    '$_', aData,
+                                    '$INPUT', repeatResultSlice,
+                                    '$INDEX', scopeIndex,
+                                    '$FIRST', scopeIndex === 1,
+                                    '$MIDDLE',
+                                        scopeIndex > 1 && scopeIndex < last,
+                                    '$LAST', scopeIndex !== last,
+                                    '$EVEN', scopeIndex % 2 === 0,
+                                    '$ODD', scopeIndex % 2 !== 0,
+                                    '$#', scopeIndex);
+                        } else {
+                            info = TP.hc(
+                                    '$REQUEST', null,
+                                    'TP', TP,
+                                    'APP', APP,
+                                    '$SOURCE', this,
+                                    '$TAG', nearestScopeTPElem,
+                                    '$TARGET', tpDoc,
+                                    '$_', aData,
+                                    '$INPUT', repeatResultSlice,
+                                    '$INDEX', scopeIndex,
+                                    '$FIRST', scopeIndex === 0,
+                                    '$MIDDLE',
+                                        scopeIndex > 0 && scopeIndex < last,
+                                    '$LAST', scopeIndex !== last,
+                                    '$EVEN', scopeIndex % 2 === 0,
+                                    '$ODD', scopeIndex % 2 !== 0,
+                                    '$#', scopeIndex);
+                        }
+
+                        //  Grab the templating expression and wrap it in ACP
+                        //  brackets. This allows the transform machinery to
+                        //  treat it properly.
+                        template = templatedElem.getAttribute(
+                                                    'tibet:templateexpr');
+                        template = '{{' + template + '}}';
+
+                        //  Run the the transform machinery and use the value it
+                        //  produces to set the 'value' of the templated
+                        //  element.
+                        val = template.transform(null, info);
+                        templatedElems.at(i).set('value', val);
+
+                        //  Add this to the list of elements that the templating
+                        //  machinery refreshed.
+                        templateRefreshedElems.push(
+                                templatedElem.getNativeNode());
+                    }
+                }.bind(this));
+
+            //  If there are remainder elements, they need to be set to blank
+            //  and then added to the list of elements that the templating
+            //  machinery refreshed.
+            if (TP.notEmpty(remainderTPElems)) {
+                remainderTPElems.forEach(
+                    function(aTPElem) {
+                        aTPElem.setTextContent('');
+                        templateRefreshedElems.push(aTPElem.getNativeNode());
+                    });
+            }
+
+            //  If there were already refreshed elements because of the binding
+            //  update machinery, just go into that hash under the
+            //  'value__value' entry and add to it.
+            if (TP.notEmpty(allRefreshedElements)) {
+                existingValueRefreshedElems =
+                    allRefreshedElements.at('value__value');
+                existingValueRefreshedElems =
+                    existingValueRefreshedElems.concat(templateRefreshedElems);
+                allRefreshedElements.atPut(
+                    'value__value', existingValueRefreshedElems);
+            } else {
+                //  Otherwise, make a 'value__value' entry from the elements
+                //  that we refreshed from templates.
+                allRefreshedElements = TP.hc('value__value',
+                                                templateRefreshedElems);
+            }
+        }
 
         //  Send a custom DOM-level event to allow 3rd party libraries to know
         //  that the bindings have been refreshed.
-        allRefreshedElements = this.getDocument().get('$refreshedElements');
         if (TP.notEmpty(allRefreshedElements)) {
             this.$sendNativeRefreshEvent();
 
