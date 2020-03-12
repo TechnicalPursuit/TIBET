@@ -6171,12 +6171,6 @@ function(aCollection, elems) {
     //  Finally, append the whole fragment under the receiver element
     TP.nodeAppendChild(elem, bodyFragment, false);
 
-    //  Bubble any xmlns attributes upward to avoid markup clutter.
-    TP.nodeGetElementsByTagName(elem, '*').forEach(
-            function(anElem) {
-                TP.elementBubbleXMLNSAttributes(anElem);
-            });
-
     //  Awaken any content that has been inserted under this element. We have to
     //  do this manually, since we turned off mutation tracking for this element
     //  above.
