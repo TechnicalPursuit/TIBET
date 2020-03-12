@@ -526,7 +526,7 @@ function(anOverlayPoint, anAvoidPoint) {
         bodyTPElem,
         bodyRect,
 
-        bodyScrollOffsets,
+        scrollOffsets,
 
         testPoint,
         overlayCorner,
@@ -562,9 +562,10 @@ function(anOverlayPoint, anAvoidPoint) {
     bodyRect.constrainRect(overlayRect);
 
     //  Make sure to add in the scrolling offsets.
-    bodyScrollOffsets = bodyTPElem.getScrollOffsetPoint();
-    overlayRect.addToX(bodyScrollOffsets.getX());
-    overlayRect.addToY(bodyScrollOffsets.getY());
+    scrollOffsets = this.getScrollOffsetFromAncestor();
+
+    overlayRect.addToX(scrollOffsets.getX());
+    overlayRect.addToY(scrollOffsets.getY());
 
     //  If the computed overlay rectangle includes the 'avoid point' (in many
     //  cases, this is the current mouse location), then try to adjust its X and
