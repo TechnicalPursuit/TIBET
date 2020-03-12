@@ -3474,6 +3474,38 @@ function(startGroupName, alwaysWrap, wantsNested) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('getScrollOffsetFromAncestor',
+function(anAncestor, wantsTransformed) {
+
+    /**
+     * @method getScrollOffsetFromAncestor
+     * @summary Returns an Array containing the X and Y of the total amount
+     *     that the receiver is scrolled from the top, left corner of the
+     *     supplied ancestor. If the ancestor isn't supplied, it defaults to
+     *     the supplied element's document.
+     * @param {HTMLElement} [anAncestor] The ancestor element to use as the
+     *     'outermost' element to compute the scroll offset from. This is an
+     *     optional parameter that defaults to the document.
+     * @param {Boolean} [wantsTransformed] An optional parameter that determines
+     *     whether to return 'transformed' values if the receiver has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {TP.gui.Point} The receiver's scroll offset position.
+     */
+
+    var elem,
+        offsets;
+
+    elem = this.getNativeNode();
+
+    offsets = TP.elementGetScrollOffsetFromAncestor(elem,
+                                                    anAncestor,
+                                                    wantsTransformed);
+
+    return TP.pc(offsets.first(), offsets.last());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('getScrollOffsetPoint',
 function() {
 
