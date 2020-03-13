@@ -2731,11 +2731,11 @@ function(aURIOrRoute, winContext, event) {
         //  keyboard events. We ignore other types of events here.
         evtProps = TP.eventGetPropertyKeys(event);
         switch (evtProps) {
-            case TP.DOM_KEY_PROPERTIES:
-                TP.core.Keyboard.invokeObservers(TP.evtGetType(event), event);
+            case TP.DOM_KEY_EVENT_PROPERTIES:
+                TP.core.Keyboard.invokeObservers(TP.eventGetType(event), event);
                 break;
-            case TP.DOM_MOUSE_PROPERTIES:
-                TP.core.Mouse.invokeObservers(TP.evtGetType(event), event);
+            case TP.DOM_MOUSE_EVENT_PROPERTIES:
+                TP.core.Mouse.invokeObservers(TP.eventGetType(event), event);
                 break;
             default:
                 break;
