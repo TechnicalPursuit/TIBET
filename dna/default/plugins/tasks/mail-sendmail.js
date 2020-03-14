@@ -105,6 +105,7 @@
             //  option data. This should give us optional values for the path,
             //  newline, and args for the nodemailer sendmail transport.
             sendmailOpts = TDS.blend({}, params.transport);
+            sendmailOpts.sendmail = true;
 
             //  NodeJS TLSSocket options - we allow 'unauthorized' (i.e.
             //  self-signed certificate) access to the underlying server.
