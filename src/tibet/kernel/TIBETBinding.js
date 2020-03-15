@@ -5969,9 +5969,8 @@ function(aCollection, elems) {
 
         existingChunkCount,
 
-        pagingSize,
-
-        chunkCount,
+        repeatSize,
+        endIndex,
 
         doc,
 
@@ -5984,11 +5983,12 @@ function(aCollection, elems) {
         info,
         result,
 
+        startIndex,
+
         tpDoc,
 
         scopeIndex,
 
-        len,
         i,
 
         newElement,
@@ -6026,12 +6026,33 @@ function(aCollection, elems) {
 
     existingChunkCount = allRepeatChunks.getSize();
 
-    //  If there is actually a defined repeat size, then always use its value.
-    //  Otherwise, default the size value.
-    if (this.hasAttribute('bind:repeatsize')) {
-        pagingSize = this.getAttribute('bind:repeatsize');
+    //  If we have a 'bind:repeatindex', then we can compute a starting index
+    //  from it.
+    if (this.hasAttribute('bind:repeatindex')) {
+        if (!TP.isNumber(startIndex =
+                            this.getAttribute('bind:repeatindex').asNumber())) {
+            startIndex = 0;
+        } else {
+            startIndex -= 1;
+        }
     } else {
-        pagingSize = resourceLength;
+        startIndex = 0;
+    }
+
+    //  If we have a 'bind:repeatsize', then we can compute how many rows we
+    //  should be displaying.
+    if (this.hasAttribute('bind:repeatsize')) {
+
+        //  If we have a 'bind:repeatsize', then we can compute an ending index
+        //  from that and the startIndex
+        if (TP.isNumber(repeatSize =
+                        this.getAttribute('bind:repeatsize').asNumber())) {
+            endIndex = startIndex + repeatSize;
+        } else {
+            endIndex = resourceLength - startIndex;
+        }
+    } else {
+        endIndex = resourceLength;
     }
 
     //  If the repeat content's child element list has a size of 1, then we
@@ -6045,12 +6066,13 @@ function(aCollection, elems) {
     str = TP.str(repeatContent);
 
     //  Use either the resource length or the paging size, whichever is smaller.
-    chunkCount = resourceLength.min(pagingSize);
+    endIndex = endIndex.min(resourceLength);
 
     //  If we have already generated chunks and the count of those generated
     //  items is the same as the chunks we're going to produce, then we don't
     //  need to regenerate so we can just exit here.
-    if (existingChunkCount === chunkCount && !TP.regex.HAS_ACP.test(str)) {
+    if (existingChunkCount === endIndex - startIndex &&
+        !TP.regex.HAS_ACP.test(str)) {
 
         //  Clear any repeat source or repeat index on any descendant elements.
         //  Just because we're reusing the chunk doesn't mean that we're using
@@ -6073,10 +6095,7 @@ function(aCollection, elems) {
     //  - we'll use this information later.
     isXMLResource = TP.isXMLNode(TP.unwrap(aCollection.first()));
 
-    //  Iterate over the chunkCount and build out a chunk of markup for each
-    //  repeat chunk.
-    len = chunkCount;
-    for (i = 0; i < len; i++) {
+    for (i = startIndex; i < endIndex; i++) {
 
         //  Make sure to clone the content.
         newElement = TP.nodeCloneNode(repeatContent);
