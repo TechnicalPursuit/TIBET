@@ -5622,7 +5622,7 @@ function(regenerateIfNecessary) {
 
         repeatResultSize,
 
-        boundElems,
+        regenerateFunc,
 
         allRefreshedElements,
 
@@ -5706,17 +5706,13 @@ function(regenerateIfNecessary) {
     repeatResult = this.$normalizeRepeatValue(repeatResult);
     repeatResultSize = repeatResult.getSize();
 
-    //  Make sure that repeatResult is a collection.
-    if (TP.isCollection(repeatResult)) {
-
-        //  Grab the hash of refreshed elements. This will be updated by the
-        //  binding machinery if there are bound elements to be refreshed.
-        allRefreshedElements = this.getDocument().get('$refreshedElements');
+    regenerateFunc = function(shouldRegenerate) {
+        var boundElems;
 
         //  If this flag is true, then go ahead and regenerate (if necessary).
         //  Note how we pass any empty Array in here, since we're not adding or
         //  removing rows that need to be recursively processed at this time.
-        if (TP.isTrue(regenerateIfNecessary)) {
+        if (TP.isTrue(shouldRegenerate)) {
             this.$regenerateRepeat(repeatResult, TP.ac());
         }
 
@@ -5739,6 +5735,18 @@ function(regenerateIfNecessary) {
                     this,
                     null);
         }
+    }.bind(this);
+
+    //  Make sure that repeatResult is a collection.
+    if (TP.isCollection(repeatResult)) {
+
+        //  Grab the hash of refreshed elements. This will be updated by the
+        //  binding machinery if there are bound elements to be refreshed.
+        allRefreshedElements = this.getDocument().get('$refreshedElements');
+
+        //  Call upon the regeneration function, which will regenerate the
+        //  repeat (and update from bindings) if necessary.
+        regenerateFunc(regenerateIfNecessary);
 
         //  If we didn't regenerate, then we need to see if we should update
         //  from templates.
@@ -5772,7 +5780,19 @@ function(regenerateIfNecessary) {
                 //  whole size of the group.
                 repeatSize = this.getAttribute('bind:repeatsize');
                 if (!TP.isNumber(repeatSize)) {
-                    repeatSize = repeatResultSize;
+                    repeatSize =
+                        (repeatResultSize / templatedElems.getSize()).floor();
+                }
+
+                //  If the number of templated elements doesn't evenly divide
+                //  into the repeatSize, then we need to regenerate the repeat.
+                if (templatedElems.getSize() % repeatSize > 0) {
+                    //  Call upon the regeneration function, which will
+                    //  regenerate the repeat (and update from bindings) if
+                    //  necessary.
+                    regenerateFunc(true);
+
+                    return this;
                 }
 
                 //  We have the total number of templated elements. We now need
