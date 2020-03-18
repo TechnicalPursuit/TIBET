@@ -36,7 +36,7 @@
     <br/>
     <br/>
 
-    Repeat index #: <input type="text" value="1" id="repeatIndexField" onchange="TP.byId('repeater').setAttribute('bind:repeatindex', this.value)"/>
+    Repeat index #: <input type="text" value="0" id="repeatIndexField" onchange="TP.byId('repeater').setAttribute('bind:repeatindex', this.value)"/>
     <br/>
     <br/>
 
@@ -44,7 +44,7 @@
     <br/>
     <br/>
 
-    <span id="repeater" bind:repeat="urn:tibet:test_people#tibet(people)" bind:repeatindex="1" bind:repeatsize="2">
+    <span id="repeater" bind:repeat="urn:tibet:test_people#tibet(people)" bind:repeatindex="0" bind:repeatsize="2">
         <label>First name:
             <input type="text" bind:io="{value: firstname}" tabindex="0"/>
         </label>

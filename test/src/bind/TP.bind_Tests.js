@@ -4726,7 +4726,7 @@ function() {
 
                 test.assert.isEqualTo(
                     repeatIndexField.get('value'),
-                    '1');
+                    '0');
 
                 test.assert.isEqualTo(
                     repeatSizeField.get('value'),
@@ -4825,7 +4825,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('2', repeatIndexField).
+                    sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
@@ -4837,7 +4837,7 @@ function() {
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '2');
+                            '1');
 
                         inputFields = TP.byCSSPath(
                                             '#repeater input[type="text"]',
@@ -4937,7 +4937,7 @@ function() {
 
                 test.assert.isEqualTo(
                     repeatIndexField.get('value'),
-                    '1');
+                    '0');
 
                 test.assert.isEqualTo(
                     repeatSizeField.get('value'),
@@ -5127,7 +5127,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('2', repeatIndexField).
+                    sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
@@ -5139,7 +5139,7 @@ function() {
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '2');
+                            '1');
 
                         inputFields = TP.byCSSPath(
                                             '#repeater input[type="text"]',
@@ -5231,7 +5231,7 @@ function() {
 
                 test.assert.isEqualTo(
                     repeatIndexField.get('value'),
-                    '1');
+                    '0');
 
                 test.assert.isEqualTo(
                     repeatSizeField.get('value'),
@@ -5330,7 +5330,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('2', repeatIndexField).
+                    sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
@@ -5342,7 +5342,7 @@ function() {
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '2');
+                            '1');
 
                         inputFields = TP.byCSSPath(
                                             '#repeater input[type="text"]',
@@ -5438,15 +5438,7 @@ function() {
 
                 test.assert.isEqualTo(
                     repeatIndexField.get('value'),
-                    '1');
-
-                test.assert.isEqualTo(
-                    repeatSizeField.get('value'),
-                    '2');
-
-                test.assert.isEqualTo(
-                    repeatIndexField.get('value'),
-                    '1');
+                    '0');
 
                 test.assert.isEqualTo(
                     repeatSizeField.get('value'),
@@ -5636,7 +5628,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('2', repeatIndexField).
+                    sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
@@ -5648,7 +5640,7 @@ function() {
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '2');
+                            '1');
 
                         inputFields = TP.byCSSPath(
                                             '#repeater input[type="text"]',
@@ -5740,15 +5732,7 @@ function() {
 
                 test.assert.isEqualTo(
                     repeatIndexField.get('value'),
-                    '1');
-
-                test.assert.isEqualTo(
-                    repeatSizeField.get('value'),
-                    '2');
-
-                test.assert.isEqualTo(
-                    repeatIndexField.get('value'),
-                    '1');
+                    '0');
 
                 test.assert.isEqualTo(
                     repeatSizeField.get('value'),
@@ -5847,7 +5831,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('2', repeatIndexField).
+                    sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
@@ -5859,7 +5843,7 @@ function() {
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '2');
+                            '1');
 
                         inputFields = TP.byCSSPath(
                                             '#repeater input[type="text"]',
@@ -5959,7 +5943,7 @@ function() {
 
                 test.assert.isEqualTo(
                     repeatIndexField.get('value'),
-                    '1');
+                    '0');
 
                 test.assert.isEqualTo(
                     repeatSizeField.get('value'),
@@ -6149,7 +6133,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('2', repeatIndexField).
+                    sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     run();
 
@@ -6161,7 +6145,7 @@ function() {
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '2');
+                            '1');
 
                         inputFields = TP.byCSSPath(
                                             '#repeater input[type="text"]',
