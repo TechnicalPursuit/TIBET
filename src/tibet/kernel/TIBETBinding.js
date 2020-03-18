@@ -2501,7 +2501,7 @@ function(size) {
 
     repeatIndex = repeatIndex.asNumber();
     if (!TP.isNumber(repeatIndex)) {
-        repeatIndex = 1;
+        repeatIndex = 0;
     }
 
     return repeatIndex;
@@ -6032,8 +6032,6 @@ function(aCollection, elems) {
         if (!TP.isNumber(startIndex =
                             this.getAttribute('bind:repeatindex').asNumber())) {
             startIndex = 0;
-        } else {
-            startIndex -= 1;
         }
     } else {
         startIndex = 0;
@@ -7294,9 +7292,7 @@ function(aPosition) {
 
     endIndex = position * repeatSize;
 
-    //  NB: We offset the repeatindex by 1 since it is always computed as a
-    //  1-based number.
-    this.setAttribute('bind:repeatindex', endIndex + 1);
+    this.setAttribute('bind:repeatindex', endIndex);
 
     //  NB: We pass true here to signal change in case anything in the GUI is
     //  watching this attribute.
@@ -7381,10 +7377,10 @@ function(aCollection) {
     if (this.hasAttribute('bind:repeatindex')) {
         if (!TP.isNumber(startIndex =
                             this.getAttribute('bind:repeatindex').asNumber())) {
-            startIndex = 1;
+            startIndex = 0;
         }
     } else {
-        startIndex = 1;
+        startIndex = 0;
     }
 
     //  If we have a 'bind:repeatsize', then we can compute how many rows we
@@ -7405,8 +7401,8 @@ function(aCollection) {
         endIndex = resourceLength;
     }
 
-    //  The startIndex has to be at least 1.
-    startIndex = startIndex.max(1);
+    //  The startIndex has to be at least 0.
+    startIndex = startIndex.max(0);
 
     //  The endIndex cannot be larger than the number of rows.
     endIndex = endIndex.min(resourceLength);
@@ -7422,13 +7418,13 @@ function(aCollection) {
 
         repeatElem = allRepeatChunks.at(i);
 
-        //  If we're not dealing with an XML resource, then we subtract one from
-        //  the index we're processing (since indices are 1-based, which is fine
+        //  If we're dealing with an XML resource, then we add one to the index
+        //  we're processing (since indices in XPath are 1-based, which is fine
         //  for XML, but not for other 0-based data, like JS or JSON).
         if (!isXMLResource) {
-            scopeIndex = indices.at(i) - 1;
-        } else {
             scopeIndex = indices.at(i);
+        } else {
+            scopeIndex = indices.at(i) + 1;
         }
 
         //  Update the 'bind:scope' with an attribute containing the numeric
