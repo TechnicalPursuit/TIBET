@@ -6023,6 +6023,10 @@ function(aCollection, elems) {
         elemIndex,
         args,
 
+        overflow,
+        remainderSize,
+        remainderTextNodes,
+
         descendants,
 
         evt;
@@ -6195,6 +6199,62 @@ function(aCollection, elems) {
         //  Append this new chunk of markup to the document fragment we're
         //  building up and then loop to the top to do it again.
         bodyFragment.appendChild(newElement);
+    }
+
+    //  If we have a real repeatSize, then see if there are remainder (i.e.
+    //  blank) rows that need to be generated.
+    if (TP.isNumber(repeatSize)) {
+
+        overflow = endIndex % repeatSize;
+
+        if (overflow > 0) {
+
+            remainderSize = repeatSize - overflow;
+
+            //  Iterate over the number of remaining rows, clone the content and
+            //  blank all of the Text node (but only if they contain
+            //  non-whitespace content).
+            for (i = 0; i < remainderSize; i++) {
+
+                //  Make sure to clone the content.
+                newElement = TP.nodeCloneNode(repeatContent);
+
+                remainderTextNodes = TP.elementGetTextNodesMatching(
+                                        newElement, TP.RETURN_TRUE);
+                remainderTextNodes.forEach(
+                    function(aTextNode) {
+                        if (!TP.regex.ONLY_WHITESPACE.test(
+                                            aTextNode.nodeValue)) {
+                            TP.nodeSetTextContent(aTextNode, '');
+                        }
+                    });
+
+                //  If this is an XML resource, then we need to bump the number
+                //  by 1 because XPath is 1-based.
+                if (isXMLResource) {
+                    scopeIndex = endIndex + i + 1;
+                } else {
+                    scopeIndex = endIndex + i;
+                }
+
+                //  Stamp a 'bind:scope' with an attribute containing the
+                //  numeric scoping index (i.e. '[2]'). This will be used in
+                //  bind scoping computations.
+                TP.elementSetAttribute(newElement,
+                                        'bind:scope',
+                                        '[' + scopeIndex + ']',
+                                        true);
+
+                //  Cache the repeating source and index on the element for much
+                //  better bind:repeat performance
+                newElement[TP.REPEAT_SOURCE] = aCollection;
+                newElement[TP.REPEAT_INDEX] = scopeIndex;
+
+                //  Append this new chunk of markup to the document fragment
+                //  we're building up and then loop to the top to do it again.
+                bodyFragment.appendChild(newElement);
+            }
+        }
     }
 
     //  Put an attribute on ourself that will prevent Mutation signals from
