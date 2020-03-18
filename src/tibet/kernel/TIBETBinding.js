@@ -5799,7 +5799,9 @@ function(regenerateIfNecessary) {
                 //  to compute how many are in each 'group' by dividing that
                 //  into the size of the repeat result.
                 groupingSize =
-                    (repeatResultSize / templatedElems.getSize()).floor();
+                    (templatedElems.getSize() / repeatSize).floor();
+
+                groupingSize = groupingSize.max(1);
 
                 //  Slice off the chunk of the repeat result that corresponds to
                 //  the initial repeat index and size.
