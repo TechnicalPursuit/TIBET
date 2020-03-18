@@ -5815,9 +5815,9 @@ function(regenerateIfNecessary) {
                                     groupingSize * repeatResultSlice.getSize());
 
                 if (isXMLResource) {
-                    last = repeatResultSlice.getSize();
+                    last = repeatIndex + repeatSize;
                 } else {
-                    last = repeatResultSlice.getSize() - 1;
+                    last = repeatIndex + repeatSize - 1;
                 }
 
                 tpDoc = this.getDocument();
