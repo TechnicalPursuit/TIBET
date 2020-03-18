@@ -5810,6 +5810,7 @@ function(regenerateIfNecessary) {
                             endIndex,
                             nearestScopeElem,
                             nearestScopeTPElem,
+                            dataIndex,
                             i,
                             templatedElem,
                             info,
@@ -5832,6 +5833,8 @@ function(regenerateIfNecessary) {
                                 elem);
                         nearestScopeTPElem = TP.wrap(nearestScopeElem);
 
+                        dataIndex = scopeIndex + repeatIndex;
+
                         for (i = startIndex; i < endIndex; i++) {
 
                             templatedElem = templatedElems.at(i);
@@ -5846,14 +5849,14 @@ function(regenerateIfNecessary) {
                                         '$TARGET', tpDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
-                                        '$INDEX', scopeIndex,
-                                        '$FIRST', scopeIndex === 1,
+                                        '$INDEX', dataIndex,
+                                        '$FIRST', dataIndex === 1,
                                         '$MIDDLE',
-                                            scopeIndex > 1 && scopeIndex < last,
-                                        '$LAST', scopeIndex !== last,
-                                        '$EVEN', scopeIndex % 2 === 0,
-                                        '$ODD', scopeIndex % 2 !== 0,
-                                        '$#', scopeIndex);
+                                            dataIndex > 1 && dataIndex < last,
+                                        '$LAST', dataIndex !== last,
+                                        '$EVEN', dataIndex % 2 === 0,
+                                        '$ODD', dataIndex % 2 !== 0,
+                                        '$#', dataIndex);
                             } else {
                                 info = TP.hc(
                                         '$REQUEST', null,
@@ -5864,14 +5867,14 @@ function(regenerateIfNecessary) {
                                         '$TARGET', tpDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
-                                        '$INDEX', scopeIndex,
-                                        '$FIRST', scopeIndex === 0,
+                                        '$INDEX', dataIndex,
+                                        '$FIRST', dataIndex === 0,
                                         '$MIDDLE',
-                                            scopeIndex > 0 && scopeIndex < last,
-                                        '$LAST', scopeIndex !== last,
-                                        '$EVEN', scopeIndex % 2 === 0,
-                                        '$ODD', scopeIndex % 2 !== 0,
-                                        '$#', scopeIndex);
+                                            dataIndex > 0 && dataIndex < last,
+                                        '$LAST', dataIndex !== last,
+                                        '$EVEN', dataIndex % 2 === 0,
+                                        '$ODD', dataIndex % 2 !== 0,
+                                        '$#', dataIndex);
                             }
 
                             //  Grab the templating expression and wrap it in
