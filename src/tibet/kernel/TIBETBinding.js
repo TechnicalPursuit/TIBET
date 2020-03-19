@@ -5626,7 +5626,11 @@ function(regenerateIfNecessary) {
 
         allRefreshedElements,
 
+        templatedAttrs,
+
         elem,
+        tpDoc,
+
         isXMLResource,
 
         templatedElems,
@@ -5639,11 +5643,12 @@ function(regenerateIfNecessary) {
         remainderTPElems,
 
         last,
-        tpDoc,
 
         templateRefreshedElems,
 
-        existingValueRefreshedElems;
+        existingValueRefreshedElems,
+
+        remainderAttrs;
 
     //  Grab our binding scoping values and compute a 'binding repeat'
     //  expression from them and any local value on us. Note here how we both
@@ -5752,29 +5757,33 @@ function(regenerateIfNecessary) {
         //  from templates.
         if (TP.notTrue(regenerateIfNecessary)) {
 
-            //  Grab any templated elements and refresh their values.
+            isXMLResource = TP.isXMLNode(TP.unwrap(repeatResult.first()));
+
+            //  Grab the repeat index. If one isn't available, we just use
+            //  either 0 or 1, depending on whether we're dealing with an XML
+            //  resource or not.
+            repeatIndex = this.getAttribute('bind:repeatindex');
+            if (!TP.isNumber(repeatIndex)) {
+                if (isXMLResource) {
+                    repeatIndex = 1;
+                } else {
+                    repeatIndex = 0;
+                }
+            }
 
             elem = this.getNativeNode();
-            templatedElems = TP.byCSSPath('*[tibet|templateexpr]',
-                                            elem,
-                                            false,
-                                            true);
+
+            tpDoc = this.getDocument();
+
+            //  Grab any templated elements and refresh their values.
+
+            templatedElems =
+                TP.byCSSPath('*[tibet|templateexpr]',
+                                elem,
+                                false,
+                                true);
 
             if (TP.notEmpty(templatedElems)) {
-
-                isXMLResource = TP.isXMLNode(TP.unwrap(repeatResult.first()));
-
-                //  Grab the repeat index. If one isn't available, we just use
-                //  either 0 or 1, depending on whether we're dealing with an
-                //  XML resource or not.
-                repeatIndex = this.getAttribute('bind:repeatindex');
-                if (!TP.isNumber(repeatIndex)) {
-                    if (isXMLResource) {
-                        repeatIndex = 1;
-                    } else {
-                        repeatIndex = 0;
-                    }
-                }
 
                 //  Grab the repeat size. If one isn't available, just use the
                 //  whole size of the group.
@@ -5820,8 +5829,6 @@ function(regenerateIfNecessary) {
                     last = repeatIndex + repeatSize - 1;
                 }
 
-                tpDoc = this.getDocument();
-
                 //  Use this Array to keep track of the elements that we refresh
                 //  using the templating machinery below.
                 templateRefreshedElems = TP.ac();
@@ -5830,6 +5837,7 @@ function(regenerateIfNecessary) {
                     function(aData, scopeIndex) {
                         var startIndex,
                             endIndex,
+                            firstTemplatedElem,
                             nearestScopeElem,
                             nearestScopeTPElem,
                             dataIndex,
@@ -5846,13 +5854,22 @@ function(regenerateIfNecessary) {
                         startIndex = scopeIndex * groupingSize;
                         endIndex = startIndex + groupingSize;
 
-                        //  Grab the nearest ancestor to the first templated
-                        //  element in this group that has a scope.
-                        nearestScopeElem =
-                            TP.nodeDetectAncestorMatchingCSS(
-                                templatedElems.at(startIndex).getNativeNode(),
-                                '*[bind|scope]',
-                                elem);
+                        firstTemplatedElem =
+                                templatedElems.at(startIndex).getNativeNode();
+
+                        if (TP.elementHasAttribute(
+                                    firstTemplatedElem, 'bind:scope', true)) {
+                            nearestScopeElem = firstTemplatedElem;
+                        } else {
+                            //  Grab the nearest ancestor to the first templated
+                            //  element in this group that has a scope.
+                            nearestScopeElem =
+                                TP.nodeDetectAncestorMatchingCSS(
+                                    firstTemplatedElem,
+                                    '*[bind|scope]',
+                                    elem);
+                        }
+
                         nearestScopeTPElem = TP.wrap(nearestScopeElem);
 
                         dataIndex = scopeIndex + repeatIndex;
@@ -5928,6 +5945,236 @@ function(regenerateIfNecessary) {
                             aTPElem.setTextContent('');
                             templateRefreshedElems.push(
                                             aTPElem.getNativeNode());
+                        });
+                }
+
+                //  If there were already refreshed elements because of the
+                //  binding update machinery, just go into that hash under the
+                //  'value__value' entry and add to it.
+                if (TP.notEmpty(allRefreshedElements)) {
+                    existingValueRefreshedElems =
+                        allRefreshedElements.at('value__value');
+                    existingValueRefreshedElems =
+                        existingValueRefreshedElems.concat(
+                                                    templateRefreshedElems);
+                    allRefreshedElements.atPut(
+                        'value__value', existingValueRefreshedElems);
+                } else {
+                    //  Otherwise, make a 'value__value' entry from the elements
+                    //  that we refreshed from templates.
+                    allRefreshedElements = TP.hc('value__value',
+                                                    templateRefreshedElems);
+                }
+            }
+
+            templatedAttrs =
+                TP.byPath('.//*/@*' +
+                    '[contains(., "' + TP.ACP_ENCODED_BEGIN + '") and ' +
+                    'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"]',
+                            elem,
+                            false,
+                            false);
+
+            if (TP.notEmpty(templatedAttrs)) {
+
+                //  Grab the repeat size. If one isn't available, just use the
+                //  whole size of the group.
+                repeatSize = this.getAttribute('bind:repeatsize');
+                if (!TP.isNumber(repeatSize)) {
+                    repeatSize =
+                        (repeatResultSize / templatedAttrs.getSize()).floor();
+                }
+
+                //  If the number of templated elements doesn't evenly divide
+                //  into the repeatSize, then we need to regenerate the repeat.
+                if (templatedAttrs.getSize() % repeatSize > 0) {
+                    //  Call upon the regeneration function, which will
+                    //  regenerate the repeat (and update from bindings) if
+                    //  necessary.
+                    regenerateFunc(true);
+
+                    return this;
+                }
+
+                //  We have the total number of templated elements. We now need
+                //  to compute how many are in each 'group' by dividing that
+                //  into the size of the repeat result.
+                groupingSize =
+                    (templatedAttrs.getSize() / repeatSize).floor();
+
+                groupingSize = groupingSize.max(1);
+
+                //  Slice off the chunk of the repeat result that corresponds to
+                //  the initial repeat index and size.
+                repeatResultSlice = repeatResult.slice(
+                                            repeatIndex,
+                                            repeatIndex + repeatSize);
+
+                //  Whatever is left over of the templated elements are ones
+                //  that we need to set to blank.
+                remainderAttrs = templatedAttrs.slice(
+                                    groupingSize * repeatResultSlice.getSize());
+
+                if (isXMLResource) {
+                    last = repeatIndex + repeatSize;
+                } else {
+                    last = repeatIndex + repeatSize - 1;
+                }
+
+                //  Use this Array to keep track of the elements that we refresh
+                //  using the templating machinery below.
+                templateRefreshedElems = TP.ac();
+
+                repeatResultSlice.forEach(
+                    function(aData, scopeIndex) {
+                        var startIndex,
+                            endIndex,
+                            ownerElem,
+                            nearestScopeElem,
+                            nearestScopeTPElem,
+                            dataIndex,
+                            i,
+                            templatedAttr,
+                            info,
+                            jsonStr,
+                            attrData;
+
+                        //  Set the starting index to the current scope index
+                        //  times the number of elements in each group and the
+                        //  end index to that plus the number of elements in
+                        //  each group.
+                        startIndex = scopeIndex * groupingSize;
+                        endIndex = startIndex + groupingSize;
+
+                        ownerElem = templatedAttrs.at(startIndex).ownerElement;
+
+                        if (TP.elementHasAttribute(
+                                            ownerElem, 'bind:scope', true)) {
+                            nearestScopeElem = ownerElem;
+                        } else {
+                            //  Grab the nearest ancestor to the first templated
+                            //  element in this group that has a scope.
+                            nearestScopeElem =
+                                TP.nodeDetectAncestorMatchingCSS(
+                                    templatedAttrs.at(startIndex).ownerElement,
+                                    '*[bind|scope]',
+                                    elem);
+                        }
+
+                        nearestScopeTPElem = TP.wrap(nearestScopeElem);
+
+                        dataIndex = scopeIndex + repeatIndex;
+
+                        for (i = startIndex; i < endIndex; i++) {
+
+                            templatedAttr = templatedAttrs.at(i);
+
+                            if (isXMLResource) {
+                                info = TP.hc(
+                                        '$REQUEST', null,
+                                        'TP', TP,
+                                        'APP', APP,
+                                        '$SOURCE', this,
+                                        '$TAG', nearestScopeTPElem,
+                                        '$TARGET', tpDoc,
+                                        '$_', aData,
+                                        '$INPUT', repeatResultSlice,
+                                        '$INDEX', dataIndex,
+                                        '$FIRST', dataIndex === 1,
+                                        '$MIDDLE',
+                                            dataIndex > 1 && dataIndex < last,
+                                        '$LAST', dataIndex !== last,
+                                        '$EVEN', dataIndex % 2 === 0,
+                                        '$ODD', dataIndex % 2 !== 0,
+                                        '$#', dataIndex);
+                            } else {
+                                info = TP.hc(
+                                        '$REQUEST', null,
+                                        'TP', TP,
+                                        'APP', APP,
+                                        '$SOURCE', this,
+                                        '$TAG', nearestScopeTPElem,
+                                        '$TARGET', tpDoc,
+                                        '$_', aData,
+                                        '$INPUT', repeatResultSlice,
+                                        '$INDEX', dataIndex,
+                                        '$FIRST', dataIndex === 0,
+                                        '$MIDDLE',
+                                            dataIndex > 0 && dataIndex < last,
+                                        '$LAST', dataIndex !== last,
+                                        '$EVEN', dataIndex % 2 === 0,
+                                        '$ODD', dataIndex % 2 !== 0,
+                                        '$#', dataIndex);
+                            }
+
+                            jsonStr = TP.reformatJSToJSON(
+                                        templatedAttr.nodeValue);
+
+                            attrData = TP.json2js(jsonStr);
+
+                            /* eslint-disable no-loop-func */
+                            attrData.perform(
+                                function(kvPair) {
+                                    var attrName,
+                                        attrVal,
+
+                                        val;
+
+                                    attrName = kvPair.first();
+                                    attrVal = kvPair.last();
+
+                                    attrVal = attrVal.unquoted('"');
+
+                                    attrVal = attrVal.replace(
+                                                TP.regex.ACP_ENCODED_BEGIN,
+                                                TP.ACP_BEGIN);
+                                    attrVal = attrVal.replace(
+                                                TP.regex.ACP_ENCODED_END,
+                                                TP.ACP_END);
+
+                                    val = attrVal.transform(null, info);
+
+                                    TP.elementSetAttribute(ownerElem,
+                                                            attrName,
+                                                            val,
+                                                            true);
+                                });
+                            /* eslint-enable no-loop-func */
+
+                            //  Add this to the list of elements that the
+                            //  templating machinery refreshed.
+                            templateRefreshedElems.push(
+                                    templatedAttrs.ownerElement);
+                        }
+                    }.bind(this));
+
+                //  If there are remainder elements, they need to be set to
+                //  blank and then added to the list of elements that the
+                //  templating machinery refreshed.
+                if (TP.notEmpty(remainderAttrs)) {
+                    remainderAttrs.forEach(
+                        function(anAttr) {
+                            var jsonStr,
+                                attrData;
+
+                            jsonStr = TP.reformatJSToJSON(anAttr.nodeValue);
+
+                            attrData = TP.json2js(jsonStr);
+
+                            attrData.perform(
+                                function(kvPair) {
+                                    var attrName;
+
+                                    attrName = kvPair.first();
+
+                                    TP.elementRemoveAttribute(
+                                                anAttr.ownerElement,
+                                                attrName,
+                                                true);
+                                });
+
+                            templateRefreshedElems.push(
+                                            anAttr.ownerElement);
                         });
                 }
 
