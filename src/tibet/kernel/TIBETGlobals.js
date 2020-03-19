@@ -1789,6 +1789,16 @@ TP.CREDENTIALS_DB_NAME = 'TIBET_USER_CREDENTIALS';
 TP.LOCALSTORAGE_DB_NAME = 'TIBET_LOCAL_DB';
 
 //  ---
+//  ACP support
+//  ---
+
+TP.ACP_BEGIN = '{{';
+TP.ACP_END = '}}';
+
+TP.ACP_ENCODED_BEGIN = '_BEGIN_ACP_';
+TP.ACP_ENCODED_END = '_END_ACP_';
+
+//  ---
 //  XML support
 //  ---
 
@@ -3234,6 +3244,12 @@ TP.regex.HAS_ACP = /\{\{.*\}\}/;
 TP.regex.EXTRACT_ACP = /\{\{(.+?)\}\}/;
 
 TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
+
+TP.regex.ACP_BEGIN = /\{\{/g;
+TP.regex.ACP_END = /\}\}/g;
+
+TP.regex.ACP_ENCODED_BEGIN = /_BEGIN_ACP_/g;
+TP.regex.ACP_ENCODED_END = /_END_ACP_/g;
 
 //  0-n non-'\' characters followed by 0-n whitespace, followed by '.%',
 //  followed by 0-n whitespace, followed by 1-n any characters

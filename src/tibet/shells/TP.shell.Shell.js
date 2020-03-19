@@ -322,7 +322,14 @@ TP.shell.Shell.Type.defineConstant('MIN_USERNAME_LEN', 2);
 TP.shell.Shell.Type.defineConstant('MIN_PASSWORD_LEN', 2);
 
 TP.shell.Shell.Type.defineConstant('INVALID_ARGUMENT_MATCHER',
-    TP.rc('(xmlns|xmlns:\\w+|class|tibet:tag|tag|tsh:argv|argv)'));
+    TP.rc('(xmlns' +
+            '|xmlns:\\w+' +
+            '|class' +
+            '|tibet:tag' +
+            '|tag' +
+            '|tsh:argv' +
+            '|argv' +
+            '|tibet:attrtemplateexprs)'));
 
 //  'starter' snippet list used for new accounts. a list of pairs:
 //  ([[command, user text], ...])

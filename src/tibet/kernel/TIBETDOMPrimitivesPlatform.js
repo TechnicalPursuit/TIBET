@@ -289,6 +289,121 @@ TP.hc(
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$documentCaptureACPAttrExpressions',
+TP.hc(
+    'test',
+    TP.sys.getBrowserUI,
+    TP.DEFAULT,
+    function(inputStr) {
+
+        /**
+         * @method $documentCaptureACPAttrExpressions
+         * @summary Captures any ACP expressions inside of attributes and adds a
+         *     new attribute, 'tibet:attrtemplateexprs', that has those
+         *     expressions captured.
+         * @param {String} inputStr The markup String to convert attribute ACP
+         *     expressions in.
+         * @returns {String} A markup String that has attribute ACP expressions
+         *     captured into a 'tibet:attrtemplateexprs' attribute.
+         */
+
+        var parser,
+            workingDoc,
+
+            result,
+
+            acpAttrs,
+
+            node,
+
+            i,
+
+            srcAttr,
+
+            ownerElem,
+
+            val,
+            trackingAttr,
+
+            outputStr;
+
+        //  Use the 'old ActiveX way' to parse the document - this parser
+        //  does *not* strip "invalid" constructs from the markup.
+        parser = new DOMParser();
+
+        workingDoc = parser.parseFromString(inputStr, TP.XML_ENCODED);
+
+        //  Look for any attributes that contain '{{' - these are binding
+        //  expressions. Note how *do not* look for any that are in the
+        //  TP.w3.Xmlns.BIND namespace, which means any 'bind:*' attributes
+        //  themselves.
+        result = workingDoc.evaluate(
+                '//*/@*[contains(., "' + TP.ACP_BEGIN + '") and ' +
+                'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"]',
+                workingDoc,
+                null,
+                XPathResult.ANY_TYPE,
+                null);
+
+        acpAttrs = TP.ac();
+        while (TP.isNode(node = result.iterateNext())) {
+            acpAttrs.push(node);
+        }
+
+        for (i = 0; i < acpAttrs.length; i++) {
+
+            srcAttr = acpAttrs[i];
+
+            //  Grab the Element node that owns this Attribute node.
+            ownerElem = srcAttr.ownerElement;
+
+            //  Initially set the trackingAttr to null
+            trackingAttr = ownerElem.attributes['tibet:attrtemplateexprs'];
+
+            val = srcAttr.nodeValue;
+
+            //  If the expression starts and ends exactly (modulo whitespace)
+            //  with '{{' and '}}' then we can trim off the whitespace.
+            if (/^\s*\{\{/.test(val) && /\}\}\s*$/.test(val)) {
+                //  Trim off whitespace
+                val = TP.trim(val);
+            }
+
+            val = val.replace(TP.regex.ACP_BEGIN, TP.ACP_ENCODED_BEGIN);
+            val = val.replace(TP.regex.ACP_END, TP.ACP_ENCODED_END);
+
+            val = val.quoted('"');
+
+            //  There was no existing tibet:attrtemplateexprs attribute - build
+            //  one and set it's value.
+            if (!TP.isAttributeNode(trackingAttr)) {
+                ownerElem.setAttributeNS(
+                        TP.w3.Xmlns.TIBET,
+                        'tibet:attrtemplateexprs',
+                        '{' + srcAttr.name + ': ' + val + '}');
+            } else {
+                //  Already have a tibet:attrtemplateexprs attribute - add to
+                //  it.
+                trackingAttr.nodeValue =
+                    trackingAttr.nodeValue.slice(
+                        0, trackingAttr.nodeValue.lastIndexOf('}')) +
+                    ', ' +
+                    srcAttr.name +
+                    ': ' +
+                    val +
+                    '}';
+            }
+        }
+
+        //  Turn it back into a String.
+        outputStr = new XMLSerializer().serializeToString(workingDoc);
+
+        return outputStr;
+    }
+));
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentFromString',
 TP.hc(
     'test',
@@ -389,6 +504,11 @@ TP.hc(
         if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
             !TP.isJSONString(str)) {
             str = TP.$documentFixupInlineBindingAttrs(str);
+        }
+
+        if (TP.regex.HAS_ACP.test(str) &&
+            !TP.isJSONString(str)) {
+            str = TP.$documentCaptureACPAttrExpressions(str);
         }
 
         //  Make sure to replace any characters that are valid UTF-8, but not
@@ -582,6 +702,11 @@ TP.hc(
         if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
             !TP.isJSONString(str)) {
             str = TP.$documentFixupInlineBindingAttrs(str);
+        }
+
+        if (TP.regex.HAS_ACP.test(str) &&
+            !TP.isJSONString(str)) {
+            str = TP.$documentCaptureACPAttrExpressions(str);
         }
 
         //  Make sure to replace any characters that are valid UTF-8, but not
