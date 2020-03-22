@@ -6144,7 +6144,7 @@ function(regenerateIfNecessary) {
                             //  Add this to the list of elements that the
                             //  templating machinery refreshed.
                             templateRefreshedElems.push(
-                                    templatedAttrs.ownerElement);
+                                    templatedAttr.ownerElement);
                         }
                     }.bind(this));
 
