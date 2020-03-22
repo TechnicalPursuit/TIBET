@@ -38,7 +38,13 @@
         logger = logger.getContextualLogger(meta);
 
         //  ---
-        //  Task
+        //  Task name
+        //  ---
+
+        module.exports.taskName = 'sample';
+
+        //  ---
+        //  Runtime
         //  ---
 
         /**
