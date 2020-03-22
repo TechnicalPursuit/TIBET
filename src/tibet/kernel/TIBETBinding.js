@@ -4564,6 +4564,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
         remainderParts,
 
         needsRefresh,
+        allRefreshedElements,
 
         insideRepeatScope,
 
@@ -5279,6 +5280,20 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                                         ownerTPElem.$insertRepeatRowAt(
                                                                 updateIndexes,
                                                                 branchVal);
+                                    ownerTPElem.$refreshBranches(
+                                        primarySource,
+                                        'value',
+                                        branchVal,
+                                        ownerTPElem.$getBoundElements(),
+                                        null,
+                                        null,
+                                        null,
+                                        false,
+                                        sigOrigin,
+                                        true,
+                                        ownerTPElem,
+                                        null);
+
                                 } else {
 
                                     ownerTPElem.empty();
@@ -5300,8 +5315,6 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                                     }
                                 }
 
-                                ownerTPElem.$refreshRepeatData(false);
-
                                 needsRefresh = false;
 
                                 break;
@@ -5321,6 +5334,13 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
 
                             default:
                                 break;
+                        }
+
+                        allRefreshedElements =
+                            ownerTPElem.getDocument().get('$refreshedElements');
+                        if (TP.notEmpty(allRefreshedElements)) {
+                            ownerTPElem.$sendNativeRefreshEvent();
+                            allRefreshedElements.empty();
                         }
                     }
 
