@@ -358,7 +358,7 @@
             //  process this particular task (which is ok..not an error).
             runner = TDS.workflow.tasks[plugin];
             if (!runner) {
-                logger.error(job, 'task runner not found: ' +
+                logger.error(job, 'task plugin not found: ' +
                     plugin);
                 return;
             }
