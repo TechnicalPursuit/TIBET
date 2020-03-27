@@ -1604,7 +1604,8 @@ function(aDocument, content, filename) {
      * @param {Document} aDocument The document that the download link element
      *     will be generated into (and removed from when complete).
      * @param {String} content The content to download.
-     * @param {String} filename The filename to use when downloading the data.
+     * @param {String} filename The filename to make the downloaded data
+     *     available under.
      */
 
     var win,
@@ -1636,8 +1637,6 @@ function(aDocument, content, filename) {
     //  Create a new anchor and set various attributes on it to allow us to
     //  treat it as a 'download' link.
     anchorElem = TP.documentConstructElement(aDocument, 'a', TP.w3.Xmlns.XHTML);
-
-    TP.elementSetAttribute(anchorElem, 'target', '_blank', true);
 
     //  NB: These properties must be set directly for this approach to work. We
     //  cannot use TP.elementSetAttribute here.
