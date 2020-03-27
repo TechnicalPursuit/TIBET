@@ -1659,6 +1659,65 @@ function(aDocument, content, filename) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('documentDownloadURL',
+function(aDocument, aURL) {
+
+    /**
+     * @method documentDownloadURL
+     * @summary Downloads the content pointed to by the supplied URL (which
+     *     should exist on the same-origin server) to the user's local file
+     *     system.
+     * @description This mechanism generates a link to the supplied URL which
+     *     and then activates that link via a synthetic 'click' event.
+     * @param {Document} aDocument The document that the download link element
+     *     will be generated into (and removed from when complete).
+     * @param {String} aURL The server URL to download.
+     */
+
+    var win,
+
+        blob,
+        url,
+
+        anchorElem,
+        evt;
+
+    if (!TP.isDocument(aDocument)) {
+        return;
+    }
+
+    if (TP.isEmpty(aURL)) {
+        return;
+    }
+
+    //  Grab the Window of the supplied document.
+    win = TP.nodeGetWindow(aDocument);
+
+    //  Create a new anchor and set various attributes on it to allow us to
+    //  treat it as a 'download' link.
+    anchorElem = TP.documentConstructElement(aDocument, 'a', TP.w3.Xmlns.XHTML);
+
+    //  NB: These properties must be set directly for this approach to work. We
+    //  cannot use TP.elementSetAttribute here.
+    anchorElem.href = aURL;
+
+    //  Append the anchor to the document's body. This will allow us to activate
+    //  it.
+    TP.nodeAppendChild(TP.documentGetBody(aDocument), anchorElem, false);
+
+    //  Create a 'click' Event and dispatch it against the anchor. This will
+    //  activate the anchor and begin the download process.
+    evt = TP.documentConstructEvent(aDocument, TP.hc('type', 'click'));
+    anchorElem.dispatchEvent(evt);
+
+    //  We're done with it - detach it from it's parent node.
+    TP.nodeDetach(anchorElem);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  JSONP call support
 //  ------------------------------------------------------------------------
 
