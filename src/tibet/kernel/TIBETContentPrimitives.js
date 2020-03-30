@@ -1675,12 +1675,7 @@ function(aDocument, aURL) {
      * @param {String} aURL The server URL to download.
      */
 
-    var win,
-
-        blob,
-        url,
-
-        anchorElem,
+    var anchorElem,
         evt;
 
     if (!TP.isDocument(aDocument)) {
@@ -1690,9 +1685,6 @@ function(aDocument, aURL) {
     if (TP.isEmpty(aURL)) {
         return;
     }
-
-    //  Grab the Window of the supplied document.
-    win = TP.nodeGetWindow(aDocument);
 
     //  Create a new anchor and set various attributes on it to allow us to
     //  treat it as a 'download' link.
