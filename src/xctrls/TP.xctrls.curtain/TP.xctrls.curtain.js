@@ -118,22 +118,20 @@ function(aSignal) {
      * @returns {TP.xctrls.curtain} The receiver.
      */
 
-    var hideDialogs,
+    var dismissDialogs,
 
-        event,
-        focusedTPElem;
+        dialogTPElem;
 
     //  If we have an attribute, 'dismiss-onclick', we signal a 'DialogDismiss'
     //  to the focused element. This way, any XControls dialog boxes that are
     //  open will be dismissed and then we will be dismissed.
-    hideDialogs = TP.bc(this.getAttribute('dismiss-onclick'));
+    dismissDialogs = TP.bc(this.getAttribute('dismiss-onclick'));
 
-    if (hideDialogs) {
-        event = aSignal.getPayload();
-        focusedTPElem = this.getFocusedElement();
+    if (dismissDialogs) {
+        dialogTPElem = this.getDocument().get('xctrls|dialog');
 
-        if (TP.isKindOf(focusedTPElem, TP.dom.ElementNode)) {
-            focusedTPElem.signal('TP.sig.DialogDismiss');
+        if (TP.isKindOf(dialogTPElem, TP.dom.ElementNode)) {
+            dialogTPElem.signal('TP.sig.DialogDismiss');
         }
     }
 
