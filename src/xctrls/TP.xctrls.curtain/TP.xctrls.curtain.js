@@ -49,8 +49,9 @@ function(aTPDocument, aCurtainID) {
 
     var tpDocBody,
         curtainID,
-        curtainElem,
-        curtainTPElem;
+
+        curtainTPElem,
+        curtainElem;
 
     if (TP.notValid(aTPDocument)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
@@ -58,12 +59,12 @@ function(aTPDocument, aCurtainID) {
 
     curtainID = TP.ifInvalid(aCurtainID, 'systemCurtain');
 
-    curtainElem = aTPDocument.get('//*[@id="' + curtainID + '"]');
+    curtainTPElem = aTPDocument.get('//*[@id="' + curtainID + '"]');
 
     //  If the 'get' expression above didn't find one, it hands back an empty
     //  Array. Otherwise it will hand back the TP.dom.ElementNode that
     //  represents the curtain.
-    if (TP.isEmpty(curtainElem)) {
+    if (TP.isEmpty(curtainTPElem)) {
 
         tpDocBody = aTPDocument.getBody();
 
