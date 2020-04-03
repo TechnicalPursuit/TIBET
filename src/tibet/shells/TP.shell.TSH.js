@@ -1819,6 +1819,386 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.shell.TSH.Inst.defineMethod('$processRequestUsingElectron',
+function(aRequest) {
+
+    /**
+     * @method $processRequestUsingElectron
+     * @summary Processes request using Electron. Note that this method also
+     *     completes the request.
+     * @param {TP.sig.ShellRequest} aRequest The request to process using
+     *     Electron.
+     * @returns {TP.sig.Request} The request to process.
+     */
+
+    return aRequest;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.shell.TSH.Inst.defineMethod('$processRequestUsingTDS',
+function(aRequest) {
+
+    /**
+     * @method $processRequestUsingTDS
+     * @summary Processes request using the TDS. This involves encoding the
+     *     commands parameters, invoking the command remotely and then decoding
+     *     the results. Note that this method also completes the request.
+     * @param {TP.sig.ShellRequest} aRequest The request to process using the
+     *     TDS.
+     * @returns {TP.sig.Request} The request to process.
+     */
+
+    var cmd,
+        realCmd,
+        url,
+        argv,
+        seenKeys,
+        noSocket,
+        configure,
+        process,
+        args,
+        str,
+        req,
+        shell,
+        cliSocket;
+
+    //  TODO: sanity check them for non-alphanumeric 'command line' chars.
+
+    cmd = this.getArgument(aRequest, 'ARG0', null, false);
+    if (TP.isEmpty(cmd)) {
+        cmd = 'help';
+        realCmd = false;
+    } else {
+        realCmd = true;
+    }
+
+    noSocket = this.getArgument(aRequest, 'tsh:nosocket');
+
+    shell = TP.shell.TSH.getDefaultInstance();
+
+    //  ---
+    //  Assemble the command string. We use the same "url format" in all cases.
+    //  ---
+
+    str = 'cmd=' + encodeURIComponent(cmd);
+
+    argv = this.getArgument(aRequest, 'ARGV');
+    if (TP.notEmpty(argv)) {
+
+        argv.shift();       //  pop off the first one, it's the command.
+
+        if (TP.notEmpty(argv)) {
+            argv.forEach(
+                    function(item, ind) {
+                        str += '&arg' + ind + '=' + encodeURIComponent(item);
+                    });
+        }
+    }
+
+    seenKeys = TP.hc();
+
+    args = this.getArguments(aRequest);
+
+    //  If there is a real command (which there is in all cases except when the
+    //  command is 'help'), filter argN variants. We don't want to have
+    //  duplicate arguments sent over the wire.
+    if (realCmd) {
+        args = args.select(
+                function(kvPair) {
+                    if (/ARG\d/.test(kvPair.first()) ||
+                        /tsh:ARG\d/.test(kvPair.first())) {
+                        if (TP.isValid(args.at('ARGV'))) {
+                            args.at('ARGV').shift();
+                        }
+
+                        return false;
+                    }
+
+                    return true;
+                });
+    }
+
+    args.perform(
+        function(arg) {
+            var key,
+                value;
+
+            key = arg.first();
+            value = arg.last();
+
+            //  We already processed ARGV above, which includes all ARG*
+            //  arguments.
+            if (/^ARG/.test(key)) {
+                return;
+            }
+
+            //  Have to get a little fancier here. If we see tsh: prefixes we
+            //  want to remove those. If we don't see a value that key is a
+            //  boolean flag.
+            if (/tsh:/.test(key)) {
+                key = key.slice(4);
+            }
+
+            if (seenKeys.at(key)) {
+                return;
+            }
+
+            seenKeys.atPut(key, true);
+
+            str += '&' + encodeURIComponent(key);
+            if (TP.notEmpty(value)) {
+                if (value !== true) {
+                    str += '=' + encodeURIComponent(
+                        ('' + value).stripEnclosingQuotes());
+                }
+            }
+        });
+
+    //  ---
+    //  Helpers
+    //  ---
+
+    //  Helper function to process a single result object (print/resolve).
+    process = function(result, request) {
+        var lvl,
+            data,
+            reason;
+
+        //  Ignore empty results. Should be JSON structure with 'ok' key.
+        if (TP.isEmpty(result)) {
+            return;
+        }
+
+        //  If there's a level try to set the request to output at the
+        //  corresponding level.
+        if (TP.notEmpty(result.level)) {
+            //  TODO:   currently this isn't translating to console style.
+            //  TODO:   maybe verify we never "downgrade" message level so
+            //          we keep the "worst" level (error) once it's hit.
+            lvl = result.level;
+            request.atPut('messageLevel', TP.log.Level.getLevel(lvl));
+        }
+
+        if (TP.notEmpty(result.ok)) {
+
+            if (result.ok === true) {
+                if (TP.notEmpty(result.data)) {
+                    data = TP.stringStripANSIControlCharacters(result.data);
+                    TP.notEmpty(data) ? request.stdout(data) : 0;
+                }
+            } else {
+                if (TP.notEmpty(result.reason)) {
+                    reason = TP.stringStripANSIControlCharacters(result.reason);
+                    TP.notEmpty(reason) ? request.stderr(reason) : 0;
+                }
+            }
+
+            if (result.status === 0) {
+                request.complete();
+                return;
+            } else if (result.status !== undefined) {
+                request.fail();
+                return;
+            }
+
+        } else {
+
+            if (result.status === 0) {
+                if (TP.notEmpty(result.data)) {
+                    data = TP.stringStripANSIControlCharacters(result.data);
+                    TP.notEmpty(data) ? request.stderr(data) : 0;
+                }
+                request.complete();
+                return;
+            } else if (result.status !== undefined) {
+                if (TP.notEmpty(result.reason)) {
+                    reason = TP.stringStripANSIControlCharacters(result.reason);
+                    TP.notEmpty(reason) ? request.stderr(reason) : 0;
+                }
+                request.fail();
+                return;
+            }
+        }
+    };
+
+    //  Helper function to configure the methods for standard socket events.
+    configure = function(request) {
+
+        var socket;
+
+        socket = shell.get('cliSocket');
+
+        //  When a connection is opened
+        socket.defineMethod('onopen',
+            function(evt) {
+                request.stdout('CLI socket connection opened.');
+                socket.send(str);
+            });
+
+        //  When data is received
+        socket.defineMethod('onmessage',
+            function(evt) {
+                var result,
+                    data;
+
+                try {
+                    data = TP.stringStripANSIControlCharacters(evt.data);
+                    result = JSON.parse(data);
+                    process(result, request);
+                } catch (e) {
+                    request.stderr(e.message);
+                    result = TP.stringStripANSIControlCharacters(evt.data);
+                    request.stdout(result);
+                }
+            });
+
+        //  When a connection could not be made
+        socket.defineMethod('onerror',
+            function(evt) {
+                var result;
+
+                shell.set('cliSocket', null);
+
+                result = evt;
+                request.stderr(result);
+                request.fail(evt);
+            });
+
+        //  When a connection is closed
+        socket.defineMethod('onclose',
+            function(evt) {
+                shell.set('cliSocket', null);
+
+                request.complete();
+            });
+    };
+
+    //  ---
+    //  URI version
+    //  ---
+
+    if (noSocket === true || !TP.core.Socket.isSupported()) {
+
+        url = TP.uriExpandPath(TP.sys.getcfg('tds.cli.uri'));
+
+        url += '?' + str + '&nosocket=true';
+        url = TP.uc(url);
+
+        if (TP.notValid(url)) {
+            return aRequest.fail('Invalid request input.');
+        }
+
+        req = TP.sig.HTTPRequest.construct(
+                    TP.hc('uri', url.getLocation(),
+                            'resultType', TP.TEXT));
+
+        req.defineHandler('RequestSucceeded',
+                            function() {
+                                var result,
+                                    obj;
+
+                                result = req.getResult();
+
+                                try {
+                                    obj = JSON.parse(result);
+                                    if (TP.isArray(obj)) {
+                                        obj.forEach(function(item) {
+                                            process(item, aRequest);
+                                        });
+                                    } else {
+                                        process(obj, aRequest);
+                                    }
+                                } catch (e) {
+                                    aRequest.stdout(result);
+                                    aRequest.complete();
+                                }
+                            });
+
+        req.defineHandler('RequestFailed',
+                            function() {
+                                var result,
+                                    obj;
+
+                                result = req.getResult();
+
+                                try {
+                                    obj = JSON.parse(result);
+                                    if (TP.isArray(obj)) {
+                                        obj.forEach(function(item) {
+                                            process(item, aRequest);
+                                        });
+                                    } else {
+                                        process(obj, aRequest);
+                                    }
+                                } catch (e) {
+                                    aRequest.stderr(result);
+                                    aRequest.fail(result);
+                                }
+                            });
+
+        url.httpPost(req);
+
+        return this;
+    }
+
+    //  ---
+    //  Socket version
+    //  ---
+
+    cliSocket = shell.get('cliSocket');
+
+    //  We have a socket, but it's closed. Null it out and re-create it.
+    if (TP.isValid(cliSocket) && cliSocket.isClosed()) {
+        cliSocket = null;
+        shell.set('cliSocket', null);
+    }
+
+    if (TP.notValid(cliSocket)) {
+
+        //  Calling the URL with no command or arguments sets up the socket.
+        url = TP.uriExpandPath(TP.sys.getcfg('tds.cli.uri'));
+
+        TP.httpPost(url).then(
+            function() {
+                var path,
+                    socket;
+
+                path = TP.uriExpandPath('~app').slice(0, -1).replace(
+                                                            'http:', 'ws:');
+
+                //  Create, configure, and activate the new socket.
+                socket = TP.core.Socket.construct(path, TP.ac('tibet-cli'));
+                shell.set('cliSocket', socket);
+
+                configure(aRequest);
+                socket.activate();
+
+                //  NOTE: no send() here...it's in the onopen handler installed
+                //  via the configure() call.
+            });
+
+        return aRequest;
+
+    } else {
+
+        //  Rebuild the event listeners by tearing down any current ones,
+        //  reconfiguring the methods on the instance, and re-attaching
+        //  listeners on the underlying source.
+        cliSocket.teardownStandardHandlers();
+
+        configure(aRequest);
+
+        cliSocket.setupStandardHandlers();
+
+        cliSocket.send(str);
+    }
+
+    return aRequest;
+});
+
+//  ------------------------------------------------------------------------
 //  DATA BUILT-INS
 //  ------------------------------------------------------------------------
 
