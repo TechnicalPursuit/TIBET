@@ -68,19 +68,42 @@ TP.xctrls.dialog.Inst.defineAttribute('bodyGroup',
     TP.cpc('> *[tibet|pelem="body"] > tibet|group',
         TP.hc('shouldCollapse', true)));
 
-TP.xctrls.dialog.Inst.defineAttribute('curtain',
-    TP.xpc('//*[@id="systemCurtain"]',
-        TP.hc('shouldCollapse', true)
-    ).set('fallbackWith', function(tpTarget) {
-        return TP.xctrls.curtain.getSystemCurtainFor(
-            tpTarget.getDocument(),
-            tpTarget.getAttribute('curtain'));
-    }));
-
 TP.xctrls.dialog.Inst.defineAttribute('curtainWasShowing');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.dialog.Inst.defineMethod('getCurtain',
+function() {
+
+    /**
+     * @method getCurtain
+     * @summary Returns the curtain associated with this dialog.
+     * @description If the receiver has a 'curtainID' attribute, then TIBET will
+     *     try to find a curtain element with that ID. If none can be found,
+     *     then this method will return the shared system curtain.
+     * @returns {TP.xctrls.curtain} The curtain associated with the receiver.
+     */
+
+    var tpDoc,
+
+        curtainID,
+        curtainTPElem;
+
+    tpDoc = this.getDocument();
+
+    curtainID = this.getAttribute('curtainID');
+    if (TP.notEmpty(curtainID)) {
+        curtainTPElem = tpDoc.get('//*[@id="' + curtainID + '"]');
+        if (TP.isKindOf(curtainTPElem, TP.dom.ElementNode)) {
+            return curtainTPElem;
+        }
+    }
+
+    return TP.xctrls.curtain.getSystemCurtainFor(tpDoc);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.dialog.Inst.defineHandler('DialogDismiss',
@@ -299,7 +322,7 @@ function(info) {
                 //  attribute if appropriate.
                 dialogElem = TP.elem(
                                 '<xctrls:dialog id="' + dialogID + '"' +
-                                ' curtain="systemCurtain"/>');
+                                ' curtainID="systemCurtain"/>');
                 if (isModal) {
                     TP.elementSetAttribute(dialogElem, 'modal', 'true', true);
                 }
