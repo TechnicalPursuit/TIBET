@@ -107,6 +107,45 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.curtain.Inst.defineHandler('DOMClick',
+function(aSignal) {
+
+    /**
+     * @method handleDOMClick
+     * @summary Handles notifications of 'click' signals.
+     * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.xctrls.curtain} The receiver.
+     */
+
+    var hideDialogs,
+
+        event,
+        focusedTPElem;
+
+    //  If we have an attribute, 'dismiss-onclick', we signal a 'DialogDismiss'
+    //  to the focused element. This way, any XControls dialog boxes that are
+    //  open will be dismissed and then we will be dismissed.
+    hideDialogs = TP.bc(this.getAttribute('dismiss-onclick'));
+
+    if (hideDialogs) {
+        event = aSignal.getPayload();
+        focusedTPElem = this.getFocusedElement();
+
+        if (TP.isKindOf(focusedTPElem, TP.dom.ElementNode)) {
+            focusedTPElem.signal('TP.sig.DialogDismiss');
+        }
+    }
+
+    //  NB: Unlike the trap for almost all of the other UI signals, we allow
+    //  'drag move' to pass, since we use curtain for smooth drag tracking.
+    return this;
+}, {
+    phase: TP.CAPTURING
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.curtain.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
