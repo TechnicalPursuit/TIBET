@@ -92,7 +92,7 @@ function(aSignal) {
      * (i.e. hidden).
      * @param {TP.sig.DialogDismiss} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.dialog} The receiver.
+     * @returns {TP.xctrls.dialog} The receiver.
      */
 
     this.setAttribute('hidden', true);
@@ -183,7 +183,7 @@ function(aTitle) {
      * @method setTitle
      * @summary Sets the title of the receiver.
      * @param {String} aTitle The text content to set the title to.
-     * @returns {TP.sherpa.dialog} The receiver.
+     * @returns {TP.xctrls.dialog} The receiver.
      */
 
     this.get('header').setTextContent(aTitle);
@@ -379,7 +379,7 @@ function(beHidden) {
      *     events from the rest of the app.
      * @param {Boolean} beHidden Whether or not the curtain should be in  a
      *     hidden state.
-     * @returns {TP.sherpa.dialog} The receiver.
+     * @returns {TP.xctrls.dialog} The receiver.
      */
 
     var curtainTPElem;
