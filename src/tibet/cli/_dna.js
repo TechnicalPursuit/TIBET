@@ -255,13 +255,6 @@ Cmd.prototype.executeClone = function() {
         return 1;
     }
 
-    err = CLI.sh.cp(flags, CLI.joinPaths(dna, '.*'), working);
-    if (CLI.sh.error()) {
-        this.error('Error cloning dna directory: ' + err.stderr);
-        this.executeCleanup(1);
-        return 1;
-    }
-
     //  Before we go any further we have to rename any directories which include
     //  template references themselves.
     return this.executeProcessDirs();
