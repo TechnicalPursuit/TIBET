@@ -2044,12 +2044,20 @@ function(aRequest) {
                     data;
 
                 try {
-                    data = TP.stringStripANSIControlCharacters(evt.data);
-                    result = JSON.parse(data);
+                    if (TP.notEmpty(evt.data)) {
+                        data = TP.stringStripANSIControlCharacters(evt.data);
+                        result = JSON.parse(data);
+                    } else {
+                        result = {};
+                    }
                     process(result, request);
                 } catch (e) {
                     request.stderr(e.message);
-                    result = TP.stringStripANSIControlCharacters(evt.data);
+                    if (TP.notEmpty(evt.data)) {
+                        result = TP.stringStripANSIControlCharacters(evt.data);
+                    } else {
+                        result = '';
+                    }
                     request.stdout(result);
                 }
             });
