@@ -1832,6 +1832,218 @@ function(aRequest) {
      * @returns {TP.sig.Request} The request to process.
      */
 
+    var cmd,
+        realCmd,
+
+        spawnArgs,
+
+        argv,
+        seenKeys,
+        args,
+
+        process,
+        msgCallback,
+        errCallback;
+
+    cmd = this.getArgument(aRequest, 'ARG0', null, false);
+    if (TP.isEmpty(cmd)) {
+        cmd = 'help';
+        realCmd = false;
+    } else {
+        realCmd = true;
+    }
+
+    //  ---
+    //  Assemble the spawn arguments
+    //  ---
+
+    spawnArgs = TP.ac();
+
+    argv = this.getArgument(aRequest, 'ARGV');
+    if (TP.notEmpty(argv)) {
+
+        argv.shift();       //  pop off the first one, it's the command.
+
+        if (TP.notEmpty(argv)) {
+            argv.forEach(
+                    function(item, ind) {
+                        spawnArgs.push(item);
+                    });
+        }
+    }
+
+    seenKeys = TP.hc();
+
+    args = this.getArguments(aRequest);
+
+    //  If there is a real command (which there is in all cases except when
+    //  the command is 'help'), filter argN variants. We don't want to have
+    //  duplicate arguments sent over the wire.
+    if (realCmd) {
+        args = args.select(
+                function(kvPair) {
+                    if (/ARG\d/.test(kvPair.first()) ||
+                        /tsh:ARG\d/.test(kvPair.first())) {
+                        if (TP.isValid(args.at('ARGV'))) {
+                            args.at('ARGV').shift();
+                        }
+
+                        return false;
+                    }
+
+                    return true;
+                });
+    }
+
+    args.perform(
+        function(arg) {
+            var key,
+                value;
+
+            key = arg.first();
+            value = arg.last();
+
+            //  We already processed ARGV above, which includes all ARG*
+            //  arguments.
+            if (/^ARG/.test(key)) {
+                return;
+            }
+
+            //  Have to get a little fancier here. If we see tsh: prefixes we
+            //  want to remove those. If we don't see a value that key is a
+            //  boolean flag.
+            if (/tsh:/.test(key)) {
+                key = key.slice(4);
+            }
+
+            if (seenKeys.at(key)) {
+                return;
+            }
+
+            seenKeys.atPut(key, true);
+
+            //  NB: The following logic matches that of the 'cli' plugin for
+            //  the TDS.
+
+            spawnArgs.push('--' + key);
+
+            //  We don't add the value if it is null, undefined,
+            //  true, the empty string or if the key equals the
+            //  value (like a good XML shell, TSH will duplicate
+            //  the key name as the value for Boolean flags:
+            //  --no-color="no-color").
+            if (value !== null &&
+                value !== undefined &&
+                value !== 'true' &&
+                value !== '' &&
+                value !== key) {
+
+                spawnArgs.push(('' + value).stripEnclosingQuotes());
+            }
+        });
+
+    //  ---
+    //  Helpers
+    //  ---
+
+    //  Helper function to process a single result object (print/resolve).
+    process = function(result, request) {
+        var lvl,
+            data,
+            reason;
+
+        //  Ignore empty results. Should be JSON structure with 'ok' key.
+        if (TP.isEmpty(result)) {
+            return;
+        }
+
+        //  If there's a level try to set the request to output at the
+        //  corresponding level.
+        if (TP.notEmpty(result.level)) {
+            //  TODO:   currently this isn't translating to console style.
+            //  TODO:   maybe verify we never "downgrade" message level so
+            //          we keep the "worst" level (error) once it's hit.
+            lvl = result.level;
+            request.atPut('messageLevel', TP.log.Level.getLevel(lvl));
+        }
+
+        if (TP.notEmpty(result.ok)) {
+
+            if (result.ok === true) {
+                if (TP.notEmpty(result.data)) {
+                    data = TP.stringStripANSIControlCharacters(result.data);
+                    TP.notEmpty(data) ? request.stdout(data) : 0;
+                }
+            } else {
+                if (TP.notEmpty(result.reason)) {
+                    reason = TP.stringStripANSIControlCharacters(result.reason);
+                    TP.notEmpty(reason) ? request.stderr(reason) : 0;
+                }
+            }
+
+            if (result.status === 0) {
+                request.complete();
+                return;
+            } else if (result.status !== undefined) {
+                request.fail();
+                return;
+            }
+
+        } else {
+
+            if (result.status === 0) {
+                if (TP.notEmpty(result.data)) {
+                    data = TP.stringStripANSIControlCharacters(result.data);
+                    TP.notEmpty(data) ? request.stderr(data) : 0;
+                }
+                request.complete();
+                return;
+            } else if (result.status !== undefined) {
+                if (TP.notEmpty(result.reason)) {
+                    reason = TP.stringStripANSIControlCharacters(result.reason);
+                    TP.notEmpty(reason) ? request.stderr(reason) : 0;
+                }
+                request.fail();
+                return;
+            }
+        }
+    };
+
+    msgCallback = function(evt) {
+        try {
+            if (TP.notEmpty(evt.data)) {
+                evt.data = TP.stringStripANSIControlCharacters(evt.data);
+            }
+            process(evt, aRequest);
+        } catch (e) {
+            aRequest.stderr(e.message);
+            if (TP.notEmpty(evt.data)) {
+                evt.data = TP.stringStripANSIControlCharacters(evt.data);
+            }
+            aRequest.stdout(evt);
+        }
+    };
+
+    errCallback = function(evt) {
+        aRequest.stderr(evt.reason);
+        aRequest.fail(evt.reason);
+    };
+
+    TP.extern.electron_lib_utils.commandSpawn(
+        cmd, spawnArgs, msgCallback, errCallback).then(
+        function(spawnResult) {
+            if (spawnResult.level === 'error') {
+                errCallback(spawnResult);
+                return;
+            }
+
+            msgCallback(spawnResult);
+            aRequest.complete();
+        },
+        function(spawnError) {
+            errCallback(spawnError);
+        });
+
     return aRequest;
 });
 

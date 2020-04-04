@@ -23,14 +23,22 @@
      */
     module.exports = function(options) {
 
-        var fs,
+        var CLI,
+
+            fs,
+            sh,
 
             fileDelete,
             fileExists,
             fileLoad,
-            fileSave;
+            fileSave,
+
+            commandSpawn;
+
+        CLI = require('../../src/tibet/cli/_cli');
 
         fs = require('fs');
+        sh = require('shelljs');
 
         //  ---
 
@@ -132,11 +140,92 @@
 
         //  ---
 
+        /**
+         *
+         */
+        commandSpawn = function(command, args, onmsgcb, onerrcb) {
+
+            var cmdObj,
+
+                tibetPath,
+                spawnArgs;
+
+            /*
+            cmdObj = {
+                options: {debug: false, verbose: false},
+                log: CLI.log,
+                error: CLI.error
+            };
+            */
+
+            //  Note no 'status' field here for the 'log' or 'error' functions -
+            //  they don't cause the command to terminate at this point.
+
+            cmdObj = {
+                options: {debug: false, verbose: false},
+                log: function(msg, spec, level) {
+                    var logMsg;
+
+                    logMsg = {
+                        level: level,
+                        ok: true,
+                        data: msg
+                    };
+
+                    onmsgcb(logMsg);
+                },
+                error: function(msg, spec) {
+                    var errMsg;
+
+                    errMsg = {
+                        level: 'error', //  ??
+                        ok: false,
+                        reason: msg
+                    };
+
+                    onerrcb(errMsg);
+                }
+            };
+
+            tibetPath = sh.which('tibet').toString();
+            if (tibetPath) {
+                spawnArgs = args.slice();
+                return CLI.spawnAsync(cmdObj, tibetPath, spawnArgs).then(
+                    function(result) {
+                        var spawnResult;
+
+                        spawnResult = {
+                            level: 'log', // ??
+                            ok: true,
+                            data: result.stdout
+                        };
+
+                        return spawnResult;
+                    },
+                    function(err) {
+                        var spawnError;
+
+                        spawnError = {
+                            level: 'error', // ??
+                            ok: false,
+                            reason: err.toString()
+                        };
+
+                        return spawnError;
+                    });
+            }
+
+            return Promise.resolve();
+        };
+
+        //  ---
+
         return {
             fileDelete: fileDelete,
             fileExists: fileExists,
             fileLoad: fileLoad,
-            fileSave: fileSave
+            fileSave: fileSave,
+            commandSpawn: commandSpawn
         };
     };
 
