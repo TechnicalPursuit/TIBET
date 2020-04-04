@@ -169,13 +169,6 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
  * Mozilla and Webkit styles to turn off default behavior
  * ----------------------------------------------------------------------- */
 
-/* do not show the built-in resizer */
-
-*|* {
-
-    resize: none;
-}
-
 /* hide scrollbars on all platforms, but especially Windows */
 
 /* specific to Webkit */
@@ -211,8 +204,8 @@ tibet|group {
 }
 
 /*
-  TP.tag.ActionTag and TP.tag.InfoTag elements are
-  transformed into XHTML, so we can't use '.' class notation here
+  TP.tag.ActionTag and TP.tag.InfoTag elements are transformed into *X*HTML, so
+  we can't use '.' class notation here
 */
 
 *|*[class~="tibet-action"],
@@ -230,18 +223,6 @@ tibet|group {
 *|*[pclass|hidden] {
 
     display: none;
-}
-
-/*
-  ========================================================================
-  'overlay' class - use on browsers where an element needs to hide a
-  scrollbar. This seems to be necessary on Chrome/OSX.
-  ========================================================================
-*/
-
-.overlay {
-
-    transform: translate3d(0, 0, 0);
 }
 
 /*
