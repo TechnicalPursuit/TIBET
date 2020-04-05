@@ -20,6 +20,8 @@
         Make.defineTaskOptions('build_tibet', {timeout: 1000 * 60 * 30});
         Make.defineTaskOptions('build_all', {timeout: 1000 * 60 * 30});
 
+        Make.defineTaskOptions('checkup', {timeout: 1000 * 60 * 10});
+
         Make.defineTaskOptions('_rollup_base', {timeout: 1000 * 60 * 10});
         Make.defineTaskOptions('_rollup_baseui', {timeout: 1000 * 60 * 10});
         Make.defineTaskOptions('_rollup_contributor', {timeout: 1000 * 60 * 10});
