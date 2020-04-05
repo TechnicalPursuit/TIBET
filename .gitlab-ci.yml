@@ -7,7 +7,8 @@ stages:
   - build
 
 unit_test:
-  image: node
+  # image: node
+  image: alekzonder/puppeteer:latest
   stage: test
   variables:
     NODE_ENV: test
@@ -20,6 +21,7 @@ unit_test:
 
     - yarn
   script:
+    - yarn link .
     - yarn test
     - yarn run prettier --list-different
 
