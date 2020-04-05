@@ -868,7 +868,9 @@ function() {
         }
 
         //  Signal to observers that this control has rendered its data.
-        this.signal('TP.sig.DidRenderData');
+        (function() {
+            this.signal('TP.sig.DidRenderData');
+        }).bind(this).queueAfterNextRepaint(this.getNativeWindow());
     }
 
     return this;
