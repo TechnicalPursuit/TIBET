@@ -237,7 +237,10 @@ Cmd.prototype.executeClone = function() {
         dna,
         working,
         err,
-        flags;
+        flags,
+
+        silent,
+        msg;
 
     options = this.options;
     dna = options.dna;
@@ -253,6 +256,20 @@ Cmd.prototype.executeClone = function() {
         this.error('Error cloning dna directory: ' + err.stderr);
         this.executeCleanup(1);
         return 1;
+    }
+
+    silent = CLI.sh.config.silent;
+    CLI.sh.config.silent = true;
+    err = CLI.sh.cp(flags, CLI.joinPaths(dna, '.*'), working);
+    CLI.sh.config.silent = silent;
+
+    if (CLI.sh.error()) {
+        msg = err.stderr;
+        if (!/no such file/.test(msg)) {
+            this.error('Error cloning dna directory: ' + msg);
+            this.executeCleanup(1);
+            return 1;
+        }
     }
 
     //  Before we go any further we have to rename any directories which include
