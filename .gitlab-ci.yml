@@ -22,7 +22,7 @@ unit_test:
     - yarn config set cache-folder .yarn
     - yarn install
   script:
-    - yarn link tibet
+    - yarn link
     - yarn test
 
 build:
