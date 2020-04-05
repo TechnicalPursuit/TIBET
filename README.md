@@ -52,7 +52,7 @@ Angular; React; Vue; frameworks that force you to write code today, tomorrow, in
 
 Before installing, check TIBET's <a href="#supported">supported platform chart</a> for your target platform(s).
 
-See the <a href="https://github.com/TechnicalPursuit/TIBET/blob/master/INSTALL.md#installation">full installation instructions</a> if you're running on Windows, want to run TIBET via Docker, or are interested in installing a development fork via Git.
+See the <a href="https://github.com/TechnicalPursuit/TIBET/blob/master/INSTALL.md#installation">full installation instructions</a> if you want to run TIBET via Docker, or are interested in installing a development fork via Git.
 
 TIBET is currently installed globally via `npm install -g`:<br/>
 
@@ -153,7 +153,7 @@ relates to a topic.
 The TIBET CLI, TIBET Server, TIBET Workflow System and other server-side
 components are **fully-supported on MacOS and common Linux variants**.
 
-For Microsoft Windows we recommend using Docker or similar container technology. Pre-built <a href="https://hub.docker.com/r/technicalpursuit/tibet">Docker images are available</a>. Native Windows support is being considered but has no release date planned. <a href="http://www.technicalpursuit.com">Contact us</a> if you require native Windows server or CLI components.
+Pre-built <a href="https://hub.docker.com/r/technicalpursuit/tibet">Docker images are available</a>.
 
 
 ###### TIBET Client / Sherpa
