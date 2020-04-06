@@ -3,13 +3,39 @@ cache:
   - node_modules/
   - .yarn
 
+variables:
+  DOCKER_DRIVER: overlay
+  CI_REGISTRY: registry.gitlab.com
+  CI_REGISTRY_TEST_IMAGE: registry.gitlab.com/teamtibet/tibet:$CI_BUILD_REF_NAME
+  CI_REGISTRY_RELEASE_IMAGE: registry.gitlab.com/teamtibet/tibet:latest
+
+services:
+  - docker:dind
+
 stages:
-  - test
   - build
+  - test
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+
+build:
+  image: docker:latest
+  stage: build
+  script:
+    - docker build -f Dockerfile_CI -t $CI_REGISTRY_TEST_IMAGE .
+    - docker push $CI_REGISTRY_TEST_IMAGE
+  only:
+    - develop
+
+docker_test:
+  stage: test
+  script:
+    - docker run $CI_REGISTRY_TEST_IMAGE
 
 unit_test:
   image: node
-  stage: test
+  stage: test_old
   variables:
     NODE_ENV: test
   before_script:
@@ -25,20 +51,4 @@ unit_test:
     - yarn link
     - tibet build
     - tibet test
-
-build:
-  image: docker:latest
-  stage: build
-  services:
-    - docker:dind
-  variables:
-    DOCKER_DRIVER: overlay
-    CI_REGISTRY: registry.gitlab.com
-    CI_REGISTRY_IMAGE: registry.gitlab.com/teamtibet/TIBET
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build --pull -t "${CI_REGISTRY_IMAGE}:latest" .
-    - docker push "${CI_REGISTRY_IMAGE}:latest"
-  only:
-    - develop
 
