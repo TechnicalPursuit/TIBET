@@ -3,7 +3,6 @@ image: docker:latest
 cache:
   paths:
   - node_modules/
-  - .yarn
 
 variables:
   DOCKER_DRIVER: overlay
