@@ -315,7 +315,7 @@ function() {
                 test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
             });
     });
-});
+}).skip();
 
 //  ------------------------------------------------------------------------
 
