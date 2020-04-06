@@ -1,3 +1,5 @@
+image: docker:latest
+
 cache:
   paths:
   - node_modules/
@@ -20,7 +22,6 @@ before_script:
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
 
 build:
-  image: docker:latest
   stage: build
   script:
     - docker build -f Dockerfile_CI -t $CI_REGISTRY_TEST_IMAGE .
