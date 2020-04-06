@@ -23,7 +23,8 @@ unit_test:
     - yarn install
   script:
     - yarn link
-    - yarn test
+    - tibet build
+    - tibet test
 
 build:
   image: docker:latest
