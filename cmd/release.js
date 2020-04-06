@@ -747,7 +747,7 @@ Cmd.prototype.phaseThree = function(meta) {
     // ---
 
     commands = [
-        'docker build --no-cache -t technicalpursuit/tibet:latest .',
+        'docker build --no-cache -f Dockerfile_DEPLOY -t technicalpursuit/tibet:latest .',
         'docker push technicalpursuit/tibet:latest',
         'docker tag technicalpursuit/tibet:latest technicalpursuit/tibet:' +
         meta.source.major,

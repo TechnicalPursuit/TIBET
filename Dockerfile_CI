@@ -1,5 +1,4 @@
-# THIS DOCKERFILE IS USED FOR LOCAL DEVELOPMENT WITH A SNAPSHOT OF THE LATEST
-# TIBET CODE.
+# THIS DOCKERFILE IS USED FOR CONTINUOUS INTEGRATION AND DEPLOYMENT TESTING.
 
 # Start with Node 10.X and the Debian Linux 'Stretch Slim' image.
 FROM node:10.16.0-stretch-slim
@@ -25,11 +24,11 @@ RUN apt-get update \
      && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
      && chmod +x /usr/sbin/wait-for-it.sh
 
-# Add the non-root 'developer' user.
-RUN useradd -ms /bin/bash developer
+# Add the non-root 'tester' user.
+RUN useradd -ms /bin/bash tester
 
-# cd into the 'developer' user's home directory.
-WORKDIR /home/developer
+# cd into the 'tester' user's home directory.
+WORKDIR /home/tester
 
 # Copy in the contents of TIBET from the local source directory into the
 # Docker image's app directory. By specifying the '--chown' flag, we ensure that
@@ -40,13 +39,8 @@ COPY --chown=node:node . .
 # indeed linked.
 RUN npm link
 
-# Switch to the non-root 'developer' user.
-USER developer
-
-# Expose TIBET's favorite port :-). The container environment will map this port
-# to whatever port it wants to, but by default the TDS listens on this port so
-# exposing this port makes it easy.
-EXPOSE 1407
+# Switch to the non-root 'tester' user.
+USER tester
 
 # Set an entrypoint to bash and we're ready to go!
-ENTRYPOINT /bin/bash
+ENTRYPOINT /usr/local/bin/tibet test
