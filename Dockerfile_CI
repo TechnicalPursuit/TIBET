@@ -39,6 +39,9 @@ COPY --chown=node:node . .
 # indeed linked.
 RUN npm link
 
+# Make sure to build the loader so that it's available to the CI system.
+RUN tibet build_loader
+
 # Switch to the non-root 'tester' user.
 USER tester
 
