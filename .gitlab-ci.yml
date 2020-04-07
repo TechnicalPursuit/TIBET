@@ -16,6 +16,7 @@ services:
 
 stages:
   - build
+  - test
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
@@ -27,8 +28,6 @@ build:
     - docker build --cache-from $CI_REGISTRY_TEST_CACHE_IMAGE -f Dockerfile_CI -t $CI_REGISTRY_TEST_IMAGE .
     - docker push $CI_REGISTRY_TEST_IMAGE
     - docker push $CI_REGISTRY_TEST_CACHE_IMAGE
-  only:
-    - develop
 
 docker_test:
   stage: test
