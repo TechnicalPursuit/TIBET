@@ -1,4 +1,4 @@
-image: docker:latest
+image: node:10.19.0-stretch-slim
 
 cache:
   paths:
