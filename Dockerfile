@@ -2,10 +2,10 @@
 # TIBET CODE.
 
 # Start with Node 10.X and the Debian Linux 'Stretch Slim' image.
-FROM node:10.16.0-stretch-slim
+FROM node:10.19.0-stretch-slim
 
 # Grab the latest package definitions for apt-get
-RUN apt-get update
+RUN apt-get update && apt-get install -y gnupg2
 
 # Add git because some of TIBET's npm packages come from TPI forks of Git
 # packages on Github (force 'yes' or otherwise Docker can't complete building
@@ -36,9 +36,22 @@ WORKDIR /home/developer
 # everything gets the proper permissions.
 COPY --chown=node:node . .
 
-# Relink TIBET so that everything that needs to be installed and linked is
-# indeed linked.
-RUN npm link
+# Remove the node_modules in order to get "architecture correct" versions of any
+# binary dependencies below when we link. Note that we need to do this rather
+# than put an entry for node_modules in .dockerignore since that file is shared
+# with other images where we want the original node_modules.
+RUN rm -rf node_modules
+
+# Force npm to set the user to root and install TIBET *globally*. Note that
+# forcing the npm user to be root solves multiple issues when installing npm
+# packages as the root user, which is what we are until the USER command below.
+# Also note that, because TIBET is a global package, it won't install TIBET's
+# devDependencies. We'll do that in the step below.
+RUN npm -g config set user root && npm install -g tibet
+
+# Run a script in TIBET's bin directory that will install of its
+# devDependencies.
+RUN $(npm root -g)/tibet/bin/tibet_develop_init.bash
 
 # Switch to the non-root 'developer' user.
 USER developer

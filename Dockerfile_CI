@@ -1,10 +1,10 @@
 # THIS DOCKERFILE IS USED FOR CONTINUOUS INTEGRATION AND DEPLOYMENT TESTING.
 
 # Start with Node 10.X and the Debian Linux 'Stretch Slim' image.
-FROM node:10.16.0-stretch-slim
+FROM node:10.19.0-stretch-slim
 
 # Grab the latest package definitions for apt-get
-RUN apt-get update
+RUN apt-get update && apt-get install -y gnupg2
 
 # Add git because some of TIBET's npm packages come from TPI forks of Git
 # packages on Github (force 'yes' or otherwise Docker can't complete building
@@ -29,6 +29,17 @@ RUN useradd -ms /bin/bash tester
 
 # cd into the 'tester' user's home directory.
 WORKDIR /home/tester
+
+# Copy just the package.json here. We'll need to install Puppeteer here since,
+# as a binary, it needs to be installed for the container. We don't want the
+# version that was installed in the host environment (which might not be Linux,
+# which is what this container image is defining).
+COPY --chown=node:node package.json .
+
+# Go ahead and install the container-specific version of Puppeteer here. Since
+# the COPY below will only copy *new* files, this won't be overwritten when the
+# node_modules directory is copied from the host into this container.
+RUN npm install puppeteer
 
 # Copy in the contents of TIBET from the local source directory into the
 # Docker image's app directory. By specifying the '--chown' flag, we ensure that

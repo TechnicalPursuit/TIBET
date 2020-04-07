@@ -8,6 +8,7 @@ variables:
   DOCKER_DRIVER: overlay
   CI_REGISTRY: registry.gitlab.com
   CI_REGISTRY_TEST_IMAGE: registry.gitlab.com/teamtibet/tibet:$CI_BUILD_REF_NAME
+  CI_REGISTRY_TEST_CACHE_IMAGE: registry.gitlab.com/teamtibet/tibet:ci_cache
   CI_REGISTRY_RELEASE_IMAGE: registry.gitlab.com/teamtibet/tibet:latest
 
 services:
@@ -23,10 +24,11 @@ before_script:
 build:
   stage: build
   script:
-    - docker build -f Dockerfile_CI -t $CI_REGISTRY_TEST_IMAGE .
+    - docker pull $CI_REGISTRY_TEST_CACHE_IMAGE || true
+    - docker build --cache-from $CI_REGISTRY_TEST_CACHE_IMAGE -f Dockerfile_CI -t $CI_REGISTRY_TEST_IMAGE .
     - docker push $CI_REGISTRY_TEST_IMAGE
-  only:
-    - develop
+    - docker tag $CI_REGISTRY_TEST_IMAGE $CI_REGISTRY_TEST_CACHE_IMAGE
+    - docker push $CI_REGISTRY_TEST_CACHE_IMAGE
 
 docker_test:
   stage: test
