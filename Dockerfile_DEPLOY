@@ -2,10 +2,10 @@
 # ACCESSIBLE* NPM PACKAGE ON NPMJS.COM.
 
 # Start with Node 10.X and the Debian Linux 'Stretch Slim' image.
-FROM node:10.16.0-stretch-slim
+FROM node:10.19.0-stretch-slim
 
 # Grab the latest package definitions for apt-get
-RUN apt-get update
+RUN apt-get update && apt-get install -y gnupg2
 
 # Add git because some of TIBET's npm packages come from TPI forks of Git
 # packages on Github (force 'yes' or otherwise Docker can't complete building
