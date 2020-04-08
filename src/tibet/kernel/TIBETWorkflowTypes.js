@@ -6329,7 +6329,7 @@ function(delayMS) {
 //  ------------------------------------------------------------------------
 
 TP.core.PromiseProvider.Inst.defineMethod('andWaitFor',
-function(anOrigin, aSignal) {
+function(anOrigin, aSignal, timeoutMS) {
 
     /**
      * @method andWaitFor
@@ -6337,8 +6337,14 @@ function(anOrigin, aSignal) {
      *     certain signal using the receiver's Promise machinery.
      * @param {Object} anOrigin The signal origin to observe.
      * @param {TP.sig.Signal|String} aSignal The signal type or name to observe.
+     * @param {Number} [timeoutMS] The number of milliseconds before timing out.
      * @returns {TP.core.PromiseProvider} The receiver.
      */
+
+    var timeout;
+
+    timeout = TP.ifInvalid(timeoutMS,
+                            TP.sys.cfg('test.case_mslimit', 10000));
 
     this.chainPromise(TP.extern.Promise.construct(
         function(resolver, rejector) {
@@ -6350,7 +6356,7 @@ function(anOrigin, aSignal) {
             };
 
             handlerFunc.observe(anOrigin, aSignal);
-        }));
+        }).timeout(timeout));
 
     return this;
 });
