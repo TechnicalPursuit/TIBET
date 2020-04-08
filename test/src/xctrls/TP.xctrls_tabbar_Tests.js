@@ -315,7 +315,7 @@ function() {
                 test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
             });
     });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -511,7 +511,7 @@ function() {
         test.assert.isEqualTo(value, 'baz');
     });
 
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
