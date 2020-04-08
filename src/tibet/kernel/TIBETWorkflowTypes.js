@@ -6311,17 +6311,17 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.PromiseProvider.Inst.defineMethod('andWait',
-function(timeoutMS) {
+function(delayMS) {
 
     /**
      * @method andWait
      * @summary A convenience mechanism to wait a certain number of milliseconds
      *     using the receiver's Promise machinery.
-     * @param {Number} timeoutMS The number of milliseconds to wait.
+     * @param {Number} delayMS The number of milliseconds to wait.
      * @returns {TP.core.PromiseProvider} The receiver.
      */
 
-    this.chainPromise(TP.extern.Promise.delay(timeoutMS));
+    this.chainPromise(TP.extern.Promise.delay(delayMS));
 
     return this;
 });
