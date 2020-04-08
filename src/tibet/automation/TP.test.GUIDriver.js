@@ -1441,8 +1441,8 @@ function() {
                             //  Function object, therefore we have to wrap it.
                             workCallback =
                                 function() {
-                                    setTimeout(workFunc,
-                                        TP.sys.cfg('test.anti_starve_timeout'));
+                                    workFunc.queueAfterNextRepaint(
+                                        TP.nodeGetWindow(currentElement));
                                 };
 
                             //  Execute the individual sequence step entry.

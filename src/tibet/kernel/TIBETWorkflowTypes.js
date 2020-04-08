@@ -6294,16 +6294,20 @@ TP.core.PromiseProvider.Inst.defineAttribute('$currentPromise');
 //  ------------------------------------------------------------------------
 
 TP.core.PromiseProvider.Inst.defineMethod('andAllowGUIRefresh',
-function() {
+function(windowContext) {
 
     /**
      * @method andAllowGUIRefresh
      * @summary A convenience mechanism to give the GUI a chance to refresh.
+     * @param {TP.core.Window} windowContext The window context to wait to be
+     *     refreshed.
      * @returns {TP.core.PromiseProvider} The receiver.
      */
 
-    this.chainPromise(TP.extern.Promise.delay(
-        TP.sys.cfg('test.anti_starve_timeout')));
+    this.chainPromise(TP.extern.Promise.construct(
+        function(resolver, rejector) {
+            resolver.queueAfterNextRepaint(windowContext.getNativeWindow());
+        }));
 
     return this;
 });
