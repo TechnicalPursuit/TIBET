@@ -336,8 +336,7 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                listID;
+            var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -347,9 +346,6 @@ function() {
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            listID = TP.computeOriginID(windowContext, loc, 'list5');
-            this.andWaitFor(listID, 'TP.sig.DidRender');
         });
 
     //  ---

@@ -336,8 +336,7 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tabbarID;
+            var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -347,9 +346,6 @@ function() {
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            tabbarID = TP.computeOriginID(windowContext, loc, 'tabbar4');
-            this.andWaitFor(tabbarID, 'TP.sig.DidRenderData');
         });
 
     //  ---
@@ -553,8 +549,7 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tabbarID;
+            var loc;
 
             TP.$$setupCommonObjectValues();
 
@@ -563,9 +558,6 @@ function() {
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            tabbarID = TP.computeOriginID(windowContext, loc, 'tabbar4');
-            this.andWaitFor(tabbarID, 'TP.sig.DidRenderData');
         });
 
     //  ---
@@ -735,17 +727,13 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tabbarID;
+            var loc;
 
             windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
             driver.setLocation(loadURI);
-
-            tabbarID = TP.computeOriginID(windowContext, loc, 'tabbar5');
-            this.andWaitFor(tabbarID, 'TP.sig.DidRenderData');
         });
 
     //  ---
@@ -836,17 +824,13 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tabbarID;
+            var loc;
 
             windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
             driver.setLocation(loadURI);
-
-            tabbarID = TP.computeOriginID(windowContext, loc, 'tabbar6');
-            this.andWaitFor(tabbarID, 'TP.sig.DidRenderData');
         });
 
     //  ---

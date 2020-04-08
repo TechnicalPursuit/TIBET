@@ -338,8 +338,7 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tableID;
+            var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -349,9 +348,6 @@ function() {
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            tableID = TP.computeOriginID(windowContext, loc, 'table5');
-            this.andWaitFor(tableID, 'TP.sig.DidRender');
         });
 
     //  ---
