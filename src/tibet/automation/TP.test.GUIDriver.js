@@ -465,11 +465,7 @@ function(aURI, aWindow, aRequest) {
 
                                 request = TP.request(aRequest);
 
-                                var loadFunc = function() {
-                                    setTimeout(resolver, 2000);
-                                };
-
-                                request.atPut(TP.ONLOAD, loadFunc);
+                                request.atPut(TP.ONLOAD, resolver);
                                 request.atPut(TP.ONFAIL, rejector);
 
                                 tpWin.setLocation(aURI, request);

@@ -26,6 +26,8 @@ function() {
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
+            this.andWait(2000);
+
             this.chain(
                 function() {
                     this.startTrackingSignals();
