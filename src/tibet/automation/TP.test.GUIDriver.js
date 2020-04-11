@@ -479,8 +479,6 @@ function(aURI, aWindow, aRequest) {
                             TP.str(err)) : 0;
         });
 
-    this.get('promiseProvider').andAllowGUIRefresh(tpWin);
-
     return this;
 });
 
