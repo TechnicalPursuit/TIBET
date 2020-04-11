@@ -6366,6 +6366,46 @@ function(anOrigin, aSignal, timeoutMS) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.PromiseProvider.Inst.defineMethod('andIfNotValidWaitFor',
+function(aCondition, anOrigin, aSignal, timeoutMS) {
+
+    /**
+     * @method andIfNotValidWaitFor
+     * @summary A convenience method to test the return value of the supplied
+     *     Function and, if its not valid, to wait until an original has fired a
+     *     certain signal.
+     * @description Note that, if the supplied function returned a not valid
+     *     value and the signal is waited upon, that the function will be
+     *     executed again once the signal is received, but the return value will
+     *     *not* be checked..
+     * @param {Function} aCondition The function to execute to determine the
+     *     validity condition. This function *must* return the value to test for
+     *     validity.
+     * @param {Object} anOrigin The signal origin to observe.
+     * @param {TP.sig.Signal|String} aSignal The signal type or name to observe.
+     * @param {Number} [timeoutMS] The number of milliseconds before timing out.
+     * @returns {TP.core.PromiseProvider} The receiver.
+     */
+
+    var result;
+
+    result = aCondition();
+    if (TP.isValid(result)) {
+        return this;
+    }
+
+    this.andWaitFor(anOrigin, aSignal, timeoutMS);
+
+    this.chain(
+        function() {
+            aCondition();
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.PromiseProvider.Inst.defineMethod('chain',
 function(onFulfilled, onRejected) {
 
