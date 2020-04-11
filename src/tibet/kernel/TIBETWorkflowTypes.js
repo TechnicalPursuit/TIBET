@@ -6298,7 +6298,7 @@ function(windowContext) {
 
     /**
      * @method andAllowGUIRefresh
-     * @summary A convenience mechanism to give the GUI a chance to refresh.
+     * @summary A convenience method to give the GUI a chance to refresh.
      * @param {TP.core.Window} windowContext The window context to wait to be
      *     refreshed.
      * @returns {TP.core.PromiseProvider} The receiver.
@@ -6319,8 +6319,7 @@ function(delayMS) {
 
     /**
      * @method andWait
-     * @summary A convenience mechanism to wait a certain number of milliseconds
-     *     using the receiver's Promise machinery.
+     * @summary A convenience method to wait a certain number of milliseconds.
      * @param {Number} delayMS The number of milliseconds to wait.
      * @returns {TP.core.PromiseProvider} The receiver.
      */
@@ -6337,8 +6336,8 @@ function(anOrigin, aSignal, timeoutMS) {
 
     /**
      * @method andWaitFor
-     * @summary A convenience mechanism to wait until an origin has fired a
-     *     certain signal using the receiver's Promise machinery.
+     * @summary A convenience method to wait until an origin has fired a
+     *     certain signal.
      * @param {Object} anOrigin The signal origin to observe.
      * @param {TP.sig.Signal|String} aSignal The signal type or name to observe.
      * @param {Number} [timeoutMS] The number of milliseconds before timing out.
