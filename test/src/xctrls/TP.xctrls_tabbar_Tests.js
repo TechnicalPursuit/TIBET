@@ -74,9 +74,13 @@ function() {
 
         tabbar = TP.byId('tabbar1', windowContext);
 
+        firstTabbarItem = tabbar.get('allItemContent').first();
+        console.log('INITIALLY VALID: ' + TP.isValid(firstTabbarItem));
+
         test.andIfNotValidWaitFor(
                 function() {
                     firstTabbarItem = tabbar.get('allItemContent').first();
+                    console.log('VALID on wait: ' + TP.isValid(firstTabbarItem));
                     return firstTabbarItem;
                 },
                 TP.gid(tabbar),
