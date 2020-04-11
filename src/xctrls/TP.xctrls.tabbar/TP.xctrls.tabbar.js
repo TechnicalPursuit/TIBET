@@ -63,7 +63,7 @@ function() {
     var containerSelection,
         rootUpdateSelection;
 
-    console.log('GOT TO TABBAR RENDER #1');
+    console.log('GOT TO TABBAR RENDER #1: ' + this.getID());
 
     //  Note that this is a strict check for the value of 'false' (the Boolean
     //  value of false). This can't just be a 'falsey' value.
@@ -71,26 +71,26 @@ function() {
         return this;
     }
 
-    console.log('GOT TO TABBAR RENDER #2');
+    console.log('GOT TO TABBAR RENDER #2: ' + this.getID());
 
     this.d3SelectContainer();
 
-    console.log('GOT TO TABBAR RENDER #3');
+    console.log('GOT TO TABBAR RENDER #3: ' + this.getID());
 
     //  If the data is not valid, then empty the root selection (keeping the
     //  root itself intact for future updates).
     if (TP.notValid(this.get('data'))) {
 
-    console.log('GOT TO TABBAR RENDER #4');
+    console.log('GOT TO TABBAR RENDER #4: ' + this.getID());
 
         containerSelection = this.get('containerSelection');
 
-    console.log('GOT TO TABBAR RENDER #5');
+    console.log('GOT TO TABBAR RENDER #5: ' + this.getID());
 
         //  No valid container selection? Return here.
         if (TP.notValid(containerSelection)) {
 
-    console.log('GOT TO TABBAR RENDER #6');
+    console.log('GOT TO TABBAR RENDER #6: ' + this.getID());
 
             //  Signal to observers that this control has rendered.
             this.signal('TP.sig.DidRender');
@@ -98,28 +98,28 @@ function() {
             return this;
         }
 
-    console.log('GOT TO TABBAR RENDER #7');
+    console.log('GOT TO TABBAR RENDER #7: ' + this.getID());
 
         containerSelection.selectAll('*').remove();
 
-    console.log('GOT TO TABBAR RENDER #8');
+    console.log('GOT TO TABBAR RENDER #8: ' + this.getID());
 
         //  Signal to observers that this control has rendered.
         this.signal('TP.sig.DidRender');
 
     } else {
 
-    console.log('GOT TO TABBAR RENDER #9');
+    console.log('GOT TO TABBAR RENDER #9: ' + this.getID());
 
         //  Select any nodes under the 'selection root'
         rootUpdateSelection = this.d3Select();
 
-    console.log('GOT TO TABBAR RENDER #10');
+    console.log('GOT TO TABBAR RENDER #10: ' + this.getID());
 
         //  No valid root update selection? Return here.
         if (TP.notValid(rootUpdateSelection)) {
 
-    console.log('GOT TO TABBAR RENDER #11');
+    console.log('GOT TO TABBAR RENDER #11: ' + this.getID());
 
             //  Signal to observers that this control has rendered.
             this.signal('TP.sig.DidRender');
@@ -127,46 +127,46 @@ function() {
             return this;
         }
 
-    console.log('GOT TO TABBAR RENDER #12');
+    console.log('GOT TO TABBAR RENDER #12: ' + this.getID());
 
         //  Associate (or 'bind') the data to the root update selection.
         this.d3Data(rootUpdateSelection);
 
-    console.log('GOT TO TABBAR RENDER #13');
+    console.log('GOT TO TABBAR RENDER #13: ' + this.getID());
 
         //  Update any existing update selection
         this.d3Update();
         this.d3UpdateTransition();
 
-    console.log('GOT TO TABBAR RENDER #14');
+    console.log('GOT TO TABBAR RENDER #14: ' + this.getID());
 
         //  Add any content to the enter selection
         this.d3Enter();
         this.d3EnterTransition();
 
-    console.log('GOT TO TABBAR RENDER #15');
+    console.log('GOT TO TABBAR RENDER #15: ' + this.getID());
 
         //  Remove any content from the exit selection
         this.d3Exit();
         this.d3ExitTransition();
 
-    console.log('GOT TO TABBAR RENDER #16');
+    console.log('GOT TO TABBAR RENDER #16: ' + this.getID());
 
         //  If we're supposed to maintain the order between data and DOM, then
         //  do so here.
         if (TP.notFalse(this.getType().get('shouldOrder'))) {
-    console.log('GOT TO TABBAR RENDER #17');
+    console.log('GOT TO TABBAR RENDER #17: ' + this.getID());
 
             this.get('updateSelection').order();
         }
 
-    console.log('GOT TO TABBAR RENDER #18');
+    console.log('GOT TO TABBAR RENDER #18: ' + this.getID());
 
         //  Signal to observers that this control has rendered its data.
         this.signal('TP.sig.DidRenderData');
     }
 
-    console.log('GOT TO TABBAR RENDER #19');
+    console.log('GOT TO TABBAR RENDER #19: ' + this.getID());
 
     return this;
 });
