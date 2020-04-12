@@ -548,9 +548,6 @@ function() {
     //  'infinite scroll' capability.
     virtualScroller.render();
 
-    //  Signal to observers that this control has rendered.
-    this.signal('TP.sig.DidRender');
-
     return this;
 });
 
@@ -726,12 +723,18 @@ TP.extern.d3.VirtualScroller = function() {
             //  changed. We do that directly right here.
             if (Math.abs(scrollTop - lastScrollTop) === 0) {
                 scrollRenderFrame(position);
+
+                //  Signal to observers that this control has rendered.
+                control.signal('TP.sig.DidRenderData');
             } else {
                 //  Otherwise, there was a change in scroll position. Make the
                 //  scrolling render function itself run after the next repaint
                 //  for less flicker.
                 (function() {
                     scrollRenderFrame(position);
+
+                    //  Signal to observers that this control has rendered.
+                    control.signal('TP.sig.DidRenderData');
                 }).queueAfterNextRepaint();
             }
 

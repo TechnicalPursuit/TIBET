@@ -414,6 +414,10 @@ Cmd.prototype.execute = function() {
                     }
                     break;
             }
+
+            if (/FAIL:/.test(text)) {
+                cmd.close(1, puppetBrowser);
+            }
         });
 
         return puppetBrowser.userAgent();

@@ -1811,11 +1811,6 @@
     //  the test suite timeout
     TP.sys.setcfg('test.suite_mslimit', 45000);
 
-    //  how long should we wait to give the GUI event thread a chance to be
-    //  serviced? This is used in the testing and automation frameworks to
-    //  prevent the Promise machinery from starving the event loop.
-    TP.sys.setcfg('test.anti_starve_timeout', 10);
-
     //  whether or not 'error' logging causes tests to fail
     TP.sys.setcfg('test.fail_on_error_log', true);
 

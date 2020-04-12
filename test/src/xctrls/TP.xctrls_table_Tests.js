@@ -17,18 +17,13 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tableID;
+            var loc;
 
             windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            tableID = TP.computeOriginID(windowContext, loc, 'table5');
-            this.andWaitFor(tableID, 'TP.sig.DidRender');
-            this.andWait(2000);
 
             this.chain(
                 function() {
@@ -78,13 +73,22 @@ function() {
 
         table = TP.byId('table1', windowContext);
 
-        firsttableItem = table.get('rowitems').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firsttableItem = table.get('rowitems').first();
+                    return firsttableItem;
+                },
+                TP.gid(table),
+                'TP.sig.DidRenderData');
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().constructSequence().
-            sendEvent(TP.hc('type', 'focus'), table).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    sendEvent(TP.hc('type', 'focus'), table).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -107,13 +111,22 @@ function() {
 
         table = TP.byId('table1', windowContext);
 
-        firsttableItem = table.get('rowitems').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firsttableItem = table.get('rowitems').first();
+                    return firsttableItem;
+                },
+                TP.gid(table),
+                'TP.sig.DidRenderData');
 
         //  Individual mousedown/mouseup
 
-        test.getDriver().constructSequence().
-            mouseDown(firsttableItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseDown(firsttableItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -125,11 +138,12 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().constructSequence().
-            mouseUp(firsttableItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseUp(firsttableItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -143,11 +157,12 @@ function() {
 
         //  click
 
-        test.getDriver().constructSequence().
-            click(firsttableItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(firsttableItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -174,13 +189,22 @@ function() {
 
         table = TP.byId('table1', windowContext);
 
-        firsttableItem = table.get('rowitems').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firsttableItem = table.get('rowitems').first();
+                    return firsttableItem;
+                },
+                TP.gid(table),
+                'TP.sig.DidRenderData');
 
         //  Individual keydown/keyup
 
-        test.getDriver().constructSequence().
-            keyDown(firsttableItem, 'Enter').
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyDown(firsttableItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -192,11 +216,12 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().constructSequence().
-            keyUp(firsttableItem, 'Enter').
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyUp(firsttableItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -221,17 +246,24 @@ function() {
         table = TP.byId('table1', windowContext);
         table.setAttrDisabled(true);
 
-        table.render();
-
-        firsttableItem = table.get('rowitems').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firsttableItem = table.get('rowitems').first();
+                    return firsttableItem;
+                },
+                TP.gid(table),
+                'TP.sig.DidRenderData');
 
         test.assert.isDisabled(TP.unwrap(firsttableItem));
 
         //  --- Focus
 
-        test.getDriver().constructSequence().
-            sendEvent(TP.hc('type', 'focus'), firsttableItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    sendEvent(TP.hc('type', 'focus'), firsttableItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -245,9 +277,12 @@ function() {
 
         //  --- Individual mousedown/mouseup
 
-        test.getDriver().constructSequence().
-            mouseDown(firsttableItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseDown(firsttableItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -257,11 +292,12 @@ function() {
                 test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
             });
 
-        test.getDriver().constructSequence().
-            mouseUp(firsttableItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseUp(firsttableItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -273,11 +309,12 @@ function() {
 
         //  --- click
 
-        test.getDriver().constructSequence().
-            click(firsttableItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(firsttableItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -292,9 +329,12 @@ function() {
 
         //  --- Individual keydown/keyup
 
-        test.getDriver().constructSequence().
-            keyDown(firsttableItem, 'Enter').
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyDown(firsttableItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -306,11 +346,12 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().constructSequence().
-            keyUp(firsttableItem, 'Enter').
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyUp(firsttableItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -339,8 +380,7 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tableID;
+            var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -350,10 +390,6 @@ function() {
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            tableID = TP.computeOriginID(windowContext, loc, 'table5');
-            this.andWaitFor(tableID, 'TP.sig.DidRender');
-            this.andWait(2000);
         });
 
     //  ---
@@ -798,7 +834,6 @@ function() {
 
             tableID = TP.computeOriginID(windowContext, loc, 'table5');
             this.andWaitFor(tableID, 'TP.sig.DidRender');
-            this.andWait(2000);
         });
 
     //  ---
@@ -1006,18 +1041,13 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tableID;
+            var loc;
 
             windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            tableID = TP.computeOriginID(windowContext, loc, 'table8');
-            this.andWaitFor(tableID, 'TP.sig.DidRender');
-            this.andWait(2000);
         });
 
     //  ---
@@ -1068,11 +1098,20 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        tableItem = tpElem.get('rowitems').at(0);
+        test.andIfNotValidWaitFor(
+                function() {
+                    tableItem = tpElem.get('rowitems').first();
+                    return tableItem;
+                },
+                TP.gid(tpElem),
+                'TP.sig.DidRenderData');
 
-        test.getDriver().constructSequence().
-            click(tableItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(tableItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -1105,18 +1144,13 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tableID;
+            var loc;
 
             windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            tableID = TP.computeOriginID(windowContext, loc, 'table9');
-            this.andWaitFor(tableID, 'TP.sig.DidRender');
-            this.andWait(2000);
         });
 
     //  ---
@@ -1172,11 +1206,20 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        secondtableItem = tpElem.get('rowitems').at(1);
+        test.andIfNotValidWaitFor(
+                function() {
+                    secondtableItem = tpElem.get('rowitems').at(1);
+                    return secondtableItem;
+                },
+                TP.gid(tpElem),
+                'TP.sig.DidRenderData');
 
-        test.getDriver().constructSequence().
-            click(secondtableItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(secondtableItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -1196,11 +1239,20 @@ function() {
                         TP.ac('bar', 'bar', 2)));
             });
 
-        thirdtableItem = tpElem.get('rowitems').at(2);
+        test.andIfNotValidWaitFor(
+                function() {
+                    thirdtableItem = tpElem.get('rowitems').at(2);
+                    return thirdtableItem;
+                },
+                TP.gid(tpElem),
+                'TP.sig.DidRenderData');
 
-        test.getDriver().constructSequence().
-            click(thirdtableItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(thirdtableItem).
+                    run();
+            });
 
         test.chain(
             function() {

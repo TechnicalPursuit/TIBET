@@ -17,18 +17,13 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                listID;
+            var loc;
 
             windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            listID = TP.computeOriginID(windowContext, loc, 'list5');
-            this.andWaitFor(listID, 'TP.sig.DidRender');
-            this.andWait(2000);
 
             this.chain(
                 function() {
@@ -78,7 +73,13 @@ function() {
 
         list = TP.byId('list1', windowContext);
 
-        firstListItem = list.get('listitems').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstListItem = list.get('listitems').first();
+                    return firstListItem;
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
 
         //  Change the focus via 'direct' method
 
@@ -107,13 +108,22 @@ function() {
 
         list = TP.byId('list1', windowContext);
 
-        firstListItem = list.get('listitems').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstListItem = list.get('listitems').first();
+                    return firstListItem;
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
 
         //  Individual mousedown/mouseup
 
-        test.getDriver().constructSequence().
-            mouseDown(firstListItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseDown(firstListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -125,11 +135,12 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().constructSequence().
-            mouseUp(firstListItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseUp(firstListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -143,11 +154,12 @@ function() {
 
         //  click
 
-        test.getDriver().constructSequence().
-            click(firstListItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(firstListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -174,13 +186,22 @@ function() {
 
         list = TP.byId('list1', windowContext);
 
-        firstListItem = list.get('listitems').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstListItem = list.get('listitems').first();
+                    return firstListItem;
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
 
         //  Individual keydown/keyup
 
-        test.getDriver().constructSequence().
-            keyDown(firstListItem, 'Enter').
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyDown(firstListItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -192,11 +213,12 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().constructSequence().
-            keyUp(firstListItem, 'Enter').
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                keyUp(firstListItem, 'Enter').
+                run();
+            });
 
         test.chain(
             function() {
@@ -221,15 +243,24 @@ function() {
         list = TP.byId('list1', windowContext);
         list.setAttrDisabled(true);
 
-        firstListItem = list.get('listitems').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstListItem = list.get('listitems').first();
+                    return firstListItem;
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
 
         test.assert.isDisabled(TP.unwrap(firstListItem));
 
         //  --- Focus
 
-        test.getDriver().constructSequence().
-            sendEvent(TP.hc('type', 'focus'), firstListItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    sendEvent(TP.hc('type', 'focus'), firstListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -243,9 +274,12 @@ function() {
 
         //  --- Individual mousedown/mouseup
 
-        test.getDriver().constructSequence().
-            mouseDown(firstListItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseDown(firstListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -255,11 +289,12 @@ function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
             });
 
-        test.getDriver().constructSequence().
-            mouseUp(firstListItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseUp(firstListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -271,11 +306,12 @@ function() {
 
         //  --- click
 
-        test.getDriver().constructSequence().
-            click(firstListItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(firstListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -290,9 +326,12 @@ function() {
 
         //  --- Individual keydown/keyup
 
-        test.getDriver().constructSequence().
-            keyDown(firstListItem, 'Enter').
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyDown(firstListItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -304,11 +343,12 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().constructSequence().
-            keyUp(firstListItem, 'Enter').
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyUp(firstListItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -337,8 +377,7 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                listID;
+            var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -348,10 +387,6 @@ function() {
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            listID = TP.computeOriginID(windowContext, loc, 'list5');
-            this.andWaitFor(listID, 'TP.sig.DidRender');
-            this.andWait(2000);
         });
 
     //  ---
@@ -738,7 +773,6 @@ function() {
 
             listID = TP.computeOriginID(windowContext, loc, 'list5');
             this.andWaitFor(listID, 'TP.sig.DidRender');
-            this.andWait(2000);
         });
 
     //  ---
@@ -920,18 +954,13 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                listID;
+            var loc;
 
             windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            listID = TP.computeOriginID(windowContext, loc, 'list8');
-            this.andWaitFor(listID, 'TP.sig.DidRender');
-            this.andWait(2000);
         });
 
     //  ---
@@ -974,7 +1003,7 @@ function() {
         var tpElem,
 
             modelObj,
-            listItem;
+            firstListItem;
 
         tpElem = TP.byId('list8', windowContext);
 
@@ -982,11 +1011,20 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        listItem = tpElem.get('listitems').at(0);
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstListItem = tpElem.get('listitems').first();
+                    return firstListItem;
+                },
+                TP.gid(tpElem),
+                'TP.sig.DidRenderData');
 
-        test.getDriver().constructSequence().
-            click(listItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(firstListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -1019,18 +1057,13 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                listID;
+            var loc;
 
             windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            listID = TP.computeOriginID(windowContext, loc, 'list9');
-            this.andWaitFor(listID, 'TP.sig.DidRender');
-            this.andWait(2000);
         });
 
     //  ---
@@ -1082,11 +1115,20 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        secondListItem = tpElem.get('listitems').at(1);
+        test.andIfNotValidWaitFor(
+                function() {
+                    secondListItem = tpElem.get('listitems').at(1);
+                    return secondListItem;
+                },
+                TP.gid(tpElem),
+                'TP.sig.DidRenderData');
 
-        test.getDriver().constructSequence().
-            click(secondListItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(secondListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -1099,11 +1141,20 @@ function() {
                     TP.ac('foo', 'baz', 'bar'));
             });
 
-        thirdListItem = tpElem.get('listitems').at(2);
+        test.andIfNotValidWaitFor(
+                function() {
+                    thirdListItem = tpElem.get('listitems').at(2);
+                    return thirdListItem;
+                },
+                TP.gid(tpElem),
+                'TP.sig.DidRenderData');
 
-        test.getDriver().constructSequence().
-            click(thirdListItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(thirdListItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -1115,7 +1166,6 @@ function() {
                     TP.val(modelObj.get('selection_set_2')),
                     TP.ac('foo', 'bar'));
             });
-
     });
 
 });

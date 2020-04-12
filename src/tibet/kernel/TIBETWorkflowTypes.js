@@ -6294,16 +6294,20 @@ TP.core.PromiseProvider.Inst.defineAttribute('$currentPromise');
 //  ------------------------------------------------------------------------
 
 TP.core.PromiseProvider.Inst.defineMethod('andAllowGUIRefresh',
-function() {
+function(windowContext) {
 
     /**
      * @method andAllowGUIRefresh
-     * @summary A convenience mechanism to give the GUI a chance to refresh.
+     * @summary A convenience method to give the GUI a chance to refresh.
+     * @param {TP.core.Window} windowContext The window context to wait to be
+     *     refreshed.
      * @returns {TP.core.PromiseProvider} The receiver.
      */
 
-    this.chainPromise(TP.extern.Promise.delay(
-        TP.sys.cfg('test.anti_starve_timeout')));
+    this.chainPromise(TP.extern.Promise.construct(
+        function(resolver, rejector) {
+            resolver.queueAfterNextRepaint(windowContext.getNativeWindow());
+        }));
 
     return this;
 });
@@ -6311,17 +6315,16 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.PromiseProvider.Inst.defineMethod('andWait',
-function(timeoutMS) {
+function(delayMS) {
 
     /**
      * @method andWait
-     * @summary A convenience mechanism to wait a certain number of milliseconds
-     *     using the receiver's Promise machinery.
-     * @param {Number} timeoutMS The number of milliseconds to wait.
+     * @summary A convenience method to wait a certain number of milliseconds.
+     * @param {Number} delayMS The number of milliseconds to wait.
      * @returns {TP.core.PromiseProvider} The receiver.
      */
 
-    this.chainPromise(TP.extern.Promise.delay(timeoutMS));
+    this.chainPromise(TP.extern.Promise.delay(delayMS));
 
     return this;
 });
@@ -6329,16 +6332,22 @@ function(timeoutMS) {
 //  ------------------------------------------------------------------------
 
 TP.core.PromiseProvider.Inst.defineMethod('andWaitFor',
-function(anOrigin, aSignal) {
+function(anOrigin, aSignal, timeoutMS) {
 
     /**
      * @method andWaitFor
-     * @summary A convenience mechanism to wait until an origin has fired a
-     *     certain signal using the receiver's Promise machinery.
+     * @summary A convenience method to wait until an origin has fired a
+     *     certain signal.
      * @param {Object} anOrigin The signal origin to observe.
      * @param {TP.sig.Signal|String} aSignal The signal type or name to observe.
+     * @param {Number} [timeoutMS] The number of milliseconds before timing out.
      * @returns {TP.core.PromiseProvider} The receiver.
      */
+
+    var timeout;
+
+    timeout = TP.ifInvalid(timeoutMS,
+                            TP.sys.cfg('test.case_mslimit', 10000));
 
     this.chainPromise(TP.extern.Promise.construct(
         function(resolver, rejector) {
@@ -6350,7 +6359,47 @@ function(anOrigin, aSignal) {
             };
 
             handlerFunc.observe(anOrigin, aSignal);
-        }));
+        }).timeout(timeout));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.PromiseProvider.Inst.defineMethod('andIfNotValidWaitFor',
+function(aCondition, anOrigin, aSignal, timeoutMS) {
+
+    /**
+     * @method andIfNotValidWaitFor
+     * @summary A convenience method to test the return value of the supplied
+     *     Function and, if its not valid, to wait until an original has fired a
+     *     certain signal.
+     * @description Note that, if the supplied function returned a not valid
+     *     value and the signal is waited upon, that the function will be
+     *     executed again once the signal is received, but the return value will
+     *     *not* be checked..
+     * @param {Function} aCondition The function to execute to determine the
+     *     validity condition. This function *must* return the value to test for
+     *     validity.
+     * @param {Object} anOrigin The signal origin to observe.
+     * @param {TP.sig.Signal|String} aSignal The signal type or name to observe.
+     * @param {Number} [timeoutMS] The number of milliseconds before timing out.
+     * @returns {TP.core.PromiseProvider} The receiver.
+     */
+
+    var result;
+
+    result = aCondition();
+    if (TP.isValid(result)) {
+        return this;
+    }
+
+    this.andWaitFor(anOrigin, aSignal, timeoutMS);
+
+    this.chain(
+        function() {
+            aCondition();
+        });
 
     return this;
 });

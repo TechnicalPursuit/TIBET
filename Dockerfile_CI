@@ -56,6 +56,9 @@ RUN tibet build_hook
 # Make sure to build the loader so that it's available to the CI system.
 RUN tibet build_loader
 
+# Make sure to build the workers so that they're available to the CI system.
+RUN tibet build_workers
+
 # Switch to the non-root 'tester' user.
 USER tester
 

@@ -434,8 +434,7 @@ function(aURI, aWindow, aRequest) {
      * @param {TP.sig.Request} [aRequest] A request containing control
      *     parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {Promise} A Promise which completes when the resource is
-     *     available.
+     * @returns {TP.test.GUIDriver} The receiver.
      */
 
     var tpWin;
@@ -456,7 +455,7 @@ function(aURI, aWindow, aRequest) {
         tpWin = this.get('windowContext');
     }
 
-    return this.get('promiseProvider').chain(
+    this.get('promiseProvider').chain(
         function() {
             var promise;
 
@@ -479,6 +478,8 @@ function(aURI, aWindow, aRequest) {
                 TP.error('Error creating setLocation Promise: ' +
                             TP.str(err)) : 0;
         });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1441,8 +1442,8 @@ function() {
                             //  Function object, therefore we have to wrap it.
                             workCallback =
                                 function() {
-                                    setTimeout(workFunc,
-                                        TP.sys.cfg('test.anti_starve_timeout'));
+                                    workFunc.queueAfterNextRepaint(
+                                        TP.nodeGetWindow(currentElement));
                                 };
 
                             //  Execute the individual sequence step entry.
