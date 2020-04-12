@@ -240,28 +240,28 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
@@ -853,28 +853,28 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
@@ -3184,28 +3184,28 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
@@ -3787,28 +3787,28 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
@@ -6206,21 +6206,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
@@ -6430,21 +6430,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
@@ -8221,21 +8221,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
@@ -9104,21 +9104,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
@@ -9253,28 +9253,28 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
@@ -9642,28 +9642,28 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
@@ -9909,21 +9909,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);

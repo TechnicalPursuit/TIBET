@@ -32,21 +32,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the
             //  blank
@@ -2296,7 +2296,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             //  We 'snapshot' the current focus stack so that in case we're
             //  running this in the Sherpa, etc., any current items won't be
             //  corrupting our assertions below.
@@ -2323,7 +2323,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
 
             this.getDriver().showTestLog();
 
@@ -2349,14 +2349,14 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             //  A short pause for when we're running these in a large group of
             //  tests gives the GUI a chance to update.
             this.andWait(500);
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);

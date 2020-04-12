@@ -60,11 +60,11 @@ function() {
 
     var root;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         root = TP.log.Manager.getRootLogger();
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         TP.log.Manager.removeLogger(root);
         root = null;
     });
@@ -112,11 +112,11 @@ function() {
 
     var root;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         root = TP.log.Manager.getRootLogger();
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         TP.log.Manager.removeLogger(root);
         TP.log.Manager.removeLogger('foofy');
         TP.log.Manager.removeLogger('foofy.nested');
@@ -225,11 +225,11 @@ function() {
 
     var root;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         root = TP.log.Manager.getRootLogger();
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         TP.log.Manager.removeLogger(root);
         root = null;
         TP.log.Manager.removeLogger('foofy');
@@ -277,12 +277,12 @@ function() {
     var root,
         logger;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         root = TP.log.Manager.getRootLogger();
         logger = TP.log.Manager.getLogger('foofy');
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         TP.log.Manager.removeLogger(logger);
         logger = null;
         TP.log.Manager.removeLogger(root);
@@ -324,12 +324,12 @@ function() {
     var root,
         logger;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         root = TP.log.Manager.getRootLogger();
         logger = TP.log.Manager.getLogger('foofy');
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         TP.log.Manager.removeLogger(logger);
         logger = null;
         TP.log.Manager.removeLogger(root);

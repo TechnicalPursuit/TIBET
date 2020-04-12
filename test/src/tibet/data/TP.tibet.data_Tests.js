@@ -45,7 +45,7 @@ function() {
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     this.before(
-        function() {
+        function(suite, options) {
 
             //  ---
 
@@ -60,7 +60,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  ---
 
@@ -73,7 +73,7 @@ function() {
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -261,7 +261,7 @@ function() {
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     this.before(
-        function() {
+        function(suite, options) {
 
             //  ---
 
@@ -276,7 +276,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  ---
 
@@ -289,7 +289,7 @@ function() {
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -464,7 +464,7 @@ function() {
     var loadURI;
 
     this.before(
-        function() {
+        function(suite, options) {
 
             //  ---
 
@@ -479,7 +479,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  ---
 
@@ -492,7 +492,7 @@ function() {
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();

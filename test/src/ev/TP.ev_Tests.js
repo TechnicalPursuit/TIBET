@@ -23,24 +23,24 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the

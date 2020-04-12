@@ -23,7 +23,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             //  ---
 
@@ -121,14 +121,14 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
@@ -519,7 +519,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             //  ---
 
@@ -593,14 +593,14 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);

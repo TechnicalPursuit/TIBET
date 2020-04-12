@@ -29,7 +29,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -42,7 +42,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
@@ -785,7 +785,7 @@ function() {
         windowContext;
 
     this.before(
-        function() {
+        function(suite, options) {
             var testDataLoc,
                 loadURI;
 
@@ -1979,7 +1979,7 @@ function() {
 
     var windowContext;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         var testDataLoc,
             loadURI;
 
@@ -2607,7 +2607,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             windowContext = this.getDriver().get('windowContext');
 
@@ -2617,7 +2617,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);

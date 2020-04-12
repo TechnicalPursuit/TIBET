@@ -180,7 +180,7 @@ TP.test.Suite.Inst.describe('TP.test.Suite - promise chaining',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             //  A statement in the code body should be seen first
             TP.sys.logTest('You should see this - #1', TP.DEBUG);
 
@@ -198,7 +198,7 @@ function() {
         });
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             //  A statement in the code body should be seen first
             TP.sys.logTest('You should see this - #4', TP.DEBUG);
 
@@ -236,7 +236,7 @@ function() {
     });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             //  A statement in the code body should be seen first
             TP.sys.logTest('You should see this - #10', TP.DEBUG);
 
@@ -254,7 +254,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  A statement in the code body should be seen first
             TP.sys.logTest('You should see this - #13', TP.DEBUG);
 

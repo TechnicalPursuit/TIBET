@@ -333,7 +333,7 @@ TP.test.OOTester.describe('Reflection - getTypeName',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -445,7 +445,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -456,7 +456,7 @@ TP.test.OOTester.describe('Reflection - getSupertype',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -601,7 +601,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -612,7 +612,7 @@ TP.test.OOTester.describe('Reflection - getSupertypeName',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -757,7 +757,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -768,7 +768,7 @@ TP.test.OOTester.describe('Reflection - getSupertypes',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -903,7 +903,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -914,7 +914,7 @@ TP.test.OOTester.describe('Reflection - getSupertypeNames',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -1062,7 +1062,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -1073,7 +1073,7 @@ TP.test.OOTester.describe('Reflection - getSubtypes',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -1349,7 +1349,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -1360,7 +1360,7 @@ TP.test.OOTester.describe('Reflection - getSubtypeNames',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -1636,7 +1636,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -1647,7 +1647,7 @@ TP.test.OOTester.describe('Reflection - getMethod',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -1722,7 +1722,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -1733,7 +1733,7 @@ TP.test.OOTester.describe('Reflection - getMethods',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -1904,7 +1904,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -1915,7 +1915,7 @@ TP.test.OOTester.describe('Reflection - getMethodInfoFor',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -2046,7 +2046,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -2057,7 +2057,7 @@ TP.test.OOTester.describe('Reflection - getPropertyScope',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -3362,7 +3362,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -3381,7 +3381,7 @@ TP.test.OOTester.describe('Reflection - getInterface',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -4068,7 +4068,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -4079,7 +4079,7 @@ TP.test.OOTester.describe('Inheritance - defineAttribute',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -4359,7 +4359,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -4370,7 +4370,7 @@ TP.test.OOTester.describe('Inheritance - defineMethod',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
         });
 
@@ -4823,7 +4823,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
         });
 });
@@ -4875,7 +4875,7 @@ TP.test.OOTester.describe('Inheritance - callNextMethod',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
 
             TP.test.OOTester.commonBefore();
 
@@ -4997,7 +4997,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             var metadata;
 
@@ -5023,7 +5023,7 @@ TP.test.OOTester.describe('Inheritance - C3 linearization',
 function() {
 
     this.before(
-        function() {
+        function(suite, options) {
             //  From the canonical description of C3 linearization
             //  http://en.wikipedia.org/wiki/C3_linearization
 
@@ -5086,7 +5086,7 @@ function() {
         autoResolveSetting;
 
     this.before(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonBefore();
 
             //  Reset our counters
@@ -5103,7 +5103,7 @@ function() {
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Set auto resolution back to its prior setting here
             TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
@@ -6728,7 +6728,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             TP.test.OOTester.commonAfter();
 
             TP.sys.shouldThrowExceptions(shouldThrowSetting);

@@ -25,7 +25,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             windowContext = this.getDriver().get('windowContext');
         });
@@ -33,7 +33,7 @@ function() {
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the
             //  blank

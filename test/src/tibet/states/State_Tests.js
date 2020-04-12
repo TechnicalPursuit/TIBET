@@ -23,11 +23,11 @@ function() {
 
     var machine;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         machine = TP.core.StateMachine.construct();
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         machine.deactivate(true);
         machine = null;
     });
@@ -153,11 +153,11 @@ function() {
 
     var machine;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         machine = TP.core.StateMachine.construct();
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         machine.deactivate(true);
         machine = null;
     });
@@ -264,11 +264,11 @@ function() {
 
     var machine;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         machine = TP.core.StateMachine.construct();
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         machine.deactivate(true);
         machine = null;
     });
@@ -339,12 +339,12 @@ function() {
     var machine,
         controller;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         machine = TP.core.StateMachine.construct();
         controller = TP.core.Controller.construct();
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         machine.deactivate(true);
         machine = null;
         controller = null;
@@ -914,11 +914,11 @@ function() {
 
     var machine;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         machine = TP.core.StateMachine.construct();
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         machine.deactivate(true);
         machine = null;
     });
@@ -1262,11 +1262,11 @@ function() {
 
     var machine;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         machine = TP.core.StateMachine.construct();
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         machine.deactivate(true);
         machine = null;
     });
@@ -1460,7 +1460,7 @@ function() {
     Responder = TP.lang.Object.defineSubtype('TestResponder');
     Responder.addTraits(TP.core.StateResponder);
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         machine = TP.core.StateMachine.construct();
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
@@ -1470,7 +1470,7 @@ function() {
         responder.addStateMachine(machine);
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         responder.teardownStateResponder();
         machine.deactivate(true);
         machine = null;

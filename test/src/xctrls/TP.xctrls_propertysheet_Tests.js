@@ -10,7 +10,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             var jsonURI,
 

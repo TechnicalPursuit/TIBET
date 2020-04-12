@@ -77,7 +77,7 @@ function() {
     var params;
 
     this.before(
-        function() {
+        function(suite, options) {
             var win,
                 doc,
 
@@ -111,7 +111,7 @@ function() {
         }.bind(this));
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             //  NB: The default of TIBETURNs is that they fetch their resources
             //  synchronously, so we don't need to specify that here.
             params = TP.request('refresh', true, 'async', false);
@@ -1062,7 +1062,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             var backgroundElem;
 
             //  Set up a temporary reference to the top-level window name
@@ -1220,7 +1220,7 @@ function() {
         objURI6,
         objURI7;
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         //  This returns a TP.lang.Hash
         modelObj = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
@@ -1254,14 +1254,14 @@ function() {
 
     //  ---
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         valuePathResults.empty();
         structurePathResults.empty();
     });
 
     //  ---
 
-    this.after(function() {
+    this.after(function(suite, options) {
         objValueObsFunction.ignore(objURI1, 'ValueChange');
         objStructureObsFunction.ignore(objURI1, 'StructureChange');
 
@@ -1543,7 +1543,7 @@ function() {
         xmlURI7,
         xmlURI8;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         modelObj = TP.tpdoc('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
         TP.sys.registerObject(modelObj, 'xmlData');
 
@@ -1576,14 +1576,14 @@ function() {
 
     //  ---
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         valuePathResults.empty();
         structurePathResults.empty();
     });
 
     //  ---
 
-    this.after(function() {
+    this.after(function(suite, options) {
         xmlValueObsFunction.ignore(xmlURI1, 'ValueChange');
         xmlStructureObsFunction.ignore(xmlURI1, 'StructureChange');
 
@@ -1809,7 +1809,7 @@ function() {
         jsonURI6,
         jsonURI7;
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         modelObj = TP.core.JSONContent.construct(
                     '{"foo":["1st","2nd",{"hi":"there"}]}');
@@ -1843,14 +1843,14 @@ function() {
 
     //  ---
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         valuePathResults.empty();
         structurePathResults.empty();
     });
 
     //  ---
 
-    this.after(function() {
+    this.after(function(suite, options) {
         jsonValueObsFunction.ignore(jsonURI1, 'ValueChange');
         jsonStructureObsFunction.ignore(jsonURI1, 'StructureChange');
 
@@ -2114,7 +2114,7 @@ function() {
         xmlURI7,
         xmlURI8;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         modelObj = TP.core.XMLContent.construct(
             '<emp><lname valid="true">Edney</lname><age>47</age></emp>');
         TP.sys.registerObject(modelObj, 'xmlData');
@@ -2148,14 +2148,14 @@ function() {
 
     //  ---
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         valuePathResults.empty();
         structurePathResults.empty();
     });
 
     //  ---
 
-    this.after(function() {
+    this.after(function(suite, options) {
         xmlValueObsFunction.ignore(xmlURI1, 'ValueChange');
         xmlStructureObsFunction.ignore(xmlURI1, 'StructureChange');
 
@@ -2405,13 +2405,13 @@ function() {
 
     //  ---
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
 
         objURI1 = TP.uc('urn:tibet:objData');
         objURI2 = TP.uc('urn:tibet:objData#tibet(.)');
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
 
         TP.uri.URI.removeInstance(objURI1);
         TP.uri.URI.removeInstance(objURI2);
@@ -2481,7 +2481,7 @@ function() {
 
     //  ---
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         noCollapseRequest = TP.request('shouldCollapse', false);
         collapseRequest = TP.request('shouldCollapse', true);
@@ -2492,7 +2492,7 @@ function() {
 
     //  ---
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
 
         xmlSourceURI = TP.uc('urn:tibet:xmlData');
         xmlSingleValueURI = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
@@ -2500,7 +2500,7 @@ function() {
         xmlNoValueURI = TP.uc('urn:tibet:xmlData#xpath1(//goo)');
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
 
         TP.uri.URI.removeInstance(xmlSourceURI);
         TP.uri.URI.removeInstance(xmlSingleValueURI);
@@ -2659,7 +2659,7 @@ function() {
 
     //  ---
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         noCollapseRequest = TP.request('shouldCollapse', false);
         collapseRequest = TP.request('shouldCollapse', true);
@@ -2670,7 +2670,7 @@ function() {
 
     //  ---
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
 
         jsonSourceURI = TP.uc('urn:tibet:jsonData');
         jsonSingleValueURI = TP.uc('urn:tibet:jsonData#jpath($.foo[0])');
@@ -2678,7 +2678,7 @@ function() {
         jsonNoValueURI = TP.uc('urn:tibet:jsonData#jpath($.goo)');
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
 
         TP.uri.URI.removeInstance(jsonSourceURI);
         TP.uri.URI.removeInstance(jsonSingleValueURI);
@@ -2830,7 +2830,7 @@ function() {
         objURI1,
         objURI2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         //  Note that TP.json2js returns a TP.lang.Hash.
         modelObj1 = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
@@ -2842,7 +2842,7 @@ function() {
         this.startTrackingSignals();
     });
 
-    this.after(function() {
+    this.after(function(suite, options) {
 
         this.stopTrackingSignals();
 
@@ -2852,7 +2852,7 @@ function() {
 
     //  ---
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
 
         objURI1 = TP.uc('urn:tibet:objData');
 
@@ -2860,7 +2860,7 @@ function() {
         objURI2.set('shouldCreateContent', true);
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
 
         TP.uri.URI.removeInstance(objURI1);
         TP.uri.URI.removeInstance(objURI2);
@@ -3062,14 +3062,14 @@ function() {
     resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             server = TP.test.fakeServer.create();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             server.restore();
         });
 
@@ -3155,14 +3155,14 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             server = TP.test.fakeServer.create();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             server.restore();
         });
 
@@ -3603,16 +3603,16 @@ function() {
     params = TP.request('refresh', true, 'async', true, 'resultType', TP.WRAP);
     resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
 
-    this.before(function() {
+    this.before(function(suite, options) {
         this.startTrackingSignals();
     });
 
-    this.after(function() {
+    this.after(function(suite, options) {
         this.stopTrackingSignals();
     });
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             var url;
 
             server = TP.test.fakeServer.create();
@@ -3627,7 +3627,7 @@ function() {
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             server.restore();
             this.getSuite().resetSignalTracking();
         });
@@ -3851,7 +3851,7 @@ function() {
                 'v=1.0&q=football&start=10';
 
     this.before(
-        function() {
+        function(suite, options) {
             stub = TP.jsonpCall.asStub();
         });
 
@@ -3891,7 +3891,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             stub.restore();
         });
 });
@@ -3909,7 +3909,7 @@ function() {
     storage = TP.core.LocalStorage.construct();
 
     this.before(
-        function() {
+        function(suite, options) {
             var storageStr;
 
             storageStr = TP.js2json(
@@ -4051,7 +4051,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             storage.removeKey(TP.LOCALSTORAGE_DB_NAME);
         });
 });
@@ -4791,24 +4791,24 @@ function() {
     var localURI,
         sessionURI;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         localStorage.removeItem('foo');
         sessionStorage.removeItem('foo');
     });
 
-    this.after(function() {
+    this.after(function(suite, options) {
         localStorage.removeItem('foo');
         sessionStorage.removeItem('foo');
     });
 
     //  ---
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         localURI = TP.uc('storage://local/foo');
         sessionURI = TP.uc('storage://session/foo');
     });
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         TP.uri.URI.removeInstance(localURI);
         TP.uri.URI.removeInstance(sessionURI);
     });

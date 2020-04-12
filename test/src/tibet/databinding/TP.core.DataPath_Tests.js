@@ -2726,7 +2726,7 @@ function() {
     var singleLevelModel,
         singleLevelPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.json2js('{"foo":"bar"}');
         singleLevelPath = TP.apc('foo');
     });
@@ -2760,7 +2760,7 @@ function() {
     var singleLevelModel,
         singleLevelPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.json2js('{}');
         singleLevelPath = TP.apc('foo');
     });
@@ -2800,7 +2800,7 @@ function() {
     var singleLevelModel,
         singleLevelPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.hc('foo', TP.test.CustomAccessorType.construct());
         singleLevelPath = TP.apc('foo');
     });
@@ -2837,7 +2837,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.json2js('{"foo":{"hi":"there"}}');
         singleLevelPath = TP.apc('foo.hi');
 
@@ -2898,7 +2898,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.json2js('["one", "two", ["a", "b", "c"]]');
         singleLevelPath = TP.apc('2.1');
 
@@ -2959,7 +2959,7 @@ function() {
         middleResultsModel,
         middleResultsPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         tailResultsModel = TP.json2js(
             '{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
         tailResultsPath = TP.apc('foo.hi[boo,moo]');
@@ -3029,7 +3029,7 @@ function() {
         middleResultsModel,
         middleResultsPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         tailResultsModel = TP.json2js(
             '["one", "two", ["a", ["6", "7", "8"], "c"]]');
         tailResultsPath = TP.apc('2[1,2]');
@@ -3095,7 +3095,7 @@ function() {
 
     var slicingResultsModel;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         slicingResultsModel =
             TP.json2js('["one", "two", ["a", ["6", "7", "8"], "c"], 37, "hi"]');
     });
@@ -3192,7 +3192,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
         singleLevelPath = TP.apc('foo.1');
 
@@ -3254,7 +3254,7 @@ function() {
         path4;
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             model1 = TP.json2js(
                 '[' +
                     '{"fname":"january", "lname":"smith", "aliases":["jan", "j", "janny"]},' +
@@ -3270,7 +3270,7 @@ function() {
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             model1 = null;
 
             path1 = null;
@@ -3394,7 +3394,7 @@ function() {
         path1,
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.json2js('{"foo":{"hi":"there"}}');
         path1 = TP.apc('bar.moo');
         path2 = TP.apc('bar[moo,too].noo');
@@ -3481,7 +3481,7 @@ function() {
         path2,
         path3;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.json2js('["one", "two", ["a", "b", "c"]]');
         path1 = TP.apc('3.1');
         path2 = TP.apc('3.1[0,4]');
@@ -3606,7 +3606,7 @@ function() {
         path1,
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
         path1 = TP.apc('foo.3.bar');
         path2 = TP.apc('foo.3[bar,moo,too].roo');
@@ -3702,7 +3702,7 @@ function() {
         path3,
         path4;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.json2js(
             '{"foo":["1st","2nd","3rd","4th",["A","B","C"],["X","Y","Z"]]}');
         path1 = TP.apc('foo.{{0}}');
@@ -3820,7 +3820,7 @@ function() {
         singleLevelValuePath,
         singleLevelOtherPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.hc('foo', TP.test.CustomAccessorType.construct());
         singleLevelValuePath = TP.apc('foo.value');
         singleLevelOtherPath = TP.apc('foo.moo');
@@ -3872,7 +3872,7 @@ function() {
         singleLevelValuePath,
         singleLevelOtherPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.hc('foo', TP.test.CustomAccessorType.construct());
         singleLevelValuePath = TP.apc('foo.boo.value');
         singleLevelOtherPath = TP.apc('foo.boo.moo');
@@ -3926,7 +3926,7 @@ function() {
         model2,
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname></emp>');
         path1 = TP.apc('/emp/lname').set('shouldCollapse', true);
 
@@ -4018,7 +4018,7 @@ function() {
         model2,
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname></emp>');
         path1 = TP.apc('/emp/lname').set('shouldCollapse', true);
 
@@ -4089,7 +4089,7 @@ function() {
 
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path1 = TP.apc('/emp/fname');
 
@@ -4221,7 +4221,7 @@ function() {
 
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path1 = TP.apc('/emp/vitals');
 
@@ -4356,7 +4356,7 @@ function() {
         path1,
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname foo="bar">Jones</lname><age baz="goo">47</age></emp>');
         path1 = TP.apc('/emp/lname/@foo').set('shouldCollapse', true);
         path2 = TP.apc('/emp/lname/@foo|/emp/age/@baz').set('shouldCollapse', true);
@@ -4448,7 +4448,7 @@ function() {
         model2,
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path1 = TP.apc('/emp/fname/@foo');
 
@@ -4589,7 +4589,7 @@ function() {
         model2,
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname></emp>');
         path1 = TP.apc('/emp/{{0}}').set('shouldCollapse', true);
 
@@ -4667,7 +4667,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":"there"}}');
         singleLevelPath = TP.apc('$.foo.hi', TP.hc('shouldCollapse', true));
@@ -4729,7 +4729,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.core.JSONContent.construct(
             '{"value":["one", "two", ["a", "b", "c"]]}');
         singleLevelPath = TP.apc('$.value[2][1]', TP.hc('shouldCollapse', true));
@@ -4791,7 +4791,7 @@ function() {
         middleResultsModel,
         middleResultsPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         tailResultsModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
         tailResultsPath = TP.apc('$.foo.hi[\'boo\',\'moo\']', TP.hc('shouldCollapse', true));
@@ -4874,7 +4874,7 @@ function() {
         middleResultsModel,
         middleResultsPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         tailResultsModel = TP.core.JSONContent.construct(
             '{"value": ["one", "two", ["a", ["6", "7", "8"], "c"]]}');
         tailResultsPath = TP.apc('$.value[2][1,2]', TP.hc('shouldCollapse', true));
@@ -4940,7 +4940,7 @@ function() {
 
     var slicingResultsModel;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         slicingResultsModel = TP.core.JSONContent.construct(
         '{"value": ["one", "two", ["a", ["6", "7", "8"], "c"], 37, "hi"]}');
     });
@@ -5017,7 +5017,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         singleLevelModel = TP.core.JSONContent.construct(
                             '{"foo":["1st","2nd",{"hi":"there"}]}');
         singleLevelPath = TP.apc('$.foo[1]', TP.hc('shouldCollapse', true));
@@ -5080,7 +5080,7 @@ function() {
         path4;
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             model1 = TP.core.JSONContent.construct(
                 '{"value":[' +
                     '{"fname":"january", "lname":"smith", "aliases":["jan", "j", "janny"]},' +
@@ -5096,7 +5096,7 @@ function() {
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             model1 = null;
 
             path1 = null;
@@ -5221,7 +5221,7 @@ function() {
         path1,
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.core.JSONContent.construct('{"foo":{"hi":"there"}}');
         path1 = TP.apc('$.bar.moo', TP.hc('shouldCollapse', true));
         path2 = TP.apc('$.bar[\'moo\',\'too\'].noo', TP.hc('shouldCollapse', true));
@@ -5326,7 +5326,7 @@ function() {
         path2,
         path3;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.core.JSONContent.construct('{"value": ["one", "two", ["a", "b", "c"]]}');
         path1 = TP.apc('$.value[3][1]', TP.hc('shouldCollapse', true));
         path2 = TP.apc('$.value[3][1][0,4]', TP.hc('shouldCollapse', true));
@@ -5484,7 +5484,7 @@ function() {
         path1,
         path2;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         model1 = TP.core.JSONContent.construct('{"foo":["1st","2nd",{"hi":"there"}]}');
         path1 = TP.apc('$.foo[3].bar', TP.hc('shouldCollapse', true));
         path2 = TP.apc('$.foo[3][\'bar\',\'moo\',\'too\'].roo', TP.hc('shouldCollapse', true));
@@ -5598,7 +5598,7 @@ function() {
         path3,
         path4;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
 
         model1 = TP.core.JSONContent.construct(
             '{"value":[' +
@@ -5615,7 +5615,7 @@ function() {
     });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             model1 = null;
 
             path1 = null;
@@ -5739,7 +5739,7 @@ function() {
 
     var jsonContent;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         jsonContent =
             TP.core.JSONContent.construct('{ "store": { "book": [ { "category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95 }, { "category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99 }, { "category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99 }, { "category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99 } ], "bicycle": { "color": "red", "price": 19.95 } } }');
     });

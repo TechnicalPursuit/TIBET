@@ -235,7 +235,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unregister the URI to avoid a memory leak (this will also
             //  unregister the 'sub URIs' that we create here).
@@ -381,21 +381,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
@@ -499,7 +499,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             //  For now, we turn off triggering the debugger because we know
             //  that this test case has a XInclude that points to a file
             //  that won't be found - that part of this test is testing
@@ -519,7 +519,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Put log level back to what it was
             TP.setLogLevel(oldLogLevel);
 
@@ -533,7 +533,7 @@ function() {
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);

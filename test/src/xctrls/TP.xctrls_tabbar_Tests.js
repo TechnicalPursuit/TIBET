@@ -15,7 +15,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             var loc;
 
@@ -34,7 +34,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             this.stopTrackingSignals();
 
@@ -48,7 +48,7 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             var bodyElem;
 
             bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
@@ -60,7 +60,7 @@ function() {
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().resetSignalTracking();
         });
 
@@ -375,7 +375,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             var loc;
 
@@ -392,7 +392,7 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
 
             var tabbar;
 
@@ -404,7 +404,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
@@ -588,7 +588,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             var loc;
 
@@ -604,7 +604,7 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
 
             var tabbar;
 
@@ -616,7 +616,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
@@ -766,7 +766,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             var loc;
 
@@ -780,7 +780,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             driver.setLocation(unloadURI);
@@ -872,7 +872,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             var loc;
 
@@ -886,7 +886,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             driver.setLocation(unloadURI);
