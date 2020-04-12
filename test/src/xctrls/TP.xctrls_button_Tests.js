@@ -18,7 +18,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             windowContext = driver.get('windowContext');
 
@@ -31,7 +31,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             this.stopTrackingSignals();
 
@@ -45,7 +45,7 @@ function() {
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().resetSignalTracking();
         });
 

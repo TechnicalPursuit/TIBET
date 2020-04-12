@@ -36,7 +36,7 @@ function() {
         }
     };
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         TP.i18n.Locale.set('strings', null);
         TP.i18n.Locale.activate();
     });

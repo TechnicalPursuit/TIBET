@@ -41,7 +41,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             this.getDriver().showTestGUI();
 
@@ -59,7 +59,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             this.stopTrackingSignals();
             this.getDriver().showTestLog();
 
@@ -74,7 +74,7 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
 
             //  Reset the spy on signaling in preparation for the
             //  next step in this test.
@@ -173,7 +173,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             this.getDriver().showTestGUI();
 
@@ -191,7 +191,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             this.stopTrackingSignals();
             this.getDriver().showTestLog();
 
@@ -206,7 +206,7 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
 
             //  Reset the spy on signaling in preparation for the
             //  next step in this test.
@@ -374,7 +374,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             this.getDriver().showTestGUI();
 
@@ -392,7 +392,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             this.stopTrackingSignals();
             this.getDriver().showTestLog();
 
@@ -407,7 +407,7 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
 
             //  Reset the spy on signaling in preparation for the
             //  next step in this test.
@@ -477,7 +477,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             this.getDriver().showTestGUI();
 
@@ -495,7 +495,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             this.stopTrackingSignals();
             this.getDriver().showTestLog();
 
@@ -510,7 +510,7 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
 
             //  Reset the spy on signaling in preparation for the
             //  next step in this test.

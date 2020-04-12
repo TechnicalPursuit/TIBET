@@ -139,7 +139,7 @@ function() {
         oldLogLevel;
 
     this.before(
-        function() {
+        function(suite, options) {
             //  For now, we turn off triggering the debugger because we know
             //  that this test case has a XInclude that points to a file
             //  that won't be found - that part of this test is testing
@@ -157,7 +157,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Put log level back to what it was
             TP.setLogLevel(oldLogLevel);
 
@@ -169,12 +169,12 @@ function() {
         });
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
         });
 
@@ -416,7 +416,7 @@ function() {
         oldLogLevel;
 
     this.before(
-        function() {
+        function(suite, options) {
             //  For now, we turn off triggering the debugger because we know
             //  that this test case has a XInclude that points to a file
             //  that won't be found - that part of this test is testing
@@ -434,7 +434,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Put log level back to what it was
             TP.setLogLevel(oldLogLevel);
 
@@ -446,12 +446,12 @@ function() {
         });
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
         });
 
@@ -625,7 +625,7 @@ function() {
         oldLogLevel;
 
     this.before(
-        function() {
+        function(suite, options) {
             //  For now, we turn off triggering the debugger because we know
             //  that this test case has a XInclude that points to a file
             //  that won't be found - that part of this test is testing
@@ -643,7 +643,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Put log level back to what it was
             TP.setLogLevel(oldLogLevel);
 
@@ -655,12 +655,12 @@ function() {
         });
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
         });
 
@@ -845,7 +845,7 @@ function() {
         oldLogLevel;
 
     this.before(
-        function() {
+        function(suite, options) {
             var resp,
 
                 xmlSchemaTPDoc,
@@ -880,7 +880,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Put log level back to what it was
             TP.setLogLevel(oldLogLevel);
 
@@ -892,12 +892,12 @@ function() {
         });
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
         });
 
@@ -1049,7 +1049,7 @@ function() {
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     this.before(
-        function() {
+        function(suite, options) {
             var resp,
 
                 xmlSchemaTPDoc,
@@ -1097,7 +1097,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Put log level back to what it was
             TP.setLogLevel(oldLogLevel);
@@ -1119,7 +1119,7 @@ function() {
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);

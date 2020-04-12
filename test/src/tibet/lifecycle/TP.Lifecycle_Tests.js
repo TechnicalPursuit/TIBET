@@ -26,7 +26,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             winContext = this.getDriver().get('windowContext');
 
             this.startTrackingSignals();
@@ -35,14 +35,14 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().resetSignalTracking();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.stopTrackingSignals();
         });
 
@@ -208,7 +208,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             windowContext = this.getDriver().get('windowContext');
         });
 

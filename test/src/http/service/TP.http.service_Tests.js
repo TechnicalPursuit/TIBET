@@ -32,7 +32,7 @@ function() {
     httpLoc = 'http://127.0.0.1:1407';
 
     this.before(
-        function() {
+        function(suite, options) {
 
             driver = this.getDriver();
             windowContext = driver.get('windowContext');
@@ -50,7 +50,7 @@ function() {
         });
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  ---
 
@@ -63,7 +63,7 @@ function() {
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             server.restore();
 

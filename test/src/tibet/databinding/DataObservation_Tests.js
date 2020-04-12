@@ -28,7 +28,7 @@ function() {
 
     //  ---
 
-    this.before(function() {
+    this.before(function(suite, options) {
         modelObj = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
 
         valuePathResults = TP.ac();
@@ -58,14 +58,14 @@ function() {
 
     //  ---
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         valuePathResults.empty();
         structurePathResults.empty();
     });
 
     //  ---
 
-    this.after(function() {
+    this.after(function(suite, options) {
         objValueObsFunction.ignore(modelObj, 'ValueChange');
         objStructureObsFunction.ignore(modelObj, 'StructureChange');
     });
@@ -342,7 +342,7 @@ function() {
 
     //  ---
 
-    this.before(function() {
+    this.before(function(suite, options) {
         modelObj = TP.core.JSONContent.construct('{"foo":["1st","2nd",{"hi":"there"}]}');
 
         valuePathResults = TP.ac();
@@ -372,14 +372,14 @@ function() {
 
     //  ---
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         valuePathResults.empty();
         structurePathResults.empty();
     });
 
     //  ---
 
-    this.after(function() {
+    this.after(function(suite, options) {
         jsonValueObsFunction.ignore(modelObj, 'ValueChange');
         jsonStructureObsFunction.ignore(modelObj, 'StructureChange');
     });
@@ -656,7 +656,7 @@ function() {
 
     //  ---
 
-    this.before(function() {
+    this.before(function(suite, options) {
         modelObj = TP.core.XMLContent.construct('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
 
         valuePathResults = TP.ac();
@@ -686,14 +686,14 @@ function() {
 
     //  ---
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
         valuePathResults.empty();
         structurePathResults.empty();
     });
 
     //  ---
 
-    this.after(function() {
+    this.after(function(suite, options) {
         xmlValueObsFunction.ignore(modelObj, 'ValueChange');
         xmlStructureObsFunction.ignore(modelObj, 'StructureChange');
     });
@@ -925,7 +925,7 @@ function() {
 TP.lang.Object.Type.describe('Type level aspect change notification',
 function() {
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         TP.lang.Object.defineSubtype('test.SimpleEmployee');
 
@@ -1569,12 +1569,12 @@ function() {
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             this.getSuite().startTrackingSignals();
         });
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the

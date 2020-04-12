@@ -14,7 +14,7 @@ function() {
     var doc;
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             doc = TP.documentFromString(
                     '<foo xmlns="http://www.foo.com"' +
                     ' xmlns:xf="http://www.w3.org/2002/xforms"' +
@@ -82,7 +82,7 @@ function() {
     var doc;
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             doc = TP.documentFromString(
                     '<foo xmlns="http://www.foo.com"' +
                     ' xmlns:xf="http://www.w3.org/2002/xforms"' +
@@ -144,7 +144,7 @@ function() {
     var doc;
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             doc = TP.documentFromString(
                     '<foo xmlns="http://www.foo.com"' +
                     ' xmlns:xf="http://www.w3.org/2002/xforms"' +
@@ -223,7 +223,7 @@ function() {
     var doc;
 
     this.beforeEach(
-        function() {
+        function(test, options) {
             doc = TP.documentFromString(
                     '<foo xmlns="http://www.foo.com"' +
                     ' xmlns:xf="http://www.w3.org/2002/xforms"' +

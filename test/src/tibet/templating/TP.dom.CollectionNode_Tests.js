@@ -23,21 +23,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the
             //  blank
@@ -391,21 +391,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the
             //  blank
@@ -567,21 +567,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the
             //  blank
@@ -964,7 +964,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             //  We use this in the tests below.
             TP.i18n.Locale.registerStrings(
@@ -978,14 +978,14 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the
             //  blank
@@ -1106,21 +1106,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the
             //  blank
@@ -1198,21 +1198,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the
             //  blank
@@ -1290,21 +1290,21 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestGUI();
         });
 
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
             this.getDriver().showTestLog();
         });
 
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
 
             //  Unload the current page by setting it to the
             //  blank

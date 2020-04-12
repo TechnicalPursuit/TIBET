@@ -18,7 +18,7 @@ TP.uri.URIRouter.Type.describe('router api',
 function() {
     var router;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         router = TP.sys.getRouter();
     });
 
@@ -51,7 +51,7 @@ TP.uri.URIRouter.Type.describe('definePath',
 function() {
     var router;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         router = TP.sys.getRouter();
     });
 
@@ -90,7 +90,7 @@ TP.uri.URIRouter.Type.describe('compilePattern',
 function() {
     var router;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         router = TP.sys.getRouter();
     });
 
@@ -137,7 +137,7 @@ TP.uri.URIRouter.Type.describe('processRoute',
 function() {
     var router;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         router = TP.sys.getRouter();
         //  Clear any tokens/processors defined.
         router.set('processors', TP.ac());
@@ -213,7 +213,7 @@ TP.uri.URIRouter.Type.describe('token definition',
 function() {
     var router;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         router = TP.sys.getRouter();
     });
 

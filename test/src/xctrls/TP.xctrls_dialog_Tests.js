@@ -20,7 +20,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             //  We 'snapshot' the current focus stack so that in case we're
             //  running this in the Sherpa, etc., any current items won't be
@@ -54,7 +54,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             this.stopTrackingSignals();
 
@@ -84,7 +84,7 @@ function() {
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().resetSignalTracking();
         });
 

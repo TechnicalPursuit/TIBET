@@ -266,7 +266,7 @@ function() {
         level1_TP_test_SignalTestFull_FALSE_SignalTestOrigin_TestState;
 
     this.before(
-        function() {
+        function(suite, options) {
 
             sigOrigin = TP.lang.Object.construct();
             sigOrigin.setID('SignalTestOrigin');

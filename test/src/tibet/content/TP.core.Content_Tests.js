@@ -20,7 +20,7 @@ function() {
 
     //  ---
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         TP.sys.shouldUseContentCheckpoints(true);
 
@@ -29,7 +29,7 @@ function() {
 
     //  ---
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
 
         modelObj = TP.core.XMLContent.construct('<emp><lname valid="true">Jones</lname><age>47</age></emp>');
 
@@ -40,7 +40,7 @@ function() {
 
     //  ---
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
 
         this.getSuite().stopTrackingSignals();
     });
@@ -763,7 +763,7 @@ function() {
 
     //  ---
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         TP.sys.shouldUseContentCheckpoints(true);
 
@@ -772,7 +772,7 @@ function() {
 
     //  ---
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
 
         modelObj = TP.core.JSONContent.construct('{"emp":{"lname":"Jones","age":"47"}}');
 
@@ -783,7 +783,7 @@ function() {
 
     //  ---
 
-    this.afterEach(function() {
+    this.afterEach(function(test, options) {
 
         this.getSuite().stopTrackingSignals();
     });
@@ -1516,7 +1516,7 @@ function() {
 
     //  ---
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         xmlPath1 = TP.apc('//bar');
         xmlPath2 = TP.apc('//bar').set('shouldCollapse', false);
@@ -1531,7 +1531,7 @@ function() {
 
     //  ---
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
 
         modelObj = TP.core.XMLContent.construct('<foo><bar/><baz/><baz/></foo>');
     });
@@ -1669,7 +1669,7 @@ function() {
 
     //  ---
 
-    this.before(function() {
+    this.before(function(suite, options) {
 
         jsonPath1 = TP.apc('$.emp.lname');
         jsonPath2 = TP.apc('$.emp.lname').set('shouldCollapse', false);
@@ -1684,7 +1684,7 @@ function() {
 
     //  ---
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
 
         modelObj = TP.core.JSONContent.construct('{"emp":{"lname":"Jones","age":"47", "address": [{"zip":"11111"}, {"zip":"22222"}]}}');
     });

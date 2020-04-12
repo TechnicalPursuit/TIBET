@@ -3600,7 +3600,7 @@ function() {
     var schema;
 
     this.before(
-        function() {
+        function(suite, options) {
             var params,
                 uri,
                 result,
@@ -3834,7 +3834,7 @@ function() {
     var schema;
 
     this.before(
-        function() {
+        function(suite, options) {
 
             var params,
                 uri,

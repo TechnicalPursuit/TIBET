@@ -2906,7 +2906,7 @@ function() {
 
     var data;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         data = TP.doc(
             '<foo><bar></bar><baz></baz><baz></baz></foo>');
     });
@@ -3052,7 +3052,7 @@ function() {
 
     var data;
 
-    this.before(function() {
+    this.before(function(suite, options) {
         data = TP.doc(
             '<foo><bar></bar><baz></baz><baz></baz></foo>');
     });

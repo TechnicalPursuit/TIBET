@@ -18,7 +18,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             windowContext = driver.get('windowContext');
 
@@ -31,7 +31,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             this.stopTrackingSignals();
 
@@ -45,7 +45,7 @@ function() {
     //  ---
 
     this.afterEach(
-        function() {
+        function(test, options) {
             this.getSuite().resetSignalTracking();
         });
 
@@ -297,7 +297,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -311,7 +311,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             driver.setLocation(unloadURI);
@@ -474,7 +474,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -488,7 +488,7 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
 
             var tpElem;
 
@@ -500,7 +500,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             driver.setLocation(unloadURI);
@@ -696,7 +696,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             TP.$$setupCommonObjectValues();
 
@@ -709,7 +709,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             driver.setLocation(unloadURI);
@@ -842,7 +842,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             TP.$$setupCommonObjectValues();
 
@@ -855,7 +855,7 @@ function() {
     //  ---
 
     this.beforeEach(
-        function() {
+        function(test, options) {
 
             var tpElem;
 
@@ -867,7 +867,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             driver.setLocation(unloadURI);
@@ -1030,7 +1030,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             windowContext = driver.get('windowContext');
 
@@ -1041,7 +1041,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             driver.setLocation(unloadURI);
@@ -1124,7 +1124,7 @@ function() {
     //  ---
 
     this.before(
-        function() {
+        function(suite, options) {
 
             windowContext = driver.get('windowContext');
 
@@ -1135,7 +1135,7 @@ function() {
     //  ---
 
     this.after(
-        function() {
+        function(suite, options) {
 
             //  Unload the current page by setting it to the blank
             driver.setLocation(unloadURI);

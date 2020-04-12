@@ -427,7 +427,7 @@ function() {
     });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Remove any globals that the shell put there.
             delete window.x;
             delete window.y;
@@ -526,7 +526,7 @@ function() {
     });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Remove any globals that the shell put there.
             delete window.x;
             delete window.y;
@@ -1284,7 +1284,7 @@ function() {
     });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Remove any globals that the shell put there.
             delete window.x;
             delete window.y;
@@ -2426,7 +2426,7 @@ function() {
     });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Remove any globals that the shell put there.
             delete window.x;
             delete window.y;
@@ -4426,7 +4426,7 @@ function() {
     });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Remove any globals that the shell put there.
             delete window.x;
             delete window.y;
@@ -5191,7 +5191,7 @@ function() {
     });
 
     this.after(
-        function() {
+        function(suite, options) {
             var backgroundElem;
 
             //  Set up a temporary reference to the top-level window name
@@ -6477,7 +6477,7 @@ function() {
     });
 
     this.after(
-        function() {
+        function(suite, options) {
             //  Remove any globals that the shell put there.
             delete window.z;
         });

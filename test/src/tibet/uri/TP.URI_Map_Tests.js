@@ -18,7 +18,7 @@ function() {
     var uri,
         handler;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         uri = null;
         handler = null;
     });
@@ -74,7 +74,7 @@ function() {
     var uri,
         rewrite;
 
-    this.beforeEach(function() {
+    this.beforeEach(function(test, options) {
         uri = null;
         rewrite = null;
     });
