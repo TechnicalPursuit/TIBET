@@ -4279,6 +4279,7 @@ TP.sig.ServiceException.defineSubtype('RequestNotFound');
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.defineSubtype('DidRender');
+TP.sig.DidRender.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
 TP.sig.DidRender.defineSubtype('DidRenderData');
 
 //  ------------------------------------------------------------------------
