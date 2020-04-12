@@ -133,5 +133,71 @@
     A standard XControls tabbar showing dynamic content of a single dimensional Array:
     <xctrls:tabbar id="tabbar1" bind:in="{data: urn:tibet:one_dim_array#tibet(names)}"/>
 
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #2:
+    <br/>
+    A standard XControls tabbar showing dynamic content of a two dimensional Array:
+    <xctrls:tabbar id="tabbar2" bind:io="{data: urn:tibet:two_dim_array#tibet(names), value: urn:tibet:selection_scratch_data#tibet(data)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #3:
+    <br/>
+    A standard XControls tabbar showing dynamic content of an Object hash:
+    <xctrls:tabbar id="tabbar3" bind:in="{data: urn:tibet:object_hash#tibet(names)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #4:
+    <br/>
+
+    A standard XControls tabbar enabled showing dynamic content:
+    <xctrls:tabbar id="tabbar4" bind:io="{data: urn:tibet:selection_test_data#tibet(data)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #5:
+    <br/>
+
+    A standard XControls tabbar enabled showing dynamic content and value bound to a selection model:
+    <xctrls:tabbar id="tabbar5" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #6:
+    <br/>
+
+    A standard XControls tabbar enabled showing static and templated content and value bound to a selection model:
+    <xctrls:tabbar id="tabbar6" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}">
+        <xctrls:tabitem tabindex="0">
+            <xctrls:label>Before Content</xctrls:label>
+            <xctrls:value>before</xctrls:value>
+        </xctrls:tabitem>
+        <tibet:template>
+            <xctrls:tabitem>
+                <xctrls:label>[[value.1]]</xctrls:label>
+                <xctrls:value>[[value.0]]</xctrls:value>
+            </xctrls:tabitem>
+        </tibet:template>
+        <xctrls:tabitem tabindex="0">
+            <xctrls:label>After Content</xctrls:label>
+            <xctrls:value>after</xctrls:value>
+        </xctrls:tabitem>
+    </xctrls:tabbar>
+
+    <br/>
+    <br/>
+
 </body>
 </html>

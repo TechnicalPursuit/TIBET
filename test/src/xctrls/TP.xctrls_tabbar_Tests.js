@@ -26,8 +26,6 @@ function() {
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            this.andWait(2000);
-
             this.chain(
                 function() {
                     this.startTrackingSignals();
@@ -342,7 +340,7 @@ function() {
                 test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
             });
     });
-}).only();
+});
 
 //  ------------------------------------------------------------------------
 
