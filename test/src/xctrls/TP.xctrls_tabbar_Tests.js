@@ -26,6 +26,9 @@ function() {
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
+            tabbarID = TP.computeOriginID(windowContext, loc, 'tabbar1');
+            this.andWaitFor(tabbarID, 'TP.sig.DidRender');
+
             this.chain(
                 function() {
                     this.startTrackingSignals();
@@ -75,16 +78,6 @@ function() {
         tabbar = TP.byId('tabbar1', windowContext);
 
         firstTabbarItem = tabbar.get('allItemContent').first();
-        console.log('INITIALLY VALID: ' + TP.isValid(firstTabbarItem));
-
-        test.andIfNotValidWaitFor(
-                function() {
-                    firstTabbarItem = tabbar.get('allItemContent').first();
-                    console.log('VALID on wait: ' + TP.isValid(firstTabbarItem));
-                    return firstTabbarItem;
-                },
-                TP.gid(tabbar),
-                'TP.sig.DidRenderData');
 
         //  Change the focus via 'direct' method
 
@@ -113,13 +106,7 @@ function() {
 
         tabbar = TP.byId('tabbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firstTabbarItem = tabbar.get('allItemContent').first();
-                    return firstTabbarItem;
-                },
-                TP.gid(tabbar),
-                'TP.sig.DidRenderData');
+        firstTabbarItem = tabbar.get('allItemContent').first();
 
         //  Individual mousedown/mouseup
 
@@ -186,13 +173,7 @@ function() {
 
         tabbar = TP.byId('tabbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firstTabbarItem = tabbar.get('allItemContent').first();
-                    return firstTabbarItem;
-                },
-                TP.gid(tabbar),
-                'TP.sig.DidRenderData');
+        firstTabbarItem = tabbar.get('allItemContent').first();
 
         //  Individual keydown/keyup
 
@@ -239,13 +220,7 @@ function() {
         tabbar = TP.byId('tabbar1', windowContext);
         tabbar.setAttrDisabled(true);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firstTabbarItem = tabbar.get('allItemContent').first();
-                    return firstTabbarItem;
-                },
-                TP.gid(tabbar),
-                'TP.sig.DidRenderData');
+        firstTabbarItem = tabbar.get('allItemContent').first();
 
         test.assert.isDisabled(TP.unwrap(firstTabbarItem));
 
@@ -809,13 +784,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firstTabbarItem = tabbar.get('allItemContent').first();
-                    return firstTabbarItem;
-                },
-                TP.gid(tabbar),
-                'TP.sig.DidRenderData');
+        firstTabbarItem = tabbar.get('allItemContent').first();
 
         test.getDriver().constructSequence().
             click(firstTabbarItem).
@@ -908,14 +877,8 @@ function() {
 
         tabbar = TP.byId('tabbar6', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firstTabbarItem = tabbar.get('allItemContent').first();
-                    lastTabbarItem = tabbar.get('allItemContent').last();
-                    return firstTabbarItem;
-                },
-                TP.gid(tabbar),
-                'TP.sig.DidRenderData');
+        firstTabbarItem = tabbar.get('allItemContent').first();
+        lastTabbarItem = tabbar.get('allItemContent').last();
 
         //  The 2nd child element will be an 'xctrls:value'
 
