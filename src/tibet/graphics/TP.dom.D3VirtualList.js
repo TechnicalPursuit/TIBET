@@ -725,7 +725,7 @@ TP.extern.d3.VirtualScroller = function() {
                 scrollRenderFrame(position);
 
                 //  Signal to observers that this control has rendered.
-                control.signal('TP.sig.DidRender');
+                control.signal('TP.sig.DidRenderData');
             } else {
                 //  Otherwise, there was a change in scroll position. Make the
                 //  scrolling render function itself run after the next repaint
@@ -734,7 +734,7 @@ TP.extern.d3.VirtualScroller = function() {
                     scrollRenderFrame(position);
 
                     //  Signal to observers that this control has rendered.
-                    control.signal('TP.sig.DidRender');
+                    control.signal('TP.sig.DidRenderData');
                 }).queueAfterNextRepaint();
             }
 
