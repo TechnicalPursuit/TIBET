@@ -118,9 +118,12 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.getDriver().constructSequence().
-            mouseDown(firstTabbarItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseDown(firstTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -132,11 +135,12 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().constructSequence().
-            mouseUp(firstTabbarItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseUp(firstTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -150,11 +154,12 @@ function() {
 
         //  click
 
-        test.getDriver().constructSequence().
-            click(firstTabbarItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(firstTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -191,9 +196,12 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.getDriver().constructSequence().
-            keyDown(firstTabbarItem, 'Enter').
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyDown(firstTabbarItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -205,11 +213,12 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().constructSequence().
-            keyUp(firstTabbarItem, 'Enter').
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyUp(firstTabbarItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -246,9 +255,12 @@ function() {
 
         //  --- Focus
 
-        test.getDriver().constructSequence().
-            sendEvent(TP.hc('type', 'focus'), firstTabbarItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    sendEvent(TP.hc('type', 'focus'), firstTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -262,9 +274,12 @@ function() {
 
         //  --- Individual mousedown/mouseup
 
-        test.getDriver().constructSequence().
-            mouseDown(firstTabbarItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseDown(firstTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -274,11 +289,12 @@ function() {
                 test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
             });
 
-        test.getDriver().constructSequence().
-            mouseUp(firstTabbarItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    mouseUp(firstTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -290,11 +306,12 @@ function() {
 
         //  --- click
 
-        test.getDriver().constructSequence().
-            click(firstTabbarItem).
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(firstTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -309,9 +326,12 @@ function() {
 
         //  --- Individual keydown/keyup
 
-        test.getDriver().constructSequence().
-            keyDown(firstTabbarItem, 'Enter').
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyDown(firstTabbarItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -323,11 +343,12 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().constructSequence().
-            keyUp(firstTabbarItem, 'Enter').
-            run();
-
-        test.andWait(500);
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    keyUp(firstTabbarItem, 'Enter').
+                    run();
+            });
 
         test.chain(
             function() {
@@ -812,9 +833,12 @@ function() {
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.getDriver().constructSequence().
-            click(firstTabbarItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(firstTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -943,9 +967,12 @@ function() {
 
         staticTabbarItem = tabbar.get('allItemContent').first();
 
-        test.getDriver().constructSequence().
-            click(staticTabbarItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(staticTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {
@@ -960,9 +987,12 @@ function() {
 
         dynamicTabbarItem = tabbar.get('allItemContent').at(1);
 
-        test.getDriver().constructSequence().
-            click(dynamicTabbarItem).
-            run();
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(dynamicTabbarItem).
+                    run();
+            });
 
         test.chain(
             function() {

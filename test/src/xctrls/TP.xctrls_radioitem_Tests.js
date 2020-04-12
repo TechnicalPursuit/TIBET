@@ -108,8 +108,6 @@ function() {
             mouseUp(radioitem).
             run();
 
-        test.andWait(500);
-
         test.chain(
             function() {
                 test.refute.hasAttribute(radioitem, 'pclass:active');
@@ -125,8 +123,6 @@ function() {
         driver.constructSequence().
             click(radioitem).
             run();
-
-        test.andWait(500);
 
         test.chain(
             function() {
@@ -171,8 +167,6 @@ function() {
         driver.constructSequence().
             keyUp(radioitem, 'Enter').
             run();
-
-        test.andWait(500);
 
         test.chain(
             function() {
@@ -230,8 +224,6 @@ function() {
             mouseUp(radioitem).
             run();
 
-        test.andWait(500);
-
         test.chain(
             function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
@@ -245,8 +237,6 @@ function() {
         driver.constructSequence().
             click(radioitem).
             run();
-
-        test.andWait(500);
 
         test.chain(
             function() {
@@ -278,8 +268,6 @@ function() {
         driver.constructSequence().
             keyUp(radioitem, 'Enter').
             run();
-
-        test.andWait(500);
 
         test.chain(
             function() {
