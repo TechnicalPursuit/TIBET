@@ -17,17 +17,13 @@ function() {
     this.before(
         function() {
 
-            var loc,
-                tabbarID;
+            var loc;
 
             windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
-
-            tabbarID = TP.computeOriginID(windowContext, loc, 'tabbar1');
-            this.andWaitFor(tabbarID, 'TP.sig.DidRender');
 
             this.chain(
                 function() {
@@ -77,7 +73,13 @@ function() {
 
         tabbar = TP.byId('tabbar1', windowContext);
 
-        firstTabbarItem = tabbar.get('allItemContent').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstTabbarItem = tabbar.get('allItemContent').first();
+                    return firstTabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
 
         //  Change the focus via 'direct' method
 
@@ -106,7 +108,13 @@ function() {
 
         tabbar = TP.byId('tabbar1', windowContext);
 
-        firstTabbarItem = tabbar.get('allItemContent').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstTabbarItem = tabbar.get('allItemContent').first();
+                    return firstTabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
 
         //  Individual mousedown/mouseup
 
@@ -173,7 +181,13 @@ function() {
 
         tabbar = TP.byId('tabbar1', windowContext);
 
-        firstTabbarItem = tabbar.get('allItemContent').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstTabbarItem = tabbar.get('allItemContent').first();
+                    return firstTabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
 
         //  Individual keydown/keyup
 
@@ -220,7 +234,13 @@ function() {
         tabbar = TP.byId('tabbar1', windowContext);
         tabbar.setAttrDisabled(true);
 
-        firstTabbarItem = tabbar.get('allItemContent').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstTabbarItem = tabbar.get('allItemContent').first();
+                    return firstTabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
 
         test.assert.isDisabled(TP.unwrap(firstTabbarItem));
 
@@ -784,7 +804,13 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        firstTabbarItem = tabbar.get('allItemContent').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstTabbarItem = tabbar.get('allItemContent').first();
+                    return firstTabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
 
         test.getDriver().constructSequence().
             click(firstTabbarItem).
@@ -877,8 +903,14 @@ function() {
 
         tabbar = TP.byId('tabbar6', windowContext);
 
-        firstTabbarItem = tabbar.get('allItemContent').first();
-        lastTabbarItem = tabbar.get('allItemContent').last();
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstTabbarItem = tabbar.get('allItemContent').first();
+                    lastTabbarItem = tabbar.get('allItemContent').last();
+                    return firstTabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
 
         //  The 2nd child element will be an 'xctrls:value'
 
