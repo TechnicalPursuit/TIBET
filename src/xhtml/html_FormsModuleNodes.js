@@ -3199,6 +3199,24 @@ function(aValue, optionProperty) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.select.Inst.defineMethod('render',
+function() {
+
+    /**
+     * @method render
+     * @summary Renders the receiver.
+     * @returns {TP.html.select} The receiver.
+     */
+
+    if (TP.isEmpty(this.$getSelectionModel())) {
+        this.$refreshSelectionModelFor();
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.select.Inst.defineMethod('setData',
 function(aDataObject, shouldSignal) {
 
