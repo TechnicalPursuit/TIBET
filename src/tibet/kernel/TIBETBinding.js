@@ -1122,10 +1122,6 @@ function(aSignal) {
     allRefreshedElements = this.get('$refreshedElements');
     if (TP.notEmpty(allRefreshedElements)) {
         this.getBody().$sendNativeRefreshEvent();
-
-        //  Make sure to empty the list of elements that were refreshed so that
-        //  we start fresh when bindings are refreshed again.
-        allRefreshedElements.empty();
     }
 
     return this;
@@ -4244,10 +4240,6 @@ function(shouldRender, shouldRefreshBindings) {
             allRefreshedElements = this.getDocument().get('$refreshedElements');
             if (TP.notEmpty(allRefreshedElements)) {
                 this.$sendNativeRefreshEvent();
-
-                //  Make sure to empty the list of elements that were refreshed
-                //  so that we start fresh when bindings are refreshed again.
-                allRefreshedElements.empty();
             }
         }
     } else {
@@ -4427,10 +4419,6 @@ function(shouldRender, shouldSendEvent) {
     allRefreshedElements = this.getDocument().get('$refreshedElements');
     if (TP.notEmpty(allRefreshedElements) && TP.notFalse(shouldSendEvent)) {
         this.$sendNativeRefreshEvent();
-
-        //  Make sure to empty the list of elements that were refreshed so that
-        //  we start fresh when bindings are refreshed again.
-        allRefreshedElements.empty();
     }
 
     return this;
@@ -5340,7 +5328,6 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                             ownerTPElem.getDocument().get('$refreshedElements');
                         if (TP.notEmpty(allRefreshedElements)) {
                             ownerTPElem.$sendNativeRefreshEvent();
-                            allRefreshedElements.empty();
                         }
                     }
 
@@ -6222,10 +6209,6 @@ function(regenerateIfNecessary) {
         //  that the bindings have been refreshed.
         if (TP.notEmpty(allRefreshedElements)) {
             this.$sendNativeRefreshEvent();
-
-            //  Make sure to empty the list of elements that were refreshed so
-            //  that we start fresh when bindings are refreshed again.
-            allRefreshedElements.empty();
         }
     }
 
@@ -6722,27 +6705,91 @@ function() {
      */
 
     var allRefreshedElements,
-        evt,
-        refreshedElements;
+
+        allContainedElements,
+
+        notContainedElementInfo,
+
+        evt;
 
     //  Send a custom DOM-level event to allow 3rd party libraries to know that
     //  the bindings have been refreshed.
 
     allRefreshedElements = this.getDocument().get('$refreshedElements');
     if (TP.notEmpty(allRefreshedElements)) {
-        evt = this.getNativeDocument().createEvent('Event');
-        evt.initEvent('TIBETBindingsRefreshed', true, true);
 
-        refreshedElements = TP.ac();
+        //  Allocate an Array for elements that *are* contained in the receiver.
+        //  We will use this Array to send the signal.
+        allContainedElements = TP.ac();
+
+        //  Build out a Hash for elements that are *not* contained in the
+        //  receiver. We'll preserve the Hash of the elements that are *not*
+        //  contained within the receiver and set 'allRefreshedElements' to
+        //  that.
+        notContainedElementInfo = TP.hc();
+
         allRefreshedElements.perform(
             function(kvPair) {
-                refreshedElements = refreshedElements.concat(kvPair.last());
-            });
-        refreshedElements.unique();
+                var containedElems,
+                    notContainedElems,
 
-        evt.data = refreshedElements;
+                    aspectKey,
+                    tpElems,
 
-        this.getNativeNode().dispatchEvent(evt);
+                    len,
+                    i,
+
+                    tpElem;
+
+                containedElems = TP.ac();
+                notContainedElems = TP.ac();
+
+                aspectKey = kvPair.first();
+                tpElems = kvPair.last();
+
+                //  Iterate over all of the elements and sort them into two
+                //  Arrays, one for elements contained in the receiver and one
+                //  for elements that are not.
+                len = tpElems.getSize();
+                for (i = 0; i < len; i++) {
+                    tpElem = tpElems.at(i);
+                    if (this.contains(tpElem, TP.IDENTITY)) {
+                        containedElems.push(tpElem);
+                    } else {
+                        notContainedElems.push(tpElem);
+                    }
+                }
+
+                //  If there are elements that are contained in the receiver,
+                //  concatenate them into the overall Array that we will use to
+                //  send the signal.
+                if (TP.notEmpty(containedElems)) {
+                    allContainedElements =
+                            allContainedElements.concat(containedElems);
+                }
+
+                //  If there are elements that are *not* contained in the
+                //  receiver, add an entry to the Hash under the aspect key.
+                //  This is the Hash that we'll preserve for other runs of this
+                //  method.
+                if (TP.notEmpty(notContainedElems)) {
+                    notContainedElementInfo.atPut(aspectKey, notContainedElems);
+                }
+            }.bind(this));
+
+        //  If we have contained elements, then send the signal.
+        if (TP.notEmpty(allContainedElements)) {
+            allContainedElements.unique();
+
+            evt = this.getNativeDocument().createEvent('Event');
+            evt.initEvent('TIBETBindingsRefreshed', true, true);
+
+            evt.data = allContainedElements;
+
+            this.getNativeNode().dispatchEvent(evt);
+        }
+
+        this.getDocument().set('$refreshedElements', notContainedElementInfo);
     }
 
     return this;
