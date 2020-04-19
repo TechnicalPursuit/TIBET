@@ -8427,7 +8427,7 @@ function(anEvent) {
     //  using the history object's 'go()' call.
     if (TP.isValid(state)) {
         if (state.index > this.get('lastValidIndex')) {
-            TP.global.history.go(-state.index);
+            this.getNativeWindow().history.go(-state.index);
             return this;
         }
     }
