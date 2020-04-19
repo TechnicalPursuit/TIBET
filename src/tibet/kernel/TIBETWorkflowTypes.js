@@ -8442,7 +8442,6 @@ function(anEvent) {
         if (TP.isValid(router)) {
             router.route(TP.ifInvalid(state, loc));
         }
-        anEvent.preventDefault();
     } else {
         //  This is a link anchor target - act accordingly
         return this;
