@@ -8434,7 +8434,7 @@ function(anEvent) {
 
     //  The popstate event can come from a number of sources so we need to
     //  ensure we get the right index adjustments in our internal history.
-    this.updateIndex(anEvent);
+    this.updateIndex(state);
 
     //  A route has to be routable so only trigger the router if it is.
     if (this.isLocationRoutable(loc)) {
@@ -8938,14 +8938,14 @@ function(anIndex) {
 //  ------------------------------------------------------------------------
 
 TP.core.History.Type.defineMethod('updateIndex',
-function(anEvent) {
+function(aState) {
 
     /**
      * @method updateIndex
      * @summary Updates the current history index by comparing data for the
-     *     current location with known history entries. The event
-     * @param {PopStateEvent} anEvent The history PopState event triggering this
-     *     update request. The index value of this event, if available, will
+     *     current location with known history entries.
+     * @param {Object} aState A history 'state' object triggering this
+     *     update request. The index value of this object, if available, will
      *     identify the new index traversed to.
      * @returns {Number} The new index.
      */
@@ -8964,18 +8964,13 @@ function(anEvent) {
         len,
         i;
 
-    //  Ensure it's for the window we're watching.
-    if (!anEvent || TP.eventGetTarget(anEvent) !== this.getNativeWindow()) {
-        return this;
-    }
-
     history = this.get('history');
     index = this.get('index');
 
     //  The state in anEvent may include an index...which would be our
     //  answer. We just need to compute the offset.
-    if (TP.isValid(anEvent)) {
-        state = anEvent.state;
+    if (TP.isValid(aState)) {
+        state = aState;
 
         if (TP.isValid(state)) {
             stateIndex = state.index;
