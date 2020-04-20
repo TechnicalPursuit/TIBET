@@ -9069,6 +9069,13 @@ function(aState) {
                     }
                 }
 
+                //  If there was no index less than our index and no index
+                //  greater than our index, then since we're 'defaulting to
+                //  back', just set the stateIndex to our index - 1
+                if (TP.notValid(stateIndex)) {
+                    stateIndex = index - 1;
+                }
+
                 this.set('index', stateIndex);
             }
         }
