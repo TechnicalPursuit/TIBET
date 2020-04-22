@@ -7858,7 +7858,11 @@ function() {
 
     var sessionHistory;
 
-    //  Install a popstate handler to catch changes due to history API.
+    //  Install a popstate handler to catch changes due to history API. Note
+    //  that installing this on the main code frame (i.e. top level window)
+    //  probably won't have much effect since navigations will come from UI
+    //  events in the canvas window. A popstate event hook is installed for them
+    //  in the loader.
     window.addEventListener('popstate',
                             function(evt) {
                                 this.onpopstate(evt);
@@ -8980,8 +8984,8 @@ function(aState) {
     history = this.get('history');
     index = this.get('index');
 
-    //  The state in anEvent may include an index...which would be our
-    //  answer. We just need to compute the offset.
+    //  The state in anEvent may include an index...which would be our answer.
+    //  We just need to compute the offset.
     if (TP.isValid(aState)) {
         state = aState;
 
