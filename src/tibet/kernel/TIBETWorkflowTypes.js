@@ -8357,6 +8357,61 @@ function(anOffset) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.History.Type.defineMethod('gotoFirst',
+function() {
+
+    /**
+     * @method gotoFirst
+     * @summary Causes the receiver to go to the first location entry in window
+     *         history.
+     * @returns {TP.meta.core.History} The receiver.
+     */
+
+    var currentIndex;
+
+    currentIndex = this.get('index');
+
+    //  no-op
+    if (currentIndex === 0) {
+        return this;
+    }
+
+    this.go(-currentIndex);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.History.Type.defineMethod('gotoLast',
+function() {
+
+    /**
+     * @method gotoLast
+     * @summary Causes the receiver to go to the last location entry in window
+     *         history.
+     * @returns {TP.meta.core.History} The receiver.
+     */
+
+    var lastIndex,
+        currentIndex;
+
+    lastIndex = this.getSize() - 1;
+
+    currentIndex = this.get('index');
+
+    //  no-op
+    if (currentIndex === lastIndex) {
+        return this;
+    }
+
+    this.go(lastIndex - currentIndex);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.History.Type.defineMethod('isLocationRoutable',
 function(aLocation) {
 
