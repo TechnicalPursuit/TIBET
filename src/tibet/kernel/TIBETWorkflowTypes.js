@@ -7840,6 +7840,10 @@ TP.core.History.Type.defineAttribute('offset', null);
 //  fire it on Chrome et. al.
 TP.core.History.Type.defineAttribute('popstate', true);
 
+//  an alternative native location that should be reported when calling
+//  getNativeLocation() on this type.
+TP.core.History.Type.defineAttribute('$$overrideLocation', null);
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -8192,7 +8196,16 @@ function() {
      * @returns {String} The current native window location.
      */
 
-    return TP.uriNormalize(this.getNativeWindow().location.toString());
+    var loc;
+
+    //  First, see if an overriding location has been supplied. If not, then use
+    //  the location of our window.
+    loc = this.get('$$overrideLocation');
+    if (TP.notValid(loc)) {
+        loc = TP.uriNormalize(this.getNativeWindow().location.toString());
+    }
+
+    return loc;
 });
 
 //  ------------------------------------------------------------------------
