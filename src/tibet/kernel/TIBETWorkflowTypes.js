@@ -8408,8 +8408,27 @@ function(anEvent) {
      * @returns {TP.meta.core.History} The receiver.
      */
 
-    var router,
+    var historyWindow,
+        eventWindow,
+
         state,
+        eventState,
+
+        index,
+
+        eventInCanvas,
+
+        stateIndex,
+
+        eventLocation,
+
+        direction,
+
+        newIndex,
+
+        newState,
+
+        router,
         loc;
 
     //  We use a flag to turn off handling on Chrome in particular since it has
@@ -8418,15 +8437,92 @@ function(anEvent) {
         return this;
     }
 
-    state = anEvent.state;
-    if (TP.isValid(state)) {
-        //  The url is what we really set as content, the 'pushed' value is what
-        //  the URL bar was set to (which will often vary for base path usage).
-        loc = state.url;
-    }
+    historyWindow = this.getNativeWindow();
+    eventWindow = TP.eventGetTarget(anEvent);
 
-    if (TP.notValid(loc)) {
-        loc = TP.uriNormalize(TP.eventGetTarget(anEvent).location.toString());
+    state = this.getNativeState();
+    eventState = anEvent.state;
+
+    index = this.get('index');
+
+    eventInCanvas = false;
+
+    //  If the event window is the same as our native window (the top-level
+    //  window where we're tracking history), then we can use the history,
+    //  state, etc. from our history object to navigate.
+    if (historyWindow === eventWindow) {
+
+        if (TP.isValid(state)) {
+            //  The url is what we really set as content, the 'pushed' value is
+            //  what the URL bar was set to (which will often vary for base path
+            //  usage).
+            loc = state.url;
+        }
+
+        //  If we couldn't compute a location from the state, then (because this
+        //  navigation was targeted at the top-level window - which means it was
+        //  probably the user clicking the back/forward buttons), the URL will
+        //  already have changed and we can just use that.
+        if (TP.notValid(loc)) {
+            loc = TP.uriNormalize(historyWindow.location.toString());
+        }
+
+    } else {
+        //  The 'popstate' event got fired against a window which is not the
+        //  codeframe. This is a complex situation. A link traversal could've
+        //  come from clicking an anchor with an href value of '#' (in which
+        //  case we don't want to do any state/history/routing at all) or it
+        //  could be coming from the user clicking the forward/backward arrows,
+        //  in which case we want to dispatch as if the event got dispatched
+        //  against the top-level window.
+
+        eventInCanvas = true;
+
+        if (TP.notValid(state)) {
+            stateIndex = 0;
+        } else {
+            stateIndex = state.index;
+        }
+
+        //  One way to detect if this a real movement or not is to compare the
+        //  index in the state that we monitor with the index that we cache on
+        //  ourself. If they're the same, then we're not traversing.
+        if (index === stateIndex) {
+
+            //  Get the location of the window that the event occurred in. If
+            //  it ends with a '#', then this was just the user clicking an
+            //  anchor with a 'href="#"'.
+            eventLocation = TP.uriNormalize(eventWindow.location.toString());
+
+            //  If there is no next location and the location in the window that
+            //  the event occurred in ends with 'blank.html#', then that means
+            //  it's one of these anchors.
+            if (TP.isEmpty(this.getNextLocation()) &&
+                eventLocation.endsWith('blank.xhtml#')) {
+                return this;
+            }
+        }
+
+        direction = this.get('direction');
+        if (TP.notValid(direction)) {
+            if (index > stateIndex) {
+                direction = 'back';
+            } else if (index <= stateIndex) {
+                direction = 'forward';
+            }
+        }
+
+        if (direction === 'back') {
+            loc = this.getHistory().at(stateIndex - 1).at(2);
+        } else if (direction === 'forward') {
+            loc = this.getHistory().at(stateIndex + 1).at(2);
+        }
+
+        //  Set the overriding location that will be reported by the
+        //  getNativeLocation() call to what we computed above. This is
+        //  important for the 'updateIndex' call below so compute the correct
+        //  index and update this object's instance variable states properly.
+        this.set('$$overrideLocation', loc);
     }
 
     //  Just because we got this event doesn't mean location actually changed.
@@ -8442,19 +8538,49 @@ function(anEvent) {
     //  user is trying to move forward in history using the forward arrow or
     //  keystroke to a place 'beyond' where we want them to go. Force them back
     //  using the history object's 'go()' call.
-    if (TP.isValid(state)) {
-        if (state.index > this.get('lastValidIndex')) {
-            this.getNativeWindow().history.go(-state.index);
+    if (TP.isValid(eventState)) {
+        if (eventState.index > this.get('lastValidIndex')) {
+            historyWindow.history.go(-eventState.index);
             return this;
         }
     }
 
     //  The popstate event can come from a number of sources so we need to
     //  ensure we get the right index adjustments in our internal history.
-    this.updateIndex(state);
+    newIndex = this.updateIndex(eventState);
 
     //  A route has to be routable so only trigger the router if it is.
     if (this.isLocationRoutable(loc)) {
+
+        //  If the event occurred in the canvas window, then manage the state
+        //  before routing so that the URL in the browser URL bar matches up.
+        if (eventInCanvas === true) {
+
+            //  Clear the override location.
+            this.set('$$overrideLocation', null);
+
+            //  If the newly calculated index is 0, that means we're at the
+            //  beginning of the 'location stack', so to be consistent for when
+            //  TIBET boots, we set a null newState.
+            if (newIndex === 0) {
+                newState = null;
+            } else {
+                newState = {
+                    index: newIndex,
+                    title: '',
+                    url: loc
+                };
+            }
+
+            //  Replace the current state with the new state to make the URL bar
+            //  have the proper value.
+            historyWindow.history.replaceState(newState, '', loc);
+
+            //  Make sure to null state here. We don't want to pass along state
+            //  to the 'route' call below - we want it to use the location.
+            state = null;
+        }
+
         router = TP.sys.getRouter();
         if (TP.isValid(router)) {
             router.route(TP.ifInvalid(state, loc));
