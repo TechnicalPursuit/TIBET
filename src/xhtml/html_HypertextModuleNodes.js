@@ -119,7 +119,7 @@ function(aRequest) {
 
         //  If there was an 'href' of '#' or an empty 'href', then we return.
         //  This means either a) the author originally had an 'onclick' value or
-        //  we already rewrote a link into a TP.go2() expression.
+        //  b) we already rewrote a link into a TP.go2() expression.
         if (href === '#' || TP.isEmpty(href)) {
             return;
         }
@@ -131,7 +131,7 @@ function(aRequest) {
 
         //  If there was an 'href' of '#' or an empty 'href', then we return.
         //  This means either a) the author originally had an 'on:click' value
-        //  or we already rewrote a link into a TP.go2() expression.
+        //  or b) we already rewrote a link into a TP.go2() expression.
         if (href === '#' || TP.isEmpty(href)) {
             return;
         }
