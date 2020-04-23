@@ -128,10 +128,14 @@ function(aRequest) {
     //  Same check for 'on:click'.
     onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
     if (TP.notEmpty(onClickVal)) {
-        //  If the element doesn't already have an 'onclick' (native version)
-        //  attribute, then put one here that will cause the observers to invoke
-        //  and, as importantly, return false to stop link traversal.
-        if (!TP.elementHasAttribute(elem, 'onclick', true)) {
+
+        //  If the element has an href of '#' and doesn't already have an
+        //  'onclick' (native version) attribute, then put one here that will
+        //  cause the observers to invoke and, as importantly, return false to
+        //  stop link traversal. Note that we only do this if the href is '#',
+        //  since other TIBET code will place the proper 'onclick' handler here
+        //  if the href is any other value.
+        if (href === '#' && !TP.elementHasAttribute(elem, 'onclick', true)) {
             TP.elementSetAttribute(
                 elem,
                 'onclick',
