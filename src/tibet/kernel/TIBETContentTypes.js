@@ -942,7 +942,7 @@ TP.core.Content.Inst.defineMethod('removeRowsMatchingFrom',
 function(aRowPath, aCollectionPath) {
 
     /**
-     * @method removesRowMatchingFrom
+     * @method removeRowsMatchingFrom
      * @summary Removes all rows of data matching the supplied row path from
      *     the target collection (which should be a subset of data contained
      *     in the receiver).
