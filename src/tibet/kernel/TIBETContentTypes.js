@@ -938,6 +938,61 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('removeRowMatchingFrom',
+function(aRowPath, aCollectionPath) {
+
+    /**
+     * @method removeRowMatchingFrom
+     * @summary Removes a row of data as specified by the result of executing
+     *     the supplied row path from the collection of data within the receiver
+     *     determined by executing the supplied collection path.
+     * @param {TP.path.AccessPath} aRowPath The access path used to specify the
+     *     'data row' to be removed.
+     * @param {TP.path.AccessPath} aCollectionPath The access path used to
+     *     specify the collection to remove the data row from.
+     * @exception TP.sig.InvalidPath Raised if either supplied path is not an
+     *     access Path
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var result,
+        targetCollection,
+
+        indexes,
+
+        len,
+        i,
+
+        collectionURI;
+
+    if (!TP.isKindOf(aRowPath, TP.path.AccessPath) ||
+        !TP.isKindOf(aRowPath, TP.path.AccessPath)) {
+        return this.raise('TP.sig.InvalidPath');
+    }
+
+    result = aRowPath.executeGet(this);
+    targetCollection = aCollectionPath.executeGet(this);
+
+    //  Get the indexes from the collection of each item.
+    indexes = TP.ac();
+
+    len = result.getSize();
+    for (i = 0; i < len; i++) {
+        indexes.push(targetCollection.indexOf(result.at(i)));
+    }
+
+    collectionURI = TP.uc(TP.uriJoinFragments(
+                            this.get('$publicURI').getPrimaryLocation(),
+                            aCollectionPath.asString()));
+
+    //  Remove the row with that index from the receiver.
+    this.removeRowFromAt(collectionURI, indexes);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
