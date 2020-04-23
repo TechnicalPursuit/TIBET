@@ -938,14 +938,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Inst.defineMethod('removeRowMatchingFrom',
+TP.core.Content.Inst.defineMethod('removeRowsMatchingFrom',
 function(aRowPath, aCollectionPath) {
 
     /**
-     * @method removeRowMatchingFrom
-     * @summary Removes a row of data as specified by the result of executing
-     *     the supplied row path from the collection of data within the receiver
-     *     determined by executing the supplied collection path.
+     * @method removesRowMatchingFrom
+     * @summary Removes all rows of data matching the supplied row path from
+     *     the target collection (which should be a subset of data contained
+     *     in the receiver).
      * @param {TP.path.AccessPath} aRowPath The access path used to specify the
      *     'data row' to be removed.
      * @param {TP.path.AccessPath} aCollectionPath The access path used to
@@ -966,7 +966,7 @@ function(aRowPath, aCollectionPath) {
         collectionURI;
 
     if (!TP.isKindOf(aRowPath, TP.path.AccessPath) ||
-        !TP.isKindOf(aRowPath, TP.path.AccessPath)) {
+        !TP.isKindOf(aCollectionPath, TP.path.AccessPath)) {
         return this.raise('TP.sig.InvalidPath');
     }
 
