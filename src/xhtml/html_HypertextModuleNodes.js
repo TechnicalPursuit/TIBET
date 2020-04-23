@@ -119,7 +119,7 @@ function(aRequest) {
 
         //  If there was an 'href' of '#' or an empty 'href', then we return.
         //  This means either a) the author originally had an 'onclick' value or
-        //  we already rewrote a link into a TP.go2() expression.
+        //  b) we already rewrote a link into a TP.go2() expression.
         if (href === '#' || TP.isEmpty(href)) {
             return;
         }
@@ -128,10 +128,23 @@ function(aRequest) {
     //  Same check for 'on:click'.
     onClickVal = TP.elementGetAttribute(elem, 'on:click', true);
     if (TP.notEmpty(onClickVal)) {
+        //  If the element doesn't already have an 'onclick' (native version)
+        //  attribute, then put one here that will cause the observers to invoke
+        //  and, as importantly, return false to stop link traversal.
+        if (!TP.elementHasAttribute(elem, 'onclick', true)) {
+            TP.elementSetAttribute(
+                elem,
+                'onclick',
+                'TP.core.Mouse.invokeObservers(\'click\', event);' +
+                ' return false;',
+                true);
+
+            return;
+        }
 
         //  If there was an 'href' of '#' or an empty 'href', then we return.
         //  This means either a) the author originally had an 'on:click' value
-        //  or we already rewrote a link into a TP.go2() expression.
+        //  or b) we already rewrote a link into a TP.go2() expression.
         if (href === '#' || TP.isEmpty(href)) {
             return;
         }
