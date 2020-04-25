@@ -552,11 +552,15 @@ function() {
 
     this.it('Explicit complex query with body context - dynamically modified', function(test, options) {
 
+        var driver;
+
         TP.isFluffy = true;
 
         loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping11.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver = test.getDriver();
+
+        driver.setLocation(loadURI);
 
         test.chain(
             function(result) {
@@ -567,9 +571,9 @@ function() {
 
                 parentTPElem.addRawContent('<div xmlns="' + TP.w3.Xmlns.XHTML + '" id="moo">This is the moo div. It is in the \'fooGroup\' group.</div>');
 
-                //  Give it a 50ms wait - otherwise, Promises starve the event
-                //  loop and the MO machinery will never be triggered.
-                test.andWait(50);
+                //  Wait for the next GUI refresh - otherwise, Promises starve
+                //  the event loop and the MO machinery will never be triggered.
+                test.andAllowGUIRefresh(driver.get('windowContext'));
 
                 test.chain(
                     function() {

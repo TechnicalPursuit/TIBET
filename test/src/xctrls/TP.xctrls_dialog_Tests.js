@@ -97,8 +97,6 @@ function() {
 
         pageTextField = TP.byId('pageTextField', windowContext, false);
 
-        test.andWait(500);
-
         test.chain(
             function() {
                 //  Initially, the text field in the page should have focus.
@@ -147,7 +145,7 @@ function() {
                 return promise;
             });
 
-        test.andWait(2000);
+        test.andAllowGUIRefresh(windowContext);
 
         test.chain(
             function() {
@@ -199,7 +197,7 @@ function() {
                 dialogTPElem.setAttribute('hidden', true);
             });
 
-        test.andWait(3000);
+        test.andAllowGUIRefresh(windowContext);
 
         test.chain(
             function() {
