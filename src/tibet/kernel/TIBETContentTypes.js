@@ -986,7 +986,7 @@ function(aRowPath, aCollectionPath) {
                             aCollectionPath.asString()));
 
     //  Remove the row with that index from the receiver.
-    this.removeRowFromAt(collectionURI, indexes);
+    this.removeRowsFromAt(collectionURI, indexes);
 
     return this;
 });
@@ -2473,19 +2473,19 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Inst.defineMethod('removeRowFromAt',
+TP.core.JSONContent.Inst.defineMethod('removeRowsFromAt',
 function(aCollectionURI, aDeleteIndex) {
 
     /**
-     * @method removeRowFromAt
+     * @method removeRowsFromAt
      * @summary Removes a row of data from the collection as defined by the
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
      * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
      *     remove the row from.
-     * @param {Number} aDeleteIndex The index to remove the item from in the
-     *     collection.
+     * @param {Number|Number[]} aDeleteIndex The index(es) to remove the item
+     *     from in the collection.
      * @returns {TP.core.JSONContent} The receiver.
      */
 
@@ -2550,6 +2550,8 @@ function(aCollectionURI, aDeleteIndex) {
         //  indexes, then use those as the deletion indexes.
         if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
             deleteIndexes = TP.ac(aDeleteIndex);
+        } else if (TP.isArray(aDeleteIndex)) {
+            deleteIndexes = aDeleteIndex;
         } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
             //  empty
         } else {
@@ -3274,19 +3276,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLContent.Inst.defineMethod('removeRowFromAt',
+TP.core.XMLContent.Inst.defineMethod('removeRowsFromAt',
 function(aCollectionURI, aDeleteIndex) {
 
     /**
-     * @method removeRowFromAt
+     * @method removeRowsFromAt
      * @summary Removes a row of data from the collection as defined by the
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
      * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
      *     remove the row from.
-     * @param {Number} aDeleteIndex The index to remove the item from in the
-     *     collection.
+     * @param {Number|Number[]} aDeleteIndex The index(es) to remove the item
+     *     from in the collection.
      * @exception TP.sig.InvalidNode
      * @returns {TP.core.XMLContent} The receiver.
      */
@@ -3353,6 +3355,15 @@ function(aCollectionURI, aDeleteIndex) {
         deletionPath = './*[' + aDeleteIndex + ']';
 
         deleteIndexes = TP.ac(aDeleteIndex);
+    } else if (TP.isArray(deleteIndexes = aDeleteIndex)) {
+
+        deletionPath = './*[';
+
+        for (i = 0; i < deleteIndexes.getSize(); i++) {
+            deletionPath += 'position = ' + deleteIndexes.at(i) + ' or ';
+        }
+
+        deletionPath = deletionPath.slice(0, -4) + ']';
     } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
 
         deletionPath = './*[';

@@ -13279,7 +13279,7 @@ function(aSignal) {
 
     //  Remove a row from that collection, using the deletion index in the
     //  signal.
-    this.removeRowFromAt(scopeURI, index);
+    this.removeRowsFromAt(scopeURI, index);
 
     return this;
 }, {
@@ -13642,19 +13642,19 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('removeRowFromAt',
+TP.defineMetaInstMethod('removeRowsFromAt',
 function(aCollectionURI, aDeleteIndex) {
 
     /**
-     * @method removeRowFromAt
+     * @method removeRowsFromAt
      * @summary Removes a row of data from the collection as defined by the
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
      * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
      *     remove the row from.
-     * @param {Number} aDeleteIndex The index to remove the item from in the
-     *     collection.
+     * @param {Number|Number[]} aDeleteIndex The index(es) to remove the item
+     *     from in the collection.
      * @returns {Object} The receiver.
      */
 
@@ -13686,6 +13686,8 @@ function(aCollectionURI, aDeleteIndex) {
         //  indexes, then use those as the deletion indexes.
         if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
             deleteIndexes = TP.ac(aDeleteIndex);
+        } else if (TP.isArray(aDeleteIndex)) {
+            deleteIndexes = aDeleteIndex;
         } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
             //  empty
         } else {
