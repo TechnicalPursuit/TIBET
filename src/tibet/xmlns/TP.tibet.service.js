@@ -25,6 +25,7 @@ TP.tibet.service.isAbstract(true);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.tibet.service.Inst.defineAttribute('$value');
 TP.tibet.service.Inst.defineAttribute('isActivated');
 
 //  ------------------------------------------------------------------------
@@ -44,6 +45,20 @@ function() {
      */
 
     return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @method getValue
+     * @summary Returns the value of the receiver.
+     * @returns {String} The value of the receiver.
+     */
+
+    return this.$get('$value');
 });
 
 //  ------------------------------------------------------------------------
@@ -95,19 +110,25 @@ function(aValue, shouldSignal) {
      *     had before this method was called.
      */
 
-    var elem;
+    var elem,
+
+        currentValue;
 
     elem = this.getNativeNode();
 
     //  If we're setting this value due to an update from the binding machinery
-    //  and we have awakened, then go ahead and activate.
-    if (TP.isTrue(TP.$$settingFromBindMachinery)) {
-        if (elem[TP.AWAKENED]) {
+    //  and we have awakened, then check to see if any value that we might be
+    //  bound to has changed. If so, then activate.
+    if (TP.isTrue(TP.$$settingFromBindMachinery) && elem[TP.AWAKENED]) {
+        currentValue = this.$get('$value');
+        if (!TP.equal(currentValue, aValue)) {
             this.activate();
         }
     }
 
-    //  This node type never changes its 'value'.
+    this.$set('$value', aValue);
+
+    //  This node type never broadcasts that it changes its 'value'.
     return false;
 });
 

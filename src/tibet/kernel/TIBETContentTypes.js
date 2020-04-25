@@ -986,7 +986,7 @@ function(aRowPath, aCollectionPath) {
                             aCollectionPath.asString()));
 
     //  Remove the row with that index from the receiver.
-    this.removeRowFromAt(collectionURI, indexes);
+    this.removeRowsFromAt(collectionURI, indexes);
 
     return this;
 });
@@ -2473,23 +2473,26 @@ function(aCollectionURIOrPath, aDataRowOrURIOrPath, anInsertIndex, aPosition,
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Inst.defineMethod('removeRowFromAt',
+TP.core.JSONContent.Inst.defineMethod('removeRowsFromAt',
 function(aCollectionURI, aDeleteIndex) {
 
     /**
-     * @method removeRowFromAt
+     * @method removeRowsFromAt
      * @summary Removes a row of data from the collection as defined by the
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
      * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
      *     remove the row from.
-     * @param {Number} aDeleteIndex The index to remove the item from in the
-     *     collection.
+     * @param {Number|Number[]} aDeleteIndex The index(es) to remove the item
+     *     from in the collection.
      * @returns {TP.core.JSONContent} The receiver.
      */
 
-    var targetCollection,
+    var targetURI,
+        publicURI,
+
+        targetCollection,
 
         realArrayURI,
 
@@ -2507,22 +2510,38 @@ function(aCollectionURI, aDeleteIndex) {
 
         batchID;
 
+    targetURI = aCollectionURI;
+
+    //  If targetURI is null or is not a TP.uri.URI, then set it to the
+    //  receiver's publicURI (if its real).
+    if (!TP.isURI(targetURI)) {
+        publicURI = this.get('$publicURI');
+
+        //  publicURI isn't real - nothing to do here.
+        if (!TP.isURI(publicURI)) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        targetURI = publicURI;
+    }
+
     //  If the supplied URI really resolves to an Array, then remove the proper
     //  row.
 
     //  NB: We assume 'async' of false here. We also want to make sure that we
     //  don't collapse results, since what we're looking for is an Array.
-    targetCollection = aCollectionURI.getResource(
+    targetCollection = targetURI.getResource(
                                 TP.hc('async', false,
                                         'shouldCollapse', false)).get('result');
 
     if (!TP.isArray(targetCollection)) {
-        realArrayURI = aCollectionURI.getSuperURIWithResourceType(Array);
+        realArrayURI = targetURI.getSuperURIWithResourceType(Array);
         targetCollection = realArrayURI.getResource(
                                 TP.hc('async', false,
                                         'shouldCollapse', false)).get('result');
     } else {
-        realArrayURI = aCollectionURI;
+        realArrayURI = targetURI;
     }
 
     if (TP.isArray(targetCollection)) {
@@ -2531,6 +2550,8 @@ function(aCollectionURI, aDeleteIndex) {
         //  indexes, then use those as the deletion indexes.
         if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
             deleteIndexes = TP.ac(aDeleteIndex);
+        } else if (TP.isArray(aDeleteIndex)) {
+            deleteIndexes = aDeleteIndex;
         } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
             //  empty
         } else {
@@ -3255,24 +3276,27 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLContent.Inst.defineMethod('removeRowFromAt',
+TP.core.XMLContent.Inst.defineMethod('removeRowsFromAt',
 function(aCollectionURI, aDeleteIndex) {
 
     /**
-     * @method removeRowFromAt
+     * @method removeRowsFromAt
      * @summary Removes a row of data from the collection as defined by the
      *     supplied collection URI. This collection should be either the whole
      *     collection representing the data of the receiver or a subcollection
      *     of that data.
      * @param {TP.uri.URI} aCollectionURI The URI pointing to the collection to
      *     remove the row from.
-     * @param {Number} aDeleteIndex The index to remove the item from in the
-     *     collection.
+     * @param {Number|Number[]} aDeleteIndex The index(es) to remove the item
+     *     from in the collection.
      * @exception TP.sig.InvalidNode
      * @returns {TP.core.XMLContent} The receiver.
      */
 
-    var targetCollection,
+    var targetURI,
+        publicURI,
+
+        targetCollection,
 
         preDeleteSize,
 
@@ -3294,10 +3318,26 @@ function(aCollectionURI, aDeleteIndex) {
 
         batchID;
 
+    targetURI = aCollectionURI;
+
+    //  If targetURI is null or is not a TP.uri.URI, then set it to the
+    //  receiver's publicURI (if its real).
+    if (!TP.isURI(targetURI)) {
+        publicURI = this.get('$publicURI');
+
+        //  publicURI isn't real - nothing to do here.
+        if (!TP.isURI(publicURI)) {
+            //  TODO: Raise exception
+            return this;
+        }
+
+        targetURI = publicURI;
+    }
+
     //  Make sure that we have a TP.dom.CollectionNode
 
     //  NB: We assume 'async' of false here.
-    targetCollection = aCollectionURI.getResource(
+    targetCollection = targetURI.getResource(
                     TP.hc('resultType', TP.WRAP, 'async', false)).get('result');
 
     if (!TP.isArray(targetCollection)) {
@@ -3315,6 +3355,15 @@ function(aCollectionURI, aDeleteIndex) {
         deletionPath = './*[' + aDeleteIndex + ']';
 
         deleteIndexes = TP.ac(aDeleteIndex);
+    } else if (TP.isArray(deleteIndexes = aDeleteIndex)) {
+
+        deletionPath = './*[';
+
+        for (i = 0; i < deleteIndexes.getSize(); i++) {
+            deletionPath += 'position = ' + deleteIndexes.at(i) + ' or ';
+        }
+
+        deletionPath = deletionPath.slice(0, -4) + ']';
     } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
 
         deletionPath = './*[';
@@ -3353,7 +3402,7 @@ function(aCollectionURI, aDeleteIndex) {
 
     //  The aspect that changed is just the collection along with the
     //  index that changed.
-    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
+    changedAspect = targetURI.getFragmentExpr() + '[' + changedIndex + ']';
 
     //  Construct a 'changed paths' data structure that observers will expect to
     //  see.
