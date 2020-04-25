@@ -2338,13 +2338,6 @@ function() {
 
     //  ---
 
-    this.beforeEach(
-        function(test, options) {
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.andWait(500);
-        });
-
     this.afterEach(
         function(test, options) {
 
@@ -2405,10 +2398,6 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
-        //  A short pause for when we're running these in a large group of tests
-        //  gives the GUI a chance to update.
-        test.andWait(100);
-
         test.chain(
             function(result) {
                 var windowContext,
@@ -2448,10 +2437,6 @@ function() {
                 //  'tibet:focuscontext' attribute, tabbing (or shift-tabbing)
                 //  to it will push the last element onto the focus stack and
                 //  that element is what will be focused when elem3 is blurred.
-
-                //  Give the browser (ok, IE) a chance to settle a bit before
-                //  continuing.
-                test.andWait(100);
 
                 //  ---
 
