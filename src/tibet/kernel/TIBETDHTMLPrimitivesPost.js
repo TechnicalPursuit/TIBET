@@ -300,6 +300,14 @@ function(aDocument, shouldFocusPrevious) {
         //  Blur it 'the TIBET way' (so that we can manage the focus stack,
         //  etc.)
         TP.wrap(focusedElem).blur();
+
+        //  For headless systems, we just return here - otherwise we get
+        //  multiple pops off of the stack below.
+
+        //  TODO: Investigate why this is the case.
+        if (TP.sys.cfg('boot.context') === 'headless') {
+            return;
+        }
     }
 
     //  If we should focus the 'previous' element and there is a previous
