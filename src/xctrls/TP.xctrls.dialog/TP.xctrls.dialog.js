@@ -428,16 +428,16 @@ function(info) {
                 dialogTPElem.toggleCurtain(isShowing);
             }
 
-            //  Set up a timeout, allowing the curtain to show before fetching
-            //  and displaying the dialog.
-                (function() {
-                    //  Show the dialog
-                    dialogTPElem.setAttribute('hidden', false);
+            //  Set up a function that will run after the next repaint, allowing
+            //  the curtain to show before fetching and displaying the dialog.
+            (function() {
+                //  Show the dialog
+                dialogTPElem.setAttribute('hidden', false);
 
-                    //  Call the Promise's resolver with the created
-                    //  TP.xctrls.dialog object.
-                    resolver(dialogTPElem);
-                }).queueAfterNextRepaint(win);
+                //  Call the Promise's resolver with the created
+                //  TP.xctrls.dialog object.
+                resolver(dialogTPElem);
+            }).queueAfterNextRepaint(win);
         });
 
     return promise;
