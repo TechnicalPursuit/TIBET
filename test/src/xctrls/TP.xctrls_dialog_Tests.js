@@ -220,7 +220,8 @@ function() {
             });
     });
 
-});
+}).skip(TP.sys.cfg('boot.context') === 'headless' ||
+        TP.sys.cfg('project.name') === 'travis');
 
 //  ------------------------------------------------------------------------
 //  end
