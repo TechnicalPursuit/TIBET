@@ -305,9 +305,9 @@ function(aDocument, shouldFocusPrevious) {
         //  multiple pops off of the stack below.
 
         //  TODO: Investigate why this is the case.
-        if (TP.sys.cfg('boot.context') === 'headless') {
-            return;
-        }
+        //if (TP.sys.cfg('boot.context') === 'headless') {
+         //   return;
+        //}
     }
 
     //  If we should focus the 'previous' element and there is a previous
