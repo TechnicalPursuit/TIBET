@@ -3707,11 +3707,21 @@ function(aRequest) {
      */
 
 
-    var elem;
+    var elem,
+        typeVal;
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
+    }
+
+    typeVal = TP.elementGetAttribute(elem, 'type', true);
+    if (TP.notEmpty(typeVal) && typeVal !== 'button') {
+        TP.ifWarn() ?
+            TP.warn(
+                TP.annotate(
+                    TP.nodeCloneNode(elem),
+                    'Replacing \'type\' attribute value with \'button\'.')) : 0;
     }
 
     //  HTML5 changed the nature of a button - now, if a button is embedded
