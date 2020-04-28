@@ -1770,6 +1770,8 @@ TP.html.inputClickable.isAbstract(true);
 TP.backstop(TP.ac('click'), TP.html.inputClickable.getInstPrototype());
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 TP.html.inputClickable.Inst.defineMethod('disable',
 function() {
@@ -2468,6 +2470,8 @@ TP.html.inputRange.Inst.resolveTraits(
 
 TP.html.inputCheckable.defineSubtype('inputCheckbox');
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.html.inputCheckbox.Inst.defineMethod('isSingleValued',
@@ -3686,6 +3690,52 @@ TP.html.Focused.defineSubtype('button');
 TP.html.button.Type.set('booleanAttrs',
             TP.ac('autofocus', 'disabled', 'formNoValidate', 'willValidate'));
 
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.html.button.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The new element.
+     */
+
+
+    var elem,
+        typeVal;
+
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    typeVal = TP.elementGetAttribute(elem, 'type', true);
+    if (TP.notEmpty(typeVal) && typeVal !== 'button') {
+        TP.ifWarn() ?
+            TP.warn(
+                TP.annotate(
+                    TP.nodeCloneNode(elem),
+                    'Replacing \'type\' attribute value with \'button\'.')) : 0;
+    }
+
+    //  HTML5 changed the nature of a button - now, if a button is embedded
+    //  within a form element, it will act to submit the form unless we set the
+    //  new (for HTML5) 'type' attribute to 'button'. In TIBET, since we never
+    //  do 'form submits' as a way to communicate with the server, we force
+    //  'type' to be 'button'.
+    TP.elementSetAttribute(elem, 'type', 'button', true);
+
+    return elem;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.html.button.Inst.defineMethod('disable',
