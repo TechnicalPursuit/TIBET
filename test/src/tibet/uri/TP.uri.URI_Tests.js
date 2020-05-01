@@ -3897,6 +3897,170 @@ function() {
 });
 
 //  ========================================================================
+//  CookieURL
+//  ========================================================================
+
+TP.uri.CookieURL.Inst.describe('getResource',
+function() {
+
+    var storage;
+
+    //  Make sure there's an entry for 'Cookie://' URL testing
+    storage = TP.core.LocalStorage.construct();
+
+    this.before(
+        function(suite, options) {
+
+            TP.core.Cookie.setCookie(
+                'cookieTestKey',
+                'cookieTestVal'
+            );
+        });
+
+    //  ---
+
+    this.it('CookieURL: Retrieve resource', function(test, options) {
+
+        var url,
+            val;
+
+        //  A GET request here using the ID causes it to retrieve from the
+        //  cookie store.
+
+        url = TP.uc('cookie:///cookieTestKey');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        //  Implied method here is TP.HTTP_GET. Also, by default, cookie://
+        //  URLs are synchronous and configure their request to 'refresh'
+        //  automatically.
+        val = url.getResource().get('result');
+
+        test.assert.isEqualTo(
+                val,
+                'cookieTestVal',
+                TP.sc('Expected: ', '"cookieTestVal"',
+                        ' and got instead: ', val, '.'));
+
+        url.unregister();
+    });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+            TP.core.Cookie.removeCookie('cookieTestKey');
+        });
+}).skip(!TP.sys.isHTTPBased()); //  Cookies don't work with file:// URLs
+
+//  ------------------------------------------------------------------------
+
+TP.uri.CookieURL.Inst.describe('setResource',
+function() {
+
+    this.it('CookieURL: Set resource', function(test, options) {
+
+        var url,
+
+            saveResult,
+
+            obj;
+
+        url = TP.uc('cookie:///cookieTestKey');
+
+        //  By default, Cookie:// URLs are synchronous and configure their
+        //  request to 'refresh' automatically.
+
+        url.setResource('cookieTestVal');
+
+        url.save();
+
+        //  Implied method here is TP.HTTP_GET. Also, by default, cookie://
+        //  URLs are synchronous and configure their request to 'refresh'
+        //  automatically.
+        val = url.getResource().get('result');
+
+        test.assert.isEqualTo(
+                val,
+                'cookieTestVal',
+                TP.sc('Expected: ', '"cookieTestVal"',
+                        ' and got instead: ', val, '.'));
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        //  Implied method here is TP.HTTP_GET. Also, by default, cookie://
+        //  URLs are synchronous and configure their request to 'refresh'
+        //  automatically.
+        val = url.getResource().get('result');
+
+        test.assert.isEqualTo(
+                val,
+                'cookieTestVal',
+                TP.sc('Expected: ', '"cookieTestVal"',
+                        ' and got instead: ', val, '.'));
+
+        url.unregister();
+    });
+
+    this.it('CookieURL: Delete resource using DELETE', function(test, options) {
+
+        var url,
+
+            deleteResult,
+
+            obj;
+
+        url = TP.uc('cookie:///cookieTestKey');
+
+        //  By default, Cookie:// URLs are synchronous and configure their
+        //  request to 'refresh' automatically.
+
+        url.setResource('cookieTestVal');
+
+        url.save();
+
+        //  Implied method here is TP.HTTP_GET. Also, by default, cookie://
+        //  URLs are synchronous and configure their request to 'refresh'
+        //  automatically.
+        val = url.getResource().get('result');
+
+        test.assert.isEqualTo(
+                val,
+                'cookieTestVal',
+                TP.sc('Expected: ', '"cookieTestVal"',
+                        ' and got instead: ', val, '.'));
+
+        //  By default, Cookie:// URLs are synchronous and configure their
+        //  request to 'refresh'.
+
+        url.delete();
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        val = url.getResource().get('result');
+
+        test.refute.isValid(
+            val,
+            TP.sc('Expected that result would not be valid'));
+
+        url.unregister();
+    });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+            TP.core.Cookie.removeCookie('cookieTestKey');
+        });
+}).skip(!TP.sys.isHTTPBased()); //  Cookies don't work with file:// URLs
+
+//  ========================================================================
 //  LocalDBURL
 //  ========================================================================
 
