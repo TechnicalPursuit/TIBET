@@ -3107,8 +3107,12 @@ function(aURI, aRequest) {
     request = TP.request(aRequest);
     response = request.getResponse();
 
-    //  Grab the content from the request.
-    contentToSet = TP.str(request.at('body'));
+    //  Grab the content either from the request body or from the receiver.
+    contentToSet = TP.ifInvalid(
+                        request.at('body'),
+                        aURI.getContent());
+
+    contentToSet = TP.str(contentToSet);
 
     //  Make sure and set a result type (which normally wouldn't be there
     //  for 'save' requests), so that we get some sort of value back.
