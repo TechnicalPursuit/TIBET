@@ -3949,19 +3949,81 @@ function() {
 
     keySignalHandler = function(aSignal) {
 
-        var evt,
+        var sigNames,
+
+            evt,
+
             keyname,
+
+            target,
+            originArray,
+
+            len,
+            i,
+
+            origin,
+            originType,
 
             sigName,
             sigType,
 
             focusedTPElem;
 
-        //  Look in the external keybindings map. If there's an entry there,
-        //  then we get the signal name from there.
+        sigNames = aSignal.getSignalNames();
 
         evt = aSignal.getPayload();
+
         keyname = TP.eventGetDOMSignalName(evt);
+
+        //  If this is a key signal, we should unshift a signal name matching
+        //  the key name onto the front of the signal names. Because all
+        //  specific key signals have spoofed names, this is important if the
+        //  implementor wants to catch a specific key name.
+        if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
+            if (!TP.core.Keyboard.isPrintable(evt)) {
+                sigName = 'TP.sig.DOM_' +
+                            TP.core.Keyboard.$getVirtualKeySignalName(evt);
+
+                sigNames.unshift(sigName);
+            }
+        }
+
+        //  Grab the the target and the event origins from it.
+        target = TP.eventGetTarget(evt);
+        originArray = TP.elementGetEventOrigins(target);
+
+        //  Slice off the start of the origins between the window and our origin
+        //  (inclusive). We do this since we don't care about origins that occur
+        //  'above' us (hence the whole reason for this method to begin with -
+        //  we're observing key bindings directly from event sources that only
+        //  occur within ourself).
+        originArray = originArray.slice(
+                        originArray.indexOf(this.getNativeNode()) + 1);
+
+        len = originArray.getSize();
+        for (i = 0; i < len; i++) {
+
+            origin = originArray.at(i);
+
+            if (TP.isElement(origin)) {
+                //  Grab the TIBET wrapper type for the element and query it to
+                //  see if the current element is considered to be 'opaque' for
+                //  the event at it's level as it bubbles. Note here how we pass
+                //  the list of signal names that we computed above. This is
+                //  optional for this method, but we want to make sure to
+                //  supply the specific key signal by computing it above.
+                if (TP.isType(originType =
+                                TP.dom.ElementNode.getConcreteType(origin))) {
+                    if (originType.isOpaqueBubblerFor(
+                                        origin, aSignal, sigNames)) {
+                        return this;
+                    }
+                }
+            }
+        }
+
+        //  Look in the external keybindings map. If there's an entry there,
+        //  then we get the signal name from there.
 
         //  Query for a signal name via the getKeybinding method. This call will
         //  look up through the supertype chain for the first match.
