@@ -552,10 +552,10 @@ function(aSignal) {
 
     var sigNames,
 
-        keyname,
-
         len,
-        i;
+        i,
+
+        keyname;
 
     sigNames = aSignal.getSignalNames();
 
