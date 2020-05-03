@@ -690,7 +690,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('isOpaqueCapturerFor',
-function(anElement, aSignal) {
+function(anElement, aSignal, signalNames) {
 
     /**
      * @method isOpaqueCapturerFor
@@ -705,6 +705,10 @@ function(anElement, aSignal) {
      * @param {Element} anElem The element to check for the
      *     'tibet:opaque-capturing' attribute.
      * @param {String} aSignalName The signal to check.
+     * @param {String[]} [signalNames] The list of signal names to use when
+     *     computing opacity for the signal. This is an optional parameter. If
+     *     this method needs the list of signal names and this parameter is not
+     *     provided, it can be derived from the supplied signal itself.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     capture phase for the signal.
      */
