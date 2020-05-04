@@ -5719,13 +5719,20 @@ function(regenerateIfNecessary) {
     repeatResultSize = repeatResult.getSize();
 
     regenerateFunc = function(shouldRegenerate) {
-        var boundElems;
+        var alreadySignaled,
+            boundElems;
+
+        //  Whether or not we signaled 'TP.sig.DidRenderData'.
+        alreadySignaled = false;
 
         //  If this flag is true, then go ahead and regenerate (if necessary).
         //  Note how we pass any empty Array in here, since we're not adding or
         //  removing rows that need to be recursively processed at this time.
         if (TP.isTrue(shouldRegenerate)) {
             this.$regenerateRepeat(repeatResult, TP.ac());
+
+            //  $regenerateRepeat signals 'TP.sig.DidRenderData'.
+            alreadySignaled = true;
         }
 
         //  Grab any bound elements and refresh their values.
@@ -5746,6 +5753,11 @@ function(regenerateIfNecessary) {
                     true,
                     this,
                     null);
+        }
+
+        //  If we haven't already signaled TP.sig.DidRenderData, do so now.
+        if (!alreadySignaled) {
+            this.signal('TP.sig.DidRenderData');
         }
     }.bind(this);
 
@@ -6210,6 +6222,8 @@ function(regenerateIfNecessary) {
         if (TP.notEmpty(allRefreshedElements)) {
             this.$sendNativeRefreshEvent();
         }
+
+        this.signal('TP.sig.DidRenderData');
     }
 
     return this;
@@ -6564,6 +6578,8 @@ function(aCollection, elems) {
     evt.data = descendants;
 
     elem.dispatchEvent(evt);
+
+    this.signal('TP.sig.DidRenderData');
 
     return true;
 });
