@@ -3576,6 +3576,60 @@ TP.backstop(TP.ac('select'), TP.html.textarea.getInstPrototype());
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.html.textarea.Type.defineMethod('isOpaqueBubblerFor',
+function(anElement, aSignal, signalNames) {
+
+    /**
+     * @method isOpaqueBubblerFor
+     * @summary Returns whether the elements of this type are considered to be
+     *     an 'opaque bubbler' for the supplied signal (i.e. it won't let the
+     *     signal 'ascend' further up its parent hierarchy). This means that
+     *     they will handle the signal themselves and not allow ancestors above
+     *     them to handle it.
+     * @description At this level, DOM_Enter_Down and DOM_EnterUp are filtered
+     *     as opaque signals. This prevents Enter key presses from triggering
+     *     other signals within the system.
+     * @param {Element} anElem The element to check for the
+     *     'tibet:opaque-bubbling' attribute.
+     * @param {TP.sig.Signal} aSignal The signal to check.
+     * @param {String[]} [signalNames] The list of signal names to use when
+     *     computing opacity for the signal. This is an optional parameter. If
+     *     this method needs the list of signal names and this parameter is not
+     *     provided, it can be derived from the supplied signal itself.
+     * @returns {Boolean} Whether or not the receiver is opaque during the
+     *     bubble phase for the signal.
+     */
+
+    var keyname,
+
+        sigNames,
+
+        len,
+        i;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  If the signal names were not supplied in the optional parameter, grab
+    //  all of the signal names from the signal.
+    sigNames = TP.ifInvalid(signalNames, aSignal.getSignalNames());
+
+    len = sigNames.getSize();
+    for (i = 0; i < len; i++) {
+        //  Compute the key name by slicing off everything up through the last
+        //  period ('.'). I.e. the 'TP.sig.'.
+        keyname = sigNames.at(i).slice(sigNames.at(i).lastIndexOf('.') + 1);
+
+        if (keyname === 'DOM_Enter_Down' || keyname === 'DOM_Enter_Up') {
+            return true;
+        }
+    }
+
+    return this.callNextMethod();
+});
+//  ------------------------------------------------------------------------
+
 TP.html.textarea.Type.defineMethod('onchange',
 function(aTargetElem, anEvent) {
 

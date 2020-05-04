@@ -43,7 +43,7 @@ TP.xctrls.textitem.Type.defineAttribute('opaqueBubblingSignalNames',
 //  ------------------------------------------------------------------------
 
 TP.xctrls.textitem.Type.defineMethod('isOpaqueBubblerFor',
-function(anElement, aSignal) {
+function(anElement, aSignal, signalNames) {
 
     /**
      * @method isOpaqueBubblerFor
@@ -62,6 +62,10 @@ function(anElement, aSignal) {
      * @param {Element} anElem The element to check for the
      *     'tibet:opaque-bubbling' attribute.
      * @param {TP.sig.Signal} aSignal The signal to check.
+     * @param {String[]} [signalNames] The list of signal names to use when
+     *     computing opacity for the signal. This is an optional parameter. If
+     *     this method needs the list of signal names and this parameter is not
+     *     provided, it can be derived from the supplied signal itself.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     bubble phase for the signal.
      */

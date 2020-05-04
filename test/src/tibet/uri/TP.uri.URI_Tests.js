@@ -3903,11 +3903,6 @@ function() {
 TP.uri.CookieURL.Inst.describe('getResource',
 function() {
 
-    var storage;
-
-    //  Make sure there's an entry for 'Cookie://' URL testing
-    storage = TP.core.LocalStorage.construct();
-
     this.before(
         function(suite, options) {
 
@@ -3964,9 +3959,7 @@ function() {
 
         var url,
 
-            saveResult,
-
-            obj;
+            val;
 
         url = TP.uc('cookie:///cookieTestKey');
 
@@ -4010,9 +4003,7 @@ function() {
 
         var url,
 
-            deleteResult,
-
-            obj;
+            val;
 
         url = TP.uc('cookie:///cookieTestKey');
 

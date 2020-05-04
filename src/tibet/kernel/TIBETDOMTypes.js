@@ -11551,7 +11551,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Type.defineMethod('isOpaqueBubblerFor',
-function(anElement, aSignal) {
+function(anElement, aSignal, signalNames) {
 
     /**
      * @method isOpaqueBubblerFor
@@ -11569,6 +11569,10 @@ function(anElement, aSignal) {
      * @param {Element} anElem The element to check for the
      *     'tibet:opaque-bubbling' attribute.
      * @param {TP.sig.Signal} aSignal The signal to check.
+     * @param {String[]} [signalNames] The list of signal names to use when
+     *     computing opacity for the signal. This is an optional parameter. If
+     *     this method needs the list of signal names and this parameter is not
+     *     provided, it can be derived from the supplied signal itself.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     bubble phase for the signal.
      */
@@ -11602,9 +11606,9 @@ function(anElement, aSignal) {
         return false;
     }
 
-    //  Some signals, keyboard signals in particular, have multiple signal
-    //  names. We need to make sure that all of them are tested here.
-    sigNames = aSignal.getSignalNames();
+    //  If the signal names were not supplied in the optional parameter, grab
+    //  all of the signal names from the signal.
+    sigNames = TP.ifInvalid(signalNames, aSignal.getSignalNames());
 
     len = sigNames.getSize();
     for (i = 0; i < len; i++) {
@@ -11619,7 +11623,7 @@ function(anElement, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Type.defineMethod('isOpaqueCapturerFor',
-function(anElement, aSignal) {
+function(anElement, aSignal, signalNames) {
 
     /**
      * @method isOpaqueCapturerFor
@@ -11637,6 +11641,10 @@ function(anElement, aSignal) {
      * @param {Element} anElem The element to check for the
      *     'tibet:opaque-capturing' attribute.
      * @param {TP.sig.Signal} aSignal The signal to check.
+     * @param {String[]} [signalNames] The list of signal names to use when
+     *     computing opacity for the signal. This is an optional parameter. If
+     *     this method needs the list of signal names and this parameter is not
+     *     provided, it can be derived from the supplied signal itself.
      * @returns {Boolean} Whether or not the receiver is opaque during the
      *     capture phase for the signal.
      */
@@ -11670,10 +11678,12 @@ function(anElement, aSignal) {
         return false;
     }
 
+    //  If the signal names were not supplied in the optional parameter, grab
+    //  all of the signal names from the signal.
+    sigNames = TP.ifInvalid(signalNames, aSignal.getSignalNames());
+
     //  Some signals, keyboard signals in particular, have multiple signal
     //  names. We need to make sure that all of them are tested here.
-    sigNames = aSignal.getSignalNames();
-
     len = sigNames.getSize();
     for (i = 0; i < len; i++) {
         if (opaqueSigNames.indexOf(sigNames.at(i)) !== TP.NOT_FOUND) {
