@@ -6670,14 +6670,20 @@ function() {
 
         attrVal = TP.elementGetAttribute(elemWithID, 'id', true);
 
-        if (!TP.regex.HAS_ACP.test(attrVal) &&
-            !TP.elementHasGeneratedID(elemWithID)) {
+        //  If the attribute value contains ACP expressions, then we need to
+        //  leave it alone.
+        if (TP.regex.HAS_ACP.test(attrVal)) {
+            continue;
+        }
+
+        if (!TP.elementHasGeneratedID(elemWithID)) {
             TP.ifWarn() ?
                 TP.warn('Stripping ID from Element in repeat template: ' +
                         TP.str(elemWithID) + '. ' +
                         'IDs are supposed to be unique in markup.') : 0;
-            TP.elementRemoveAttribute(elemWithID, 'id', true);
         }
+
+        TP.elementRemoveAttribute(elemWithID, 'id', true);
     }
 
     //  Grab the childNodes of the receiver as a DocumentFragment.
