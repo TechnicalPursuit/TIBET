@@ -1713,6 +1713,8 @@ function(anObject, assignIfAbsent) {
      */
 
     var assign,
+        assignForce,
+
         obj,
         doc,
         win,
@@ -1738,6 +1740,16 @@ function(anObject, assignIfAbsent) {
     }
 
     assign = TP.ifInvalid(assignIfAbsent, false);
+
+    //  We set a separate flag for those places where we want to be able to
+    //  'force assignment'. If the caller has *specifically* defined the
+    //  assignIfAbsent parameter to false, then we leave force assignment as
+    //  false, otherwise we allow it to be true.
+    if (TP.isFalse(assignIfAbsent)) {
+        assignForce = false;
+    } else {
+        assignForce = true;
+    }
 
     if (TP.isKindOf(anObject, TP.dom.Node)) {
         if (TP.isType(anObject)) {
@@ -1912,12 +1924,12 @@ function(anObject, assignIfAbsent) {
                 //  Grab the owner element's global ID and slice off from the
                 //  beginning through the '#'. This will give us the 'primary
                 //  URI'.
-                globalID = TP.gid(elem, true);
+                globalID = TP.gid(elem, assignForce);
                 globalID = globalID.slice(0, globalID.lastIndexOf('#'));
 
                 //  Construct an 'xpath1' XPointer that causes the traversal to
                 //  the Element and then down to the attribute.
-                globalID += '#xpath1(//*[@id=\'' + TP.lid(elem, true) + '\']' +
+                globalID += '#xpath1(//*[@id=\'' + TP.lid(elem, assignForce) + '\']' +
                             '/@' + TP.attributeGetLocalName(obj) + ')';
             } else {
                 globalID = '#xpath1(./@' + TP.attributeGetLocalName(obj) + ')';
@@ -1945,7 +1957,7 @@ function(anObject, assignIfAbsent) {
             //  Note here how we pass true to assign an ID to the element if it
             //  doesn't have one. We're trying to avoid getting an '#element()'
             //  path.
-            globalID = TP.gid(elem, true) + globalID;
+            globalID = TP.gid(elem, assignForce) + globalID;
         }
 
         return globalID;
@@ -1964,7 +1976,7 @@ function(anObject, assignIfAbsent) {
         //  if no localID then call TP.lid() again, forcing it to
         //  assign.
         if (TP.isEmpty(localID)) {
-            localID = TP.lid(obj, true);
+            localID = TP.lid(obj, assignForce);
         }
 
         //  add our name (the window where we started this process) onto
