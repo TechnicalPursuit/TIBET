@@ -1206,7 +1206,10 @@ function(aRequest) {
         return;
     }
 
-    id = TP.gid(node);
+    //  Note that we force false here because we don't want to assign ids for
+    //  nodes that are going away, either because they're permanently removed or
+    //  because they're becoming part of a template.
+    id = TP.gid(node, false);
 
     if (TP.isURI(uri = TP.uri.URI.getInstanceById(id))) {
         uri.clearCaches();
