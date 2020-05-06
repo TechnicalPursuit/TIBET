@@ -1150,6 +1150,41 @@ function(anID) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @method setValue
+     * @summary Sets the value of the receiver.
+     * @param {Object} aValue The value to set the value of the receiver to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
+     */
+
+    var oldValue,
+        flag;
+
+    oldValue = this.get('data');
+
+    this.set('data', aValue);
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.$changed('content', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, aValue));
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('shouldSignalChange',
 function(aFlag) {
 
