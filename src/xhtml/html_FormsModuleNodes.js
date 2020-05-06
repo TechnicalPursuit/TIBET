@@ -2474,6 +2474,35 @@ TP.html.inputCheckable.defineSubtype('inputCheckbox');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckbox.Inst.defineMethod('allowsMultiples',
+function() {
+
+    /**
+     * @method allowsMultiples
+     * @summary Returns false since radio buttons, by their very nature, don't
+     *     allow multiple selection.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
+     */
+
+    var valueTPElems;
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    //  If there is only one element in the receiver's value elements and it's
+    //  the same as the receiver, then we do not consider this control as
+    //  'allowing multiple values' and want it to produce simple (i.e.
+    //  non-Array) values.
+    if (valueTPElems.getSize() === 1 && valueTPElems.first() === this) {
+        return false;
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckbox.Inst.defineMethod('isSingleValued',
 function(aspectName) {
 
@@ -2486,6 +2515,19 @@ function(aspectName) {
      *     by the caller to determine whether the receiver is single valued for.
      * @returns {Boolean} For checkbox types, this returns false.
      */
+
+    var valueTPElems;
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    //  If there is only one element in the receiver's value elements and it's
+    //  the same as the receiver, then we consider this control as binding to
+    //  single (i.e. non-Array) values.
+    if (valueTPElems.getSize() === 1 && valueTPElems.first() === this) {
+        return true;
+    }
 
     //  Checkbox (arrays) are not single valued.
     return false;
