@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+</head>
+
+<body>
+
+    <h2>Action Tag Test #2</h2><br/>
+
+    <tsh:script id="scriptGroup">
+        <tmp:simpleactiontest id="simpleAction1"/>
+        <tmp:simpleactiontest id="simpleAction2"/>
+    </tsh:script>
+
+    <button id="sendActivate" on:click="{signal: UIActivate, origin: 'scriptGroup'}">Activate the complex test</button>
+
+</body>
+</html>
