@@ -224,7 +224,7 @@ function(aRequest) {
 
     aRequest.complete();
 
-    return;
+    return aRequest;
 });
 
 //  ------------------------------------------------------------------------
