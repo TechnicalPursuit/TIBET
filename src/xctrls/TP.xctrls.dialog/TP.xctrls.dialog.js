@@ -380,7 +380,7 @@ function(info) {
                     template = TP.uc(template);
                 }
 
-                if (TP.notValid(template)) {
+                if (!TP.isURI(template)) {
                     return TP.raise(TP, 'InvalidTemplate');
                 }
             }
@@ -432,7 +432,7 @@ function(info) {
             templateData = info.at('templateData');
             contentResource = template.transform(templateData);
 
-            if (TP.isURI(template)) {
+            if (!TP.isString(template) && TP.isURI(template)) {
                 //  Set that contentResource's result as the content of our
                 //  dialog
                 dialogTPElem.setContent(contentResource.get('result'),
