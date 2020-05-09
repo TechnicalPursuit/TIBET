@@ -1835,19 +1835,15 @@ function(aSignal) {
 
     var sig;
 
-    if (this.shouldSignalChange()) {
-        sig = this.signal('TP.sig.WillRun');
-        if (sig.shouldPrevent()) {
-            return this;
-        }
+    sig = this.signal('TP.sig.WillRun');
+    if (sig.shouldPrevent()) {
+        return this;
     }
 
     try {
         this.act(aSignal);
     } finally {
-        if (this.shouldSignalChange()) {
-            this.signal('TP.sig.DidRun');
-        }
+        this.signal('TP.sig.DidRun');
     }
 
     return this;
