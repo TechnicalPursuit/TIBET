@@ -1594,7 +1594,7 @@ function(aSignal) {
      *     when you've got a handle to a specific action element. When invoked
      *     via handle the signal which is currently being processed is provided
      *     as the first argument.
-     * @param {TP.sig.Signal} aSignal The signal instance which triggered this
+     * @param {TP.sig.Signal} [aSignal] The signal instance which triggered this
      *     activity. Only valid when being invoked in response to a handle call.
      * @returns {TP.tag.ActionTag} The receiver.
      */
@@ -1625,19 +1625,27 @@ function(aSignal) {
      * @summary Returns a TP.sig.Request subtype instance suitable for the
      *     receiver's requirements. This is typically a TP.sig.ShellRequest so
      *     the TIBET Shell can be used to process/execute the tag.
-     * @param {TP.sig.Signal|TP.core.Hash} aSignal A signal or hash containing
-     *     parameter data.
+     * @param {TP.sig.Signal|TP.core.Hash} [aSignal] A signal or hash containing
+     *     parameter data. Note that this parameter is optional and is only used
+     *     if the receiver is being invoked due to a handle call.
      * @returns {TP.sig.Request} A proper TP.sig.Request for the action.
      */
 
-    return TP.sig.ShellRequest.construct(
+    var request;
+
+    request = TP.sig.ShellRequest.construct(
                     TP.hc('cmdLiteral', true,
                             'cmdNode', this.getNativeNode(),
                             'cmdExecute', true,
-                            'cmdPhases', 'Execute',
-                            'cmdTrigger', aSignal,
-                            TP.STDIN, TP.ac(aSignal.get('payload'))
+                            'cmdPhases', 'Execute'
                     ));
+
+    if (TP.isKindOf(aSignal, TP.sig.Signal)) {
+        request.atPut('cmdTrigger', aSignal);
+        request.atPut(TP.STDIN, TP.ac(aSignal.get('payload')));
+    }
+
+    return request;
 });
 
 //  ------------------------------------------------------------------------
