@@ -1187,7 +1187,7 @@ function(aRequest) {
  *     Because of their use in visual markup as well as TIBET scripts action
  *     tags provide both a signaling interface and a direct invocation
  *     interface. The signaling interface simply defers to the direct invocation
- *     approach, so you'll normally just implement an act() method on your
+ *     approach, so you'll normally just implement a tshExecute() method on your
  *     action element with a request object as the first parameter. Note that
  *     like much of TIBET's other APIs a request in this context can be a
  *     TP.sig.Request or a simple hash of parameter values.
