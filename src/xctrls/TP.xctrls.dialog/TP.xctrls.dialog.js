@@ -51,7 +51,27 @@ function() {
 
     this.defineDependencies('TP.extern.Promise');
 
+    //  Set up an observation for TP.sig.OpenDialog
+    this.observe(TP.ANY, TP.sig.OpenDialog);
+
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.dialog.Type.defineHandler('OpenDialog',
+function(aSignal) {
+
+    /**
+     * @method handleOpenDialog
+     * @param {TP.sig.OpenDialog} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.meta.xctrls.dialog} The receiver.
+     */
+
+    TP.dialog(aSignal.getPayload());
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -345,11 +365,20 @@ function(info) {
             //  Default the dialog ID and whether we're displaying in a modal
             //  fashion
             dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+            dialogID = dialogID.unquoted();
+
             isModal = info.atIfInvalid('isModal', true);
 
             template = info.at('templateContent');
+            template = template.unquoted();
+
             if (TP.notValid(template)) {
                 template = info.at('templateURI');
+                template = template.unquoted();
+
+                if (TP.isURIString(template)) {
+                    template = TP.uc(template);
+                }
 
                 if (TP.notValid(template)) {
                     return TP.raise(TP, 'InvalidTemplate');
@@ -1127,6 +1156,13 @@ function(aQuestion, choices, aDefaultAnswer, info) {
             return answerPromise;
         });
 });
+
+//  ============================================================================
+//  dialog-specific TP.sig.Signal subtypes
+//  ============================================================================
+
+//  dialog signals
+TP.sig.Signal.defineSubtype('OpenDialog');
 
 //  ------------------------------------------------------------------------
 //  end
