@@ -315,6 +315,24 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.test.Type.defineMethod('tshExecute',
+function(aRequest) {
+
+    /**
+     * @method tshExecute
+     * @summary Runs the receiver, effectively invoking its action.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input for the shell.
+     * @returns {TP.sig.Request|Number} The request or a TSH shell loop control
+     *     constant which controls how the outer TSH processing loop should
+     *     continue. Common values are TP.CONTINUE, TP.DESCEND, and TP.BREAK.
+     */
+
+    return this.cmdRunContent(aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.shell.TSH.addHelpTopic('test',
     TP.tsh.test.Type.getMethod('cmdRunContent'),
     'Executes an object\'s tests or test suite.',

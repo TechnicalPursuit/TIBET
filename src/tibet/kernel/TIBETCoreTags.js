@@ -1575,8 +1575,7 @@ function(aRequest) {
      *     TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
-    //  Typically this is overridden.
-    return TP.DESCEND;
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
