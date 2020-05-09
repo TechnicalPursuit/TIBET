@@ -32,7 +32,9 @@ function(aRequest) {
      *     script file named as the target url.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @returns {TP.sig.Request} The request.
+     * @returns {TP.sig.Request|Number} The request or a TSH shell loop control
+     *     constant which controls how the outer TSH processing loop should
+     *     continue. Common values are TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
     var shell,

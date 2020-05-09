@@ -12095,9 +12095,9 @@ function(aRequest) {
      * @summary Runs the receiver. For most tags this is a noop.
      * @param {TP.sig.ShellRequest} aRequest The shell request currently being
      *     processed.
-     * @returns {Number} A TSH shell loop control constant which controls how
-     *     the outer TSH processing loop should continue. Common values are
-     *     TP.CONTINUE, TP.DESCEND, and TP.BREAK.
+     * @returns {TP.sig.Request|Number} The request or a TSH shell loop control
+     *     constant which controls how the outer TSH processing loop should
+     *     continue. Common values are TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
     return TP.CONTINUE;
