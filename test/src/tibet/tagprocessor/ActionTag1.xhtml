@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+</head>
+
+<body>
+
+    <h2>Action Tag Test #1</h2><br/>
+
+    <tmp:simpleactiontest id="simpleAction1"/>
+
+    <button id="sendActivate" on:click="{signal: UIActivate, origin: 'simpleAction1'}">Activate the simple test</button>
+
+</body>
+</html>

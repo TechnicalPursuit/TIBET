@@ -645,6 +645,406 @@ function() {
     });
 });
 
+//  ========================================================================
+//  Action Tags
+//  ========================================================================
+
+//  ------------------------------------------------------------------------
+
+TP.tag.ActionTag.defineSubtype('tmp.simpleactiontest');
+
+//  ------------------------------------------------------------------------
+
+TP.tmp.simpleactiontest.Type.defineMethod('tshExecute',
+function(aRequest) {
+
+    var elem,
+        id,
+        val;
+
+    elem = aRequest.at('cmdNode');
+
+    id = TP.elementGetAttribute(elem, 'id', true);
+
+    val = TP.elementGetAttribute(elem, 'simpleactionexecid', true);
+
+    if (TP.notEmpty(val)) {
+        val += ' ' + id;
+    } else {
+        val = id;
+    }
+
+    TP.elementSetAttribute(elem,
+                            'simpleactionexecid',
+                            val,
+                            true);
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.ActionTag.Type.describe('TP.tag.ActionTag simple tag execution',
+function() {
+
+    var loadURI,
+        windowContext;
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            windowContext = this.getDriver().get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/ActionTag1.xhtml');
+
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(test, options) {
+
+            var unloadURI;
+
+            unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('direct execution', function(test, options) {
+
+        var actionTPElem;
+
+        actionTPElem = TP.byId('simpleAction1', windowContext);
+
+        test.assert.isElement(actionTPElem);
+
+        actionTPElem.act();
+
+        test.assert.isAttributeEqualTo(
+                        actionTPElem,
+                        'simpleactionexecid',
+                        'simpleAction1');
+
+        actionTPElem.removeAttribute('simpleactionexecid');
+    });
+
+    //  ---
+
+    this.it('signal-based execution', function(test, options) {
+
+        var actionTPElem,
+            sendActivateButton;
+
+        actionTPElem = TP.byId('simpleAction1', windowContext);
+
+        test.assert.isElement(actionTPElem);
+
+        sendActivateButton = TP.byId('sendActivate',
+                                        windowContext,
+                                        false);
+
+        this.getSuite().getDriver().constructSequence().click(sendActivateButton).run();
+
+        test.andWaitFor(actionTPElem, 'TP.sig.DidRun');
+
+        test.chain(
+            function() {
+                test.assert.isAttributeEqualTo(
+                                actionTPElem,
+                                'simpleactionexecid',
+                                'simpleAction1');
+
+                actionTPElem.removeAttribute('simpleactionexecid');
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.ActionTag.Type.describe('TP.tag.ActionTag complex tag execution',
+function() {
+
+    var loadURI,
+        windowContext;
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            windowContext = this.getDriver().get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/ActionTag2.xhtml');
+
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(test, options) {
+
+            var unloadURI;
+
+            unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('direct execution', function(test, options) {
+
+        var actionTPElem;
+
+        actionTPElem = TP.byId('scriptGroup', windowContext);
+
+        test.assert.isElement(actionTPElem);
+
+        actionTPElem.act();
+
+        test.assert.isAttributeEqualTo(
+                        actionTPElem.getChildElements().at(0),
+                        'simpleactionexecid',
+                        'simpleAction1');
+        test.assert.isAttributeEqualTo(
+                        actionTPElem.getChildElements().at(1),
+                        'simpleactionexecid',
+                        'simpleAction2');
+
+        actionTPElem.getChildElements().at(0).removeAttribute('simpleactionexecid');
+        actionTPElem.getChildElements().at(1).removeAttribute('simpleactionexecid');
+    });
+
+    //  ---
+
+    this.it('signal-based execution', function(test, options) {
+
+        var actionTPElem,
+            sendActivateButton;
+
+        actionTPElem = TP.byId('scriptGroup', windowContext);
+
+        test.assert.isElement(actionTPElem);
+
+        sendActivateButton = TP.byId('sendActivate',
+                                        windowContext,
+                                        false);
+
+        this.getSuite().getDriver().constructSequence().click(sendActivateButton).run();
+
+        test.andWaitFor(actionTPElem, 'TP.sig.DidRun');
+
+        test.chain(
+            function() {
+                test.assert.isAttributeEqualTo(
+                                actionTPElem.getChildElements().at(0),
+                                'simpleactionexecid',
+                                'simpleAction1');
+                test.assert.isAttributeEqualTo(
+                                actionTPElem.getChildElements().at(1),
+                                'simpleactionexecid',
+                                'simpleAction2');
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.ActionTag.Type.describe('TP.tag.ActionTag simple signal dispatch',
+function() {
+
+    var loadURI,
+        windowContext;
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            windowContext = this.getDriver().get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/ActionTag3.xhtml');
+
+            this.getDriver().setLocation(loadURI);
+
+            this.chain(
+                function() {
+                    this.startTrackingSignals();
+                }.bind(this),
+                function(error) {
+                    this.fail(error, TP.sc('Couldn\'t get resource: ',
+                                                loadURI.getLocation()));
+                });
+        });
+
+    //  ---
+
+    this.after(
+        function(test, options) {
+
+            var unloadURI;
+
+            unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+            this.stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('direct execution', function(test, options) {
+
+        var actionTPElem;
+
+        actionTPElem = TP.byId('dispatcher1', windowContext);
+
+        test.assert.isElement(actionTPElem);
+
+        actionTPElem.act();
+
+        test.assert.didSignal(actionTPElem, 'DispatchTestSignal1');
+    });
+
+    //  ---
+
+    this.it('signal-based execution', function(test, options) {
+
+        var actionTPElem,
+            sendActivateButton;
+
+        actionTPElem = TP.byId('dispatcher1', windowContext);
+
+        test.assert.isElement(actionTPElem);
+
+        sendActivateButton = TP.byId('sendActivate',
+                                        windowContext,
+                                        false);
+
+        this.getSuite().getDriver().constructSequence().click(sendActivateButton).run();
+
+        test.andWaitFor(actionTPElem, 'TP.sig.DidRun');
+
+        test.chain(
+            function() {
+                test.assert.didSignal(actionTPElem, 'DispatchTestSignal1');
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.ActionTag.Type.describe('TP.tag.ActionTag complex signal dispatch',
+function() {
+
+    var loadURI,
+        windowContext;
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            windowContext = this.getDriver().get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/ActionTag4.xhtml');
+
+            this.getDriver().setLocation(loadURI);
+
+            this.chain(
+                function() {
+                    this.startTrackingSignals();
+                }.bind(this),
+                function(error) {
+                    this.fail(error, TP.sc('Couldn\'t get resource: ',
+                                                loadURI.getLocation()));
+                });
+        });
+
+    //  ---
+
+    this.after(
+        function(test, options) {
+
+            var unloadURI;
+
+            unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+            this.stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('direct execution', function(test, options) {
+
+        var actionTPElem;
+
+        actionTPElem = TP.byId('dispatcherGroup', windowContext);
+
+        test.assert.isElement(actionTPElem);
+
+        actionTPElem.act();
+
+        test.assert.didSignal(actionTPElem.getChildElements().at(0), 'DispatchTestSignal1');
+        test.assert.didSignal(actionTPElem.getChildElements().at(1), 'DispatchTestSignal2');
+    });
+
+    //  ---
+
+    this.it('signal-based execution', function(test, options) {
+
+        var actionTPElem,
+            sendActivateButton;
+
+        actionTPElem = TP.byId('dispatcherGroup', windowContext);
+
+        test.assert.isElement(actionTPElem);
+
+        sendActivateButton = TP.byId('sendActivate',
+                                        windowContext,
+                                        false);
+
+        this.getSuite().getDriver().constructSequence().click(sendActivateButton).run();
+
+        test.andWaitFor(actionTPElem, 'TP.sig.DidRun');
+
+        test.chain(
+            function() {
+                test.assert.didSignal(actionTPElem.getChildElements().at(0), 'DispatchTestSignal1');
+                test.assert.didSignal(actionTPElem.getChildElements().at(1), 'DispatchTestSignal2');
+            });
+    });
+
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
