@@ -1587,6 +1587,20 @@ function(aRequest) {
                     //  tests below.
                     result = TP.DESCEND;
                     retval = TP.DESCEND;
+                } else if (TP.isKindOf(result, TP.sig.Request)) {
+                    //  If we got a request and its complete, that means that
+                    //  the tag itself handled whatever child processing that
+                    //  needed to occur and that we should move on to the next
+                    //  *sibling*.
+                    if (result.isCompleted()) {
+                        result = TP.CONTINUE;
+                        retval = TP.CONTINUE;
+                    } else {
+                        //  TODO: We could potentially look for a new node in
+                        //  the result, but for now we're just going to descend.
+                        result = TP.DESCEND;
+                        retval = TP.DESCEND;
+                    }
                 }
 
                 //  after execution we have to check to be sure the various

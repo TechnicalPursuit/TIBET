@@ -1187,7 +1187,7 @@ function(aRequest) {
  *     Because of their use in visual markup as well as TIBET scripts action
  *     tags provide both a signaling interface and a direct invocation
  *     interface. The signaling interface simply defers to the direct invocation
- *     approach, so you'll normally just implement an act() method on your
+ *     approach, so you'll normally just implement a tshExecute() method on your
  *     action element with a request object as the first parameter. Note that
  *     like much of TIBET's other APIs a request in this context can be a
  *     TP.sig.Request or a simple hash of parameter values.
@@ -1575,8 +1575,7 @@ function(aRequest) {
      *     TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
-    //  Typically this is overridden.
-    return TP.DESCEND;
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -1595,7 +1594,7 @@ function(aSignal) {
      *     when you've got a handle to a specific action element. When invoked
      *     via handle the signal which is currently being processed is provided
      *     as the first argument.
-     * @param {TP.sig.Signal} aSignal The signal instance which triggered this
+     * @param {TP.sig.Signal} [aSignal] The signal instance which triggered this
      *     activity. Only valid when being invoked in response to a handle call.
      * @returns {TP.tag.ActionTag} The receiver.
      */
@@ -1626,19 +1625,27 @@ function(aSignal) {
      * @summary Returns a TP.sig.Request subtype instance suitable for the
      *     receiver's requirements. This is typically a TP.sig.ShellRequest so
      *     the TIBET Shell can be used to process/execute the tag.
-     * @param {TP.sig.Signal|TP.core.Hash} aSignal A signal or hash containing
-     *     parameter data.
+     * @param {TP.sig.Signal|TP.core.Hash} [aSignal] A signal or hash containing
+     *     parameter data. Note that this parameter is optional and is only used
+     *     if the receiver is being invoked due to a handle call.
      * @returns {TP.sig.Request} A proper TP.sig.Request for the action.
      */
 
-    return TP.sig.ShellRequest.construct(
+    var request;
+
+    request = TP.sig.ShellRequest.construct(
                     TP.hc('cmdLiteral', true,
                             'cmdNode', this.getNativeNode(),
                             'cmdExecute', true,
-                            'cmdPhases', 'Execute',
-                            'cmdTrigger', aSignal,
-                            TP.STDIN, TP.ac(aSignal.get('payload'))
+                            'cmdPhases', 'Execute'
                     ));
+
+    if (TP.isKindOf(aSignal, TP.sig.Signal)) {
+        request.atPut('cmdTrigger', aSignal);
+        request.atPut(TP.STDIN, TP.ac(aSignal.get('payload')));
+    }
+
+    return request;
 });
 
 //  ------------------------------------------------------------------------
@@ -1828,19 +1835,15 @@ function(aSignal) {
 
     var sig;
 
-    if (this.shouldSignalChange()) {
-        sig = this.signal('TP.sig.WillRun');
-        if (sig.shouldPrevent()) {
-            return this;
-        }
+    sig = this.signal('TP.sig.WillRun');
+    if (sig.shouldPrevent()) {
+        return this;
     }
 
     try {
         this.act(aSignal);
     } finally {
-        if (this.shouldSignalChange()) {
-            this.signal('TP.sig.DidRun');
-        }
+        this.signal('TP.sig.DidRun');
     }
 
     return this;

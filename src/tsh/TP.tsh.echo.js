@@ -31,7 +31,9 @@ function(aRequest) {
      * @summary Executes the command, echoing any arguments for review.
      * @param {TP.sig.ShellRequest} aRequest The request which triggered
      *     this command.
-     * @returns {TP.sig.ShellRequest} The request.
+     * @returns {TP.sig.Request|Number} The request or a TSH shell loop control
+     *     constant which controls how the outer TSH processing loop should
+     *     continue. Common values are TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
     var shell,

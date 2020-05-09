@@ -2208,9 +2208,9 @@ function(aRequest) {
      *     TP.sig.InvalidOperation exception.
      * @param {TP.sig.Request} aRequest The request to be processed.
      * @exception TP.sig.InvalidOperation
-     * @returns {Number} A TSH shell loop control constant which controls how
-     *     the outer TSH processing loop should continue. Common values are
-     *     TP.CONTINUE, TP.DESCEND, and TP.BREAK.
+     * @returns {TP.sig.Request|Number} The request or a TSH shell loop control
+     *     constant which controls how the outer TSH processing loop should
+     *     continue. Common values are TP.CONTINUE, TP.DESCEND, and TP.BREAK.
      */
 
     this.raise('TP.sig.InvalidOperation');
