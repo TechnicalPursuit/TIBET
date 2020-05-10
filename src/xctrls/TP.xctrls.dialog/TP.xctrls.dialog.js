@@ -370,15 +370,13 @@ function(info) {
             isModal = info.atIfInvalid('isModal', true);
 
             template = info.at('templateContent');
-            template = template.unquoted();
-
-            if (TP.notValid(template)) {
-                template = info.at('templateURI');
+            if (TP.isString(template)) {
                 template = template.unquoted();
-
                 if (TP.isURIString(template)) {
                     template = TP.uc(template);
                 }
+            } else if (TP.notValid(template)) {
+                template = info.at('templateURI');
 
                 if (!TP.isURI(template)) {
                     return TP.raise(TP, 'InvalidTemplate');
