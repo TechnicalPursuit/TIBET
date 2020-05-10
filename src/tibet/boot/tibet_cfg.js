@@ -1608,8 +1608,6 @@
     //  timeouts/delays
     //  ---
 
-    TP.sys.setcfg('editor.select.delay', 50);
-
     TP.sys.setcfg('headless.timeout', 5000);
 
     TP.sys.setcfg('shell.init.delay', 10);

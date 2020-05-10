@@ -7980,9 +7980,10 @@ function(aSignal) {
         //  Set the value of the editor to the element's text content.
         editor.value = elemTextContent;
 
-        //  Select the text in the editor, but fork to allow the GUI to
-        //  refresh, which seems to help out focusing mechanics.
-        setTimeout(editor.select, TP.sys.cfg('editor.select.delay', 50));
+        //  Select the text in the editor, but cause this to happen after the
+        //  next repaint to allow the GUI to refresh, which seems to help out
+        //  focusing mechanics.
+        editor.select.queueAfterNextRepaint(TP.nodeGetWindow(anElem));
     };
 
     //  Replace the text node with an editor and style it.

@@ -1850,10 +1850,9 @@ function(aRequest) {
         //  Note here how we fork the execution (but as quickly as
         //  possible so that it goes back on the stack ASAP) so that the GUI
         //  has the chance to draw the output cell before we run.
-        setTimeout(
-            function() {
-                thisref.execute(aRequest);
-            }, 0);
+        (function() {
+            thisref.execute(aRequest);
+        }).queueAfterNextRepaint(TP.sys.getUIRoot(true));
     } else {
         //  the last real work has to be the execute call so we can handle
         //  the possibility of asynchronous work going on underneath

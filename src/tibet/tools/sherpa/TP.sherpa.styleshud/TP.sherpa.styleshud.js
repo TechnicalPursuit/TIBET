@@ -337,79 +337,78 @@ function(aTPElement) {
         return this;
     }
 
-    //  We put this into a setTimeout to improve perceived performance. In this
-    //  way, the rest of the HUD can refresh and then the style sidebar can
-    //  refresh after it does this performance-intensive work.
-    setTimeout(
-        function() {
+    //  We put this into a call to refresh after the next repaint to improve
+    //  perceived performance. In this way, the rest of the HUD can refresh
+    //  and then the style sidebar can refresh after it does this
+    //  performance-intensive work.
+    (function() {
 
-            info = TP.ac();
+        info = TP.ac();
 
-            node = TP.canInvoke(aTPElement, 'getNativeNode') ?
-                                    aTPElement.getNativeNode() :
-                                    aTPElement;
+        node = TP.canInvoke(aTPElement, 'getNativeNode') ?
+                                aTPElement.getNativeNode() :
+                                aTPElement;
 
-            if (TP.isElement(node)) {
+        if (TP.isElement(node)) {
 
-                //  Note here that we pass true to flush the element's cached
-                //  ruleset. This ensures the most accurate results when
-                //  focusing.
-                ruleInfo = TP.elementGetAppliedStyleInfo(node, true);
+            //  Note here that we pass true to flush the element's cached
+            //  ruleset. This ensures the most accurate results when
+            //  focusing.
+            ruleInfo = TP.elementGetAppliedStyleInfo(node, true);
 
-                //  Finally, we populate the info that will go into the sidebar
-                ruleInfo.perform(
-                    function(aRuleInfo) {
+            //  Finally, we populate the info that will go into the sidebar
+            ruleInfo.perform(
+                function(aRuleInfo) {
 
-                        var loc;
+                    var loc;
 
-                        //  Grab the sheet location. If it's null, use the word
-                        //  '[empty]' as the value of that slot of the info
-                        loc = aRuleInfo.at('sheetLocation');
-                        if (TP.isEmpty(loc)) {
-                            loc = '[empty]';
-                        } else {
-                            loc = TP.uriInTIBETFormat(loc);
-                        }
+                    //  Grab the sheet location. If it's null, use the word
+                    //  '[empty]' as the value of that slot of the info
+                    loc = aRuleInfo.at('sheetLocation');
+                    if (TP.isEmpty(loc)) {
+                        loc = '[empty]';
+                    } else {
+                        loc = TP.uriInTIBETFormat(loc);
+                    }
 
-                        //  Push the following data into the rule information:
+                    //  Push the following data into the rule information:
 
-                        //  TIBET URI to stylesheet (if not null)
-                        //  selectorText
-                        //  the rule's CSS text
-                        //  the original CSSRule object
-                        info.push(
-                            TP.ac(
-                                loc,
-                                aRuleInfo.at('originalSelector'),
-                                aRuleInfo.at('rule').cssText,
-                                aRuleInfo.at('rule')));
-                    });
-            }
+                    //  TIBET URI to stylesheet (if not null)
+                    //  selectorText
+                    //  the rule's CSS text
+                    //  the original CSSRule object
+                    info.push(
+                        TP.ac(
+                            loc,
+                            aRuleInfo.at('originalSelector'),
+                            aRuleInfo.at('rule').cssText,
+                            aRuleInfo.at('rule')));
+                });
+        }
 
-            info.reverse();
+        info.reverse();
 
-            //  Unshift an entry for cascaded style.
-            info.unshift(
-                TP.ac('[cascaded]', '[cascaded]', '[cascaded]', '[cascaded]'));
+        //  Unshift an entry for cascaded style.
+        info.unshift(
+            TP.ac('[cascaded]', '[cascaded]', '[cascaded]', '[cascaded]'));
 
-            currentRuleIndex = this.get('$currentRuleIndex');
-            if (TP.notValid(currentRuleIndex)) {
-                currentRuleIndex = 0;
-            }
+        currentRuleIndex = this.get('$currentRuleIndex');
+        if (TP.notValid(currentRuleIndex)) {
+            currentRuleIndex = 0;
+        }
 
-            if (info.getSize() > 1) {
-                this.set('$currentRuleIndex', 1);
-            } else {
-                this.set('$currentRuleIndex', TP.NOT_FOUND);
-            }
+        if (info.getSize() > 1) {
+            this.set('$currentRuleIndex', 1);
+        } else {
+            this.set('$currentRuleIndex', TP.NOT_FOUND);
+        }
 
-            //  List expects an array of arrays containing IDs and full names.
-            this.setValue(info);
+        //  List expects an array of arrays containing IDs and full names.
+        this.setValue(info);
 
-            //  Scroll our list content to its bottom.
-            this.get('listcontent').scrollTo(TP.BOTTOM);
-
-        }.bind(this), 10);
+        //  Scroll our list content to its bottom.
+        this.get('listcontent').scrollTo(TP.BOTTOM);
+    }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
 
     return this;
 });

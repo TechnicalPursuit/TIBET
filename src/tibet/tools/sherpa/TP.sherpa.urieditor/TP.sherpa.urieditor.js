@@ -1522,35 +1522,34 @@ function(aValue, shouldSignal) {
     //  NB: This will call render()
     this.setSourceObject(aValue);
 
-    //  Focus the editor. Note this is done in a setTimeout to allow the GUI to
-    //  'settle'.
-    setTimeout(
-        function() {
+    //  Select the text in the editor, but cause this to happen after the next
+    //  repaint to allow the GUI to refresh, which seems to help out focusing
+    //  mechanics.
+    (function() {
 
-            var editor,
+        var editor,
 
-                inspector,
+            inspector,
 
-                extraInfo,
-                findContent;
+            extraInfo,
+            findContent;
 
-            editor = this.get('editor');
-            editor.focus();
+        editor = this.get('editor');
+        editor.focus();
 
-            inspector = TP.byId('SherpaInspector', this.getNativeWindow());
+        inspector = TP.byId('SherpaInspector', this.getNativeWindow());
 
-            extraInfo = inspector.get('extraTargetInfo');
+        extraInfo = inspector.get('extraTargetInfo');
 
-            if (TP.notEmpty(extraInfo)) {
+        if (TP.notEmpty(extraInfo)) {
 
-                findContent = extraInfo.at('findContent');
+            findContent = extraInfo.at('findContent');
 
-                if (TP.notEmpty(findContent)) {
-                    editor.findAndScrollTo(findContent);
-                }
+            if (TP.notEmpty(findContent)) {
+                editor.findAndScrollTo(findContent);
             }
-
-        }.bind(this), TP.sys.cfg('editor.select.delay', 50));
+        }
+    }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
 
     return true;
 });
