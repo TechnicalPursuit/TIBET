@@ -1436,10 +1436,6 @@ function() {
 
                             //  We fork the work function here to give the GUI
                             //  a chance to refresh before we manipulate it.
-                            //  Note the return value from setTimeout is the
-                            //  timeout object - but the callback
-                            //  handed to $performGUISequenceStep() expects a
-                            //  Function object, therefore we have to wrap it.
                             workCallback =
                                 function() {
                                     workFunc.queueAfterNextRepaint(

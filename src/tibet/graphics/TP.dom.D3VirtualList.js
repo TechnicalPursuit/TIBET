@@ -619,7 +619,7 @@ function() {
      * @method teardown
      * @summary Tears down the receiver by performing housekeeping cleanup, like
      *     ignoring signals it's observing, etc.
-     * @returns {TP.sherpa.D3VirtualList} The receiver.
+     * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
     return this;
