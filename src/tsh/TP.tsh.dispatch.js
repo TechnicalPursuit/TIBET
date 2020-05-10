@@ -68,7 +68,7 @@ function(aRequest) {
         //  Just in case it was supplied as a quoted value
         orgid = orgid.unquoted();
 
-        doc = this.getNativeDocument();
+        doc = TP.nodeGetDocument(elem);
 
         //  Note how we pass false to avoid getting a wrapped origin, which
         //  we don't want here.
