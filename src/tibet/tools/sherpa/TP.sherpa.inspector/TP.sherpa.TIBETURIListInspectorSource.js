@@ -48,13 +48,13 @@ function(aSignal) {
             //  created URI.
             inspector.refreshBay();
 
-            //  Focus this using a forked function to give the modal panel
-            //  time to dismiss.
-            setTimeout(function() {
+            //  NB: We put this in a call to refresh after the next repaint so that the
+            //  the modal panel has a chance to dismiss.
+            (function() {
                 inspector.focusUsingInfo(
                             TP.hc('targetAspect', userValue,
                                     'targetObject', uri));
-            }, TP.sys.cfg('fork.delay'));
+            }).queueAfterNextRepaint(inspector.getNativeWindow());
         });
 });
 

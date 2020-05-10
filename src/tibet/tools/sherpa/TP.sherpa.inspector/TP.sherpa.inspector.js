@@ -1381,10 +1381,9 @@ function(info) {
 
     inspectorBays = TP.byCSSPath(' sherpa|inspectoritem', this);
     if (TP.notEmpty(inspectorBays)) {
-        setTimeout(
-            function() {
-                inspectorBays.last().focus();
-            }, 100);
+        (function() {
+            inspectorBays.last().focus();
+        }).queueAfterNextRepaint(this.getNativeWindow());
     }
 
     return this;
@@ -2505,14 +2504,15 @@ function(aSignal) {
 
         this.displayBusy();
 
-        //  NB: We put this in a setTimeout so that the busy panel has a chance
-        //  to show before proceeding with the focusing process.
-        setTimeout(
-            function() {
-                this.focusUsingInfo(payload);
+        //  NB: We put this in a call to refresh after the next repaint so that the
+        //  busy panel has a chance to show before proceeding with the focusing
+        //  process.
+        (function() {
+            this.focusUsingInfo(payload);
 
-                this.hideBusy();
-            }.bind(this), TP.sys.cfg('fork.delay'));
+            this.hideBusy();
+        }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
+
     } else {
         this.focusUsingInfo(payload);
     }
@@ -2798,14 +2798,15 @@ function(aSignal) {
 
             this.displayBusy();
 
-            //  NB: We put this in a setTimeout so that the busy panel has a
-            //  chance to show before proceeding with the traversal process.
-            setTimeout(
-                function() {
-                    this.traversePath(pathStack.at(newPathStackIndex));
+            //  NB: We put this in a call to refresh after the next repaint so
+            //  that the busy panel has a chance to show before proceeding with
+            //  the traversal process.
+            (function() {
+                this.traversePath(pathStack.at(newPathStackIndex));
 
-                    this.hideBusy();
-                }.bind(this), TP.sys.cfg('fork.delay'));
+                this.hideBusy();
+            }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
+
         } else {
             this.traversePath(pathStack.at(newPathStackIndex));
         }

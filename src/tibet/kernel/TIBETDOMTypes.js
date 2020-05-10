@@ -3817,122 +3817,121 @@ function(aDocument) {
                             'TP.sig.NodeWillRecast',
                             TP.hc('recastTarget', aTPElem));
 
-                //  This is all being done in a 50ms setTimeout, so that any GUI
-                //  updating that happens as part of the NodeWillRecast signal
-                //  can be rendered.
-                setTimeout(
-                    function() {
+                //  This is all being done in a Function that executes after the
+                //  next repaint, so that any GUI updating that happens as part
+                //  of the NodeWillRecast signal can be rendered.
+                (function() {
 
-                        var autodefineMissingTags,
-                            oldNode,
-                            oldNodeClone,
+                    var autodefineMissingTags,
+                        oldNode,
+                        oldNodeClone,
 
-                            newNode,
-                            newNodeClone,
+                        newNode,
+                        newNodeClone,
 
-                            oldParentNode;
+                        oldParentNode;
 
-                        //  The new content may have a tag that we don't know
-                        //  about. Therefore we force the system to autodefine
-                        //  missing tags here.
-                        autodefineMissingTags =
-                            TP.sys.cfg('sherpa.autodefine_missing_tags');
-                        TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
+                    //  The new content may have a tag that we don't know
+                    //  about. Therefore we force the system to autodefine
+                    //  missing tags here.
+                    autodefineMissingTags =
+                        TP.sys.cfg('sherpa.autodefine_missing_tags');
+                    TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
 
-                        //  Grab both the old and new nodes being transformed,
-                        //  clone them and clean them. This provides the best
-                        //  canonical comparison below when we check them for
-                        //  equality.
+                    //  Grab both the old and new nodes being transformed,
+                    //  clone them and clean them. This provides the best
+                    //  canonical comparison below when we check them for
+                    //  equality.
 
-                        oldNode = aTPElem.getNativeNode();
-                        oldNodeClone = TP.nodeCloneNode(oldNode);
-                        TP.elementClean(oldNodeClone);
+                    oldNode = aTPElem.getNativeNode();
+                    oldNodeClone = TP.nodeCloneNode(oldNode);
+                    TP.elementClean(oldNodeClone);
 
-                        newNode = authoredElem;
-                        newNodeClone = TP.nodeCloneNode(newNode);
-                        TP.elementClean(newNodeClone);
+                    newNode = authoredElem;
+                    newNodeClone = TP.nodeCloneNode(newNode);
+                    TP.elementClean(newNodeClone);
 
-                        oldParentNode = oldNode.parentNode;
+                    oldParentNode = oldNode.parentNode;
 
-                        //  process the content, supplying the authored node as
-                        //  the 'alternate element' to process. This is the core
-                        //  of 'recasting'. Note that awaken will happen via the
-                        //  core TIBET Mutation Observer when the new node is
-                        //  attached to the DOM. It will send a MutationAttach
-                        //  signal that we install a handler for below.
-                        aTPElem.setAttribute('tibet:recasting', true);
-                        aTPElem.compile(null, true, authoredElem);
+                    //  process the content, supplying the authored node as
+                    //  the 'alternate element' to process. This is the core
+                    //  of 'recasting'. Note that awaken will happen via the
+                    //  core TIBET Mutation Observer when the new node is
+                    //  attached to the DOM. It will send a MutationAttach
+                    //  signal that we install a handler for below.
+                    aTPElem.setAttribute('tibet:recasting', true);
+                    aTPElem.compile(null, true, authoredElem);
 
-                        //  Put the autodefine setting back to what it was.
-                        TP.sys.setcfg('sherpa.autodefine_missing_tags',
-                                        autodefineMissingTags);
+                    //  Put the autodefine setting back to what it was.
+                    TP.sys.setcfg('sherpa.autodefine_missing_tags',
+                                    autodefineMissingTags);
 
-                        //  The native node might have changed under the covers
-                        //  during compilation, so we need to set the attribute
-                        //  again.
-                        aTPElem.setAttribute('tibet:recasting', true);
+                    //  The native node might have changed under the covers
+                    //  during compilation, so we need to set the attribute
+                    //  again.
+                    aTPElem.setAttribute('tibet:recasting', true);
 
-                        recastTPDoc = TP.tpdoc(aTPElem);
+                    recastTPDoc = TP.tpdoc(aTPElem);
 
-                        //  Install a handler looking for a MutationAttach
-                        //  signal that will have the global ID for the element
-                        //  being recast.
-                        handler = function(aSignal) {
+                    //  Install a handler looking for a MutationAttach
+                    //  signal that will have the global ID for the element
+                    //  being recast.
+                    handler = function(aSignal) {
 
-                            var recastTPElem;
+                        var recastTPElem;
 
-                            //  If one of the mutated nodes was our recast
-                            //  Element, then the GIDs will be the same (but its
-                            //  a 'new element' insofar as the DOM is concerned,
-                            //  so we can't use '===' comparing).
-                            if (aSignal.at('mutatedNodeIDs').contains(gid)) {
+                        //  If one of the mutated nodes was our recast
+                        //  Element, then the GIDs will be the same (but its
+                        //  a 'new element' insofar as the DOM is concerned,
+                        //  so we can't use '===' comparing).
+                        if (aSignal.at('mutatedNodeIDs').contains(gid)) {
 
-                                //  Make sure to uninstall the handler.
-                                handler.ignore(recastTPDoc,
-                                                'TP.sig.MutationAttach');
+                            //  Make sure to uninstall the handler.
+                            handler.ignore(recastTPDoc,
+                                            'TP.sig.MutationAttach');
 
-                                //  Grab the wrapped element by using the GID to
-                                //  get a reference back to it.
-                                recastTPElem = TP.bySystemId(gid);
+                            //  Grab the wrapped element by using the GID to
+                            //  get a reference back to it.
+                            recastTPElem = TP.bySystemId(gid);
 
-                                //  Refresh any data bindings that are a part of
-                                //  or are under the recast element.
-                                recastTPElem.refresh();
+                            //  Refresh any data bindings that are a part of
+                            //  or are under the recast element.
+                            recastTPElem.refresh();
 
-                                //  If the two nodes, old and new, are not
-                                //  equal, then update the source document,
-                                //  replacing one with the other.
-                                if (!TP.nodeEqualsNode(
-                                        oldNodeClone, newNodeClone)) {
+                            //  If the two nodes, old and new, are not
+                            //  equal, then update the source document,
+                            //  replacing one with the other.
+                            if (!TP.nodeEqualsNode(
+                                    oldNodeClone, newNodeClone)) {
 
-                                    if (TP.sys.hasFeature('sherpa')) {
-                                        TP.bySystemId('Sherpa').
-                                            updateUICanvasSource(
-                                                TP.ac(oldNode),
-                                                oldParentNode,
-                                                TP.UPDATE,
-                                                null,
-                                                null,
-                                                null,
-                                                false,
-                                                newNode);
-                                    }
+                                if (TP.sys.hasFeature('sherpa')) {
+                                    TP.bySystemId('Sherpa').
+                                        updateUICanvasSource(
+                                            TP.ac(oldNode),
+                                            oldParentNode,
+                                            TP.UPDATE,
+                                            null,
+                                            null,
+                                            null,
+                                            false,
+                                            newNode);
                                 }
-
-                                //  Signal that we did recast the node.
-                                TP.signal(null,
-                                            'TP.sig.NodeDidRecast',
-                                            TP.hc('recastTarget',
-                                                    recastTPElem));
                             }
-                        };
 
-                        //  Set up the MutationAttach observation on the
-                        //  original Element's Document. This will stay the
-                        //  same throughout the recasting process, so we're safe
-                        //  to do that.
-                        handler.observe(recastTPDoc, 'TP.sig.MutationAttach');
-                    }, 50);
+                            //  Signal that we did recast the node.
+                            TP.signal(null,
+                                        'TP.sig.NodeDidRecast',
+                                        TP.hc('recastTarget',
+                                                recastTPElem));
+                        }
+                    };
+
+                    //  Set up the MutationAttach observation on the
+                    //  original Element's Document. This will stay the
+                    //  same throughout the recasting process, so we're safe
+                    //  to do that.
+                    handler.observe(recastTPDoc, 'TP.sig.MutationAttach');
+                }).queueAfterNextRepaint(TP.nodeGetWindow(authoredElem));
             }
         });
 

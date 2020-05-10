@@ -7630,10 +7630,14 @@ function(aSignal) {
      * @returns {TP.core.Application} The receiver.
      */
 
+    var signal;
+
+    signal = aSignal;
+
     //  Do any final steps to ensure the UI is ready for operation.
     this.finalizeGUI();
 
-    (function(signal) {
+    (function() {
 
         var elem,
             rootWin,
@@ -7680,8 +7684,7 @@ function(aSignal) {
 
         //  Signal that everything is ready and that the application did start.
         this.signal('TP.sig.AppDidStart');
-
-    }.bind(this).afterUnwind(aSignal));
+    }.bind(this)).queueAfterNextRepaint(TP.sys.uiwin(true));
 
     return this;
 });
