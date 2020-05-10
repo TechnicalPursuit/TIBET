@@ -245,26 +245,11 @@ function(aContentObject, aRequest) {
      */
 
     var bodyTPElem,
-        contentTPElem,
-
-        handler;
+        contentTPElem;
 
     bodyTPElem = this.get('bodyGroup');
 
     contentTPElem = bodyTPElem.setContent(aContentObject);
-
-    //  Observe the new panel when it gets attached to the DOM. When it
-    //  does, refresh its bound data.
-    handler = function() {
-
-        //  Make sure to ignore here - otherwise, we'll fill up the
-        //  signal map.
-        handler.ignore(contentTPElem, 'TP.sig.AttachComplete');
-
-        contentTPElem.refresh();
-    };
-
-    handler.observe(contentTPElem, 'TP.sig.AttachComplete');
 
     return contentTPElem;
 });
@@ -460,6 +445,9 @@ function(info) {
             (function() {
                 //  Show the dialog
                 dialogTPElem.setAttribute('hidden', false);
+
+                //  Refresh just after showing.
+                dialogTPElem.refresh();
 
                 //  Call the Promise's resolver with the created
                 //  TP.xctrls.dialog object.
