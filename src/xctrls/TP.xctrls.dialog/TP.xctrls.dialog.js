@@ -84,8 +84,8 @@ TP.xctrls.dialog.Inst.defineAttribute('body',
 TP.xctrls.dialog.Inst.defineAttribute('header',
     TP.cpc('> *[tibet|pelem="header"]', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.dialog.Inst.defineAttribute('bodyGroup',
-    TP.cpc('> *[tibet|pelem="body"] > tibet|group',
+TP.xctrls.dialog.Inst.defineAttribute('dialogcontent',
+    TP.cpc('> *[tibet|pelem="body"] > tibet|group > xctrls|content',
         TP.hc('shouldCollapse', true)));
 
 TP.xctrls.dialog.Inst.defineAttribute('curtainWasShowing');
@@ -220,13 +220,13 @@ function(shouldRender, shouldRefreshBindings) {
      *     receiver already had and, therefore, truly changed.
      */
 
-    var bodyTPElem;
+    var contentTPElem;
 
     //  Grab the content element under the existing panel that we
     //  found with that content key.
-    bodyTPElem = this.get('bodyGroup');
+    contentTPElem = this.get('dialogcontent');
 
-    return bodyTPElem.refresh(shouldRender, shouldRefreshBindings);
+    return contentTPElem.refresh(shouldRender, shouldRefreshBindings);
 });
 
 //  ------------------------------------------------------------------------
@@ -244,14 +244,11 @@ function(aContentObject, aRequest) {
      *     receiver.
      */
 
-    var bodyTPElem,
-        contentTPElem;
+    var contentTPElem;
 
-    bodyTPElem = this.get('bodyGroup');
+    contentTPElem = this.get('dialogcontent');
 
-    contentTPElem = bodyTPElem.setContent(aContentObject);
-
-    return contentTPElem;
+    return contentTPElem.setContent(aContentObject);
 });
 
 //  ------------------------------------------------------------------------
