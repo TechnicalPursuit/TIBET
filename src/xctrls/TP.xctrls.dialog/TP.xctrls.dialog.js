@@ -186,14 +186,24 @@ function(beHidden) {
 
         this.observeKeybindingsDirectly();
 
-        //  Focus any autofocused element or the first focusable element
-        //  under us.
-        this.focusAutofocusedOrFirstFocusableDescendant();
+        //  Set up a function that will run after the next repaint, allowing
+        //  the curtain to show (if this dialog box is modal), then fetching
+        //  and displaying the dialog. Then we're ready to refresh any bindings
+        //  and focus the first (or autofocused) control.
+        (function() {
 
-        focusedTPElem = this.getDocument().getFocusedElement();
-        if (TP.canInvoke(focusedTPElem, 'select')) {
-            focusedTPElem.select();
-        }
+            //  Refresh just after showing.
+            this.refresh();
+
+            //  Focus any autofocused element or the first focusable element
+            //  under us.
+            this.focusAutofocusedOrFirstFocusableDescendant();
+
+            focusedTPElem = this.getDocument().getFocusedElement();
+            if (TP.canInvoke(focusedTPElem, 'select')) {
+                focusedTPElem.select();
+            }
+        }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
     }
 
     return this.callNextMethod();
@@ -437,19 +447,12 @@ function(info) {
                 dialogTPElem.toggleCurtain(isShowing);
             }
 
-            //  Set up a function that will run after the next repaint, allowing
-            //  the curtain to show before fetching and displaying the dialog.
-            (function() {
-                //  Show the dialog
-                dialogTPElem.setAttribute('hidden', false);
+            //  Show the dialog
+            dialogTPElem.setAttribute('hidden', false);
 
-                //  Refresh just after showing.
-                dialogTPElem.refresh();
-
-                //  Call the Promise's resolver with the created
-                //  TP.xctrls.dialog object.
-                resolver(dialogTPElem);
-            }).queueAfterNextRepaint(win);
+            //  Call the Promise's resolver with the created
+            //  TP.xctrls.dialog object.
+            resolver(dialogTPElem);
         });
 
     return promise;
