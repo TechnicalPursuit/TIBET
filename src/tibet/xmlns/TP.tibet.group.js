@@ -351,9 +351,10 @@ function(includesGroups) {
     //  executed separately and their results combined.
     results = TP.ac();
 
-    //  Query for any immediate children that have a 'tibet:group' attribute
-    //  that matches our group ID.
-    queryStr = TP.computeFocusableQuery('> ', '[tibet|group="' + lid + '"]');
+    //  Query for any immediate children that either don't have a tibet:group
+    //  attribute or have a 'tibet:group' attribute that matches our group ID.
+    queryStr = TP.computeFocusableQuery('> ', ':not([tibet|group=])') + ', ' +
+                TP.computeFocusableQuery('> ', '[tibet|group="' + lid + '"]');
 
     results.push(
         TP.byCSSPath(queryStr,
@@ -361,9 +362,10 @@ function(includesGroups) {
                         false,
                         false));
 
-    //  Query for any descendants that have a 'tibet:group' attribute that
-    //  matches our group ID.
-    queryStr = TP.computeFocusableQuery(null, '[tibet|group="' + lid + '"]');
+    //  Query for any descendants that either don't have a tibet:group attribute
+    //  or have a 'tibet:group' attribute that matches our group ID.
+    queryStr = TP.computeFocusableQuery(null, ':not([tibet|group])') + ', ' +
+                TP.computeFocusableQuery(null, '[tibet|group="' + lid + '"]');
 
     //  Query for any descendants that have a 'tibet:group' attribute
     //  that matches our group ID.
