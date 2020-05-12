@@ -153,6 +153,10 @@ function(aPrefix, aSuffix) {
      *     supplied) will be wrapped around *each* one of these queries to
      *     further qualify them. The result is then joined together with a comma
      *     (',') so that the query computes a CSS union.
+     * @param {String} [aPrefix] The optional prefix to use when building the
+     *     query.
+     * @param {String} [aSuffix] The optional suffix to use when building the
+     *     query.
      * @returns {String} A CSS query that, when executed, will return all of the
      *     'focusable' elements under the queried node.
      */
