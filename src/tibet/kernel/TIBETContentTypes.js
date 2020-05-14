@@ -4332,6 +4332,40 @@ function(otherPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.path.AccessPath.Inst.defineMethod('copy',
+function(deep, aFilterNameOrKeys, contentOnly) {
+
+    /**
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
+     *     whose value is equalTo that of the receiver.
+     * @param {Boolean} [deep=false] True to force clones to be deep. Ignored
+     *     for this type.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array. Ignored for this type.
+     * @param {Boolean} [contentOnly=true] Copy content only? Ignored for this
+     *     type.
+     * @returns {TP.path.AccessPath} A copy of the receiver.
+     */
+
+    var config,
+        newinst;
+
+    config = TP.hc(
+                'buildout', this.get('buildout'),
+                'packageWith', this.get('packageWith'),
+                'shouldCollapse', this.get('shouldCollapse'),
+                'extractWith', this.get('extractWith'),
+                'fallbackWith', this.get('fallbackWith')
+                );
+
+    newinst = this.getType().construct(this.get('srcPath'), config);
+
+    return newinst;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.path.AccessPath.Inst.defineMethod('isAccessPath',
 function() {
 
