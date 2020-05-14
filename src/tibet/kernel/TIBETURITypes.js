@@ -4347,6 +4347,51 @@ function(aResource, aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.URI.Inst.defineMethod('setResourcePortion',
+function(aPath, aValue, aRequest) {
+
+    /**
+     * @method setResourcePortion
+     * @summary Sets a portion of the resource using the supplied path to 'drill
+     *     into' the resource pointed to by the receiver.
+     * @param {TP.path.AccessPath|String} aPath The path to use to drill into
+     *     the receiver's resource.
+     * @param {Object} aValue The value to set the referenced portion of the
+     *     resource to.
+     * @param {TP.sig.Request} [aRequest] An optional request used to retrieve
+     *     the receiver's resource.
+     * @exception {TP.sig.InvalidParameter} When the supplied path is not valid.
+     * @returns {TP.uri.URI} The receiver.
+     */
+
+    var req,
+        result,
+        path;
+
+    //  Copy the request and make sure it's configured for an 'sync' fetch.
+    req = TP.request(aRequest).copy();
+    req.atPut('async', false);
+
+    result = this.getResource(req).get('result');
+
+    if (aPath.isAccessPath()) {
+        path = TP.copy(aPath);
+    } else if (TP.isString(aPath)) {
+        path = TP.apc(aPath);
+    }
+
+    //  Note here how we set buildout to true by default. This allows us maximum
+    //  convenience in setting the resource's portion.
+    if (TP.isValid(result)) {
+        path.set('buildout', true);
+        path.executeSet(result, aValue);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.URI.Inst.defineMethod('setResourceToResultOf',
 function(aURI, aRequest, shouldCopy) {
 
@@ -4373,7 +4418,7 @@ function(aURI, aRequest, shouldCopy) {
         result,
         newResult;
 
-    //  Copy the request and make sure it's configured for an 'async' fetch.
+    //  Copy the request and make sure it's configured for an 'sync' fetch.
     req = TP.request(aRequest).copy();
     req.atPut('async', false);
 
