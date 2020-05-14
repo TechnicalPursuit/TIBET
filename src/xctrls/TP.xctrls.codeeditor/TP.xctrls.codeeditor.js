@@ -363,20 +363,19 @@ function(aStringOrRegExp) {
 
     editor = this.$get('$editorObj');
 
-    setTimeout(
-        function() {
-            editor.find(
-                aStringOrRegExp,
-                {
-                    backwards: false,
-                    wrap: false,
-                    caseSensitive: true,
-                    wholeWord: false,
-                    regExp: TP.isRegExp(aStringOrRegExp)
-                });
+    (function() {
+        editor.find(
+            aStringOrRegExp,
+            {
+                backwards: false,
+                wrap: false,
+                caseSensitive: true,
+                wholeWord: false,
+                regExp: TP.isRegExp(aStringOrRegExp)
+            });
+    }).queueAfterNextRepaint(this.getNativeWindow());
 
-            editor.findNext();
-        }, 500);
+    editor.findNext();
 
     return this;
 });
