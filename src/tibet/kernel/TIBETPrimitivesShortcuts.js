@@ -2702,7 +2702,8 @@ function(aURIOrRoute, winContext, event) {
      *     route you must provide a value with a leading '#' to force this call
      *     to recognize the path as a 'client path' rather than a server path.
      * @param {TP.uri.URI|String} aURIOrRoute The URI or route to go to.
-     * @param {Window} winContext The window with the original link element.
+     * @param {Window} [winContext] An option window with the original link
+     *     element. If this is not supplied, then the current UI canvas is used.
      * @param {Event} [event] An optional event when this method is called from
      *     a native event handler. If this parameter is a keyboard or mouse
      *     event, then the proper TIBET object will be called upon to invoke its
