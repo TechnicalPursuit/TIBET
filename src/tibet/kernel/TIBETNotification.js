@@ -6574,17 +6574,19 @@ function(originSet, aSignal, aPayload, aType) {
     //  target or the origin.
     if (TP.notValid(scope = payload.at('scope'))) {
 
-        triggerSignal = payload.at('trigger');
-        if (TP.isValid(triggerSignal) &&
-            TP.isEvent(evt = triggerSignal.getEvent())) {
-            //  Make sure that we have both an Event and an Event target.
-            if (TP.isElement(target = TP.eventGetTarget(evt))) {
-                //  Wrap the target and compute its binding scope values.
-                scopeVals = TP.wrap(target).getBindingScopeValues();
-            }
-        } else if (TP.isElement(origin = originSet)) {
+        if (TP.isElement(origin = originSet)) {
             //  Wrap the origin and compute its binding scope values.
             scopeVals = TP.wrap(origin).getBindingScopeValues();
+        } else {
+            triggerSignal = payload.at('trigger');
+            if (TP.isValid(triggerSignal) &&
+                TP.isEvent(evt = triggerSignal.getEvent())) {
+                //  Make sure that we have both an Event and an Event target.
+                if (TP.isElement(target = TP.eventGetTarget(evt))) {
+                    //  Wrap the target and compute its binding scope values.
+                    scopeVals = TP.wrap(target).getBindingScopeValues();
+                }
+            }
         }
 
         //  Join all of the scope value fragments together and set the scope in
