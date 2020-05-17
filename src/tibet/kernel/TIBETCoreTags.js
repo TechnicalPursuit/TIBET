@@ -1851,40 +1851,55 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.tag.ActionTag.Inst.defineMethod('getOutermostAction',
+function() {
+
+    /**
+     * @method getOutermostAction
+     * @summary Returns the outermost action tag, either the receiver if it is
+     *     standalone or a '<tsh:script>' or other action element.
+     * @description In addition to tsh:script tags, we also allow action tags as
+     *     children of ev:listeners and in that case we also consider them
+     *     "nested" rather than top-most actions.
+     * @returns {TP.tag.ActionTag} The outermost action tag.
+     */
+
+    var elem,
+        retVal,
+
+        tpElem;
+
+    elem = this.getNativeNode();
+
+    /* eslint-disable consistent-this */
+    retVal = this;
+    /* eslint-enable consistent-this */
+
+    while (TP.isElement(elem = elem.parentNode)) {
+        tpElem = TP.wrap(elem);
+
+        if (!TP.isKindOf(tpElem, TP.tag.ActionTag)) {
+            break;
+        }
+
+        retVal = tpElem;
+    }
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tag.ActionTag.Inst.defineMethod('isOutermostAction',
 function() {
 
     /**
      * @method isOutermostAction
-     * @summary Returns true if the receiver is the outermost action handler
-     *     (not '<action> element).
-     * @description The XForms specification states the when an action handler
-     *     is the outermost handler model updates occur immediately, but when
-     *     enclosed in an action element they can have a deferred update effect.
-     *     The result is that all elements which can potentially defer their
-     *     updates need to know if they're "outermost" so they know whether to
-     *     message the model or simply flag it for later rebuild processing. We
-     *     also allow action tags as children of ev:listeners and in that case
-     *     we also consider them "nested" rather than top-most actions.
-     * @returns {Boolean} True if the receiver is the top-most action.
+     * @summary Returns true if the receiver is the outermost action tag.
+     * @returns {Boolean} True if the receiver is the top-most action tag.
      */
 
-    var node,
-        elemName;
-
-    node = this.getNativeNode();
-
-    //  go up the parent chain and if we don't find an xctrls:action above
-    //  us then we're outermost and should not defer model updating
-    while (TP.isElement(node = node.parentNode) &&
-            TP.isCallable(node.getAttribute)) {
-        elemName = TP.elementGetFullName(node);
-        if (elemName === 'xctrls:action' || elemName === 'ev:listener') {
-            return false;
-        }
-    }
-
-    return true;
+    return this.getOutermostAction() === this;
 });
 
 //  ========================================================================
