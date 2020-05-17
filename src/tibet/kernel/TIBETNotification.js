@@ -6540,6 +6540,8 @@ function(originSet, aSignal, aPayload, aType) {
 
         payload,
         scope,
+
+        triggerSignal,
         evt,
 
         origin,
@@ -6569,30 +6571,31 @@ function(originSet, aSignal, aPayload, aType) {
     }
 
     //  If no scope was defined, then we see if we can compute one via an event
-    //  target.
+    //  target or the origin.
     if (TP.notValid(scope = payload.at('scope'))) {
 
-        //  Make sure that we have both an Event and an Event target.
-        if (TP.isEvent(evt = payload.at('trigger').getEvent())) {
-
-            if (TP.isElement(origin = originSet)) {
-                //  Wrap the origin and compute its binding scope values.
-                scopeVals = TP.wrap(origin).getBindingScopeValues();
-            } else if (TP.isElement(target = TP.eventGetTarget(evt))) {
+        triggerSignal = payload.at('trigger');
+        if (TP.isValid(triggerSignal) &&
+            TP.isEvent(evt = triggerSignal.getEvent())) {
+            //  Make sure that we have both an Event and an Event target.
+            if (TP.isElement(target = TP.eventGetTarget(evt))) {
                 //  Wrap the target and compute its binding scope values.
                 scopeVals = TP.wrap(target).getBindingScopeValues();
             }
-
-            //  Join all of the scope value fragments together and set the scope
-            //  in the payload.
-            if (TP.isEmpty(scopeVals)) {
-                TP.ifWarn() ? TP.warn('Bind firing without scope values: ') : 0;
-                return sig;
-            }
-
-            scope = TP.uriJoinFragments.apply(TP, scopeVals);
-            payload.atPut('scope', scope);
+        } else if (TP.isElement(origin = originSet)) {
+            //  Wrap the origin and compute its binding scope values.
+            scopeVals = TP.wrap(origin).getBindingScopeValues();
         }
+
+        //  Join all of the scope value fragments together and set the scope in
+        //  the payload.
+        if (TP.isEmpty(scopeVals)) {
+            TP.ifWarn() ? TP.warn('Bind firing without scope values: ') : 0;
+            return sig;
+        }
+
+        scope = TP.uriJoinFragments.apply(TP, scopeVals);
+        payload.atPut('scope', scope);
     }
 
     //  If we didn't end up with a scope or if a URI can't be computed from it,
