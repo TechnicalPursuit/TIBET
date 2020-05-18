@@ -649,6 +649,9 @@ function() {
 //  Action Tags
 //  ========================================================================
 
+TP.sig.Signal.defineSubtype('DispatchTestSignal1');
+TP.sig.Signal.defineSubtype('DispatchTestSignal2');
+
 //  ------------------------------------------------------------------------
 
 TP.tag.ActionTag.defineSubtype('tmp.simpleactiontest');
@@ -1013,8 +1016,8 @@ function() {
 
         actionTPElem.act();
 
-        test.assert.didSignal(actionTPElem.getChildElements().at(0), 'DispatchTestSignal1');
-        test.assert.didSignal(actionTPElem.getChildElements().at(1), 'DispatchTestSignal2');
+        test.assert.didSignal(actionTPElem, 'DispatchTestSignal1');
+        test.assert.didSignal(actionTPElem, 'DispatchTestSignal2');
     });
 
     //  ---
@@ -1038,8 +1041,8 @@ function() {
 
         test.chain(
             function() {
-                test.assert.didSignal(actionTPElem.getChildElements().at(0), 'DispatchTestSignal1');
-                test.assert.didSignal(actionTPElem.getChildElements().at(1), 'DispatchTestSignal2');
+                test.assert.didSignal(actionTPElem, 'DispatchTestSignal1');
+                test.assert.didSignal(actionTPElem, 'DispatchTestSignal2');
             });
     });
 
