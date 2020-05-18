@@ -48,7 +48,11 @@ function(aRequest) {
 
         sigName,
         sigPayload,
-        sigPolicy;
+        sigPolicy,
+        sigInst,
+        sigType,
+
+        outermostAction;
 
     if (TP.notValid(elem = aRequest.at('cmdNode'))) {
         return aRequest.fail();
@@ -112,13 +116,37 @@ function(aRequest) {
 
     sigPolicy = shell.getArgument(aRequest, 'tsh:policy', null, true);
 
+    //  If the author didn't specify a policy, then we try to determine if the
+    //  signal is spoofed. If so, then we default the policy to
+    //  TP.RESPONDER_FIRING.
+    if (TP.isEmpty(sigPolicy)) {
+
+        sigInst = TP.sig.SignalMap.$getSignalInstance(sigName);
+        if (sigInst.isSpoofed()) {
+            sigPolicy = TP.RESPONDER_FIRING;
+        } else {
+            sigType = TP.sig.SignalMap.$getSignalType(sigName);
+            sigPolicy = sigType.getDefaultPolicy();
+        }
+    }
+
     //  ---
     //  Dispatch the signal
     //  ---
 
-    TP.wrap(elem).dispatch(sigName, target, sigPayload, sigPolicy);
+    outermostAction = TP.wrap(elem).getOutermostAction();
 
-    /* eslint-enable no-loop-func */
+    //  If the firing policy is either TP.DOM_FIRING or TP.RESPONDER_FIRING,
+    //  then we need to dispatch the signal *from it's parent* - otherwise, the
+    //  generic 'handleSignal' method on all action tags will cause the
+    //  outermost action tag (either us or a parent that is an action tag -
+    //  probably a 'tsh:script' tag) to run us again and we'll endlessly loop.
+    if (sigPolicy === TP.DOM_FIRING || sigPolicy === TP.RESPONDER_FIRING) {
+        outermostAction.getParentNode().dispatch(
+                                    sigName, target, sigPayload, sigPolicy);
+    } else {
+        outermostAction.dispatch(sigName, target, sigPayload, sigPolicy);
+    }
 
     aRequest.complete();
 
