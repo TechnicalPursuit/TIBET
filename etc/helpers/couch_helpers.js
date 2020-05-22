@@ -420,6 +420,44 @@ helpers.getCouchURL = function(options) {
 
 
 /**
+ * Returns a data structure of db reference information that can be used by
+ * commands that want to provide an alternate way of acquiring db references
+ * rather than using the flag parameters of '--db_name', etc.
+ * @returns {Object} An object usable by the command.
+ */
+helpers.getDBReferenceInfo = function(argstr) {
+    var parts,
+        retval;
+
+    retval = {};
+
+    //  All commands allow target specification via a dotted arg1 value. Since
+    //  most commands operate on a database or database and appname we default
+    //  to assuming dbname[.appname]. Subcommands may alter this as needed.
+    if (argstr) {
+        parts = argstr.split('.');
+        switch (parts.length) {
+            case 1:
+                retval.db_name = parts[0];
+                break;
+            case 2:
+                retval.db_name = parts[0];
+                retval.db_app = parts[1];
+                break;
+            default:
+                //  abstract place to hold part 3 (viewname, something else?)
+                retval.db_name = parts[0];
+                retval.db_app = parts[1];
+                retval.db_ref = parts[2];
+                break;
+        }
+    }
+
+    return retval;
+};
+
+
+/**
  * Returns a version of the url provided with any user/pass information masked
  * out. This is used for prompts and logging where basic auth data could
  * potentially be exposed to view.

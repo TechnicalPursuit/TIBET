@@ -98,9 +98,7 @@ Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|listall|push|pushapp|remo
  * @returns {Object} An options object usable by the command.
  */
 Cmd.prototype.configure = function() {
-    var confirm,
-        parts,
-        arg1;
+    var confirm;
 
     //  Explicit flag always wins.
     if (this.hasArgument('confirm')) {
@@ -111,29 +109,6 @@ Cmd.prototype.configure = function() {
         confirm = CLI.getcfg('cli.couch.confirm');
         if (CLI.isValid(confirm)) {
             this.options.confirm = confirm;
-        }
-    }
-
-    //  All commands allow target specification via a dotted arg1 value. Since
-    //  most commands operate on a database or database and appname we default
-    //  to assuming dbname[.appname]. Subcommands may alter this as needed.
-    arg1 = this.getArgument(1);
-    if (arg1) {
-        parts = arg1.split('.');
-        switch (parts.length) {
-            case 1:
-                this.options.db_name = parts[0];
-                break;
-            case 2:
-                this.options.db_name = parts[0];
-                this.options.db_app = parts[1];
-                break;
-            default:
-                this.options.db_name = parts[0];
-                this.options.db_app = parts[1];
-                //  abstract place to hold part 3 (viewname, something else?)
-                this.options.db_ref = parts[2];
-                break;
         }
     }
 
