@@ -222,12 +222,14 @@ Cmd.prototype.dbView = function(viewname, options, params) {
 *     recursive so only documents in the top level are loaded. Also note this
 *     value will be run through the CLI's expandPath routine to expand any
 *     virtual path values.
+* @returns {Promise} A promise with 'then' and 'catch' options.
 */
 Cmd.prototype.pushDir = function(dir, options) {
     var fullpath,
         thisref,
         opts,
-        ask;
+        ask,
+        promises;
 
     thisref = this;
 
@@ -258,6 +260,8 @@ Cmd.prototype.pushDir = function(dir, options) {
         }));
     }
 
+    promises = [];
+
     sh.ls(CLI.joinPaths(fullpath, '*.json')).forEach(function(file) {
         var filename;
 
@@ -270,8 +274,10 @@ Cmd.prototype.pushDir = function(dir, options) {
 
         //  Force confirmation off here. We don't want to prompt for every
         //  individual file.
-        thisref.pushFile(file, opts);
+        promises.push(thisref.pushFile(file, opts));
     });
+
+    return Promise.all(promises);
 };
 
 
@@ -281,6 +287,7 @@ Cmd.prototype.pushDir = function(dir, options) {
  *     through the CLI's expandPath routine to handle any virtual paths.
  * @param {Object} [options] A block containing database parameters and/or
  *     instructions about whether to confirm database information.
+ * @returns {Promise} A promise with 'then' and 'catch' options.
  */
 Cmd.prototype.pushFile = function(file, options) {
     var dat,
@@ -308,7 +315,7 @@ Cmd.prototype.pushFile = function(file, options) {
         return;
     }
 
-    this.pushOne(fullpath, doc, options);
+    return this.pushOne(fullpath, doc, options);
 };
 
 
@@ -321,12 +328,13 @@ Cmd.prototype.pushFile = function(file, options) {
  * @param {Object} doc The javascript object to upload as a document.
  * @param {Object} [options] A block containing database parameters and/or
  *     instructions about whether to confirm database information.
+ * @returns {Promise} A promise with 'then' and 'catch' options.
  */
 Cmd.prototype.pushOne = function(fullpath, doc, options) {
     var params,
         db_url,
         db_name,
-        nano,
+        server,
         db,
         thisref,
         ask,
@@ -360,71 +368,61 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
         return;
     }
 
-    nano = require('nano')(db_url);
-    db = nano.use(db_name);
+    server = couch.server(db_url);
+    db = server.use(db_name);
 
     if (doc._id) {
         //  Have to fetch to get the proper _rev to update...
-        db.get(doc._id, function(err, response) {
+        return db.getAsync(doc._id).then(function(response) {
             var rev;
 
-            if (err) {
-                if (err.message !== 'missing') {
-                    //  most common error will be 'missing' document due to
-                    //  deletion, purge, etc.
-                    thisref.error(fullpath + ' =>');
-                    CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
-                    return;
-                }
+            //  Set revs to match so we can compare actual 'value' other
+            //  than the rev. If they're the same we can skip the insert.
+            rev = response._rev;
+            delete response._rev;
 
-                //  missing...don't worry about rev check...
-
-                delete doc._rev;    //  clear any _rev to avoid update conflict
-
-                thisref.log('inserting: ' + fullpath);
-
-            } else {
-                //  Set revs to match so we can compare actual 'value' other
-                //  than the rev. If they're the same we can skip the insert.
-                rev = response._rev;
-                delete response._rev;
-
-                if (CLI.isSameJSON(doc, response)) {
-                    thisref.log('skipping: ' + fullpath);
-                    return;
-                }
-
-                doc._rev = rev;
-                thisref.log('updating: ' + fullpath);
-            }
-
-            db.insert(doc, function(err2, response2) {
-                if (err2) {
-                    thisref.error(fullpath + ' =>');
-                    CLI.handleCouchError(err2, Cmd.NAME, 'pushOne', false);
-                    return;
-                }
-
-                thisref.log(fullpath + ' =>\n' + CLI.beautify(response2));
-
-                //  Set the document ID to the response ID so we know it.
-                doc._id = response2.id;
-                delete doc._rev;
-                new sh.ShellString(CLI.beautify(doc)).to(fullpath);
-            });
-
-        });
-    } else {
-
-        this.log('uploading: ' + fullpath);
-
-        //  No clue...appears to be first time we've inserted this doc.
-        db.insert(doc, function(err, response) {
-            if (err) {
-                thisref.error(fullpath + ' =>');
-                CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
+            if (CLI.isSameJSON(doc, response)) {
+                thisref.log('skipping: ' + fullpath);
                 return;
             }
+
+            doc._rev = rev;
+            thisref.log('updating: ' + fullpath);
+        }).catch(function(err) {
+            if (err.message !== 'missing') {
+                //  most common error will be 'missing' document due to
+                //  deletion, purge, etc.
+                thisref.error(fullpath + ' =>');
+                CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
+
+                throw err;
+            }
+
+            //  missing...don't worry about rev check...
+
+            delete doc._rev;    //  clear any _rev to avoid update conflict
+
+            thisref.log('inserting: ' + fullpath);
+
+        }).then(function() {
+            return db.insertAsync(doc);
+        }).then(function(response2) {
+            thisref.log(fullpath + ' =>\n' + CLI.beautify(response2));
+
+            //  Set the document ID to the response ID so we know it.
+            doc._id = response2.id;
+            delete doc._rev;
+
+            //  Write the doc to the path after beautifying it.
+            new sh.ShellString(CLI.beautify(doc)).to(fullpath);
+        }).catch(function(err2) {
+            thisref.error(fullpath + ' =>');
+            CLI.handleCouchError(err2, Cmd.NAME, 'pushOne', false);
+
+            throw err2;
+        });
+    } else {
+        return db.insertAsync(doc).then(function(response) {
 
             thisref.log(fullpath + ' =>\n' + CLI.beautify(response));
 
@@ -432,10 +430,13 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             doc._id = response.id;
             delete doc._rev;
             new sh.ShellString(CLI.beautify(doc)).to(fullpath);
+        }).catch(function(err) {
+            thisref.error(fullpath + ' =>');
+            CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
+
+            throw err;
         });
     }
-
-    return;
 };
 
 
