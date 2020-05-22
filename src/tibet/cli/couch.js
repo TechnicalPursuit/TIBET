@@ -176,7 +176,7 @@ Cmd.prototype.executeCompactdb = function() {
     nano.db.compact(db_name, app_name,
         function(error) {
             if (error) {
-                CLI.handleError(error, 'couch', 'compactdb');
+                CLI.handleCouchError(error, 'couch', 'compactdb');
                 return;
             }
 
@@ -209,7 +209,7 @@ Cmd.prototype.executeCreatedb = function() {
     nano.db.create(db_name,
         function(error) {
             if (error) {
-                CLI.handleError(error, 'couch', 'createdb');
+                CLI.handleCouchError(error, 'couch', 'createdb');
                 return;
             }
 
@@ -242,7 +242,7 @@ Cmd.prototype.executeListall = function() {
     nano = require('nano')(db_url);
     nano.db.list(function(error, list) {
         if (error) {
-            CLI.handleError(error, 'couch', 'listall');
+            CLI.handleCouchError(error, 'couch', 'listall');
             return;
         }
 
@@ -446,7 +446,7 @@ Cmd.prototype.executePushapp = function() {
             nano.multipart.insert(newdoc, attachments, doc_name,
                 function(error) {
                     if (error) {
-                        CLI.handleError(error, 'couch', 'pushapp');
+                        CLI.handleCouchError(error, 'couch', 'pushapp');
                         return;
                     }
 
@@ -735,7 +735,7 @@ Cmd.prototype.executePushapp = function() {
                     return;
                 },
                 function(err2) {
-                    CLI.handleError(err2, 'couch', 'pushapp');
+                    CLI.handleCouchError(err2, 'couch', 'pushapp');
                     return;
                 });
         },
@@ -747,11 +747,11 @@ Cmd.prototype.executePushapp = function() {
                         return;
                     },
                     function(err2) {
-                        CLI.handleError(err2, 'couch', 'pushapp');
+                        CLI.handleCouchError(err2, 'couch', 'pushapp');
                         return;
                     });
             } else {
-                CLI.handleError(error, 'couch', 'pushapp');
+                CLI.handleCouchError(error, 'couch', 'pushapp');
                 return;
             }
         });
@@ -825,7 +825,7 @@ Cmd.prototype.executeRemoveapp = function() {
         db.destroy(doc_name, response._rev,
             function(error) {
                 if (error) {
-                    CLI.handleError(error, 'couch', 'removeapp');
+                    CLI.handleCouchError(error, 'couch', 'removeapp');
                     return;
                 }
 
@@ -834,7 +834,7 @@ Cmd.prototype.executeRemoveapp = function() {
 
     }).catch(function(err) {
         CLI.debug(params);
-        CLI.handleError(err, 'couch', 'removeapp');
+        CLI.handleCouchError(err, 'couch', 'removeapp');
         return;
     });
 };
@@ -874,7 +874,7 @@ Cmd.prototype.executeRemovedb = function() {
     nano.db.destroy(db_name,
         function(error) {
             if (error) {
-                CLI.handleError(error, 'couch', 'removedb');
+                CLI.handleCouchError(error, 'couch', 'removedb');
                 return;
             }
 
@@ -986,7 +986,7 @@ Cmd.prototype.executeView = function() {
             thisref.error('View not found: ' + viewname);
         } else {
             CLI.debug(CLI.beautify(dbParams));
-            CLI.handleError(err, 'couch', 'view');
+            CLI.handleCouchError(err, 'couch', 'view');
             return;
         }
     });

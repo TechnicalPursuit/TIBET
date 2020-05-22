@@ -353,7 +353,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
                     //  most common error will be 'missing' document due to
                     //  deletion, purge, etc.
                     thisref.error(fullpath + ' =>');
-                    CLI.handleError(err, Cmd.NAME, 'pushOne', false);
+                    CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
                     return;
                 }
 
@@ -381,7 +381,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             db.insert(doc, function(err2, response2) {
                 if (err2) {
                     thisref.error(fullpath + ' =>');
-                    CLI.handleError(err2, Cmd.NAME, 'pushOne', false);
+                    CLI.handleCouchError(err2, Cmd.NAME, 'pushOne', false);
                     return;
                 }
 
@@ -402,7 +402,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
         db.insert(doc, function(err, response) {
             if (err) {
                 thisref.error(fullpath + ' =>');
-                CLI.handleError(err, Cmd.NAME, 'pushOne', false);
+                CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
                 return;
             }
 
