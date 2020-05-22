@@ -74,6 +74,26 @@ boolean: ['confirm'],
 //  Instance Methods
 //  ---
 
+//  ---
+//  Command Execution
+//  ---
+
+/**
+ * Performs error handling for couchdb. This method deconstructs an Error object
+ * as returned by nano to glean the maximum information and then calls
+ * CLI.handleError to handle the error.
+ * @param {Error} e The error object.
+ * @param {string} phase The phase of command processing.
+ * @param {string} command The command that failed.
+ * @param {Boolean} exit Set to false to avoid exiting the process.
+ */
+CLI.handleCouchError = function(e, phase, command, exit) {
+
+    e.msg = '{"error":"' + e.error + '","reason":"' + e.reason + '"}';
+
+    return CLI.handleError(e, phase, command, exit);
+};
+
 
 //  ---
 //  Utilities
