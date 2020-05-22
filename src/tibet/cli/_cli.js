@@ -1699,7 +1699,7 @@ CLI.handleError = function(e, phase, command, exit) {
 
     try {
 
-        msg = e.message || '';
+        msg = e.msg || e.message || '';
 
         // Some downstream throw calls are empty so they can do their own
         // messaging but still convey they failed. Skip messaging in those cases

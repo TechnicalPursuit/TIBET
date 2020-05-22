@@ -178,7 +178,7 @@ Cmd.prototype.executeCancel = function() {
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
             if (result.type !== 'job') {
-                CLI.handleError(new Error('Invalid job'), 'tws', 'cancel');
+                CLI.handleCouchError(new Error('Invalid job'), 'tws', 'cancel');
                 return;
             }
 
@@ -191,11 +191,11 @@ Cmd.prototype.executeCancel = function() {
             thisref.dbInsert(result).then(function(result2) {
                 thisref.info(CLI.beautify(result2));
             }).catch(function(err) {
-                CLI.handleError(err, 'tws', 'cancel');
+                CLI.handleCouchError(err, 'tws', 'cancel');
                 return;
             });
         }).catch(function(err) {
-            CLI.handleError(err, 'tws', 'cancel');
+            CLI.handleCouchError(err, 'tws', 'cancel');
             return;
         });
     } else {
@@ -284,7 +284,7 @@ Cmd.prototype.executeDisableFlow = function() {
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
             if (result.type !== 'flow') {
-                CLI.handleError(new Error('Invalid flow'), 'tws', 'enable');
+                CLI.handleCouchError(new Error('Invalid flow'), 'tws', 'enable');
                 return;
             }
 
@@ -297,11 +297,11 @@ Cmd.prototype.executeDisableFlow = function() {
             thisref.dbInsert(result).then(function(result2) {
                 thisref.info(CLI.beautify(result2));
             }).catch(function(err) {
-                CLI.handleError(err, 'tws', 'enable');
+                CLI.handleCouchError(err, 'tws', 'enable');
                 return;
             });
         }).catch(function(err) {
-            CLI.handleError(err, 'tws', 'enable');
+            CLI.handleCouchError(err, 'tws', 'enable');
             return;
         });
     } else {
@@ -397,7 +397,7 @@ Cmd.prototype.executeEnableFlow = function() {
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
             if (result.type !== 'flow') {
-                CLI.handleError(new Error('Invalid flow'), 'tws', 'enable');
+                CLI.handleCouchError(new Error('Invalid flow'), 'tws', 'enable');
                 return;
             }
 
@@ -410,11 +410,11 @@ Cmd.prototype.executeEnableFlow = function() {
             thisref.dbInsert(result).then(function(result2) {
                 thisref.info(CLI.beautify(result2));
             }).catch(function(err) {
-                CLI.handleError(err, 'tws', 'enable');
+                CLI.handleCouchError(err, 'tws', 'enable');
                 return;
             });
         }).catch(function(err) {
-            CLI.handleError(err, 'tws', 'enable');
+            CLI.handleCouchError(err, 'tws', 'enable');
             return;
         });
     } else {
@@ -481,7 +481,7 @@ Cmd.prototype.executeInit = function() {
         nano.db.create(db_name, function(err, result) {
             if (err) {
                 cmd.error('unable to create TWS database');
-                CLI.handleError(err, 'tws', 'init');
+                CLI.handleCouchError(err, 'tws', 'init');
                 return;
             }
 
@@ -501,7 +501,7 @@ Cmd.prototype.executeInit = function() {
                     return;
                 }
                 cmd.error('unable to verify design doc');
-                CLI.handleError(err, 'tws', 'init');
+                CLI.handleCouchError(err, 'tws', 'init');
                 return;
             }
 
@@ -538,7 +538,7 @@ Cmd.prototype.executeInit = function() {
         db.insert(doc, function(err, result) {
             if (err) {
                 cmd.error('unable to insert design doc');
-                CLI.handleError(err, 'tws', 'init');
+                CLI.handleCouchError(err, 'tws', 'init');
                 return;
             }
 
@@ -558,7 +558,7 @@ Cmd.prototype.executeInit = function() {
         db.get('_design/' + db_app, function(err, result) {
             if (err) {
                 cmd.error('unable to fetch design doc');
-                CLI.handleError(err, 'tws', 'init');
+                CLI.handleCouchError(err, 'tws', 'init');
                 return;
             }
 
@@ -571,7 +571,7 @@ Cmd.prototype.executeInit = function() {
                 db.insert(result, function(err2, result2) {
                     if (err2) {
                         cmd.error('unable to insert TWS view block');
-                        CLI.handleError(err2, 'tws', 'init');
+                        CLI.handleCouchError(err2, 'tws', 'init');
                         return;
                     }
 
@@ -612,7 +612,7 @@ Cmd.prototype.executeInit = function() {
         db.insert(result, function(err, result2) {
             if (err) {
                 cmd.error('unable to insert TWS core views');
-                CLI.handleError(err, 'tws', 'init');
+                CLI.handleCouchError(err, 'tws', 'init');
                 return;
             }
 
@@ -628,7 +628,7 @@ Cmd.prototype.executeInit = function() {
 
     nano.db.list(function(err, result) {
         if (err) {
-            CLI.handleError(err, 'tws', 'init');
+            CLI.handleCouchError(err, 'tws', 'init');
             return;
         }
 
@@ -664,7 +664,7 @@ Cmd.prototype.executeList = function() {
         this.dbGet(doc_id).then(function(result) {
             thisref.info(CLI.beautify(result));
         }).catch(function(err) {
-            CLI.handleError(err, 'tws', 'list');
+            CLI.handleCouchError(err, 'tws', 'list');
             return;
         });
 
@@ -695,7 +695,7 @@ Cmd.prototype.executeListFlows = function() {
             });
         }
     }).catch(function(err) {
-        CLI.handleError(err, 'tws', 'list');
+        CLI.handleCouchError(err, 'tws', 'list');
         return;
     });
 };
@@ -738,7 +738,7 @@ Cmd.prototype.executeListJobs = function() {
             });
         }
     }).catch(function(err) {
-        CLI.handleError(err, 'tws', 'list');
+        CLI.handleCouchError(err, 'tws', 'list');
         return;
     });
 };
@@ -772,7 +772,7 @@ Cmd.prototype.executeListTasks = function() {
             });
         }
     }).catch(function(err) {
-        CLI.handleError(err, 'tws', 'list');
+        CLI.handleCouchError(err, 'tws', 'list');
         return;
     });
 };
@@ -840,7 +840,7 @@ Cmd.prototype.executeListViews = function() {
         });
 
     }).catch(function(err) {
-        CLI.handleError(err, 'tws', 'list');
+        CLI.handleCouchError(err, 'tws', 'list');
         return;
     });
 };
@@ -933,14 +933,14 @@ Cmd.prototype.executePushDesign = function() {
         thisref.dbInsert(doc, {}, params).then(function(result2) {
             thisref.log(CLI.beautify(result2));
         }).catch(function(err) {
-            CLI.handleError(err, 'push', 'design');
+            CLI.handleCouchError(err, 'push', 'design');
             return;
         });
     }).catch(function(err) {
         if (err.message === 'missing') {
             thisref.error('Design document not found. Did you `tibet tws init` yet?');
         } else {
-            CLI.handleError(err, 'push', 'design');
+            CLI.handleCouchError(err, 'push', 'design');
             return;
         }
     });
@@ -1140,7 +1140,7 @@ Cmd.prototype.executeSubmit = function() {
     this.dbInsert(doc).then(function(result) {
         thisref.info(CLI.beautify(result));
     }).catch(function(err) {
-        CLI.handleError(err, 'tws', 'submit');
+        CLI.handleCouchError(err, 'tws', 'submit');
         return;
     });
 };

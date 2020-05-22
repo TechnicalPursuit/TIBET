@@ -74,6 +74,26 @@ boolean: ['confirm'],
 //  Instance Methods
 //  ---
 
+//  ---
+//  Command Execution
+//  ---
+
+/**
+ * Performs error handling for couchdb. This method deconstructs an Error object
+ * as returned by nano to glean the maximum information and then calls
+ * CLI.handleError to handle the error.
+ * @param {Error} e The error object.
+ * @param {string} phase The phase of command processing.
+ * @param {string} command The command that failed.
+ * @param {Boolean} exit Set to false to avoid exiting the process.
+ */
+CLI.handleCouchError = function(e, phase, command, exit) {
+
+    e.msg = '{"error":"' + e.error + '","reason":"' + e.reason + '"}';
+
+    return CLI.handleError(e, phase, command, exit);
+};
+
 
 //  ---
 //  Utilities
@@ -353,7 +373,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
                     //  most common error will be 'missing' document due to
                     //  deletion, purge, etc.
                     thisref.error(fullpath + ' =>');
-                    CLI.handleError(err, Cmd.NAME, 'pushOne', false);
+                    CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
                     return;
                 }
 
@@ -381,7 +401,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             db.insert(doc, function(err2, response2) {
                 if (err2) {
                     thisref.error(fullpath + ' =>');
-                    CLI.handleError(err2, Cmd.NAME, 'pushOne', false);
+                    CLI.handleCouchError(err2, Cmd.NAME, 'pushOne', false);
                     return;
                 }
 
@@ -402,7 +422,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
         db.insert(doc, function(err, response) {
             if (err) {
                 thisref.error(fullpath + ' =>');
-                CLI.handleError(err, Cmd.NAME, 'pushOne', false);
+                CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
                 return;
             }
 
