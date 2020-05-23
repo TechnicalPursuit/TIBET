@@ -136,7 +136,7 @@ Cmd.prototype.dbGet = function(id, options, params) {
     db = server.use(db_name);
 
     return db.getAsync(id, options).then(function(result) {
-        return result[0];
+        return result;
     });
 };
 
@@ -177,7 +177,7 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
     db = server.use(db_name);
 
     return db.insertAsync(doc, options).then(function(result) {
-        return result[0];
+        return result;
     });
 };
 
