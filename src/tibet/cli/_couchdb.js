@@ -324,23 +324,12 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
 
     cmd = this;
 
-    opts = options || {};
+    opts = CLI.blend(options || {}, this.options);
 
-    if (CLI.isValid(opts.confirm)) {
-        ask = opts.confirm;
-    } else {
-        ask = this.options.confirm;
-    }
+    ask = opts.confirm;
 
-    if (CLI.notValid(opts.db_url)) {
-        params = couch.getCouchParameters({
-            requestor: CLI,
-            confirm: ask,
-            cfg_root: 'tds.tasks'
-        });
-    } else {
-        params = opts;
-    }
+    params = couch.getCouchParameters(
+            CLI.blend(opts, {requestor: CLI, confirm: ask}));
 
     db_url = params.db_url;
     db_name = params.db_name;
