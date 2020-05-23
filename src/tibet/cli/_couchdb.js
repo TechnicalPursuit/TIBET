@@ -219,12 +219,13 @@ Cmd.prototype.dbView = function(viewname, options, params) {
 *     recursive so only documents in the top level are loaded. Also note this
 *     value will be run through the CLI's expandPath routine to expand any
 *     virtual path values.
+ * @param {Object} [options] A block containing database parameters and/or
+ *     instructions about whether to confirm database information.
 * @returns {Promise} A promise with 'then' and 'catch' options.
 */
 Cmd.prototype.pushDir = function(dir, options) {
     var fullpath,
         cmd,
-        opts,
         ask,
         promises;
 
@@ -241,22 +242,6 @@ Cmd.prototype.pushDir = function(dir, options) {
         return;
     }
 
-    opts = options || {};
-
-    if (CLI.isValid(opts.confirm)) {
-        ask = opts.confirm;
-    } else {
-        ask = this.options.confirm;
-    }
-
-    if (CLI.notValid(opts.db_url)) {
-        opts = CLI.blend(opts, couch.getCouchParameters({
-            requestor: CLI,
-            confirm: ask,
-            cfg_root: 'tds.tasks'
-        }));
-    }
-
     promises = [];
 
     sh.ls(CLI.joinPaths(fullpath, '*.json')).forEach(function(file) {
@@ -271,7 +256,7 @@ Cmd.prototype.pushDir = function(dir, options) {
 
         //  Force confirmation off here. We don't want to prompt for every
         //  individual file.
-        promises.push(cmd.pushFile(file, opts));
+        promises.push(cmd.pushFile(file, options));
     });
 
     return Promise.all(promises);
