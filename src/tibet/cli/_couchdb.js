@@ -115,10 +115,13 @@ Cmd.prototype.dbGet = function(id, options, params) {
         db_app,
         dbParams;
 
-    dbParams = params || couch.getCouchParameters({
-        requestor: CLI,
-        confirm: this.options.confirm
-    });
+    dbParams = CLI.blend({}, params);
+    dbParams = CLI.blend(
+                dbParams,
+                couch.getCouchParameters({
+                    requestor: CLI,
+                    confirm: this.options.confirm
+                }));
 
     db_url = dbParams.db_url;
     db_name = dbParams.db_name;
@@ -153,10 +156,13 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
         db_app,
         dbParams;
 
-    dbParams = params || couch.getCouchParameters({
-        requestor: CLI,
-        confirm: this.options.confirm
-    });
+    dbParams = CLI.blend({}, params);
+    dbParams = CLI.blend(
+                dbParams,
+                couch.getCouchParameters({
+                    requestor: CLI,
+                    confirm: this.options.confirm
+                }));
 
     db_url = dbParams.db_url;
     db_name = dbParams.db_name;
@@ -191,10 +197,13 @@ Cmd.prototype.dbView = function(viewname, options, params) {
         db_app,
         dbParams;
 
-    dbParams = params || couch.getCouchParameters({
-        requestor: CLI,
-        confirm: this.options.confirm
-    });
+    dbParams = CLI.blend({}, params);
+    dbParams = CLI.blend(
+                dbParams,
+                couch.getCouchParameters({
+                    requestor: CLI,
+                    confirm: this.options.confirm
+                }));
 
     db_url = dbParams.db_url;
     db_name = dbParams.db_name;
