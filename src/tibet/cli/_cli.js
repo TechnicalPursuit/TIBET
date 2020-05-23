@@ -353,6 +353,22 @@ CLI.isJSIdentifier = function(aString) {
 };
 
 /**
+ * Returns true if the string provided is a valid hex code.
+ * @param {String} aString The string value to test.
+ * @returns {Boolean} true if the string appears to be made up of hex digits.
+ */
+CLI.isHexDigit = function(aString) {
+
+    if (typeof aString !== 'string') {
+        return false;
+    }
+
+    //  Strictly speaking the '.' here is not part of a valid individual
+    //  identifier name...but we allow for JS identifier "paths".
+    return /^[0-9A-F]+$/i.test(aString);
+};
+
+/**
  * Returns true if the object provided is an 'Object' as opposed to a string,
  * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
  * hash of keys.

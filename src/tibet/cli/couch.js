@@ -117,6 +117,81 @@ Cmd.prototype.configure = function() {
 
 
 /**
+ * Sets a Mango index on a CouchDB database.
+ */
+Cmd.prototype.executeIndex = function() {
+    var cmd,
+
+        params,
+
+        arg1,
+
+        indexObj,
+        filename,
+
+        cwd,
+        fullpath,
+        dat;
+
+    cmd = this;
+
+    params = CLI.blend(this.options, {requestor: this});
+    params = couch.getCouchParameters(params);
+
+    arg1 = this.getArgument(1);
+
+    if (!arg1) {
+        this.usage('tibet couch pull <index_file | \'index_JSON\'>');
+        return;
+    }
+
+    try {
+        indexObj = JSON.parse(arg1);
+    } catch (e) {
+        filename = arg1;
+    }
+
+    if (CLI.notEmpty(indexObj)) {
+        this.dbIndex(indexObj, {}, params).then(function(rows) {
+            cmd.log(CLI.beautify(rows));
+        },
+        function(error) {
+            CLI.handleCouchError(error, 'couch', 'executeIndex');
+        });
+    } else if (CLI.notEmpty(filename)) {
+        cwd = CLI.getCurrentDirectory();
+        fullpath = CLI.joinPaths(cwd, filename);
+
+        dat = sh.cat(fullpath);
+        if (!dat) {
+            this.error('No content read for file: ' + fullpath);
+        }
+
+        dat = dat.toString();
+
+        try {
+            indexObj = JSON.parse(dat);
+        } catch (e) {
+            this.error('Invalid index JSON: ' + e.message);
+            return 1;
+        }
+
+        this.dbIndex(indexObj, {}, params).then(function(rows) {
+            cmd.log(CLI.beautify(rows));
+        },
+        function(error) {
+            CLI.handleCouchError(error, 'couch', 'executeIndex');
+        });
+
+        return 0;
+    } else {
+        this.error('No index data provided.');
+        return 1;
+    }
+};
+
+
+/**
  */
 Cmd.prototype.executeCompactdb = function() {
     var cmd,
@@ -243,6 +318,93 @@ Cmd.prototype.executeListall = function() {
             cmd.log(db);
         });
     });
+};
+
+
+/**
+ * Pulls content from a CouchDB database.
+ */
+Cmd.prototype.executePull = function() {
+    var cmd,
+
+        params,
+
+        arg1,
+
+        query,
+        filename,
+
+        cwd,
+        fullpath,
+        dat;
+
+    cmd = this;
+
+    params = CLI.blend(this.options, {requestor: this});
+    params = couch.getCouchParameters(params);
+
+    arg1 = this.getArgument(1);
+
+    if (!arg1) {
+        this.usage(
+            'tibet couch pull <documentid | [query_file | \'query_JSON\']>');
+        return;
+    }
+
+    if (CLI.isHexDigit(arg1)) {
+        this.dbGet(arg1, {}, params).then(function(rows) {
+            cmd.log(CLI.beautify(rows));
+        },
+        function(error) {
+            CLI.handleCouchError(error, 'couch', 'executePull');
+        });
+
+        return 0;
+    }
+
+    try {
+        query = JSON.parse(arg1);
+    } catch (e) {
+        filename = arg1;
+    }
+
+    if (CLI.notEmpty(query)) {
+        this.dbQuery(query, {}, params).then(function(rows) {
+            cmd.log(CLI.beautify(rows));
+        },
+        function(error) {
+            CLI.handleCouchError(error, 'couch', 'executePull');
+        });
+    } else if (CLI.notEmpty(filename)) {
+        cwd = CLI.getCurrentDirectory();
+        fullpath = CLI.joinPaths(cwd, filename);
+
+        dat = sh.cat(fullpath);
+        if (!dat) {
+            this.error('No content read for file: ' + fullpath);
+        }
+
+        dat = dat.toString();
+
+        try {
+            query = JSON.parse(dat);
+        } catch (e) {
+            this.error('Invalid query JSON: ' + e.message);
+            return 1;
+        }
+
+        this.dbQuery(query, {}, params).then(function(rows) {
+            cmd.log(CLI.beautify(rows));
+        },
+        function(error) {
+            CLI.handleCouchError(error, 'couch', 'executePull');
+        });
+
+        return 0;
+    } else {
+        this.error('No Mango query or document _id provided.');
+        return 1;
+    }
 };
 
 

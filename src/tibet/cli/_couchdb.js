@@ -142,6 +142,48 @@ Cmd.prototype.dbGet = function(id, options, params) {
 
 
 /**
+* Low-level routine for building an index for Mango. The index object
+* should be provided along with any options which are proper for db.createIndex.
+* @param {Object} index The index object to be used.
+* @param {Object} [options] nano-compatible options db.createIndex.
+* @param {Object} [params] Couch parameters if available.
+* @returns {Promise} A promise with 'then' and 'catch' options.
+*/
+Cmd.prototype.dbIndex = function(index, options, params) {
+    var server,
+        db,
+        db_url,
+        db_name,
+        db_app,
+        dbParams;
+
+    dbParams = CLI.blend(
+                {requestor: CLI, confirm: this.options.confirm},
+                params);
+
+    dbParams = CLI.blend(
+                dbParams,
+                couch.getCouchParameters(dbParams));
+
+    db_url = dbParams.db_url;
+    db_name = dbParams.db_name;
+    db_app = dbParams.db_app;
+
+    if (!db_url || !db_name || !db_app) {
+        this.error('Unable to determine CouchDB parameters.');
+        return;
+    }
+
+    server = couch.server(db_url);
+    db = server.use(db_name);
+
+    return db.createIndex(index).then(function(result) {
+        return result;
+    });
+};
+
+
+/**
 * Low-level routine for inserting/updating a document.
 * @param {Object} doc The JavaScript object to be inserted.
 * @param {Object} [options] nano-compatible options db.insert.
@@ -178,6 +220,48 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
 
     return db.insertAsync(doc, options).then(function(result) {
         return result;
+    });
+};
+
+
+/**
+* Low-level routine for querying for documents using Mango. The query object
+* should be provided along with any options which are proper for db.find.
+* @param {Object} query The Mango query to execute in CouchDB.
+* @param {Object} [options] nano-compatible options db.find.
+* @param {Object} [params] Couch parameters if available.
+* @returns {Promise} A promise with 'then' and 'catch' options.
+*/
+Cmd.prototype.dbQuery = function(query, options, params) {
+    var server,
+        db,
+        db_url,
+        db_name,
+        db_app,
+        dbParams;
+
+    dbParams = CLI.blend(
+                {requestor: CLI, confirm: this.options.confirm},
+                params);
+
+    dbParams = CLI.blend(
+                dbParams,
+                couch.getCouchParameters(dbParams));
+
+    db_url = dbParams.db_url;
+    db_name = dbParams.db_name;
+    db_app = dbParams.db_app;
+
+    if (!db_url || !db_name || !db_app) {
+        this.error('Unable to determine CouchDB parameters.');
+        return;
+    }
+
+    server = couch.server(db_url);
+    db = server.use(db_name);
+
+    return db.findAsync(query).then(function(result) {
+        return result.docs;
     });
 };
 
