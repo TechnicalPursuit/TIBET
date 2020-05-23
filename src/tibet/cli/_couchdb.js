@@ -100,10 +100,10 @@ CLI.handleCouchError = function(e, phase, command, exit) {
 //  ---
 
 /**
-* Low-level routine for fetching a document. The document object should be
-* provided along with any options which are proper for nano.db.get.
+* Low-level routine for fetching a document. The document id should be
+* provided along with any options which are proper for db.get.
 * @param {String} id The document ID to retrieve from CouchDB.
-* @param {Object} [options] A nano-compatible db.get options object.
+* @param {Object} [options] nano-compatible options db.get.
 * @param {Object} [params] Couch parameters if available.
 * @returns {Promise} A promise with 'then' and 'catch' options.
 */
