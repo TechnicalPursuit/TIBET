@@ -319,8 +319,9 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
 
     cmd = this;
 
+    dbParams = CLI.blend({}, params);
     dbParams = CLI.blend(
-                params || {},
+                dbParams,
                 couch.getCouchParameters({
                     requestor: CLI,
                     confirm: this.options.confirm
