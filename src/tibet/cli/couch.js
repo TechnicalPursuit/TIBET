@@ -251,8 +251,12 @@ Cmd.prototype.executeListall = function() {
  * or directories containing JSON documents.
  */
 Cmd.prototype.executePush = function() {
-    var arg1,
+    var params,
+        arg1,
         fullpath;
+
+    params = CLI.blend(this.options, {requestor: this});
+    params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
 
@@ -265,14 +269,14 @@ Cmd.prototype.executePush = function() {
         }
 
         if (sh.test('-d', fullpath)) {
-            this.pushDir(fullpath, this.options);
+            this.pushDir(fullpath, params);
         } else {
             //  Has to be a JSON document.
             if (path.extname(fullpath) !== '.json') {
                 this.error('Can only push JSON documents.');
                 return;
             }
-            this.pushFile(fullpath, this.options);
+            this.pushFile(fullpath, params);
         }
     } else {
         this.error('No source document reference provided.');
