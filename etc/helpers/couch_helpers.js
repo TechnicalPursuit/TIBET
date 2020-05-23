@@ -438,11 +438,11 @@ helpers.getDBReferenceInfo = function(argstr) {
         parts = argstr.split('.');
         switch (parts.length) {
             case 1:
-                retval.db_name = parts[0];
+                retval.db_ref = parts[0];
                 break;
             case 2:
-                retval.db_name = parts[0];
-                retval.db_app = parts[1];
+                retval.db_app = parts[0];
+                retval.db_ref = parts[1];
                 break;
             default:
                 //  abstract place to hold part 3 (viewname, something else?)
