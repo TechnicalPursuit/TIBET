@@ -219,14 +219,12 @@ Cmd.prototype.dbView = function(viewname, options, params) {
 *     recursive so only documents in the top level are loaded. Also note this
 *     value will be run through the CLI's expandPath routine to expand any
 *     virtual path values.
- * @param {Object} [options] A block containing database parameters and/or
- *     instructions about whether to confirm database information.
+* @param {Object} [params] Couch parameters if available.
 * @returns {Promise} A promise with 'then' and 'catch' options.
 */
-Cmd.prototype.pushDir = function(dir, options) {
+Cmd.prototype.pushDir = function(dir, params) {
     var fullpath,
         cmd,
-        ask,
         promises;
 
     cmd = this;
@@ -256,7 +254,7 @@ Cmd.prototype.pushDir = function(dir, options) {
 
         //  Force confirmation off here. We don't want to prompt for every
         //  individual file.
-        promises.push(cmd.pushFile(file, options));
+        promises.push(cmd.pushFile(file, params));
     });
 
     return Promise.all(promises);
@@ -264,14 +262,13 @@ Cmd.prototype.pushDir = function(dir, options) {
 
 
 /**
- * Pushes a single JSON document into the current database.
- * @param {String} file The file name to be loaded. Note that this will be run
- *     through the CLI's expandPath routine to handle any virtual paths.
- * @param {Object} [options] A block containing database parameters and/or
- *     instructions about whether to confirm database information.
- * @returns {Promise} A promise with 'then' and 'catch' options.
- */
-Cmd.prototype.pushFile = function(file, options) {
+* Pushes a single JSON document into the current database.
+* @param {String} file The file name to be loaded. Note that this will be run
+*     through the CLI's expandPath routine to handle any virtual paths.
+* @param {Object} [params] Couch parameters if available.
+* @returns {Promise} A promise with 'then' and 'catch' options.
+*/
+Cmd.prototype.pushFile = function(file, params) {
     var dat,
         doc,
         fullpath;
@@ -297,42 +294,40 @@ Cmd.prototype.pushFile = function(file, options) {
         return;
     }
 
-    return this.pushOne(fullpath, doc, options);
+    return this.pushOne(fullpath, doc, params);
 };
 
 
 /**
- * Pushes an actual document object (JSON which has been parsed or a JavaScript
- * POJO) associated with a particular source file path. The path is necessary to
- * ensure that the document at that location is updated with the _id value
- * returned by CouchDB if the upload is successful, or that the _rev is updated.
- * @param {String} fullpath A full absolute path for the source of the document.
- * @param {Object} doc The javascript object to upload as a document.
- * @param {Object} [options] A block containing database parameters and/or
- *     instructions about whether to confirm database information.
- * @returns {Promise} A promise with 'then' and 'catch' options.
- */
-Cmd.prototype.pushOne = function(fullpath, doc, options) {
-    var params,
+* Pushes an actual document object (JSON which has been parsed or a JavaScript
+* POJO) associated with a particular source file path. The path is necessary to
+* ensure that the document at that location is updated with the _id value
+* returned by CouchDB if the upload is successful, or that the _rev is updated.
+* @param {String} fullpath A full absolute path for the source of the document.
+* @param {Object} doc The javascript object to upload as a document.
+* @param {Object} [params] Couch parameters if available.
+* @returns {Promise} A promise with 'then' and 'catch' options.
+*/
+Cmd.prototype.pushOne = function(fullpath, doc, params) {
+    var dbParams,
         db_url,
         db_name,
         server,
         db,
         cmd,
-        ask,
         opts;
 
     cmd = this;
 
-    opts = CLI.blend(options || {}, this.options);
+    dbParams = CLI.blend(
+                params || {},
+                couch.getCouchParameters({
+                    requestor: CLI,
+                    confirm: this.options.confirm
+                }));
 
-    ask = opts.confirm;
-
-    params = couch.getCouchParameters(
-            CLI.blend(opts, {requestor: CLI, confirm: ask}));
-
-    db_url = params.db_url;
-    db_name = params.db_name;
+    db_url = dbParams.db_url;
+    db_name = dbParams.db_name;
 
     if (!db_url || !db_name) {
         this.error('Unable to determine CouchDB parameters.');
