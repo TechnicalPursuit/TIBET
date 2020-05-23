@@ -117,8 +117,7 @@ Cmd.prototype.dbGet = function(id, options, params) {
 
     dbParams = params || couch.getCouchParameters({
         requestor: CLI,
-        confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        confirm: this.options.confirm
     });
 
     db_url = dbParams.db_url;
@@ -156,8 +155,7 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
 
     dbParams = params || couch.getCouchParameters({
         requestor: CLI,
-        confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        confirm: this.options.confirm
     });
 
     db_url = dbParams.db_url;
@@ -195,8 +193,7 @@ Cmd.prototype.dbView = function(viewname, options, params) {
 
     dbParams = params || couch.getCouchParameters({
         requestor: CLI,
-        confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        confirm: this.options.confirm
     });
 
     db_url = dbParams.db_url;

@@ -251,7 +251,7 @@ helpers.getCouchParameters = function(options) {
         opts = requestor.blend(opts, helpers.lastCouchParams);
     }
 
-    cfg_root = opts.cfg_root || 'tds.couch.';
+    cfg_root = opts.cfg_root || 'cli.couch';
 
     db_url = opts.db_url || helpers.getCouchURL(opts);
 
