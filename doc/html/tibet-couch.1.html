@@ -30,10 +30,15 @@ TIBET Workflow System functionality.</p>
 create, list, push an app, remove an app, delete, and query a database
 respectively. See the <code>EXAMPLES</code> for more information.</p>
 <p>Required CouchDB parameters such as server URL, database name, and application
-name are first checked against <code>ENVIRONMENT VARIABLES</code>, then against a set of
-TIBET configuration values. If the <code>--confirm</code> flag is active (the default) the
-values discovered are presented to you for confirmation/adjustment. Prompting
-can be turned off via the <code>--no-confirm</code> flag.</p>
+name are first checked against a set of command options, then against a set of
+TIBET configuration values, then against <code>ENVIRONMENT VARIABLES</code>. Note that not
+all parameters are supported in every step. For instance, username and password
+will <em>not</em> be pulled from TIBET configuration values. This is by design. Check
+each section below to see if the parameter you&#39;re trying to set is supported by
+that mechanism.</p>
+<p>If the <code>--confirm</code> flag is active (the default) the values discovered are
+presented to you for confirmation/adjustment. Prompting can be turned off via
+the <code>--no-confirm</code> flag.</p>
 <pre><code>For example:
 
 $ export COUCH_DATABASE=dbtest_tasks
@@ -51,10 +56,43 @@ Application name [tws] ?
 [&quot;s3::Team TIBET&quot;, &quot;sample::DEFAULT&quot;, &quot;sample::Team TIBET&quot;, &quot;sendmail::Team TIBET&quot;,
 &quot;smtp::Team TIBET&quot;]</code></pre><h2 id="options">OPTIONS</h2>
 <ul>
-<li><code>--confirm</code> :
+<li><p><code>--confirm</code> :
 Should database URL and other parameters be confirmed when provided. Default
 is true. Use <code>--no-confirm</code> to disable. If you want to disable confirmations in
-general you can set the TIBET configuration value <code>cli.couch.confirm</code> to false.</li>
+general you can set the TIBET configuration value <code>cli.couch.confirm</code> to false.</p>
+</li>
+<li><p><code>--db_url</code> :
+The URL of the CouchDB server. For example <code>http://127.0.0.1:5984</code>. This URL
+can include username and password information but for more security it is
+recommended you use <code>COUCH_USER</code>, <code>COUCH_PASS</code>, and <code>COUCH_KEY</code> variables
+instead. If you do supply credentials be aware these values should be
+URL-encoded (for example &#39;pass/word&#39; must be provided as &#39;pass%2fword&#39;). A
+sample basic auth URL will resemble the following:
+<code>http://admin:pass%2fword@127.0.0.1:5984</code>.</p>
+</li>
+<li><p><code>--db_scheme</code> :
+The CouchDB server scheme. Default is <code>http</code>.</p>
+</li>
+<li><p><code>--db_host</code> :
+The CouchDB server hostname or IP address. Default is <code>127.0.0.1</code>.</p>
+</li>
+<li><p><code>--db_port</code> :
+The CouchDB server port. Default is <code>5984</code>.</p>
+</li>
+<li><p><code>--db_user</code> :
+The username for the CouchDB server being accessed. Should be set as a
+URL-encoded value.</p>
+</li>
+<li><p><code>--db_pass</code> :
+The password for the CouchDB server being accessed. Should be set as a
+URL-encoded value.</p>
+</li>
+<li><p><code>--db_name</code> :
+The CouchDB database name to use. Defaults to the current project name.</p>
+</li>
+<li><p><code>--db_app</code> :
+The CouchDB application name to use. Defaults to the current project name.</p>
+</li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
 <ul>
@@ -119,7 +157,42 @@ $ tibet couch compactdb dbtest
 Compact database [http://127.0.0.1:5984/dbtest] ?
 Enter database name to confirm: dbtest
 compacting database: http://127.0.0.1:5984/dbtest
-database compacted.</code></pre><h3 id="list-all-databases">List all databases</h3>
+database compacted.</code></pre><h3 id="compacting-a-database-and-the-views-of-an-appdesign">Compacting a database (and the views of an app/design)</h3>
+<pre><code>Use the `tibet couch compactdb` command with an argument of database.appname
+
+$ tibet couch compactdb dbtest.tws
+Compact database [http://127.0.0.1:5984/dbtest] ?
+Enter database name to confirm: dbtest
+compacting database: http://127.0.0.1:5984/dbtest
+database compacted.</code></pre><h3 id="install-a-mango-index">Install a Mango index</h3>
+<pre><code>Use the `tibet couch index` command:
+
+$ tibet couch index type_index.json
+CouchDB url [http://127.0.0.1:5984] ?
+using base url &#39;http://127.0.0.1:5984&#39;.
+Database name [dbtest_tasks] ?
+Application name [tws] ?
+
+{
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;id&quot;: &quot;_design/0212e0197cf953d0bbb9695c1064598d8ab5c483&quot;,
+    &quot;name&quot;: &quot;typeindex&quot;
+}
+
+Alternatively you can specify the JSON description for the index in an
+inline fashion:
+
+$ tibet couch index &#39;{&quot;index&quot;:{&quot;fields&quot;:[&quot;type&quot;]},&quot;name&quot;:&quot;typeindex&quot;}&#39;
+CouchDB url [http://127.0.0.1:5984] ?
+using base url &#39;http://127.0.0.1:5984&#39;.
+Database name [dbtest_tasks] ?
+Application name [tws] ?
+
+{
+    &quot;result&quot;: &quot;created&quot;,
+    &quot;id&quot;: &quot;_design/0212e0197cf953d0bbb9695c1064598d8ab5c483&quot;,
+    &quot;name&quot;: &quot;typeindex&quot;
+}</code></pre><h3 id="list-all-databases">List all databases</h3>
 <pre><code>Use the `tibet couch listall` command:
 
 $ tibet couch listall
@@ -173,7 +246,74 @@ Application frozen. TIBET now boots from ~app_inf/tibet.
 tibet couch pushapp sample
 marshalling content for: http://127.0.0.1:5984/dbtest/_design/sample
 ...
-application ready at http://127.0.0.1:5984/dbtest/_design/sample/index.html</code></pre><h3 id="removing-a-couchdb-application">Removing a CouchDB application</h3>
+application ready at http://127.0.0.1:5984/dbtest/_design/sample/index.html</code></pre><h3 id="pull-content-from-the-database">Pull content from the database</h3>
+<pre><code>Use the `tibet couch pull` command:
+
+$ tibet couch pull 04de49e538a6e818765d46bf5603b163
+CouchDB url [http://127.0.0.1:5984] ?
+using base url &#39;http://127.0.0.1:5984&#39;.
+Database name [dbtest_tasks] ?
+Application name [tws] ?
+
+{
+    &quot;_id&quot;: &quot;04de49e538a6e818765d46bf5603b163&quot;,
+    &quot;_rev&quot;: &quot;1-eee4e588a02f106781ff31a3c01a0142&quot;,
+    &quot;type&quot;: &quot;user&quot;,
+    &quot;username&quot;: &quot;bedney@technicalpursuit.com&quot;,
+    &quot;surname&quot;: &quot;Edney&quot;,
+    &quot;givenname&quot;: &quot;William&quot;,
+}
+
+Alternatively, you can specify a Mango query instead of a document ID. You
+can specify that as a file containing the JSON for a Mango query:
+
+$ tibet couch pull user_query.json
+
+Or as the JSON for a Mango query in an inline fashion
+
+$ tibet couch pull &#39;{&quot;selector&quot;:{&quot;type&quot;:{&quot;$eq&quot;:&quot;user&quot;},&quot;surname&quot;:{&quot;$eq&quot;:&quot;Edney&quot;}}}&#39;</code></pre><h3 id="pushingupdating-a-one-or-more-documents-using-files">Pushing/updating a one or more documents using files</h3>
+<pre><code>Use the `tibet couch push` command:
+
+$ tibet couch push doc_content.json
+CouchDB url [http://127.0.0.1:5984] ?
+using base url &#39;http://127.0.0.1:5984&#39;.
+Database name [dbtest_tasks] ?
+Application name [tws] ?
+
+doc_content.json =&gt;
+{
+    &quot;ok&quot;: true,
+    &quot;id&quot;: &quot;04de49e538a6e818765d46bf560bd649&quot;,
+    &quot;rev&quot;: &quot;1-176f1e7a789b50be6434a07f4ecaac04&quot;
+}
+
+You can also push a directory of content:
+
+$ tibet couch push directory_of_docs
+
+CouchDB url [http://127.0.0.1:5984] ?
+using base url &#39;http://127.0.0.1:5984&#39;.
+Database name [dbtest_tasks] ?
+Application name [tws] ?
+
+doc_content_1.json =&gt;
+{
+    &quot;ok&quot;: true,
+    &quot;id&quot;: &quot;04de49e538a6e818765d46bf560bd649&quot;,
+    &quot;rev&quot;: &quot;1-176f1e7a789b50be6434a07f4ecaac04&quot;
+}
+
+doc_content_2.json =&gt;
+{
+    &quot;ok&quot;: true,
+    &quot;id&quot;: &quot;04de49e538a6e818765d46bf560be026&quot;,
+    &quot;rev&quot;: &quot;1-721fc851d12dbb660e3123ed9a913faa&quot;
+}
+
+Note that this command will modify the file itself with an &#39;_id&#39; or &#39;_rev&#39;
+or both, depending on whether the database has already seen this content or
+not. It will also skip content that has the same &#39;_id&#39; and that has
+*identical* content to the what is already there.</code></pre><h3 id="removing-a-couchdb-application">Removing a CouchDB application</h3>
 <pre><code>Use the `tibet couch removeapp` command:
 
 $ tibet couch removeapp sample
@@ -198,7 +338,19 @@ Database name [dbtest_tasks] ?
 Application name [tws] ?
 
 [&quot;s3::Team TIBET&quot;, &quot;sample::DEFAULT&quot;, &quot;sample::Team TIBET&quot;, &quot;sendmail::Team TIBET&quot;,
-&quot;smtp::Team TIBET&quot;]</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+&quot;smtp::Team TIBET&quot;]
+
+Note that you don&#39;t have to specify the entire set of
+database.appname.viewname. It is possible to supply just appname.viewname:
+
+$ tibet couch view tws.tasks --keys
+
+or just viewname:
+
+$ tibet couch view tasks --keys
+
+In these cases, the database name and/or app name are determined using the
+mechanism detailed earlier.</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <p>During any operation if you receive a message including output to the effect
