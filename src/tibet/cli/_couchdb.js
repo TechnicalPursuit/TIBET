@@ -115,13 +115,13 @@ Cmd.prototype.dbGet = function(id, options, params) {
         db_app,
         dbParams;
 
-    dbParams = CLI.blend({}, params);
+    dbParams = CLI.blend(
+                {requestor: CLI, confirm: this.options.confirm},
+                params);
+
     dbParams = CLI.blend(
                 dbParams,
-                couch.getCouchParameters({
-                    requestor: CLI,
-                    confirm: this.options.confirm
-                }));
+                couch.getCouchParameters(dbParams));
 
     db_url = dbParams.db_url;
     db_name = dbParams.db_name;
@@ -156,13 +156,13 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
         db_app,
         dbParams;
 
-    dbParams = CLI.blend({}, params);
+    dbParams = CLI.blend(
+                {requestor: CLI, confirm: this.options.confirm},
+                params);
+
     dbParams = CLI.blend(
                 dbParams,
-                couch.getCouchParameters({
-                    requestor: CLI,
-                    confirm: this.options.confirm
-                }));
+                couch.getCouchParameters(dbParams));
 
     db_url = dbParams.db_url;
     db_name = dbParams.db_name;
@@ -197,13 +197,13 @@ Cmd.prototype.dbView = function(viewname, options, params) {
         db_app,
         dbParams;
 
-    dbParams = CLI.blend({}, params);
+    dbParams = CLI.blend(
+                {requestor: CLI, confirm: this.options.confirm},
+                params);
+
     dbParams = CLI.blend(
                 dbParams,
-                couch.getCouchParameters({
-                    requestor: CLI,
-                    confirm: this.options.confirm
-                }));
+                couch.getCouchParameters(dbParams));
 
     db_url = dbParams.db_url;
     db_name = dbParams.db_name;
@@ -329,13 +329,13 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
 
     cmd = this;
 
-    dbParams = CLI.blend({}, params);
+    dbParams = CLI.blend(
+                {requestor: CLI, confirm: this.options.confirm},
+                params);
+
     dbParams = CLI.blend(
                 dbParams,
-                couch.getCouchParameters({
-                    requestor: CLI,
-                    confirm: this.options.confirm
-                }));
+                couch.getCouchParameters(dbParams));
 
     db_url = dbParams.db_url;
     db_name = dbParams.db_name;
