@@ -223,12 +223,12 @@ Cmd.prototype.dbView = function(viewname, options, params) {
 */
 Cmd.prototype.pushDir = function(dir, options) {
     var fullpath,
-        thisref,
+        cmd,
         opts,
         ask,
         promises;
 
-    thisref = this;
+    cmd = this;
 
     fullpath = CLI.expandPath(dir);
     if (!sh.test('-e', fullpath)) {
@@ -265,13 +265,13 @@ Cmd.prototype.pushDir = function(dir, options) {
         filename = file.toString();
 
         if (path.basename(filename).charAt(0) === '_') {
-            thisref.warn('ignoring: ' + filename);
+            cmd.warn('ignoring: ' + filename);
             return;
         }
 
         //  Force confirmation off here. We don't want to prompt for every
         //  individual file.
-        promises.push(thisref.pushFile(file, opts));
+        promises.push(cmd.pushFile(file, opts));
     });
 
     return Promise.all(promises);
@@ -333,11 +333,11 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
         db_name,
         server,
         db,
-        thisref,
+        cmd,
         ask,
         opts;
 
-    thisref = this;
+    cmd = this;
 
     opts = options || {};
 
@@ -379,17 +379,17 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             delete response._rev;
 
             if (CLI.isSameJSON(doc, response)) {
-                thisref.log('skipping: ' + fullpath);
+                cmd.log('skipping: ' + fullpath);
                 return;
             }
 
             doc._rev = rev;
-            thisref.log('updating: ' + fullpath);
+            cmd.log('updating: ' + fullpath);
         }).catch(function(err) {
             if (err.message !== 'missing') {
                 //  most common error will be 'missing' document due to
                 //  deletion, purge, etc.
-                thisref.error(fullpath + ' =>');
+                cmd.error(fullpath + ' =>');
                 CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
 
                 throw err;
@@ -399,12 +399,12 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
 
             delete doc._rev;    //  clear any _rev to avoid update conflict
 
-            thisref.log('inserting: ' + fullpath);
+            cmd.log('inserting: ' + fullpath);
 
         }).then(function() {
             return db.insertAsync(doc);
         }).then(function(response2) {
-            thisref.log(fullpath + ' =>\n' + CLI.beautify(response2));
+            cmd.log(fullpath + ' =>\n' + CLI.beautify(response2));
 
             //  Set the document ID to the response ID so we know it.
             doc._id = response2.id;
@@ -413,7 +413,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             //  Write the doc to the path after beautifying it.
             new sh.ShellString(CLI.beautify(doc)).to(fullpath);
         }).catch(function(err2) {
-            thisref.error(fullpath + ' =>');
+            cmd.error(fullpath + ' =>');
             CLI.handleCouchError(err2, Cmd.NAME, 'pushOne', false);
 
             throw err2;
@@ -421,14 +421,14 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
     } else {
         return db.insertAsync(doc).then(function(response) {
 
-            thisref.log(fullpath + ' =>\n' + CLI.beautify(response));
+            cmd.log(fullpath + ' =>\n' + CLI.beautify(response));
 
             //  Set the document ID to the response ID so we know it.
             doc._id = response.id;
             delete doc._rev;
             new sh.ShellString(CLI.beautify(doc)).to(fullpath);
         }).catch(function(err) {
-            thisref.error(fullpath + ' =>');
+            cmd.error(fullpath + ' =>');
             CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
 
             throw err;
