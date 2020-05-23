@@ -279,14 +279,16 @@ helpers.getCouchParameters = function(options) {
     if (!db_name) {
         db_name = requestor.getcfg(cfg_root + '.db_name') ||
             requestor.getcfg('npm.name');
-    }
 
-    if (options.needsdb !== false) {
-        if (requestor.prompt && opts.confirm !== false) {
-            result = requestor.prompt.question(
-                                'Database name [' + db_name + '] ? ');
-            if (result && result.length > 0) {
-                db_name = result;
+        //  If we need a db, but we've defaulted it using the logic above, then
+        //  ask the user to confirm.
+        if (options.needsdb !== false) {
+            if (requestor.prompt && opts.confirm !== false) {
+                result = requestor.prompt.question(
+                                    'Database name [' + db_name + '] ? ');
+                if (result && result.length > 0) {
+                    db_name = result;
+                }
             }
         }
     }
@@ -295,14 +297,16 @@ helpers.getCouchParameters = function(options) {
     if (!db_app) {
         db_app = requestor.getcfg(cfg_root + '.db_app') ||
             requestor.getcfg('npm.name');
-    }
 
-    if (options.needsapp !== false) {
-        if (requestor.prompt && opts.confirm !== false) {
-            result = requestor.prompt.question(
-                                'Application name [' + db_app + '] ? ');
-            if (result && result.length > 0) {
-                db_app = result;
+        //  If we need an app, but we've defaulted it using the logic above,
+        //  then ask the user to confirm.
+        if (options.needsapp !== false) {
+            if (requestor.prompt && opts.confirm !== false) {
+                result = requestor.prompt.question(
+                                    'Application name [' + db_app + '] ? ');
+                if (result && result.length > 0) {
+                    db_app = result;
+                }
             }
         }
     }
