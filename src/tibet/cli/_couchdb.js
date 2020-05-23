@@ -324,7 +324,8 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
         server,
         db,
         cmd,
-        opts;
+        opts,
+        skip;
 
     cmd = this;
 
@@ -347,6 +348,8 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
     server = couch.server(db_url);
     db = server.use(db_name);
 
+    skip = false;
+
     if (doc._id) {
         //  Have to fetch to get the proper _rev to update...
         return db.getAsync(doc._id).then(function(response) {
@@ -359,6 +362,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
 
             if (CLI.isSameJSON(doc, response)) {
                 cmd.log('skipping: ' + fullpath);
+                skip = true;
                 return;
             }
 
@@ -381,16 +385,20 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
             cmd.log('inserting: ' + fullpath);
 
         }).then(function() {
-            return db.insertAsync(doc);
+            if (!skip) {
+                return db.insertAsync(doc);
+            }
         }).then(function(response2) {
-            cmd.log(fullpath + ' =>\n' + CLI.beautify(response2));
+            if (!skip) {
+                cmd.log(fullpath + ' =>\n' + CLI.beautify(response2));
 
-            //  Set the document ID to the response ID so we know it.
-            doc._id = response2.id;
-            delete doc._rev;
+                //  Set the document ID to the response ID so we know it.
+                doc._id = response2.id;
+                delete doc._rev;
 
-            //  Write the doc to the path after beautifying it.
-            new sh.ShellString(CLI.beautify(doc)).to(fullpath);
+                //  Write the doc to the path after beautifying it.
+                new sh.ShellString(CLI.beautify(doc)).to(fullpath);
+            }
         }).catch(function(err2) {
             cmd.error(fullpath + ' =>');
             CLI.handleCouchError(err2, Cmd.NAME, 'pushOne', false);
