@@ -816,6 +816,7 @@
 
         opts = options || {};
         opts.requestor = TDS;
+        opts.cfg_root = 'tds.couch';
 
         return couch.getCouchConnection(opts);
     };
@@ -835,6 +836,7 @@
 
         opts = options || {};
         opts.requestor = TDS;
+        opts.cfg_root = 'tds.couch';
 
         return couch.getCouchDatabase(opts);
     };
@@ -850,6 +852,7 @@
 
         opts = options || {};
         opts.requestor = TDS;
+        opts.cfg_root = 'tds.couch';
 
         return couch.getCouchParameters(opts);
     };
@@ -863,6 +866,7 @@
 
         opts = options || {};
         opts.requestor = TDS;
+        opts.cfg_root = 'tds.couch';
 
         return couch.getCouchURL(opts);
     };

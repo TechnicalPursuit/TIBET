@@ -117,8 +117,7 @@ Cmd.prototype.dbGet = function(id, options, params) {
 
     dbParams = params || couch.getCouchParameters({
         requestor: CLI,
-        confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        confirm: this.options.confirm
     });
 
     db_url = dbParams.db_url;
@@ -156,8 +155,7 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
 
     dbParams = params || couch.getCouchParameters({
         requestor: CLI,
-        confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        confirm: this.options.confirm
     });
 
     db_url = dbParams.db_url;
@@ -195,8 +193,7 @@ Cmd.prototype.dbView = function(viewname, options, params) {
 
     dbParams = params || couch.getCouchParameters({
         requestor: CLI,
-        confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        confirm: this.options.confirm
     });
 
     db_url = dbParams.db_url;
@@ -222,16 +219,17 @@ Cmd.prototype.dbView = function(viewname, options, params) {
 *     recursive so only documents in the top level are loaded. Also note this
 *     value will be run through the CLI's expandPath routine to expand any
 *     virtual path values.
+ * @param {Object} [options] A block containing database parameters and/or
+ *     instructions about whether to confirm database information.
 * @returns {Promise} A promise with 'then' and 'catch' options.
 */
 Cmd.prototype.pushDir = function(dir, options) {
     var fullpath,
-        thisref,
-        opts,
+        cmd,
         ask,
         promises;
 
-    thisref = this;
+    cmd = this;
 
     fullpath = CLI.expandPath(dir);
     if (!sh.test('-e', fullpath)) {
@@ -244,22 +242,6 @@ Cmd.prototype.pushDir = function(dir, options) {
         return;
     }
 
-    opts = options || {};
-
-    if (CLI.isValid(opts.confirm)) {
-        ask = opts.confirm;
-    } else {
-        ask = this.options.confirm;
-    }
-
-    if (CLI.notValid(opts.db_url)) {
-        opts = CLI.blend(opts, couch.getCouchParameters({
-            requestor: CLI,
-            confirm: ask,
-            cfg_root: 'tds.tasks'
-        }));
-    }
-
     promises = [];
 
     sh.ls(CLI.joinPaths(fullpath, '*.json')).forEach(function(file) {
@@ -268,13 +250,13 @@ Cmd.prototype.pushDir = function(dir, options) {
         filename = file.toString();
 
         if (path.basename(filename).charAt(0) === '_') {
-            thisref.warn('ignoring: ' + filename);
+            cmd.warn('ignoring: ' + filename);
             return;
         }
 
         //  Force confirmation off here. We don't want to prompt for every
         //  individual file.
-        promises.push(thisref.pushFile(file, opts));
+        promises.push(cmd.pushFile(file, options));
     });
 
     return Promise.all(promises);
@@ -336,29 +318,18 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
         db_name,
         server,
         db,
-        thisref,
+        cmd,
         ask,
         opts;
 
-    thisref = this;
+    cmd = this;
 
-    opts = options || {};
+    opts = CLI.blend(options || {}, this.options);
 
-    if (CLI.isValid(opts.confirm)) {
-        ask = opts.confirm;
-    } else {
-        ask = this.options.confirm;
-    }
+    ask = opts.confirm;
 
-    if (CLI.notValid(opts.db_url)) {
-        params = couch.getCouchParameters({
-            requestor: CLI,
-            confirm: ask,
-            cfg_root: 'tds.tasks'
-        });
-    } else {
-        params = opts;
-    }
+    params = couch.getCouchParameters(
+            CLI.blend(opts, {requestor: CLI, confirm: ask}));
 
     db_url = params.db_url;
     db_name = params.db_name;
@@ -382,17 +353,17 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             delete response._rev;
 
             if (CLI.isSameJSON(doc, response)) {
-                thisref.log('skipping: ' + fullpath);
+                cmd.log('skipping: ' + fullpath);
                 return;
             }
 
             doc._rev = rev;
-            thisref.log('updating: ' + fullpath);
+            cmd.log('updating: ' + fullpath);
         }).catch(function(err) {
             if (err.message !== 'missing') {
                 //  most common error will be 'missing' document due to
                 //  deletion, purge, etc.
-                thisref.error(fullpath + ' =>');
+                cmd.error(fullpath + ' =>');
                 CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
 
                 throw err;
@@ -402,12 +373,12 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
 
             delete doc._rev;    //  clear any _rev to avoid update conflict
 
-            thisref.log('inserting: ' + fullpath);
+            cmd.log('inserting: ' + fullpath);
 
         }).then(function() {
             return db.insertAsync(doc);
         }).then(function(response2) {
-            thisref.log(fullpath + ' =>\n' + CLI.beautify(response2));
+            cmd.log(fullpath + ' =>\n' + CLI.beautify(response2));
 
             //  Set the document ID to the response ID so we know it.
             doc._id = response2.id;
@@ -416,7 +387,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             //  Write the doc to the path after beautifying it.
             new sh.ShellString(CLI.beautify(doc)).to(fullpath);
         }).catch(function(err2) {
-            thisref.error(fullpath + ' =>');
+            cmd.error(fullpath + ' =>');
             CLI.handleCouchError(err2, Cmd.NAME, 'pushOne', false);
 
             throw err2;
@@ -424,14 +395,14 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
     } else {
         return db.insertAsync(doc).then(function(response) {
 
-            thisref.log(fullpath + ' =>\n' + CLI.beautify(response));
+            cmd.log(fullpath + ' =>\n' + CLI.beautify(response));
 
             //  Set the document ID to the response ID so we know it.
             doc._id = response.id;
             delete doc._rev;
             new sh.ShellString(CLI.beautify(doc)).to(fullpath);
         }).catch(function(err) {
-            thisref.error(fullpath + ' =>');
+            cmd.error(fullpath + ' =>');
             CLI.handleCouchError(err, Cmd.NAME, 'pushOne', false);
 
             throw err;

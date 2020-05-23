@@ -98,9 +98,7 @@ Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|listall|push|pushapp|remo
  * @returns {Object} An options object usable by the command.
  */
 Cmd.prototype.configure = function() {
-    var confirm,
-        parts,
-        arg1;
+    var confirm;
 
     //  Explicit flag always wins.
     if (this.hasArgument('confirm')) {
@@ -114,29 +112,6 @@ Cmd.prototype.configure = function() {
         }
     }
 
-    //  All commands allow target specification via a dotted arg1 value. Since
-    //  most commands operate on a database or database and appname we default
-    //  to assuming dbname[.appname]. Subcommands may alter this as needed.
-    arg1 = this.getArgument(1);
-    if (arg1) {
-        parts = arg1.split('.');
-        switch (parts.length) {
-            case 1:
-                this.options.db_name = parts[0];
-                break;
-            case 2:
-                this.options.db_name = parts[0];
-                this.options.db_app = parts[1];
-                break;
-            default:
-                this.options.db_name = parts[0];
-                this.options.db_app = parts[1];
-                //  abstract place to hold part 3 (viewname, something else?)
-                this.options.db_ref = parts[2];
-                break;
-        }
-    }
-
     return this.options;
 };
 
@@ -147,6 +122,8 @@ Cmd.prototype.executeCompactdb = function() {
     var cmd,
         params,
         db_url,
+        arg1,
+        arginfo,
         db_name,
         app_name,
         result,
@@ -158,8 +135,18 @@ Cmd.prototype.executeCompactdb = function() {
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
-    db_name = params.db_name;
-    app_name = params.app_name;
+
+    //  NB: For this command, we get database and app name from the argument,
+    //  since we're specifying the database name and app to compact.
+    arg1 = this.getArgument(1);
+    if (!arg1) {
+        this.usage('tibet couch compact <[dbname.][appname.]>');
+        return;
+    }
+    arginfo = couch.getDBReferenceInfo(arg1);
+
+    db_name = arginfo.db_name || params.db_name;
+    app_name = arginfo.db_app || params.app_name;
 
     result = CLI.prompt.question(
         'Compact database [' + couch.maskCouchAuth(db_url) + '/' + db_name +
@@ -199,8 +186,13 @@ Cmd.prototype.executeCreatedb = function() {
 
     params = CLI.blend(this.options, {requestor: this, needsapp: false});
     params = couch.getCouchParameters(params);
+
     db_url = params.db_url;
-    db_name = params.db_name;
+
+    //  NB: For this command, we get database name from the argument, since
+    //  we're specifying the database name to create - we don't want to recreate
+    //  one that's already there! ;-)
+    db_name = this.getArgument(1);
 
     this.log('creating database: ' +
         couch.maskCouchAuth(db_url) + '/' + db_name);
@@ -237,6 +229,7 @@ Cmd.prototype.executeListall = function() {
                     needsdb: false
                 });
     params = couch.getCouchParameters(params);
+
     db_url = params.db_url;
 
     nano = require('nano')(db_url);
@@ -258,27 +251,28 @@ Cmd.prototype.executeListall = function() {
  * or directories containing JSON documents.
  */
 Cmd.prototype.executePush = function() {
-    var id,
+    var arg1,
         fullpath;
 
-    id = this.getArgument(1);
+    arg1 = this.getArgument(1);
 
-    if (CLI.notEmpty(id)) {
-        fullpath = CLI.expandPath(id);
+    if (CLI.notEmpty(arg1)) {
+        fullpath = CLI.expandPath(arg1);
+
         if (!sh.test('-e', fullpath)) {
             this.error('Source path not found: ' + fullpath);
             return;
         }
 
         if (sh.test('-d', fullpath)) {
-            this.pushDir(fullpath);
+            this.pushDir(fullpath, this.options);
         } else {
             //  Has to be a JSON document.
             if (path.extname(fullpath) !== '.json') {
                 this.error('Can only push JSON documents.');
                 return;
             }
-            this.pushFile(fullpath);
+            this.pushFile(fullpath, this.options);
         }
     } else {
         this.error('No source document reference provided.');
@@ -320,7 +314,9 @@ Cmd.prototype.executePushapp = function() {
         return;
     }
 
-    //  Assume appname as solo parameter, db.app when dotted.
+    //  Assume app_name as solo parameter, db_name.app_name when dotted. NB: We
+    //  don't use our couch.getDBReferenceInfo call here since we want a default
+    //  block that will report usage.
     parts = arg1.split('.');
     switch (parts.length) {
         case 1:
@@ -338,6 +334,7 @@ Cmd.prototype.executePushapp = function() {
 
     params = CLI.blend(this.options, {requestor: this});
     params = couch.getCouchParameters(params);
+
     db_url = params.db_url;
     db_name = params.db_name;
     db_app = params.db_app;
@@ -588,19 +585,21 @@ Cmd.prototype.executePushapp = function() {
                             //  database is configured to use for attachments.
                             level = db_config.attachments.compression_level;
 
-                            couchDigest(data,
-                                {level: level, encoding: encoding}, zlib.gzip).then(
-                            function(result) {
-                                if (result === digest) {
-                                    resolve2('unchanged');
-                                } else {
-                                    resolve2('update');
-                                }
-                            },
-                            function(err3) {
-                                cmd.error(err3);
-                                reject2(err3);
-                            });
+                            couchDigest(
+                                data,
+                                {level: level, encoding: encoding},
+                                zlib.gzip).then(
+                                function(result) {
+                                    if (result === digest) {
+                                        resolve2('unchanged');
+                                    } else {
+                                        resolve2('update');
+                                    }
+                                },
+                                function(err3) {
+                                    cmd.error(err3);
+                                    reject2(err3);
+                                });
                         },
                         function(err2) {
                             reject2(err2);
@@ -645,14 +644,16 @@ Cmd.prototype.executePushapp = function() {
                 });
 
                 //  Ensure we also capture any views, shows, lists, etc...
-                //  NOTE we add 'default' if the actual app directory isn't found.
+                //  NOTE we add 'default' if the actual app directory isn't
+                //  found.
                 fullpath = CLI.expandPath(CLI.getcfg('path.tds_couch_defs'));
                 if (sh.test('-d', CLI.joinPaths(fullpath, db_app))) {
                     fullpath = CLI.joinPaths(fullpath, db_app);
                 } else {
                     fullpath = CLI.joinPaths(fullpath, 'default');
                 }
-                newdoc = couch.populateDesignDoc(existing, fullpath, params, true);
+                newdoc = couch.populateDesignDoc(
+                                    existing, fullpath, params, true);
 
                 //  Do the deed...and cross our fingers :)
                 nano = require('nano')(db_url + '/' + db_name);
@@ -782,7 +783,9 @@ Cmd.prototype.executeRemoveapp = function() {
         return;
     }
 
-    //  Assume appname as solo parameter, db.app when dotted.
+    //  Assume app_name as solo parameter, db_name.app_name when dotted. NB: We
+    //  don't use our couch.getDBReferenceInfo call here since we want a default
+    //  block that will report usage.
     parts = arg1.split('.');
     switch (parts.length) {
         case 1:
@@ -800,6 +803,7 @@ Cmd.prototype.executeRemoveapp = function() {
 
     params = CLI.blend(this.options, {requestor: this});
     params = couch.getCouchParameters(params);
+
     db_url = params.db_url;
     db_name = params.db_name;
     db_app = params.db_app;
@@ -821,22 +825,22 @@ Cmd.prototype.executeRemoveapp = function() {
     db = require('nano')(db_url + '/' + db_name);
     dbGet = Promise.promisify(db.get);
 
-    dbGet(doc_name, {att_encoding_info: true, revs_info: true}).then(function(response) {
-        db.destroy(doc_name, response._rev,
-            function(error) {
-                if (error) {
-                    CLI.handleCouchError(error, 'couch', 'removeapp');
-                    return;
-                }
+    dbGet(doc_name, {att_encoding_info: true, revs_info: true}).then(
+        function(response) {
+            db.destroy(doc_name, response._rev,
+                function(error) {
+                    if (error) {
+                        CLI.handleCouchError(error, 'couch', 'removeapp');
+                        return;
+                    }
 
-                cmd.log('application removed.');
-            });
-
-    }).catch(function(err) {
-        CLI.debug(params);
-        CLI.handleCouchError(err, 'couch', 'removeapp');
-        return;
-    });
+                    cmd.log('application removed.');
+                });
+        }).catch(function(err) {
+            CLI.debug(params);
+            CLI.handleCouchError(err, 'couch', 'removeapp');
+            return;
+        });
 };
 
 
@@ -855,8 +859,12 @@ Cmd.prototype.executeRemovedb = function() {
 
     params = CLI.blend(this.options, {requestor: this, needsapp: false});
     params = couch.getCouchParameters(params);
+
     db_url = params.db_url;
-    db_name = params.db_name;
+
+    //  NB: For this command, we get database name from the argument, since
+    //  we're specifying the database name to delete.
+    db_name = this.getArgument(1);
 
     result = CLI.prompt.question(
         'Delete ENTIRE database [' +
@@ -892,12 +900,12 @@ Cmd.prototype.executeView = function() {
         dbParams,
         viewParams,
         method,
-        thisref,
+        cmd,
         arg1,
         parts,
         db;
 
-    thisref = this;
+    cmd = this;
 
     this.reparse({
         boolean: ['docs', 'keys', 'values', 'rows'],
@@ -918,6 +926,10 @@ Cmd.prototype.executeView = function() {
     //  View parsing of arg1 is different in that viewname is required, so we
     //  assume single values are viewnames. 2 parts are app.view, and 3 parts
     //  are db.app.view.
+
+    //  NB: We don't use our couch.getDBReferenceInfo call here since we want a
+    //  default block that will report usage.
+
     parts = arg1.split('.');
     switch (parts.length) {
         case 1:
@@ -980,10 +992,10 @@ Cmd.prototype.executeView = function() {
         //  NOTE we're basically always in '--verbose' mode here since we don't
         //  know the type of document in the result and don't want to ass_ume
         //  any particular schema per se.
-        thisref.log(CLI.beautify(rows));
+        cmd.log(CLI.beautify(rows));
     }).catch(function(err) {
         if (err.message === 'missing_named_view') {
-            thisref.error('View not found: ' + viewname);
+            cmd.error('View not found: ' + viewname);
         } else {
             CLI.debug(CLI.beautify(dbParams));
             CLI.handleCouchError(err, 'couch', 'view');
