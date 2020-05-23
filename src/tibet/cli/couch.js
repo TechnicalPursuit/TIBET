@@ -265,14 +265,14 @@ Cmd.prototype.executePush = function() {
         }
 
         if (sh.test('-d', fullpath)) {
-            this.pushDir(fullpath);
+            this.pushDir(fullpath, this.options);
         } else {
             //  Has to be a JSON document.
             if (path.extname(fullpath) !== '.json') {
                 this.error('Can only push JSON documents.');
                 return;
             }
-            this.pushFile(fullpath);
+            this.pushFile(fullpath, this.options);
         }
     } else {
         this.error('No source document reference provided.');
