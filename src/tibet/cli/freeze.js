@@ -61,7 +61,7 @@ Cmd.NAME = 'freeze';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['minify', 'raw', 'all', 'zipped'],
+        'boolean': ['minify', 'raw', 'all', 'zipped', 'brotlied'],
         'string': ['tibet'],
         'default': {
             all: true,
@@ -77,7 +77,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw] [--zipped]';
+Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw] [--zipped] [--brotlied]';
 
 
 //  ---
@@ -295,11 +295,15 @@ Cmd.prototype.execute = function() {
 
             filename = aFile.toString();
 
-            // TODO: come up with a better solution. For now the one file we
-            // don't want to remove by default is tibet_developer.min.js
-            // since the various tsh-related commands use that one.
+            // TODO: come up with a better solution. For now the two files we
+            // don't want to remove by default is tibet_developer.min.js or
+            // tibet_developer.br since the various tsh-related commands use
+            // those
             if (/tibet_developer\.min\.js/.test(filename)) {
                 if (/\.gz$/.test(filename)) {
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
+                }
+                if (/\.br/.test(filename)) {
                     sh.rm('-f', CLI.joinPaths(srcroot, filename));
                 }
                 return;
@@ -323,6 +327,17 @@ Cmd.prototype.execute = function() {
                 }
             } else {
                 if (/\.gz$/.test(filename) === true) {
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
+                }
+            }
+
+            // Remove any brotlied/unbrotlied copies we don't want.
+            if (cmd.options.brotlied) {
+                if (/\.br/.test(filename) !== true) {
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
+                }
+            } else {
+                if (/\.br/.test(filename) === true) {
                     sh.rm('-f', CLI.joinPaths(srcroot, filename));
                 }
             }
