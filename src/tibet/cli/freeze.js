@@ -357,7 +357,8 @@ Cmd.prototype.execute = function() {
         return !filename.match('node_modules/tibet') &&
                 !filename.match('TIBET-INF/tibet');
     });
-    list = sh.grep('-l', 'node_modules/tibet', list);
+
+    list = sh.grep('-l', /node_modules\/tibet/g, list).toString();
 
     list.split('\n').forEach(function(aFile) {
         var filename;
