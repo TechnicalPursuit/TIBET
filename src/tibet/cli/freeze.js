@@ -354,8 +354,15 @@ Cmd.prototype.execute = function() {
 
         filename = aFile.toString();
 
-        return !filename.match('node_modules/tibet') &&
-                !filename.match('TIBET-INF/tibet');
+        //  We need to make sure to filter out directories, since ShellJS's
+        //  'grep' command will throw an error when handed a name pointing to a
+        //  directory in the list.
+        if (sh.test('-d', filename)) {
+            return false;
+        }
+
+        return !filename.match(/node_modules\/tibet/) &&
+                !filename.match(/TIBET-INF\/tibet/);
     });
 
     list = sh.grep('-l', /node_modules\/tibet/g, list).toString();
