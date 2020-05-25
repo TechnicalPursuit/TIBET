@@ -91,6 +91,7 @@ Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw
 Cmd.prototype.execute = function() {
 
     var sh,
+        path,
 
         cmd,
         err,
@@ -100,7 +101,12 @@ Cmd.prototype.execute = function() {
         libbase,
         libsrc,
         srcroot,
+
         lnflags,
+        linksrcdir,
+        linkdestdir,
+        srcdir,
+
         lnerr,
         file,
         json,
@@ -110,6 +116,7 @@ Cmd.prototype.execute = function() {
         str;
 
     sh = require('shelljs');
+    path = require('path');
 
     cmd = this;
 
@@ -272,9 +279,12 @@ Cmd.prototype.execute = function() {
 
     //  We want the project's node_modules/tibet/node_modules dir linked into
     //  place so CLI commands consistently find their dependencies.
-    lnerr = sh.ln(lnflags,
-                    CLI.joinPaths(app_npm, 'tibet', 'node_modules'),
-                    CLI.joinPaths(infroot, 'node_modules'));
+    linksrcdir = CLI.joinPaths(app_npm, 'tibet', 'node_modules');
+    linkdestdir = CLI.joinPaths(infroot, 'node_modules');
+    srcdir = path.relative(path.dirname(linkdestdir), linksrcdir);
+
+    lnerr = sh.ln(lnflags, srcdir, linkdestdir);
+
     if (sh.error()) {
         this.error('Error relinking npm resources: ' + lnerr.stderr);
     }
