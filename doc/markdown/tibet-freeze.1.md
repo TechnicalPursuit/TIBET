@@ -53,6 +53,11 @@ performance impact.
 after any minify processing so if you set both minify and zipped you will retain
 `.min.js.gz` files.
 
+  * `--brotlied` :
+    Controls whether brotlied copies are preserved or pruned. This flag works
+after any minify processing so if you set both minify and brotlied you will
+retain `.min.js.br` files.
+
 ## CONFIGURATION SETTINGS
 
 No TIBET configuration variables are utilized by this command.

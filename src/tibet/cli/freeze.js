@@ -20,9 +20,11 @@
 'use strict';
 
 var CLI,
+    helpers,
     Cmd;
 
 CLI = require('./_cli');
+helpers = require('../../../etc/helpers/make_helpers');
 
 //  ---
 //  Type Construction
@@ -61,12 +63,11 @@ Cmd.NAME = 'freeze';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['minify', 'raw', 'all', 'zipped'],
+        'boolean': ['minify', 'raw', 'all', 'zipped', 'brotlied'],
         'string': ['tibet'],
         'default': {
             all: true,
-            minify: true,
-            tibet: 'base'
+            minify: true
         }
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -77,7 +78,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw] [--zipped]';
+Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw] [--zipped] [--brotlied]';
 
 
 //  ---
@@ -91,6 +92,7 @@ Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw
 Cmd.prototype.execute = function() {
 
     var sh,
+        path,
 
         cmd,
         err,
@@ -100,16 +102,26 @@ Cmd.prototype.execute = function() {
         libbase,
         libsrc,
         srcroot,
+
         lnflags,
+        linksrcdir,
+        linkdestdir,
+        srcdir,
+
         lnerr,
         file,
         json,
         list,
         bundle,
+        profile,
 
-        str;
+        str,
+
+        source,
+        target;
 
     sh = require('shelljs');
+    path = require('path');
 
     cmd = this;
 
@@ -183,7 +195,7 @@ Cmd.prototype.execute = function() {
     }
 
     this.log('freezing packaged library resources...');
-    err = sh.cp('-Rn', CLI.joinPaths(libbase, '*'), infroot);
+    err = sh.cp('-Rn', libbase + '/', infroot);
     if (sh.error()) {
         this.error('Error cloning ' + libbase + ': ' + err.stderr);
         return 1;
@@ -191,6 +203,7 @@ Cmd.prototype.execute = function() {
 
     srcroot = CLI.joinPaths(infroot, 'lib', 'src');
     list = sh.ls('-A', srcroot);
+
     if (sh.error()) {
         this.error('Error listing ' + srcroot + ': ' + list.stderr);
         this.warn('Verify `tibet build` has run and built library packages.');
@@ -198,21 +211,21 @@ Cmd.prototype.execute = function() {
     }
 
     this.log('freezing library dependencies...');
-    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'deps', '*'), infroot);
+    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'deps') + '/', infroot);
     if (sh.error()) {
         this.error('Error cloning tibet/deps: ' + err.stderr);
         return 1;
     }
 
     this.log('freezing library support resources...');
-    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'etc', '*'), infroot);
+    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'etc') + '/', infroot);
     if (sh.error()) {
         this.error('Error cloning tibet/etc: ' + err.stderr);
         return 1;
     }
 
     this.log('freezing standard library docs...');
-    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'doc', '*'), infroot);
+    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'doc') + '/', infroot);
     if (sh.error()) {
         this.error('Error cloning tibet/doc: ' + err.stderr);
         return 1;
@@ -220,21 +233,21 @@ Cmd.prototype.execute = function() {
 
     if (this.options.raw) {
         this.log('freezing raw library source...');
-        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'src', '*'), infroot);
+        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'src') + '/', infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/src: ' + err.stderr);
             return 1;
         }
 
         this.log('freezing raw library tests...');
-        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'test', '*'), infroot);
+        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'test') + '/', infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/test: ' + err.stderr);
             return 1;
         }
 
         this.log('freezing raw library demos...');
-        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'demo', '*'), infroot);
+        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'demo') + '/', infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/demo: ' + err.stderr);
             return 1;
@@ -243,7 +256,7 @@ Cmd.prototype.execute = function() {
         this.log('freezing developer boot resources...');
         sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'boot'));
         err = sh.cp('-Rn',
-                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'boot', '*'),
+                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'boot') + '/',
                     CLI.joinPaths(infroot, 'src', 'tibet'));
         if (sh.error()) {
             this.error('Error cloning tibet boot: ' + err.stderr);
@@ -253,7 +266,7 @@ Cmd.prototype.execute = function() {
         this.log('freezing developer tool resources...');
         sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'tools'));
         err = sh.cp('-Rn',
-                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'tools', '*'),
+                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'tools') + '/',
                     CLI.joinPaths(infroot, 'src', 'tibet'));
         if (sh.error()) {
             this.error('Error cloning tibet tools: ' + err.stderr);
@@ -271,9 +284,12 @@ Cmd.prototype.execute = function() {
 
     //  We want the project's node_modules/tibet/node_modules dir linked into
     //  place so CLI commands consistently find their dependencies.
-    lnerr = sh.ln(lnflags,
-                    CLI.joinPaths(app_npm, 'tibet', 'node_modules'),
-                    CLI.joinPaths(infroot, 'node_modules'));
+    linksrcdir = CLI.joinPaths(app_npm, 'tibet', 'node_modules');
+    linkdestdir = CLI.joinPaths(infroot, 'node_modules');
+    srcdir = path.relative(path.dirname(linkdestdir), linksrcdir);
+
+    lnerr = sh.ln(lnflags, srcdir, linkdestdir);
+
     if (sh.error()) {
         this.error('Error relinking npm resources: ' + lnerr.stderr);
     }
@@ -282,11 +298,21 @@ Cmd.prototype.execute = function() {
     //  prune unwanted/unused files
     //  ---
 
+    bundle = this.options.tibet;
+    if (!bundle) {
+        profile = CLI.getcfg('project.packaging.profile');
+        if (profile) {
+            bundle = profile.slice(profile.lastIndexOf('@') + 1);
+        }
+
+        if (CLI.isEmpty(bundle)) {
+            bundle = 'base';
+        }
+    }
+
     if (!this.options.all) {
 
         this.log('pruning unnecessary source rollups...');
-
-        bundle = this.options.tibet;
 
         list.forEach(function(aFile) {
 
@@ -294,11 +320,15 @@ Cmd.prototype.execute = function() {
 
             filename = aFile.toString();
 
-            // TODO: come up with a better solution. For now the one file we
-            // don't want to remove by default is tibet_developer.min.js
-            // since the various tsh-related commands use that one.
+            // TODO: come up with a better solution. For now the two files we
+            // don't want to remove by default is tibet_developer.min.js or
+            // tibet_developer.br since the various tsh-related commands use
+            // those
             if (/tibet_developer\.min\.js/.test(filename)) {
                 if (/\.gz$/.test(filename)) {
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
+                }
+                if (/\.br/.test(filename)) {
                     sh.rm('-f', CLI.joinPaths(srcroot, filename));
                 }
                 return;
@@ -322,6 +352,17 @@ Cmd.prototype.execute = function() {
                 }
             } else {
                 if (/\.gz$/.test(filename) === true) {
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
+                }
+            }
+
+            // Remove any brotlied/unbrotlied copies we don't want.
+            if (cmd.options.brotlied) {
+                if (/\.br/.test(filename) !== true) {
+                    sh.rm('-f', CLI.joinPaths(srcroot, filename));
+                }
+            } else {
+                if (/\.br/.test(filename) === true) {
                     sh.rm('-f', CLI.joinPaths(srcroot, filename));
                 }
             }
@@ -353,10 +394,18 @@ Cmd.prototype.execute = function() {
 
         filename = aFile.toString();
 
-        return !filename.match('node_modules/tibet') &&
-                !filename.match('TIBET-INF/tibet');
+        //  We need to make sure to filter out directories, since ShellJS's
+        //  'grep' command will throw an error when handed a name pointing to a
+        //  directory in the list.
+        if (sh.test('-d', filename)) {
+            return false;
+        }
+
+        return !filename.match(/node_modules\/tibet/) &&
+                !filename.match(/TIBET-INF\/tibet/);
     });
-    list = sh.grep('-l', 'node_modules/tibet', list);
+
+    list = sh.grep('-l', /node_modules\/tibet/g, list).toString();
 
     list.split('\n').forEach(function(aFile) {
         var filename;
@@ -383,6 +432,36 @@ Cmd.prototype.execute = function() {
 
     str = CLI.beautify(JSON.stringify(json));
     new sh.ShellString(str).to(file);
+
+    //  ---
+    //  Set new lib_root in runtime and flush all paths to force recomputation
+    //  ---
+
+    CLI.getPackage().lib_root = json.path.lib_root;
+    CLI.getPackage().paths = {};
+
+    //  ---
+    //  Relink project build
+    //  ---
+
+    target = CLI.expandPath('~app_build');
+    if (!sh.test('-d', target)) {
+        this.warn('Couldn\'t find built project files but `tibet build` will' +
+                    ' now use frozen library.');
+        return 1;
+    }
+
+    source = CLI.expandPath('~lib_build');
+    if (!sh.test('-d', source)) {
+        this.error('~lib_build not found.');
+        return 1;
+    }
+
+    helpers.link_apps_and_tibet(cmd, source, target, {config: bundle});
+
+    //  ---
+    //  Finished
+    //  ---
 
     this.info('Application frozen. TIBET now boots from ' +
         CLI.getVirtualPath(infroot) + '.');

@@ -61,12 +61,10 @@ helpers = {};
  *     config - the package config id to be rolled up
  */
 helpers.linkup_app = function(make, options) {
-    var target,
-        source,
-        list,
-        config,
-        //  lnflags,
-        deferred;
+    var deferred,
+
+        target,
+        source;
 
     deferred = Promise.pending();
 
@@ -84,19 +82,43 @@ helpers.linkup_app = function(make, options) {
         return deferred;
     }
 
-    config = options.config || 'base';
+    this.link_apps_and_tibet(make, source, target, options);
 
-    //  lnflags = '-sf';
+    make.log('build assets linked successfully.');
+
+    deferred.resolve();
+
+    return deferred.promise;
+};
+
+
+/**
+ *
+ * @param {Cmd} cmd The command handle which provides access to logging and
+ *     other CLI functionality specific to that command's operation.
+ * @param {String} source The source of the link (i.e. the directory we're
+ *     linking *from*).
+ * @param {String} target The target of the link (i.e. the directory we're
+ *     linking *to*).
+ * @param {Hash} options An object whose keys must include:
+ *     pkg - the package file path
+ *     config - the package config id to be rolled up
+ */
+helpers.link_apps_and_tibet = function(cmd, source, target, options) {
+    var cfg,
+        list;
+
+    cfg = options.config || 'base';
 
     list = [
-        'tibet_' + config + '.js',
-        'tibet_' + config + '.min.js',
-        'tibet_' + config + '.min.js.gz',
-        'tibet_' + config + '.min.js.br',
-        'app_' + config + '.js',
-        'app_' + config + '.min.js',
-        'app_' + config + '.min.js.gz',
-        'app_' + config + '.min.js.br'
+        'tibet_' + cfg + '.js',
+        'tibet_' + cfg + '.min.js',
+        'tibet_' + cfg + '.min.js.gz',
+        'tibet_' + cfg + '.min.js.br',
+        'app_' + cfg + '.js',
+        'app_' + cfg + '.min.js',
+        'app_' + cfg + '.min.js.gz',
+        'app_' + cfg + '.min.js.br'
     ];
 
     list.forEach(function(item) {
@@ -111,15 +133,15 @@ helpers.linkup_app = function(make, options) {
             rellinksrc;
 
         if (item.indexOf('tibet') === 0) {
-            linksrc = make.CLI.joinPaths(source, item);
+            linksrc = CLI.joinPaths(source, item);
         } else {
-            linksrc = make.CLI.joinPaths(target, item);
+            linksrc = CLI.joinPaths(target, item);
         }
-        linkdest = make.CLI.joinPaths(target, item.replace('_' + config, ''));
+        linkdest = CLI.joinPaths(target, item.replace('_' + cfg, ''));
 
         if (!sh.test('-e', linksrc)) {
-            make.warn('skipping link for missing file \'' +
-                make.CLI.getVirtualPath(linksrc) + '\'');
+            cmd.warn('skipping link for missing file \'' +
+                CLI.getVirtualPath(linksrc) + '\'');
             return;
         }
 
@@ -132,25 +154,92 @@ helpers.linkup_app = function(make, options) {
 
         //  Join the supplied item onto the relative source directory. This
         //  will produce a relative path to the destination.
-        rellinksrc = make.CLI.joinPaths(srcdir, item);
+        rellinksrc = CLI.joinPaths(srcdir, item);
 
         try {
             //  NB: The source path to the command here is used as a raw
             //  argument. In other words, the '../..' is *not* evaluated against
             //  the current working directory. It is used as is to create the
             //  link.
-            fs.symlinkSync(rellinksrc, linkdest);
+            //  Note here that we always force the link since, if the project
+            //  was already built, it will already have links in the build
+            //  directory.
+            sh.ln('-sf', rellinksrc, linkdest);
         } catch (e) {
             throw new Error('Error linking \'' + linksrc + '\': ' +
                             e.toString());
         }
     });
 
-    make.log('build assets linked successfully.');
+    return;
+};
 
-    deferred.resolve();
 
-    return deferred.promise;
+/**
+ *
+ * @param {Cmd} make The make command handle which provides access to logging
+ *     and other CLI functionality specific to make operation.
+ * @param {String} options An object whose keys must include:
+ *     pkg - the package file path
+ *     config - the package config id to be rolled up
+ */
+helpers.update_packaging_profile = function(make, options) {
+
+    var profile,
+
+        pkg,
+        config,
+
+        file,
+        json,
+        str;
+
+    if (CLI.notValid(options)) {
+        throw new Error('InvalidOptions');
+    }
+
+    if (CLI.notValid(options.pkg)) {
+        throw new Error('InvalidPackage');
+    }
+
+    if (CLI.notValid(options.config)) {
+        throw new Error('InvalidConfig');
+    }
+
+    pkg = options.pkg;
+    config = options.config;
+
+    //  The package will be a file reference to a configuration XML. The profile
+    //  will be built from that name and the config. So, a package value of
+    //  '~app_cfg/main.xml' and a config value of 'base' will become a profile
+    //  value of 'main@base'.
+    if (pkg.indexOf('.') !== -1) {
+        profile = pkg.slice(pkg.lastIndexOf('/') + 1,
+                                pkg.lastIndexOf('.'));
+    } else {
+        profile = pkg.slice(pkg.lastIndexOf('/') + 1);
+    }
+
+    profile += '@' + config;
+
+    file = CLI.expandPath('~tibet_file');
+    json = require(file);
+    if (!json) {
+        this.error('Unable to update lib_root in: ' + file);
+        return 1;
+    }
+    if (!json.project) {
+        json.project = {};
+    }
+    if (!json.project.packaging) {
+        json.project.packaging = {};
+    }
+    json.project.packaging.profile = profile;
+
+    str = CLI.beautify(JSON.stringify(json));
+    new sh.ShellString(str).to(file);
+
+    return;
 };
 
 
