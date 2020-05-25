@@ -151,6 +151,71 @@ helpers.linkup_app = function(make, options) {
     deferred.resolve();
 
     return deferred.promise;
+/**
+ *
+ * @param {Cmd} make The make command handle which provides access to logging
+ *     and other CLI functionality specific to make operation.
+ * @param {String} options An object whose keys must include:
+ *     pkg - the package file path
+ *     config - the package config id to be rolled up
+ */
+helpers.update_packaging_profile = function(make, options) {
+
+    var profile,
+
+        pkg,
+        config,
+
+        file,
+        json,
+        str;
+
+    if (CLI.notValid(options)) {
+        throw new Error('InvalidOptions');
+    }
+
+    if (CLI.notValid(options.pkg)) {
+        throw new Error('InvalidPackage');
+    }
+
+    if (CLI.notValid(options.config)) {
+        throw new Error('InvalidConfig');
+    }
+
+    pkg = options.pkg;
+    config = options.config;
+
+    //  The package will be a file reference to a configuration XML. The profile
+    //  will be built from that name and the config. So, a package value of
+    //  '~app_cfg/main.xml' and a config value of 'base' will become a profile
+    //  value of 'main@base'.
+    if (pkg.indexOf('.') !== -1) {
+        profile = pkg.slice(pkg.lastIndexOf('/') + 1,
+                                pkg.lastIndexOf('.'));
+    } else {
+        profile = pkg.slice(pkg.lastIndexOf('/') + 1);
+    }
+
+    profile += '@' + config;
+
+    file = CLI.expandPath('~tibet_file');
+    json = require(file);
+    if (!json) {
+        this.error('Unable to update lib_root in: ' + file);
+        return 1;
+    }
+    if (!json.project) {
+        json.project = {};
+    }
+    if (!json.project.packaging) {
+        json.project.packaging = {};
+    }
+    json.project.packaging.profile = profile;
+
+    str = CLI.beautify(JSON.stringify(json));
+    new sh.ShellString(str).to(file);
+
+    return;
 };
 
 

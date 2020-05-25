@@ -32,7 +32,10 @@
             }
         }
 
-        make.helpers.resource_build(make, info).then(resolve, reject);
+        make.helpers.resource_build(make, info).then(function() {
+            make.helpers.update_packaging_profile(make, info);
+            resolve();
+        }, reject);
     };
 
 }());
