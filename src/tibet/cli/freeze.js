@@ -20,9 +20,11 @@
 'use strict';
 
 var CLI,
+    helpers,
     Cmd;
 
 CLI = require('./_cli');
+helpers = require('../../../etc/helpers/make_helpers');
 
 //  ---
 //  Type Construction
@@ -111,8 +113,12 @@ Cmd.prototype.execute = function() {
         json,
         list,
         bundle,
+        profile,
 
-        str;
+        str,
+
+        source,
+        target;
 
     sh = require('shelljs');
     path = require('path');
@@ -426,6 +432,36 @@ Cmd.prototype.execute = function() {
 
     str = CLI.beautify(JSON.stringify(json));
     new sh.ShellString(str).to(file);
+
+    //  ---
+    //  Set new lib_root in runtime and flush all paths to force recomputation
+    //  ---
+
+    CLI.getPackage().lib_root = json.path.lib_root;
+    CLI.getPackage().paths = {};
+
+    //  ---
+    //  Relink project build
+    //  ---
+
+    target = CLI.expandPath('~app_build');
+    if (!sh.test('-d', target)) {
+        this.warn('Couldn\'t find built project files but `tibet build` will' +
+                    ' now use frozen library.');
+        return 1;
+    }
+
+    source = CLI.expandPath('~lib_build');
+    if (!sh.test('-d', source)) {
+        this.error('~lib_build not found.');
+        return 1;
+    }
+
+    helpers.link_apps_and_tibet(cmd, source, target, {config: bundle});
+
+    //  ---
+    //  Finished
+    //  ---
 
     this.info('Application frozen. TIBET now boots from ' +
         CLI.getVirtualPath(infroot) + '.');
