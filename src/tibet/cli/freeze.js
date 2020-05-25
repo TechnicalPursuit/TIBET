@@ -65,8 +65,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'string': ['tibet'],
         'default': {
             all: true,
-            minify: true,
-            tibet: 'base'
+            minify: true
         }
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -293,11 +292,21 @@ Cmd.prototype.execute = function() {
     //  prune unwanted/unused files
     //  ---
 
+    bundle = this.options.tibet;
+    if (!bundle) {
+        profile = CLI.getcfg('project.packaging.profile');
+        if (profile) {
+            bundle = profile.slice(profile.lastIndexOf('@') + 1);
+        }
+
+        if (CLI.isEmpty(bundle)) {
+            bundle = 'base';
+        }
+    }
+
     if (!this.options.all) {
 
         this.log('pruning unnecessary source rollups...');
-
-        bundle = this.options.tibet;
 
         list.forEach(function(aFile) {
 
