@@ -300,6 +300,10 @@ Cmd.prototype.execute = function() {
 
     bundle = this.options.tibet;
     if (!bundle) {
+
+        //  Compute the bundle based on what the 'tibet build' command would've
+        //  put into our config as the project packaging profile (if 'tibet
+        //  build was executed').
         profile = CLI.getcfg('project.packaging.profile');
         if (profile) {
             bundle = profile.slice(profile.lastIndexOf('@') + 1);
@@ -387,36 +391,6 @@ Cmd.prototype.execute = function() {
     //  update lib_root
     //  ---
 
-    this.log('updating embedded lib_root references...');
-
-    list = sh.find('.').filter(function(aFile) {
-        var filename;
-
-        filename = aFile.toString();
-
-        //  We need to make sure to filter out directories, since ShellJS's
-        //  'grep' command will throw an error when handed a name pointing to a
-        //  directory in the list.
-        if (sh.test('-d', filename)) {
-            return false;
-        }
-
-        return !filename.match(/node_modules\/tibet/) &&
-                !filename.match(/TIBET-INF\/tibet/);
-    });
-
-    list = sh.grep('-l', /node_modules\/tibet/g, list).toString();
-
-    list.split('\n').forEach(function(aFile) {
-        var filename;
-
-        filename = aFile.toString();
-
-        if (filename) {
-            sh.sed('-i', /node_modules\/tibet/g, 'TIBET-INF/tibet', filename);
-        }
-    });
-
     this.log('updating project lib_root setting...');
 
     file = CLI.expandPath('~tibet_file');
@@ -430,6 +404,7 @@ Cmd.prototype.execute = function() {
     }
     json.path.lib_root = '~app/TIBET-INF/tibet';
 
+    //  SAVE the file (note the 'to()' call here...
     str = CLI.beautify(JSON.stringify(json));
     new sh.ShellString(str).to(file);
 
