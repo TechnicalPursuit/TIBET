@@ -166,35 +166,6 @@ Cmd.prototype.execute = function() {
         this.error('Error relinking library resources: ' + lnerr.stderr);
     }
 
-    this.log('updating embedded lib_root references...');
-
-    list = sh.find('.').filter(function(aFile) {
-        var filename;
-
-        filename = aFile.toString();
-
-        //  We need to make sure to filter out directories, since ShellJS's
-        //  'grep' command will throw an error when handed a name pointing to a
-        //  directory in the list.
-        if (sh.test('-d', filename)) {
-            return false;
-        }
-
-        return !filename.match('node_modules/tibet') &&
-                !filename.match('TIBET-INF/tibet');
-    });
-
-    list = sh.grep('-l', /TIBET-INF\/tibet/, list).toString();
-
-    list.split('\n').forEach(function(aFile) {
-        var filename;
-
-        filename = aFile.toString();
-
-        if (filename) {
-            sh.sed('-i', /TIBET-INF\/tibet/g, 'node_modules/tibet', filename);
-        }
-    });
 
     this.log('updating project lib_root setting...');
 
