@@ -12,17 +12,19 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 (function() {
 
 'use strict';
 
 var CLI,
+    helpers,
     Cmd;
 
 
 CLI = require('./_cli');
+helpers = require('../../../etc/helpers/make_helpers');
 
 //  ---
 //  Type Construction
@@ -80,22 +82,36 @@ Cmd.prototype.USAGE = 'tibet thaw [--force]';
 Cmd.prototype.execute = function() {
 
     var sh,
+        path,
 
+        cmd,
         err,
         app_inf,
         app_npm,
         infroot,
 
         lnflags,
+        linksrcdir,
+        linkdestdir,
+        srcdir,
         lnerr,
 
         file,
         json,
         list,
 
-        str;
+        str,
+
+        profile,
+        bundle,
+
+        source,
+        target;
 
     sh = require('shelljs');
+    path = require('path');
+
+    cmd = this;
 
     app_inf = CLI.expandPath('~app_inf');
 
@@ -141,7 +157,11 @@ Cmd.prototype.execute = function() {
 
     this.log('relinking development library resources...');
 
-    lnerr = sh.ln(lnflags, CLI.joinPaths(app_npm, 'tibet'), infroot);
+    linksrcdir = CLI.joinPaths(app_npm, 'tibet');
+    linkdestdir = infroot;
+    srcdir = path.relative(path.dirname(linkdestdir), linksrcdir);
+
+    lnerr = sh.ln(lnflags, srcdir, linkdestdir);
     if (sh.error()) {
         this.error('Error relinking library resources: ' + lnerr.stderr);
     }
@@ -153,15 +173,26 @@ Cmd.prototype.execute = function() {
 
         filename = aFile.toString();
 
+        //  We need to make sure to filter out directories, since ShellJS's
+        //  'grep' command will throw an error when handed a name pointing to a
+        //  directory in the list.
+        if (sh.test('-d', filename)) {
+            return false;
+        }
+
         return !filename.match('node_modules/tibet') &&
                 !filename.match('TIBET-INF/tibet');
     });
 
-    list = sh.grep('-l', 'TIBET-INF/tibet', list).toString();
+    list = sh.grep('-l', /TIBET-INF\/tibet/, list).toString();
 
-    list.split('\n').forEach(function(fname) {
-        if (fname) {
-            sh.sed('-i', /TIBET-INF\/tibet/g, 'node_modules/tibet', fname);
+    list.split('\n').forEach(function(aFile) {
+        var filename;
+
+        filename = aFile.toString();
+
+        if (filename) {
+            sh.sed('-i', /TIBET-INF\/tibet/g, 'node_modules/tibet', filename);
         }
     });
 
@@ -182,6 +213,44 @@ Cmd.prototype.execute = function() {
     //  SAVE the file (note the 'to()' call here...
     str = CLI.beautify(JSON.stringify(json));
     new sh.ShellString(str).to(file);
+
+    //  ---
+    //  Set new lib_root in runtime and flush all paths to force recomputation
+    //  ---
+
+    CLI.getPackage().lib_root = json.path.lib_root;
+    CLI.getPackage().paths = {};
+
+    //  ---
+    //  Relink project build
+    //  ---
+
+    //  Compute the bundle based on what the 'tibet build' command would've
+    //  put into our config as the project packaging profile (if 'tibet
+    //  build was executed').
+    profile = CLI.getcfg('project.packaging.profile');
+    if (profile) {
+        bundle = profile.slice(profile.lastIndexOf('@') + 1);
+    }
+
+    if (CLI.isEmpty(bundle)) {
+        bundle = 'base';
+    }
+
+    target = CLI.expandPath('~app_build');
+    if (!sh.test('-d', target)) {
+        this.warn('Couldn\'t find built project files but `tibet build` will' +
+                    ' now use dynamically linked library.');
+        return 1;
+    }
+
+    source = CLI.expandPath('~lib_build');
+    if (!sh.test('-d', source)) {
+        this.error('~lib_build not found.');
+        return 1;
+    }
+
+    helpers.link_apps_and_tibet(cmd, source, target, {config: bundle});
 
     this.info('Application thawed. TIBET now boots from ~/node_modules/tibet.');
 
