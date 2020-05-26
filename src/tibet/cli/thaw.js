@@ -166,6 +166,9 @@ Cmd.prototype.execute = function() {
         this.error('Error relinking library resources: ' + lnerr.stderr);
     }
 
+    //  ---
+    //  update lib_root
+    //  ---
 
     this.log('updating project lib_root setting...');
 

@@ -300,6 +300,10 @@ Cmd.prototype.execute = function() {
 
     bundle = this.options.tibet;
     if (!bundle) {
+
+        //  Compute the bundle based on what the 'tibet build' command would've
+        //  put into our config as the project packaging profile (if 'tibet
+        //  build was executed').
         profile = CLI.getcfg('project.packaging.profile');
         if (profile) {
             bundle = profile.slice(profile.lastIndexOf('@') + 1);
@@ -400,6 +404,7 @@ Cmd.prototype.execute = function() {
     }
     json.path.lib_root = '~app/TIBET-INF/tibet';
 
+    //  SAVE the file (note the 'to()' call here...
     str = CLI.beautify(JSON.stringify(json));
     new sh.ShellString(str).to(file);
 
