@@ -3738,7 +3738,7 @@ TP.regex.PATH_EXPR = /(^|\s+)(.+?)($|\s+)/g; // needs reset
 
 //  any of these symbols -
 //  '|', '@', '#', ':', '/', '&', '=', '<', '>', '.', '[', '('
-TP.regex.NON_SIMPLE_PATH = /[|@#:\/&=><\.\[\(]/;
+TP.regex.NON_SIMPLE_PATH = /[|@#:\/&=><\.\[\(](?!\object)/;
 
 //  ---
 //  JSON path
