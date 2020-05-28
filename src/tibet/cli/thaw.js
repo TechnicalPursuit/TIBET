@@ -98,7 +98,6 @@ Cmd.prototype.execute = function() {
 
         file,
         json,
-        list,
 
         str,
 

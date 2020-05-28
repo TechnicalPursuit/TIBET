@@ -758,6 +758,8 @@ function(contentInfo, overlayContent, afterLoadHandler) {
                 elem = result.getNativeNode();
             } else if (TP.isElement(result)) {
                 elem = result;
+            } else if (TP.isString(result)) {
+                elem = TP.elem(result);
             } else {
                 elem = TP.elem(result.get('data'));
             }

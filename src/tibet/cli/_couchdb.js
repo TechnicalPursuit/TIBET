@@ -408,7 +408,6 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
         server,
         db,
         cmd,
-        opts,
         skip;
 
     cmd = this;
