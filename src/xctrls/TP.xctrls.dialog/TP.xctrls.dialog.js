@@ -333,11 +333,11 @@ function(info) {
     promise = TP.extern.Promise.construct(
         function(resolver, rejector) {
 
-            var win,
-
-                dialogID,
+            var dialogID,
                 isModal,
                 template,
+
+                win,
 
                 dialogTPElem,
 
