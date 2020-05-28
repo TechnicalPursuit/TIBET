@@ -29,8 +29,7 @@ TP.xctrls.notifier.Type.defineConstant('NOTIFIER_OFFSET', 8);
 
 //  The ID of the shared popup that is used in scenarios where notifiers are
 //  being shared.
-TP.xctrls.SharedOverlay.Type.defineAttribute('sharedOverlayID',
-                                                'systemNotifier');
+TP.xctrls.notifier.Type.defineAttribute('sharedOverlayID', 'systemNotifier');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
