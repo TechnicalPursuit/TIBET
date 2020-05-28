@@ -31,6 +31,9 @@ TP.xctrls.notifier.Type.defineConstant('NOTIFIER_OFFSET', 8);
 //  being shared.
 TP.xctrls.notifier.Type.defineAttribute('sharedOverlayID', 'systemNotifier');
 
+//  Any 'after hide' handler that was used when showing the notifier.
+TP.xctrls.notifier.Type.defineAttribute('$afterHide');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -182,8 +185,15 @@ function(aSignal) {
      * @returns {TP.xctrls.notifier} The receiver.
      */
 
+    var afterHideFunc;
+
     this.setAttribute('active', false);
     this.setAttribute('hidden', true);
+
+    afterHideFunc = this.getType().get('$afterHide');
+    if (TP.isCallable(afterHideFunc)) {
+        afterHideFunc(this);
+    }
 
     return this;
 });
@@ -237,6 +247,127 @@ function(beHidden) {
 //  notifier signals
 TP.sig.OpenOverlay.defineSubtype('OpenNotifier');
 TP.sig.CloseOverlay.defineSubtype('CloseNotifier');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('notify',
+function(info) {
+
+    /**
+     * @method notify
+     * @summary Displays a notifier to the user given the information in the
+     *     supplied hash.
+     * @param {TP.core.Hash} info The information used when displaying the
+     *     notifier. Valid keys for this hash include:
+     *          {String} [notifierID=systemNotifier] The id to use for the
+     *          overall notifier in the system.
+     *          {String} templateContent The actual markup content to put into
+     *          the notifier.
+     *          {TP.uri.URI} [templateURI] If the templateContent parameter is
+     *          not supplied, this parameter will be checked for a URI that can
+     *          be used to supply the markup content.
+     *          {Object} [templateData] If either the templateContent or the
+     *          templateURI point to content that has ACP expressions in it,
+     *          this parameter will provide the dynamic data for that template.
+     *          {Function} [beforeShow] A function to execute before showing the
+     *          notifier.
+     * @returns {Promise} A Promise to be used as necessary. Since this is an
+     *     alert(), this Promise's resolver Function will be called with no
+     *     return value.
+     */
+
+    var notifierID,
+        template,
+
+        templateData,
+
+        contentResource,
+        content,
+        contentElem,
+
+        notifierContentURI,
+
+        tpDoc,
+
+        beforeShowCallback;
+
+    if (TP.notValid(info)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    if (TP.notValid(info.at('templateContent')) &&
+        TP.notValid(info.at('templateURI'))) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  Default the notifier ID
+    notifierID = info.atIfInvalid('notifierID', 'systemNotifier');
+    notifierID = notifierID.unquoted();
+
+    template = info.at('templateContent');
+    if (TP.isString(template)) {
+        template = template.unquoted();
+        if (TP.isURIString(template)) {
+            template = TP.uc(template);
+        }
+    } else if (TP.notValid(template)) {
+        template = info.at('templateURI');
+
+        if (!TP.isURI(template)) {
+            return TP.raise(TP, 'InvalidTemplate');
+        }
+    }
+
+    //  Grab any template data and transform the supplied template with
+    //  it.
+    templateData = info.at('templateData');
+    contentResource = template.transform(templateData);
+
+    //  Extract the result and build an XHTML span around it.
+
+    if (!TP.isString(template) && TP.isURI(template)) {
+        content = contentResource.get('result');
+    } else {
+        content = contentResource;
+    }
+
+    contentElem = TP.xhtmlnode('<span>' + content + '</span>');
+
+    //  Since the signal below wants content in a URI, we create one to hold the
+    //  content and set its resource to the content element that we created.
+    notifierContentURI = TP.uc('urn:tibet:notifiercontent');
+    notifierContentURI.setResource(contentElem);
+
+    if (TP.sys.hasFeature('sherpa')) {
+        tpDoc = TP.sys.getUIRoot().getDocument();
+    } else {
+        tpDoc = TP.sys.getUICanvas().getDocument();
+    }
+
+    //  If a callback Function that should be executed before we show
+    //  the notifier was supplied, invoke it with the notifier
+    //  TP.dom.ElementNode as the only parameter.
+    beforeShowCallback = info.at('beforeShow');
+    if (TP.isCallable(beforeShowCallback)) {
+        beforeShowCallback(TP.byId(notifierID, tpDoc));
+    }
+
+    TP.xctrls.notifier.set('$afterHide',
+        function(aNotifierTPElem) {
+            notifierContentURI.setResource('');
+        });
+
+    this.signal(
+        null,
+        'OpenNotifier',
+        TP.hc(
+            'overlayID', notifierID,
+            'contentURI', notifierContentURI.getLocation(),
+            'noPosition', true,
+            'triggerTPDocument', tpDoc));
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 //  end
