@@ -4235,15 +4235,17 @@ function(aSelectFunction) {
 
     if (TP.isCallable(aSelectFunction)) {
         func = aSelectFunction;
+    } else {
+        return Object.entries(this);
     }
 
     len = this.getSize();
     for (i = 0; i < len; i++) {
-        item = TP.ac(i, this.at(i));
+        item = TP.ac(i.toString(), this.at(i));
 
         //  if we've got a filtering function and it doesn't return
         //  true then we'll skip this entry
-        if (func && !func(item)) {
+        if (!func(item)) {
             continue;
         }
 
