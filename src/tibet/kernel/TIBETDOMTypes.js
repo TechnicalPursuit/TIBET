@@ -3661,8 +3661,8 @@ function(aNode) {
  *     'addAt', 'addAllAt', 'at', 'atAll', 'atAllPut',
  *     'atIfInvalid', 'atIfNull', 'atIfUndefined', 'atPut', 'atPutIfAbsent',
  *     'containsKey', 'containsValue', 'detectKeyAt', 'getKeys', 'getKVPairs',
- *     'getPairs', 'getPosition', 'getPositions', 'grepKeys', 'performOver',
- *     'removeAt', 'removeAtAll', 'removeKey', 'removeKeys', 'transpose',
+ *     'getPosition', 'getPositions', 'grepKeys', 'performOver', 'removeAt',
+ *     'removeAtAll', 'removeKey', 'removeKeys', 'transpose',
  *
  *     TP.api.OrderedCollection API:
  *
@@ -8708,20 +8708,6 @@ function() {
 
     /**
      * @method getKVPairs
-     * @summary
-     * @returns {TP.dom.CollectionNode} The receiver.
-     */
-
-    return TP.todo();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.CollectionNode.Inst.defineMethod('getPairs',
-function() {
-
-    /**
-     * @method getPairs
      * @summary
      * @returns {TP.dom.CollectionNode} The receiver.
      */

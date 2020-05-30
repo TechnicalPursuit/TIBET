@@ -4183,130 +4183,6 @@ function(aNumber) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('getPairs',
-function(aSelectFunction) {
-
-    /**
-     * @method getPairs
-     * @summary Returns an array of ordered pairs generated from the receiver.
-     *     The individual pairs are [key,value] arrays where the keys are
-     *     filtered using the optional function provided.
-     * @param {Function} aSelectFunction A function used to select items that
-     *     will be returned. Each item is passed to this function and if the
-     *     function returns true the item is included in the result.
-     * @exception TP.sig.InvalidPairRequest
-     * @returns {Object[]} The array of ordered pairs.
-     */
-
-    //  if we can provide keys and do an 'at' then we can get pairs
-    if (!TP.canInvokeInterface(this, ['at', 'getKeys'])) {
-        return this.raise('TP.sig.InvalidPairRequest');
-    }
-
-    //  the work is easy for key/value objects
-    return this.select(aSelectFunction || TP.RETURN_TRUE);
-});
-
-//  ------------------------------------------------------------------------
-
-Array.Inst.defineMethod('getPairs',
-function(aSelectFunction) {
-
-    /**
-     * @method getPairs
-     * @summary Returns the ordered pairs contained in the receiver, or implied
-     *     by the receiver's key/value content. For example, an array of the
-     *     form [['a',1], ['b',2]] will simply return its content wrapped in a
-     *     new container, while an array of the form ['a','b','c'] will return
-     *     [['a','b'],['c',null]]. This is the inverse operation a flatten would
-     *     have had on the results of a getPairs on a TP.core.Hash.
-     * @description To allow Arrays to serve as a form of interchange format
-     *     between collections of various types they have special behavior when
-     *     it comes to managing "items" and "pairs". In particular, although the
-     *     array's "keys" could be thought of as its numeric indexes the
-     *     getPairs operation doesn't think in those terms, instead focusing on
-     *     content rather than ordering information.
-     * @param {Function} aSelectFunction A function used to select items that
-     *     will be returned. Each item is passed to this function and if the
-     *     function returns true the item is included in the result.
-     * @returns {Object[]} A new array containing the pairs.
-     */
-
-    var tmparr,
-
-        func,
-
-        len,
-        i,
-
-        item;
-
-    tmparr = TP.ac();
-
-    if (TP.isCallable(aSelectFunction)) {
-        func = aSelectFunction;
-    }
-
-    len = this.getSize();
-
-    //  deal with case where array appears to contain a list of ordered
-    //  pairs. in those cases we collect all objects that are pairs
-    if (len > 0 && TP.isPair(this.first())) {
-        for (i = 0; i < len; i++) {
-            if (TP.isValid(this.at(i)) && TP.isPair(this.at(i))) {
-                //  if we've got a filtering function and it doesn't return
-                //  true then we'll skip this entry
-                if (func && !func(this.at(i))) {
-                    continue;
-                }
-
-                tmparr.push(this.at(i));
-            }
-        }
-
-        return tmparr;
-    }
-
-    //  deal with assembly of ordered pairs from key/value pairs so we
-    //  construct a hash form of the receiver's content
-    for (i = 0; i + 1 < len; i += 2) {
-        item = TP.ac(this.at(i), this.at(i + 1));
-
-        //  if we've got a filtering function and it doesn't return
-        //  true then we'll skip this entry
-        if (func && !func(item)) {
-            continue;
-        }
-
-        tmparr.push(item);
-    }
-
-    //  deal with any straggler...
-    if (len.isOdd()) {
-        tmparr.push(TP.ac(this.last(), null));
-    }
-
-    return tmparr;
-});
-
-//  ------------------------------------------------------------------------
-
-String.Inst.defineMethod('getPairs',
-function() {
-
-    /**
-     * @method getPairs
-     * @summary Returns an array of ordered pairs generated from the receiver.
-     * @description For a String this is an invalid operation and an
-     *     TP.sig.InvalidPairRequest exception will be raised.
-     * @exception TP.sig.InvalidPairRequest
-     */
-
-    return this.raise('TP.sig.InvalidPairRequest');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.defineMetaInstMethod('getKVPairs',
 function(aSelectFunction) {
 
@@ -4376,10 +4252,6 @@ function(aSelectFunction) {
 
     return tmparr;
 });
-
-//  ------------------------------------------------------------------------
-
-TP.StringProto.getKVPairs = TP.StringProto.getPairs;
 
 //  ------------------------------------------------------------------------
 //  Inspection
@@ -4893,9 +4765,11 @@ function(aSelectFunction) {
      * @returns {Object[]} The receiver's items in array key/value form.
      */
 
-    //  Most objects are associative arrays, so we can work from the
-    //  getPairs() perspective
-    return this.getPairs(aSelectFunction);
+    if (TP.isCallable(aSelectFunction)) {
+        return this.select(aSelectFunction);
+    }
+
+    return TP.entries(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -4927,7 +4801,7 @@ function(aSelectFunction) {
         return this.select(aSelectFunction);
     }
 
-    return this;
+    return this.getValues();
 });
 
 //  ------------------------------------------------------------------------
