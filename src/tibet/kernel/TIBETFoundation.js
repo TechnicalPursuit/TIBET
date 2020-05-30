@@ -4256,6 +4256,54 @@ function(aSelectFunction) {
 });
 
 //  ------------------------------------------------------------------------
+
+String.Inst.defineMethod('getKVPairs',
+function(aSelectFunction) {
+
+    /**
+     * @method getKVPairs
+     * @summary Returns the key/value pairs contained in the receiver.
+     * @description For Strings this returns an array of ordered pairs where
+     *     each ordered pair consists of a numerical index and the value at that
+     *     index. This is a more "inspection string" format used specifically
+     *     for dumping key/value data.
+     * @param {Function} aSelectFunction A function used to select items that
+     *     will be returned. Each item is passed to this function and if the
+     *     function returns true the item is included in the result.
+     * @returns {Object[]} A new array containing the pairs.
+     */
+
+    var tmparr,
+        func,
+        len,
+        i,
+        item;
+
+    tmparr = TP.ac();
+
+    if (TP.isCallable(aSelectFunction)) {
+        func = aSelectFunction;
+    } else {
+        return Object.entries(this);
+    }
+
+    len = this.getSize();
+    for (i = 0; i < len; i++) {
+        item = TP.ac(i.toString(), this.at(i));
+
+        //  if we've got a filtering function and it doesn't return
+        //  true then we'll skip this entry
+        if (!func(item)) {
+            continue;
+        }
+
+        tmparr.push(item);
+    }
+
+    return tmparr;
+});
+
+//  ------------------------------------------------------------------------
 //  Inspection
 //  ------------------------------------------------------------------------
 
