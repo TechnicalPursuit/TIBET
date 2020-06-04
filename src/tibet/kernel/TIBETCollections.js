@@ -112,7 +112,6 @@ TP.api.IndexedCollection =
         'getKeys',
         'getKeysForValue',
         'getKVPairs',
-        'getPairs',
         'getPosition',
         'getPositions',
         'grepKeys',
@@ -2219,8 +2218,6 @@ function(aValue, aTest) {
 //  ------------------------------------------------------------------------
 //  getKVPairs                  Kernel
 //  ------------------------------------------------------------------------
-//  getPairs                    Kernel
-//  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('getPosition',
 function(anItem, startIndex, aTest) {
@@ -4086,8 +4083,6 @@ function(aKey, anIndex) {
 //  getKeys                     Kernel
 //  ------------------------------------------------------------------------
 //  getKVPairs                  Kernel
-//  ------------------------------------------------------------------------
-//  getPairs                    Kernel
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('getPosition',
@@ -6426,7 +6421,11 @@ function() {
      * @returns {Object[]} The receiver as an Array.
      */
 
-    return this.getPairs();
+    var hash;
+
+    hash = this.$get('$$hash');
+
+    return Object.entries(hash);
 });
 
 //  ------------------------------------------------------------------------
@@ -7243,25 +7242,14 @@ function() {
      * @method getValues
      * @summary Returns an array containing the values for the objects'
      *     attributes.
-     * @returns {String[]} An array of the values for the receiver's keys.
+     * @returns {Object[]} An array of the values for the receiver's keys.
      */
 
-    var arr,
-        keys,
-        hash,
-        i;
+    var hash;
 
-    arr = TP.ac();
+    hash = this.$get('$$hash');
 
-    keys = TP.keys(this);
-
-    if (TP.notNull(hash = this.$get('$$hash'))) {
-        for (i = 0; i < keys.length; i++) {
-            arr.push(hash[keys[i]]);
-        }
-    }
-
-    return arr;
+    return Object.values(hash);
 });
 
 //  ------------------------------------------------------------------------
@@ -8316,8 +8304,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 //  getKVPairs                  Kernel
-//  ------------------------------------------------------------------------
-//  getPairs                    Kernel
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('getPosition',
