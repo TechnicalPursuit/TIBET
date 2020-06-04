@@ -3196,8 +3196,111 @@ function() {
 //  TP.nodeEvaluateXPath()
 //  TP.nodeEvaluateXPointer()
 //  TP.nodeEvaluateXTension()
-//  TP.nodeEvaluateCSS
-//  TP.nodeEvaluateBarename
+//  TP.nodeEvaluateCSS()
+//  TP.nodeEvaluateBarename()
+
+//  ------------------------------------------------------------------------
+
+TP.entries.describe('core tests',
+function() {
+
+    this.it('non mutable values - primitives', function(test, options) {
+
+        var val,
+            entriesVal;
+
+        val = 'hi';
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, [['0', 'h'], ['1', 'i']]);
+
+        val = 42;
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+
+        val = true;
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+    });
+
+    this.it('non mutable values - boxed', function(test, options) {
+
+        var val,
+            entriesVal;
+
+        val = new String('hi');
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, [['0', 'h'], ['1', 'i']]);
+
+        val = new Number(42);
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+
+        val = new Boolean(true);
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+    });
+
+    this.it('mutable reference values - shorthand', function(test, options) {
+
+        var val,
+            entriesVal;
+
+        /* eslint-disable brace-style, max-statements-per-line */
+        val = function() {alert('hi');};
+        /* eslint-enable brace-style, max-statements-per-line */
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+
+        val = /foo/;
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+
+        val = {foo: 'bar', baz: 'goo'};
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, [['foo', 'bar'], ['baz', 'goo']]);
+
+        val = [1, 2, 3];
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, [['0', 1], ['1', 2], ['2', 3]]);
+    });
+
+    this.it('mutable reference values - boxed', function(test, options) {
+
+        var val,
+            entriesVal;
+
+        val = new Date();
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+
+        val = new Function('a', 'b', 'return a + b');
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+
+        val = new RegExp('\\w+');
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+
+        val = new Object();
+        val.foo = 'bar';
+        val.baz = 'goo';
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, [['foo', 'bar'], ['baz', 'goo']]);
+
+        val = new Array(1, 2, 3);
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, [['0', 1], ['1', 2], ['2', 3]]);
+
+        val = TP.lang.Object.construct();
+        entriesVal = TP.entries(val);
+        test.assert.isEmpty(entriesVal);
+
+        val = TP.core.Hash.construct('foo', 'bar', 'baz', 'goo');
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, [['foo', 'bar'], ['baz', 'goo']]);
+    });
+
+});
 
 //  ------------------------------------------------------------------------
 //  end
