@@ -633,7 +633,7 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
      *     This allows you to alter behavior for a single method and then put
      *     it back where you found it all clean and nice.
      * @param {Object} owner The object that owns the method.
-     * @param {String} name The slot name.
+     * @param {String|Symbol} name The slot name (or Symbol identifier).
      * @param {String} track The slot track (type, inst, local, etc).
      * @param {String} display The slot display name. Defaults to the
      *     owner.track.name triplet.
@@ -641,7 +641,11 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
      * @para Object The object receiving the slot.
      */
 
-    var displayName;
+    var methodName,
+        displayName;
+
+    //  In case this is a Symbol.
+    methodName = name.toString();
 
     //  Build a display name that should work for most cases.
     if (!display) {
@@ -649,23 +653,23 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
         //  Obj.Local.method, but Obj.Inst.method, or Obj.Type.method as needed.
         if (track.indexOf(TP.LOCAL_TRACK) === TP.NOT_FOUND) {
             try {
-                displayName = owner.getID() + '.' + track + '.' + name;
+                displayName = owner.getID() + '.' + track + '.' + methodName;
             } catch (e) {
                 top.console.log(
                     'Can\'t compute owner ID for: ' + TP.str(owner) +
-                    ' for method named: ' + name +
+                    ' for method named: ' + methodName +
                     ' on track: ' + track +
                     ' stack: ' + e.stack);
             }
         } else {
-            displayName = owner.getID() + '.' + name;
+            displayName = owner.getID() + '.' + methodName;
         }
     } else {
         displayName = display;
     }
 
     //  Attach reflection metadata.
-    this[TP.NAME] = name;
+    this[TP.NAME] = methodName;
     this[TP.OWNER] = owner;
     this[TP.TRACK] = track;
     this[TP.DISPLAY] = displayName;
@@ -2145,7 +2149,7 @@ TP.defineSlot = function(target, name, value, type, track, descriptor) {
      * @method defineSlot
      * @summary Defines a slot, which may be an attribute, method, etc.
      * @param {Object} target The object receiving the slot.
-     * @param {String} name The slot name.
+     * @param {String|Symbol} name The slot name (or Symbol identifier).
      * @param {Object} value The slot value.
      * @param {String} type The slot type (attribute, method, etc).
      * @param {String} track The slot track (type, inst, local, etc).
@@ -2216,7 +2220,7 @@ TP.registerLoadInfo(TP.defineSlot);
 
 //  ------------------------------------------------------------------------
 
-TP.stringStripFunctionSource = function(str, name) {
+TP.stringStripFunctionSource = function(str) {
 
     var arr,
         tokens,
@@ -2309,6 +2313,8 @@ TP.functionNeedsCallee = function(aFunction, aName) {
      *     callNextMethod which requires the function to be proxied with a
      *     wrapper to handle callee management.
      * @param {Function} aFunction The function to test.
+     * @param {String} aName The method name, if the Function is some Object's
+     *     method.
      * @returns {Boolean} True if the function should be patched.
      */
 
@@ -2362,7 +2368,7 @@ TP.functionNeedsCallee = function(aFunction, aName) {
     }
 
     //  Have to do it the heavy-lifting way by using a more tokenized approach.
-    str = TP.stringStripFunctionSource(str, aName);
+    str = TP.stringStripFunctionSource(str);
 
     result = TP.regex.NEEDS_CALLEE.test(str);
 
@@ -2394,7 +2400,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
      * @method defineMethodSlot
      * @summary Defines a method, tracking all necessary metadata.
      * @param {Object} target The target object.
-     * @param {String} name The method name.
+     * @param {String|Symbol} name The slot name (or Symbol identifier).
      * @param {Object} value The method value (aka method 'body').
      * @param {String} track The method track (Inst, Type, Local). Default is
      *     TP.LOCAL_TRACK.
@@ -2414,6 +2420,8 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
         realMethod,
 
+        methodName,
+
         desc,
 
         installCalleePatch,
@@ -2432,6 +2440,9 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     realMethod = value;
 
+    //  In case this is a Symbol.
+    methodName = name.toString();
+
     //  If we've been through here once already for this Function instance, then
     //  that means that we're aliasing this method to another slot. We don't
     //  reinstrument the Function instance representing the value here with
@@ -2448,6 +2459,8 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         //  Therefore, we only exit here if the display name value that this
         //  Function already has is *not* 'Function.FunctionProto'.
         if (realMethod[TP.DISPLAY] !== 'Function.FunctionProto') {
+            //  NB: We do *not* use methodName here - if 'name' is a Symbol, we
+            //  want it registered under that Symbol, not a String name.
             TP.defineSlot(target, name, realMethod,
                             TP.METHOD, track, realMethod[TP.DESCRIPTOR]);
 
@@ -2465,7 +2478,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
             desc = descriptor ? descriptor : TP.DEFAULT_DESCRIPTOR;
 
-            TP.defineSlot(target, name, realMethod, TP.METHOD, trk, desc);
+            TP.defineSlot(target, methodName, realMethod, TP.METHOD, trk, desc);
 
             //  capture the descriptor on the realMethod (method body)
             realMethod[TP.DESCRIPTOR] = desc;
@@ -2473,7 +2486,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         } else {
             TP.ifError() ?
                 TP.error('Invalid method body for ' +
-                            'TP.defineMethodSlot: ' + name) : 0;
+                            'TP.defineMethodSlot: ' + methodName) : 0;
         }
 
         return;
@@ -2481,7 +2494,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     //  Warn about deprecated use of method definition for handler definition
     //  unless flagged (by the defineHandler call ;)) to keep quiet about it.
-    if (!$isHandler && TP.deprecated && /^handle[0-9A-Z]/.test(name)) {
+    if (!$isHandler && TP.deprecated && /^handle[0-9A-Z]/.test(methodName)) {
         if (descriptor && descriptor.deprecationWarning === false) {
             void 0;
         } else {
@@ -2504,7 +2517,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         } else if (descriptor && descriptor.patchCallee === false) {
             installCalleePatch = false;
         } else {
-            installCalleePatch = TP.functionNeedsCallee(realMethod, name);
+            installCalleePatch = TP.functionNeedsCallee(realMethod, methodName);
         }
     }
 
@@ -2523,7 +2536,8 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     if (TP.__trackInvocations__ &&
         methodWantsInvocationTracking &&
         !TP.regex.NATIVE_CODE.test(realMethod.toString()) &&
-        TP.EXCLUDE_INVOCATION_METHOD_NAMES.indexOf(name) === TP.NOT_FOUND) {
+        TP.EXCLUDE_INVOCATION_METHOD_NAMES.indexOf(methodName) ===
+                                                            TP.NOT_FOUND) {
 
         installedInvocationsTracker = true;
 
@@ -2581,9 +2595,9 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         //  function as well.
         realMethod.$wrapperFunc = method;
 
-        //  Register the 'invocation' patch under the *original* owner, name,
-        //  track and display for the real method.
-        method.asMethod(own, name, trk, display);
+        //  Register the 'invocation' patch under the *original* owner, method
+        //  name, track and display for the real method.
+        method.asMethod(own, methodName, trk, display);
 
         //  So this is a little tricky. We've defined a patch function to
         //  'stand in' for (and wrap a call to) our method. We do want to
@@ -2591,11 +2605,12 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         //  purposes, so we tell the real method function to instrument itself
         //  with the name of the method it's being stood in for but with a
         //  '$$originalMethod' suffix.
-        realMethod.asMethod(own, name + '$$originalMethod', trk, display);
+        realMethod.asMethod(own, methodName + '$$originalMethod', trk, display);
 
         //  If the original 'display' argument was provided, that means that
         //  'asMethod()' won't have set the display name using the supplied
-        //  'name'.
+        //  'methodName' - which means we need to append '$$originalMethod' to
+        //  the display name.
 
         //  NB: We use an old fashioned check here for 'isEmpty()' for display,
         //  since this could be called *very* early in the boot process.
@@ -2604,15 +2619,15 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
             realMethod[TP.DISPLAY] = disp + '$$originalMethod';
         }
 
-        TP.defineSlot(target, name + '$$originalMethod', realMethod, TP.METHOD,
-                        trk, TP.HIDDEN_DESCRIPTOR);
+        TP.defineSlot(target, methodName + '$$originalMethod', realMethod,
+                        TP.METHOD, trk, TP.HIDDEN_DESCRIPTOR);
 
         //  Lastly, make the 'real method' now be the wrapper method, so that
         //  any further wrapping, etc. will be happening to the wrapper.
         realMethod = method;
     } else {
         //  Ensure metadata is attached along with owner/track etc.
-        realMethod.asMethod(own, name, trk, display);
+        realMethod.asMethod(own, methodName, trk, display);
     }
 
     if (installCalleePatch) {
@@ -2688,11 +2703,11 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         //  purposes, so we tell the patch function to instrument itself
         //  with the name of the method it's standing in for but with a
         //  '$$calleePatch' suffix.
-        method.asMethod(own, name + '$$calleePatch', trk, display);
+        method.asMethod(own, methodName + '$$calleePatch', trk, display);
 
         //  If the original 'display' argument was provided, that means that
         //  'asMethod()' won't have set the display name using the supplied
-        //  'name' - which means we need to append '$$calleePatch' to the
+        //  'methodName' - which means we need to append '$$calleePatch' to the
         //  display name.
         if (TP.notEmpty(display)) {
             disp = method[TP.DISPLAY];
@@ -2707,7 +2722,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         //  distinguish between the two because it's instrumented itself
         //  with it's "real name" (the method name with the '$$calleePatch'
         //  suffix).
-        TP.defineSlot(target, name + '$$calleePatch', method, TP.METHOD,
+        TP.defineSlot(target, methodName + '$$calleePatch', method, TP.METHOD,
                         trk, TP.HIDDEN_DESCRIPTOR);
     } else {
         //  The logic above determined that we don't want/need a callee
@@ -2718,6 +2733,8 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     /* eslint-disable no-extra-parens */
     desc = descriptor ? descriptor : TP.DEFAULT_DESCRIPTOR;
 
+    //  NB: We do *not* use methodName here - if 'name' is a Symbol, we want it
+    //  registered under that Symbol, not a String name.
     TP.defineSlot(target, name, method, TP.METHOD, trk, desc);
 
     //  capture the descriptor on the method (method body)
@@ -2761,9 +2778,9 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
             //  things like signal handler name computation.
             TP.sys.addMetadata(own, value, TP.METHOD, trk);
         }
-    } else if (name.match(/^handle/)) {
+    } else if (methodName.match(/^handle/)) {
         //  still make sure we track handler names for getBestHandlerNames call.
-        TP.sys.$$meta_handlers.push(name);
+        TP.sys.$$meta_handlers.push(methodName);
         TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
     }
 
@@ -11089,33 +11106,33 @@ function(includeDate, includeMillis, includeNonNum) {
      * @addon Date
      */
 
-    var s,
-        p,
-        inD,
-        inM;
+    var str,
+        padding,
+        wantsDate,
+        wantsMillis;
 
-    p = TP.DEFAULT_NUMPAD;
+    padding = TP.DEFAULT_NUMPAD;
 
-    inD = TP.isBoolean(includeDate) ? includeDate : true;
-    inM = TP.isBoolean(includeMillis) ? includeMillis : true;
+    wantsDate = TP.isBoolean(includeDate) ? includeDate : true;
+    wantsMillis = TP.isBoolean(includeMillis) ? includeMillis : true;
 
-    s = inD ? this.getFullYear().toString().pad(4, p) +
-                        (this.getMonth() + 1).toString().pad(2, p) +
-                        this.getDate().toString().pad(2, p) +
+    str = wantsDate ? this.getFullYear().toString().pad(4, padding) +
+                        (this.getMonth() + 1).toString().pad(2, padding) +
+                        this.getDate().toString().pad(2, padding) +
                         'T' : '';
 
-    s = s + this.getHours().toString().pad(2, p) + ':' +
-            this.getMinutes().toString().pad(2, p) + ':' +
-            this.getSeconds().toString().pad(2, p);
+    str = str + this.getHours().toString().pad(2, padding) + ':' +
+            this.getMinutes().toString().pad(2, padding) + ':' +
+            this.getSeconds().toString().pad(2, padding);
 
-    if (inM) {
-        s = s + '.' + this.getMilliseconds().toString().pad(3, p);
+    if (wantsMillis) {
+        str = str + '.' + this.getMilliseconds().toString().pad(3, padding);
     }
 
     if (TP.isFalse(includeNonNum)) {
-        return s.strip(/[^0-9]/g);
+        return str.strip(/[^0-9]/g);
     } else {
-        return s;
+        return str;
     }
 });
 

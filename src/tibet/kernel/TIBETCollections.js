@@ -4499,6 +4499,7 @@ function() {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  The internal hash of this object.
 TP.core.Hash.Inst.defineAttribute('$$hash');
 
 //  what delim should be used when joining array elements into a string
@@ -4718,6 +4719,53 @@ function() {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Hash.Inst.defineMethod(Symbol.iterator,
+function() {
+
+    /**
+     * @method Symbol.iterator
+     * @summary The ECMA2015 iterator method that allows TP.core.Hash to be
+     *     used in iteration contexts, such as ECMA2015 for...of loops.
+     * @description This method allows TP.core.Hash to participate in ECMA2015
+     *     iteration contexts. As such, it's 'name' is actually Symbol.iterator
+     *     and is not a String. It returns an Object that has one slot: the
+     *     'next' Function, per the specification's requirements.
+     * @returns {Object} A POJO with a single slot containing the Function that
+     *     will be invoked to return the 'next' iterable chunk. Note that for
+     *     TP.core.Hash objects, this is a key/value pair.
+     */
+
+    var count,
+        keys,
+        size,
+
+        hash;
+
+    count = 0;
+    keys = this.getKeys();
+    size = keys.getSize();
+
+    hash = this.$get('$$hash');
+
+    return {
+        next: function() {
+            var key,
+                val;
+
+            if (count < size) {
+                key = keys[count];
+                val = hash[key];
+                count++;
+                return {done: false, value: [key, val]};
+            } else {
+                return {done: true, value: undefined};
+            }
+        }
+    };
 });
 
 //  ------------------------------------------------------------------------
