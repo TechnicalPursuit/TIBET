@@ -3705,13 +3705,12 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getValues',
-function(aFilterName) {
+function() {
 
     /**
      * @method getValues
      * @summary Returns an array containing the values for the objects'
-     *     attributes. The filter provided determines which set of keys is used
-     *     to acquire the values.
+     *     attributes.
      * @returns {Object[]} An array of the values for the receiver's keys.
      */
 

@@ -3196,8 +3196,8 @@ function() {
 //  TP.nodeEvaluateXPath()
 //  TP.nodeEvaluateXPointer()
 //  TP.nodeEvaluateXTension()
-//  TP.nodeEvaluateCSS
-//  TP.nodeEvaluateBarename
+//  TP.nodeEvaluateCSS()
+//  TP.nodeEvaluateBarename()
 
 //  ------------------------------------------------------------------------
 
