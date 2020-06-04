@@ -1146,7 +1146,9 @@ function(enterSelection) {
         newContent,
 
         shouldConstructCloseMarks,
-        shouldConstructTooltips;
+        shouldConstructTooltips,
+
+        thisref;
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
@@ -1155,8 +1157,10 @@ function(enterSelection) {
     shouldConstructCloseMarks = this.getType().get('wantsCloseMarks');
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
 
+    thisref = this;
+
     newContent.each(
-        function() {
+        function(data, index) {
             var labelContent,
                 markContent,
                 valueContent,
@@ -1173,7 +1177,7 @@ function(enterSelection) {
                         preIndex,
                         postIndex;
 
-                    labelVal = d[1];
+                    labelVal = thisref.getItemLabel(d, index);
 
                     if (/match_result">/g.test(labelVal)) {
                         preIndex = labelVal.indexOf('<span');
@@ -1202,7 +1206,7 @@ function(enterSelection) {
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(
                 function(d, i) {
-                    return d[0];
+                    return thisref.getItemValue(d, index);
                 }
             );
 
@@ -1211,7 +1215,8 @@ function(enterSelection) {
                 hintContent.html(
                     function(d, i) {
                         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
-                                TP.xmlLiteralsToEntities(d[0]) +
+                                TP.xmlLiteralsToEntities(
+                                    thisref.getItemValue(d, index)) +
                                 '</span>';
                     }
                 );
@@ -1284,6 +1289,44 @@ function() {
     }
 
     return selectionData;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('getItemLabel',
+function(aDataValue, anIndex) {
+
+    /**
+     * @method getItemLabel
+     * @summary Returns the value that an individual item should use as it's
+     *     'label' when rendering.
+     * @param {Object[]} aDataValue The d3 datum at the current point of item
+     *     rendering iteration.
+     * @param {Number} anIndex The index of the supplied datum in its overall
+     *     data set.
+     * @returns {String} The value to use as the item's 'label'.
+     */
+
+    return aDataValue[1];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('getItemValue',
+function(aDataValue, anIndex) {
+
+    /**
+     * @method getItemValue
+     * @summary Returns the value that an individual item should use as it's
+     *     'value' when rendering.
+     * @param {Object[]} aDataValue The d3 datum at the current point of item
+     *     rendering iteration.
+     * @param {Number} anIndex The index of the supplied datum in its overall
+     *     data set.
+     * @returns {String} The value to use as the item's 'value'.
+     */
+
+    return aDataValue[0];
 });
 
 //  ------------------------------------------------------------------------
@@ -1419,7 +1462,9 @@ function(selection) {
         groupID,
 
         precedingStaticContent,
-        followingStaticContent;
+        followingStaticContent,
+
+        thisref;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1428,9 +1473,12 @@ function(selection) {
 
     groupID = this.getLocalID() + '_group';
 
+    thisref = this;
+
     selection.each(
-        function(d) {
-            var wrappedElem;
+        function(d, i) {
+            var wrappedElem,
+                val;
 
             //  TODO: This looks like a Chrome bug - investigate.
             Object.setPrototypeOf(
@@ -1438,11 +1486,13 @@ function(selection) {
 
             wrappedElem = TP.wrap(this);
 
+            val = thisref.getItemValue(d, i).toString();
+
             //  Then, set the visual toggle based on whether the value is
             //  selected or not. Note that we convert to a String to make sure
             //  the proper comparison with selected values (which will contain
             //  only Strings).
-            if (selectedValues.contains(d[0].toString())) {
+            if (selectedValues.contains(val)) {
                 wrappedElem.$setVisualToggle(true);
                 return;
             }
@@ -1509,25 +1559,32 @@ function(selection) {
     var selectedValues,
 
         precedingStaticContent,
-        followingStaticContent;
+        followingStaticContent,
+
+        thisref;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
         selectedValues = TP.ac();
     }
 
-    selection.each(
-            function(d) {
+    thisref = this;
 
-                var wrappedElem;
+    selection.each(
+            function(d, i) {
+
+                var wrappedElem,
+                    val;
 
                 wrappedElem = TP.wrap(this);
+
+                val = thisref.getItemValue(d, i).toString();
 
                 //  Then, set the visual toggle based on whether the value is
                 //  selected or not. Note that we convert to a String to make
                 //  sure the proper comparison with selected values (which will
                 //  contain only Strings).
-                if (selectedValues.contains(d[0].toString())) {
+                if (selectedValues.contains(val)) {
                     wrappedElem.$setVisualToggle(true);
                     return;
                 }
@@ -1583,8 +1640,12 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
+    var thisref;
+
+    thisref = this;
+
     updateSelection.each(
-        function(data) {
+        function(data, index) {
             var labelContent,
                 valueContent;
 
@@ -1598,7 +1659,7 @@ function(updateSelection) {
                         preIndex,
                         postIndex;
 
-                    labelVal = data[1];
+                    labelVal = thisref.getItemLabel(d, index);
 
                     if (/match_result">/g.test(labelVal)) {
                         preIndex = labelVal.indexOf('<span');
@@ -1624,7 +1685,7 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    return data[0];
+                    return thisref.getItemValue(data, index);
                 }
             );
         });

@@ -249,6 +249,7 @@
     <script src="~lib_test/src/xctrls/TP.xctrls_dialog_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_list_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_notifier_Tests.js"/>
+    <script src="~lib_test/src/xctrls/TP.xctrls_pagerbar_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_popup_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_propertysheet_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_radioitem_Tests.js"/>

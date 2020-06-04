@@ -43,7 +43,97 @@ TP.xctrls.pagerbar.Type.defineAttribute('defaultItemTagName',
                                         'xctrls:pageritem');
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.pagerbar.Inst.defineMethod('getItemLabel',
+function(aDataValue, anIndex) {
+
+    /**
+     * @method getItemLabel
+     * @summary Returns the value that an individual item should use as it's
+     *     'label' when rendering.
+     * @param {Object[]} aDataValue The d3 datum at the current point of item
+     *     rendering iteration.
+     * @param {Number} anIndex The index of the supplied datum in its overall
+     *     data set.
+     * @returns {String} The value to use as the item's 'label'.
+     */
+
+    var val;
+
+    if (/Previous|Start|Next|End/.test(aDataValue.at(1))) {
+        return aDataValue.at(1);
+    }
+
+    val = anIndex + 1;
+
+    //  If the receiver is configured to show next/previous buttons, we need to
+    //  subtract 1 to the page value to account for the 'previous' button.
+    if (this.hasAttribute('nextprevious')) {
+        val -= 1;
+    }
+
+    //  If the receiver is configured to show start/end buttons, we need to
+    //  subtract 1 to the page value to account for the 'start' button.
+    if (this.hasAttribute('startend')) {
+        val -= 1;
+    }
+
+    return val;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.pagerbar.Inst.defineMethod('getPageValue',
+function() {
+
+    /**
+     * @method getPageValue
+     * @summary Gets the *page value* of the receiver. That is, the numeric
+     *     value of the page that the receiver is displaying. Note that this is
+     *     a *1-based* value.
+     * @returns {Number} The 1-based page value.
+     */
+
+    var value,
+        val;
+
+    //  Grab the underlying data value.
+    value = this.getValue();
+
+    if (TP.isString(value)) {
+        val = value.asNumber();
+
+        //  It wasn't a String with a Number in it, so we consult our set of
+        //  data keys. This will return
+        if (TP.isNaN(val)) {
+            val = this.get('$dataKeys').indexOf(value);
+        }
+    } else if (TP.isNumber(value)) {
+        val = value;
+    }
+
+    //  Add 1 to the page value due to the fact that this method needs to return
+    //  the value as a 1-based number, but our data key Array is 0-based
+    //  (obviously).
+    val += 1;
+
+    //  If the receiver is configured to show next/previous buttons, we need to
+    //  subtract 1 to the page value to account for the 'previous' button.
+    if (this.hasAttribute('nextprevious')) {
+        val -= 1;
+    }
+
+    //  If the receiver is configured to show start/end buttons, we need to
+    //  subtract 1 to the page value to account for the 'start' button.
+    if (this.hasAttribute('startend')) {
+        val -= 1;
+    }
+
+    return val;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.pagerbar.Inst.defineHandler('UIDeactivate',
@@ -61,7 +151,15 @@ function(aSignal) {
 
         valueTPElem,
 
-        newValue;
+        newValue,
+        oldValue,
+        oldPageValue,
+        newPageValue,
+
+        signalName,
+
+        alwaysSignalChange,
+        wasSignalingChange;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -92,35 +190,132 @@ function(aSignal) {
         //  And it's text content.
         newValue = valueTPElem.getTextContent();
 
+        //  Grab the old value before we set it.
+        oldValue = this.getValue();
+
+        //  Grab the old *page value* before we set it.
+        oldPageValue = this.getPageValue();
+
         switch (newValue) {
 
             case 'start':
-                this.dispatch('TP.sig.UIPageStart');
+                signalName = 'TP.sig.UIPageStart';
+
+                newPageValue = 1;
+
                 break;
 
             case 'previous':
-                this.dispatch('TP.sig.UIPagePrevious');
+                signalName = 'TP.sig.UIPagePrevious';
+
+                newPageValue = oldPageValue - 1;
+
                 break;
 
             case 'next':
-                this.dispatch('TP.sig.UIPageNext');
+                signalName = 'TP.sig.UIPageNext';
+
+                newPageValue = oldPageValue + 1;
+
                 break;
 
             case 'end':
-                this.dispatch('TP.sig.UIPageEnd');
+                signalName = 'TP.sig.UIPageEnd';
+
+                newPageValue = this.$get('$dataKeys').getSize();
+
+                //  If the receiver is configured to show next/previous buttons,
+                //  we need to subtract 2 to the page value to account for both
+                //  the 'next' and 'previous' buttons (since we're computing
+                //  from the end of the data key Array).
+                if (this.hasAttribute('nextprevious')) {
+                    newPageValue -= 2;
+                }
+
+                //  If the receiver is configured to show start/end buttons, we
+                //  need to subtract 2 to the page value to account for both the
+                //  'start' and 'end' buttons (since we're computing from the
+                //  end of the data key Array).
+                if (this.hasAttribute('startend')) {
+                    newPageValue -= 2;
+                }
+
                 break;
 
             default:
+                signalName = 'TP.sig.UIPageSet';
+
                 //  Make sure this is a Number before dispatching the signal.
-                newValue = newValue.asNumber();
-                if (TP.isNumber(newValue)) {
-                    this.dispatch('TP.sig.UIPageSet',
-                                    null,
-                                    TP.hc('pageNum', newValue));
+                if (TP.isString(newValue)) {
+                    newPageValue = newValue.asNumber();
+                    if (TP.isNaN(newPageValue)) {
+                        newPageValue = this.get('$dataKeys').indexOf(newValue);
+                    }
+                } else if (TP.isNumber(newValue)) {
+                    newPageValue = newValue;
+                }
+
+                newPageValue += 1;
+
+                //  If the receiver is configured to show next/previous buttons,
+                //  we need to subtract 1 to the page value to account for the
+                //  'previous' button.
+                if (this.hasAttribute('nextprevious')) {
+                    newPageValue -= 1;
+                }
+
+                //  If the receiver is configured to show start/end buttons, we
+                //  need to subtract 1 to the page value to account for the
+                //  'start' button.
+                if (this.hasAttribute('startend')) {
+                    newPageValue -= 1;
                 }
 
                 break;
         }
+
+        if (!TP.equal(oldPageValue, newPageValue)) {
+            this.dispatch(signalName,
+                            null,
+                            TP.hc('pageNum', newPageValue));
+        }
+
+        //  If we always signal change, then even if the values are equal,
+        //  we will not exit here. If an attribute is defined, then it takes
+        //  precedence over whatever the item control returns.
+        if (this.hasAttribute('alwayschange')) {
+            alwaysSignalChange = TP.bc(this.getAttribute('alwayschange'));
+        } else {
+            alwaysSignalChange = wrappedDOMTarget.alwaysSignalChange();
+        }
+
+        //  If we don't always signal change and the two values are equivalent,
+        //  than just return.
+        if (!alwaysSignalChange && TP.equal(oldPageValue, newPageValue)) {
+            return this;
+        }
+
+        //  If the item was already selected, then deselect the value.
+        //  Otherwise, select it.
+
+        //  Note here how we turn off change signaling to avoid multiple
+        //  unnecessary calls to render.
+        wasSignalingChange = this.shouldSignalChange();
+        this.shouldSignalChange(false);
+
+        this.setPageValue(newPageValue);
+
+        //  Need to re-obtain this after setting the page value, which will
+        //  alter it.
+        newValue = this.getValue();
+
+        this.changed('value', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
+
+        //  If the element is bound, then update its bound value.
+        this.setBoundValueIfBound(newValue);
+
+        this.shouldSignalChange(wasSignalingChange);
 
         //  Make sure that we stop propagation here so that we don't get any
         //  more responders further up in the chain processing this.
@@ -146,10 +341,8 @@ function(aDataObject, shouldSignal) {
 
     var dataObj,
 
-        pageSize,
-        totalPages,
-
-        pageData;
+        pageData,
+        firstObj;
 
     if (TP.notValid(aDataObject)) {
         return this;
@@ -158,28 +351,23 @@ function(aDataObject, shouldSignal) {
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
 
-    //  If the data object is an Array and only has 1 item, which must be a
-    //  non-Array Collection (Hash, POJO, NodeList, NamedNodeMap), then we use
-    //  the entries collection as our data object.
-    if (TP.isArray(dataObj) &&
-        dataObj.getSize() === 1 &&
-        TP.isCollection(dataObj.first()) &&
-        !TP.isArray(dataObj.first())) {
-        dataObj = TP.entries(dataObj.first());
+    //  Now, obtain a set of key/value pairs no matter what kind of data object
+    //  we were handed.
+    if (TP.isArray(dataObj)) {
+        firstObj = dataObj.first();
+
+        if (dataObj.getSize() === 1 &&
+            TP.isCollection(firstObj) &&
+            !TP.isArray(firstObj)) {
+            pageData = TP.entries(firstObj);
+        } else if (TP.isPair(firstObj)) {
+            pageData = TP.copy(dataObj);
+        } else {
+            pageData = TP.entries(dataObj);
+        }
+    } else {
+        pageData = TP.entries(dataObj);
     }
-
-    pageSize = this.getAttribute('pagesize').asNumber();
-    if (TP.isNaN(pageSize)) {
-        pageSize = 1;
-    }
-
-    totalPages = (dataObj.getSize() / pageSize).ceil();
-
-    //  Create an Array from a Range, starting at 1.
-    pageData = (1).to(totalPages).asArray();
-
-    //  Get the Array as pairs of Arrays (in the form of: [index, value])
-    pageData = pageData.getKVPairs();
 
     //  Unshift the starting entries on the front, if the author wanted them.
 
@@ -208,41 +396,50 @@ function(aDataObject, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.pagerbar.Inst.defineMethod('setValue',
-function(aValue, shouldSignal) {
+TP.xctrls.pagerbar.Inst.defineMethod('setPageValue',
+function(aValue) {
 
     /**
-     * @method setValue
-     * @summary Sets the value of the receiver's node. For a UI element this
-     *     method will ensure any display formatters are invoked. NOTE that this
-     *     method does not update the receiver's bound value if it's a bound
-     *     control. In fact, this method is used in response to a change in the
-     *     bound value to update the display value, so this method should avoid
-     *     changes to the bound value to avoid recursions.
-     * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} shouldSignal Should changes be notified. If false
-     *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {Boolean} Whether or not the value was changed from the value it
-     *     had before this method was called.
+     * @method setPageValue
+     * @summary Sets the *page value* of the receiver. That is, the numeric
+     *     value of the page that the receiver should be displaying.
+     * @param {Number} aValue The page number value to set the receiver to. This
+     *     should be a *1-based* numeric value.
+     * @returns {TP.xctrls.pagerbar} The receiver.
      */
 
-    var val;
+    var pageValue,
+        val;
 
-    if (TP.notValid(aValue)) {
-        return false;
+    if (TP.isString(aValue)) {
+        pageValue = aValue.asNumber();
+    } else if (TP.isNumber(aValue)) {
+        pageValue = aValue;
     }
 
-    //  Because this is expecting a 1-based value, but we're driven by a 0-based
-    //  data set, we need to subtract 1.
-    val = aValue.asNumber();
+    //  Subtract 1 from the page value due to the fact that the user supplied it
+    //  as a 1-based number, but our data key Array is 0-based (obviously).
+    pageValue = pageValue - 1;
 
-    if (!TP.isNumber(val)) {
-        return false;
+    //  If the receiver is configured to show next/previous buttons, we need to
+    //  add 1 to the page value to account for the 'previous' button.
+    if (this.hasAttribute('nextprevious')) {
+        pageValue += 1;
     }
 
-    val -= 1;
+    //  If the receiver is configured to show start/end buttons, we need to add
+    //  1 to the page value to account for the 'start' button.
+    if (this.hasAttribute('startend')) {
+        pageValue += 1;
+    }
 
-    return this.callNextMethod(val, shouldSignal);
+    //  Grab the data value at that position in our data key Array and set the
+    //  *data value* to it.
+    val = this.get('$dataKeys').at(pageValue);
+
+    this.setValue(val);
+
+    return this;
 });
 
 //  ========================================================================
