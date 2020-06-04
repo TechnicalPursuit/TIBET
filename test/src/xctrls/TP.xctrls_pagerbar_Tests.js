@@ -998,7 +998,14 @@ function() {
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        staticPagerItem = pagerbar.get('allItemContent').first();
+        test.andIfNotValidWaitFor(
+                function() {
+                    staticPagerItem = pagerbar.get('allItemContent').first();
+                    dynamicPagerItem = pagerbar.get('allItemContent').at(2);
+                    return staticPagerItem;
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
 
         test.chain(
             function() {
@@ -1021,8 +1028,6 @@ function() {
                     TP.val(modelObj.get('selection_set_2')),
                     'before');
             });
-
-        dynamicPagerItem = pagerbar.get('allItemContent').at(2);
 
         test.chain(
             function() {
@@ -1136,11 +1141,17 @@ function() {
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        startPagerItem = pagerbar.get('allItemContent').at(0);
-        previousPagerItem = pagerbar.get('allItemContent').at(1);
-        numTwoPagerItem = pagerbar.get('allItemContent').at(3);
-        nextPagerItem = pagerbar.get('allItemContent').at(5);
-        endPagerItem = pagerbar.get('allItemContent').at(6);
+        test.andIfNotValidWaitFor(
+                function() {
+                    startPagerItem = pagerbar.get('allItemContent').at(0);
+                    previousPagerItem = pagerbar.get('allItemContent').at(1);
+                    numTwoPagerItem = pagerbar.get('allItemContent').at(3);
+                    nextPagerItem = pagerbar.get('allItemContent').at(5);
+                    endPagerItem = pagerbar.get('allItemContent').at(6);
+                    return startPagerItem;
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
 
         test.chain(
             function() {

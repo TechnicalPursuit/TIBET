@@ -967,6 +967,16 @@ function() {
 
         staticTabbarItem = tabbar.get('allItemContent').first();
 
+        test.andIfNotValidWaitFor(
+                function() {
+                    staticTabbarItem = tabbar.get('allItemContent').first();
+                    dynamicTabbarItem = tabbar.get('allItemContent').at(1);
+
+                    return staticTabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
         test.chain(
             function() {
                 test.getDriver().constructSequence().
@@ -984,8 +994,6 @@ function() {
                     TP.val(modelObj.get('selection_set_2')),
                     'before');
             });
-
-        dynamicTabbarItem = tabbar.get('allItemContent').at(1);
 
         test.chain(
             function() {
