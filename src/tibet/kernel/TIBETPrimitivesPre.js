@@ -2309,6 +2309,8 @@ TP.functionNeedsCallee = function(aFunction, aName) {
      *     callNextMethod which requires the function to be proxied with a
      *     wrapper to handle callee management.
      * @param {Function} aFunction The function to test.
+     * @param {String} aName The method name, if the Function is some Object's
+     *     method.
      * @returns {Boolean} True if the function should be patched.
      */
 
@@ -2362,7 +2364,7 @@ TP.functionNeedsCallee = function(aFunction, aName) {
     }
 
     //  Have to do it the heavy-lifting way by using a more tokenized approach.
-    str = TP.stringStripFunctionSource(str, aName);
+    str = TP.stringStripFunctionSource(str);
 
     result = TP.regex.NEEDS_CALLEE.test(str);
 
