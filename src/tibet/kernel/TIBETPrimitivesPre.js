@@ -2216,7 +2216,7 @@ TP.registerLoadInfo(TP.defineSlot);
 
 //  ------------------------------------------------------------------------
 
-TP.stringStripFunctionSource = function(str, name) {
+TP.stringStripFunctionSource = function(str) {
 
     var arr,
         tokens,
