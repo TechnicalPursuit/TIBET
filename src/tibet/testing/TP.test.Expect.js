@@ -323,6 +323,13 @@ function() {
     //  the effect, when used below, of creating stub chains from each name
     //  listed to every other name.
     chainDict = TP.hc();
+
+    //  'Unwrap' the Proxy that we normally get back as a TP.core.Hash and grab
+    //  the original hash object. We do this because we will be using Hash
+    //  method names as propertie names here and (since we always use 'at' here
+    //  and not destructuring) we need to get those values, not the methods
+    //  themselves from the hash object.
+    chainDict = chainDict[TP.PROXIED];
     chainDict.atAllPut(chainMethodNames, chainMethodNames);
 
     //  Set up the method chains.
