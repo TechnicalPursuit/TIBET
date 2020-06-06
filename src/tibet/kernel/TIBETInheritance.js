@@ -530,7 +530,8 @@ function(name, classDefFunction) {
                 //  Don't copy the 'length', 'prototype' or 'constructor' slots.
                 if (propName === 'length' ||
                     propName === 'prototype' ||
-                    propName === 'constructor') {
+                    propName === 'constructor' ||
+                    propName === TP.PROXIED) {
                     return;
                 }
 

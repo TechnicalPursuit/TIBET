@@ -361,6 +361,9 @@ TP.constructProxyObject = function(target, config) {
     newProxy = new Proxy(target, config);
     newProxy.__isProxy__ = true;
 
+    //  Capture the proxied object so that we can access later.
+    newProxy[TP.PROXIED] = target;
+
     return newProxy;
 };
 
@@ -1389,6 +1392,7 @@ TP.SIGNAL_BATCH = 'batch';
 TP.END_SIGNAL_BATCH = 'endbatch';
 
 TP.TARGET = 'Target';
+TP.PROXIED = 'Proxied';
 
 //  ---
 //  requests
