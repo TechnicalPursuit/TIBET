@@ -1868,6 +1868,8 @@ TP.hc = function() {
         dict.atPut(arguments[i], arguments[i + 1]);
     }
 
+    dict[TP.PROXIED] = dict;
+
     return dict;
 };
 

@@ -4595,7 +4595,10 @@ function() {
         attrs,
         len,
         val,
-        thisref;
+        thisref,
+
+        proxyConfig,
+        hashProxy;
 
     this.callNextMethod();
 
@@ -4718,7 +4721,53 @@ function() {
             break;
     }
 
-    return this;
+    //  Now, construct an ECMA6 proxy that will 'stand in' for the hash. This
+    //  allows TP.core.Hash objects to participate in ECMA6-style destructuring.
+    proxyConfig = {
+        get: function(target, propName) {
+            var warning;
+
+            //  If the named slot has a real value on the target, then we should
+            //  check further to see if it also has a value on the embedded
+            //  hash.
+            if (target[propName]) {
+
+                //  If the named slot has a value on the embedded hash and the
+                //  two values are not the same, then we should warn the caller
+                //  that they're accessing a slot that exists on both. They're
+                //  probably trying to get to the value on the embedded hash,
+                //  but it's shadowed by a slot on the hash object itself and we
+                //  *must* return that value since, in other cases, it's most
+                //  likely a method on the hash object and we can't break method
+                //  dispatch.
+                if (target.$$hash[propName] &&
+                    target[propName] !== target.$$hash[propName]) {
+
+                    if (TP.isValid(target[propName][TP.OWNER])) {
+                        warning = 'Accessing shadowed method: ' + propName +
+                                    ' via direct access. Use the at() method' +
+                                    ' instead';
+                    } else {
+                        warning = 'Accessing shadowed property: ' + propName +
+                                    ' via direct access. Use the at() method' +
+                                    ' instead';
+                    }
+
+                    TP.ifWarn() ? TP.warn(warning) : 0;
+                }
+
+                return target[propName];
+            }
+
+            //  The slot had no real value on the target - return the value
+            //  that's in the embedded hash object.
+            return target.$$hash[propName];
+        }
+    };
+
+    hashProxy = TP.constructProxyObject(this, proxyConfig);
+
+    return hashProxy;
 });
 
 //  ------------------------------------------------------------------------
