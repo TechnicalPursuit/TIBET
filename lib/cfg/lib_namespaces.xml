@@ -284,42 +284,40 @@
 </config>
 
 <config id="xctrls">
-    <!-- common xctrls LESS files -->
-    <resource href="xctrls/TP.xctrls_variables.less"/>
-    <resource href="xctrls/themes/tpi/TP.xctrls_variables_tpi.less"/>
-
-    <resource href="xctrls/TP.xctrls_grid.less"/>
+    <!-- common xctrls CSS files -->
+    <resource href="xctrls/TP.xctrls_variables.css"/>
+    <resource href="xctrls/themes/tpi/TP.xctrls_variables_tpi.css"/>
 
 
     <!-- General theme files -->
-    <resource href="xctrls/themes/TP.xctrls_common_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls_common_all.css"/>
 
-    <resource href="xctrls/themes/TP.xctrls.button_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.buttonitem_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.checkitem_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.combo_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.dialog_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.list_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.notifier_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.pagerbar_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.propertysheet_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.radioitem_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.select_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.sticky_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.tabbar_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.table_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.textitem_all.less"/>
-    <resource href="xctrls/themes/TP.xctrls.tooltip_all.less"/>
+    <resource href="xctrls/themes/TP.xctrls.button_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.buttonitem_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.checkitem_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.combo_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.dialog_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.list_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.notifier_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.pagerbar_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.propertysheet_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.radioitem_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.select_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.sticky_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.tabbar_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.table_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.textitem_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.tooltip_all.css"/>
 
     <!-- Individual theme files are brought in by their components based on a
-            setting of a cfg parameter so we don't have to mention them here..
+            setting of a cfg parameter so we don't have to mention them here.
     -->
 
     <script src="xctrls/TP.xctrls.XMLNS.js"/>
 
     <script src="xctrls/TP.xctrls.Element.js"/>
     <property name="path.TP.xctrls.Element.style" value="~TP.xctrls.XMLNS/TP.xctrls_common.css"/>
-    <property name="path.TP.xctrls.Element.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls_common_tpi.less"/>
+    <property name="path.TP.xctrls.Element.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls_common_tpi.css"/>
 
     <script src="xctrls/TP.xctrls.item/TP.xctrls.item.js"/>
     <script src="xctrls/TP.xctrls.item/TP.xctrls.item.keybindings.js"/>
