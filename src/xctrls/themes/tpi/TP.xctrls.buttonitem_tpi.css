@@ -1,0 +1,106 @@
+/*
+    CSS styles for the 'xctrls:buttonitem' control.
+*/
+
+@import url("../TP.xctrls.buttonitem_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The buttonitem */
+*[data-theme~="tpi"] xctrls|buttonitem {
+
+    border-width: var(--xctrls-buttonitem-border-width);
+    border-style: var(--xctrls-buttonitem-border-style);
+    border-radius: var(--xctrls-buttonitem-border-radius);
+
+    font-size: var(--xctrls-buttonitem-font-size);
+
+    background-color: var(--xctrls-buttonitem-background-color-normal);
+}
+
+/* Hovering over the buttonitem */
+*[data-theme~="tpi"] xctrls|buttonitem:hover {
+
+}
+
+/* Focusing on the buttonitem */
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] {
+
+}
+
+/* Clicking down on the buttonitem */
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|active] {
+
+}
+
+/* The buttonitem is disabled */
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|disabled] {
+
+}
+
+/* The buttonitem is selected */
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|selected] {
+
+    background-color: var(--xctrls-buttonitem-background-color-selected);
+}
+
+/* The buttonitem label */
+*[data-theme~="tpi"] xctrls|buttonitem > xctrls|label {
+
+    box-shadow: inset 0 0 0.5em #ddd;
+    font-family: var(--xctrls-buttonitem-font-family);
+    color: var(--xctrls-buttonitem-font-color-normal);
+}
+
+/* Hovering over the buttonitem, label must highlight */
+*[data-theme~="tpi"] xctrls|buttonitem:hover > xctrls|label {
+
+    color: var(--xctrls-buttonitem-font-color-hover);
+    background-color: var(--xctrls-buttonitem-background-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|selected]:hover > xctrls|label {
+
+    color: var(--xctrls-buttonitem-font-color-normal);
+    background-color: var(--xctrls-buttonitem-background-color-selected);
+}
+
+/* Focusing on the buttonitem, label must highlight */
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] {
+
+}
+
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] > xctrls|label {
+
+    color: var(--xctrls-buttonitem-font-color-focus);
+    background-color: var(--xctrls-buttonitem-background-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus][pclass|selected] > xctrls|label {
+
+}
+
+/* Clicking down on the buttonitem, label must highlight */
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|active] {
+
+}
+
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|active] > xctrls|label {
+
+    color: var(--xctrls-buttonitem-font-color-active);
+    background-color: var(--xctrls-buttonitem-background-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|active][pclass|selected] > xctrls|label {
+
+}
+
+/* The buttonitem is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|disabled] > xctrls|label {
+
+    color: var(--xctrls-buttonitem-font-color-disabled);
+    background-color: var(--xctrls-buttonitem-background-color-disabled);
+}

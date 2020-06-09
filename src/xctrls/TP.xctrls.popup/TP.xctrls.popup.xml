@@ -11,7 +11,7 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.popup.style" value="~TP.xctrls.popup/TP.xctrls.popup.less"/>
+    <property name="path.TP.xctrls.popup.style" value="~TP.xctrls.popup/TP.xctrls.popup.css"/>
 </config>
 
 <config id="scripts">

@@ -1,0 +1,32 @@
+/*
+    CSS styles for the 'xctrls:popup' control.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+xctrls|popup {
+
+    position: absolute;
+    display: inline-block;
+
+    top: 0;
+    left: 0;
+}
+
+xctrls|popup[pclass|hidden] {
+
+    display: none;
+}
+
+/* NB: Any direct children of our content should be set to 'block' to fit our
+ * content element
+ */
+xctrls|popup > xctrls|content {
+
+}
+
+xctrls|popup > xctrls|content > * {
+
+    display: block;
+}

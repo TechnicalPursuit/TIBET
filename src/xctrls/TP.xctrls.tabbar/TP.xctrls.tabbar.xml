@@ -11,8 +11,8 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.tabbar.style" value="~TP.xctrls.tabbar/TP.xctrls.tabbar.less"/>
-    <property name="path.TP.xctrls.tabbar.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.tabbar_tpi.less"/>
+    <property name="path.TP.xctrls.tabbar.style" value="~TP.xctrls.tabbar/TP.xctrls.tabbar.css"/>
+    <property name="path.TP.xctrls.tabbar.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.tabbar_tpi.css"/>
 </config>
 
 <config id="scripts">

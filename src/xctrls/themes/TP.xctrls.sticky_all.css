@@ -1,0 +1,12 @@
+/*
+    CSS styles common across 'xctrls:sticky' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* All themed 'xctrls:sticky' controls */
+*[data-theme] xctrls|sticky {
+
+    z-index: var(--tibet-STICKY-TIER);
+}

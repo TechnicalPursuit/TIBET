@@ -1,0 +1,73 @@
+/*
+    CSS styles common across 'xctrls:list' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* All themed 'xctrls:list' controls */
+*[data-theme] xctrls|list {
+
+    text-align: center;
+    cursor: pointer;
+
+    /* Here so that the control can read these in JS */
+
+    /* The item height *with* borders */
+    --xctrls-item-height: 20px;
+
+    /* The border height (top and bottom added together) */
+    --xctrls-item-border-height: 2px;
+
+    /* Minimum of 3 rows of height */
+    min-height: 60px;
+}
+
+*[data-theme] xctrls|list *[tibet|pelem="choices"] {
+
+    margin: 0;
+    padding: 0;
+}
+
+*[data-theme] xctrls|list *[tibet|pelem="choices"] > xctrls|* {
+
+    right: 0;
+    left: 0;
+
+    height: var(--xctrls-item-height);
+
+    border: solid 1px transparent;
+
+    text-align: left;
+
+    white-space: nowrap;
+
+    /* Make each cell overflow with an ellipsis */
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+}
+
+*[data-theme] xctrls|list *[tibet|pelem="choices"] > xctrls|*[spacer] {
+
+    cursor: default;
+}
+
+*[data-theme] xctrls|list *[tibet|pelem="choices"] > xctrls|*[grouping] {
+
+    cursor: default;
+}
+
+/* All themed, non-disabled 'xctrls:list' controls */
+*[data-theme] xctrls|list:not([pclass|disabled]) {
+
+    background: transparent;
+    text-decoration: none;
+}
+
+/* All themed, non-disabled 'xctrls:list' control labels */
+*[data-theme] xctrls|list:not([pclass|disabled]) xctrls|label {
+
+}

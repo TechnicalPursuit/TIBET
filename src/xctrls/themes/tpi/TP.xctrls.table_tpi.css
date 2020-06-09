@@ -1,0 +1,170 @@
+/*
+    CSS styles for 'xctrls:table' controls for the 'tpi' theme.
+*/
+
+@import url("../TP.xctrls.table_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* The table */
+*[data-theme~="tpi"] xctrls|table {
+
+    border-width: var(--xctrls-list-border-width);
+    border-style: var(--xctrls-list-border-style);
+    border-radius: var(--xctrls-list-border-radius);
+
+    width: 20em;
+
+    line-height: 1.2;
+}
+
+/* Hovering over the table */
+*[data-theme~="tpi"] xctrls|table:hover {
+
+}
+
+/* Focusing on the table */
+*[data-theme~="tpi"] xctrls|table[pclass|focus] {
+
+}
+
+/* Clicking down on the table */
+*[data-theme~="tpi"] xctrls|table[pclass|active] {
+
+}
+
+/* The table is disabled */
+*[data-theme~="tpi"] xctrls|table[pclass|disabled] {
+
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] {
+
+    margin: 0;
+    padding: 0;
+
+    background-color: white;
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row {
+
+    /* We set the background-color of the row to be the normal border color - it
+     * shows through to show the cell borders
+     */
+
+    background-color: var(--xctrls-tableitem-border-color-normal);
+}
+
+/* Hovering over the table, label must highlight */
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row:hover xctrls|label {
+
+    color: var(--xctrls-tableitem-font-color-hover);
+
+    background-color: var(--xctrls-tableitem-background-color-hover);
+}
+
+/* Selected list item, label must highlight */
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|selected] {
+
+    border-right: none;
+    border-bottom: none;
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|selected] xctrls|textitem {
+
+    background-color: var(--xctrls-textitem-background-color-selected);
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|selected] xctrls|label {
+
+    background-color: var(--xctrls-tableitem-background-color-selected-normal);
+
+    top: 1px;
+    right: 0;
+    left: 1px;
+    bottom: 0;
+
+    margin-bottom: 1px;
+}
+
+/* Focusing on the table, label must highlight */
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|focus] xctrls|label {
+
+    color: var(--xctrls-tableitem-font-color-focus);
+    font-weight: var(--xctrls-tableitem-font-weight-focus);
+}
+
+/* Clicking down on the table, label must highlight */
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|active] xctrls|label {
+
+    color: var(--xctrls-tableitem-font-color-active);
+
+    background-color: var(--xctrls-tableitem-background-color-active);
+}
+
+/* The table is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|disabled] xctrls|label {
+
+    color: var(--xctrls-tableitem-font-color-disabled);
+
+    background-color: var(--xctrls-tableitem-background-color-disabled);
+}
+
+/* The table cell label */
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row > .cell {
+
+    position: relative;
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row xctrls|textitem {
+
+    position: absolute;
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row xctrls|textitem > xctrls|label {
+
+    position: absolute;
+    display: block;
+
+    top: 1px;
+    right: 0;
+    left: 1px;
+    bottom: 0;
+
+    padding-top: 1px;
+    padding-left: var(--xctrls-tableitem-padding-width);
+    padding-right: var(--xctrls-tableitem-padding-width);
+
+    font-family: var(--xctrls-tableitem-font-family);
+    color: var(--xctrls-tableitem-font-color-normal);
+    font-weight: var(--xctrls-tableitem-font-weight-normal);
+
+    background-color: var(--xctrls-tableitem-background-color-normal);
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[grouping] xctrls|textitem > xctrls|label {
+
+    background-color: var(--xctrls-tableitem-grouping-background-color-normal);
+
+    font-weight: var(--xctrls-tableitem-grouping-font-weight);
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[grouping]:hover xctrls|textitem > xctrls|label {
+
+    background-color: var(--xctrls-tableitem-grouping-background-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[spacer] xctrls|textitem > xctrls|label {
+
+}
+
+*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[spacer]:hover xctrls|textitem > xctrls|label {
+
+    background-color: initial;
+}

@@ -1,0 +1,40 @@
+/*
+    CSS styles common across all 'xctrls:' controls for the 'tpi' theme.
+*/
+
+@import url("../TP.xctrls_common_all.css");
+
+@import url("TP.xctrls_variables_tpi.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* All controls - normal mode */
+*[data-theme~="tpi"] xctrls|* {
+
+    border-color: var(--xctrls-border-color-normal);
+}
+
+/* All controls - hover mode */
+*[data-theme~="tpi"] xctrls|*:hover {
+
+    border-color: var(--xctrls-border-color-hover);
+}
+
+/* All controls - focused mode */
+*[data-theme~="tpi"] xctrls|*[pclass|focus] {
+
+    border-color: var(--xctrls-border-color-focus);
+}
+
+/* All controls - active mode */
+*[data-theme~="tpi"] xctrls|*[pclass|active] {
+
+    border-color: var(--xctrls-border-color-active);
+}
+
+/* All controls - disabled mode */
+*[data-theme~="tpi"] xctrls|*[pclass|disabled] {
+
+    border-color: var(--xctrls-border-color-disabled);
+}

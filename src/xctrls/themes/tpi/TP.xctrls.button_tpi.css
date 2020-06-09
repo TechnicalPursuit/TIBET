@@ -1,0 +1,76 @@
+/*
+    CSS styles for 'xctrls:button' controls for the 'tpi' theme.
+*/
+
+@import url("../TP.xctrls.button_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The button */
+*[data-theme~="tpi"] xctrls|button {
+
+    border-width: var(--xctrls-button-border-width);
+    border-style: var(--xctrls-button-border-style);
+    border-radius: var(--xctrls-button-border-radius);
+
+    box-shadow: inset 0 0 0.5em #ddd;
+
+    font-size: var(--xctrls-button-font-size);
+}
+
+/* Hovering over the button */
+*[data-theme~="tpi"] xctrls|button:hover {
+
+}
+
+/* Focusing on the button */
+*[data-theme~="tpi"] xctrls|button[pclass|focus] {
+
+}
+
+/* Clicking down on the button */
+*[data-theme~="tpi"] xctrls|button[pclass|active] {
+
+}
+
+/* The button is disabled */
+*[data-theme~="tpi"] xctrls|button[pclass|disabled] {
+
+}
+
+/* The button label */
+*[data-theme~="tpi"] xctrls|button > xctrls|label {
+
+    font-family: var(--xctrls-button-font-family);
+    color: var(--xctrls-button-font-color-normal);
+    background-color: var(--xctrls-button-background-color-normal);
+}
+
+/* Hovering over the button, label must highlight */
+*[data-theme~="tpi"] xctrls|button:hover > xctrls|label {
+
+    color: var(--xctrls-button-font-color-hover);
+    background-color: var(--xctrls-button-background-color-hover);
+}
+
+/* Focusing on the button, label must highlight */
+*[data-theme~="tpi"] xctrls|button[pclass|focus] > xctrls|label {
+
+    color: var(--xctrls-button-font-color-focus);
+    background-color: var(--xctrls-button-background-color-focus);
+}
+
+/* Clicking down on the button, label must highlight */
+*[data-theme~="tpi"] xctrls|button[pclass|active] > xctrls|label {
+
+    color: var(--xctrls-button-font-color-active);
+    background-color: var(--xctrls-button-background-color-active);
+}
+
+/* The button is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|button[pclass|disabled] > xctrls|label {
+
+    color: var(--xctrls-button-font-color-disabled);
+    background-color: var(--xctrls-button-background-color-disabled);
+}

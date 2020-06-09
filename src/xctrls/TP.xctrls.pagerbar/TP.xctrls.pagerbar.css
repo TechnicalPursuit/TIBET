@@ -1,0 +1,32 @@
+/*
+    CSS styles for 'xctrls:pagerbar' controls.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+xctrls|pagerbar {
+
+    position: relative;
+
+    user-select: none;
+}
+
+xctrls|pagerbar xctrls|content {
+
+    display: flex;
+}
+
+xctrls|pagerbar xctrls|content > *|* {
+
+    display: flex;
+
+    justify-content: center;
+    flex: 1 1 auto;
+}
+
+xctrls|pagerbar xctrls|pageritem {
+
+    order: 1;
+    flex: 1;
+}

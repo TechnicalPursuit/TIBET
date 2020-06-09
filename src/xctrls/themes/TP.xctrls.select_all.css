@@ -1,0 +1,43 @@
+/*
+    CSS styles common across 'xctrls:select' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* All themed 'xctrls:select' controls */
+*[data-theme] xctrls|select {
+
+    color: inherit;
+
+    cursor: pointer;
+
+    min-width: 5em;
+
+    overflow: hidden;
+}
+
+/* All themed, non-disabled 'xctrls:select' controls */
+*[data-theme] xctrls|select:not([pclass|disabled]) {
+
+    text-decoration: none;
+}
+
+/* All themed, non-disabled 'xctrls:select' control labels */
+*[data-theme] xctrls|select:not([pclass|disabled]) xctrls|label {
+
+}
+
+*[data-theme] xctrls|select > xctrls|button {
+
+    margin: 0;
+    padding: 0;
+
+    border: none;
+
+    box-shadow: none;
+
+    text-overflow: ellipsis;
+
+    flex: 1;
+}

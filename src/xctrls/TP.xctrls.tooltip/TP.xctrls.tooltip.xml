@@ -11,8 +11,8 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.tooltip.style" value="~TP.xctrls.tooltip/TP.xctrls.tooltip.less"/>
-    <property name="path.TP.xctrls.tooltip.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.tooltip_tpi.less"/>
+    <property name="path.TP.xctrls.tooltip.style" value="~TP.xctrls.tooltip/TP.xctrls.tooltip.css"/>
+    <property name="path.TP.xctrls.tooltip.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.tooltip_tpi.css"/>
 </config>
 
 <config id="scripts">

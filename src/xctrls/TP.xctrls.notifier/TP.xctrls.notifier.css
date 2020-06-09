@@ -1,0 +1,29 @@
+/*
+    CSS styles for the 'xctrls:notifier' control.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+xctrls|notifier {
+
+    position: absolute;
+    display: inline-block;
+}
+
+/* Hovering over the notifier */
+xctrls|notifier:hover {
+
+}
+
+xctrls|notifier > xctrls|content {
+
+}
+
+/* NB: Any direct children of our content should be set to 'block' to fit our
+ * content element
+ */
+xctrls|notifier > xctrls|content > * {
+
+    display: block;
+}

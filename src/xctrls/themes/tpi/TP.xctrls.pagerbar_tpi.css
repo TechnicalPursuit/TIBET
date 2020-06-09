@@ -1,0 +1,99 @@
+/*
+    CSS styles for 'xctrls:pagerbar' controls for the 'tpi' theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+@import url("../TP.xctrls.pagerbar_all.css");
+
+/* The pagerbar */
+*[data-theme~="tpi"] xctrls|pagerbar {
+
+}
+
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem {
+
+    border-width: var(--xctrls-pageritem-border-width);
+    border-style: var(--xctrls-pageritem-border-style);
+    border-top-left-radius: var(--xctrls-pageritem-border-radius);
+    border-top-right-radius: var(--xctrls-pageritem-border-radius);
+}
+
+/* Hovering over the pagerbar */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem:hover {
+
+}
+
+/* Focusing on the pagerbar */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|focus] {
+
+}
+
+/* Clicking down on the pagerbar */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|active] {
+
+}
+
+/* The pagerbar is disabled */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|disabled] {
+
+}
+
+/* The pagerbar label */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem > xctrls|label {
+
+    font-family: var(--xctrls-pageritem-font-family);
+    color: var(--xctrls-pageritem-font-color-normal);
+}
+
+/* Hovering over the pagerbar, tab and label must highlight */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem:hover {
+
+    background-color: var(--xctrls-pageritem-background-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem:hover > xctrls|label {
+
+    color: var(--xctrls-pageritem-font-color-hover);
+}
+
+/* Selected list item, tab must highlight */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|selected] {
+
+    background-color: var(--xctrls-pageritem-background-color-selected-normal);
+    border-bottom-color: var(--xctrls-pageritem-background-color-selected-normal);
+}
+
+/* Focusing on the pagerbar, tab and label must highlight */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|focus] {
+
+    background-color: var(--xctrls-pageritem-background-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|focus] > xctrls|label {
+
+    color: var(--xctrls-pageritem-font-color-focus);
+}
+
+/* Clicking down on the pagerbar, tab and label must highlight */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|active] {
+
+    background-color: var(--xctrls-pageritem-background-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|active] > xctrls|label {
+
+    color: var(--xctrls-pageritem-font-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|disabled] {
+
+    background-color: var(--xctrls-pageritem-background-color-disabled);
+}
+
+/* The pageritem is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem[pclass|disabled] > xctrls|label {
+
+    color: var(--xctrls-pageritem-font-color-disabled);
+}

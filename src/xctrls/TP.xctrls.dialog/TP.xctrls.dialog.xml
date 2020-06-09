@@ -11,8 +11,8 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.dialog.style" value="~TP.xctrls.dialog/TP.xctrls.dialog.less"/>
-    <property name="path.TP.xctrls.dialog.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.dialog_tpi.less"/>
+    <property name="path.TP.xctrls.dialog.style" value="~TP.xctrls.dialog/TP.xctrls.dialog.css"/>
+    <property name="path.TP.xctrls.dialog.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.dialog_tpi.css"/>
 </config>
 
 <config id="scripts">

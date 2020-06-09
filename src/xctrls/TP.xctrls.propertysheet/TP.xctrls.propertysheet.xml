@@ -11,8 +11,8 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.propertysheet.style" value="~TP.xctrls.propertysheet/TP.xctrls.propertysheet.less"/>
-    <property name="path.TP.xctrls.propertysheet.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.propertysheet_tpi.less"/>
+    <property name="path.TP.xctrls.propertysheet.style" value="~TP.xctrls.propertysheet/TP.xctrls.propertysheet.css"/>
+    <property name="path.TP.xctrls.propertysheet.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.propertysheet_tpi.css"/>
 </config>
 
 <config id="scripts">

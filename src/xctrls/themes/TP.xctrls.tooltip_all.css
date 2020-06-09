@@ -1,0 +1,13 @@
+/*
+    CSS styles common across 'xctrls:tooltip' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* All themed 'xctrls:tooltip' controls */
+*[data-theme] xctrls|tooltip {
+
+    text-align: center;
+    padding: 0.25em;
+}

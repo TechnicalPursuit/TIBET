@@ -2,6 +2,8 @@
     CSS styles common across all 'xctrls:' widgets.
 */
 
+@import url("TP.xctrls_variables.css");
+
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 

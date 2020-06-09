@@ -1,0 +1,68 @@
+/*
+    CSS styles for 'xctrls:list' controls.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* The list */
+xctrls|list {
+
+    position: relative;
+    display: inline-block;
+
+    overflow-y: auto;
+
+    user-select: none;
+}
+
+xctrls|list > .scroller > tibet|group {
+
+    width: 100%;
+}
+
+xctrls|list *[tibet|pelem="choices"] {
+
+    position: relative;
+}
+
+xctrls|list *[tibet|pelem="choices"] > xctrls|* {
+
+    display: flex;
+    position: absolute;
+
+    box-sizing: border-box;
+}
+
+/* The item label */
+xctrls|list *[tibet|pelem="choices"] > xctrls|* > xctrls|label {
+
+    position: relative;
+    display: block;
+}
+
+xctrls|list *[tibet|pelem="choices"] > xctrls|*[spacer] * {
+
+    display: none;
+}
+
+/* Hovering over the list */
+xctrls|list:hover {
+
+}
+
+/* Focusing on the list */
+xctrls|list[pclass|focus] {
+
+}
+
+/* Clicking down on the list */
+xctrls|list[pclass|active] {
+
+}
+
+/* The list is disabled */
+xctrls|list[pclass|disabled] {
+
+}

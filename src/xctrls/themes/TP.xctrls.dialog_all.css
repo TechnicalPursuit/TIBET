@@ -1,0 +1,68 @@
+/*
+    CSS styles common across 'xctrls:dialog' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* All themed 'xctrls:dialog' controls */
+*[data-theme] xctrls|dialog {
+
+    /* rely on outer flex container */
+    margin: auto;
+
+    text-align: center;
+}
+
+/* The dialog header */
+*[data-theme] xctrls|dialog > *[tibet|pelem="header"] {
+
+    left: 0;
+    right: 0;
+
+    height: 24px;
+
+    margin: 2px;
+
+    border: 1px solid #666;
+
+    cursor: move;
+}
+
+/* The dialog body */
+*[data-theme] xctrls|dialog > *[tibet|pelem="body"] {
+
+    top: 27px;
+    right: 0;
+    bottom: 9px;
+    left: 0;
+
+    margin: 2px;
+    padding: 4px;
+
+    border: 1px solid #666;
+}
+
+/* The dialog footer */
+*[data-theme] xctrls|dialog > *[tibet|pelem="footer"] {
+
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: 8px;
+
+    margin: 2px;
+    border: 1px solid #666;
+}
+
+/* All themed, non-disabled 'xctrls:dialog' controls */
+*[data-theme] xctrls|dialog:not([pclass|disabled]) {
+
+}
+
+/* All themed, non-disabled 'xctrls:dialog' control labels */
+*[data-theme] xctrls|dialog:not([pclass|disabled]) xctrls|label {
+
+}

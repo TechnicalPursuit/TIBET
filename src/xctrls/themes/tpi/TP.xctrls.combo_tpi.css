@@ -1,0 +1,87 @@
+/*
+    CSS styles for 'xctrls:combo' controls for the 'tpi' theme.
+*/
+
+@import url("../TP.xctrls.combo_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The combo */
+*[data-theme~="tpi"] xctrls|combo {
+
+    border-width: var(--xctrls-combo-border-width);
+    border-style: var(--xctrls-combo-border-style);
+    border-radius: var(--xctrls-combo-border-radius);
+
+    font-size: var(--xctrls-combo-font-size);
+}
+
+/* Hovering over the combo */
+*[data-theme~="tpi"] xctrls|combo:hover * {
+
+    color: var(--xctrls-combo-font-color-hover);
+
+    background-color: var(--xctrls-combo-background-color-hover);
+}
+
+/* Focusing on the combo */
+*[data-theme~="tpi"] xctrls|combo[pclass|focus] {
+
+    color: var(--xctrls-combo-font-color-focus);
+
+    background-color: var(--xctrls-combo-background-color-focus);
+}
+
+/* Clicking down on the combo */
+*[data-theme~="tpi"] xctrls|combo[pclass|active] * {
+
+    color: var(--xctrls-combo-font-color-active);
+
+    background-color: var(--xctrls-combo-background-color-active);
+}
+
+/* The combo is disabled */
+*[data-theme~="tpi"] xctrls|combo[pclass|disabled] * {
+
+    color: var(--xctrls-combo-font-color-disabled);
+
+    background-color: var(--xctrls-combo-background-color-disabled);
+}
+
+/* The combo button */
+*[data-theme~="tpi"] xctrls|combo > xctrls|button {
+
+}
+
+/* The combo button's label */
+*[data-theme~="tpi"] xctrls|combo > xctrls|button > xctrls|label {
+
+    background-color: transparent;
+}
+
+/* Hovering over the combo's button, label must highlight */
+*[data-theme~="tpi"] xctrls|combo > xctrls|button:hover > xctrls|label {
+
+}
+
+/* Focusing on the combo's button, label must highlight */
+*[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|focus] > xctrls|label {
+
+}
+
+/* Clicking down on the combo's button, label must highlight */
+*[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|active] > xctrls|label {
+
+}
+
+/* The combo's button is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|disabled] > xctrls|label {
+
+}
+
+/* The down arrow */
+*[data-theme~="tpi"] xctrls|combo > .icon {
+
+    border-left: var(--xctrls-combo-border-width) var(--xctrls-combo-border-style) var(--xctrls-border-color-normal);
+}
