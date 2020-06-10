@@ -22,78 +22,6 @@ TP.tibet.style.Type.set('uriAttrs', TP.ac('href'));
 TP.tibet.style.Type.set('reloadableUriAttrs', TP.ac('href'));
 
 //  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-/**
- * The dictionary of known global vars for less compilations.
- * @type {Object}
- */
-TP.tibet.style.Type.defineAttribute('lessGlobalVars');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.tibet.style.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
-
-    this.refreshLessGlobals();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.style.Type.defineMethod('refreshLessGlobals',
-function() {
-
-    /**
-     * @method refreshLessGlobals
-     * @summary Updates the object containing global values passed to less
-     *     worker thread processes. The values typically involve 'path'
-     *     variables from the system configuration dictionary.
-     * @returns {TP.meta.tibet.style} The receiver.
-     */
-
-    var cfg,
-        globalVars;
-
-    //  Get all of the cfg variables starting with 'path.'
-    cfg = TP.sys.cfg('path');
-
-    //  Create a POJO to hold vars since we'll be using via worker thread.
-    globalVars = {};
-
-    //  Iterate over all of the 'path.' variables, getting each key and slicing
-    //  the 'path.' part off of it. Any remaining periods ('.') in the key are
-    //  replaced with '-'. Then, quote the value so that LESS doesn't have
-    //  issues with spaces, etc.
-    cfg.getKeys().forEach(
-        function(aKey) {
-            var val;
-
-            //  If the cfg data has a real value for that key, get the key and
-            //  slice off the 'path.' portion. Any remaining periods ('.') in
-            //  the key are then replaced with '-'. Then, quote the value so
-            //  that LESS doesn't have issues with spaces, etc.
-            if (TP.notEmpty(val = cfg.at(aKey)) && TP.isString(val)) {
-                globalVars[aKey.slice(5).replace(/\./g, '-')] =
-                    '"' + TP.uriResolveVirtualPath(val) + '"';
-            }
-        });
-
-    this.$set('lessGlobalVars', globalVars);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
@@ -146,168 +74,6 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tibet.style.Inst.defineMethod('compileAndInsertLESS',
-function(lessLoc, lessText) {
-
-    /**
-     * @method compileAndInsertLESS
-     * @summary Compiles the supplied less text and inserts into the document of
-     * the supplied style element.
-     * @param {String} lessLoc The location that the LESS was found in. If the
-     *     LESS source came from inline content on a 'tibet:style' element, this
-     *     will be the location of the document plus a nonsensical name to
-     *     satisfy the LESS compiler. If its from a 'tibet:style' element with
-     *     an href, then it will be that href.
-     * @param {String} lessText The source LESS text to compile.
-     * @returns {TP.tibet.style} The receiver.
-     */
-
-    var ourID,
-        lessParams,
-        lessWorker;
-
-    //  Get our local ID, assigning it if necessary.
-    ourID = this.getLocalID(true);
-
-    TP.documentEnsureHeadElement(this.getNativeDocument());
-
-    lessParams = TP.hc('filename', lessLoc,
-                        'rootpath', TP.uriCollectionPath(lessLoc),
-                        'globalVars', this.getType().get('lessGlobalVars'),
-                        'elemID', ourID,
-                        'paths', TP.ac(lessLoc));
-
-    //  Obtain a 'LESS worker' and ask it to compile the LESS text.
-    lessWorker = TP.core.LESSWorker.getWorker();
-    lessWorker.compile(lessText, lessParams).then(
-            function(result) {
-                var cssText,
-                    cssElemID,
-
-                    natNode,
-                    natDoc,
-
-                    insertionPoint,
-
-                    cssImportIDs,
-
-                    existingStyleElem,
-                    generatedStyleElem,
-
-                    cssGeneratedID;
-
-                if (TP.notValid(result)) {
-                    return;
-                }
-
-                cssText = result.at('css');
-
-                //  If there were valid compilation options (as set above in the
-                //  'lessParams' variable), extract the element ID as supplied
-                //  there. It is necessary to pass this above and use it here
-                //  since workers are asynchronous and closured variables are
-                //  inadequate.
-                if (TP.isValid(result.at('compilationOptions'))) {
-
-                    cssElemID = result.at('compilationOptions').at('elemID');
-                }
-
-                natNode = this.getNativeNode();
-                natDoc = this.getNativeDocument();
-
-                //  If there is no existing native CSS 'style' element that
-                //  would've been generated for this element, create one and set
-                //  its content.
-                if (!TP.isElement(
-                    existingStyleElem =
-                    TP.byCSSPath('*[tibet|for="' + cssElemID + '"]',
-                                    natDoc,
-                                    true,
-                                    false))) {
-
-                    insertionPoint = natNode.nextSibling;
-
-                    //  Always insert the 'compiled representation' just after
-                    //  the original. Make sure that if it's not an Element or
-                    //  if it has been detached (which can happen due to DOM
-                    //  structural changes when content is being loaded -
-                    //  sometimes <script> elements are moved around, for
-                    //  instance), that we set the insertion point to null.
-                    if (!TP.isElement(insertionPoint) ||
-                        TP.nodeIsDetached(insertionPoint)) {
-                        insertionPoint = null;
-                    }
-
-                    generatedStyleElem = TP.documentAddCSSStyleElement(
-                                                    natDoc,
-                                                    cssText,
-                                                    insertionPoint);
-
-                    //  Compute and set an ID for our generated (real) CSS style
-                    //  sheet.
-                    cssGeneratedID = cssElemID + '_generated';
-                    TP.elementSetAttribute(
-                                generatedStyleElem, 'id', cssGeneratedID, true);
-
-                    //  Set an attribute on our newly created style element that
-                    //  links it back to the source element.
-                    TP.elementSetAttribute(generatedStyleElem,
-                                            'tibet:for',
-                                            cssElemID,
-                                            true);
-
-                    //  Track the original source from the URI - this is what
-                    //  the author originally typed and might be a virtual URI.
-                    //  We'd like to track it here.
-                    TP.elementSetAttribute(generatedStyleElem,
-                                            'tibet:originalhref',
-                                            lessLoc,
-                                            true);
-
-                    //  If the original element has a 'tibet:type' attribute on
-                    //  it, copy it over to the generated version. Note that we
-                    //  do *not* do this for imported stylesheets above.
-                    if (this.hasAttribute('tibet:type')) {
-                        TP.elementSetAttribute(generatedStyleElem,
-                                                'tibet:type',
-                                                this.getAttribute('tibet:type'),
-                                                true);
-                    }
-
-                    //  If @imports were detected and we've gathered a set of
-                    //  IDs representing them, then we join those together using
-                    //  the TP.JOIN separator character and set the 'imports'
-                    //  attribute to that value. This will be used by the
-                    //  generated style element to determine when all of its
-                    //  @imports have been loaded.
-                    if (TP.notEmpty(cssImportIDs)) {
-                        TP.elementSetAttribute(generatedStyleElem,
-                                                'imports',
-                                                cssImportIDs.join(TP.JOIN),
-                                                true);
-                    }
-                } else {
-
-                    //  Otherwise, just set the content of the existing one.
-                    TP.cssStyleElementSetContent(existingStyleElem, cssText);
-                }
-
-                //  Work around Chrome (and possibly others) stupidity
-                //  TODO: Commented out for now - doesn't seem to need it.
-                // TP.windowForceRepaint(TP.nodeGetWindow(natDoc));
-
-            }.bind(this)).catch(
-            function(err) {
-                TP.ifError() ?
-                    TP.error('Error compiling LESS in: ' + lessLoc +
-                                TP.str(err)) : 0;
-            });
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.tibet.style.Inst.defineMethod('isReadyToRender',
 function() {
 
@@ -346,7 +112,6 @@ function(anHref) {
         ext,
         hrefURI,
         hrefLocation,
-        fetchRequest,
         newHref,
 
         styleURI,
@@ -362,37 +127,6 @@ function(anHref) {
         hrefLocation = hrefURI.getLocation();
 
         switch (ext) {
-
-            case 'less':
-
-                //  The style is some LESS CSS. Go fetch it and, when it's
-                //  returned, compile and insert it into the document. Note how
-                //  we *don't* specify 'refresh' here, since we want the latest
-                //  content as set into the URL.
-                fetchRequest = TP.request('async',
-                    TP.sys.isHTTPBased(), 'resultType', TP.TEXT);
-                fetchRequest.defineHandler(
-                        'RequestSucceeded',
-                            function(aResponse) {
-                                var fetchLoc,
-                                    fetchResult;
-
-                                //  Note here how we grab the 'whole location'
-                                //  of the URI and supply that to the LESS
-                                //  processor. No need to do the 'nonsensical
-                                //  file name' trick - we have the real LESS
-                                //  file here.
-                                fetchLoc = hrefLocation;
-                                fetchResult = aResponse.get('result');
-
-                                //  Run the LESS compiler and insert the
-                                //  results.
-                                this.compileAndInsertLESS(
-                                            fetchLoc, fetchResult);
-                            }.bind(this));
-                hrefURI.getResource(fetchRequest);
-
-                break;
 
             default:
 
@@ -556,9 +290,6 @@ function() {
 
         type,
 
-        currentDir,
-        currentLoc,
-
         newStyleElem,
         existingStyleElem;
 
@@ -577,20 +308,6 @@ function() {
     type = this.getAttribute('type');
 
     switch (type) {
-        case 'less':
-
-            //  Note that, due to a limitation of the LESS API, we can't
-            //  just provide a 'root path' that url()s can be resolved
-            //  against. So we get our document's collection path and attach
-            //  a nonsensical filename to it before supplying that to the
-            //  LESS compilation routine.
-            currentDir = TP.uriCollectionPath(TP.documentGetLocation(doc));
-            currentLoc = TP.uriJoinPaths(currentDir, 'fluffy.less');
-
-            this.compileAndInsertLESS(currentLoc, resourceStr);
-
-            break;
-
         default:
 
             //  If there is no existing 'style' element, create one and set
