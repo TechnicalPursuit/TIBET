@@ -240,6 +240,57 @@ function(beHidden) {
     return this.callNextMethod();
 });
 
+//  ------------------------------------------------------------------------
+
+TP.xctrls.notifier.Inst.defineMethod('setContentAndActivate',
+function(contentInfo, overlayContent) {
+
+    /**
+     * @method setContentAndActivate
+     * @summary Sets the content of the receiver's native DOM counterpart to
+     *     the content supplied and activates the receiver. If the content is
+     *     not supplied, then the supplied trigger signal will be queried for
+     *     content.
+     * @param {TP.core.Hash} contentInfo Information about the content, where to
+     *     obtain it, how to render it, where to position it, etc.
+     * @param {String|Element|DocumentFragment} [overlayContent] The optional
+     *     content to place inside of the overlay element.
+     * @returns {TP.xctrls.notifier} The receiver.
+     */
+
+    var fadeoutDuration,
+        fadeoutDelay;
+
+    //  Notifiers support passing their fadeout duration and delay as parameters
+    //  in the signal that opens them.
+
+    fadeoutDuration = contentInfo.at('fadeoutDuration');
+    if (TP.notEmpty(fadeoutDuration)) {
+        this.setStyleProperty(
+                    '--xctrls-notifier-fadeout-duration',
+                    fadeoutDuration + 'ms');
+    } else {
+        //  Make sure to remove any local property that was placed here before.
+        //  This call invocation may just want to use the inherited value.
+        this.removeStyleProperty(
+                    '--xctrls-notifier-fadeout-duration');
+    }
+
+    fadeoutDelay = contentInfo.at('fadeoutDelay');
+    if (TP.notEmpty(fadeoutDelay)) {
+        this.setStyleProperty(
+                    '--xctrls-notifier-fadeout-delay',
+                    fadeoutDelay + 'ms');
+    } else {
+        //  Make sure to remove any local property that was placed here before.
+        //  This call invocation may just want to use the inherited value.
+        this.removeStyleProperty(
+                    '--xctrls-notifier-fadeout-delay');
+    }
+
+    return this.callNextMethod();
+});
+
 //  ============================================================================
 //  notifier-specific TP.sig.Signal subtypes
 //  ============================================================================
@@ -364,7 +415,9 @@ function(info) {
             'overlayID', notifierID,
             'contentURI', notifierContentURI.getLocation(),
             'noPosition', true,
-            'triggerTPDocument', tpDoc));
+            'triggerTPDocument', tpDoc,
+            'fadeoutDuration', info.at('fadeoutDuration'),
+            'fadeoutDelay', info.at('fadeoutDelay')));
 
     return this;
 });
