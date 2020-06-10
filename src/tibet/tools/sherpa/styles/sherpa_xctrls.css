@@ -1,5 +1,5 @@
 /*
-    LESS styles for 'xctrls' controls within the Sherpa.
+    CSS styles for 'xctrls' controls within the Sherpa.
 */
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
@@ -8,7 +8,6 @@
 @namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
 
 /* Inspector lists */
-
 sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|list {
 
     top: 0;
@@ -26,24 +25,26 @@ sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|list {
     border: none;
 
     overflow-y: auto;
+}
 
-    *[tibet|pelem="choices"] {
+sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|list *[tibet|pelem="choices"] {
 
-        & > xctrls|textitem {
+}
 
-            & > xctrls|label {
+sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|list *[tibet|pelem="choices"] > xctrls|textitem {
 
-                font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-            }
-        }
-    }
+}
+
+sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|list *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
 sherpa|inspectoritem[childtype="xctrls:list"] {
+
 }
 
 /* Inspector tables */
-
 sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|table {
 
     top: 0;
@@ -61,41 +62,41 @@ sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|table {
     border: none;
 
     overflow-y: auto;
+}
 
-    *[tibet|pelem="choices"] {
+sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|table *[tibet|pelem="choices"] {
 
-        & > xctrls|textitem {
+}
 
-            & > xctrls|label {
+sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|table *[tibet|pelem="choices"] > xctrls|textitem {
 
-                font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-            }
-        }
-    }
+}
+
+sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|table *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
 sherpa|inspectoritem[childtype="xctrls:table"] {
+
 }
 
 /* Inspector property sheets */
+sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|propertysheet label {
 
-sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|propertysheet {
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 90%;
 
-    & label {
-        font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-        font-size: 90%;
+    line-height: 1.8;
+}
 
-        line-height: 1.8;
-    }
+sherpa|inspector#SherpaInspector sherpa|inspectoritem > xctrls|propertysheet input {
 
-    & input {
-        font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-        font-size: 73%;
-    }
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 73%;
 }
 
 /* The notifier */
-
 xctrls|notifier#SherpaNotifier {
 
     top: 56px;
@@ -108,22 +109,18 @@ xctrls|notifier#SherpaNotifier {
 
     background-color: cornsilk;
 
-    transition:
-        opacity
-        var(--sherpa-notifier-fadeout-duration)
-        ease
-        var(--sherpa-notifier-fadeout-delay);
+    transition: opacity var(--sherpa-notifier-fadeout-duration) ease var(--sherpa-notifier-fadeout-delay);
+}
 
-    & > xctrls|content {
+xctrls|notifier#SherpaNotifier > xctrls|content {
 
-        margin-left: 2px;
-        margin-right: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
 
-        border-radius: 4px;
+    border-radius: 4px;
 
-        font-size: 12px;
-        font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
-    }
+    font-size: 12px;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
 }
 
 #background.edge-north-open xctrls|notifier#SherpaNotifier {
@@ -131,7 +128,7 @@ xctrls|notifier#SherpaNotifier {
     /* Note here how we have to use the LESS 'escape' mechanism. The LESS parser
      isn't smart enough to handle CSS custom properties within function
      expressions */
-    top: ~"calc(var(--sherpa-drawer-north-open-height) + 5px + 16px)";
+    top: calc(var(--sherpa-drawer-north-open-height) + 5px + 16px);
 }
 
 /* When the west drawer is open */
@@ -159,7 +156,6 @@ xctrls|notifier#SherpaNotifier {
 }
 
 /* The console tabbar */
-
 xctrls|tabbar#SherpaConsoleTabbar {
 
     position: absolute;
@@ -172,18 +168,18 @@ xctrls|tabbar#SherpaConsoleTabbar {
 
     /* 250 more than our 'sherpa:drawer' parent */
     z-index: 26500;
+}
 
-    xctrls|tabitem {
+xctrls|tabbar#SherpaConsoleTabbar xctrls|tabitem {
 
-        font-size: 77%;
-        padding-bottom: 5px;
-        padding-right: 10px;
+    font-size: 77%;
+    padding-bottom: 5px;
+    padding-right: 10px;
+}
 
-        &:first-child > .close_mark {
+xctrls|tabbar#SherpaConsoleTabbar xctrls|tabitem:first-child > .close_mark {
 
-            display: none;
-        }
-    }
+    display: none;
 }
 
 xctrls|panelbox#SherpaConsolePanelbox {
@@ -196,32 +192,29 @@ xctrls|panelbox#SherpaConsolePanelbox {
     left: 30px;
 
     border: solid 1px #aaa;
+}
 
-    xctrls|panel {
+xctrls|panelbox#SherpaConsolePanelbox xctrls|panel {
 
-        width: 100%;
-        height: 100%;
+    width: 100%;
+    height: 100%;
 
-        text-align: left;
-    }
+    text-align: left;
 }
 
 /* The snippets popup */
-
 xctrls|popup#SnippetsPopup {
 
     z-index: var(--tibet-CONTEXT-MENU-TIER);
 }
 
 /* The bookmarks popup */
-
 xctrls|popup#BookmarksPopup {
 
     z-index: var(--tibet-CONTEXT-MENU-TIER);
 }
 
 /* The adjuster popup */
-
 xctrls|popup#AdjusterPopup {
 
     z-index: var(--tibet-CONTEXT-MENU-TIER);
@@ -233,7 +226,6 @@ xctrls|list#TSHCompleterList {
 
     bottom: 64px;
     left: 280px;
-
     width: 23em;
 
     min-height: 1.5em;
@@ -248,30 +240,31 @@ xctrls|list#TSHCompleterList {
     overflow-y: auto;
 
     z-index: var(--tibet-CONTEXT-MENU-TIER);
+}
 
-    *[tibet|pelem="choices"] {
+xctrls|list#TSHCompleterList *[tibet|pelem="choices"] {
 
-        & > xctrls|textitem {
+}
 
-            background-color: white;
+xctrls|list#TSHCompleterList *[tibet|pelem="choices"] > xctrls|textitem {
 
-            & > xctrls|label {
+    background-color: white;
+}
 
-                font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-                letter-spacing: 1px;
-                color: #666;
+xctrls|list#TSHCompleterList *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label {
 
-                & span.match_result {
-                    color: black;
-                    font-weight: bold;
-                }
-            }
-        }
-    }
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    letter-spacing: 1px;
+    color: #666;
+}
+
+xctrls|list#TSHCompleterList *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label span.match_result {
+
+    color: black;
+    font-weight: bold;
 }
 
 /* The adjuster tooltip */
-
 xctrls|tooltip#AdjusterTooltip {
 
     max-width: 300px;
@@ -279,20 +272,19 @@ xctrls|tooltip#AdjusterTooltip {
     font-size: 77%;
 
     transition: none;
+}
 
-    &[pclass|active] {
+xctrls|tooltip#AdjusterTooltip[pclass|active] {
 
-        opacity: 1;
-    }
+    opacity: 1;
+}
 
-    span.propertyName {
+xctrls|tooltip#AdjusterTooltip span.propertyName {
 
-        font-weight: bold;
-    }
+    font-weight: bold;
 }
 
 /* CouchDB sub inspector stuff */
-
 sherpa|inspectoritem > div.couchdbsubinspectorsauth {
 
     font-size: 100%;
@@ -318,7 +310,6 @@ sherpa|inspectoritem > div.couchdbsubinspectorsauth > button {
     height: 2em;
 
     margin-top: 1em;
-
     font-size: 85%;
 }
 
@@ -332,7 +323,6 @@ sherpa|inspectoritem > div.couchtools > a {
 }
 
 /* AWS sub inspector stuff */
-
 sherpa|inspectoritem > div.awssubinspectorsauth {
 
     font-size: 100%;
@@ -363,7 +353,6 @@ sherpa|inspectoritem > div.awssubinspectorsauth > button {
 }
 
 /* Salesforce sub inspector stuff */
-
 sherpa|inspectoritem > div.salesforcesubinspectorsauth > div.textarea_wrapper {
 
     position: absolute;
