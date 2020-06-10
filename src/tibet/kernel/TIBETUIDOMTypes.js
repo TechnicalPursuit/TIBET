@@ -3836,8 +3836,6 @@ function() {
         head,
         styleLoc,
 
-        inlined,
-
         styleElems,
 
         gids;
@@ -3857,10 +3855,6 @@ function() {
         //  already.
         head = TP.documentEnsureHeadElement(this.getNativeDocument());
         styleLoc = styleURI.getLocation();
-
-        //  If the system is running with inlined resources we create 'style'
-        //  elements rather than 'link' elements for CSS files.
-        inlined = TP.uriIsInlined(styleLoc, this.getType());
 
         //  Generate a CSS query that looks under the head for any style
         //  elements that have an 'originalhref' attribute that contains

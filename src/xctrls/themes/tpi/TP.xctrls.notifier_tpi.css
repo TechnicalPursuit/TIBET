@@ -10,6 +10,8 @@
 /* The notifier */
 *[data-theme~="tpi"] xctrls|notifier {
 
+    transition: opacity var(--xctrls-notifier-fadeout-duration) ease var(--xctrls-notifier-fadeout-delay);
+
     background-color: var(--xctrls-notifier-background-color);
 
     border-width: var(--xctrls-notifier-border-width);
