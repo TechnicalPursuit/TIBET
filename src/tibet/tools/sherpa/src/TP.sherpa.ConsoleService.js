@@ -164,11 +164,6 @@ function(aResourceID, aRequest) {
     //  update our overall status
     consoleGUI.updateStatus();
 
-    //  put our project identifier in place in the notifier bar
-    this.notify(TP.sc(
-        'Welcome to Sherpa&#8482; Shift-Right-Click in page to begin editing.'
-        ));
-
     //  Process whatever initial request(s) might be sitting in the queue
     this[TP.composeHandlerName('NextRequest')]();
 

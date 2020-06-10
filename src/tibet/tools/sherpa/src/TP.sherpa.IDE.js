@@ -5272,6 +5272,13 @@ function() {
         //  proceeding.
         (function() {
             TP.byId('SherpaHUD', viewWin).toggle('closed');
+
+            //  put our project identifier in place in the notifier bar
+            TP.bySystemId('SherpaConsoleService').notify(TP.sc(
+                'Welcome to Sherpa&#8482; Shift-Right-Click in page to begin' +
+                ' editing.'
+                ));
+
             thisref.signal('SherpaReady');
         }).queueAfterNextRepaint();
     };
