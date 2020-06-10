@@ -1,0 +1,393 @@
+/*
+    CSS variables common across all 'xctrls:' controls for the 'tpi' theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+:root {
+
+    /* common variables */
+
+    --xctrls-border-color-normal: #aaa;
+    --xctrls-border-color-hover: #aaa;
+    --xctrls-border-color-focus: #aaa;
+    --xctrls-border-color-active: #aaa;
+    --xctrls-border-color-disabled: #eee;
+
+    /* xctrls|button variables */
+
+    --xctrls-button-border-width: 1px;
+    --xctrls-button-border-style: solid;
+    --xctrls-button-border-radius: 3px;
+
+    --xctrls-button-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-button-font-size: 99%;
+    --xctrls-button-font-color-normal: black;
+    --xctrls-button-font-color-hover: #666;
+    --xctrls-button-font-color-focus: #666;
+    --xctrls-button-font-color-active: #666;
+    --xctrls-button-font-color-disabled: #aaa;
+
+    --xctrls-button-background-color-normal: white;
+    --xctrls-button-background-color-hover: cornsilk;
+    --xctrls-button-background-color-focus: gold;
+    --xctrls-button-background-color-active: gold;
+    --xctrls-button-background-color-disabled: #eee;
+
+    /* xctrls|buttonitem variables */
+
+    --xctrls-buttonitem-border-width: 1px;
+    --xctrls-buttonitem-border-style: solid;
+    --xctrls-buttonitem-border-radius: 3px;
+
+    --xctrls-buttonitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-buttonitem-font-size: 99%;
+    --xctrls-buttonitem-font-color-normal: black;
+    --xctrls-buttonitem-font-color-hover: #666;
+    --xctrls-buttonitem-font-color-focus: #666;
+    --xctrls-buttonitem-font-color-active: #666;
+    --xctrls-buttonitem-font-color-disabled: #aaa;
+
+    --xctrls-buttonitem-background-color-normal: white;
+    --xctrls-buttonitem-background-color-hover: cornsilk;
+    --xctrls-buttonitem-background-color-focus: gold;
+    --xctrls-buttonitem-background-color-active: gold;
+    --xctrls-buttonitem-background-color-disabled: #eee;
+
+    --xctrls-buttonitem-background-color-selected: gold;
+
+    /* xctrls|checkitem variables */
+
+    --xctrls-checkitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-checkitem-font-color-normal: black;
+    --xctrls-checkitem-font-color-hover: #666;
+    --xctrls-checkitem-font-color-focus: #666;
+    --xctrls-checkitem-font-color-active: #666;
+    --xctrls-checkitem-font-color-disabled: #aaa;
+
+    --xctrls-checkitem-background-color-normal: white;
+    --xctrls-checkitem-background-color-hover: white;
+    --xctrls-checkitem-background-color-focus: white;
+    --xctrls-checkitem-background-color-active: white;
+    --xctrls-checkitem-background-color-disabled: white;
+
+    --xctrls-checkitem-check-border-color-normal: black;
+    --xctrls-checkitem-check-border-color-hover: black;
+    --xctrls-checkitem-check-border-color-focus: black;
+    --xctrls-checkitem-check-border-color-active: black;
+    --xctrls-checkitem-check-border-color-disabled: #eee;
+
+    --xctrls-checkitem-check-color-normal: black;
+    --xctrls-checkitem-check-color-hover: cornsilk;
+    --xctrls-checkitem-check-color-focus: gold;
+    --xctrls-checkitem-check-color-active: gold;
+    --xctrls-checkitem-check-color-disabled: #eee;
+
+    /* xctrls|radioitem variables */
+
+    --xctrls-radioitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-radioitem-font-color-normal: black;
+    --xctrls-radioitem-font-color-hover: #666;
+    --xctrls-radioitem-font-color-focus: #666;
+    --xctrls-radioitem-font-color-active: #666;
+    --xctrls-radioitem-font-color-disabled: #aaa;
+
+    --xctrls-radioitem-background-color-normal: white;
+    --xctrls-radioitem-background-color-hover: white;
+    --xctrls-radioitem-background-color-focus: white;
+    --xctrls-radioitem-background-color-active: white;
+    --xctrls-radioitem-background-color-disabled: white;
+
+    --xctrls-radioitem-check-color-normal: black;
+    --xctrls-radioitem-check-color-hover: cornsilk;
+    --xctrls-radioitem-check-color-focus: gold;
+    --xctrls-radioitem-check-color-active: gold;
+    --xctrls-radioitem-check-color-disabled: #eee;
+
+    /* xctrls|textitem variables */
+
+    --xctrls-textitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-textitem-font-color-normal: black;
+    --xctrls-textitem-font-color-hover: #666;
+    --xctrls-textitem-font-color-focus: #666;
+    --xctrls-textitem-font-color-active: #666;
+    --xctrls-textitem-font-color-disabled: #aaa;
+
+    --xctrls-textitem-background-color-normal: transparent;
+    --xctrls-textitem-background-color-hover: cornsilk;
+    --xctrls-textitem-background-color-focus: gold;
+    --xctrls-textitem-background-color-active: gold;
+    --xctrls-textitem-background-color-disabled: #eee;
+
+    --xctrls-textitem-background-color-selected: gray;
+
+    /* xctrls|combo variables */
+
+    --xctrls-combo-border-width: 1px;
+    --xctrls-combo-border-style: solid;
+    --xctrls-combo-border-radius: 3px;
+
+    --xctrls-combo-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-combo-font-size: 99%;
+    --xctrls-combo-font-color-normal: black;
+    --xctrls-combo-font-color-hover: #666;
+    --xctrls-combo-font-color-focus: #666;
+    --xctrls-combo-font-color-active: #666;
+    --xctrls-combo-font-color-disabled: #aaa;
+
+    --xctrls-combo-background-color-normal: white;
+    --xctrls-combo-background-color-hover: cornsilk;
+    --xctrls-combo-background-color-focus: gold;
+    --xctrls-combo-background-color-active: gold;
+    --xctrls-combo-background-color-disabled: #eee;
+
+    /* xctrls|dialog variables */
+
+    --xctrls-dialog-max-width: 600px;
+    --xctrls-dialog-max-height: 370px;
+    --xctrls-dialog-min-width: 300px;
+    --xctrls-dialog-min-height: 235px;
+
+    --xctrls-dialog-border-width: 1px;
+    --xctrls-dialog-border-style: solid;
+    --xctrls-dialog-border-radius: 5px;
+
+    --xctrls-dialog-border-color-normal: #333;
+    --xctrls-dialog-border-color-hover: initial;
+    --xctrls-dialog-border-color-focus: initial;
+    --xctrls-dialog-border-color-active: initial;
+    --xctrls-dialog-border-color-disabled: initial;
+
+    --xctrls-dialog-background-color: gold;
+
+    --xctrls-dialog-header-background-color: #f9f9f9;
+    --xctrls-dialog-header-color: black;
+    --xctrls-dialog-header-font-size: 116%;
+    --xctrls-dialog-header-line-height: 1.5;
+
+    --xctrls-dialog-body-background-color: white;
+
+    --xctrls-dialog-footer-background-color: #eee;
+
+    /* xctrls|list variables */
+
+    --xctrls-listitem-padding-width: 2px;
+
+    --xctrls-list-border-width: 1px;
+    --xctrls-list-border-style: solid;
+    --xctrls-list-border-radius: 4px;
+
+    --xctrls-list-border-color-normal: #eee;
+    --xctrls-list-border-color-hover: initial;
+    --xctrls-list-border-color-focus: initial;
+    --xctrls-list-border-color-active: initial;
+    --xctrls-list-border-color-disabled: initial;
+
+    --xctrls-listitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-listitem-font-color-normal: black;
+    --xctrls-listitem-font-color-hover: #666;
+    --xctrls-listitem-font-color-focus: black;
+    --xctrls-listitem-font-color-active: #666;
+    --xctrls-listitem-font-color-disabled: #aaa;
+
+    --xctrls-listitem-font-weight-normal: normal;
+    --xctrls-listitem-font-weight-focus: bold;
+
+    --xctrls-listitem-border-width: 1px;
+    --xctrls-listitem-border-style: solid;
+
+    --xctrls-listitem-border-color-light: white;
+    --xctrls-listitem-border-color-normal: #999;
+    --xctrls-listitem-border-color-hover: initial;
+    --xctrls-listitem-border-color-focus: black;
+    --xctrls-listitem-border-color-active: initial;
+    --xctrls-listitem-border-color-disabled: initial;
+
+    --xctrls-listitem-background-color-normal: white;
+    --xctrls-listitem-background-color-hover: cornsilk;
+    /*  NB: We don't set a background-color for focused items - it hides whether
+        they're selected or not. */
+    --xctrls-listitem-background-color-active: gold;
+    --xctrls-listitem-background-color-disabled: white;
+
+    --xctrls-listitem-background-color-selected-normal: gold;
+
+    --xctrls-listitem-grouping-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-listitem-grouping-font-weight: bold;
+    --xctrls-listitem-grouping-font-color-normal: black;
+    --xctrls-listitem-grouping-font-color-disabled: #aaa;
+
+    --xctrls-listitem-grouping-background-color-normal: cornsilk;
+    --xctrls-listitem-grouping-background-color-hover: cornsilk;
+
+    /* xctrls|notifier variables */
+
+    --xctrls-notifier-border-width: 1px;
+    --xctrls-notifier-border-style: solid;
+    --xctrls-notifier-border-radius: 4px;
+
+    --xctrls-notifier-border-color-normal: #666;
+    --xctrls-notifier-border-color-hover: initial;
+    --xctrls-notifier-border-color-active: initial;
+
+    --xctrls-notifier-background-color: white;
+    --xctrls-notifier-background-color-hover: cornsilk;
+    --xctrls-notifier-background-color-active: gold;
+
+    /* xctrls|select variables */
+
+    --xctrls-select-border-width: 1px;
+    --xctrls-select-border-style: solid;
+    --xctrls-select-border-radius: 3px;
+
+    --xctrls-select-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-select-font-size: 99%;
+    --xctrls-select-font-color-normal: black;
+    --xctrls-select-font-color-hover: #666;
+    --xctrls-select-font-color-focus: #666;
+    --xctrls-select-font-color-active: #666;
+    --xctrls-select-font-color-disabled: #aaa;
+
+    --xctrls-select-background-color-normal: white;
+    --xctrls-select-background-color-hover: cornsilk;
+    --xctrls-select-background-color-focus: gold;
+    --xctrls-select-background-color-active: gold;
+    --xctrls-select-background-color-disabled: #eee;
+
+    /* xctrls|table variables */
+
+    --xctrls-tableitem-padding-width: 2px;
+
+    --xctrls-table-border-width: 1px;
+    --xctrls-table-border-style: solid;
+    --xctrls-table-border-radius: 4px;
+
+    --xctrls-table-border-color-normal: #eee;
+    --xctrls-table-border-color-hover: initial;
+    --xctrls-table-border-color-focus: initial;
+    --xctrls-table-border-color-active: initial;
+    --xctrls-table-border-color-disabled: initial;
+
+    --xctrls-tableitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-tableitem-font-color-normal: black;
+    --xctrls-tableitem-font-color-hover: #666;
+    --xctrls-tableitem-font-color-focus: black;
+    --xctrls-tableitem-font-color-active: #666;
+    --xctrls-tableitem-font-color-disabled: #aaa;
+
+    --xctrls-tableitem-font-weight-normal: normal;
+    --xctrls-tableitem-font-weight-focus: bold;
+
+    --xctrls-tableitem-border-width: 1px;
+    --xctrls-tableitem-border-style: solid;
+
+    --xctrls-tableitem-border-color-normal: #eee;
+    --xctrls-tableitem-border-color-hover: initial;
+    --xctrls-tableitem-border-color-focus: black;
+    --xctrls-tableitem-border-color-active: initial;
+    --xctrls-tableitem-border-color-disabled: initial;
+
+    --xctrls-tableitem-background-color-normal: white;
+    --xctrls-tableitem-background-color-hover: cornsilk;
+    /*  NB: We don't set a background-color for focused items - it hides whether
+        they're selected or not. */
+    --xctrls-tableitem-background-color-active: gold;
+    --xctrls-tableitem-background-color-disabled: white;
+
+    --xctrls-tableitem-background-color-selected-normal: gold;
+
+    --xctrls-tableitem-grouping-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-tableitem-grouping-font-weight: bold;
+    --xctrls-tableitem-grouping-font-color-normal: black;
+    --xctrls-tableitem-grouping-font-color-disabled: #aaa;
+
+    --xctrls-tableitem-grouping-background-color-normal: #eee;
+    --xctrls-tableitem-grouping-background-color-hover: #eee;
+
+    /* xctrls|tabitem variables */
+
+    --xctrls-tabitem-border-width: 1px;
+    --xctrls-tabitem-border-style: solid;
+    --xctrls-tabitem-border-radius: 6px;
+
+    --xctrls-tabitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-tabitem-font-color-normal: black;
+    --xctrls-tabitem-font-color-hover: #666;
+    --xctrls-tabitem-font-color-focus: #666;
+    --xctrls-tabitem-font-color-active: #666;
+    --xctrls-tabitem-font-color-disabled: #aaa;
+
+    --xctrls-tabitem-background-color-normal: white;
+    --xctrls-tabitem-background-color-hover: cornsilk;
+    --xctrls-tabitem-background-color-focus: gold;
+    --xctrls-tabitem-background-color-active: gold;
+    --xctrls-tabitem-background-color-disabled: #eee;
+
+    --xctrls-tabitem-background-color-selected-normal: gold;
+
+    --xctrls-tabitem-close_mark-color-normal: black;
+    --xctrls-tabitem-close_mark-color-hover: red;
+
+    /* xctrls|tooltip variables */
+
+    --xctrls-tooltip-border-width: 1px;
+    --xctrls-tooltip-border-style: solid;
+    --xctrls-tooltip-border-radius: 4px;
+
+    --xctrls-tooltip-border-color-normal: #666;
+    --xctrls-tooltip-border-color-hover: initial;
+    --xctrls-tooltip-border-color-active: initial;
+
+    --xctrls-tooltip-background-color: white;
+    --xctrls-tooltip-background-color-hover: gold;
+    --xctrls-tooltip-background-color-active: cornsilk;
+
+    /* xctrls|propertysheet variables */
+
+    --xctrls-propertysheet-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-propertysheet-font-size: 100%;
+    --xctrls-propertysheet-font-color-normal: black;
+    --xctrls-propertysheet-font-color-disabled: #aaa;
+
+    --xctrls-propertysheet-background-color-normal: white;
+    --xctrls-propertysheet-background-color-disabled: #eee;
+
+    --xctrls-propertysheet-border-width: 1px;
+    --xctrls-propertysheet-border-style: solid;
+    --xctrls-propertysheet-border-radius: 2px;
+
+    --xctrls-propertysheet-border-color-normal: #666;
+
+    /* xctrls|sticky variables */
+
+    --xctrls-sticky-border-width: 1px;
+    --xctrls-sticky-border-style: solid;
+    --xctrls-sticky-border-radius: 4px;
+
+    --xctrls-sticky-border-color-normal: #666;
+    --xctrls-sticky-border-color-active: initial;
+
+    --xctrls-sticky-background-color: white;
+    --xctrls-sticky-background-color-active: cornsilk;
+
+    /* xctrls|pageritem variables */
+
+    --xctrls-pageritem-border-width: 1px;
+    --xctrls-pageritem-border-style: solid;
+    --xctrls-pageritem-border-radius: 0;
+
+    --xctrls-pageritem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-pageritem-font-color-normal: black;
+    --xctrls-pageritem-font-color-hover: #666;
+    --xctrls-pageritem-font-color-focus: #666;
+    --xctrls-pageritem-font-color-active: #666;
+    --xctrls-pageritem-font-color-disabled: #aaa;
+
+    --xctrls-pageritem-background-color-normal: white;
+    --xctrls-pageritem-background-color-hover: cornsilk;
+    --xctrls-pageritem-background-color-focus: gold;
+    --xctrls-pageritem-background-color-active: gold;
+    --xctrls-pageritem-background-color-disabled: #eee;
+
+    --xctrls-pageritem-background-color-selected-normal: gold;
+}

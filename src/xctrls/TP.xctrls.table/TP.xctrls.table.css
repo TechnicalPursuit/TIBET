@@ -1,0 +1,95 @@
+/*
+    CSS styles for 'xctrls:table' controls.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* The table */
+xctrls|table {
+
+    position: relative;
+    display: inline-block;
+
+    overflow-y: auto;
+
+    user-select: none;
+}
+
+xctrls|table > .scroller > tibet|group {
+
+    width: 100%;
+}
+
+xctrls|table *[tibet|pelem="choices"] {
+
+    position: relative;
+}
+
+/* Grouping element for column groupings */
+xctrls|table *[tibet|pelem="choices"] .grouping {
+
+    display: flex;
+
+    flex-direction: row;
+}
+
+xctrls|table *[tibet|pelem="choices"] > .row {
+
+    display: flex;
+    position: absolute;
+
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    box-sizing: border-box;
+}
+
+xctrls|table *[tibet|pelem="choices"] > .row > .cell {
+
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    vertical-align: top;
+}
+
+xctrls|table[colcount="1"] .cell {
+
+    width: var(--grid-full-width);
+}
+
+xctrls|table[colcount="2"] .cell {
+
+    width: var(--grid-1of2-width);
+}
+
+xctrls|table[colcount="3"] .cell {
+
+    width: var(--grid-1of3-width);
+}
+
+xctrls|table[colcount="4"] .cell {
+
+    width: var(--grid-1of4-width);
+}
+
+/* Hovering over the table */
+xctrls|table:hover {
+
+}
+
+/* Focusing on the table */
+xctrls|table[pclass|focus] {
+
+}
+
+/* Clicking down on the table */
+xctrls|table[pclass|active] {
+
+}
+
+/* The table is disabled */
+xctrls|table[pclass|disabled] {
+
+}

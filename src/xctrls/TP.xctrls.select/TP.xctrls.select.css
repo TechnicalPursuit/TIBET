@@ -1,0 +1,144 @@
+/*
+    CSS styles for the 'xctrls:select' control.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace svg url("http://www.w3.org/2000/svg");
+
+xctrls|select {
+
+    display: inline-flex;
+
+    box-sizing: border-box;
+
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+}
+
+/* Hovering over the select */
+xctrls|select:hover {
+
+}
+
+/* Focusing on the select */
+xctrls|select[pclass|focus] {
+
+}
+
+/* Clicking down on the select */
+xctrls|select[pclass|active] {
+
+}
+
+/* The select is disabled */
+xctrls|select[pclass|disabled] {
+
+}
+
+/* The select button */
+xctrls|select > xctrls|button {
+
+    display: inline-flex;
+
+    box-sizing: border-box;
+
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+
+    flex: 1;
+}
+
+/* The select button's label */
+xctrls|select > xctrls|button > xctrls|label {
+
+    flex: 1;
+}
+
+/* Hovering over the select's button, label must highlight */
+xctrls|select > xctrls|button:hover > xctrls|label {
+
+}
+
+/* Focusing on the select's button, label must highlight */
+xctrls|select > xctrls|button[pclass|focus] > xctrls|label {
+
+}
+
+/* Clicking down on the select's button, label must highlight */
+xctrls|select > xctrls|button[pclass|active] > xctrls|label {
+
+}
+
+/* The select's button is disabled, so is the label */
+xctrls|select > xctrls|button[pclass|disabled] > xctrls|label {
+
+}
+
+/* The down arrow */
+xctrls|select > .icon {
+
+}
+
+xctrls|select > .icon svg|svg {
+
+    display: block;
+    width: 1em;
+    height: 1em;
+}
+
+xctrls|select > .icon svg|svg svg|rect {
+
+    fill: none;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+xctrls|select > .icon svg|svg svg|polygon {
+
+    display: none;
+}
+
+/* Hovering over the down arrow */
+xctrls|select:hover {
+
+}
+
+xctrls|select:hover > .icon {
+
+}
+
+/* Focusing on the down arrow */
+xctrls|select[pclass|focus] {
+
+}
+
+/* Clicking down on the down arrow */
+xctrls|select[pclass|active] {
+
+}
+
+xctrls|select[pclass|active] > .icon {
+
+}
+
+xctrls|select[pclass|active][pclass|checked] > .icon {
+
+}
+
+/* The down arrow is disabled */
+xctrls|select[pclass|disabled] > .icon {
+
+}
+
+xctrls|select[pclass|disabled][pclass|active] > .icon {
+
+}
+
+xctrls|select[pclass|disabled][pclass|active][pclass|checked] > .icon {
+
+}

@@ -299,8 +299,6 @@
     <resource href="~lib_lib/src/tibet_hook.min.js" no-inline="true"/>
     <resource href="~lib_lib/src/tibet_worker.js" no-inline="true"/>
 
-    <resource href="~lib_deps/less-tpi.min.js" no-inline="true"/>
-
     <resource href="~lib_media/tibet_logo.svg" no-inline="true"/>
     <resource href="~lib_media/tibet_world.gif" no-inline="true"/>
 

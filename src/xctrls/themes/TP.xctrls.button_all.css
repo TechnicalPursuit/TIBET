@@ -1,0 +1,34 @@
+/*
+    CSS styles common across 'xctrls:button' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* All themed 'xctrls:button' controls */
+*[data-theme] xctrls|button {
+
+    text-align: center;
+
+    color: inherit;
+
+    cursor: pointer;
+
+    margin: 0.25em;
+    padding: 0.25em 0.5em;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+/* All themed, non-disabled 'xctrls:button' controls */
+*[data-theme] xctrls|button:not([pclass|disabled]) {
+
+    text-decoration: none;
+}
+
+/* All themed, non-disabled 'xctrls:button' control labels */
+*[data-theme] xctrls|button:not([pclass|disabled]) xctrls|label {
+
+}

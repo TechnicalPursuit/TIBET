@@ -11,8 +11,8 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.pagerbar.style" value="~TP.xctrls.pagerbar/TP.xctrls.pagerbar.less"/>
-    <property name="path.TP.xctrls.pagerbar.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.pagerbar_tpi.less"/>
+    <property name="path.TP.xctrls.pagerbar.style" value="~TP.xctrls.pagerbar/TP.xctrls.pagerbar.css"/>
+    <property name="path.TP.xctrls.pagerbar.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.pagerbar_tpi.css"/>
 </config>
 
 <config id="scripts">

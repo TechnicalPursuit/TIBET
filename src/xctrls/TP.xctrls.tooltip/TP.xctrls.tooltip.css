@@ -1,0 +1,44 @@
+/*
+    CSS styles for the 'xctrls:tooltip' control.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+xctrls|tooltip {
+
+    position: absolute;
+    display: inline-block;
+
+    top: 0;
+    left: 0;
+
+    opacity: 1;
+
+    transition: opacity 3000ms ease 1000ms;
+
+    pointer-events: none;
+}
+
+/* Hovering over the tooltip */
+xctrls|tooltip:hover {
+
+}
+
+/* When the tooltip was active */
+xctrls|tooltip[pclass|active] {
+
+    opacity: 0;
+}
+
+xctrls|tooltip > xctrls|content {
+
+}
+
+/* NB: Any direct children of our content should be set to 'block' to fit our
+ * content element
+ */
+xctrls|tooltip > xctrls|content > * {
+
+    display: block;
+}

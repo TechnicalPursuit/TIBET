@@ -1,0 +1,128 @@
+/*
+    CSS styles for 'xctrls:dialog' controls.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* The dialog */
+xctrls|dialog {
+
+    position: absolute;
+
+    max-width: 600px;
+    max-height: 370px;
+
+    user-select: none;
+
+    overflow: hidden;
+}
+
+/* Hovering over the dialog */
+xctrls|dialog:hover {
+
+}
+
+/* Focusing on the dialog */
+xctrls|dialog[pclass|focus] {
+
+}
+
+/* The dialog header */
+xctrls|dialog > *[tibet|pelem="header"] {
+
+    position: absolute;
+}
+
+/* The dialog body */
+xctrls|dialog > *[tibet|pelem="body"] {
+
+    position: absolute;
+
+    overflow: hidden;
+}
+
+/* The dialog footer */
+xctrls|dialog > *[tibet|pelem="footer"] {
+
+    position: absolute;
+}
+
+xctrls|dialog .dialogContent {
+
+    display: flex;
+    justify-content: center;
+
+    height: 100%;
+
+    flex-wrap: wrap;
+}
+
+xctrls|dialog .dialogMessage {
+
+    display: flex;
+    justify-content: center;
+
+    align-self: center;
+
+    width: 100%;
+}
+
+xctrls|dialog .dialogMessage > * {
+
+    width: 100%;
+
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+xctrls|dialog .choiceContent {
+
+    text-align: left;
+}
+
+xctrls|dialog .choiceContent > label {
+
+    display: inline-block;
+    height: 1.35em;
+
+    margin-left: 2px;
+
+    vertical-align: text-bottom;
+}
+
+xctrls|dialog .choiceContent > label[for="overrideField"] {
+
+    height: 1.15em;
+}
+
+xctrls|dialog .choiceContent > input[type="checkbox"],
+xctrls|dialog .choiceContent > input[type="radio"] {
+
+    margin-left: 1.7em;
+}
+
+xctrls|dialog .choiceContent > select[multiple] {
+
+    height: 6.25em;
+    line-height: 1.5em;
+
+    padding: 0;
+}
+
+xctrls|dialog .dialogControls {
+
+    display: flex;
+    justify-content: center;
+    align-self: flex-end;
+
+    margin-bottom: 12px;
+
+    width: 100%;
+}
+
+xctrls|dialog .dialogControls > button {
+
+    min-width: 5em;
+}

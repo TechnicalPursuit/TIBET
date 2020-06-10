@@ -1,0 +1,112 @@
+/*
+    CSS styles for 'xctrls:tabbar' controls for the 'tpi' theme.
+*/
+
+@import url("../TP.xctrls.tabbar_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The tabbar */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem {
+
+    border-width: var(--xctrls-tabitem-border-width);
+    border-style: var(--xctrls-tabitem-border-style);
+    border-top-left-radius: var(--xctrls-tabitem-border-radius);
+    border-top-right-radius: var(--xctrls-tabitem-border-radius);
+}
+
+/* Hovering over the tabbar */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem:hover {
+
+}
+
+/* Focusing on the tabbar */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|focus] {
+
+}
+
+/* Clicking down on the tabbar */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|active] {
+
+}
+
+/* The tabbar is disabled */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|disabled] {
+
+}
+
+/* The tabbar label */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem > xctrls|label {
+
+    font-family: var(--xctrls-tabitem-font-family);
+    color: var(--xctrls-tabitem-font-color-normal);
+}
+
+/* Hovering over the tabbar, tab and label must highlight */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem:hover {
+
+    background-color: var(--xctrls-tabitem-background-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem:hover > xctrls|label {
+
+    color: var(--xctrls-tabitem-font-color-hover);
+}
+
+/* Selected list item, tab must highlight */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|selected] {
+
+    background-color: var(--xctrls-tabitem-background-color-selected-normal);
+    border-bottom-color: var(--xctrls-tabitem-background-color-selected-normal);
+}
+
+/* Focusing on the tabbar, tab and label must highlight */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|focus] {
+
+    background-color: var(--xctrls-tabitem-background-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|focus] > xctrls|label {
+
+    color: var(--xctrls-tabitem-font-color-focus);
+}
+
+/* Clicking down on the tabbar, tab and label must highlight */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|active] {
+
+    background-color: var(--xctrls-tabitem-background-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|active] > xctrls|label {
+
+    color: var(--xctrls-tabitem-font-color-active);
+}
+
+/* The tabitem is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|disabled] {
+
+    background-color: var(--xctrls-tabitem-background-color-disabled);
+}
+
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem[pclass|disabled] > xctrls|label {
+
+    color: var(--xctrls-tabitem-font-color-disabled);
+}
+
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem > .close_mark {
+
+    color: var(--xctrls-tabitem-close_mark-color-normal);
+}
+
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem > .close_mark::after {
+
+    content: "\00d7";
+    font-size: 20px;
+    line-height: 10px;
+}
+
+*[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem > .close_mark:hover {
+
+    color: var(--xctrls-tabitem-close_mark-color-hover);
+}

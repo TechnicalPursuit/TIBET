@@ -11,8 +11,8 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.buttonitem.style" value="~TP.xctrls.buttonitem/TP.xctrls.buttonitem.less"/>
-    <property name="path.TP.xctrls.buttonitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.buttonitem_tpi.less"/>
+    <property name="path.TP.xctrls.buttonitem.style" value="~TP.xctrls.buttonitem/TP.xctrls.buttonitem.css"/>
+    <property name="path.TP.xctrls.buttonitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.buttonitem_tpi.css"/>
 </config>
 
 <config id="scripts">

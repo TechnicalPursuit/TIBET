@@ -1,0 +1,33 @@
+/*
+    CSS styles for 'xctrls:notifier' controls for the 'tpi' theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+@import url("../TP.xctrls.notifier_all.css");
+
+/* The notifier */
+*[data-theme~="tpi"] xctrls|notifier {
+
+    background-color: var(--xctrls-notifier-background-color);
+
+    border-width: var(--xctrls-notifier-border-width);
+    border-style: var(--xctrls-notifier-border-style);
+    border-radius: var(--xctrls-notifier-border-radius);
+    border-color: var(--xctrls-notifier-border-color-normal);
+}
+
+/* Hovering over the notifier */
+*[data-theme~="tpi"] xctrls|notifier:hover {
+
+    background-color: var(--xctrls-notifier-background-color-hover);
+    border-color: var(--xctrls-notifier-border-color-hover);
+}
+
+/* When the notifier is active */
+*[data-theme~="tpi"] xctrls|notifier[pclass|active] {
+
+    background-color: var(--xctrls-notifier-background-color-active);
+    border-color: var(--xctrls-notifier-border-color-active);
+}

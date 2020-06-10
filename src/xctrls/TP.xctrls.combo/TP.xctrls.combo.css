@@ -1,0 +1,149 @@
+/*
+    CSS styles for the 'xctrls:combo' control.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace svg url("http://www.w3.org/2000/svg");
+
+xctrls|combo {
+
+    display: inline-flex;
+
+    box-sizing: border-box;
+
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+}
+
+/* Hovering over the combo */
+xctrls|combo:hover {
+
+}
+
+/* Focusing on the combo */
+xctrls|combo[pclass|focus] {
+
+}
+
+/* Clicking down on the combo */
+xctrls|combo[pclass|active] {
+
+}
+
+/* The combo is disabled */
+xctrls|combo[pclass|disabled] {
+
+}
+
+/* The combo button */
+xctrls|combo > xctrls|button {
+
+    display: inline-flex;
+
+    box-sizing: border-box;
+
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+
+    flex: 1;
+}
+
+/* The combo button's label */
+xctrls|combo > xctrls|button > xctrls|label {
+
+    flex: 1;
+}
+
+/* Hovering over the combo's button, label must highlight */
+xctrls|combo > xctrls|button:hover > xctrls|label {
+
+}
+
+/* Focusing on the combo's button, label must highlight */
+xctrls|combo > xctrls|button[pclass|focus] > xctrls|label {
+
+}
+
+/* Clicking down on the combo's button, label must highlight */
+xctrls|combo > xctrls|button[pclass|active] > xctrls|label {
+
+}
+
+/* The combo's button is disabled, so is the label */
+xctrls|combo > xctrls|button[pclass|disabled] > xctrls|label {
+
+}
+
+/* The down arrow */
+xctrls|combo > .icon {
+
+}
+
+xctrls|combo > .icon svg|svg {
+
+    display: block;
+
+    width: 1em;
+    height: 1em;
+}
+
+xctrls|combo > .icon svg|svg svg|rect {
+
+    fill: none;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+xctrls|combo > .icon svg|svg svg|polygon {
+
+    display: none;
+}
+
+/* Hovering over the down arrow */
+xctrls|combo:hover {
+
+}
+
+xctrls|combo:hover > .icon {
+
+}
+
+/* Focusing on the down arrow */
+xctrls|combo[pclass|focus] {
+
+}
+
+/* Clicking down on the down arrow */
+xctrls|combo[pclass|active] {
+
+}
+
+xctrls|combo[pclass|active] > .icon {
+
+}
+
+xctrls|combo[pclass|active][pclass|checked] > .icon {
+
+}
+
+/* The down arrow is disabled */
+xctrls|combo[pclass|disabled] {
+
+}
+
+xctrls|combo[pclass|disabled] > .icon {
+
+}
+
+xctrls|combo[pclass|disabled][pclass|active] > .icon {
+
+}
+
+xctrls|combo[pclass|disabled][pclass|active][pclass|checked] > .icon {
+
+}

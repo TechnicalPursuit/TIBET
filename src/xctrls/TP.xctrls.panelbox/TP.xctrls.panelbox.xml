@@ -11,7 +11,7 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.panelbox.style" value="~TP.xctrls.panelbox/TP.xctrls.panelbox.less"/>
+    <property name="path.TP.xctrls.panelbox.style" value="~TP.xctrls.panelbox/TP.xctrls.panelbox.css"/>
 </config>
 
 <config id="scripts">

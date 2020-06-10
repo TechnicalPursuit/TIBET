@@ -11,7 +11,7 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.hint.style" value="~TP.xctrls.hint/TP.xctrls.hint.less"/>
+    <property name="path.TP.xctrls.hint.style" value="~TP.xctrls.hint/TP.xctrls.hint.css"/>
 </config>
 
 <config id="scripts">

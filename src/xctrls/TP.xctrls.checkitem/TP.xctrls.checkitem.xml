@@ -11,8 +11,8 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.checkitem.style" value="~TP.xctrls.checkitem/TP.xctrls.checkitem.less"/>
-    <property name="path.TP.xctrls.checkitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.checkitem_tpi.less"/>
+    <property name="path.TP.xctrls.checkitem.style" value="~TP.xctrls.checkitem/TP.xctrls.checkitem.css"/>
+    <property name="path.TP.xctrls.checkitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.checkitem_tpi.css"/>
 </config>
 
 <config id="scripts">

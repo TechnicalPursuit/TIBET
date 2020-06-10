@@ -1,0 +1,57 @@
+/*
+    CSS styles for 'xctrls:propertysheet' controls for the 'tpi' theme.
+*/
+
+@import url("../TP.xctrls.propertysheet_all.css");
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The propertysheet */
+*[data-theme~="tpi"] xctrls|propertysheet {
+
+    font-size: var(--xctrls-propertysheet-font-size);
+}
+
+/* The propertysheet is disabled */
+*[data-theme~="tpi"] xctrls|propertysheet[pclass|disabled] {
+
+}
+
+/* The propertysheet fieldset */
+*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields {
+
+    margin: 0;
+    font-family: var(--xctrls-propertysheet-font-family);
+    color: var(--xctrls-propertysheet-font-color-normal);
+    background-color: var(--xctrls-propertysheet-background-color-normal);
+    border-width: var(--xctrls-propertysheet-border-width);
+    border-style: var(--xctrls-propertysheet-border-style);
+    border-radius: var(--xctrls-propertysheet-border-radius);
+    border-color: var(--xctrls-propertysheet-border-color-normal);
+}
+
+*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields span.propertyfield {
+
+}
+
+*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields span.propertyfield *:nth-child(even) {
+
+    position: sticky;
+    left: 100px;
+    margin-top: 2px;
+}
+
+/* The save button */
+*[data-theme~="tpi"] xctrls|propertysheet > xctrls|button[class~="saveButton"] {
+
+    margin-top: 10px;
+}
+
+/* The propertysheet is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|propertysheet[pclass|disabled] > fieldset {
+
+    color: var(--xctrls-propertysheet-font-color-disabled);
+    background-color: var(--xctrls-propertysheet-background-color-disabled);
+}

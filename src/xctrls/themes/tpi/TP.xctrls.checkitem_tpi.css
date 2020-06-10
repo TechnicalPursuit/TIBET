@@ -1,0 +1,210 @@
+/*
+    CSS styles for the 'xctrls:checkitem' control.
+*/
+
+@import url("../TP.xctrls.checkitem_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The checkitem */
+*[data-theme~="tpi"] xctrls|checkitem {
+
+}
+
+/* The checkitem's value (the checkmark) */
+*[data-theme~="tpi"] xctrls|checkitem > *[tibet|pelem="value"] {
+
+}
+
+/* Hovering over the checkitem */
+*[data-theme~="tpi"] xctrls|checkitem:hover {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem:hover > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem:hover > *[tibet|pelem="value"] svg|rect {
+
+    stroke: var(--xctrls-checkitem-check-border-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem:hover > *[tibet|pelem="value"] svg|polygon {
+
+    stroke: var(--xctrls-checkitem-check-color-hover);
+    fill: var(--xctrls-checkitem-check-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem:hover[pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+/* Focusing on the checkitem */
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus] > *[tibet|pelem="value"] svg|rect {
+
+    stroke: var(--xctrls-checkitem-check-border-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus] > *[tibet|pelem="value"] svg|polygon {
+
+    stroke: var(--xctrls-checkitem-check-color-focus);
+    fill: var(--xctrls-checkitem-check-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus][pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus][pclass|checked] > *[tibet|pelem="value"] svg|rect {
+
+    stroke: var(--xctrls-checkitem-check-border-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus][pclass|checked] > *[tibet|pelem="value"] svg|polygon {
+
+    stroke: var(--xctrls-checkitem-check-color-focus);
+    fill: var(--xctrls-checkitem-check-color-focus);
+}
+
+/* Clicking down on the checkitem */
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active] > *[tibet|pelem="value"] svg|rect {
+
+    stroke: var(--xctrls-checkitem-check-border-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active] > *[tibet|pelem="value"] svg|polygon {
+
+    stroke: var(--xctrls-checkitem-check-color-active);
+    fill: var(--xctrls-checkitem-check-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active][pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active][pclass|checked] > *[tibet|pelem="value"] svg|rect {
+
+    stroke: var(--xctrls-checkitem-check-border-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active][pclass|checked] > *[tibet|pelem="value"] svg|polygon {
+
+    stroke: var(--xctrls-checkitem-check-color-active);
+    fill: var(--xctrls-checkitem-check-color-active);
+}
+
+/* The checkitem is disabled */
+*[data-theme~="tpi"] xctrls|checkitem[pclass|disabled] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|disabled] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|disabled] > *[tibet|pelem="value"] svg|rect {
+
+    stroke: var(--xctrls-checkitem-check-border-color-disabled);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|disabled] > *[tibet|pelem="value"] svg|polygon {
+
+    stroke: var(--xctrls-checkitem-check-color-disabled);
+    fill: var(--xctrls-checkitem-check-color-disabled);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|disabled][pclass|active] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|disabled][pclass|active][pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+/* The checkitem is checked */
+*[data-theme~="tpi"] xctrls|checkitem[pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|checked] > *[tibet|pelem="value"] svg|rect {
+
+    stroke: var(--xctrls-checkitem-check-border-color-normal);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|checked] > *[tibet|pelem="value"] svg|polygon {
+
+    stroke: var(--xctrls-checkitem-check-color-normal);
+    fill: var(--xctrls-checkitem-check-color-normal);
+}
+
+/* The checkitem label */
+*[data-theme~="tpi"] xctrls|checkitem > xctrls|label {
+
+    font-family: var(--xctrls-checkitem-font-family);
+    color: var(--xctrls-checkitem-font-color-normal);
+    background-color: var(--xctrls-checkitem-background-color-normal);
+}
+
+/* Hovering over the checkitem, label must highlight */
+*[data-theme~="tpi"] xctrls|checkitem:hover > xctrls|label {
+
+    color: var(--xctrls-checkitem-font-color-hover);
+    background-color: var(--xctrls-checkitem-background-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus] {
+
+}
+
+/* Focusing on the checkitem, label must highlight */
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus] > xctrls|label {
+
+    color: var(--xctrls-checkitem-font-color-focus);
+    background-color: var(--xctrls-checkitem-background-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|focus][pclass|checked] > xctrls|label {
+
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active] {
+
+}
+
+/* Clicking down on the checkitem, label must highlight */
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active] > xctrls|label {
+
+    color: var(--xctrls-checkitem-font-color-active);
+    background-color: var(--xctrls-checkitem-background-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|checkitem[pclass|active][pclass|checked] > xctrls|label {
+
+}
+
+/* The checkitem is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|checkitem[pclass|disabled] > xctrls|label {
+
+    color: var(--xctrls-checkitem-font-color-disabled);
+    background-color: var(--xctrls-checkitem-background-color-disabled);
+}

@@ -1,0 +1,22 @@
+/*
+    CSS variables common across all 'xctrls:' widgets.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+:root {
+
+    /* Grid variables */
+
+    --grid-full-width: 100%;
+    --grid-1of2-width: 50%;
+    --grid-1of3-width: 33.3333%;
+    --grid-1of4-width: 25%;
+
+    /** NON-THEMED WIDGETS **/
+
+    /* xctrls|curtain variables */
+
+    --xctrls-curtain-background-color: #000;
+    --xctrls-curtain-opacity: 0.6;
+}

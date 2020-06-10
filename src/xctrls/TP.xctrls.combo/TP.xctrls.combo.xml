@@ -11,8 +11,8 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
-    <property name="path.TP.xctrls.combo.style" value="~TP.xctrls.combo/TP.xctrls.combo.less"/>
-    <property name="path.TP.xctrls.combo.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.combo_tpi.less"/>
+    <property name="path.TP.xctrls.combo.style" value="~TP.xctrls.combo/TP.xctrls.combo.css"/>
+    <property name="path.TP.xctrls.combo.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.combo_tpi.css"/>
 </config>
 
 <config id="scripts">

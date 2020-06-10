@@ -1,0 +1,15 @@
+/*
+    CSS styles common across 'xctrls:' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* All disabled controls */
+*[data-theme] xctrls|*[pclass|disabled] {
+
+    pointer-events: none;
+    cursor: default;
+
+    opacity: 0.3;
+}

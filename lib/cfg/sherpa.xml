@@ -186,7 +186,7 @@
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>
 
-    <resource href="~ide_root/styles/sherpa_xctrls.less"/>
+    <resource href="~ide_root/styles/sherpa_xctrls.css"/>
     <resource href="~ide_root/styles/sherpa_pp.css"/>
 
     <resource href="~ide_root/schema/tibet_tooling_types.json"/>

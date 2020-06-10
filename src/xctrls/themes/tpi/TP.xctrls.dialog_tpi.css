@@ -1,0 +1,77 @@
+/*
+    CSS styles for 'xctrls:dialog' controls for the 'tpi' theme.
+*/
+
+@import url("../TP.xctrls.dialog_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* The dialog */
+*[data-theme~="tpi"] xctrls|dialog {
+
+    background-color: var(--xctrls-dialog-background-color);
+
+    max-width: var(--xctrls-dialog-max-width);
+    max-height: var(--xctrls-dialog-max-height);
+    min-width: var(--xctrls-dialog-min-width);
+    min-height: var(--xctrls-dialog-min-height);
+
+    border-width: var(--xctrls-dialog-border-width);
+    border-style: var(--xctrls-dialog-border-style);
+    border-radius: var(--xctrls-dialog-border-radius);
+    border-color: var(--xctrls-dialog-border-color-normal);
+}
+
+/* Hovering over the dialog */
+*[data-theme~="tpi"] xctrls|dialog:hover {
+
+    border-color: var(--xctrls-dialog-border-color-hover);
+}
+
+/* Focusing on the dialog */
+*[data-theme~="tpi"] xctrls|dialog[pclass|focus] {
+
+    border-color: var(--xctrls-dialog-border-color-focus);
+}
+
+/* Clicking down on the dialog */
+*[data-theme~="tpi"] xctrls|dialog[pclass|active] {
+
+    border-color: var(--xctrls-dialog-border-color-active);
+}
+
+/* The dialog is disabled */
+*[data-theme~="tpi"] xctrls|dialog[pclass|disabled] {
+
+    border-color: var(--xctrls-dialog-border-color-disabled);
+}
+
+/* The dialog header */
+*[data-theme~="tpi"] xctrls|dialog > *[tibet|pelem="header"] {
+
+    background-color: var(--xctrls-dialog-header-background-color);
+    color: var(--xctrls-dialog-header-color);
+
+    font-size: var(--xctrls-dialog-header-font-size);
+    line-height: var(--xctrls-dialog-header-line-height);
+
+    border-top-left-radius: calc(var(--xctrls-dialog-border-radius) - 2px);
+    border-top-right-radius: calc(var(--xctrls-dialog-border-radius) - 2px);
+}
+
+/* The dialog body */
+*[data-theme~="tpi"] xctrls|dialog > *[tibet|pelem="body"] {
+
+    background-color: var(--xctrls-dialog-body-background-color);
+}
+
+/* The dialog footer */
+*[data-theme~="tpi"] xctrls|dialog > *[tibet|pelem="footer"] {
+
+    background-color: var(--xctrls-dialog-footer-background-color);
+
+    border-bottom-left-radius: calc(var(--xctrls-dialog-border-radius) - 2px);
+    border-bottom-right-radius: calc(var(--xctrls-dialog-border-radius) - 2px);
+}

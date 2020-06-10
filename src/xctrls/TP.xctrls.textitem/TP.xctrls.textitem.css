@@ -1,0 +1,66 @@
+/*
+    CSS styles for the 'xctrls:textitem' control.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The textitem */
+xctrls|textitem {
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+}
+
+/* Hovering over the textitem */
+xctrls|textitem:hover {
+
+}
+
+/* Focusing on the textitem */
+xctrls|textitem[pclass|focus] {
+
+}
+
+/* Clicking down on the textitem */
+xctrls|textitem[pclass|active] {
+
+}
+
+/* The textitem is disabled */
+xctrls|textitem[pclass|disabled] {
+
+}
+
+/* The textitem is selected */
+xctrls|textitem[pclass|selected] {
+
+}
+
+/* The textitem label */
+xctrls|textitem > xctrls|label {
+
+    flex: 1;
+}
+
+/* Clicking down on the textitem, label must highlight */
+xctrls|textitem[pclass|active] {
+
+}
+
+xctrls|textitem[pclass|active] > xctrls|label {
+
+}
+
+xctrls|textitem[pclass|active][pclass|selected] > xctrls|label {
+
+}
+
+/* The textitem is disabled, so is the label */
+xctrls|textitem[pclass|disabled] > xctrls|label {
+
+}

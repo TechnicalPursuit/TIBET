@@ -1,0 +1,26 @@
+/*
+    CSS styles for 'xctrls:sticky' controls for the 'tpi' theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+@import url("../TP.xctrls.sticky_all.css");
+
+/* The sticky */
+*[data-theme~="tpi"] xctrls|sticky {
+
+    background-color: var(--xctrls-sticky-background-color);
+
+    border-width: var(--xctrls-sticky-border-width);
+    border-style: var(--xctrls-sticky-border-style);
+    border-radius: var(--xctrls-sticky-border-radius);
+    border-color: var(--xctrls-sticky-border-color-normal);
+}
+
+/* When the sticky is active */
+*[data-theme~="tpi"] xctrls|sticky[pclass|active] {
+
+    background-color: var(--xctrls-sticky-background-color-active);
+    border-color: var(--xctrls-sticky-border-color-active);
+}

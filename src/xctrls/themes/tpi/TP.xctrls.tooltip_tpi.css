@@ -1,0 +1,33 @@
+/*
+    CSS styles for 'xctrls:tooltip' controls for the 'tpi' theme.
+*/
+
+@import url("../TP.xctrls.tooltip_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The tooltip */
+*[data-theme~="tpi"] xctrls|tooltip {
+
+    background-color: var(--xctrls-tooltip-background-color);
+
+    border-width: var(--xctrls-tooltip-border-width);
+    border-style: var(--xctrls-tooltip-border-style);
+    border-radius: var(--xctrls-tooltip-border-radius);
+    border-color: var(--xctrls-tooltip-border-color-normal);
+}
+
+/* Hovering over the tooltip */
+*[data-theme~="tpi"] xctrls|tooltip:hover {
+
+    background-color: var(--xctrls-tooltip-background-color-hover);
+    border-color: var(--xctrls-tooltip-border-color-hover);
+}
+
+/* When the tooltip is active */
+*[data-theme~="tpi"] xctrls|tooltip[pclass|active] {
+
+    background-color: var(--xctrls-tooltip-background-color-active);
+    border-color: var(--xctrls-tooltip-border-color-active);
+}

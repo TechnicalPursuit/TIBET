@@ -1,0 +1,202 @@
+/*
+    CSS styles for the 'xctrls:radioitem' control.
+*/
+
+@import url("../TP.xctrls.radioitem_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The radioitem */
+*[data-theme~="tpi"] xctrls|radioitem {
+
+}
+
+/* The radioitem's value (the checkmark) */
+*[data-theme~="tpi"] xctrls|radioitem > *[tibet|pelem="value"] {
+
+}
+
+/* Hovering over the radioitem */
+*[data-theme~="tpi"] xctrls|radioitem:hover {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem:hover > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem:hover > *[tibet|pelem="value"] svg|g[state="off"] {
+
+    stroke: var(--xctrls-radioitem-check-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem:hover > *[tibet|pelem="value"] svg|g[state="on"] {
+
+    stroke: var(--xctrls-radioitem-check-color-hover);
+    fill: var(--xctrls-radioitem-check-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem:hover[pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+/* Focusing on the radioitem */
+*[data-theme~="tpi"] xctrls|radioitem[pclass|focus] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|focus] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|focus] > *[tibet|pelem="value"] svg|g[state="off"] {
+
+    stroke: var(--xctrls-radioitem-check-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|focus] > *[tibet|pelem="value"] svg|g[state="on"] {
+
+    stroke: var(--xctrls-radioitem-check-color-focus);
+    fill: var(--xctrls-radioitem-check-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|focus][pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|focus][pclass|checked] > *[tibet|pelem="value"] svg|g[state="off"] {
+
+    stroke: var(--xctrls-radioitem-check-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|focus][pclass|checked] > *[tibet|pelem="value"] svg|g[state="on"] {
+
+    stroke: var(--xctrls-radioitem-check-color-focus);
+    fill: var(--xctrls-radioitem-check-color-focus);
+}
+
+/* Clicking down on the radioitem */
+*[data-theme~="tpi"] xctrls|radioitem[pclass|active] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|active] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|active] > *[tibet|pelem="value"] svg|g[state="off"] {
+
+    stroke: var(--xctrls-radioitem-check-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|active] > *[tibet|pelem="value"] svg|g[state="on"] {
+
+    stroke: var(--xctrls-radioitem-check-color-active);
+    fill: var(--xctrls-radioitem-check-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|active][pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|active][pclass|checked] > *[tibet|pelem="value"] svg|g[state="off"] {
+
+    stroke: var(--xctrls-radioitem-check-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|active][pclass|checked] > *[tibet|pelem="value"] svg|g[state="on"] {
+
+    stroke: var(--xctrls-radioitem-check-color-active);
+    fill: var(--xctrls-radioitem-check-color-active);
+}
+
+/* The radioitem is disabled */
+*[data-theme~="tpi"] xctrls|radioitem[pclass|disabled] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|disabled] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|disabled] > *[tibet|pelem="value"] svg|g[state="off"] {
+
+    stroke: var(--xctrls-radioitem-check-color-disabled);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|disabled] > *[tibet|pelem="value"] svg|g[state="on"] {
+
+    stroke: var(--xctrls-radioitem-check-color-disabled);
+    fill: var(--xctrls-radioitem-check-color-disabled);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|disabled][pclass|active] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|disabled][pclass|active][pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+/* The radioitem is checked */
+*[data-theme~="tpi"] xctrls|radioitem[pclass|checked] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|checked] > *[tibet|pelem="value"] svg|g[state="off"] {
+
+    stroke: var(--xctrls-radioitem-check-color-normal);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|checked] > *[tibet|pelem="value"] svg|g[state="on"] {
+
+    stroke: var(--xctrls-radioitem-check-color-normal);
+    fill: var(--xctrls-radioitem-check-color-normal);
+}
+
+/* The radioitem label */
+*[data-theme~="tpi"] xctrls|radioitem > xctrls|label {
+
+    font-family: var(--xctrls-radioitem-font-family);
+    color: var(--xctrls-radioitem-font-color-normal);
+    background-color: var(--xctrls-radioitem-background-color-normal);
+}
+
+/* Hovering over the radioitem, label must highlight */
+*[data-theme~="tpi"] xctrls|radioitem:hover > xctrls|label {
+
+    color: var(--xctrls-radioitem-font-color-hover);
+    background-color: var(--xctrls-radioitem-background-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|focus] {
+
+}
+
+/* Focusing on the radioitem, label must highlight */
+*[data-theme~="tpi"] xctrls|radioitem[pclass|focus] > xctrls|label {
+
+    color: var(--xctrls-radioitem-font-color-focus);
+    background-color: var(--xctrls-radioitem-background-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|radioitem[pclass|active] {
+
+}
+
+/* Clicking down on the radioitem, label must highlight */
+*[data-theme~="tpi"] xctrls|radioitem[pclass|active] > xctrls|label {
+
+    color: var(--xctrls-radioitem-font-color-active);
+    background-color: var(--xctrls-radioitem-background-color-active);
+}
+
+/* The radioitem is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|radioitem[pclass|disabled] > xctrls|label {
+
+    color: var(--xctrls-radioitem-font-color-disabled);
+    background-color: var(--xctrls-radioitem-background-color-disabled);
+}

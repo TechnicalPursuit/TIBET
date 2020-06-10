@@ -1,0 +1,157 @@
+/*
+    CSS styles for 'xctrls:list' controls for the 'tpi' theme.
+*/
+
+@import url("../TP.xctrls.list_all.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* The list */
+*[data-theme~="tpi"] xctrls|list {
+
+    border-width: var(--xctrls-list-border-width);
+    border-style: var(--xctrls-list-border-style);
+    border-radius: var(--xctrls-list-border-radius);
+
+    width: 10em;
+
+    line-height: 1.2;
+}
+
+/* Hovering over the list */
+*[data-theme~="tpi"] xctrls|list:hover {
+
+}
+
+/* Focusing on the list */
+*[data-theme~="tpi"] xctrls|list[pclass|focus] {
+
+}
+
+/* Clicking down on the list */
+*[data-theme~="tpi"] xctrls|list[pclass|active] {
+
+}
+
+/* The list is disabled */
+*[data-theme~="tpi"] xctrls|list[pclass|disabled] {
+
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] {
+
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem {
+
+    display: block;
+
+    border-top: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-light);
+    border-left: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-light);
+    border-right: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-normal);
+    border-bottom: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-normal);
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|focus] {
+
+}
+
+/* The list label */
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label {
+
+    bottom: var(--xctrls-listitem-border-width);
+    right: var(--xctrls-listitem-border-width);
+
+    padding-left: var(--xctrls-listitem-padding-width);
+    padding-right: var(--xctrls-listitem-padding-width);
+
+    font-family: var(--xctrls-listitem-font-family);
+    color: var(--xctrls-listitem-font-color-normal);
+    font-weight: var(--xctrls-listitem-font-weight-normal);
+
+    background-color: var(--xctrls-listitem-background-color-normal);
+}
+
+/* Selected list item, label must highlight */
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|selected] {
+
+    background-color: var(--xctrls-listitem-background-color-selected-normal);
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|selected] > xctrls|label {
+
+    background-color: var(--xctrls-listitem-background-color-selected-normal);
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|selected]:hover {
+
+    background-color: var(--xctrls-listitem-background-color-selected-normal);
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|selected]:hover > xctrls|label {
+
+    background-color: var(--xctrls-listitem-background-color-selected-normal);
+}
+
+/* Hovering over the list, label must highlight */
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem:hover > xctrls|label {
+
+    color: var(--xctrls-listitem-font-color-hover);
+
+    background-color: var(--xctrls-listitem-background-color-hover);
+}
+
+/* Focusing on the list, label must highlight */
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|focus] > xctrls|label {
+
+    color: var(--xctrls-listitem-font-color-focus);
+    font-weight: var(--xctrls-listitem-font-weight-focus);
+}
+
+/* Clicking down on the list, label must highlight */
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|active] > xctrls|label {
+
+    color: var(--xctrls-listitem-font-color-active);
+
+    background-color: var(--xctrls-listitem-background-color-active);
+}
+
+/* The list is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|disabled] > xctrls|label {
+
+    color: var(--xctrls-listitem-font-color-disabled);
+
+    background-color: var(--xctrls-listitem-background-color-disabled);
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[grouping] > xctrls|label {
+
+    font-family: var(--xctrls-listitem-font-family);
+    font-weight: var(--xctrls-listitem-grouping-font-weight);
+    color: var(--xctrls-listitem-grouping-font-color-normal);
+
+    background-color: var(--xctrls-listitem-grouping-background-color-normal);
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[grouping]:hover > xctrls|label {
+
+    font-family: var(--xctrls-listitem-font-family);
+    font-weight: var(--xctrls-listitem-grouping-font-weight);
+    color: var(--xctrls-listitem-grouping-font-color-normal);
+
+    background-color: var(--xctrls-listitem-grouping-background-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[spacer] > xctrls|label {
+
+}
+
+*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[spacer]:hover > xctrls|label {
+
+    background-color: initial;
+}

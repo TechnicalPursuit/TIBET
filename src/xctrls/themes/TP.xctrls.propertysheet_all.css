@@ -1,0 +1,46 @@
+/*
+    CSS styles common across 'xctrls:propertysheet' controls for any theme.
+*/
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+*[data-theme] {
+
+}
+
+/* All themed 'xctrls:propertysheet' controls */
+*[data-theme] xctrls|propertysheet {
+
+    width: auto;
+    height: auto;
+
+    overflow: auto;
+}
+
+/* All themed, non-disabled 'xctrls:propertysheet' controls */
+*[data-theme] xctrls|propertysheet:not([pclass|disabled]) {
+}
+
+/* All themed, non-disabled 'xctrls:propertysheet' control labels */
+*[data-theme] xctrls|propertysheet:not([pclass|disabled]) xctrls|label {
+}
+
+*[data-theme] xctrls|propertysheet > span.propertyfields {
+
+    display: block;
+}
+
+*[data-theme] xctrls|propertysheet > span.propertyfields span.propertyfield {
+
+    display: block;
+}
+
+*[data-theme] xctrls|propertysheet > span.propertyfields span.propertyfield label {
+
+    white-space: nowrap;
+
+    user-select: none;
+
+    cursor: pointer;
+}

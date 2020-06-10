@@ -1,0 +1,39 @@
+/*
+    CSS styles common across 'xctrls:buttonitem' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+/* All themed 'xctrls:buttonitem' controls */
+*[data-theme] xctrls|buttonitem {
+
+    text-align: center;
+
+    color: inherit;
+
+    cursor: pointer;
+
+    margin: 0.25em;
+    padding: 0.25em 0.5em;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+/* All themed 'xctrls:buttonitem' controls ::value pseudo-element */
+*[data-theme] xctrls|buttonitem > *[tibet|pelem="value"] {
+
+}
+
+/* All themed, non-disabled 'xctrls:buttonitem' controls */
+*[data-theme] xctrls|buttonitem:not([pclass|disabled]) {
+
+}
+
+/* All themed, non-disabled 'xctrls:buttonitem' control labels */
+*[data-theme] xctrls|buttonitem:not([pclass|disabled]) xctrls|label {
+
+}
