@@ -222,6 +222,9 @@
 
     /* xctrls|notifier variables */
 
+    --xctrls-notifier-fadeout-duration: 3000ms;
+    --xctrls-notifier-fadeout-delay: 1000ms;
+
     --xctrls-notifier-border-width: 1px;
     --xctrls-notifier-border-style: solid;
     --xctrls-notifier-border-radius: 4px;
