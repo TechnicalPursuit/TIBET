@@ -2546,59 +2546,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.IDE.Inst.defineHandler('SherpaNotify',
-function(aSignal) {
-
-    /**
-     * @method handleSherpaNotify
-     * @summary Displays a notifier for the signal payload's message slot, if
-     *     any.
-     * @param {TP.sig.SherpaNotify} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.IDE} The receiver.
-     */
-
-    var notifier,
-        notifierContent,
-
-        message,
-
-        triggerTPDoc;
-
-    notifier = TP.byId('SherpaNotifier', TP.sys.getUIRoot());
-    notifier.setStyleProperty(
-                '--sherpa-notifier-fadeout-duration',
-                TP.sys.cfg('sherpa.notifier_fadeout_duration', 5000) + 'ms');
-    notifier.setStyleProperty(
-                '--sherpa-notifier-fadeout-delay',
-                TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000) + 'ms');
-
-    notifierContent = TP.byId('SherpaNotifierContent', this.get('vWin'));
-    if (TP.notValid(notifierContent)) {
-        return this;
-    }
-
-    message = aSignal.at('message');
-    if (TP.notEmpty(message)) {
-        notifierContent.setContent(
-                        TP.xhtmlnode('<div>' + message + '</div>'));
-    }
-
-    triggerTPDoc = TP.tpdoc(this.get('vWin'));
-
-    this.signal(
-        'OpenNotifier',
-        TP.hc(
-            'overlayID', 'SherpaNotifier',
-            'contentID', 'SherpaNotifierContent',
-            'noPosition', true,
-            'triggerTPDocument', triggerTPDoc));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.IDE.Inst.defineHandler('ToggleSherpa',
 function(aSignal) {
 
@@ -6276,9 +6223,6 @@ TP.sig.SherpaSignal.defineSubtype('ScreenDidToggle');
 //  GUI Signals
 TP.sig.ResponderSignal.defineSubtype('SherpaHaloToggle');
 TP.sig.ResponderSignal.defineSubtype('SherpaOutlinerToggle');
-
-//  Notifier Signals
-TP.sig.ResponderSignal.defineSubtype('SherpaNotify');
 
 //  Sherpa canvas signals
 TP.sig.SherpaSignal.defineSubtype('CanvasChanged');
