@@ -541,17 +541,19 @@ function(aSignal) {
      * @returns {TP.sherpa.workbench} The receiver.
      */
 
-    var mousePoint,
-        canvasOffsets;
+    (function() {
+        var mousePoint,
+            canvasOffsets;
 
-    mousePoint = aSignal.getGlobalPoint();
-    canvasOffsets = TP.windowComputeWindowOffsets(
+        mousePoint = aSignal.getGlobalPoint();
+        canvasOffsets = TP.windowComputeWindowOffsets(
                             TP.sys.getUIRoot(true), TP.sys.getUICanvas(true));
 
-    mousePoint.setX(mousePoint.getX() - canvasOffsets.at('0'));
-    mousePoint.setY(mousePoint.getY() - canvasOffsets.at('1'));
+        mousePoint.setX(mousePoint.getX() - canvasOffsets.at('0'));
+        mousePoint.setY(mousePoint.getY() - canvasOffsets.at('1'));
 
-    this.updateStatusbar(TP.hc('mousePoint', mousePoint));
+        this.updateStatusbar(TP.hc('mousePoint', mousePoint));
+    }.bind(this).queueAfterNextRepaint(this.getNativeWindow()));
 
     return this;
 });
