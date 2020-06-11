@@ -1813,9 +1813,9 @@
     TP.sys.setcfg('test.fail_on_error_log', true);
 
     //  the test harness 'isTesting' flag timeout. This is required because
-    //  sometiumes DOM mutations done by some tests but ignored by the
+    //  sometimes DOM mutations done by some tests but ignored by the
     //  'isTesting' flag, will come *after* the test harness has finished, This
-    //  delays the resest of the 'isTesting' flag to false by a certain number
+    //  delays the reset of the 'isTesting' flag to false by a certain number
     //  of ms.
     TP.sys.setcfg('test.reset_flag_timeout', 5000);
 
