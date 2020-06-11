@@ -3776,9 +3776,7 @@ function(normalizedEvent) {
     //  account disabled elements and will look for a target element
     //  with the appropriate 'enabling attribute', if possible.
 
-    if (TP.isElement(targetElem = TP.eventGetResolvedTarget(normalizedEvent))) {
-        TP.elementSetAttribute(targetElem, 'pclass:hover', 'true', true);
-    }
+    targetElem = TP.eventGetResolvedTarget(normalizedEvent);
 
     overDelay = TP.sys.cfg('mouse.over_delay');
 
@@ -3910,16 +3908,9 @@ function(normalizedEvent) {
      * @returns {TP.meta.core.Mouse} The receiver.
      */
 
-    var targetElem;
-
     //  Get a resolved event target, given the event. This takes into
     //  account disabled elements and will look for a target element
     //  with the appropriate 'enabling attribute', if possible.
-
-    //  TODO: remove this, replace with "wake up mr. css processor?"
-    if (TP.isElement(targetElem = TP.eventGetResolvedTarget(normalizedEvent))) {
-        TP.elementRemoveAttribute(targetElem, 'pclass:hover', true);
-    }
 
     if (this.$$isDragging(normalizedEvent)) {
         TP.eventSetType(normalizedEvent, 'dragout');

@@ -1331,6 +1331,7 @@ function(aSignal) {
 
         computedPoint,
 
+        actionWin,
         styleObj,
 
         workerFuncs,
@@ -1360,6 +1361,7 @@ function(aSignal) {
 
     computedPoint = this.get('$computedPoint');
 
+    actionWin = TP.nodeGetWindow(actionElem);
     styleObj = TP.elementGetStyleObj(actionElem);
 
     workerFuncs = this.get('workers');
@@ -1376,20 +1378,23 @@ function(aSignal) {
     topVal = computedY;
     leftVal = computedX;
 
-    if (TP.notEmpty(workerFuncs)) {
-        workerFuncs.forEach(
-            function(aFunc) {
-                aFunc(actionElem,
-                        styleObj,
-                        TP.hc(
-                            'top', topVal,
-                            'left', leftVal),
-                        infoAttrs);
-            });
-    } else {
-        styleObj.top = computedY + 'px';
-        styleObj.left = computedX + 'px';
-    }
+    actionWin.requestAnimationFrame(
+        function() {
+            if (TP.notEmpty(workerFuncs)) {
+                workerFuncs.forEach(
+                    function(aFunc) {
+                        aFunc(actionElem,
+                                styleObj,
+                                TP.hc(
+                                    'top', topVal,
+                                    'left', leftVal),
+                                infoAttrs);
+                    });
+            } else {
+                styleObj.top = computedY + 'px';
+                styleObj.left = computedX + 'px';
+            }
+        });
 
     return this;
 });
@@ -2164,6 +2169,7 @@ function(aSignal) {
 
         computedPoint,
 
+        actionWin,
         styleObj,
 
         side,
@@ -2216,6 +2222,7 @@ function(aSignal) {
 
     computedPoint = this.get('$computedPoint');
 
+    actionWin = TP.nodeGetWindow(actionElem);
     styleObj = TP.elementGetStyleObj(actionElem);
 
     side = this.get('dragSide');
@@ -2271,20 +2278,23 @@ function(aSignal) {
                     heightVal = dimensionY;
                 }
 
-                if (TP.notEmpty(workerFuncs)) {
-                    workerFuncs.forEach(
-                        function(aFunc) {
-                            aFunc(actionElem,
-                                    styleObj,
-                                    TP.hc(
-                                        'top', topVal,
-                                        'height', heightVal),
-                                    infoAttrs);
-                        });
-                } else {
-                    styleObj.top = topVal + 'px';
-                    styleObj.height = heightVal + 'px';
-                }
+                actionWin.requestAnimationFrame(
+                    function() {
+                        if (TP.notEmpty(workerFuncs)) {
+                            workerFuncs.forEach(
+                                function(aFunc) {
+                                    aFunc(actionElem,
+                                            styleObj,
+                                            TP.hc(
+                                                'top', topVal,
+                                                'height', heightVal),
+                                            infoAttrs);
+                                });
+                        } else {
+                            styleObj.top = topVal + 'px';
+                            styleObj.height = heightVal + 'px';
+                        }
+                    });
             }
 
             break;
@@ -2328,22 +2338,25 @@ function(aSignal) {
 
                 widthVal = computedX;
 
-                if (TP.notEmpty(workerFuncs)) {
-                    workerFuncs.forEach(
-                        function(aFunc) {
-                            aFunc(actionElem,
-                                    styleObj,
-                                    TP.hc(
-                                        'top', topVal,
-                                        'height', heightVal,
-                                        'width', widthVal),
-                                    infoAttrs);
-                        });
-                } else {
-                    styleObj.top = topVal + 'px';
-                    styleObj.height = heightVal + 'px';
-                    styleObj.width = widthVal + 'px';
-                }
+                actionWin.requestAnimationFrame(
+                    function() {
+                        if (TP.notEmpty(workerFuncs)) {
+                            workerFuncs.forEach(
+                                function(aFunc) {
+                                    aFunc(actionElem,
+                                            styleObj,
+                                            TP.hc(
+                                                'top', topVal,
+                                                'height', heightVal,
+                                                'width', widthVal),
+                                            infoAttrs);
+                                });
+                        } else {
+                            styleObj.top = topVal + 'px';
+                            styleObj.height = heightVal + 'px';
+                            styleObj.width = widthVal + 'px';
+                        }
+                    });
             }
 
             break;
@@ -2358,18 +2371,21 @@ function(aSignal) {
 
             widthVal = computedX;
 
-            if (TP.notEmpty(workerFuncs)) {
-                workerFuncs.forEach(
-                    function(aFunc) {
-                        aFunc(actionElem,
-                                styleObj,
-                                TP.hc(
-                                    'width', widthVal),
-                                infoAttrs);
-                    });
-            } else {
-                styleObj.width = widthVal + 'px';
-            }
+            actionWin.requestAnimationFrame(
+                function() {
+                    if (TP.notEmpty(workerFuncs)) {
+                        workerFuncs.forEach(
+                            function(aFunc) {
+                                aFunc(actionElem,
+                                        styleObj,
+                                        TP.hc(
+                                            'width', widthVal),
+                                        infoAttrs);
+                            });
+                    } else {
+                        styleObj.width = widthVal + 'px';
+                    }
+            });
 
             break;
 
@@ -2386,20 +2402,23 @@ function(aSignal) {
             widthVal = computedX;
             heightVal = computedY;
 
-            if (TP.notEmpty(workerFuncs)) {
-                workerFuncs.forEach(
-                    function(aFunc) {
-                        aFunc(actionElem,
-                                styleObj,
-                                TP.hc(
-                                    'height', heightVal,
-                                    'width', widthVal),
-                                infoAttrs);
-                    });
-            } else {
-                styleObj.width = widthVal + 'px';
-                styleObj.height = heightVal + 'px';
-            }
+            actionWin.requestAnimationFrame(
+                function() {
+                    if (TP.notEmpty(workerFuncs)) {
+                        workerFuncs.forEach(
+                            function(aFunc) {
+                                aFunc(actionElem,
+                                        styleObj,
+                                        TP.hc(
+                                            'height', heightVal,
+                                            'width', widthVal),
+                                        infoAttrs);
+                            });
+                    } else {
+                        styleObj.width = widthVal + 'px';
+                        styleObj.height = heightVal + 'px';
+                    }
+                });
 
             break;
 
@@ -2413,18 +2432,21 @@ function(aSignal) {
 
             heightVal = computedY;
 
-            if (TP.notEmpty(workerFuncs)) {
-                workerFuncs.forEach(
-                    function(aFunc) {
-                        aFunc(actionElem,
-                                styleObj,
-                                TP.hc(
-                                    'height', heightVal),
-                                infoAttrs);
-                    });
-            } else {
-                styleObj.height = heightVal + 'px';
-            }
+            actionWin.requestAnimationFrame(
+                function() {
+                    if (TP.notEmpty(workerFuncs)) {
+                        workerFuncs.forEach(
+                            function(aFunc) {
+                                aFunc(actionElem,
+                                        styleObj,
+                                        TP.hc(
+                                            'height', heightVal),
+                                        infoAttrs);
+                            });
+                    } else {
+                        styleObj.height = heightVal + 'px';
+                    }
+                });
 
             break;
 
@@ -2467,22 +2489,25 @@ function(aSignal) {
 
                 heightVal = computedY;
 
-                if (TP.notEmpty(workerFuncs)) {
-                    workerFuncs.forEach(
-                        function(aFunc) {
-                            aFunc(actionElem,
-                                    styleObj,
-                                    TP.hc(
-                                        'left', leftVal,
-                                        'height', heightVal,
-                                        'width', widthVal),
-                                    infoAttrs);
-                        });
-                } else {
-                    styleObj.left = leftVal + 'px';
-                    styleObj.height = heightVal + 'px';
-                    styleObj.width = widthVal + 'px';
-                }
+                actionWin.requestAnimationFrame(
+                    function() {
+                        if (TP.notEmpty(workerFuncs)) {
+                            workerFuncs.forEach(
+                                function(aFunc) {
+                                    aFunc(actionElem,
+                                            styleObj,
+                                            TP.hc(
+                                                'left', leftVal,
+                                                'height', heightVal,
+                                                'width', widthVal),
+                                            infoAttrs);
+                                });
+                        } else {
+                            styleObj.left = leftVal + 'px';
+                            styleObj.height = heightVal + 'px';
+                            styleObj.width = widthVal + 'px';
+                        }
+                    });
             }
 
             break;
@@ -2522,20 +2547,23 @@ function(aSignal) {
                     widthVal = dimensionX;
                 }
 
-                if (TP.notEmpty(workerFuncs)) {
-                    workerFuncs.forEach(
-                        function(aFunc) {
-                            aFunc(actionElem,
-                                    styleObj,
-                                    TP.hc(
-                                        'left', leftVal,
-                                        'width', widthVal),
-                                    infoAttrs);
-                        });
-                } else {
-                    styleObj.left = leftVal + 'px';
-                    styleObj.width = widthVal + 'px';
-                }
+                actionWin.requestAnimationFrame(
+                    function() {
+                        if (TP.notEmpty(workerFuncs)) {
+                            workerFuncs.forEach(
+                                function(aFunc) {
+                                    aFunc(actionElem,
+                                            styleObj,
+                                            TP.hc(
+                                                'left', leftVal,
+                                                'width', widthVal),
+                                            infoAttrs);
+                                });
+                        } else {
+                            styleObj.left = leftVal + 'px';
+                            styleObj.width = widthVal + 'px';
+                        }
+                    });
             }
 
             break;
@@ -2577,20 +2605,23 @@ function(aSignal) {
                     heightVal = dimensionY;
                 }
 
-                if (TP.notEmpty(workerFuncs)) {
-                    workerFuncs.forEach(
-                        function(aFunc) {
-                            aFunc(actionElem,
-                                    styleObj,
-                                    TP.hc(
-                                        'top', topVal,
-                                        'height', heightVal),
-                                    infoAttrs);
-                        });
-                } else {
-                    styleObj.top = topVal + 'px';
-                    styleObj.height = heightVal + 'px';
-                }
+                actionWin.requestAnimationFrame(
+                    function() {
+                        if (TP.notEmpty(workerFuncs)) {
+                            workerFuncs.forEach(
+                                function(aFunc) {
+                                    aFunc(actionElem,
+                                            styleObj,
+                                            TP.hc(
+                                                'top', topVal,
+                                                'height', heightVal),
+                                            infoAttrs);
+                                });
+                        } else {
+                            styleObj.top = topVal + 'px';
+                            styleObj.height = heightVal + 'px';
+                        }
+                    });
             }
 
             if (computedX > 0) {
@@ -2620,20 +2651,23 @@ function(aSignal) {
                     widthVal = dimensionX;
                 }
 
-                if (TP.notEmpty(workerFuncs)) {
-                    workerFuncs.forEach(
-                        function(aFunc) {
-                            aFunc(actionElem,
-                                    styleObj,
-                                    TP.hc(
-                                        'left', leftVal,
-                                        'width', widthVal),
-                                    infoAttrs);
-                        });
-                } else {
-                    styleObj.left = leftVal + 'px';
-                    styleObj.width = widthVal + 'px';
-                }
+                actionWin.requestAnimationFrame(
+                    function() {
+                        if (TP.notEmpty(workerFuncs)) {
+                            workerFuncs.forEach(
+                                function(aFunc) {
+                                    aFunc(actionElem,
+                                            styleObj,
+                                            TP.hc(
+                                                'left', leftVal,
+                                                'width', widthVal),
+                                            infoAttrs);
+                                });
+                        } else {
+                            styleObj.left = leftVal + 'px';
+                            styleObj.width = widthVal + 'px';
+                        }
+                    });
             }
 
             break;

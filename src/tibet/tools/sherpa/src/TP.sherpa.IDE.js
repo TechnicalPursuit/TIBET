@@ -523,8 +523,8 @@ function(finalizationFunc) {
     //  Configure the north and south drawers to not track mutations for
     //  performance (we don't use mutation signals there anyway) and to set up
     //  the console service's keyboard state machine. Note that we do this in a
-    //  fork to let the system do a GUI refresh to show initializng status,
-    //  etc.
+    //  queued function to let the system do a GUI repaint to show initializing
+    //  status, etc.
     thisref = this;
 
     (function() {

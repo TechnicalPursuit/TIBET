@@ -1697,9 +1697,11 @@ function() {
     //  than the stylesheet was originally injected into.
     this.setupInjectedStyleSheet();
 
-    //  Update both the target element and it's descendants style.
-    this.updateTargetElementStyle();
-    this.updateOutlinedDescendantStyle();
+    setTimeout(function() {
+        //  Update both the target element and it's descendants style.
+        this.updateTargetElementStyle();
+        this.updateOutlinedDescendantStyle();
+    }.bind(this), 1000);
 
     //  Grab the halo, move and size it to its own target and update its style
     //  to match what we need to display it properly.

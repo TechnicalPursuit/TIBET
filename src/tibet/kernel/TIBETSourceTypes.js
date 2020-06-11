@@ -1865,7 +1865,6 @@ function() {
     //  mutation records for:
     //
     //      - style attribute changes.
-    //      - flipping 'pclass:hover' attribute changes.
 
     TP.addMutationObserverFilter(
         function(aMutationRecord) {
@@ -1876,14 +1875,6 @@ function() {
 
                     case 'style':
                         return false;
-
-                    case 'hover':
-                        if (aMutationRecord.attributeNamespace ===
-                            TP.w3.Xmlns.PCLASS) {
-                            return false;
-                        }
-
-                        break;
 
                     default:
                         break;
