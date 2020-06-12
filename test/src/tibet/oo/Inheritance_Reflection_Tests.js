@@ -4366,7 +4366,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.OOTester.describe('Inheritance - defineMethod',
+TP.test.OOTester.describe('Inheritance - defineMethod with String method name',
 function() {
 
     this.before(
@@ -4830,6 +4830,508 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.test.OOTester.describe('Inheritance - defineMethod with Symbol method name',
+function() {
+
+    this.before(
+        function(suite, options) {
+            TP.test.OOTester.commonBefore();
+        });
+
+    //  ---
+
+    this.it('TIBET type defineMethod', function(test, options) {
+
+        var typeSym,
+            typeLocalSym,
+
+            obj,
+
+            val,
+            correctVal;
+
+        //  ---
+
+        typeSym = Symbol('TypeMethod');
+        typeLocalSym = Symbol('TypeLocalMethod');
+
+        //  ---
+
+        TP.dom.Node.Type.defineMethod(
+            typeSym,
+            function() {
+                return true;
+            });
+        obj = TP.dom.Node[typeSym];
+
+        val = obj[TP.OWNER];
+        correctVal = TP.dom.Node;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.TYPE_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = 'TP.dom.Node.Type.Symbol(TypeMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        TP.dom.Node.defineMethod(
+            typeLocalSym,
+            function() {
+                return true;
+            });
+        obj = TP.dom.Node[typeLocalSym];
+
+        val = obj[TP.OWNER];
+        correctVal = TP.dom.Node;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.TYPE_LOCAL_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = 'TP.dom.Node.Symbol(TypeLocalMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('TIBET instance defineMethod', function(test, options) {
+
+        var instSym,
+            localSym,
+
+            inst,
+
+            obj,
+
+            val,
+            correctVal;
+
+        //  ---
+
+        instSym = Symbol('InstanceMethod');
+        localSym = Symbol('LocalMethod');
+
+        //  ---
+
+        TP.gui.Point.Inst.defineMethod(
+            instSym,
+            function() {
+                return true;
+            });
+        obj = TP.gui.Point.getInstPrototype()[instSym];
+
+        val = obj[TP.OWNER];
+        correctVal = TP.gui.Point;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.INST_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = 'TP.gui.Point.Inst.Symbol(InstanceMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        inst = TP.gui.Point.construct(20, 30);
+
+        inst.defineMethod(localSym,
+                            function() {
+                                return true;
+                            });
+        obj = inst[localSym];
+
+        val = obj[TP.OWNER];
+        correctVal = inst;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.LOCAL_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = TP.id(inst) + '.Symbol(LocalMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('native type defineMethod', function(test, options) {
+
+        var typeSym,
+            typeLocalSym,
+
+            functionInstSym,
+            functionLocalSym,
+
+            inst,
+
+            obj,
+
+            val,
+            correctVal;
+
+        //  ---
+
+        typeSym = Symbol('TypeMethod');
+        typeLocalSym = Symbol('TypeLocalMethod');
+
+        functionInstSym = Symbol('FunctionInstMethod');
+        functionLocalSym = Symbol('FunctionLocalMethod');
+
+        //  ---
+
+        Array.Type.defineMethod(typeSym,
+                                function() {
+                                    return true;
+                                });
+        obj = Array[typeSym];
+
+        val = obj[TP.OWNER];
+        correctVal = Array;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.TYPE_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = 'Array.Type.Symbol(TypeMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        Array.defineMethod(typeLocalSym,
+                            function() {
+                                return true;
+                            });
+        obj = Array[typeLocalSym];
+
+        val = obj[TP.OWNER];
+        correctVal = Array;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.TYPE_LOCAL_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = 'Array.Symbol(TypeLocalMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  When we want a method to show up on all *instances* of Functions, we
+        //  message TP.FunctionProto directly.
+
+        TP.FunctionProto.defineMethod(
+            functionInstSym,
+            function() {
+                return true;
+            });
+        obj = TP.FunctionProto[functionInstSym];
+
+        val = obj[TP.OWNER];
+        correctVal = Function;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.INST_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = 'Function.Inst.Symbol(FunctionInstMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  When we want a method to show up on a *particular* instance of a
+        //  Function, we message it directly.
+
+        inst = function() {
+            return false;
+        };
+
+        inst.defineMethod(
+            functionLocalSym,
+            function() {
+                return true;
+            });
+        obj = inst[functionLocalSym];
+
+        val = obj[TP.OWNER];
+        correctVal = inst;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.LOCAL_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = TP.id(inst) + '.Symbol(FunctionLocalMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('native instance defineMethod', function(test, options) {
+
+        var instSym,
+            localSym,
+
+            inst,
+
+            obj,
+
+            val,
+            correctVal;
+
+        //  ---
+
+        instSym = Symbol('InstanceMethod');
+        localSym = Symbol('LocalMethod');
+
+        //  ---
+
+        Array.Inst.defineMethod(
+            instSym,
+            function() {
+                return true;
+            });
+        obj = Array.getInstPrototype()[instSym];
+
+        val = obj[TP.OWNER];
+        correctVal = Array;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.INST_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = 'Array.Inst.Symbol(InstanceMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        inst = TP.ac('hi', 'there');
+
+        inst.defineMethod(localSym,
+                            function() {
+                                return true;
+                            });
+        obj = inst[localSym];
+
+        val = obj[TP.OWNER];
+        correctVal = inst;
+
+        test.assert.isIdenticalTo(
+            val,
+            correctVal,
+            TP.sc('TP.OWNER for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', TP.name(val), '.'));
+
+        val = obj[TP.TRACK];
+        correctVal = TP.LOCAL_TRACK;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.TRACK for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = obj[TP.DISPLAY];
+        correctVal = TP.id(inst) + '.Symbol(LocalMethod)';
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('TP.DISPLAY for: ', TP.name(obj),
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+            TP.test.OOTester.commonAfter();
+        });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.OOTester.describe('Inheritance - defineSubtype',
 function() {
 
@@ -4874,6 +5376,12 @@ function() {
 TP.test.OOTester.describe('Inheritance - callNextMethod',
 function() {
 
+    var typeMethodSymbol,
+        instMethodSymbol;
+
+    typeMethodSymbol = Symbol('typeMethod');
+    instMethodSymbol = Symbol('instMethod');
+
     this.before(
         function(suite, options) {
 
@@ -4886,6 +5394,9 @@ function() {
             TP.test.FooType.Type.defineAttribute('species');
             TP.test.FooType.Inst.defineAttribute('theName');
 
+            TP.test.FooType.Type.defineAttribute('color');
+            TP.test.FooType.Inst.defineAttribute('theSize');
+
             TP.test.FooType.Type.defineMethod('giveSpecies',
             function(aSpecies) {
                 this.set('species', aSpecies);
@@ -4894,6 +5405,16 @@ function() {
             TP.test.FooType.Inst.defineMethod('giveName',
             function(aName) {
                 this.set('theName', aName);
+            });
+
+            TP.test.FooType.Type.defineMethod(typeMethodSymbol,
+            function(aColor) {
+                this.set('color', aColor);
+            });
+
+            TP.test.FooType.Inst.defineMethod(instMethodSymbol,
+            function(aSize) {
+                this.set('theSize', aSize);
             });
 
             //  ---
@@ -4907,6 +5428,16 @@ function() {
 
             TP.test.BarType.Inst.defineMethod('giveName',
             function(aName) {
+                this.callNextMethod();
+            });
+
+            TP.test.BarType.Type.defineMethod(typeMethodSymbol,
+            function(aColor) {
+                this.callNextMethod();
+            });
+
+            TP.test.BarType.Inst.defineMethod(instMethodSymbol,
+            function(aSize) {
                 this.callNextMethod();
             });
 
@@ -4927,11 +5458,25 @@ function() {
                 //  'fluffy', no matter what the caller wanted.
                 this.callNextMethod('fluffy');
             });
+
+            TP.test.BazType.Type.defineMethod(typeMethodSymbol,
+            function(aColor) {
+                //  BazType will always have its color set to 'purple',
+                //  no matter what the caller wanted.
+                this.callNextMethod('purple');
+            });
+
+            TP.test.BazType.Inst.defineMethod(instMethodSymbol,
+            function(aSize) {
+                //  Instances of BazType will always have their size set to
+                //  'extraLarge', no matter what the caller wanted.
+                this.callNextMethod('extraLarge');
+            });
         });
 
     //  ---
 
-    this.it('TP.lang.RootObject callNextMethod()', function(test, options) {
+    this.it('TP.lang.RootObject callNextMethod() with String method name', function(test, options) {
 
         var newBar,
             nameVal,
@@ -4992,6 +5537,71 @@ function() {
             nameVal,
             'fluffy',
             TP.sc('\'name\' should be "fluffy"', ' not: ', nameVal, '.'));
+    });
+
+    //  ---
+
+    this.it('TP.lang.RootObject callNextMethod() with Symbol method name', function(test, options) {
+
+        var colorVal,
+
+            newBar,
+            sizeVal,
+
+            newBaz;
+
+        //  ---
+        //  Type-level callNextMethod
+        //  ---
+
+        TP.test.BarType[typeMethodSymbol]('orange');
+
+        colorVal = TP.test.BarType.get('color');
+
+        test.assert.isEqualTo(
+            colorVal,
+            'orange',
+            TP.sc('\'color\' should be "orange"', ' not: ', colorVal, '.'));
+
+        //  ---
+
+        TP.test.BazType[typeMethodSymbol]('red');
+
+        colorVal = TP.test.BazType.get('color');
+
+        //  BazType will always have its color set to 'purple', no matter
+        //  what we supplied.
+        test.assert.isEqualTo(
+            colorVal,
+            'purple',
+            TP.sc('\'color\' should be "purple"', ' not: ',
+                    colorVal, '.'));
+
+        //  ---
+        //  Instance-level callNextMethod
+        //  ---
+
+        newBar = TP.test.BarType.construct();
+        newBar[instMethodSymbol]('small');
+
+        sizeVal = newBar.get('theSize');
+
+        test.assert.isEqualTo(
+            sizeVal,
+            'small',
+            TP.sc('\'size\' should be "small"', ' not: ', sizeVal, '.'));
+
+        newBaz = TP.test.BazType.construct();
+        newBaz[instMethodSymbol]('medium');
+
+        sizeVal = newBaz.get('theSize');
+
+        //  Instances of BazType will always have their size set to
+        //  'extraLarge', no matter what we supplied.
+        test.assert.isEqualTo(
+            sizeVal,
+            'extraLarge',
+            TP.sc('\'size\' should be "extraLarge"', ' not: ', sizeVal, '.'));
     });
 
     //  ---

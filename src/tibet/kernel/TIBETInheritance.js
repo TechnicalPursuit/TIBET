@@ -10147,6 +10147,9 @@ function() {
         functionTrack,
         functionParent,
 
+        targetObj,
+        symbol,
+
         nextfunc;
 
     //  there is no "next method" after you reach the top (TP.ObjectProto)
@@ -10187,8 +10190,6 @@ function() {
 
     if (TP.notValid(nextfunc)) {
 
-        functionName = theFunction.getName();
-
         //  Check to make sure that theFunction really has an owner slot. All
         //  objects should, but sometimes we get objects from other contexts
         //  (i.e. frames) that don't know what 'owner' is. in those cases we
@@ -10211,11 +10212,8 @@ function() {
                     return;
                 }
 
-                if (!TP.isCallable(nextfunc =
-                    functionParent[TP.INSTC].prototype[functionName])) {
-                    theFunction.$$nextfunc = TP.NONE;
-                    return;
-                }
+                targetObj = functionParent[TP.INSTC].prototype;
+
                 break;
 
             case TP.TYPE_TRACK:
@@ -10226,29 +10224,20 @@ function() {
                     return;
                 }
 
-                if (!TP.isCallable(nextfunc =
-                    functionParent[TP.TYPEC].prototype[functionName])) {
-                    theFunction.$$nextfunc = TP.NONE;
-                    return;
-                }
+                targetObj = functionParent[TP.TYPEC].prototype;
+
                 break;
 
             case TP.TYPE_LOCAL_TRACK:
                 //  local method on the type itself...
-                if (!TP.isCallable(nextfunc =
-                    functionOwner[TP.TYPEC].prototype[functionName])) {
-                    theFunction.$$nextfunc = TP.NONE;
-                    return;
-                }
+                targetObj = functionOwner[TP.TYPEC].prototype;
+
                 break;
 
             case TP.LOCAL_TRACK:
                 //  local method on an instance
-                if (!TP.isCallable(nextfunc =
-                    functionOwner.getType()[TP.INSTC].prototype[functionName])) {
-                    theFunction.$$nextfunc = TP.NONE;
-                    return;
-                }
+                targetObj = functionOwner.getType()[TP.INSTC].prototype;
+
                 break;
 
             case TP.GLOBAL_TRACK:
@@ -10260,13 +10249,36 @@ function() {
                 return;
         }
 
+        //  Grab the function name.
+        functionName = theFunction.getName();
+
+        //  If the function's 'name' indicates a JS Symbol (i.e. 'Symbol(foo)'),
+        //  then try to find a matching Symbol on the target object.
+        if (TP.regex.JS_SYMBOL.test(functionName)) {
+            symbol = Object.getOwnPropertySymbols(targetObj).find(
+                        function(aSymbol) {
+                            return aSymbol.toString() === functionName;
+                        });
+            nextfunc = targetObj[symbol];
+        } else {
+            nextfunc = targetObj[functionName];
+        }
+
         //  DO NOT RECURSE...NO 'NEXT' FUNCTION
         if (theFunction === nextfunc) {
             theFunction.$$nextfunc = TP.NONE;
             return;
         }
 
-        //  cache result for future lookups
+        //  Make sure the computed next function is a callable value. If it
+        //  isn't, then mark the '$$nextfunc' property on the receiving Function
+        //  as being TP.NONE.
+        if (!TP.isCallable(nextfunc)) {
+            theFunction.$$nextfunc = TP.NONE;
+            return;
+        }
+
+        //  Cache result for future lookups.
         theFunction.$$nextfunc = nextfunc;
     }
 
