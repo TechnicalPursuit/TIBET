@@ -88,7 +88,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -871,9 +871,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 
-var base64 = __webpack_require__(19)
-var ieee754 = __webpack_require__(20)
-var isArray = __webpack_require__(21)
+var base64 = __webpack_require__(20)
+var ieee754 = __webpack_require__(21)
+var isArray = __webpack_require__(22)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -2651,7 +2651,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(19)))
 
 /***/ }),
 /* 2 */
@@ -2659,8 +2659,8 @@ function isnan (val) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthenticationHelper; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer____default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer___);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(3);
@@ -2694,7 +2694,7 @@ function isnan (val) {
 
 
 var randomBytes = function randomBytes(nBytes) {
-  return __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.random(nBytes).toString(), 'hex');
+  return __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.random(nBytes).toString(), 'hex');
 };
 
 
@@ -2702,9 +2702,7 @@ var initN = 'FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD1' + '29024E088A67CC
 var newPasswordRequiredChallengeUserAttributePrefix = 'userAttributes.';
 /** @class */
 
-var AuthenticationHelper =
-/*#__PURE__*/
-function () {
+var AuthenticationHelper = /*#__PURE__*/function () {
   /**
    * Constructs a new AuthenticationHelper object
    * @param {string} PoolName Cognito user pool name.
@@ -2715,7 +2713,7 @@ function () {
     this.k = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash("00" + this.N.toString(16) + "0" + this.g.toString(16)), 16);
     this.smallAValue = this.generateRandomSmallA();
     this.getLargeAValue(function () {});
-    this.infoBits = __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from('Caldera Derived Key', 'utf8');
+    this.infoBits = __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from('Caldera Derived Key', 'utf8');
     this.poolName = PoolName;
   }
   /**
@@ -2871,7 +2869,7 @@ function () {
   ;
 
   _proto.hash = function hash(buf) {
-    var str = buf instanceof __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(buf) : buf;
+    var str = buf instanceof __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(buf) : buf;
     var hashHex = __WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256___default()(str).toString();
     return new Array(64 - hashHex.length).join('0') + hashHex;
   }
@@ -2884,7 +2882,7 @@ function () {
   ;
 
   _proto.hexHash = function hexHash(hexStr) {
-    return this.hash(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(hexStr, 'hex'));
+    return this.hash(__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(hexStr, 'hex'));
   }
   /**
    * Standard hkdf algorithm
@@ -2896,12 +2894,12 @@ function () {
   ;
 
   _proto.computehkdf = function computehkdf(ikm, salt) {
-    var infoBitsWordArray = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].concat([this.infoBits, __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(String.fromCharCode(1), 'utf8')]));
-    var ikmWordArray = ikm instanceof __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(ikm) : ikm;
-    var saltWordArray = salt instanceof __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(salt) : salt;
+    var infoBitsWordArray = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].concat([this.infoBits, __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(String.fromCharCode(1), 'utf8')]));
+    var ikmWordArray = ikm instanceof __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(ikm) : ikm;
+    var saltWordArray = salt instanceof __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"] ? __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(salt) : salt;
     var prk = __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(ikmWordArray, saltWordArray);
     var hmac = __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(infoBitsWordArray, prk);
-    return __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(hmac.toString(), 'hex').slice(0, 16);
+    return __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(hmac.toString(), 'hex').slice(0, 16);
   }
   /**
    * Calculates the final hkdf based on computed S value, and computed U value and the key
@@ -2935,7 +2933,7 @@ function () {
         callback(err, null);
       }
 
-      var hkdf = _this4.computehkdf(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this4.padHex(sValue), 'hex'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this4.padHex(_this4.UValue.toString(16)), 'hex'));
+      var hkdf = _this4.computehkdf(__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this4.padHex(sValue), 'hex'), __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this4.padHex(_this4.UValue.toString(16)), 'hex'));
 
       callback(null, hkdf);
     });
@@ -3292,7 +3290,7 @@ function () {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(0), __webpack_require__(4), __webpack_require__(22));
+		module.exports = exports = factory(__webpack_require__(0), __webpack_require__(4), __webpack_require__(23));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -4214,9 +4212,7 @@ function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.crea
 
 /** @class */
 
-var CognitoAccessToken =
-/*#__PURE__*/
-function (_CognitoJwtToken) {
+var CognitoAccessToken = /*#__PURE__*/function (_CognitoJwtToken) {
   _inheritsLoose(CognitoAccessToken, _CognitoJwtToken);
 
   /**
@@ -4241,8 +4237,8 @@ function (_CognitoJwtToken) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoJwtToken; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer____default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer___);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer__);
 /*!
  * Copyright 2016 Amazon.com,
  * Inc. or its affiliates. All Rights Reserved.
@@ -4262,9 +4258,7 @@ function (_CognitoJwtToken) {
 
 /** @class */
 
-var CognitoJwtToken =
-/*#__PURE__*/
-function () {
+var CognitoJwtToken = /*#__PURE__*/function () {
   /**
    * Constructs a new CognitoJwtToken object
    * @param {string=} token The JWT token.
@@ -4309,7 +4303,7 @@ function () {
     var payload = this.jwtToken.split('.')[1];
 
     try {
-      return JSON.parse(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(payload, 'base64').toString('utf8'));
+      return JSON.parse(__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(payload, 'base64').toString('utf8'));
     } catch (err) {
       return {};
     }
@@ -4348,9 +4342,7 @@ function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.crea
 
 /** @class */
 
-var CognitoIdToken =
-/*#__PURE__*/
-function (_CognitoJwtToken) {
+var CognitoIdToken = /*#__PURE__*/function (_CognitoJwtToken) {
   _inheritsLoose(CognitoIdToken, _CognitoJwtToken);
 
   /**
@@ -4393,9 +4385,7 @@ function (_CognitoJwtToken) {
  */
 
 /** @class */
-var CognitoRefreshToken =
-/*#__PURE__*/
-function () {
+var CognitoRefreshToken = /*#__PURE__*/function () {
   /**
    * Constructs a new CognitoRefreshToken object
    * @param {string=} RefreshToken The JWT refresh token.
@@ -4429,13 +4419,13 @@ function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoUser; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer____default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer___);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__);
@@ -4518,11 +4508,11 @@ function () {
  * @param {bool=} userConfirmationNecessary User must be confirmed.
  */
 
+var isBrowser = typeof navigator !== 'undefined';
+var userAgent = isBrowser ? navigator.userAgent : 'nodejs';
 /** @class */
 
-var CognitoUser =
-/*#__PURE__*/
-function () {
+var CognitoUser = /*#__PURE__*/function () {
   /**
    * Constructs a new CognitoUser object
    * @param {object} data Creation options
@@ -4744,7 +4734,7 @@ function () {
           }
 
           var dateNow = dateHelper.getNowString();
-          var message = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].concat([__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this2.pool.getUserPoolId().split('_')[1], 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this2.username, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(challengeParameters.SECRET_BLOCK, 'base64'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(dateNow, 'utf8')]));
+          var message = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].concat([__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this2.pool.getUserPoolId().split('_')[1], 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this2.username, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(challengeParameters.SECRET_BLOCK, 'base64'), __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(dateNow, 'utf8')]));
           var key = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(hkdf);
           var signatureString = __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default.a.stringify(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(message, key));
           var challengeResponses = {};
@@ -4936,8 +4926,8 @@ function () {
       }
 
       var deviceSecretVerifierConfig = {
-        Salt: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
-        PasswordVerifier: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
+        Salt: __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
+        PasswordVerifier: __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
       };
       _this4.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
       _this4.deviceGroupKey = newDeviceMetadata.DeviceGroupKey;
@@ -4947,7 +4937,7 @@ function () {
         DeviceKey: newDeviceMetadata.DeviceKey,
         AccessToken: _this4.signInUserSession.getAccessToken().getJwtToken(),
         DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
-        DeviceName: navigator.userAgent
+        DeviceName: userAgent
       }, function (errConfirm, dataConfirm) {
         if (errConfirm) {
           return callback.onFailure(errConfirm);
@@ -5079,7 +5069,7 @@ function () {
           }
 
           var dateNow = dateHelper.getNowString();
-          var message = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].concat([__WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this6.deviceGroupKey, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(_this6.deviceKey, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(challengeParameters.SECRET_BLOCK, 'base64'), __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(dateNow, 'utf8')]));
+          var message = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].concat([__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this6.deviceGroupKey, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this6.deviceKey, 'utf8'), __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(challengeParameters.SECRET_BLOCK, 'base64'), __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(dateNow, 'utf8')]));
           var key = __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.create(hkdf);
           var signatureString = __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default.a.stringify(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default()(message, key));
           var challengeResponses = {};
@@ -5263,8 +5253,8 @@ function () {
         }
 
         var deviceSecretVerifierConfig = {
-          Salt: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
-          PasswordVerifier: __WEBPACK_IMPORTED_MODULE_0_buffer___["Buffer"].from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
+          Salt: __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
+          PasswordVerifier: __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
         };
         _this8.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
         _this8.deviceGroupKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey;
@@ -5274,7 +5264,7 @@ function () {
           DeviceKey: dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey,
           AccessToken: _this8.signInUserSession.getAccessToken().getJwtToken(),
           DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
-          DeviceName: navigator.userAgent
+          DeviceName: userAgent
         }, function (errConfirm, dataConfirm) {
           if (errConfirm) {
             return callback.onFailure(errConfirm);
@@ -5452,6 +5442,8 @@ function () {
   ;
 
   _proto.updateAttributes = function updateAttributes(attributes, callback, clientMetadata) {
+    var _this10 = this;
+
     if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
       return callback(new Error('User is not authenticated'), null);
     }
@@ -5463,9 +5455,14 @@ function () {
     }, function (err) {
       if (err) {
         return callback(err, null);
-      }
+      } // update cached user
 
-      return callback(null, 'SUCCESS');
+
+      return _this10.getUserData(function () {
+        return callback(null, 'SUCCESS');
+      }, {
+        bypassCache: true
+      });
     });
     return undefined;
   }
@@ -5527,57 +5524,121 @@ function () {
     return undefined;
   }
   /**
+   * PRIVATE ONLY: This is an internal only method and should not
+   * be directly called by the consumers.
+   */
+  ;
+
+  _proto.createGetUserRequest = function createGetUserRequest() {
+    return this.client.promisifyRequest('GetUser', {
+      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+    });
+  }
+  /**
+   * PRIVATE ONLY: This is an internal only method and should not
+   * be directly called by the consumers.
+   */
+  ;
+
+  _proto.refreshSessionIfPossible = function refreshSessionIfPossible() {
+    var _this11 = this;
+
+    // best effort, if not possible
+    return new Promise(function (resolve) {
+      var refresh = _this11.signInUserSession.getRefreshToken();
+
+      if (refresh && refresh.getToken()) {
+        _this11.refreshSession(refresh, resolve);
+      } else {
+        resolve();
+      }
+    });
+  }
+  /**
    * This is used by an authenticated users to get the userData
    * @param {nodeCallback<UserData>} callback Called on success or error.
+   * @param {GetUserDataOptions} params
    * @returns {void}
    */
   ;
 
   _proto.getUserData = function getUserData(callback, params) {
-    var _this10 = this;
+    var _this12 = this;
 
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       this.clearCachedUserData();
       return callback(new Error('User is not authenticated'), null);
     }
 
-    var bypassCache = params ? params.bypassCache : false;
-    var userData = this.storage.getItem(this.userDataKey); // get the cached user data
+    var userData = this.getUserDataFromCache();
 
-    if (!userData || bypassCache) {
-      this.client.request('GetUser', {
-        AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
-      }, function (err, latestUserData) {
-        if (err) {
-          return callback(err, null);
-        }
-
-        _this10.cacheUserData(latestUserData);
-
-        var refresh = _this10.signInUserSession.getRefreshToken();
-
-        if (refresh && refresh.getToken()) {
-          _this10.refreshSession(refresh, function (refreshError, data) {
-            if (refreshError) {
-              return callback(refreshError, null);
-            }
-
-            return callback(null, latestUserData);
-          });
-        } else {
-          return callback(null, latestUserData);
-        }
-      });
-    } else {
-      try {
-        return callback(null, JSON.parse(userData));
-      } catch (err) {
-        this.clearCachedUserData();
-        return callback(err, null);
-      }
+    if (!userData) {
+      this.fetchUserData().then(function (data) {
+        callback(null, data);
+      })["catch"](callback);
+      return;
     }
 
-    return undefined;
+    if (this.isFetchUserDataAndTokenRequired(params)) {
+      this.fetchUserData().then(function (data) {
+        return _this12.refreshSessionIfPossible().then(function () {
+          return data;
+        });
+      }).then(function (data) {
+        return callback(null, data);
+      })["catch"](callback);
+      return;
+    }
+
+    try {
+      callback(null, JSON.parse(userData));
+      return;
+    } catch (err) {
+      this.clearCachedUserData();
+      callback(err, null);
+      return;
+    }
+  }
+  /**
+   *
+   * PRIVATE ONLY: This is an internal only method and should not
+   * be directly called by the consumers.
+   */
+  ;
+
+  _proto.getUserDataFromCache = function getUserDataFromCache() {
+    var userData = this.storage.getItem(this.userDataKey);
+    return userData;
+  }
+  /**
+   *
+   * PRIVATE ONLY: This is an internal only method and should not
+   * be directly called by the consumers.
+   */
+  ;
+
+  _proto.isFetchUserDataAndTokenRequired = function isFetchUserDataAndTokenRequired(params) {
+    var _ref = params || {},
+        _ref$bypassCache = _ref.bypassCache,
+        bypassCache = _ref$bypassCache === void 0 ? false : _ref$bypassCache;
+
+    return bypassCache;
+  }
+  /**
+   *
+   * PRIVATE ONLY: This is an internal only method and should not
+   * be directly called by the consumers.
+   */
+  ;
+
+  _proto.fetchUserData = function fetchUserData() {
+    var _this13 = this;
+
+    return this.createGetUserRequest().then(function (data) {
+      _this13.cacheUserData(data);
+
+      return data;
+    });
   }
   /**
    * This is used by an authenticated user to delete a list of attributes
@@ -5695,7 +5756,7 @@ function () {
   ;
 
   _proto.refreshSession = function refreshSession(refreshToken, callback, clientMetadata) {
-    var _this11 = this;
+    var _this14 = this;
 
     var authParameters = {};
     authParameters.REFRESH_TOKEN = refreshToken.getToken();
@@ -5723,7 +5784,7 @@ function () {
     this.client.request('InitiateAuth', jsonReq, function (err, authResult) {
       if (err) {
         if (err.code === 'NotAuthorizedException') {
-          _this11.clearCachedUser();
+          _this14.clearCachedUser();
         }
 
         return callback(err, null);
@@ -5736,11 +5797,11 @@ function () {
           authenticationResult.RefreshToken = refreshToken.getToken();
         }
 
-        _this11.signInUserSession = _this11.getCognitoUserSession(authenticationResult);
+        _this14.signInUserSession = _this14.getCognitoUserSession(authenticationResult);
 
-        _this11.cacheTokens();
+        _this14.cacheTokens();
 
-        return callback(null, _this11.signInUserSession);
+        return callback(null, _this14.signInUserSession);
       }
 
       return undefined;
@@ -6065,16 +6126,16 @@ function () {
   ;
 
   _proto.forgetDevice = function forgetDevice(callback) {
-    var _this12 = this;
+    var _this15 = this;
 
     this.forgetSpecificDevice(this.deviceKey, {
       onFailure: callback.onFailure,
       onSuccess: function onSuccess(result) {
-        _this12.deviceKey = null;
-        _this12.deviceGroupKey = null;
-        _this12.randomPassword = null;
+        _this15.deviceKey = null;
+        _this15.deviceGroupKey = null;
+        _this15.randomPassword = null;
 
-        _this12.clearCachedDeviceKeyAndPassword();
+        _this15.clearCachedDeviceKeyAndPassword();
 
         return callback.onSuccess(result);
       }
@@ -6138,7 +6199,7 @@ function () {
    * This is used to list all devices for a user
    *
    * @param {int} limit the number of devices returned in a call
-   * @param {string} paginationToken the pagination token in case any was returned before
+   * @param {string | null} paginationToken the pagination token in case any was returned before
    * @param {object} callback Result callback map.
    * @param {onFailure} callback.onFailure Called on any error.
    * @param {onSuccess<*>} callback.onSuccess Called on success with device list.
@@ -6151,11 +6212,16 @@ function () {
       return callback.onFailure(new Error('User is not authenticated'));
     }
 
-    this.client.request('ListDevices', {
+    var requestParams = {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
-      Limit: limit,
-      PaginationToken: paginationToken
-    }, function (err, data) {
+      Limit: limit
+    };
+
+    if (paginationToken) {
+      requestParams.PaginationToken = paginationToken;
+    }
+
+    this.client.request('ListDevices', requestParams, function (err, data) {
       if (err) {
         return callback.onFailure(err);
       }
@@ -6174,7 +6240,7 @@ function () {
   ;
 
   _proto.globalSignOut = function globalSignOut(callback) {
-    var _this13 = this;
+    var _this16 = this;
 
     if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
       return callback.onFailure(new Error('User is not authenticated'));
@@ -6187,7 +6253,7 @@ function () {
         return callback.onFailure(err);
       }
 
-      _this13.clearCachedUser();
+      _this16.clearCachedUser();
 
       return callback.onSuccess('SUCCESS');
     });
@@ -6212,7 +6278,7 @@ function () {
   ;
 
   _proto.sendMFASelectionAnswer = function sendMFASelectionAnswer(answerChallenge, callback) {
-    var _this14 = this;
+    var _this17 = this;
 
     var challengeResponses = {};
     challengeResponses.USERNAME = this.username;
@@ -6233,7 +6299,7 @@ function () {
         return callback.onFailure(err);
       }
 
-      _this14.Session = data.Session;
+      _this17.Session = data.Session;
 
       if (answerChallenge === 'SMS_MFA') {
         return callback.mfaRequired(data.challengeName, data.challengeParameters);
@@ -6264,7 +6330,7 @@ function () {
   ;
 
   _proto.associateSoftwareToken = function associateSoftwareToken(callback) {
-    var _this15 = this;
+    var _this18 = this;
 
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       this.client.request('AssociateSoftwareToken', {
@@ -6274,7 +6340,7 @@ function () {
           return callback.onFailure(err);
         }
 
-        _this15.Session = data.Session;
+        _this18.Session = data.Session;
         return callback.associateSecretCode(data.SecretCode);
       });
     } else {
@@ -6299,7 +6365,7 @@ function () {
   ;
 
   _proto.verifySoftwareToken = function verifySoftwareToken(totpCode, friendlyDeviceName, callback) {
-    var _this16 = this;
+    var _this19 = this;
 
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       this.client.request('VerifySoftwareToken', {
@@ -6311,30 +6377,30 @@ function () {
           return callback.onFailure(err);
         }
 
-        _this16.Session = data.Session;
+        _this19.Session = data.Session;
         var challengeResponses = {};
-        challengeResponses.USERNAME = _this16.username;
+        challengeResponses.USERNAME = _this19.username;
         var jsonReq = {
           ChallengeName: 'MFA_SETUP',
-          ClientId: _this16.pool.getClientId(),
+          ClientId: _this19.pool.getClientId(),
           ChallengeResponses: challengeResponses,
-          Session: _this16.Session
+          Session: _this19.Session
         };
 
-        if (_this16.getUserContextData()) {
-          jsonReq.UserContextData = _this16.getUserContextData();
+        if (_this19.getUserContextData()) {
+          jsonReq.UserContextData = _this19.getUserContextData();
         }
 
-        _this16.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
+        _this19.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
           if (errRespond) {
             return callback.onFailure(errRespond);
           }
 
-          _this16.signInUserSession = _this16.getCognitoUserSession(dataRespond.AuthenticationResult);
+          _this19.signInUserSession = _this19.getCognitoUserSession(dataRespond.AuthenticationResult);
 
-          _this16.cacheTokens();
+          _this19.cacheTokens();
 
-          return callback.onSuccess(_this16.signInUserSession);
+          return callback.onSuccess(_this19.signInUserSession);
         });
 
         return undefined;
@@ -6383,9 +6449,7 @@ function () {
  */
 
 /** @class */
-var CognitoUserSession =
-/*#__PURE__*/
-function () {
+var CognitoUserSession = /*#__PURE__*/function () {
   /**
    * Constructs a new CognitoUserSession object
    * @param {CognitoIdToken} IdToken The session's Id token.
@@ -6497,9 +6561,7 @@ var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
 var weekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 /** @class */
 
-var DateHelper =
-/*#__PURE__*/
-function () {
+var DateHelper = /*#__PURE__*/function () {
   function DateHelper() {}
 
   var _proto = DateHelper.prototype;
@@ -6565,9 +6627,7 @@ function () {
  */
 
 /** @class */
-var CognitoUserAttribute =
-/*#__PURE__*/
-function () {
+var CognitoUserAttribute = /*#__PURE__*/function () {
   /**
    * Constructs a new CognitoUserAttribute object
    * @param {string=} Name The record's name
@@ -6671,9 +6731,7 @@ function () {
 var dataMemory = {};
 /** @class */
 
-var MemoryStorage =
-/*#__PURE__*/
-function () {
+var MemoryStorage = /*#__PURE__*/function () {
   function MemoryStorage() {}
 
   /**
@@ -6723,9 +6781,7 @@ function () {
 /** @class */
 
 
-var StorageHelper =
-/*#__PURE__*/
-function () {
+var StorageHelper = /*#__PURE__*/function () {
   /**
    * This is used to get a storage object
    * @returns {object} the storage
@@ -6761,8 +6817,35 @@ function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return appendToCognitoUserAgent; });
+// constructor
+function UserAgent() {} // public
+
+
+UserAgent.prototype.userAgent = 'aws-amplify/0.1.x js';
+var appendToCognitoUserAgent = function appendToCognitoUserAgent(content) {
+  if (!content) {
+    return;
+  }
+
+  if (UserAgent.prototype.userAgent && !UserAgent.prototype.userAgent.includes(content)) {
+    UserAgent.prototype.userAgent = UserAgent.prototype.userAgent.concat(' ', content);
+  }
+
+  if (!UserAgent.prototype.userAgent || UserAgent.prototype.userAgent === '') {
+    UserAgent.prototype.userAgent = content;
+  }
+}; // class for defining the amzn user-agent
+
+/* harmony default export */ __webpack_exports__["b"] = (UserAgent);
+
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AuthenticationDetails__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AuthenticationDetails__ = __webpack_require__(18);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "AuthenticationDetails", function() { return __WEBPACK_IMPORTED_MODULE_0__AuthenticationDetails__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AuthenticationHelper__ = __webpack_require__(2);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "AuthenticationHelper", function() { return __WEBPACK_IMPORTED_MODULE_1__AuthenticationHelper__["a"]; });
@@ -6776,7 +6859,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUser", function() { return __WEBPACK_IMPORTED_MODULE_5__CognitoUser__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__ = __webpack_require__(14);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserAttribute", function() { return __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__ = __webpack_require__(25);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserPool", function() { return __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__ = __webpack_require__(12);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserSession", function() { return __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__["a"]; });
@@ -6784,6 +6867,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CookieStorage", function() { return __WEBPACK_IMPORTED_MODULE_9__CookieStorage__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__DateHelper__ = __webpack_require__(13);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "DateHelper", function() { return __WEBPACK_IMPORTED_MODULE_10__DateHelper__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__UserAgent__ = __webpack_require__(16);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "appendToCognitoUserAgent", function() { return __WEBPACK_IMPORTED_MODULE_11__UserAgent__["a"]; });
 /*!
  * Copyright 2016 Amazon.com,
  * Inc. or its affiliates. All Rights Reserved.
@@ -6812,8 +6897,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6836,9 +6922,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  */
 
 /** @class */
-var AuthenticationDetails =
-/*#__PURE__*/
-function () {
+var AuthenticationDetails = /*#__PURE__*/function () {
   /**
    * Constructs a new AuthenticationDetails object
    * @param {object=} data Creation options.
@@ -6910,7 +6994,7 @@ function () {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 var g;
@@ -6937,7 +7021,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7096,7 +7180,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -7186,7 +7270,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -7197,7 +7281,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -7345,7 +7429,7 @@ module.exports = Array.isArray || function (arr) {
 }));
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -7485,12 +7569,12 @@ module.exports = Array.isArray || function (arr) {
 }));
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoUserPool; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Client__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Client__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CognitoUser__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__StorageHelper__ = __webpack_require__(15);
 /*!
@@ -7514,14 +7598,15 @@ module.exports = Array.isArray || function (arr) {
 
 /** @class */
 
-var CognitoUserPool =
-/*#__PURE__*/
-function () {
+var CognitoUserPool = /*#__PURE__*/function () {
   /**
    * Constructs a new CognitoUserPool object
    * @param {object} data Creation options.
    * @param {string} data.UserPoolId Cognito user pool id.
    * @param {string} data.ClientId User pool application client id.
+   * @param {string} data.endpoint Optional custom service endpoint.
+   * @param {object} data.fetchOptions Optional options for fetch API.
+   *        (only credentials option is supported)
    * @param {object} data.Storage Optional storage object.
    * @param {boolean} data.AdvancedSecurityDataCollectionFlag Optional:
    *        boolean flag indicating if the data collection is enabled
@@ -7533,6 +7618,7 @@ function () {
         UserPoolId = _ref.UserPoolId,
         ClientId = _ref.ClientId,
         endpoint = _ref.endpoint,
+        fetchOptions = _ref.fetchOptions,
         AdvancedSecurityDataCollectionFlag = _ref.AdvancedSecurityDataCollectionFlag;
 
     if (!UserPoolId || !ClientId) {
@@ -7546,7 +7632,7 @@ function () {
     var region = UserPoolId.split('_')[0];
     this.userPoolId = UserPoolId;
     this.clientId = ClientId;
-    this.client = new __WEBPACK_IMPORTED_MODULE_0__Client__["a" /* default */](region, endpoint);
+    this.client = new __WEBPACK_IMPORTED_MODULE_0__Client__["a" /* default */](region, endpoint, fetchOptions);
     /**
      * By default, AdvancedSecurityDataCollectionFlag is set to true,
      * if no input value is provided.
@@ -7587,6 +7673,7 @@ function () {
    * @param {(AttributeArg[])=} validationData Application metadata.
    * @param {(AttributeArg[])=} clientMetadata Client metadata.
    * @param {nodeCallback<SignUpResult>} callback Called on error or with the new user.
+   * @param {ClientMetadata} clientMetadata object which is passed from client to Cognito Lambda trigger
    * @returns {void}
    */
   ;
@@ -7688,26 +7775,86 @@ function () {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Client; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UserAgent__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__UserAgent__ = __webpack_require__(16);
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
+function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
+
+function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+var CognitoError = /*#__PURE__*/function (_Error) {
+  _inheritsLoose(CognitoError, _Error);
+
+  function CognitoError(message, code, name, statusCode) {
+    var _this;
+
+    _this = _Error.call(this, message) || this;
+    _this.code = code;
+    _this.name = name;
+    _this.statusCode = statusCode;
+    return _this;
+  }
+
+  return CognitoError;
+}( /*#__PURE__*/_wrapNativeSuper(Error));
 /** @class */
 
-var Client =
-/*#__PURE__*/
-function () {
+
+var Client = /*#__PURE__*/function () {
   /**
    * Constructs a new AWS Cognito Identity Provider client object
    * @param {string} region AWS region
    * @param {string} endpoint endpoint
+   * @param {object} fetchOptions options for fetch API (only credentials is supported)
    */
-  function Client(region, endpoint) {
+  function Client(region, endpoint, fetchOptions) {
     this.endpoint = endpoint || "https://cognito-idp." + region + ".amazonaws.com/";
-    this.userAgent = __WEBPACK_IMPORTED_MODULE_0__UserAgent__["a" /* default */].prototype.userAgent || 'aws-amplify/0.1.x js';
+
+    var _ref = fetchOptions || {},
+        credentials = _ref.credentials;
+
+    this.fetchOptions = credentials ? {
+      credentials: credentials
+    } : {};
+  }
+  /**
+   * Makes an unauthenticated request on AWS Cognito Identity Provider API
+   * using fetch
+   * @param {string} operation API operation
+   * @param {object} params Input parameters
+   * @returns Promise<object>
+   */
+
+
+  var _proto = Client.prototype;
+
+  _proto.promisifyRequest = function promisifyRequest(operation, params) {
+    var _this2 = this;
+
+    return new Promise(function (resolve, reject) {
+      _this2.request(operation, params, function (err, data) {
+        if (err) {
+          reject(new CognitoError(err.message, err.code, err.name, err.statusCode));
+        } else {
+          resolve(data);
+        }
+      });
+    });
   }
   /**
    * Makes an unauthenticated request on AWS Cognito Identity Provider API
@@ -7717,23 +7864,21 @@ function () {
    * @param {function} callback Callback called when a response is returned
    * @returns {void}
    */
-
-
-  var _proto = Client.prototype;
+  ;
 
   _proto.request = function request(operation, params, callback) {
     var headers = {
       'Content-Type': 'application/x-amz-json-1.1',
       'X-Amz-Target': "AWSCognitoIdentityProviderService." + operation,
-      'X-Amz-User-Agent': this.userAgent
+      'X-Amz-User-Agent': __WEBPACK_IMPORTED_MODULE_0__UserAgent__["b" /* default */].prototype.userAgent
     };
-    var options = {
+    var options = Object.assign({}, this.fetchOptions, {
       headers: headers,
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
       body: JSON.stringify(params)
-    };
+    });
     var response;
     var responseJsonData;
     fetch(this.endpoint, options).then(function (resp) {
@@ -7799,19 +7944,6 @@ function () {
 
 
 /***/ }),
-/* 26 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// class for defining the amzn user-agent
-/* harmony default export */ __webpack_exports__["a"] = (UserAgent); // constructor
-
-function UserAgent() {} // public
-
-
-UserAgent.prototype.userAgent = 'aws-amplify/0.1.x js';
-
-/***/ }),
 /* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -7822,9 +7954,7 @@ UserAgent.prototype.userAgent = 'aws-amplify/0.1.x js';
 
 /** @class */
 
-var CookieStorage =
-/*#__PURE__*/
-function () {
+var CookieStorage = /*#__PURE__*/function () {
   /**
    * Constructs a new CookieStorage object
    * @param {object} data Creation options.
