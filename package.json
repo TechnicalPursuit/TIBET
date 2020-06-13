@@ -109,7 +109,7 @@
         "syn": "github:TechnicalPursuit/syn"
     },
     "engines": {
-        "node": ">=10",
+        "node": ">=12",
         "npm": ">=6"
     },
     "scripts": {

@@ -1,5 +1,5 @@
-# Start with Node 10.X and the Alpine Linux Docker image.
-FROM node:10-alpine
+# Start with Node 12.X and the Alpine Linux Docker image.
+FROM node:12-alpine
 
 # Add git because some of TIBET's npm packages come from TPI forks of Git
 # packages on Github.
