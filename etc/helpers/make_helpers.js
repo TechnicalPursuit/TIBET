@@ -24,7 +24,6 @@ var CLI,
     path,
     Promise,
     zlib,
-    iltorb,
     helpers;
 
 
@@ -36,14 +35,6 @@ sh = require('shelljs');
 path = require('path');
 Promise = require('bluebird');
 zlib = require('zlib');
-
-//  Conditionally load iltorb. If this fails don't make a fuss, we just won't
-//  output brotli-compressed content.
-try {
-    iltorb = require('iltorb');
-} catch (e) {
-    void 0;
-}
 
 
 /**
@@ -701,12 +692,6 @@ helpers.rollup = function(make, options) {
     //  brotli as well...
     if (options.brotli) {
 
-        if (!iltorb) {
-            make.warn('Ignoring brotli flag. Module `iltorb` not installed' +
-                        ' in the TIBET library.');
-            return promise;
-        }
-
         promise = promise.then(
             function() {
 
@@ -717,7 +702,7 @@ helpers.rollup = function(make, options) {
                     var buff;
 
                     buff = Buffer.from(buffer, 'utf8');
-                    return Promise.promisify(iltorb.compress)(buff).then(
+                    return Promise.promisify(zlib.brotliCompress)(buff).then(
                         function(brresult) {
                             try {
                                 fs.writeFileSync(brotfile, brresult);

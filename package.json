@@ -97,7 +97,6 @@
         "babel-minify": "^0.5.1",
         "chai": "^4.2.0",
         "eslint": "^7.2.0",
-        "iltorb": "^2.4.4",
         "less": "^3.11.3",
         "mocha": "^8.0.1",
         "mutation-summary": "github:TechnicalPursuit/mutation-summary",
