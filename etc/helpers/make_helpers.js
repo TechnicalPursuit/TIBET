@@ -24,7 +24,6 @@ var CLI,
     path,
     Promise,
     zlib,
-    iltorb,
     helpers;
 
 
@@ -36,14 +35,6 @@ sh = require('shelljs');
 path = require('path');
 Promise = require('bluebird');
 zlib = require('zlib');
-
-//  Conditionally load iltorb. If this fails don't make a fuss, we just won't
-//  output brotli-compressed content.
-try {
-    iltorb = require('iltorb');
-} catch (e) {
-    void 0;
-}
 
 
 /**
@@ -68,14 +59,14 @@ helpers.linkup_app = function(make, options) {
 
     deferred = Promise.pending();
 
-    target = make.CLI.expandPath('~app_build');
+    target = CLI.expandPath('~app_build');
     if (!sh.test('-d', target)) {
         make.error('~app_build not found.');
         deferred.reject();
         return deferred;
     }
 
-    source = make.CLI.expandPath('~lib_build');
+    source = CLI.expandPath('~lib_build');
     if (!sh.test('-d', source)) {
         make.error('~lib_build not found.');
         deferred.reject();
@@ -292,7 +283,7 @@ helpers.package_check = function(make, options) {
     if (os.platform() === 'win32') {
         cmd = 'tibet';
     } else {
-        cmd = make.CLI.joinPaths(
+        cmd = CLI.joinPaths(
                     module.filename, '..', '..', '..', 'bin', 'tibet');
     }
 
@@ -424,7 +415,7 @@ helpers.resource_build = function(make, options) {
     if (os.platform() === 'win32') {
         cmd = 'tibet';
     } else {
-        cmd = make.CLI.joinPaths(
+        cmd = CLI.joinPaths(
                     module.filename, '..', '..', '..', 'bin', 'tibet');
     }
 
@@ -563,7 +554,7 @@ helpers.rollup = function(make, options) {
     if (os.platform() === 'win32') {
         cmd = 'tibet';
     } else {
-        cmd = make.CLI.joinPaths(
+        cmd = CLI.joinPaths(
                     module.filename, '..', '..', '..', 'bin', 'tibet');
     }
 
@@ -603,7 +594,7 @@ helpers.rollup = function(make, options) {
         ext = '.js';
     }
 
-    file = make.CLI.joinPaths(dir, prefix + root + ext);
+    file = CLI.joinPaths(dir, prefix + root + ext);
 
     promise = new Promise(function(resolver, rejector) {
         var proc;
@@ -701,12 +692,6 @@ helpers.rollup = function(make, options) {
     //  brotli as well...
     if (options.brotli) {
 
-        if (!iltorb) {
-            make.warn('Ignoring brotli flag. Module `iltorb` not installed' +
-                        ' in the TIBET library.');
-            return promise;
-        }
-
         promise = promise.then(
             function() {
 
@@ -717,7 +702,7 @@ helpers.rollup = function(make, options) {
                     var buff;
 
                     buff = Buffer.from(buffer, 'utf8');
-                    return Promise.promisify(iltorb.compress)(buff).then(
+                    return Promise.promisify(zlib.brotliCompress)(buff).then(
                         function(brresult) {
                             try {
                                 fs.writeFileSync(brotfile, brresult);
@@ -755,7 +740,7 @@ helpers.rollup_app = function(make, options) {
     var opts,
         dir;
 
-    dir = make.CLI.expandPath('~app_build');
+    dir = CLI.expandPath('~app_build');
     if (!sh.test('-d', dir)) {
         sh.mkdir(dir);
     }
@@ -786,7 +771,7 @@ helpers.rollup_lib = function(make, options) {
     var opts,
         dir;
 
-    dir = make.CLI.expandPath('~lib_build');
+    dir = CLI.expandPath('~lib_build');
     if (!sh.test('-d', dir)) {
         sh.mkdir(dir);
     }
