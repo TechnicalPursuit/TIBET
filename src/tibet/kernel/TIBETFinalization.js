@@ -168,6 +168,8 @@ function() {
         rootName,
         rootWindow,
 
+        promise,
+
         typeInits;
 
     // We only do this once.
@@ -211,331 +213,345 @@ function() {
         return this;
     }
 
-    (function() {
-        var uri,
-            req,
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+            var uri,
+                req;
 
-            tibetToken;
+            msg = 'Initializing user...';
 
-        msg = 'Initializing user...';
+            if (TP.sys.cfg('boot.use_login')) {
+                //  User should be logged in. We want to load/generate a vcard
+                //  for them if possible.
+                uri = TP.sys.cfg('tds.vcard.uri');
+                if (TP.isEmpty(uri)) {
+                    TP.core.User.getRealUser();
+                } else {
+                    uri = TP.uriExpandPath(uri);
+                    req = TP.request('uri', uri, 'async', true);
+                    req.defineHandler('IOSucceeded',
+                        function(aSignal) {
+                            var result;
 
-        if (TP.sys.cfg('boot.use_login')) {
-            //  User should be logged in. We want to load/generate a vcard for
-            //  them if possible.
-            uri = TP.sys.cfg('tds.vcard.uri');
-            if (TP.isEmpty(uri)) {
-                TP.core.User.getRealUser();
-            } else {
-                uri = TP.uriExpandPath(uri);
-                req = TP.request('uri', uri, 'async', false);
-                req.defineHandler('IOSucceeded',
-                    function(aSignal) {
-                        var result;
+                            result = aSignal.getResult();
+                            if (TP.isDocument(result)) {
+                                TP.ietf.vcard.initVCards(result);
+                                TP.core.User.construct(
+                                    TP.nodeEvaluateXPath(result,
+                                        'string(//$def:fn/$def:text/text())'));
+                            } else {
+                                TP.ifWarn() ?
+                                    TP.warn('Invalid or missing user' +
+                                                                ' vcard.') : 0;
+                                TP.core.User.getRealUser();
+                            }
 
-                        result = aSignal.getResult();
-                        if (TP.isDocument(result)) {
-                            TP.ietf.vcard.initVCards(result);
-                            TP.core.User.construct(
-                                TP.nodeEvaluateXPath(result,
-                                    'string(//$def:fn/$def:text/text())'));
-                        } else {
+                            resolver();
+                        });
+                    req.defineHandler('IOFailed',
+                        function(aSignal) {
                             TP.ifWarn() ?
                                 TP.warn('Invalid or missing user vcard.') : 0;
                             TP.core.User.getRealUser();
-                        }
-                    });
-                req.defineHandler('IOFailed',
-                    function(aSignal) {
-                        TP.ifWarn() ?
-                            TP.warn('Invalid or missing user vcard.') : 0;
-                        TP.core.User.getRealUser();
-                    });
-                TP.httpGet(uri, req);
-            }
-        } else {
-            //  Not a login-restricted application. Force construction of
-            //  default user.
-            TP.core.User.getRealUser();
-        }
-
-        //  Set up common URIs for the user object, the raw user vCard data and
-        //  the host data.
-        TP.uc('urn:tibet:user').setResource(
-                                    TP.sys.getEffectiveUser());
-        TP.uc('urn:tibet:userinfo').setResource(
-                                    TP.sys.getEffectiveUser().get('vcard'));
-        TP.uc('urn:tibet:hosturi').setResource(
-                                    TP.uc('~').getConcreteURI());
-
-        //  If we're running in headless mode, then we need to check to see if
-        //  we have a valid 'TIBET.boot.tibet_token' in the sessionStorage. If
-        //  not, see if the cfg has a 'headless.tibet_token' configured. If so,
-        //  set it's value into the session storage.
-        //  This helps when running tests or builds with apps that want to load
-        //  resources on login. Note that we do *not* check to see if the
-        //  application is configured to require login here. When in a headless
-        //  mode, the 'boot.use_login' cfg parameter will always be false.
-        if (TP.sys.cfg('boot.context') === 'headless') {
-
-            tibetToken = TP.global.sessionStorage.getItem(
-                                        'TIBET.boot.tibet_token');
-
-            if (TP.isEmpty(tibetToken)) {
-                tibetToken = TP.sys.getcfg('headless.tibet_token');
-
-                if (TP.notEmpty(tibetToken)) {
-                    TP.global.sessionStorage.setItem(
-                                        'TIBET.boot.tibet_token', tibetToken);
-                }
-            }
-        }
-
-    }).queueAfterNextRepaint(rootWindow);
-
-    (function() {
-        var i;
-
-        //  One tricky part is that we can sometimes trigger application
-        //  instance creation during phase one of parallel booting. Because of
-        //  that, it will be an instance of the common TP.core.Application type
-        //  and not the specific subtype of TP.core.Application that we'll want
-        //  for the rest of the life of running the app.
-
-        //  So, when that happens we want to clear the singleton instance now
-        //  that phase two has loaded and before we try anything that would
-        //  depend on routes etc. This singleton instance will be re-created as
-        //  an instance of our application-specific subtype.
-        TP.core.Application.set('singleton', null);
-
-        //  Initialize all the types which own initialize methods so we're sure
-        //  they're ready for operation. this may cause them to load other types
-        //  so we do this before proxy setup.
-        try {
-            //  Final signal before initializers are run.
-            TP.signal('TP.sys', 'AppInitialize');
-
-            msg = 'Initializing TIBET types...';
-
-            TP.ifDebug() ? TP.debug(msg) : 0;
-            TP.boot.$stdout(msg, TP.DEBUG);
-
-            //  Run through the type initializers and run them.
-            for (i = 0; i < typeInits.getSize(); i++) {
-                typeInits.at(i)();
-            }
-        } catch (e) {
-            msg = 'TIBET Type Initialization Error';
-            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-            TP.boot.$stderr(msg, e, TP.FATAL);
-
-            TP.boot.shouldStop('Type Initialization Failure(s).');
-            TP.boot.$stderr('Initialization failure.', TP.FATAL);
-
-            throw e;
-        }
-    }).queueAfterNextRepaint(rootWindow);
-
-    (function() {
-
-        msg = 'Initializing root canvas...';
-
-        //  Force initialization of the root canvas id before any changes are
-        //  made to the canvas setting by other operations.
-        try {
-            TP.ifDebug() ? TP.debug(msg) : 0;
-            TP.boot.$stdout(msg, TP.DEBUG);
-            name = TP.sys.getUIRootName();
-            if (TP.notValid(name)) {
-                throw new Error('InvalidUIRoot');
-            }
-        } catch (e) {
-            msg = 'Canvas Initialization Error';
-            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-            TP.boot.$stderr(msg, e);
-            throw e;
-        }
-    }).queueAfterNextRepaint(rootWindow);
-
-    (function() {
-
-        msg = 'Initializing type proxies...';
-
-        //  Initialize type proxies for types we didn't load as a result of the
-        //  boot manifest or through type initialization.
-        try {
-            TP.ifDebug() ? TP.debug(msg) : 0;
-            TP.boot.$stdout(msg, TP.DEBUG);
-
-            TP.sys.initializeTypeProxies();
-        } catch (e) {
-            msg = 'Proxy Initialization Error';
-            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-            TP.boot.$stderr(msg, e);
-            throw e;
-        }
-    }).queueAfterNextRepaint(rootWindow);
-
-    (function() {
-
-        msg = 'Initializing namespace support...';
-
-        //  Install native/non-native namespace support. this may also involve
-        //  loading types
-        try {
-            TP.ifDebug() ? TP.debug(msg) : 0;
-            TP.boot.$stdout(msg, TP.DEBUG);
-
-            //  Two classes of namespace, internally supported and those TIBET
-            //  has to provide support for
-            TP.core.Browser.installNativeNamespaces();
-            TP.core.Browser.installNonNativeNamespaces();
-        } catch (e) {
-            msg = 'Namespace Initialization Error';
-            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-            TP.boot.$stderr(msg, e);
-            throw e;
-        }
-    }).queueAfterNextRepaint(rootWindow);
-
-    (function() {
-
-        msg = 'Initializing default locale...';
-
-        //  Bring in any locale that might be specified
-        try {
-            TP.ifDebug() ? TP.debug(msg) : 0;
-            TP.boot.$stdout(msg, TP.DEBUG);
-
-            if (TP.notEmpty(locale = TP.sys.cfg('tibet.locale'))) {
-                type = TP.sys.getTypeByName(locale);
-
-                if (TP.notValid(type)) {
-                    msg = 'Locale Initialization Error: ' +
-                        locale + ' not found.';
-                    TP.boot.$stderr(msg);
-                    TP.ifError() ? TP.error(msg) : 0;
-
-                    //  set the default based on the current language
-                    TP.sys.setLocale();
-                } else {
-                    TP.sys.setLocale(type);
+                        });
+                    TP.httpGet(uri, req);
                 }
             } else {
-                //  set the default based on the current language
-                TP.sys.setLocale();
+                //  Not a login-restricted application. Force construction of
+                //  default user.
+                TP.core.User.getRealUser();
+                resolver();
             }
-        } catch (e) {
-            msg = 'Locale Initialization Error';
-            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-            TP.boot.$stderr(msg, e);
-            throw e;
-        }
-    }).queueAfterNextRepaint(rootWindow);
+        });
 
-    (function() {
+    promise.then(
+        function(resolver, rejector) {
 
-        msg = 'TIBET Initialization complete.';
+            var tibetToken;
 
-        TP.ifDebug() ? TP.debug(msg) : 0;
-        TP.boot.$stdout(msg, TP.DEBUG);
+            //  Set up common URIs for the user object, the raw user vCard data
+            //  and the host data.
+            TP.uc('urn:tibet:user').setResource(
+                                        TP.sys.getEffectiveUser());
+            TP.uc('urn:tibet:userinfo').setResource(
+                                        TP.sys.getEffectiveUser().get('vcard'));
+            TP.uc('urn:tibet:hosturi').setResource(
+                                        TP.uc('~').getConcreteURI());
 
-        //  Ensure dependent code knows we're now fully initialized.
-        TP.sys.hasInitialized(true);
+            //  If we're running in headless mode, then we need to check to see
+            //  if we have a valid 'TIBET.boot.tibet_token' in the
+            //  sessionStorage. If not, see if the cfg has a
+            //  'headless.tibet_token' configured. If so, set it's value into
+            //  the session storage. This helps when running tests or builds
+            //  with apps that want to load resources on login. Note that we do
+            //  *not* check to see if the application is configured to require
+            //  login here. When in a headless mode, the 'boot.use_login' cfg
+            //  parameter will always be false.
+            if (TP.sys.cfg('boot.context') === 'headless') {
 
-        //  Refresh controllers now that all initialization is done.
-        //  Note that this will build the proper Application subtype instance
-        //  and configure it.
-        TP.sys.getApplication().refreshControllers();
+                tibetToken = TP.global.sessionStorage.getItem(
+                                            'TIBET.boot.tibet_token');
 
-        try {
-            //  Compute common sizes, such as font metrics and scrollbar sizes.
-            TP.computeCommonSizes();
-        } catch (e) {
-            msg = 'UI metrics/size computations failed.';
-            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-            TP.boot.$stderr(msg, e);
-            // Fall through and take our chances the UI will display properly.
-        }
+                if (TP.isEmpty(tibetToken)) {
+                    tibetToken = TP.sys.getcfg('headless.tibet_token');
 
-        //  Final signal before UI begins processing.
-        TP.signal('TP.sys', 'AppDidInitialize');
-
-        if (TP.sys.inDeveloperMode()) {
-
-            //  Set up handler for tibet.json changes... NOTE that because we're
-            //  referencing via a TIBETURL we want to get the concrete URI to
-            //  actually apply the handler to. The TIBETURL will delegate to
-            //  that during processing.
-            TP.uc('~app/tibet.json').getConcreteURI().defineMethod(
-                'processRefreshedContent',
-                function() {
-                    var obj,
-                        str;
-
-                    TP.info('Refreshing tibet.json configuration values.');
-
-                    str = TP.str(this.getContent());
-                    try {
-                        obj = JSON.parse(str);
-                    } catch (e) {
-                        TP.error(
-                            'Failed to parse: ' + this.getLocation(), e);
-                        return;
+                    if (TP.notEmpty(tibetToken)) {
+                        TP.global.sessionStorage.setItem(
+                                        'TIBET.boot.tibet_token', tibetToken);
                     }
-
-                    TP.boot.$configureOptions(obj);
-
-                    //  Configure routing data from cfg() parameters
-                    TP.uri.URIRouter.$configureRoutes();
-
-                    //  Call the supertype method here, which will inform any
-                    //  observers of the 'tibet.json' URI that it's content
-                    //  changed.
-                    return this.callNextMethod();
-                }, {
-                    patchCallee: true
-                });
-
-            TP.boot.$getStageInfo('starting').head =
-                'Launching TIBET Sherpa&#8482; IDE...';
-        }
-
-        //  If we initialized without error move on to starting.
-        TP.boot.$setStage('starting');
-
-        //  Recapture starting time in case we broke for debugging.
-        TP.boot.$uitime = new Date();
-
-        //  Load the UI. This will ultimately trigger UIReady.
-        TP.sys.loadUIRoot();
-    }).queueAfterNextRepaint(rootWindow);
-
-    //  If caching of the app has been deferred (probably because this is a
-    //  'login based' application), then populate the caches.
-    //  NOTE!!! NOTE!! We *MUST* do this *after* loading the UI root. This
-    //  process turns on and off cfg flags (like 'boot.teamtibet') that will
-    //  interfere with the normal booting operations, so we must wait for all of
-    //  that to have completed.
-    (function() {
-
-        msg = 'Populating deferred caches...';
-
-        //  If the app uses logins, then the caches will *not* have been
-        //  populated (due to issues around trying to retrieve all of the
-        //  package XML files and not being able to retrieve the app-level ones
-        //  since we weren't logged in). In that case, either one of these flags
-        //  may be true and we need to call into the boot system to populate
-        //  those caches.
-        if (TP.sys.cfg('boot.use_login')) {
-            if (TP.boot.$libCacheNeedsPopulatingAfterLogin ||
-                TP.boot.$appCacheNeedsPopulatingAfterLogin) {
-                TP.boot.populateCaches(
-                            TP.boot.$libCacheNeedsPopulatingAfterLogin,
-                            TP.boot.$appCacheNeedsPopulatingAfterLogin);
+                }
             }
-        }
 
-    }).queueAfterNextRepaint(rootWindow);
+            (function() {
+                var i;
+
+                //  One tricky part is that we can sometimes trigger application
+                //  instance creation during phase one of parallel booting.
+                //  Because of that, it will be an instance of the common
+                //  TP.core.Application type and not the specific subtype of
+                //  TP.core.Application that we'll want for the rest of the life
+                //  of running the app.
+
+                //  So, when that happens we want to clear the singleton
+                //  instance now that phase two has loaded and before we try
+                //  anything that would depend on routes etc. This singleton
+                //  instance will be re-created as an instance of our
+                //  application-specific subtype.
+                TP.core.Application.set('singleton', null);
+
+                //  Initialize all the types which own initialize methods so
+                //  we're sure they're ready for operation. this may cause them
+                //  to load other types so we do this before proxy setup.
+                try {
+                    //  Final signal before initializers are run.
+                    TP.signal('TP.sys', 'AppInitialize');
+
+                    msg = 'Initializing TIBET types...';
+
+                    TP.ifDebug() ? TP.debug(msg) : 0;
+                    TP.boot.$stdout(msg, TP.DEBUG);
+
+                    //  Run through the type initializers and run them.
+                    for (i = 0; i < typeInits.getSize(); i++) {
+                        typeInits.at(i)();
+                    }
+                } catch (e) {
+                    msg = 'TIBET Type Initialization Error';
+                    TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                    TP.boot.$stderr(msg, e, TP.FATAL);
+
+                    TP.boot.shouldStop('Type Initialization Failure(s).');
+                    TP.boot.$stderr('Initialization failure.', TP.FATAL);
+
+                    throw e;
+                }
+            }).queueAfterNextRepaint(rootWindow);
+
+            (function() {
+
+                msg = 'Initializing root canvas...';
+
+                //  Force initialization of the root canvas id before any
+                //  changes are made to the canvas setting by other operations.
+                try {
+                    TP.ifDebug() ? TP.debug(msg) : 0;
+                    TP.boot.$stdout(msg, TP.DEBUG);
+                    name = TP.sys.getUIRootName();
+                    if (TP.notValid(name)) {
+                        throw new Error('InvalidUIRoot');
+                    }
+                } catch (e) {
+                    msg = 'Canvas Initialization Error';
+                    TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                    TP.boot.$stderr(msg, e);
+                    throw e;
+                }
+            }).queueAfterNextRepaint(rootWindow);
+
+            (function() {
+
+                msg = 'Initializing type proxies...';
+
+                //  Initialize type proxies for types we didn't load as a result
+                //  of the boot manifest or through type initialization.
+                try {
+                    TP.ifDebug() ? TP.debug(msg) : 0;
+                    TP.boot.$stdout(msg, TP.DEBUG);
+
+                    TP.sys.initializeTypeProxies();
+                } catch (e) {
+                    msg = 'Proxy Initialization Error';
+                    TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                    TP.boot.$stderr(msg, e);
+                    throw e;
+                }
+            }).queueAfterNextRepaint(rootWindow);
+
+            (function() {
+
+                msg = 'Initializing namespace support...';
+
+                //  Install native/non-native namespace support. this may also
+                //  involve loading types
+                try {
+                    TP.ifDebug() ? TP.debug(msg) : 0;
+                    TP.boot.$stdout(msg, TP.DEBUG);
+
+                    //  Two classes of namespace, internally supported and those
+                    //  TIBET has to provide support for.
+                    TP.core.Browser.installNativeNamespaces();
+                    TP.core.Browser.installNonNativeNamespaces();
+                } catch (e) {
+                    msg = 'Namespace Initialization Error';
+                    TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                    TP.boot.$stderr(msg, e);
+                    throw e;
+                }
+            }).queueAfterNextRepaint(rootWindow);
+
+            (function() {
+
+                msg = 'Initializing default locale...';
+
+                //  Bring in any locale that might be specified
+                try {
+                    TP.ifDebug() ? TP.debug(msg) : 0;
+                    TP.boot.$stdout(msg, TP.DEBUG);
+
+                    if (TP.notEmpty(locale = TP.sys.cfg('tibet.locale'))) {
+                        type = TP.sys.getTypeByName(locale);
+
+                        if (TP.notValid(type)) {
+                            msg = 'Locale Initialization Error: ' +
+                                locale + ' not found.';
+                            TP.boot.$stderr(msg);
+                            TP.ifError() ? TP.error(msg) : 0;
+
+                            //  set the default based on the current language
+                            TP.sys.setLocale();
+                        } else {
+                            TP.sys.setLocale(type);
+                        }
+                    } else {
+                        //  set the default based on the current language
+                        TP.sys.setLocale();
+                    }
+                } catch (e) {
+                    msg = 'Locale Initialization Error';
+                    TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                    TP.boot.$stderr(msg, e);
+                    throw e;
+                }
+            }).queueAfterNextRepaint(rootWindow);
+
+            (function() {
+
+                msg = 'TIBET Initialization complete.';
+
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
+
+                //  Ensure dependent code knows we're now fully initialized.
+                TP.sys.hasInitialized(true);
+
+                //  Refresh controllers now that all initialization is done.
+                //  Note that this will build the proper Application subtype
+                //  instance and configure it.
+                TP.sys.getApplication().refreshControllers();
+
+                try {
+                    //  Compute common sizes, such as font metrics and scrollbar
+                    //  sizes.
+                    TP.computeCommonSizes();
+                } catch (e) {
+                    msg = 'UI metrics/size computations failed.';
+                    TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                    TP.boot.$stderr(msg, e);
+                    //  Fall through and take our chances the UI will display
+                    //  properly.
+                }
+
+                //  Final signal before UI begins processing.
+                TP.signal('TP.sys', 'AppDidInitialize');
+
+                if (TP.sys.inDeveloperMode()) {
+
+                    //  Set up handler for tibet.json changes... NOTE that
+                    //  because we're referencing via a TIBETURL we want to get
+                    //  the concrete URI to actually apply the handler to. The
+                    //  TIBETURL will delegate to that during processing.
+                    TP.uc('~app/tibet.json').getConcreteURI().defineMethod(
+                        'processRefreshedContent',
+                        function() {
+                            var obj,
+                                str;
+
+                            TP.info('Refreshing tibet.json configuration' +
+                                                                    ' values.');
+
+                            str = TP.str(this.getContent());
+                            try {
+                                obj = JSON.parse(str);
+                            } catch (e) {
+                                TP.error('Failed to parse: ' +
+                                                this.getLocation(), e);
+                                return;
+                            }
+
+                            TP.boot.$configureOptions(obj);
+
+                            //  Configure routing data from cfg() parameters
+                            TP.uri.URIRouter.$configureRoutes();
+
+                            //  Call the supertype method here, which will
+                            //  inform any observers of the 'tibet.json' URI
+                            //  that it's content changed.
+                            return this.callNextMethod();
+                        }, {
+                            patchCallee: true
+                        });
+
+                    TP.boot.$getStageInfo('starting').head =
+                        'Launching TIBET Sherpa&#8482; IDE...';
+                }
+
+                //  If we initialized without error move on to starting.
+                TP.boot.$setStage('starting');
+
+                //  Recapture starting time in case we broke for debugging.
+                TP.boot.$uitime = new Date();
+
+                //  Load the UI. This will ultimately trigger UIReady.
+                TP.sys.loadUIRoot();
+            }).queueAfterNextRepaint(rootWindow);
+
+            //  If caching of the app has been deferred (probably because this
+            //  is a 'login based' application), then populate the caches.
+
+            //  NOTE!!! NOTE!! We *MUST* do this *after* loading the UI root.
+            //  This process turns on and off cfg flags (like 'boot.teamtibet')
+            //  that will interfere with the normal booting operations, so we
+            //  must wait for all of that to have completed.
+            (function() {
+
+                msg = 'Populating deferred caches...';
+
+                //  If the app uses logins, then the caches will *not* have been
+                //  populated (due to issues around trying to retrieve all of
+                //  the package XML files and not being able to retrieve the
+                //  app-level ones since we weren't logged in). In that case,
+                //  either one of these flags may be true and we need to call
+                //  into the boot system to populate those caches.
+                if (TP.sys.cfg('boot.use_login')) {
+                    if (TP.boot.$libCacheNeedsPopulatingAfterLogin ||
+                        TP.boot.$appCacheNeedsPopulatingAfterLogin) {
+                        TP.boot.populateCaches(
+                                    TP.boot.$libCacheNeedsPopulatingAfterLogin,
+                                    TP.boot.$appCacheNeedsPopulatingAfterLogin);
+                    }
+                }
+            }).queueAfterNextRepaint(rootWindow);
+    });
 
     return this;
 }, {
