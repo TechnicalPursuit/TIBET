@@ -6255,6 +6255,11 @@ function(aRequest, filterResult) {
         //  may need to force refresh to true if the content hasn't been loaded
         //  and there wasn't a specific value for refresh.
         refresh = !loaded;
+
+        //  Make sure to put this value into the subrequest before we call
+        //  rewriteRequestMode below. That call looks at this value to compute
+        //  whether this request should fetch asynchronously or not.
+        subrequest.atPut('refresh', refresh);
     }
 
     //  verify sync/async and warn when inbound value doesn't match up.
