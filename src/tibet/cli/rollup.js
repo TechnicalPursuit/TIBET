@@ -113,6 +113,7 @@ Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify]';
 Cmd.prototype.executeForEach = function(list) {
     var pkg,
         cmd,
+        tmpdir,
         minifyOpts; // Options for minify
 
     cmd = this;
@@ -120,6 +121,13 @@ Cmd.prototype.executeForEach = function(list) {
 
     if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
+    }
+
+    //  Grab the temp directory path that we're going to use as the build cache
+    //  (and create it if it's not there).
+    tmpdir = sh.tempdir() + '/tibet_build_cache';
+    if (!sh.test('-d', tmpdir)) {
+        sh.mkdir('-p', tmpdir);
     }
 
     minifyOpts = {
@@ -156,11 +164,15 @@ Cmd.prototype.executeForEach = function(list) {
 
     list.forEach(function(item) {
         var src,
+            usecache,
             result,
             code,
-            virtual;
+            virtual,
+            cachename,
+            srcLMDTime,
+            cacheLMDTime;
 
-        // If this doesn't work it's a problem for any 'script' output.
+        //  If this doesn't work it's a problem for any 'script' output.
         src = item.getAttribute('src') || item.getAttribute('href');
 
         if (src) {
@@ -172,29 +184,54 @@ Cmd.prototype.executeForEach = function(list) {
                 throw new Error('NotFound: ' + src);
             }
 
-            // Don't minify .min.js files, assume they're done. Also respect
-            // either command-line option or element attribute to that effect.
+            usecache = false;
+
+            cachename = CLI.joinPaths(
+                        tmpdir,
+                        src.replace(/\//g, '_').replace(/\.js/, '.min.js'));
+
+            //  If the file exists in the cache, check it's last modified
+            //  date/time against the source file's last modified date/time. If
+            //  the cache file is newer than the source file, then the source
+            //  file hasn't changed and we can just use the cache file.
+            if (sh.test('-e', cachename)) {
+                srcLMDTime = fs.statSync(src).mtime.getTime();
+                cacheLMDTime = fs.statSync(cachename).mtime.getTime();
+
+                if (srcLMDTime < cacheLMDTime) {
+                    usecache = true;
+                }
+            }
+
+            //  Don't minify .min.js files, assume they're done. Also respect
+            //  either command-line option or element attribute to that effect.
             if (/\.min\.js$/.test(src) ||
                 CLI.notEmpty(item.getAttribute('no-minify')) ||
                 !cmd.options.minify) {
                 code = fs.readFileSync(src, {encoding: 'utf8'});
             } else {
-                try {
-                    code = fs.readFileSync(src, {encoding: 'utf8'});
+                if (usecache) {
+                    code = fs.readFileSync(cachename, {encoding: 'utf8'});
+                } else {
+                    try {
+                        code = fs.readFileSync(src, {encoding: 'utf8'});
 
-                    result = minify(code, minifyOpts);
-                    if (!result || !result.code) {
-                        code = '';
-                    } else {
-                        code = result.code;
-                    }
+                        result = minify(code, minifyOpts);
+                        if (!result || !result.code) {
+                            code = '';
+                        } else {
+                            code = result.code;
+                        }
 
-                    if (code && code[code.length - 1] !== ';') {
-                        code += ';';
+                        if (code && code[code.length - 1] !== ';') {
+                            code += ';';
+                        }
+
+                        new sh.ShellString(code).to(cachename);
+                    } catch (e) {
+                        cmd.error('Error minifying ' + src + ': ' + e.message);
+                        throw e;
                     }
-                } catch (e) {
-                    cmd.error('Error minifying ' + src + ': ' + e.message);
-                    throw e;
                 }
             }
 

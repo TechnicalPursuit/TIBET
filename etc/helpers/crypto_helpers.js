@@ -40,6 +40,7 @@
      * @param {Object} requestor An object which must provide isEmpty, notValid,
      *     getcfg, and rpad functionality to the helper function. Usually TDS or
      *     CLI object passed by invoking wrapper calls.
+     * @returns {String} The decrypted value.
      */
     helpers.decrypt = function(text, requestor) {
         var key,
@@ -66,14 +67,16 @@
         key = process.env.TIBET_CRYPTO_KEY;
         if (requestor.isEmpty(key)) {
             throw new Error(
-                'No secret key for encryption. $ export TIBET_CRYPTO_KEY="{{secret}}"');
+                'No secret key for encryption. $ export' +
+                ' TIBET_CRYPTO_KEY="{{secret}}"');
         }
         keylen = process.env.TIBET_CRYPTO_KEYLEN ||
             requestor.getcfg('tibet.crypto.keylen', 32);
         key = Buffer.from(requestor.rpad(key, keylen, '.'));
         key = key.slice(0, keylen);
 
-        //  Get the target algorithm. This will ultimately default via getcfg here.
+        //  Get the target algorithm. This will ultimately default via getcfg
+        //  here.
         alg = process.env.TIBET_CRYPTO_CIPHER ||
             requestor.getcfg('tibet.crypto.cipher', 'aes-256-ctr');
 
@@ -94,6 +97,7 @@
      *     match with a prior encrypted value.
      * @param {Object} requestor An object which must provide isEmpty, getcfg,
      *     and rpad functionality to the helper function.
+     * @returns {String} The encrypted value.
      */
     helpers.encrypt = function(text, salt, requestor) {
         var key,
@@ -115,7 +119,8 @@
         key = process.env.TIBET_CRYPTO_KEY;
         if (requestor.isEmpty(key)) {
             throw new Error(
-                'No secret key for encryption. $ export TIBET_CRYPTO_KEY="{{secret}}"');
+                'No secret key for encryption. $ export' +
+                ' TIBET_CRYPTO_KEY="{{secret}}"');
         }
         keylen = process.env.TIBET_CRYPTO_KEYLEN ||
             requestor.getcfg('tibet.crypto.keylen', 32);
@@ -132,7 +137,8 @@
             saltval = salt;
         }
 
-        //  Get the target algorithm. This will ultimately default via getcfg here.
+        //  Get the target algorithm. This will ultimately default via getcfg
+        //  here.
         alg = process.env.TIBET_CRYPTO_CIPHER ||
             requestor.getcfg('tibet.crypto.cipher', 'aes-256-ctr');
 
@@ -141,8 +147,8 @@
         encrypted = cipher.update(str);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
 
-        //  Always include the salt (since it's random) as part of the final value,
-        //  otherwise it's impossible to decrypt :).
+        //  Always include the salt (since it's random) as part of the final
+        //  value, otherwise it's impossible to decrypt :).
         return saltval.toString('hex') + ':' + encrypted.toString('hex');
     };
 
