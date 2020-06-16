@@ -50,6 +50,8 @@ helpers = {};
  * @param {Hash} options An object whose keys must include:
  *     pkg - the package file path
  *     config - the package config id to be rolled up
+ * @returns {Promise} A Promise that will resolve when the operation is
+ *     finished.
  */
 helpers.linkup_app = function(make, options) {
     var deferred,
@@ -241,6 +243,8 @@ helpers.update_packaging_profile = function(make, options) {
  * @param {Hash} options An object whose keys must include:
  *     pkg - the package file path
  *     config - the package config id to be rolled up
+ * @returns {Promise} A Promise that will resolve when the operation is
+ *     finished.
  */
 helpers.package_check = function(make, options) {
 
@@ -346,6 +350,8 @@ helpers.package_check = function(make, options) {
  * @param {Hash} options An object whose keys must include:
  *     pkg - the package file path
  *     config - the package config id to be rolled up
+ * @returns {Promise} A Promise that will resolve when the operation is
+ *     finished.
  */
 helpers.resource_build = function(make, options) {
 
@@ -489,6 +495,8 @@ helpers.resource_build = function(make, options) {
  *     headers - true to add headers between files [false]
  *     minify - true to minify the content of files [false]
  *     root - name of output artifact file [config id]
+ * @returns {Promise} A Promise that will resolve when the operation is
+ *     finished.
  */
 helpers.rollup = function(make, options) {
 
@@ -735,6 +743,8 @@ helpers.rollup = function(make, options) {
 
 /**
  *
+ * @returns {Promise} A Promise that will resolve when the operation is
+ *     finished.
  */
 helpers.rollup_app = function(make, options) {
     var opts,
@@ -766,6 +776,8 @@ helpers.rollup_app = function(make, options) {
 
 /**
  *
+ * @returns {Promise} A Promise that will resolve when the operation is
+ *     finished.
  */
 helpers.rollup_lib = function(make, options) {
     var opts,
@@ -804,6 +816,8 @@ helpers.rollup_lib = function(make, options) {
  *     source - the file path to the source template text.
  *     target - the file path to the target file.
  *     data - the object containing templating data.
+ * @returns {Promise} A Promise that will resolve when the operation is
+ *     finished.
  */
 helpers.transform = function(make, options) {
 
