@@ -678,6 +678,8 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
     //  IDs and TP.Primitive.id or TP.Local.foo isn't resolvable.
     this[TP.ID] = owner === TP ? 'TP.' + name : displayName;
 
+    Object.defineProperty(this, 'name', {value: displayName});
+
     //  Register where we were loaded from.
     TP.registerLoadInfo(this);
 
