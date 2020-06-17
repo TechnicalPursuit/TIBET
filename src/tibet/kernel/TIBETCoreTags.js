@@ -683,7 +683,7 @@ function() {
         templateSourceURI;
 
     docSourceLoc = this.getDocument().getDocumentElement().
-                                        getAttribute('tibet:globaldocid');
+                                        getAttribute(TP.GLOBAL_DOCID_ATTR);
 
     if (TP.isURIString(docSourceLoc, true)) {
         docSourceURI = TP.uc(docSourceLoc).getPrimaryURI();
