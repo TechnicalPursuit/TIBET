@@ -1331,11 +1331,8 @@
     //  job/fork control
     //  ---
 
-    //  the delays in milliseconds used for Function.fork calls, the
-    //  typical repeat time for a repetitive fork, and typical requeue time
-    TP.sys.setcfg('fork.delay', 0);
-    TP.sys.setcfg('fork.interval', 5000);
-    TP.sys.setcfg('fork.requeue_delay', 0);
+    //  the delays in milliseconds used for delayed Function calls.
+    TP.sys.setcfg('queue.delay', 0);
 
     //  when computing intervals for certain TP.core.Job instances we need a
     //  default value for the interval. standard is "animation speed" which is

@@ -6357,7 +6357,7 @@ function(aRequest, filterResult) {
 
                 //  Fake completion of the subrequest and related request.
                 subrequest.complete(resource);
-            }.bind(this), TP.sys.cfg('fork.delay'));
+            }.bind(this), TP.sys.cfg('queue.delay'));
         }
 
         return subrequest.getResponse();
