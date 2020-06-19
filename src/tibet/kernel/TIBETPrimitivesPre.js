@@ -8991,11 +8991,11 @@ function(anObj, includeScannedGlobals) {
         case 'function':
             if (TP.isTrue(includeScannedGlobals)) {
                 /* eslint-disable no-extra-parens */
-                return (anObj[TP.TRACK] === 'Global' ||
+                return (anObj[TP.TRACK] === TP.GLOBAL_TRACK ||
                         TP.sys.$windowglobals.contains(TP.name(anObj)));
                 /* eslint-enable no-extra-parens */
             } else {
-                return anObj[TP.TRACK] === 'Global';
+                return anObj[TP.TRACK] === TP.GLOBAL_TRACK;
             }
 
         default:
