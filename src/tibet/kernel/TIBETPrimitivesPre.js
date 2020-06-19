@@ -3745,7 +3745,8 @@ function(anObject) {
             anObject[TP.OWNER] &&
             anObject[TP.TRACK] &&
             anObject[TP.OWNER] !== TP.NONE &&
-            anObject[TP.TRACK] !== TP.NONE;
+            anObject[TP.TRACK] !== TP.NONE &&
+            anObject[TP.TRACK] !== TP.GLOBAL_TRACK;
 
 }, null, 'TP.isMethod');
 
