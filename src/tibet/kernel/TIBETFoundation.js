@@ -605,7 +605,7 @@ function(aWindow, afterWaitMS) {
      *     execute just after the browser repaints the screen. If you want to
      *     pass arguments to the function itself, simply pass them as parameters
      *     to this method:
-     *         f.queueAfterNextRepaint(farg1, farg2, ...).
+     *         f.queueBeforeNextRepaint(window, waitms, farg1, farg2, ...).
      * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
      *     refresh. This is an optional parameter that will default to the
      *     current UI canvas.
@@ -628,7 +628,10 @@ function(aWindow, afterWaitMS) {
     //  we'll want to invoke the receiver (this) but need a way to get it
     //  to close properly into the function we'll use for argument passing
     thisref = this;
-    arglist = TP.args(arguments);
+
+    //  NB: We supply 2 as the second argument to skip gathering the window and
+    //  the wait ms into the args we'll use for the Function apply.
+    arglist = TP.args(arguments, 2);
 
     //  have to build a second function to ensure the arguments are used
     func = function() {
@@ -657,6 +660,8 @@ function(aWindow, afterWaitMS) {
                 function() {
                     setTimeout(func, waitMS);
                 });
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------
@@ -672,7 +677,7 @@ function(aWindow) {
      *     execute just before the browser repaints the screen. If you want to
      *     pass arguments to the function itself, simply pass them as parameters
      *     to this method:
-     *         f.queueBeforeNextRepaint(farg1, farg2, ...).
+     *         f.queueBeforeNextRepaint(window, farg1, farg2, ...).
      * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
      *     refresh. This is an optional parameter that will default to the
      *     current UI canvas.
@@ -690,7 +695,10 @@ function(aWindow) {
     //  we'll want to invoke the receiver (this) but need a way to get it
     //  to close properly into the function we'll use for argument passing
     thisref = this;
-    arglist = TP.args(arguments);
+
+    //  NB: We supply 1 as the second argument to skip gathering the window into
+    //  the args we'll use for the Function apply.
+    arglist = TP.args(arguments, 1);
 
     //  have to build a second function to ensure the arguments are used
     func = function() {
@@ -708,6 +716,8 @@ function(aWindow) {
     //  This will 'schedule' the call for just before next time the screen is
     //  repainted.
     return win.requestAnimationFrame(func);
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------
