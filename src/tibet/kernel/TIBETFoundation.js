@@ -606,40 +606,44 @@ function(aWindow, afterWaitMS) {
      *     pass arguments to the function itself, simply pass them as parameters
      *     to this method:
      *         f.queueBeforeNextRepaint(window, waitms, farg1, farg2, ...).
+     *     Note that this method returns an extended Promise object that
+     *     contains the ID of either the window.requestAnimationFrame or the
+     *     timeout that gets used to run the receiver after the delay (it gets
+     *     reset to the timeout as part of the RAF call. That ID is available in
+     *     the Promise's 'cancellationID' slot. Calling cancelTimeout with that
+     *     ID will cancel the operation, causing the receiver not to run *and
+     *     the Promise not to resolve*.
      * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
      *     refresh. This is an optional parameter that will default to the
      *     current UI canvas.
      * @param {Number} [afterWaitMS] The amount of time in milliseconds to wait
      *     after repaint to execute the receiver. This is optional and defaults
      *     to 0.
-     * @returns {Object} The object to use to stop the queueBeforeNextRepaint()
-     *     prematurely (via cancelAnimationFrame()).
+     * @returns {Promise} A promise which resolves after the delay, with an
+     *     extra property of 'cancellationID' which can be used to cancel
+     *     execution of the receiver after the delay.
      */
 
     var thisref,
         arglist,
 
-        func,
-
         win,
 
-        waitMS;
+        waitMS,
+
+        promise,
+        cancellationID;
 
     //  we'll want to invoke the receiver (this) but need a way to get it
     //  to close properly into the function we'll use for argument passing
     thisref = this;
 
+    //  Just in case we were handed a TP.core.Window
+    win = TP.unwrap(aWindow);
+
     //  NB: We supply 2 as the second argument to skip gathering the window and
     //  the wait ms into the args we'll use for the Function apply.
     arglist = TP.args(arguments, 2);
-
-    //  have to build a second function to ensure the arguments are used
-    func = function() {
-        return thisref.apply(thisref, arglist);
-    };
-
-    //  Just in case we were handed a TP.core.Window
-    win = TP.unwrap(aWindow);
 
     if (!TP.isWindow(win)) {
         win = TP.sys.getUICanvas(true);
@@ -648,18 +652,40 @@ function(aWindow, afterWaitMS) {
     if (TP.isNumber(afterWaitMS)) {
         waitMS = afterWaitMS;
     } else {
-        waitMS = 0;
+        waitMS = TP.sys.getcfg('queue.delay', 0);
     }
 
-    //  Call requestAnimationFrame with the a Function that wraps Function that
-    //  we calculated above in a setTimeout that will invoke after the supplied
-    //  number of milliseconds (or 0).
-    //  This will 'schedule' the call for just after next time the screen is
-    //  repainted.
-    return win.requestAnimationFrame(
-                function() {
-                    setTimeout(func, waitMS);
+    promise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+                    var func;
+
+                    //  have to build a second function to ensure the arguments
+                    //  are used
+                    func = function() {
+                        resolver(thisref.apply(thisref, arglist));
+                    };
+
+                    //  Call requestAnimationFrame with the a Function that
+                    //  wraps the Function that we calculated above in a
+                    //  setTimeout that will invoke after the supplied number of
+                    //  milliseconds (or 0).
+                    //  This will 'schedule' the call for just after next time
+                    //  the screen is repainted.
+                    cancellationID = win.requestAnimationFrame(
+                                function() {
+                                    //  NB: We reset the returned Promise's
+                                    //  'cancellationID' here to what the
+                                    //  setTimeout() returns so that once this
+                                    //  method is triggered, the process can
+                                    //  still be cancelled.
+                                    promise.cancellationID =
+                                                    setTimeout(func, waitMS);
+                                });
                 });
+
+    promise.cancellationID = cancellationID;
+
+    return promise;
 }, {
     dependencies: [TP.extern.Promise]
 });
@@ -678,44 +704,63 @@ function(aWindow) {
      *     pass arguments to the function itself, simply pass them as parameters
      *     to this method:
      *         f.queueBeforeNextRepaint(window, farg1, farg2, ...).
+     *     Note that this method returns an extended Promise object that
+     *     contains the ID of the window.requestAnimationFrame that gets used to
+     *     run the receiver. That ID is available in the Promise's 'cancellation
+     *     ID' slot. Calling cancelTimeout with that ID will cancel the
+     *     operation, causing the receiver not to run *and the Promise not to
+     *     resolve*.
      * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
      *     refresh. This is an optional parameter that will default to the
      *     current UI canvas.
-     * @returns {Object} The object to use to stop the queueBeforeNextRepaint()
-     *     prematurely (via cancelAnimationFrame()).
+     * @returns {Promise} A promise which resolves after the delay, with an
+     *     extra property of 'cancellationID' which can be used to cancel
+     *     execution of the receiver after the delay.
      */
 
     var thisref,
         arglist,
 
-        func,
+        win,
 
-        win;
+        promise,
+        cancellationID;
 
     //  we'll want to invoke the receiver (this) but need a way to get it
     //  to close properly into the function we'll use for argument passing
     thisref = this;
 
+    //  Just in case we were handed a TP.core.Window
+    win = TP.unwrap(aWindow);
+
     //  NB: We supply 1 as the second argument to skip gathering the window into
     //  the args we'll use for the Function apply.
     arglist = TP.args(arguments, 1);
-
-    //  have to build a second function to ensure the arguments are used
-    func = function() {
-        return thisref.apply(thisref, arglist);
-    };
-
-    //  Just in case we were handed a TP.core.Window
-    win = TP.unwrap(aWindow);
 
     if (!TP.isWindow(win)) {
         win = TP.sys.getUICanvas(true);
     }
 
-    //  Call requestAnimationFrame with the Function that we calculated above.
-    //  This will 'schedule' the call for just before next time the screen is
-    //  repainted.
-    return win.requestAnimationFrame(func);
+    promise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+                    var func;
+
+                    //  have to build a second function to ensure the arguments
+                    //  are used
+                    func = function() {
+                        resolver(thisref.apply(thisref, arglist));
+                    };
+
+                    //  Call requestAnimationFrame with the a Function that
+                    //  uses the Function that we calculated above.
+                    //  This will 'schedule' the call for just before next time
+                    //  the screen is repainted.
+                    cancellationID = win.requestAnimationFrame(func);
+                });
+
+    promise.cancellationID = cancellationID;
+
+    return promise;
 }, {
     dependencies: [TP.extern.Promise]
 });
