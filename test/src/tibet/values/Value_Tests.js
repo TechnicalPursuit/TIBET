@@ -3204,6 +3204,43 @@ function() {
 TP.entries.describe('core tests',
 function() {
 
+    this.it('empty values', function(test, options) {
+
+        var val,
+            entriesVal;
+
+        //  NB: There are assertions for other kinds of objects that end up
+        //  empty embedded in other tests below.
+
+        val = '';
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, []);
+
+        val = new String('');
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, []);
+
+        val = {};
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, []);
+
+        val = [];
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, []);
+
+        val = new Object();
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, []);
+
+        val = new Array();
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, []);
+
+        val = TP.core.Hash.construct();
+        entriesVal = TP.entries(val);
+        test.assert.isEqualTo(entriesVal, []);
+    });
+
     this.it('non mutable values - primitives', function(test, options) {
 
         var val,
