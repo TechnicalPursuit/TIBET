@@ -594,118 +594,70 @@ function(aFunction) {
 //  FUNCTION "THREADING"
 //  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('afterUnwind',
-function() {
+Function.Inst.defineMethod('delay',
+function(afterWaitMS) {
 
     /**
-     * @method afterUnwind
-     * @summary Causes the receiver to be executed when the stack has been
-     *     completely 'unwound' (i.e. when we're back at the main event loop).
+     * @method delay
+     * @summary Causes the receiver to be executed after the supplied delay.
      * @description This method provides a convenient way for the receiver to
-     *     execute at the 'top' of the event loop. If you want to pass arguments
-     *     to the function itself, simply pass them as parameters to this
-     *     method:
-     *         f.afterUnwind(farg1, farg2, ...).
-     *     Note that this method provides a slightly better mechanism for
-     *     executing Functions at the top the stack than a '0' based timeout or
-     *     fork as it leverage some underlying platform capabilities, but
-     *     shouldn't be used when waiting for the screen to refresh as the GUI
-     *     thread might not have been serviced yet. Instead, use the
-     *     queueBeforeNextRepaint()/queueAfterNextRepaint() methods.
-     * @returns {Function} The receiver.
+     *     execute after a certain delay of time. If you want to
+     *     pass arguments to the function itself, simply pass them as parameters
+     *     to this method:
+     *         f.delay(waitms, farg1, farg2, ...).
+     *     Note that this method returns an extended Promise object that
+     *     contains the ID of the timeout that gets used to run the receiver
+     *     after the delay. That ID is available in the Promise's
+     *     'cancellationID' slot. Calling cancelTimeout with that ID will cancel
+     *     the operation, causing the receiver not to run *and the Promise not
+     *     to resolve*.
+     * @param {Number} [afterWaitMS] The amount of time in milliseconds to wait
+     *     to execute the receiver. This is optional and defaults to 0.
+     * @returns {Object} The object to use to stop the queueBeforeNextRepaint()
+     *     prematurely (via cancelAnimationFrame()).
+     * @returns {Promise} A promise which resolves after the delay, with an
+     *     extra property of 'cancellationID' which can be used to cancel
+     *     execution of the receiver after the delay.
      */
 
     var thisref,
         arglist,
 
-        func,
+        waitMS,
 
-        flushQueue;
+        promise,
+        cancellationID;
 
     //  we'll want to invoke the receiver (this) but need a way to get it
     //  to close properly into the function we'll use for argument passing
     thisref = this;
-    arglist = TP.args(arguments);
 
-    //  have to build a second function to ensure the arguments are used
-    func = function() {
-        return thisref.apply(thisref, arglist);
-    };
+    //  NB: We supply 1 as the second argument to skip gathering the wait ms
+    //  into the args we'll use for the Function apply.
+    arglist = TP.args(arguments, 1);
 
-    //  Leverage Promises if they're available. This is better if we're running
-    //  in an environment where we may already have Promises scheduling since
-    //  this will use a common scheduler for everything.
-    if (TP.isDefined(TP.extern.Promise)) {
-
-        TP.extern.Promise.resolve(TP.extern.Promise.construct(func));
-
-    } else if (window.MutationObserver) {
-
-        //  Leverage MutationObservers if they're available
-
-        //  If there is no 'TP.$$unwindElem' global, then we need to set it up
-        //  along with the MutationObserver that will trigger *at the top of the
-        //  event loop* (as MutationObservers do) and run all of the functions
-        //  in the TP.$$unwindQueue
-        if (!TP.isElement(TP.$$unwindElem)) {
-
-            //  Set up our globals. Note that we don't even have to append the
-            //  TP.$$unwindElem to a document or anything to get
-            //  MutationObserver goodness.
-            TP.defineAttributeSlot(TP,
-                                    '$$unwindElem',
-                                    document.createElement('div'));
-            TP.defineAttributeSlot(TP, '$$unwindQueue', TP.ac());
-
-            //  Define a function that runs all functions in the
-            //  TP.$$unwindQueue and then empties the queue.
-            flushQueue = function() {
-                var i;
-
-                for (i = 0; i < TP.$$unwindQueue.getSize(); i++) {
-                    TP.$$unwindQueue.at(i)();
-                }
-
-                //  Make sure to empty the queue after we execute all of the
-                //  pending Functions.
-                TP.$$unwindQueue.empty();
-            };
-
-            //  Now set up the MutationObserver to flush the queue whenever the
-            //  TP.$$unwindElem changes.
-            new MutationObserver(flushQueue).observe(
-                TP.$$unwindElem,
-                {
-                    attributes: true
-                });
-        }
-
-        //  Push the Function we built above onto the TP.$$unwindQueue and tweak
-        //  the TP.$$unwindElem to cause the MutationObserver to run the queue
-        //  flushing Function the next time the stack is completely unwound.
-        TP.$$unwindQueue.push(func);
-        TP.$$unwindElem.setAttribute('x', '100');
-
+    if (TP.isNumber(afterWaitMS)) {
+        waitMS = afterWaitMS;
     } else {
-
-        //  Otherwise, we don't have MutationObservers available to us, so we
-        //  just use setTimeout() with an interval of 0, which works to achieve
-        //  a similar effect in most environments.
-        if (arguments.length < 1) {
-
-            //  NB: We specifically do not capture the return value here because
-            //  the caller couldn't know what mechanism we use to run this, so
-            //  it's of limited value.
-            setTimeout(this, 0);
-        }
-
-        //  NB: We specifically do not capture the return value here because the
-        //  caller couldn't know what mechanism we use to run this, so it's of
-        //  limited value.
-        setTimeout(func, 0);
+        waitMS = TP.sys.getcfg('queue.delay', 0);
     }
 
-    return this;
+    promise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+                    var func;
+
+                    //  have to build a second function to ensure the arguments
+                    //  are used
+                    func = function() {
+                        resolver(thisref.apply(thisref, arglist));
+                    };
+
+                    cancellationID = setTimeout(func, waitMS);
+                });
+
+    promise.cancellationID = cancellationID;
+
+    return promise;
 }, {
     dependencies: [TP.extern.Promise]
 });
@@ -723,38 +675,45 @@ function(aWindow, afterWaitMS) {
      *     execute just after the browser repaints the screen. If you want to
      *     pass arguments to the function itself, simply pass them as parameters
      *     to this method:
-     *         f.queueAfterNextRepaint(farg1, farg2, ...).
+     *         f.queueBeforeNextRepaint(window, waitms, farg1, farg2, ...).
+     *     Note that this method returns an extended Promise object that
+     *     contains the ID of either the window.requestAnimationFrame or the
+     *     timeout that gets used to run the receiver after the delay (it gets
+     *     reset to the timeout as part of the RAF call. That ID is available in
+     *     the Promise's 'cancellationID' slot. Calling cancelTimeout with that
+     *     ID will cancel the operation, causing the receiver not to run *and
+     *     the Promise not to resolve*.
      * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
      *     refresh. This is an optional parameter that will default to the
      *     current UI canvas.
      * @param {Number} [afterWaitMS] The amount of time in milliseconds to wait
      *     after repaint to execute the receiver. This is optional and defaults
      *     to 0.
-     * @returns {Object} The object to use to stop the queueBeforeNextRepaint()
-     *     prematurely (via cancelAnimationFrame()).
+     * @returns {Promise} A promise which resolves after the delay, with an
+     *     extra property of 'cancellationID' which can be used to cancel
+     *     execution of the receiver after the delay.
      */
 
     var thisref,
         arglist,
 
-        func,
-
         win,
 
-        waitMS;
+        waitMS,
+
+        promise,
+        cancellationID;
 
     //  we'll want to invoke the receiver (this) but need a way to get it
     //  to close properly into the function we'll use for argument passing
     thisref = this;
-    arglist = TP.args(arguments);
-
-    //  have to build a second function to ensure the arguments are used
-    func = function() {
-        return thisref.apply(thisref, arglist);
-    };
 
     //  Just in case we were handed a TP.core.Window
     win = TP.unwrap(aWindow);
+
+    //  NB: We supply 2 as the second argument to skip gathering the window and
+    //  the wait ms into the args we'll use for the Function apply.
+    arglist = TP.args(arguments, 2);
 
     if (!TP.isWindow(win)) {
         win = TP.sys.getUICanvas(true);
@@ -763,18 +722,42 @@ function(aWindow, afterWaitMS) {
     if (TP.isNumber(afterWaitMS)) {
         waitMS = afterWaitMS;
     } else {
-        waitMS = 0;
+        waitMS = TP.sys.getcfg('queue.delay', 0);
     }
 
-    //  Call requestAnimationFrame with the a Function that wraps Function that
-    //  we calculated above in a setTimeout that will invoke after the supplied
-    //  number of milliseconds (or 0).
-    //  This will 'schedule' the call for just after next time the screen is
-    //  repainted.
-    return win.requestAnimationFrame(
-                function() {
-                    setTimeout(func, waitMS);
+    promise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+                    var func;
+
+                    //  have to build a second function to ensure the arguments
+                    //  are used
+                    func = function() {
+                        resolver(thisref.apply(thisref, arglist));
+                    };
+
+                    //  Call requestAnimationFrame with the a Function that
+                    //  wraps the Function that we calculated above in a
+                    //  setTimeout that will invoke after the supplied number of
+                    //  milliseconds (or 0).
+                    //  This will 'schedule' the call for just after next time
+                    //  the screen is repainted.
+                    cancellationID = win.requestAnimationFrame(
+                                function() {
+                                    //  NB: We reset the returned Promise's
+                                    //  'cancellationID' here to what the
+                                    //  setTimeout() returns so that once this
+                                    //  method is triggered, the process can
+                                    //  still be cancelled.
+                                    promise.cancellationID =
+                                                    setTimeout(func, waitMS);
+                                });
                 });
+
+    promise.cancellationID = cancellationID;
+
+    return promise;
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------
@@ -790,42 +773,66 @@ function(aWindow) {
      *     execute just before the browser repaints the screen. If you want to
      *     pass arguments to the function itself, simply pass them as parameters
      *     to this method:
-     *         f.queueBeforeNextRepaint(farg1, farg2, ...).
+     *         f.queueBeforeNextRepaint(window, farg1, farg2, ...).
+     *     Note that this method returns an extended Promise object that
+     *     contains the ID of the window.requestAnimationFrame that gets used to
+     *     run the receiver. That ID is available in the Promise's 'cancellation
+     *     ID' slot. Calling cancelTimeout with that ID will cancel the
+     *     operation, causing the receiver not to run *and the Promise not to
+     *     resolve*.
      * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
      *     refresh. This is an optional parameter that will default to the
      *     current UI canvas.
-     * @returns {Object} The object to use to stop the queueBeforeNextRepaint()
-     *     prematurely (via cancelAnimationFrame()).
+     * @returns {Promise} A promise which resolves after the delay, with an
+     *     extra property of 'cancellationID' which can be used to cancel
+     *     execution of the receiver after the delay.
      */
 
     var thisref,
         arglist,
 
-        func,
+        win,
 
-        win;
+        promise,
+        cancellationID;
 
     //  we'll want to invoke the receiver (this) but need a way to get it
     //  to close properly into the function we'll use for argument passing
     thisref = this;
-    arglist = TP.args(arguments);
-
-    //  have to build a second function to ensure the arguments are used
-    func = function() {
-        return thisref.apply(thisref, arglist);
-    };
 
     //  Just in case we were handed a TP.core.Window
     win = TP.unwrap(aWindow);
+
+    //  NB: We supply 1 as the second argument to skip gathering the window into
+    //  the args we'll use for the Function apply.
+    arglist = TP.args(arguments, 1);
 
     if (!TP.isWindow(win)) {
         win = TP.sys.getUICanvas(true);
     }
 
-    //  Call requestAnimationFrame with the Function that we calculated above.
-    //  This will 'schedule' the call for just before next time the screen is
-    //  repainted.
-    return win.requestAnimationFrame(func);
+    promise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+                    var func;
+
+                    //  have to build a second function to ensure the arguments
+                    //  are used
+                    func = function() {
+                        resolver(thisref.apply(thisref, arglist));
+                    };
+
+                    //  Call requestAnimationFrame with the a Function that
+                    //  uses the Function that we calculated above.
+                    //  This will 'schedule' the call for just before next time
+                    //  the screen is repainted.
+                    cancellationID = win.requestAnimationFrame(func);
+                });
+
+    promise.cancellationID = cancellationID;
+
+    return promise;
+}, {
+    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------
@@ -4235,7 +4242,10 @@ function(aSelectFunction) {
     if (TP.isCallable(aSelectFunction)) {
         func = aSelectFunction;
     } else {
-        return Object.entries(this);
+        return Object.entries(this).filter(
+                function(entry) {
+                    return !TP.regex.INTERNAL_SLOT.test(entry[0]);
+                });
     }
 
     len = this.getSize();

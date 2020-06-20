@@ -4083,8 +4083,6 @@ TP.sys.getWindowById = function(anID, aWindow) {
     //  And the other obvious things...
     if (context.name === id) {
         return context;
-    } else if (context.name === id) {
-        return context;
     }
 
     //  Iterate, stopping at each level to check for a window IFRAME and/or name

@@ -5865,7 +5865,9 @@ function(propertyName, resolution, resolutionOption) {
     //  that has been manually resolved (i.e. forced)
     //  Note that we do this assignment to avoid having JS engines possibly
     //  optimize an unassigned slot access away and not executing the resolver.
+    /* eslint-disable no-unused-vars */
     val = this[propertyName];
+    /* eslint-enable no-unused-vars */
 
     return this;
 });
@@ -6125,7 +6127,9 @@ function(propertyName, resolution, resolutionOption) {
     //  that has been manually resolved (i.e. forced)
     //  Note that we do this assignment to avoid having JS engines possibly
     //  optimize an unassigned slot access away and not executing the resolver.
+    /* eslint-disable no-unused-vars */
     val = this[propertyName];
+    /* eslint-enable no-unused-vars */
 
     return this;
 });

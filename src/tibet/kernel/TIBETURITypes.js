@@ -4806,6 +4806,7 @@ function(aDataSource, aRequest) {
     //  entire process is finished. That means ensuring we have a clean
     //  subrequest instance we can locally modify.
     subrequest = this.constructSubrequest(aRequest);
+    subrequest.atPut('async', false);
 
     subrequest.defineMethod(
             'completeJob',
@@ -6357,7 +6358,7 @@ function(aRequest, filterResult) {
 
                 //  Fake completion of the subrequest and related request.
                 subrequest.complete(resource);
-            }.bind(this), TP.sys.cfg('fork.delay'));
+            }.bind(this), TP.sys.cfg('queue.delay'));
         }
 
         return subrequest.getResponse();

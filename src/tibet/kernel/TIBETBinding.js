@@ -7572,8 +7572,6 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                             //  If it's a String, Number or Boolean, then
                             //  scopedVal is the actual value we want to use.
                             exprVal = scopedVal;
-                        } else if (TP.isPlainObject(scopedVal)) {
-                            exprVal = scopedVal[expr];
                         } else {
                             exprVal = scopedVal.get(expr);
                         }

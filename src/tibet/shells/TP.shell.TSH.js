@@ -3092,8 +3092,8 @@ function(aRequest) {
             function(key) {
 
                 if (TP.isFunction(window[key]) &&
-                    (window[key][TP.TRACK] === 'Global' ||
-                        window[key][TP.TRACK] === 'Local')) {
+                    (window[key][TP.TRACK] === TP.GLOBAL_TRACK ||
+                        window[key][TP.TRACK] === TP.LOCAL_TRACK)) {
                     return true;
                 }
 
