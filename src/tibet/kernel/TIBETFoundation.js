@@ -4127,7 +4127,10 @@ function(aSelectFunction) {
     if (TP.isCallable(aSelectFunction)) {
         func = aSelectFunction;
     } else {
-        return Object.entries(this);
+        return Object.entries(this).filter(
+                function(entry) {
+                    return !TP.regex.INTERNAL_SLOT.test(entry[0]);
+                });
     }
 
     len = this.getSize();
