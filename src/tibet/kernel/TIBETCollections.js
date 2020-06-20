@@ -4725,43 +4725,51 @@ function() {
     //  allows TP.core.Hash objects to participate in ECMA6-style destructuring.
     proxyConfig = {
         get: function(target, propName) {
-            var warning;
 
-            //  If the named slot has a real value on the target, then we should
-            //  check further to see if it also has a value on the embedded
-            //  hash.
+            //  If the named slot has a real value on the target, then we return
+            //  that.
             if (target[propName]) {
-
-                //  If the named slot has a value on the embedded hash and the
-                //  two values are not the same, then we should warn the caller
-                //  that they're accessing a slot that exists on both. They're
-                //  probably trying to get to the value on the embedded hash,
-                //  but it's shadowed by a slot on the hash object itself and we
-                //  *must* return that value since, in other cases, it's most
-                //  likely a method on the hash object and we can't break method
-                //  dispatch.
-                if (target.$$hash[propName] &&
-                    target[propName] !== target.$$hash[propName]) {
-
-                    if (TP.isValid(target[propName][TP.OWNER])) {
-                        warning = 'Accessing shadowed method: ' + propName +
-                                    ' via direct access. Use the at() method' +
-                                    ' instead';
-                    } else {
-                        warning = 'Accessing shadowed property: ' + propName +
-                                    ' via direct access. Use the at() method' +
-                                    ' instead';
-                    }
-
-                    TP.ifWarn() ? TP.warn(warning) : 0;
-                }
-
                 return target[propName];
             }
 
             //  The slot had no real value on the target - return the value
             //  that's in the embedded hash object.
             return target.$$hash[propName];
+        },
+        set: function(target, propName, propValue) {
+
+            //  Any INTERNAL slots never get a proxified shadowed method created
+            //  for them.
+            if (TP.regex.INTERNAL_SLOT.test(propName)) {
+                target[propName] = propValue;
+                return;
+            }
+
+            //  Any one of these TP.core.Hash-specific slots never get a
+            //  proxified shadowed method created for them.
+            switch (propName) {
+                case 'sortFunction':
+                case TP.PROXIED:
+                case TP.REVISED:
+                    target[propName] = propValue;
+                    return;
+                default:
+                    break;
+            }
+
+            //  If we're setting a named slot that also happens to be an
+            //  (instance) method on our type, then we need to redefine the
+            //  definition of that on *ourself* (i.e. a local method) that will
+            //  be a Function Proxy, wrapping our 'inherited' method with traps
+            //  that can detect whether that slot is being accessed because it's
+            //  a property access or a function invocation.
+            if (TP.isValid(target[propName]) &&
+                !TP.regex.INTERNAL_SLOT.test(propName) &&
+                target[propName][TP.OWNER] === TP.core.Hash) {
+                target.$$proxifyShadowedMethod(propName);
+            }
+
+            target.$$hash[propName] = propValue;
         }
     };
 
@@ -4838,6 +4846,7 @@ function(aCollection) {
     var keys,
         hash,
         keyArr,
+        target,
         i,
         len,
         item;
@@ -4852,6 +4861,8 @@ function(aCollection) {
     hash = this.$get('$$hash');
     keyArr = this.getKeys();
 
+    target = this[TP.PROXIED];
+
     len = keys.getSize();
     for (i = 0; i < len; i++) {
         item = keys[i];
@@ -4860,6 +4871,23 @@ function(aCollection) {
         //  us.
         if (TP.notDefined(hash[item]) || !TP.owns(hash, item)) {
             hash[item] = i;
+
+            //  If we have a proxied object (i.e. we are a proxy)
+            //  AND the slot doesn't have one of TIBET's 'internal slot' names.
+            //  AND if the target of the proxy (i.e. the hash that we're
+            //  proxying for) has a slot named the same as the key of what is
+            //  being added to the internal hash
+            //  AND the slot on the target is a method
+            //  AND that slot is owned by the TP.core.Hash type
+            //  then we need to create a 'proxyfied' shadow method. See the
+            //  $$proxifyShadowedMethod method for more details.
+            if (TP.isValid(target) &&
+                !TP.regex.INTERNAL_SLOT.test(item) &&
+                TP.isValid(target[item]) &&
+                target[item][TP.OWNER] === TP.core.Hash) {
+
+                target.$$proxifyShadowedMethod(item);
+            }
         }
     }
 
@@ -5830,6 +5858,64 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
 
         this.atPut(key, newval);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Hash.Inst.defineMethod('$$proxifyShadowedMethod',
+function(aMethodName) {
+
+    /**
+     * @method $$proxifyShadowedMethod
+     * @summary This method creates a local version of the method named by the
+     *     parameter on the receiver. This is because sometimes we want to
+     *     access a property on our underlying hash via ECMAScript 6 object
+     *     destructuring and, if that property is the same name as one of our
+     *     methods, we have to know *how* this property is being accessed. Is it
+     *     a destructuring or is it a method call on ourself? The only way to
+     *     know is to install an ECMAScript 6 Function Proxy.
+     * description The installed method will actually be an ECMAScript 6 Proxy
+     *     around a Function (the function inherited from this object's
+     *     prototype). This proxy will allow us to detect whether the slot is
+     *     being accessed as a property (i.e. foo.bar) or as a call (i.e.
+     *     foo.bar()). This is important when this method is shadowing a
+     *     property that we've got in our underlying hash.
+     * @param {String} aMethodName The name of the method to create a proxified
+     *     shadow method for.
+     * @returns {TP.core.Hash} The receiver.
+     */
+
+    var thisref,
+        propName,
+
+        methodProxyConfig,
+        methodProxy;
+
+    thisref = this;
+    propName = aMethodName;
+
+    //  Create a Proxy configuration that contains two traps: one for 'get',
+    //  which will be called when a regular property access is made - like in
+    //  destructuring, and one for 'apply', which will be called when the
+    //  property is accessed because a function call (i.e. method dispatch) is
+    //  being made against us.
+    methodProxyConfig = {
+        get: function(targetFunc, funcPropName) {
+            return function() {
+                return thisref.$$hash[propName];
+            };
+        },
+        apply: function(targetFunc, thisArg, argList) {
+            return Reflect.apply(targetFunc, thisref, argList);
+        }
+    };
+
+    //  Construct a Proxy around the Function that we inherit from our prototype
+    //  and set that Proxy back onto ourself as a 'local method'.
+    methodProxy = TP.constructProxyObject(this[propName], methodProxyConfig);
+    this[propName] = methodProxy;
 
     return this;
 });
@@ -8238,6 +8324,7 @@ function(anIndex, aValue) {
         shouldSignal,
         op,
         val,
+        target,
         changeRecord,
         changeRecordHash;
 
@@ -8278,12 +8365,31 @@ function(anIndex, aValue) {
                     }
                 }
             } else {
-                //  Otherwise, we're not gonna signal Change so we just set
-                //  the slot and return.
                 hash[anIndex] = aValue;
-
-                return this;
             }
+        }
+
+        //  If we have a proxied object (i.e. we are a proxy)
+        //  AND the slot doesn't have one of TIBET's 'internal slot' names.
+        //  AND if the target of the proxy (i.e. the hash that we're proxying
+        //  for) has a slot named the same as the key of what is being added
+        //  to the internal hash
+        //  AND the slot on the target is a method
+        //  AND that slot is owned by the TP.core.Hash type
+        //  then we need to create a 'proxyfied' shadow method. See the
+        //  $$proxifyShadowedMethod method for more details.
+        target = this[TP.PROXIED];
+        if (TP.isValid(target) &&
+            !TP.regex.INTERNAL_SLOT.test(anIndex) &&
+            TP.isValid(target[anIndex]) &&
+            target[anIndex][TP.OWNER] === TP.core.Hash) {
+
+            target.$$proxifyShadowedMethod(anIndex);
+        }
+
+        //  Otherwise, we're not gonna signal Change so we just return.
+        if (TP.notValid(op)) {
+            return this;
         }
     }
 
