@@ -4806,6 +4806,7 @@ function(aDataSource, aRequest) {
     //  entire process is finished. That means ensuring we have a clean
     //  subrequest instance we can locally modify.
     subrequest = this.constructSubrequest(aRequest);
+    subrequest.atPut('async', false);
 
     subrequest.defineMethod(
             'completeJob',
