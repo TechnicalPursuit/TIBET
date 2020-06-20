@@ -594,6 +594,76 @@ function(aFunction) {
 //  FUNCTION "THREADING"
 //  ------------------------------------------------------------------------
 
+Function.Inst.defineMethod('delay',
+function(afterWaitMS) {
+
+    /**
+     * @method delay
+     * @summary Causes the receiver to be executed after the supplied delay.
+     * @description This method provides a convenient way for the receiver to
+     *     execute after a certain delay of time. If you want to
+     *     pass arguments to the function itself, simply pass them as parameters
+     *     to this method:
+     *         f.delay(waitms, farg1, farg2, ...).
+     *     Note that this method returns an extended Promise object that
+     *     contains the ID of the timeout that gets used to run the receiver
+     *     after the delay. That ID is available in the Promise's
+     *     'cancellationID' slot. Calling cancelTimeout with that ID will cancel
+     *     the operation, causing the receiver not to run *and the Promise not
+     *     to resolve*.
+     * @param {Number} [afterWaitMS] The amount of time in milliseconds to wait
+     *     to execute the receiver. This is optional and defaults to 0.
+     * @returns {Object} The object to use to stop the queueBeforeNextRepaint()
+     *     prematurely (via cancelAnimationFrame()).
+     * @returns {Promise} A promise which resolves after the delay, with an
+     *     extra property of 'cancellationID' which can be used to cancel
+     *     execution of the receiver after the delay.
+     */
+
+    var thisref,
+        arglist,
+
+        waitMS,
+
+        promise,
+        cancellationID;
+
+    //  we'll want to invoke the receiver (this) but need a way to get it
+    //  to close properly into the function we'll use for argument passing
+    thisref = this;
+
+    //  NB: We supply 1 as the second argument to skip gathering the wait ms
+    //  into the args we'll use for the Function apply.
+    arglist = TP.args(arguments, 1);
+
+    if (TP.isNumber(afterWaitMS)) {
+        waitMS = afterWaitMS;
+    } else {
+        waitMS = TP.sys.getcfg('queue.delay', 0);
+    }
+
+    promise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+                    var func;
+
+                    //  have to build a second function to ensure the arguments
+                    //  are used
+                    func = function() {
+                        resolver(thisref.apply(thisref, arglist));
+                    };
+
+                    cancellationID = setTimeout(func, waitMS);
+                });
+
+    promise.cancellationID = cancellationID;
+
+    return promise;
+}, {
+    dependencies: [TP.extern.Promise]
+});
+
+//  ------------------------------------------------------------------------
+
 Function.Inst.defineMethod('queueAfterNextRepaint',
 function(aWindow, afterWaitMS) {
 
