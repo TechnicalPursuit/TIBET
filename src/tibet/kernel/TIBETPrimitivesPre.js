@@ -3324,11 +3324,11 @@ function(anObj) {
      *     wrapper for something else.
      */
 
-    if (TP.isDefined(anObj.$realFunc)) {
+    if (TP.isValid(anObj.$realFunc)) {
         return anObj.$realFunc;
     }
 
-    if (TP.isDefined(anObj.$resolutionMethod)) {
+    if (TP.isValid(anObj.$resolutionMethod)) {
         return anObj.$resolutionMethod;
     }
 
