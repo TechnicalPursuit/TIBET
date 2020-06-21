@@ -568,7 +568,7 @@ function() {
             });
         machine.defineState('start', 'right',
             {
-                trigger: 'Right'
+                trigger: TP.ac(TP.ANY, 'Right')
             });
         machine.defineState('finish');
 
