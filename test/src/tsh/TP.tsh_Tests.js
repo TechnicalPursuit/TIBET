@@ -16,6 +16,9 @@
 
 //  ------------------------------------------------------------------------
 
+TP.w3.Xmlns.registerNSInfo('urn:tmp:test',
+    TP.hc('prefix', 'test'));
+
 TP.shell.TSH.Type.describe('Expansion Core',
 function() {
 
