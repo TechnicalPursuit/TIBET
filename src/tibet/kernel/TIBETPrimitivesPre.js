@@ -3597,6 +3597,10 @@ function(anObj) {
     //  Check for Booleans - unfortunately, since this uses valueOf(), we must
     //  'protect' that against orphan (i.e. __proto__-less objects).
     if (TP.isCallable(anObj.valueOf)) {
+        if (anObj === TP.DateProto) {
+            return true;
+        }
+
         if ((anObj.valueOf() === true || anObj.valueOf() === false) &&
             anObj !== TP.BooleanProto) {
             return false;
