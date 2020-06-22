@@ -1286,6 +1286,129 @@ function() {
             });
     });
 
+    //  ---
+
+    this.it('xctrls:pagerbar - disable buttons when appropriate', function(test, options) {
+
+        var pagerbar,
+
+            modelObj,
+
+            startPagerItem,
+            previousPagerItem,
+            numTwoPagerItem,
+            nextPagerItem,
+            endPagerItem;
+
+        pagerbar = TP.byId('pagerbar7', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction - first, one of the
+        //  'static' items.
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    startPagerItem = pagerbar.get('allItemContent').at(0);
+                    previousPagerItem = pagerbar.get('allItemContent').at(1);
+                    numTwoPagerItem = pagerbar.get('allItemContent').at(3);
+                    nextPagerItem = pagerbar.get('allItemContent').at(5);
+                    endPagerItem = pagerbar.get('allItemContent').at(6);
+                    return startPagerItem;
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(startPagerItem).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                test.assert.isDisabled(startPagerItem);
+                test.assert.isDisabled(previousPagerItem);
+                test.refute.isDisabled(nextPagerItem);
+                test.refute.isDisabled(endPagerItem);
+            });
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(numTwoPagerItem).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                test.refute.isDisabled(startPagerItem);
+                test.refute.isDisabled(previousPagerItem);
+                test.refute.isDisabled(nextPagerItem);
+                test.refute.isDisabled(endPagerItem);
+            });
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(nextPagerItem).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                test.refute.isDisabled(startPagerItem);
+                test.refute.isDisabled(previousPagerItem);
+                test.assert.isDisabled(nextPagerItem);
+                test.assert.isDisabled(endPagerItem);
+            });
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(previousPagerItem).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                test.refute.isDisabled(startPagerItem);
+                test.refute.isDisabled(previousPagerItem);
+                test.refute.isDisabled(nextPagerItem);
+                test.refute.isDisabled(endPagerItem);
+            });
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(endPagerItem).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                test.refute.isDisabled(startPagerItem);
+                test.refute.isDisabled(previousPagerItem);
+                test.assert.isDisabled(nextPagerItem);
+                test.assert.isDisabled(endPagerItem);
+            });
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(startPagerItem).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                test.assert.isDisabled(startPagerItem);
+                test.assert.isDisabled(previousPagerItem);
+                test.refute.isDisabled(nextPagerItem);
+                test.refute.isDisabled(endPagerItem);
+            });
+    });
 });
 
 //  ------------------------------------------------------------------------

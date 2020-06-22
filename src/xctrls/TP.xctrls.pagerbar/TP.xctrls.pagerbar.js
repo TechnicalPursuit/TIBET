@@ -409,7 +409,24 @@ function(aValue) {
      */
 
     var pageValue,
-        val;
+
+        hasNextPrevious,
+        hasStartEnd,
+
+        dataSize,
+
+        atStart,
+        atEnd,
+
+        val,
+
+        allItems,
+
+        startPagerItem,
+        previousPagerItem,
+
+        nextPagerItem,
+        endPagerItem;
 
     if (TP.isString(aValue)) {
         pageValue = aValue.asNumber();
@@ -417,19 +434,42 @@ function(aValue) {
         pageValue = aValue;
     }
 
+    hasNextPrevious = this.hasAttribute('nextprevious');
+    hasStartEnd = this.hasAttribute('startend');
+
+    dataSize = this.get('$dataKeys').getSize();
+
+    if (hasStartEnd) {
+        dataSize -= 2;
+    }
+
+    if (hasNextPrevious) {
+        dataSize -= 2;
+    }
+
     //  Subtract 1 from the page value due to the fact that the user supplied it
     //  as a 1-based number, but our data key Array is 0-based (obviously).
     pageValue = pageValue - 1;
 
+    atStart = false;
+    if (pageValue === 0) {
+        atStart = true;
+    }
+
+    atEnd = false;
+    if (pageValue === dataSize - 1) {
+        atEnd = true;
+    }
+
     //  If the receiver is configured to show next/previous buttons, we need to
     //  add 1 to the page value to account for the 'previous' button.
-    if (this.hasAttribute('nextprevious')) {
+    if (hasNextPrevious) {
         pageValue += 1;
     }
 
     //  If the receiver is configured to show start/end buttons, we need to add
     //  1 to the page value to account for the 'start' button.
-    if (this.hasAttribute('startend')) {
+    if (hasStartEnd) {
         pageValue += 1;
     }
 
@@ -438,6 +478,62 @@ function(aValue) {
     val = this.get('$dataKeys').at(pageValue);
 
     this.setValue(val);
+
+    allItems = this.get('allItemContent');
+
+    if (atStart) {
+        if (hasNextPrevious) {
+            startPagerItem = allItems.at(0);
+            startPagerItem.setAttrDisabled(true);
+        }
+
+        if (hasStartEnd) {
+            previousPagerItem = allItems.at(1);
+            previousPagerItem.setAttrDisabled(true);
+        }
+    } else {
+        if (hasNextPrevious) {
+            startPagerItem = allItems.at(0);
+            startPagerItem.setAttrDisabled(false);
+        }
+
+        if (hasStartEnd) {
+            previousPagerItem = allItems.at(1);
+            previousPagerItem.setAttrDisabled(false);
+        }
+    }
+
+    if (atEnd) {
+        if (hasNextPrevious) {
+            if (hasStartEnd) {
+                endPagerItem = allItems.at(dataSize + 3);
+            } else {
+                endPagerItem = allItems.at(dataSize + 2);
+            }
+
+            endPagerItem.setAttrDisabled(true);
+        }
+
+        if (hasStartEnd) {
+            nextPagerItem = allItems.at(dataSize + 2);
+            nextPagerItem.setAttrDisabled(true);
+        }
+    } else {
+        if (hasNextPrevious) {
+            if (hasStartEnd) {
+                endPagerItem = allItems.at(dataSize + 3);
+            } else {
+                endPagerItem = allItems.at(dataSize + 2);
+            }
+
+            endPagerItem.setAttrDisabled(false);
+        }
+
+        if (hasStartEnd) {
+            nextPagerItem = allItems.at(dataSize + 2);
+            nextPagerItem.setAttrDisabled(false);
+        }
+    }
 
     return this;
 });
