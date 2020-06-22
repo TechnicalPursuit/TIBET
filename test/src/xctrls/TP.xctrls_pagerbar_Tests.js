@@ -251,7 +251,7 @@ function() {
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.assert.isDisabled(TP.unwrap(firstPagerbarItem));
+        test.assert.isDisabled(firstPagerbarItem);
 
         //  --- Focus
 
