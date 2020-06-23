@@ -20,6 +20,7 @@
         "marked": "^0.8.0",
         "marked-man": "^0.7.0",
         "minimist": "*",
+        "nocache": "^2.1.0",
         "passport": "^0.4.1",
         "passport-local": "*",
         "request": "^2.88.2",

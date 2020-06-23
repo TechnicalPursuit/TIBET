@@ -20,6 +20,7 @@
     module.exports = function(options) {
         var app,
             helmet,
+            noCache,
             TDS;
 
         app = options.app;
@@ -30,6 +31,7 @@
         //  ---
 
         helmet = require('helmet');
+        noCache = require('nocache');
 
         //  ---
         //  Middleware
@@ -37,7 +39,7 @@
 
         app.use(helmet.hidePoweredBy());
         app.use(helmet.ieNoOpen());
-        app.use(helmet.noCache());
+        app.use(noCache());
         app.use(helmet.noSniff());
         app.use(helmet.frameguard('sameorigin'));
         app.use(helmet.xssFilter());
