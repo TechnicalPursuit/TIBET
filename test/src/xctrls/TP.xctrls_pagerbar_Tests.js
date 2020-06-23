@@ -1292,8 +1292,6 @@ function() {
 
         var pagerbar,
 
-            modelObj,
-
             startPagerItem,
             previousPagerItem,
             numTwoPagerItem,
@@ -1301,8 +1299,6 @@ function() {
             endPagerItem;
 
         pagerbar = TP.byId('pagerbar7', windowContext);
-
-        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
@@ -1409,6 +1405,120 @@ function() {
                 test.refute.isDisabled(endPagerItem);
             });
     });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.pagerbar.Type.describe('TP.xctrls.pagerbar: paging',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            var loc;
+
+            windowContext = driver.get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
+            loadURI = TP.uc(loc);
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - initial setup', function(test, options) {
+
+        var pagerbar,
+
+            modelObj;
+
+        pagerbar = TP.byId('pagerbar8', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'davis');
+
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            2);
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_4')),
+            'davis');
+    });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+
+        var pagerbar,
+
+            modelObj,
+            firstPagerbarItem;
+
+        pagerbar = TP.byId('pagerbar8', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    return firstPagerbarItem;
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(firstPagerbarItem).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    pagerbar.get('value'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    pagerbar.get('pageValue'),
+                    1);
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('selection_set_4')),
+                    'smith');
+            });
+    });
+
 });
 
 //  ------------------------------------------------------------------------

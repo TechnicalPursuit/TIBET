@@ -95,7 +95,7 @@
     <!-- The test data for value bound selection tests -->
     <tibet:data name="urn:tibet:bound_selection_test_data" content="TP.core.Hash">
         <![CDATA[
-        {"selection_set_1": "bar", "selection_set_2": "foo", "selection_set_3": "baz"}
+        {"selection_set_1": "bar", "selection_set_2": "foo", "selection_set_3": "baz", "selection_set_4": "davis"}
         ]]>
     </tibet:data>
 
@@ -181,8 +181,15 @@
     pagerbar #7:
     <br/>
 
-    A standard XControls pagerbar enabled showing dynamic content, value bound to a selection model and inserted start/end and next/previous buttons :
+    A standard XControls pagerbar enabled showing dynamic content, value bound to a selection model and inserted start/end and next/previous buttons:
     <xctrls:pagerbar id="pagerbar7" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_3)}" startend="true" nextprevious="true"/>
+
+    <br/>
+    pagerbar #8:
+    <br/>
+
+    A standard XControls pagerbar enabled showing dynamic content, value bound to a selection model and a page size greater than 1.
+    <xctrls:pagerbar id="pagerbar8" bind:in="{data: urn:tibet:object_hash#tibet(names)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_4)}" pagesize="5"/>
 
 </body>
 </html>
