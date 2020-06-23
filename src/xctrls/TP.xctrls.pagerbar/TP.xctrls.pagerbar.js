@@ -342,6 +342,12 @@ function(aDataObject, shouldSignal) {
     var dataObj,
 
         pageData,
+        pageSize,
+
+        groupedData,
+        len,
+        i,
+
         firstObj;
 
     if (TP.notValid(aDataObject)) {
@@ -367,6 +373,24 @@ function(aDataObject, shouldSignal) {
         }
     } else {
         pageData = TP.entries(dataObj);
+    }
+
+    //  Grab the 'paging size' that we're going to page the data by. If it's
+    //  either not defined or 1, then we can skip grouping the data.
+    pageSize = this.getAttribute('pagesize').asNumber();
+    if (TP.isNaN(pageSize) || pageSize === 1) {
+        //  Empty
+    } else {
+        //  Otherwise, generate a new data set, taking the first of each item in
+        //  a group, as computed by the paging size.
+        groupedData = TP.ac();
+
+        len = pageData.getSize();
+        for (i = 0; i < len; i += pageSize) {
+            groupedData.push(pageData.at(i));
+        }
+
+        pageData = groupedData;
     }
 
     //  Unshift the starting entries on the front, if the author wanted them.
