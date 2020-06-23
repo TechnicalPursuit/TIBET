@@ -375,14 +375,11 @@ function(aDataObject, shouldSignal) {
         pageData = TP.entries(dataObj);
     }
 
-    //  Grab the 'paging size' that we're going to page the data by. If it's
-    //  either not defined or 1, then we can skip grouping the data.
+    //  Grab the 'paging size' that we're going to page the data by. If it's a
+    //  Number with a size greater than 1, we generate a new data set, taking
+    //  the first of each item in a group, as computed by the paging size.
     pageSize = this.getAttribute('pagesize').asNumber();
-    if (TP.isNaN(pageSize) || pageSize === 1) {
-        //  Empty
-    } else {
-        //  Otherwise, generate a new data set, taking the first of each item in
-        //  a group, as computed by the paging size.
+    if (TP.isNumber(pageSize) && pageSize > 1) {
         groupedData = TP.ac();
 
         len = pageData.getSize();
