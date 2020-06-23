@@ -254,7 +254,7 @@ function() {
                 TP.gid(table),
                 'TP.sig.DidRenderData');
 
-        test.assert.isDisabled(TP.unwrap(firsttableItem));
+        test.assert.isDisabled(firsttableItem);
 
         //  --- Focus
 

@@ -251,7 +251,7 @@ function() {
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.assert.isDisabled(TP.unwrap(firstTabbarItem));
+        test.assert.isDisabled(firstTabbarItem);
 
         //  --- Focus
 
