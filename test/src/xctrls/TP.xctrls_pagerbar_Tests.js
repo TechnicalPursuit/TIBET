@@ -1292,8 +1292,6 @@ function() {
 
         var pagerbar,
 
-            modelObj,
-
             startPagerItem,
             previousPagerItem,
             numTwoPagerItem,
@@ -1301,8 +1299,6 @@ function() {
             endPagerItem;
 
         pagerbar = TP.byId('pagerbar7', windowContext);
-
-        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
