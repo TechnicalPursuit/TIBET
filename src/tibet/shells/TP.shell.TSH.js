@@ -1601,6 +1601,8 @@ function(aRequest) {
                         result = TP.DESCEND;
                         retval = TP.DESCEND;
                     }
+                } else {
+                    retval = result;
                 }
 
                 //  after execution we have to check to be sure the various
