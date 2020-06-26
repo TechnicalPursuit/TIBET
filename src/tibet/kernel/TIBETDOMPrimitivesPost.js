@@ -7714,6 +7714,20 @@ function(aNode, anXPath, resultType, logErrors) {
     theXPath = anXPath.replace(TP.regex.XPATH_DEFAULTNS,
                                 '*[name()="$1"]');
 
+    //  Gecko-based browsers (i.e. Firefox) has issues when querying for
+    //  descendant or self when the node is a Text node. In this case, we just
+    //  hand back the node itself, wrapped in an Array or not depending on the
+    //  result type the caller wanted.
+    if (TP.sys.isUA('GECKO')) {
+        if (TP.isTextNode(aNode) && anXPath === 'descendant-or-self::node()') {
+            if (resultType === TP.NODESET) {
+                return TP.ac(aNode);
+            } else if (resultType === TP.FIRST_NODE) {
+                return aNode;
+            }
+        }
+    }
+
     try {
         doc = TP.nodeGetDocument(aNode);
 
