@@ -1464,7 +1464,9 @@ function(selection) {
         precedingStaticContent,
         followingStaticContent,
 
-        thisref;
+        thisref,
+
+        allItems;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1537,6 +1539,13 @@ function(selection) {
             });
     }
 
+    //  Stamp all of the items in the item content with an index.
+    allItems = this.get('allItemContent');
+    allItems.forEach(
+        function(item, index) {
+            item.setAttribute('itemnum', index);
+        });
+
     return this;
 });
 
@@ -1561,7 +1570,9 @@ function(selection) {
         precedingStaticContent,
         followingStaticContent,
 
-        thisref;
+        thisref,
+
+        allItems;
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1622,6 +1633,13 @@ function(selection) {
                 }
             });
     }
+
+    //  Stamp all of the items in the item content with an index.
+    allItems = this.get('allItemContent');
+    allItems.forEach(
+        function(item, index) {
+            item.setAttribute('itemnum', index);
+        });
 
     return this;
 });
