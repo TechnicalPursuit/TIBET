@@ -3294,7 +3294,7 @@ function() {
 
     repeatSize = this.getAttribute('bind:repeatsize');
 
-    return (repeatCollection.getSize() / repeatSize).floor();
+    return (repeatCollection.getSize() / repeatSize).ceil();
 });
 
 //  ------------------------------------------------------------------------
@@ -3313,7 +3313,9 @@ function() {
         repeatIndex;
 
     repeatSize = this.getAttribute('bind:repeatsize');
-    repeatIndex = this.getAttribute('bind:repeatindex');
+
+    //  Need to adjust for 1-based vs. 0-based computation.
+    repeatIndex = this.getAttribute('bind:repeatindex') + 1;
 
     return (repeatIndex / repeatSize).ceil();
 });
@@ -3610,7 +3612,7 @@ function(aSignal) {
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
-        pagePos = this.getRepeatPageCount() + 1;
+        pagePos = this.getRepeatPageCount();
         this.setRepeatPage(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
@@ -3702,7 +3704,7 @@ function(aSignal) {
     elem = this.getNativeNode();
     if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
-        pagePos = aSignal.at('pageNum') + 1;
+        pagePos = aSignal.at('pageNum');
         this.setRepeatPage(pagePos);
 
         //  Make sure to stop the signal propagation here - we've processed the
@@ -7697,7 +7699,7 @@ function(aPosition) {
 
     repeatSize = this.getAttribute('bind:repeatsize');
 
-    position = aPosition - 1;
+    position = aPosition;
 
     //  Can't go before the first page.
     if (position < 0) {
@@ -7709,7 +7711,7 @@ function(aPosition) {
         return this;
     }
 
-    endIndex = position * repeatSize;
+    endIndex = (position - 1) * repeatSize;
 
     this.setAttribute('bind:repeatindex', endIndex);
 
