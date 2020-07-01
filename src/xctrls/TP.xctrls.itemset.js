@@ -1582,27 +1582,26 @@ function(selection) {
     thisref = this;
 
     selection.each(
-            function(d, i) {
+        function(d, i) {
 
-                var wrappedElem,
-                    val;
+            var wrappedElem,
+                val;
 
-                wrappedElem = TP.wrap(this);
+            wrappedElem = TP.wrap(this);
 
-                val = thisref.getItemValue(d, i).toString();
+            val = thisref.getItemValue(d, i).toString();
 
-                //  Then, set the visual toggle based on whether the value is
-                //  selected or not. Note that we convert to a String to make
-                //  sure the proper comparison with selected values (which will
-                //  contain only Strings).
-                if (selectedValues.contains(val)) {
-                    wrappedElem.$setVisualToggle(true);
-                    return;
-                }
-
-                wrappedElem.$setVisualToggle(false);
+            //  Then, set the visual toggle based on whether the value is
+            //  selected or not. Note that we convert to a String to make
+            //  sure the proper comparison with selected values (which will
+            //  contain only Strings).
+            if (selectedValues.contains(val)) {
+                wrappedElem.$setVisualToggle(true);
+                return;
             }
-        );
+
+            wrappedElem.$setVisualToggle(false);
+        });
 
     //  Grab any static content that precedes the templated, dynamic content
     //  and, if its value matches any of the selected values, then toggle it on.
