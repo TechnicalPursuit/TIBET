@@ -745,7 +745,7 @@ function(aSignal) {
                     //  up to the consoleoutputitem element, which will have had
                     //  the request that created it programmed onto it.
                     dndSource = aSignal.at('dndSource');
-                    tdcOutputItem = dndSource.getAncestorBySelector(
+                    tdcOutputItem = dndSource.getFirstAncestorBySelector(
                                                 'sherpa|consoleoutputitem');
                     tdcRequest = tdcOutputItem.get('$creatingRequest');
 

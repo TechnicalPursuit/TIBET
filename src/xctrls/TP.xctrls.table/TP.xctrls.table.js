@@ -319,7 +319,7 @@ function(aSignal) {
             wrappedRow = wrappedDOMTarget;
         } else {
             //  Otherwise, it probably happened in a cell, so use that.
-            wrappedRow = wrappedDOMTarget.getAncestorBySelector('.row');
+            wrappedRow = wrappedDOMTarget.getFirstAncestorBySelector('.row');
         }
 
         row = TP.unwrap(wrappedRow);
@@ -1467,7 +1467,7 @@ function(selection) {
                 var tableTPElem,
                     successorTPElem;
 
-                tableTPElem = this.getAncestorBySelector('xctrls|table');
+                tableTPElem = this.getFirstAncestorBySelector('xctrls|table');
 
                 successorTPElem = tableTPElem.scrollAndComputeFocusElement(
                                     moveAction);

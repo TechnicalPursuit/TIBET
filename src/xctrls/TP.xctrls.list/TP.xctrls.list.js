@@ -1798,7 +1798,7 @@ function(selection) {
                 var listTPElem,
                     successorTPElem;
 
-                listTPElem = this.getAncestorBySelector('xctrls|list');
+                listTPElem = this.getFirstAncestorBySelector('xctrls|list');
 
                 successorTPElem = listTPElem.scrollAndComputeFocusElement(
                                     moveAction);

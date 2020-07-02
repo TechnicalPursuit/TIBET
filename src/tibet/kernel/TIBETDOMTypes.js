@@ -5943,28 +5943,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.CollectionNode.Inst.defineMethod('getAncestorBySelector',
-function(aSelector, stopAncestor) {
-
-    /**
-     * @method getAncestorBySelector
-     * @summary Returns the first ancestor of the receiver for which aSelector
-     *     matches.
-     * @param {String} aSelector The selector to match.
-     * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
-     *     this would be identical to the document node of the document that
-     *     the receiver is contained in.
-     * @returns {TP.dom.ElementNode|undefined} The ancestor element that matches
-     *     the CSS.
-     */
-
-    return TP.wrap(TP.nodeDetectAncestorMatchingCSS(this.getNativeNode(),
-                                                    aSelector,
-                                                    stopAncestor));
-});
-
-//  ------------------------------------------------------------------------
-
 TP.dom.CollectionNode.Inst.defineMethod('getAncestorsBySelector',
 function(aSelector, stopAncestor) {
 
@@ -6486,6 +6464,28 @@ function(attrName, attrValue) {
                                 attrName,
                                 attrValue,
                                 true));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.CollectionNode.Inst.defineMethod('getFirstAncestorBySelector',
+function(aSelector, stopAncestor) {
+
+    /**
+     * @method getFirstAncestorBySelector
+     * @summary Returns the first ancestor of the receiver for which aSelector
+     *     matches.
+     * @param {String} aSelector The selector to match.
+     * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
+     *     this would be identical to the document node of the document that
+     *     the receiver is contained in.
+     * @returns {TP.dom.ElementNode|undefined} The ancestor element that matches
+     *     the CSS.
+     */
+
+    return TP.wrap(TP.nodeDetectAncestorMatchingCSS(this.getNativeNode(),
+                                                    aSelector,
+                                                    stopAncestor));
 });
 
 //  ------------------------------------------------------------------------
