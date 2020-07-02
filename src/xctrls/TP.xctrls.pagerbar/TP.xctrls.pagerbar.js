@@ -85,7 +85,7 @@ function(aDataValue, anIndex) {
 
     /**
      * @method getItemLabel
-     * @summary Returns the value that an individual item should use as it's
+     * @summary Returns the value that an individual item should use as its
      *     'label' when rendering.
      * @param {Object[]} aDataValue The d3 datum at the current point of item
      *     rendering iteration.
@@ -378,34 +378,26 @@ function(aDataObject, shouldSignal) {
         pageData = groupedData;
     }
 
-    //  Add a 'label' to the data set. This is useful for consumers so that they
-    //  don't have to do custom code to compute a 1-based label. It also
-    //  integrates with the labels we provide below.
-    len = pageData.getSize();
-    for (i = 0; i < len; i++) {
-        pageData.at(i).push(i + 1);
-    }
-
     //  Unshift the starting entries on the front, if the author wanted them.
 
     //  NB: This looks to be in a strange order, but only because of how unshift
     //  works.
     if (this.hasAttribute('nextprevious')) {
-        pageData.unshift(TP.ac('previous', 'previous', 'Previous'));
+        pageData.unshift(TP.ac('previous', 'Previous'));
     }
 
     if (this.hasAttribute('startend')) {
-        pageData.unshift(TP.ac('start', 'start', 'Start'));
+        pageData.unshift(TP.ac('start', 'Start'));
     }
 
     //  Push the ending entries on the back, if the author wanted them.
 
     if (this.hasAttribute('nextprevious')) {
-        pageData.push(TP.ac('next', 'next', 'Next'));
+        pageData.push(TP.ac('next', 'Next'));
     }
 
     if (this.hasAttribute('startend')) {
-        pageData.push(TP.ac('end', 'end', 'End'));
+        pageData.push(TP.ac('end', 'End'));
     }
 
     this.callNextMethod(pageData, shouldSignal);
