@@ -994,6 +994,8 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
         ind,
 
+        targetTPElem,
+
         len,
 
         i,
@@ -1012,6 +1014,8 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
     elems = TP.ac(itemElement.querySelectorAll('*[*|in], *[*|io]'));
 
     ind = this.adjustIterationIndex(index);
+
+    targetTPElem = TP.wrap(itemElement);
 
     //  Loop over all of the elements that were found.
     len = elems.getSize();
@@ -1057,7 +1061,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
                         //  Execute the transformation function and the return
                         //  value.
                         val = transformFunc(
-                                this, datum, this, allData, ind, false);
+                                this, datum, targetTPElem, allData, ind, false);
                     } else {
                         //  TODO: Support more than 1 expr
                         expr = record.at('dataExprs').at(0);
