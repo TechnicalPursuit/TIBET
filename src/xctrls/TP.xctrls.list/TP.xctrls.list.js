@@ -1691,12 +1691,12 @@ function() {
             //  populated to the bound data.
             prebuiltTemplateTPElem = TP.wrap(
                 TP.xhtmlnode(
-                    '<span>' +
+                    '<tibet:template>' +
                         '<' + itemTagName + '>' +
                             '<xctrls:label>[[value.1]]</xctrls:label>' +
                             '<xctrls:value>[[value.0]]</xctrls:value>' +
                         '</' + itemTagName + '>' +
-                    '</span>')
+                    '</tibet:template>')
                 );
 
             //  Compile it.
