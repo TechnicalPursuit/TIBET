@@ -1020,6 +1020,9 @@ function(aDataSource, transformParams) {
     var str,
 
         template,
+
+        retVal,
+
         type,
 
         urnBuilt,
@@ -1076,7 +1079,10 @@ function(aDataSource, transformParams) {
                                     'transformObject');
     } else if (TP.isType(type = TP.sys.getTypeByName(str))) {
         if (TP.canInvoke(type, 'transform')) {
-            return type.transform(aDataSource, transformParams);
+            TP.$$templateContext = transformParams;
+            retVal = type.transform(aDataSource, transformParams);
+            TP.$$templateContext = null;
+            return retVal;
         } else {
             return TP.raise(this, 'TP.sig.InvalidFormat',
                             str + ' does not support transform call.');
@@ -1200,7 +1206,9 @@ function(aDataSource, transformParams) {
 
             oldSource = params.at('$_');
 
+            TP.$$templateContext = params;
             retVal = this(dataSource, params);
+            TP.$$templateContext = null;
 
             //  In case any nested templates messed with the $INPUT, restore it
             //  to the value we set before template execution.
@@ -1272,7 +1280,9 @@ function(aDataSource, transformParams) {
         params.atPut('$ODD', i % 2 !== 0);
 
         try {
+            TP.$$templateContext = params;
             val = this(source.at(i), params);
+            TP.$$templateContext = null;
         } catch (e) {
             return this.raise(
                     'TP.sig.TransformFailed',
