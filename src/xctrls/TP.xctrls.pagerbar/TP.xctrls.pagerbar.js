@@ -46,12 +46,46 @@ TP.xctrls.pagerbar.Type.defineAttribute('defaultItemTagName',
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.pagerbar.Inst.defineMethod('$adjustPageValue',
+function(pageValue) {
+
+    /**
+     * @method $adjustPageValue
+     * @summary Adjusts the page value, taking into account that the value will
+     *     be supplied using a 0-based index, but the caller will want it as
+     *     1-based and also that the receiver might be configured to show
+     *     next/previous and start/end buttons.
+     * @param {Number} pageValue The value to adjust.
+     * @returns {Number} The adjusted value.
+     */
+
+    var adjustedValue;
+
+    adjustedValue = pageValue + 1;
+
+    //  If the receiver is configured to show next/previous buttons, we need to
+    //  subtract 1 to the page value to account for the 'previous' button.
+    if (this.hasAttribute('nextprevious')) {
+        adjustedValue -= 1;
+    }
+
+    //  If the receiver is configured to show start/end buttons, we need to
+    //  subtract 1 to the page value to account for the 'start' button.
+    if (this.hasAttribute('startend')) {
+        adjustedValue -= 1;
+    }
+
+    return adjustedValue;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.pagerbar.Inst.defineMethod('getItemLabel',
 function(aDataValue, anIndex) {
 
     /**
      * @method getItemLabel
-     * @summary Returns the value that an individual item should use as it's
+     * @summary Returns the value that an individual item should use as its
      *     'label' when rendering.
      * @param {Object[]} aDataValue The d3 datum at the current point of item
      *     rendering iteration.
@@ -66,19 +100,9 @@ function(aDataValue, anIndex) {
         return aDataValue.at(1);
     }
 
-    val = anIndex + 1;
-
-    //  If the receiver is configured to show next/previous buttons, we need to
-    //  subtract 1 to the page value to account for the 'previous' button.
-    if (this.hasAttribute('nextprevious')) {
-        val -= 1;
-    }
-
-    //  If the receiver is configured to show start/end buttons, we need to
-    //  subtract 1 to the page value to account for the 'start' button.
-    if (this.hasAttribute('startend')) {
-        val -= 1;
-    }
+    //  Adjust the page value, taking into account off-by-1 and whether or not
+    //  we're showing the next/previous and start/end items.
+    val = this.$adjustPageValue(anIndex);
 
     return val;
 });
@@ -97,41 +121,18 @@ function() {
      */
 
     var value,
-        val;
+        pageValue;
 
     //  Grab the underlying data value.
     value = this.getValue();
 
-    if (TP.isString(value)) {
-        val = value.asNumber();
+    pageValue = this.get('$dataKeys').indexOf(value);
 
-        //  It wasn't a String with a Number in it, so we consult our set of
-        //  data keys. This will return
-        if (TP.isNaN(val)) {
-            val = this.get('$dataKeys').indexOf(value);
-        }
-    } else if (TP.isNumber(value)) {
-        val = value;
-    }
+    //  Adjust the page value, taking into account off-by-1 and whether or not
+    //  we're showing the next/previous and start/end items.
+    pageValue = this.$adjustPageValue(pageValue);
 
-    //  Add 1 to the page value due to the fact that this method needs to return
-    //  the value as a 1-based number, but our data key Array is 0-based
-    //  (obviously).
-    val += 1;
-
-    //  If the receiver is configured to show next/previous buttons, we need to
-    //  subtract 1 to the page value to account for the 'previous' button.
-    if (this.hasAttribute('nextprevious')) {
-        val -= 1;
-    }
-
-    //  If the receiver is configured to show start/end buttons, we need to
-    //  subtract 1 to the page value to account for the 'start' button.
-    if (this.hasAttribute('startend')) {
-        val -= 1;
-    }
-
-    return val;
+    return pageValue;
 });
 
 //  ------------------------------------------------------------------------
@@ -245,31 +246,18 @@ function(aSignal) {
             default:
                 signalName = 'TP.sig.UIPageSet';
 
-                //  Make sure this is a Number before dispatching the signal.
-                if (TP.isString(newValue)) {
-                    newPageValue = newValue.asNumber();
-                    if (TP.isNaN(newPageValue)) {
-                        newPageValue = this.get('$dataKeys').indexOf(newValue);
-                    }
-                } else if (TP.isNumber(newValue)) {
-                    newPageValue = newValue;
+                //  We're going to use the item number as the new page value.
+                newValue = valueTPElem.getParentNode().getAttribute('itemnum');
+
+                newPageValue = newValue.asNumber();
+                if (TP.isNaN(newPageValue)) {
+                    newPageValue = this.get('$dataKeys').indexOf(newValue);
                 }
 
-                newPageValue += 1;
-
-                //  If the receiver is configured to show next/previous buttons,
-                //  we need to subtract 1 to the page value to account for the
-                //  'previous' button.
-                if (this.hasAttribute('nextprevious')) {
-                    newPageValue -= 1;
-                }
-
-                //  If the receiver is configured to show start/end buttons, we
-                //  need to subtract 1 to the page value to account for the
-                //  'start' button.
-                if (this.hasAttribute('startend')) {
-                    newPageValue -= 1;
-                }
+                //  Adjust the page value, taking into account off-by-1 and
+                //  whether or not we're showing the next/previous and start/end
+                //  items.
+                newPageValue = this.$adjustPageValue(newPageValue);
 
                 break;
         }
@@ -412,7 +400,12 @@ function(aDataObject, shouldSignal) {
         pageData.push(TP.ac('end', 'End'));
     }
 
-    return this.callNextMethod(pageData, shouldSignal);
+    this.callNextMethod(pageData, shouldSignal);
+
+    //  Initially we always set the page value to 1.
+    this.setPageValue(1);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -457,6 +450,10 @@ function(aValue) {
 
     hasNextPrevious = this.hasAttribute('nextprevious');
     hasStartEnd = this.hasAttribute('startend');
+
+    if (TP.isEmpty(this.get('$dataKeys'))) {
+        return this;
+    }
 
     dataSize = this.get('$dataKeys').getSize();
 
@@ -559,6 +556,47 @@ function(aValue) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.xctrls.pagerbar.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @method setValue
+     * @summary Sets the value of the receiver's node. For a UI element this
+     *     method will ensure any display formatters are invoked. NOTE that this
+     *     method does not update the receiver's bound value if it's a bound
+     *     control. In fact, this method is used in response to a change in the
+     *     bound value to update the display value, so this method should avoid
+     *     changes to the bound value to avoid recursions.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
+     */
+
+    var didChange,
+        newPageValue;
+
+    didChange = this.callNextMethod();
+
+    if (TP.isTrue(didChange)) {
+        newPageValue = this.get('$dataKeys').indexOf(aValue);
+        if (newPageValue === TP.NOT_FOUND) {
+            return didChange;
+        }
+
+        //  Adjust the page value, taking into account off-by-1 and whether or
+        //  not we're showing the next/previous and start/end items.
+        newPageValue = this.$adjustPageValue(newPageValue);
+
+        this.setPageValue(newPageValue);
+    }
+
+    return didChange;
+});
+
 //  ========================================================================
 //  TP.xctrls.pageritem
 //  ========================================================================
@@ -605,6 +643,35 @@ function() {
 
     return this.get(
         TP.xpc('string(./xctrls:value)', TP.hc('shouldCollapse', true)));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.pageritem.Inst.defineMethod('getPageLabel',
+function() {
+
+    /**
+     * @method getPageLabel
+     * @summary Returns the value that the receiver should use as its label when
+     *     rendering.
+     * @returns {String} The value to use as the receiver's 'label'.
+     */
+
+    var source,
+        input,
+        index;
+
+    //  A reference to the xctrls:pagerbar element that we belong to.
+    source = TP.$$templateContext.at('$SOURCE');
+
+    //  The Array of data bound to the xctrls:pagerbar element that we belong
+    //  to.
+    input = TP.$$templateContext.at('$INPUT');
+
+    //  The current index of iteration as the xctrls:pagerbar draws.
+    index = TP.$$templateContext.at('$INDEX');
+
+    return source.getItemLabel(input.at(index), index);
 });
 
 //  ------------------------------------------------------------------------

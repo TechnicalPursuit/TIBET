@@ -1643,7 +1643,7 @@ function(outputNode) {
         insertedNode = newNode;
     } else {
         //  Create a 'tsh:script' wrapper (unless we are already in one)
-        scriptAncestor = this.getAncestorBySelector('tsh|script');
+        scriptAncestor = this.getFirstAncestorBySelector('tsh|script');
         if (this.getCanonicalName() !== 'tsh:script' &&
             TP.notValid(scriptAncestor)) {
 
