@@ -646,5 +646,34 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.pageritem.Inst.defineMethod('getPageLabel',
+function() {
+
+    /**
+     * @method getPageLabel
+     * @summary Returns the value that the receiver should use as its label when
+     *     rendering.
+     * @returns {String} The value to use as the receiver's 'label'.
+     */
+
+    var source,
+        input,
+        index;
+
+    //  A reference to the xctrls:pagerbar element that we belong to.
+    source = TP.$$templateContext.at('$SOURCE');
+
+    //  The Array of data bound to the xctrls:pagerbar element that we belong
+    //  to.
+    input = TP.$$templateContext.at('$INPUT');
+
+    //  The current index of iteration as the xctrls:pagerbar draws.
+    index = TP.$$templateContext.at('$INDEX');
+
+    return source.getItemLabel(input.at(index), index);
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
