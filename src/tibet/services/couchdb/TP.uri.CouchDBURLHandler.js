@@ -788,7 +788,7 @@ function(targetURI) {
      *     that's part of a 'couch app' application (i.e. a TIBET application
      *     that is stored inside of the CouchDB database itself).
      * @param {TP.uri.URI} targetURI The URI to test.
-     * @returns {Boolean} true if the URI is authenticated.
+     * @returns {Boolean} true if the URI is a CouchApp URI.
      */
 
     var targetLoc,
