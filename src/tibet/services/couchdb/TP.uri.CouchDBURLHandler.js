@@ -777,6 +777,34 @@ function(targetURI, roleName) {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.CouchDBURLHandler.Type.defineMethod('isCouchAppURI',
+function(targetURI) {
+
+    /**
+     * @method isCouchAppURI
+     * @summary Returns whether or not the URI's location is a path that leads
+     *     to a 'couch app'.
+     * @description This method will return true if the URI points to a location
+     *     that's part of a 'couch app' application (i.e. a TIBET application
+     *     that is stored inside of the CouchDB database itself).
+     * @param {TP.uri.URI} targetURI The URI to test.
+     * @returns {Boolean} true if the URI is a CouchApp URI.
+     */
+
+    var targetLoc,
+        couchAppPortion;
+
+    targetLoc = targetURI.getLocation();
+    couchAppPortion = TP.uriJoinPaths(
+                        TP.sys.cfg('couch.db_name'),
+                        '_design',
+                        TP.sys.cfg('project.name'));
+
+    return targetLoc.contains(couchAppPortion);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.CouchDBURLHandler.Type.defineMethod('isWatchableURI',
 function(targetURI) {
 
@@ -819,6 +847,13 @@ function(targetURI, aRequest) {
         authRequest;
 
     request = TP.request(aRequest);
+
+    //  Make sure that the UI is not a 'CouchApp URI' (i.e. isn't being
+    //  loaded as part of a CouchApp application). If it is, just return
+    //  whatever the supertype does (*without* setting simple CORS below).
+    if (this.isCouchAppURI(targetURI)) {
+        return this.callNextMethod();
+    }
 
     //  Make sure that the connection has been authenticated.
     if (!this.isAuthenticated(targetURI)) {
@@ -897,6 +932,13 @@ function(targetURI, aRequest) {
         authRequest;
 
     request = TP.request(aRequest);
+
+    //  Make sure that the UI is not a 'CouchApp URI' (i.e. isn't being
+    //  loaded as part of a CouchApp application). If it is, just return
+    //  whatever the supertype does (*without* setting simple CORS below).
+    if (this.isCouchAppURI(targetURI)) {
+        return this.callNextMethod();
+    }
 
     //  Make sure that the connection has been authenticated.
     if (!this.isAuthenticated(targetURI)) {
@@ -986,6 +1028,13 @@ function(targetURI, aRequest) {
     //  TODO: Only do this if targetURI is pointing to a CouchDB document
 
     request = TP.request(aRequest);
+
+    //  Make sure that the UI is not a 'CouchApp URI' (i.e. isn't being
+    //  loaded as part of a CouchApp application). If it is, just return
+    //  whatever the supertype does (*without* setting simple CORS below).
+    if (this.isCouchAppURI(targetURI)) {
+        return this.callNextMethod();
+    }
 
     //  Make sure that the connection has been authenticated.
     if (!this.isAuthenticated(targetURI)) {
