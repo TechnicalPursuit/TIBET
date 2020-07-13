@@ -801,7 +801,7 @@ Cmd.prototype.executePushapp = function() {
 
                         attachments.push({
                             name: att_name,
-                            content_type: couchMime(att_name),
+                            content_type: couchMime(file_name),
                             data: data
                         });
                     } else {
