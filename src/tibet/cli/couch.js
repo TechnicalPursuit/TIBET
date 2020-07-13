@@ -139,7 +139,6 @@ Cmd.prototype.executeIndex = function() {
     params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
-
     if (!arg1) {
         this.usage('tibet couch pull <index_file | \'index_JSON\'>');
         return;
@@ -218,6 +217,7 @@ Cmd.prototype.executeCompactdb = function() {
         this.usage('tibet couch compact <[dbname.][appname.]>');
         return;
     }
+
     arginfo = couch.getDBReferenceInfo(arg1);
 
     db_name = arginfo.db_name || params.db_name;
@@ -254,7 +254,7 @@ Cmd.prototype.executeCreatedb = function() {
     var cmd,
         params,
         db_url,
-        db_name,
+        arg1,
         nano;
 
     cmd = this;
@@ -267,13 +267,17 @@ Cmd.prototype.executeCreatedb = function() {
     //  NB: For this command, we get database name from the argument, since
     //  we're specifying the database name to create - we don't want to recreate
     //  one that's already there! ;-)
-    db_name = this.getArgument(1);
+    arg1 = this.getArgument(1);
+    if (!arg1) {
+        this.usage('tibet couch createdb <dbname>');
+        return;
+    }
 
     this.log('creating database: ' +
-        couch.maskCouchAuth(db_url) + '/' + db_name);
+        couch.maskCouchAuth(db_url) + '/' + arg1);
 
     nano = require('nano')(db_url);
-    nano.db.create(db_name,
+    nano.db.create(arg1,
         function(error) {
             if (error) {
                 CLI.handleCouchError(error, 'couch', 'createdb');
@@ -281,7 +285,7 @@ Cmd.prototype.executeCreatedb = function() {
             }
 
             cmd.log('database ready at ' +
-                couch.maskCouchAuth(db_url) + '/' + db_name);
+                couch.maskCouchAuth(db_url) + '/' + arg1);
         });
 };
 
@@ -344,7 +348,6 @@ Cmd.prototype.executePull = function() {
     params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
-
     if (!arg1) {
         this.usage(
             'tibet couch pull <documentid | [query_file | \'query_JSON\']>');
@@ -421,6 +424,10 @@ Cmd.prototype.executePush = function() {
     params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
+    if (!arg1) {
+        this.usage('tibet couch push <fileordirectory>');
+        return;
+    }
 
     if (CLI.notEmpty(arg1)) {
         fullpath = CLI.expandPath(arg1);
@@ -1017,7 +1024,7 @@ Cmd.prototype.executeRemovedb = function() {
     var cmd,
         params,
         db_url,
-        db_name,
+        arg1,
         result,
         nano;
 
@@ -1030,22 +1037,26 @@ Cmd.prototype.executeRemovedb = function() {
 
     //  NB: For this command, we get database name from the argument, since
     //  we're specifying the database name to delete.
-    db_name = this.getArgument(1);
+    arg1 = this.getArgument(1);
+    if (!arg1) {
+        this.usage('tibet couch removedb <dbname>');
+        return;
+    }
 
     result = CLI.prompt.question(
         'Delete ENTIRE database [' +
-        couch.maskCouchAuth(db_url) + '/' + db_name +
+        couch.maskCouchAuth(db_url) + '/' + arg1 +
         '] ? Enter database name to confirm: ');
-    if (!result || result.trim().toLowerCase() !== db_name) {
+    if (!result || result.trim().toLowerCase() !== arg1) {
         this.log('database removal cancelled.');
         return 0;
     }
 
     this.log('deleting database: ' +
-        couch.maskCouchAuth(db_url) + '/' + db_name);
+        couch.maskCouchAuth(db_url) + '/' + arg1);
 
     nano = require('nano')(db_url);
-    nano.db.destroy(db_name,
+    nano.db.destroy(arg1,
         function(error) {
             if (error) {
                 CLI.handleCouchError(error, 'couch', 'removedb');
