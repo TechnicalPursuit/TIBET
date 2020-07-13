@@ -505,7 +505,7 @@ Cmd.prototype.executePushapp = function() {
             return;
     }
 
-    params = CLI.blend(this.options, {requestor: this});
+    params = CLI.blend(this.options, {requestor: this, needsapp: false, needsdb: false});
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -914,7 +914,35 @@ Cmd.prototype.executePushapp = function() {
                 });
         },
         function(error) {
-            if (error.reason === 'missing') {
+            if (error.reason === 'Database does not exist.') {
+                //  Create database if it doesn't exist.
+                new Promise(function(resolve, reject) {
+                    nano = require('nano')(db_url);
+                    nano.db.create(db_name,
+                        function(err2) {
+                            if (err2) {
+                                CLI.handleCouchError(err2, 'couch', 'createdb');
+                                reject();
+                                return;
+                            }
+
+                            cmd.log('database created at ' +
+                                couch.maskCouchAuth(db_url) + '/' + arg1);
+                            resolve();
+                        });
+                }).then(function() {
+                    //  No document? Clean start then.
+                    insertAll(list).then(
+                        function() {
+                            return;
+                        },
+                        function(err2) {
+                            CLI.handleCouchError(err2, 'couch', 'pushapp');
+                            return;
+                        });
+                });
+
+            } else if (error.reason === 'missing') {
                 //  No document? Clean start then.
                 insertAll(list).then(
                     function() {
