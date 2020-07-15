@@ -521,8 +521,8 @@ Cmd.prototype.executePushapp = function() {
         }
     };
 
-    //  Access the database configuration data. We use this for gzip
-    //  level confirmation and other potential processing.
+    //  Access the database configuration data. We use this for gzip level
+    //  confirmation and other potential processing.
     require('nano')(db_url).relax({db: '_config'}, function(err2, dat) {
         if (err2) {
             //  ERROR here usually means 'you are not a server admin' or
@@ -549,13 +549,6 @@ Cmd.prototype.executePushapp = function() {
                     json;
 
                 spec = {};
-
-                //  TODO: Not sure how to send the content header for an
-                //  individual attachment (or if it's even necessary). Check
-                //  back on this.
-                if (/\.gz$/.test(item)) {
-                    return false;
-                }
 
                 spec.name = couchAttachment(item);
                 spec.content_type = couchMime(item);
@@ -717,12 +710,6 @@ Cmd.prototype.executePushapp = function() {
                     encoding,
                     digest,
                     current;
-
-                //  TODO: Revisit why we ignore the gz files. Would storing
-                //  and loading these speed things up?
-                if (/\.gz$/.test(item)) {
-                    return Promise.reject('ignore');
-                }
 
                 name = couchAttachment(item, root);
 
