@@ -139,7 +139,6 @@ Cmd.prototype.executeIndex = function() {
     params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
-
     if (!arg1) {
         this.usage('tibet couch pull <index_file | \'index_JSON\'>');
         return;
@@ -206,7 +205,7 @@ Cmd.prototype.executeCompactdb = function() {
 
     cmd = this;
 
-    params = CLI.blend(this.options, {requestor: this, needsapp: false});
+    params = CLI.blend(this.options, {requestor: this, needsapp: false, needsdb: false});
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -218,6 +217,7 @@ Cmd.prototype.executeCompactdb = function() {
         this.usage('tibet couch compact <[dbname.][appname.]>');
         return;
     }
+
     arginfo = couch.getDBReferenceInfo(arg1);
 
     db_name = arginfo.db_name || params.db_name;
@@ -254,12 +254,12 @@ Cmd.prototype.executeCreatedb = function() {
     var cmd,
         params,
         db_url,
-        db_name,
+        arg1,
         nano;
 
     cmd = this;
 
-    params = CLI.blend(this.options, {requestor: this, needsapp: false});
+    params = CLI.blend(this.options, {requestor: this, needsapp: false, needsdb: false});
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -267,13 +267,17 @@ Cmd.prototype.executeCreatedb = function() {
     //  NB: For this command, we get database name from the argument, since
     //  we're specifying the database name to create - we don't want to recreate
     //  one that's already there! ;-)
-    db_name = this.getArgument(1);
+    arg1 = this.getArgument(1);
+    if (!arg1) {
+        this.usage('tibet couch createdb <dbname>');
+        return;
+    }
 
     this.log('creating database: ' +
-        couch.maskCouchAuth(db_url) + '/' + db_name);
+        couch.maskCouchAuth(db_url) + '/' + arg1);
 
     nano = require('nano')(db_url);
-    nano.db.create(db_name,
+    nano.db.create(arg1,
         function(error) {
             if (error) {
                 CLI.handleCouchError(error, 'couch', 'createdb');
@@ -281,7 +285,7 @@ Cmd.prototype.executeCreatedb = function() {
             }
 
             cmd.log('database ready at ' +
-                couch.maskCouchAuth(db_url) + '/' + db_name);
+                couch.maskCouchAuth(db_url) + '/' + arg1);
         });
 };
 
@@ -344,7 +348,6 @@ Cmd.prototype.executePull = function() {
     params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
-
     if (!arg1) {
         this.usage(
             'tibet couch pull <documentid | [query_file | \'query_JSON\']>');
@@ -421,6 +424,10 @@ Cmd.prototype.executePush = function() {
     params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
+    if (!arg1) {
+        this.usage('tibet couch push <fileordirectory>');
+        return;
+    }
 
     if (CLI.notEmpty(arg1)) {
         fullpath = CLI.expandPath(arg1);
@@ -498,7 +505,7 @@ Cmd.prototype.executePushapp = function() {
             return;
     }
 
-    params = CLI.blend(this.options, {requestor: this});
+    params = CLI.blend(this.options, {requestor: this, needsapp: false, needsdb: false});
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -514,8 +521,8 @@ Cmd.prototype.executePushapp = function() {
         }
     };
 
-    //  Access the database configuration data. We use this for gzip
-    //  level confirmation and other potential processing.
+    //  Access the database configuration data. We use this for gzip level
+    //  confirmation and other potential processing.
     require('nano')(db_url).relax({db: '_config'}, function(err2, dat) {
         if (err2) {
             //  ERROR here usually means 'you are not a server admin' or
@@ -542,13 +549,6 @@ Cmd.prototype.executePushapp = function() {
                     json;
 
                 spec = {};
-
-                //  TODO: Not sure how to send the content header for an
-                //  individual attachment (or if it's even necessary). Check
-                //  back on this.
-                if (/\.gz$/.test(item)) {
-                    return false;
-                }
 
                 spec.name = couchAttachment(item);
                 spec.content_type = couchMime(item);
@@ -711,12 +711,6 @@ Cmd.prototype.executePushapp = function() {
                     digest,
                     current;
 
-                //  TODO: Revisit why we ignore the gz files. Would storing
-                //  and loading these speed things up?
-                if (/\.gz$/.test(item)) {
-                    return Promise.reject('ignore');
-                }
-
                 name = couchAttachment(item, root);
 
                 current = doc_atts[name];
@@ -801,7 +795,7 @@ Cmd.prototype.executePushapp = function() {
 
                         attachments.push({
                             name: att_name,
-                            content_type: couchMime(att_name),
+                            content_type: couchMime(file_name),
                             data: data
                         });
                     } else {
@@ -907,7 +901,35 @@ Cmd.prototype.executePushapp = function() {
                 });
         },
         function(error) {
-            if (error.reason === 'missing') {
+            if (error.reason === 'Database does not exist.') {
+                //  Create database if it doesn't exist.
+                new Promise(function(resolve, reject) {
+                    nano = require('nano')(db_url);
+                    nano.db.create(db_name,
+                        function(err2) {
+                            if (err2) {
+                                CLI.handleCouchError(err2, 'couch', 'createdb');
+                                reject();
+                                return;
+                            }
+
+                            cmd.log('database created at ' +
+                                couch.maskCouchAuth(db_url) + '/' + arg1);
+                            resolve();
+                        });
+                }).then(function() {
+                    //  No document? Clean start then.
+                    insertAll(list).then(
+                        function() {
+                            return;
+                        },
+                        function(err2) {
+                            CLI.handleCouchError(err2, 'couch', 'pushapp');
+                            return;
+                        });
+                });
+
+            } else if (error.reason === 'missing') {
                 //  No document? Clean start then.
                 insertAll(list).then(
                     function() {
@@ -1017,35 +1039,39 @@ Cmd.prototype.executeRemovedb = function() {
     var cmd,
         params,
         db_url,
-        db_name,
+        arg1,
         result,
         nano;
 
     cmd = this;
 
-    params = CLI.blend(this.options, {requestor: this, needsapp: false});
+    params = CLI.blend(this.options, {requestor: this, needsapp: false, needsdb: false});
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
 
     //  NB: For this command, we get database name from the argument, since
     //  we're specifying the database name to delete.
-    db_name = this.getArgument(1);
+    arg1 = this.getArgument(1);
+    if (!arg1) {
+        this.usage('tibet couch removedb <dbname>');
+        return;
+    }
 
     result = CLI.prompt.question(
         'Delete ENTIRE database [' +
-        couch.maskCouchAuth(db_url) + '/' + db_name +
+        couch.maskCouchAuth(db_url) + '/' + arg1 +
         '] ? Enter database name to confirm: ');
-    if (!result || result.trim().toLowerCase() !== db_name) {
+    if (!result || result.trim().toLowerCase() !== arg1) {
         this.log('database removal cancelled.');
         return 0;
     }
 
     this.log('deleting database: ' +
-        couch.maskCouchAuth(db_url) + '/' + db_name);
+        couch.maskCouchAuth(db_url) + '/' + arg1);
 
     nano = require('nano')(db_url);
-    nano.db.destroy(db_name,
+    nano.db.destroy(arg1,
         function(error) {
             if (error) {
                 CLI.handleCouchError(error, 'couch', 'removedb');
