@@ -905,6 +905,9 @@ function(contentInfo, overlayContent, afterLoadHandler) {
         } else if (TP.isCallable(contentInfo.at('$afterLoadHandler'))) {
             contentInfo.at('$afterLoadHandler')(tpContent);
         }
+
+        //  Refresh the content in case it's data bound.
+        tpContent.refresh();
     };
 
     handler.observe(tpContent, 'TP.sig.AttachComplete');
