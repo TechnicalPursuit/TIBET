@@ -56,6 +56,7 @@ function(anOverlayID, aTPDocument) {
      * @returns {TP.xctrls.SharedOverlay} The matching overlay on the supplied
      *     TP.dom.Document.
      */
+
     var overlayTPElem,
 
         tpDocBody,
@@ -69,25 +70,17 @@ function(anOverlayID, aTPDocument) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    overlayTPElem = aTPDocument.get('//*[@id="' + anOverlayID + '"]');
+    tpDocBody = aTPDocument.getBody();
 
-    //  If the 'get' expression above didn't find one, it hands back an empty
-    //  Array. Otherwise it will hand back the TP.dom.ElementNode that
-    //  represents the overlay.
-    if (TP.isEmpty(overlayTPElem)) {
+    if (TP.isValid(tpDocBody)) {
 
-        tpDocBody = aTPDocument.getBody();
+        overlayElem = TP.elem(
+            '<' + this.getCanonicalName() + ' id="' + anOverlayID + '"/>');
 
-        if (TP.isValid(tpDocBody)) {
-
-            overlayElem = TP.elem(
-                '<' + this.getCanonicalName() + ' id="' + anOverlayID + '"/>');
-
-            overlayTPElem = tpDocBody.insertContent(
-                                    overlayElem,
-                                    TP.BEFORE_END,
-                                    TP.hc('doc', aTPDocument.getNativeNode()));
-        }
+        overlayTPElem = tpDocBody.insertContent(
+                                overlayElem,
+                                TP.BEFORE_END,
+                                TP.hc('doc', aTPDocument.getNativeNode()));
     }
 
     return overlayTPElem;
