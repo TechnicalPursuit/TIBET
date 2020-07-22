@@ -161,7 +161,7 @@ TP.xctrls.popup.defineAttribute('isSticky');
 
 //  Whether or not the currently processing DOMClick signal is the 'triggering'
 //  signal or is a subsequent DOMClick.
-TP.xctrls.popup.defineAttribute('isTriggeringClick');
+TP.xctrls.popup.defineAttribute('isTriggeringSignal');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -263,16 +263,16 @@ function(aSignal) {
                 !triggerTPElem.contains(targetElem)) {
                 this.setAttribute('closed', true);
                 this.setAttribute('hidden', true);
-            } else if (!this.get('isTriggeringClick')) {
+            } else if (!this.get('isTriggeringSignal')) {
                 this.setAttribute('closed', true);
                 this.setAttribute('hidden', true);
             }
         }
     }
 
-    //  Flip the isTriggeringClick flag - there's no way that any subsequent
+    //  Flip the isTriggeringSignal flag - there's no way that any subsequent
     //  clicks during this 'popup open' session are the triggering click.
-    this.set('isTriggeringClick', false, false);
+    this.set('isTriggeringSignal', false, false);
 
     return this;
 });
@@ -312,9 +312,9 @@ function(beHidden) {
         //  when the mouse button is released outside of the trigger, the popup
         //  will 'stick' and not dismiss (the first time only).
         if (this.get('isSticky') === true) {
-            this.set('isTriggeringClick', true, false);
+            this.set('isTriggeringSignal', true, false);
         } else {
-            this.set('isTriggeringClick', false, false);
+            this.set('isTriggeringSignal', false, false);
         }
 
         this.observeKeybindingsDirectly();
