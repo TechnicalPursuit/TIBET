@@ -3,6 +3,8 @@ node_modules/**
 bower_components/**
 **/bower_components/**
 deps/**
+**/deps/**
 lib/src/**
+**/lib/src/**
 **/build/**
 **/*__*__*.*

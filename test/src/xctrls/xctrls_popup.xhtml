@@ -69,7 +69,7 @@
     <br/>
     <br/>
 
-    <button id="trigger1" on:UIActivate="{signal: OpenPopup, payload: {contentID: trigger1Popup}}">Trigger #1</button>
+    <button id="trigger1" on:UIActivate="{signal: OpenPopup, payload: {contentID: trigger1Popup, sticky: true}}">Trigger #1</button>
 
     <!-- NB: This markup transforms into markup that will have an class of
          'type_test_content' -->
@@ -82,7 +82,7 @@
 
     <button id="trigger2" on:UIActivate="{signal: OpenPopup, payload: {contentID: trigger2Popup, hideOn: UISelect}}">Trigger #2</button>
 
-    <span id="trigger2Popup" class="popup_content"><xctrls:list id="inlineTestContent" bind:in="{data: urn:tibet:popup_content_list#tibet(names)}" tibet:no-awaken="true"/></span>
+    <span id="trigger2Popup" class="popup_content"><xctrls:list id="inlineTestContent" bind:in="{data: urn:tibet:popup_content_list#tibet(names)}"/></span>
 
     <br/>
     <br/>

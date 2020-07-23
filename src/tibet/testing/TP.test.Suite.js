@@ -1532,20 +1532,20 @@ function(options) {
                                             return afterMaybe;
                                         }).then(
                                         function() {
-                                            suite.report(options);
+                                            return suite.report(options);
                                         });
                     } else {
                         //  No returned Promise, just a last promise.
                         return finalPromise.then(
                                         function() {
-                                            suite.report(options);
+                                            return suite.report(options);
                                         });
                     }
                 } else if (TP.isThenable(afterMaybe)) {
                     //  Returned Promise, no last promise
                     return afterMaybe.then(
                                     function() {
-                                        suite.report(options);
+                                        return suite.report(options);
                                     });
                 } else {
                     //  Otherwise, just report and cleanup.

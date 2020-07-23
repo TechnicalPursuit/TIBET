@@ -52,6 +52,37 @@ function() {
     return;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.xctrls.popup.Type.defineMethod('constructOverlay',
+function(anOverlayID, aTPDocument) {
+
+    /**
+     * @method constructOverlay
+     * @summary Returns (and, if necessary, constructs) the overlay found by
+     *     using the supplied overlayID to query the supplied document.
+     * @description We override this method from its supertype here since, when
+     *     the popup is triggered for the first time, we won't have an
+     *     opportunity to catch the first keyup event (because setup for
+     *     instances of our supertype happens asynchronously). Therefore, we
+     *     want to install the keyup handler here for that first time.
+     * @param {String} anOverlayID The ID to use to query for the overlay.
+     * @param {TP.dom.Document} aTPDocument The document to create the overlay
+     *     in, if it can't be found. Note that, in this case, the overlay will
+     *     be created as the last child of the document's 'body' element.
+     * @returns {TP.xctrls.popup} The matching overlay on the supplied
+     *     TP.dom.Document.
+     */
+
+    var overlayTPElem;
+
+    overlayTPElem = this.callNextMethod();
+
+    overlayTPElem.observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+
+    return overlayTPElem;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.popup.Type.defineHandler('OpenPopup',
@@ -156,12 +187,12 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 //  Whether or not the popup is 'sticky'... that is, showing without the mouse
-//  button being down.
+//  button being down or after a key up.
 TP.xctrls.popup.defineAttribute('isSticky');
 
 //  Whether or not the currently processing DOMClick signal is the 'triggering'
 //  signal or is a subsequent DOMClick.
-TP.xctrls.popup.defineAttribute('isTriggeringClick');
+TP.xctrls.popup.defineAttribute('isTriggeringSignal');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -238,6 +269,12 @@ function(aSignal) {
     var targetElem,
         triggerTPElem;
 
+    //  If the component has a 'hide on' signal name, then we don't hide it via
+    //  DOM click.
+    if (TP.isValid(this.get('$hideOnSignalName'))) {
+        return this;
+    }
+
     targetElem = aSignal.getTarget();
 
     triggerTPElem = this.get('$triggerTPElement');
@@ -263,16 +300,76 @@ function(aSignal) {
                 !triggerTPElem.contains(targetElem)) {
                 this.setAttribute('closed', true);
                 this.setAttribute('hidden', true);
-            } else if (!this.get('isTriggeringClick')) {
+            } else if (!this.get('isTriggeringSignal')) {
                 this.setAttribute('closed', true);
                 this.setAttribute('hidden', true);
             }
         }
     }
 
-    //  Flip the isTriggeringClick flag - there's no way that any subsequent
-    //  clicks during this 'popup open' session are the triggering click.
-    this.set('isTriggeringClick', false, false);
+    //  Flip the isTriggeringSignal flag - there's no way that any subsequent
+    //  clicks during this 'popup open' session are the triggering signal.
+    this.set('isTriggeringSignal', false, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.popup.Inst.defineHandler('DOMKeyUp',
+function(aSignal) {
+
+    /**
+     * @method handleDOMKeyUp
+     * @param {TP.sig.DOMKeyUp} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.xctrls.popup} The receiver.
+     */
+
+    var targetElem,
+        triggerTPElem;
+
+    //  If the component has a 'hide on' signal name, then we don't hide it via
+    //  DOM keyup.
+    if (TP.isValid(this.get('$hideOnSignalName'))) {
+        return this;
+    }
+
+    targetElem = aSignal.getTarget();
+
+    triggerTPElem = this.get('$triggerTPElement');
+
+    //  If we don't have a valid triggering element, then check to see if the
+    //  target element of the DOMKeyUp is contained in ourself. If not, then
+    //  hide ourself.
+    if (TP.notValid(triggerTPElem)) {
+        if (!this.contains(targetElem)) {
+            this.setAttribute('closed', true);
+            this.setAttribute('hidden', true);
+        }
+    } else {
+
+        //  If the target element of the DOMKeyUp isn't contained in ourself,
+        //  then check to see if the triggering element contains the target
+        //  element (or is the triggering element itself). Also, check to see if
+        //  this is *not* the triggering keyup. If any of those is the case,
+        //  then hide ourself.
+        if (!this.contains(targetElem)) {
+
+            if (TP.unwrap(triggerTPElem) !== targetElem &&
+                !triggerTPElem.contains(targetElem)) {
+                this.setAttribute('closed', true);
+                this.setAttribute('hidden', true);
+            } else if (!this.get('isTriggeringSignal')) {
+                this.setAttribute('closed', true);
+                this.setAttribute('hidden', true);
+            }
+        }
+    }
+
+    //  Flip the isTriggeringSignal flag - there's no way that any subsequent
+    //  keyups during this 'popup open' session are the triggering signal.
+    this.set('isTriggeringSignal', false, false);
 
     return this;
 });
@@ -296,6 +393,7 @@ function(beHidden) {
         this.blurFocusedDescendantElement();
 
         this.ignore(TP.core.Mouse, 'TP.sig.DOMClick');
+        this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
         this.ignore(TP.ANY, 'TP.sig.ClosePopup');
 
         this.ignoreKeybindingsDirectly();
@@ -303,6 +401,7 @@ function(beHidden) {
     } else {
 
         this.observe(TP.core.Mouse, 'TP.sig.DOMClick');
+        this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
         this.observe(TP.ANY, 'TP.sig.ClosePopup');
 
         //  If this popup is 'sticky', that means it stays visible even after
@@ -312,9 +411,9 @@ function(beHidden) {
         //  when the mouse button is released outside of the trigger, the popup
         //  will 'stick' and not dismiss (the first time only).
         if (this.get('isSticky') === true) {
-            this.set('isTriggeringClick', true, false);
+            this.set('isTriggeringSignal', true, false);
         } else {
-            this.set('isTriggeringClick', false, false);
+            this.set('isTriggeringSignal', false, false);
         }
 
         this.observeKeybindingsDirectly();

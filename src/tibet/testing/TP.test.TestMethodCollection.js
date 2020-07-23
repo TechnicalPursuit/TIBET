@@ -2513,16 +2513,28 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isVisible',
 function(anObject, aComment) {
 
+    var obj,
+
+        isElem,
+        isVisible;
+
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
 
-    //  this.assert(!TP.isInvisible(anObject), aComment,
-    //  'Expected ' + TP.id(anObject) + ' to be visible.');
+    //  Just in case we got handed a TP.dom.ElementNode.
+    obj = TP.unwrap(anObject);
 
-    TP.todo();
+    isElem = TP.isElement(obj);
 
-    return;
+    isVisible = this.assert(
+                    TP.elementIsVisible(obj),
+                    aComment,
+                    TP.sc('Expected ', TP.id(anObject), ' to be visible.'));
+
+    /* eslint-disable no-extra-parens */
+    return (isElem && isVisible);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------

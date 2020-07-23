@@ -3541,10 +3541,18 @@ function(nativeEvent) {
 
         case 'click':
 
-            lastEventName = 'lastClick';
-            TP.core.Mouse.$set(lastEventName, ev);
+            //  If the 'detail' field on the native event is '0', that means
+            //  that this is a simulated 'click' event. Most browsers simulate a
+            //  click event when the user releases the 'enter' key over a
+            //  focusable control. We don't want these signals (TIBET handles
+            //  events/signals in a much smarter - and more explicit - way) and
+            //  so we dampen them here.
+            if (ev.detail !== 0) {
+                lastEventName = 'lastClick';
+                TP.core.Mouse.$set(lastEventName, ev);
 
-            TP.core.Mouse.$$handleClick(ev);
+                TP.core.Mouse.$$handleClick(ev);
+            }
             break;
 
         case 'dblclick':
