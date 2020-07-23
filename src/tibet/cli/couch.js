@@ -135,7 +135,9 @@ Cmd.prototype.executeIndex = function() {
 
     cmd = this;
 
-    params = CLI.blend(this.options, {requestor: this});
+    params = CLI.blend(this.options, {
+                            requestor: this
+                        });
     params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
@@ -205,7 +207,11 @@ Cmd.prototype.executeCompactdb = function() {
 
     cmd = this;
 
-    params = CLI.blend(this.options, {requestor: this, needsapp: false, needsdb: false});
+    params = CLI.blend(this.options, {
+                            requestor: this,
+                            needsapp: false,
+                            needsdb: false
+                        });
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -259,7 +265,11 @@ Cmd.prototype.executeCreatedb = function() {
 
     cmd = this;
 
-    params = CLI.blend(this.options, {requestor: this, needsapp: false, needsdb: false});
+    params = CLI.blend(this.options, {
+                            requestor: this,
+                            needsapp: false,
+                            needsdb: false
+                        });
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -301,12 +311,11 @@ Cmd.prototype.executeListall = function() {
 
     cmd = this;
 
-    params = CLI.blend(
-                this.options, {
-                    requestor: this,
-                    needsapp: false,
-                    needsdb: false
-                });
+    params = CLI.blend(this.options, {
+                            requestor: this,
+                            needsapp: false,
+                            needsdb: false
+                        });
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -344,7 +353,9 @@ Cmd.prototype.executePull = function() {
 
     cmd = this;
 
-    params = CLI.blend(this.options, {requestor: this});
+    params = CLI.blend(this.options, {
+                            requestor: this
+                        });
     params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
@@ -420,7 +431,9 @@ Cmd.prototype.executePush = function() {
         arg1,
         fullpath;
 
-    params = CLI.blend(this.options, {requestor: this});
+    params = CLI.blend(this.options, {
+                            requestor: this
+                        });
     params = couch.getCouchParameters(params);
 
     arg1 = this.getArgument(1);
@@ -505,7 +518,11 @@ Cmd.prototype.executePushapp = function() {
             return;
     }
 
-    params = CLI.blend(this.options, {requestor: this, needsapp: false, needsdb: false});
+    params = CLI.blend(this.options, {
+                            requestor: this,
+                            needsapp: false,
+                            needsdb: false
+                        });
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -989,7 +1006,9 @@ Cmd.prototype.executeRemoveapp = function() {
             return;
     }
 
-    params = CLI.blend(this.options, {requestor: this});
+    params = CLI.blend(this.options, {
+                            requestor: this
+                        });
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -1045,7 +1064,11 @@ Cmd.prototype.executeRemovedb = function() {
 
     cmd = this;
 
-    params = CLI.blend(this.options, {requestor: this, needsapp: false, needsdb: false});
+    params = CLI.blend(this.options, {
+                            requestor: this,
+                            needsapp: false,
+                            needsdb: false
+                        });
     params = couch.getCouchParameters(params);
 
     db_url = params.db_url;
@@ -1163,7 +1186,9 @@ Cmd.prototype.executeView = function() {
     }
     viewParams.include_docs = this.options.docs;
 
-    dbParams = CLI.blend(this.options, {requestor: this});
+    dbParams = CLI.blend(this.options, {
+                                requestor: this
+                            });
     dbParams = couch.getCouchParameters(dbParams);
 
     db = couch.getCouchDatabase(dbParams);
