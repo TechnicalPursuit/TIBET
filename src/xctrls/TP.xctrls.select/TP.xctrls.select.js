@@ -132,48 +132,20 @@ function() {
     /**
      * @method getDisplayValue
      * @summary Gets the display, or visual, value of the receiver's node.
-     * @returns {Object} The visual value of the receiver's UI node.
+     * @returns {Object|null} The visual value of the receiver's UI node.
      */
 
-    var initialVal,
+    var val;
 
-        dataObj,
+    //  Our display value is whatever the label is displaying. That might be a
+    //  blank if the value was set to something that's not in our list.
 
-        value;
-
-    initialVal = this.get('label').getContent();
-
-    //  Since the popup might not be shown, we need to access the data directly.
-
-    dataObj = this.get('dataURI').getContent();
-
-    //  If we have a hash as our data, this will convert it into an Array of
-    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
-    //  Array is the key and the second item is the value.
-    if (TP.isHash(dataObj)) {
-        value = dataObj.getKeysForValue(initialVal).first();
-    } else if (TP.isPlainObject(dataObj)) {
-        value = TP.hc(dataObj).getKeysForValue(initialVal).first();
-    } else if (TP.isPair(dataObj.first())) {
-        value = dataObj.detect(
-                    function(pair) {
-                        return pair.last() === initialVal;
-                    });
-        if (TP.isValid(value)) {
-            value = value.first();
-        }
-    } else if (TP.isArray(dataObj)) {
-        value = dataObj.indexOf(initialVal);
-        if (value === TP.NOT_FOUND) {
-            value = null;
-        }
+    val = this.get('label').getContent();
+    if (TP.isEmpty(val)) {
+        val = null;
     }
 
-    if (TP.notValid(value)) {
-        value = initialVal;
-    }
-
-    return value;
+    return val;
 });
 
 //  ------------------------------------------------------------------------
@@ -189,35 +161,33 @@ function(aValue) {
      * @returns {TP.xctrls.select} The receiver.
      */
 
-    var dataObj,
+    var content,
+
+        contentValue,
+        contentItem,
 
         label;
 
-    //  Since the popup might not be shown, we need to access the data directly.
+    content = this.get('popupContentFirstElement');
 
-    dataObj = this.get('dataURI').getContent();
+    if (TP.isValid(content)) {
+        content.setDisplayValue(aValue);
 
-    if (TP.isHash(dataObj)) {
-        label = dataObj.at(aValue);
-    } else if (TP.isPlainObject(dataObj)) {
-        label = TP.hc(dataObj).at(aValue);
-    } else if (TP.isPair(dataObj.first())) {
-        label = dataObj.detect(
-                    function(pair) {
-                        return pair.first() === aValue;
-                    });
-        if (TP.isValid(label)) {
-            label = label.last();
+        //  Grab the display value and trying to find a matching item in our
+        //  list.
+        contentValue = content.getDisplayValue();
+        contentItem = content.get('itemWithValue', contentValue);
+
+        //  If we found a matching item, we'll use it's label text as our label.
+        //  Otherwise, we'll set our label to the empty String.
+        if (TP.isValid(contentItem)) {
+            label = contentItem.getLabelText();
+        } else {
+            label = '';
         }
-    } else if (TP.isArray(dataObj)) {
-        label = dataObj.at(aValue);
-    }
 
-    if (TP.notValid(label)) {
-        label = aValue;
+        this.get('label').setContent(label);
     }
-
-    this.get('label').setContent(label);
 
     return this;
 });
