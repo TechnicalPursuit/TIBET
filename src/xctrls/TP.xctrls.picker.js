@@ -309,6 +309,30 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.picker.Inst.defineMethod('setAttrDisabled',
+function(beDisabled) {
+
+    /**
+     * @method setAttrDisabled
+     * @summary The setter for the receiver's disabled state.
+     * @param {Boolean} beDisabled Whether or not the receiver is in a disabled
+     *     state.
+     * @returns {Boolean} Whether the receiver's state is disabled.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        content.setAttrDisabled(beDisabled);
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.picker.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
