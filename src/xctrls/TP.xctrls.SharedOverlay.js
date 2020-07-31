@@ -217,7 +217,9 @@ function(aSignal) {
         hideOnSignalName,
         hideOnSignalType,
 
-        needsObserve;
+        needsObserve,
+
+        originTPElem;
 
     overlayTPElem = this.getOverlayElement(aSignal);
 
@@ -289,28 +291,30 @@ function(aSignal) {
             needsObserve = false;
         }
 
+        originTPElem = TP.ifInvalid(aSignal.at('hideOrigin'), overlayTPElem);
+
         //  Note here how we define the handler as a local method on the
         //  specific instance.
-        overlayTPElem.defineHandler(
+        originTPElem.defineHandler(
             hideOnSignalName,
             function(sig) {
 
                 //  If we observed before, we need to ignore here to avoid
                 //  leaking.
                 if (needsObserve) {
-                    this.ignore(this,
+                    originTPElem.ignore(originTPElem,
                                 hideOnSignalName,
                                 null,
                                 TP.sig.SignalMap.REGISTER_CAPTURING);
                 }
 
-                this.callNextMethod();
+                originTPElem.callNextMethod();
 
                 //  The overlay is closed.
-                this.setAttribute('closed', true);
+                overlayTPElem.setAttribute('closed', true);
 
                 //  Hide the overlay.
-                this.setAttribute('hidden', true);
+                overlayTPElem.setAttribute('hidden', true);
             }, {
                 phase: TP.CAPTURING,
                 patchCallee: true
@@ -321,7 +325,7 @@ function(aSignal) {
         //  signal before any other underlying control that might block that
         //  signal from bubbling back out to us during regular bubbling phase.
         if (needsObserve) {
-            overlayTPElem.observe(overlayTPElem,
+            originTPElem.observe(originTPElem,
                                     hideOnSignalName,
                                     null,
                                     TP.sig.SignalMap.REGISTER_CAPTURING);

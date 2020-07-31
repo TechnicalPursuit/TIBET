@@ -533,7 +533,7 @@ function(aFlag) {
      * @method isControllerSignal
      * @summary Combined setter/getter for whether signals of this type will
      *     stop before traversing the TIBET controller chain. Only controller
-     *     signals (Routing, Workflow, UI signals, etc)  notify controllers.
+     *     signals (Routing, Workflow, UI signals, etc) notify controllers.
      * @param {Boolean} aFlag
      * @returns {Boolean} Whether or not signals of this type will traverse the
      *     TIBET controller chain or not.
@@ -590,7 +590,11 @@ function() {
     //  when the observer is an element, but does so for capturing signals and
     //  for non-element observers, so we return true here for that.
     /* eslint-disable no-extra-parens */
-    return (policy === TP.OBSERVER_FIRING || policy === TP.DOM_FIRING);
+    return (policy === TP.OBSERVER_FIRING ||
+            policy === TP.DOM_FIRING ||
+            policy === TP.INHERITANCE_FIRING ||
+            policy === TP.EXCEPTION_FIRING ||
+            policy === TP.FIRE_ONE);
     /* eslint-enable no-extra-parens */
 });
 

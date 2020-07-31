@@ -6358,17 +6358,73 @@ function(anOrigin, aSignal, timeoutMS) {
 
     this.chainPromise(TP.extern.Promise.construct(
         function(resolver, rejector) {
-            var handlerFunc;
+            var sigName,
+                sigType,
 
-            handlerFunc = function(firedSignal) {
-                handlerFunc.ignore(anOrigin, aSignal);
-                resolver(firedSignal);
-            };
+                needsObserve,
 
-            handlerFunc.observe(anOrigin, aSignal);
+                sigInst,
+                currentHandler,
+
+                handler;
+
+            //  Compute the full signal name and/or the signal type.
+            if (TP.isString(aSignal)) {
+                sigName = TP.expandSignalName(aSignal);
+                sigType = TP.sys.getTypeByName(sigName);
+            } else {
+                sigType = aSignal;
+                sigName = aSignal.getSignalName();
+            }
+
+            if (TP.isType(sigType)) {
+
+                //  If the signal type's default firing policy says that we need
+                //  to observe in order to receive signals, then we'll do that.
+                needsObserve = sigType.needsObserve();
+            } else {
+                //  Otherwise, it's probably a spoofed signal (i.e. one without
+                //  a type), so we just set needsObserve to false (it's probably
+                //  a RESPONDER_FIRING signal).
+                needsObserve = false;
+            }
+
+            //  If the signal is one that needs observation, then set up an
+            //  observation handler that will ignore the signal when its fired
+            //  and then invoke the Promise's resolver.
+            if (needsObserve) {
+                handler = function(firedSignal) {
+                    handler.ignore(anOrigin, aSignal);
+                    resolver(firedSignal);
+                };
+
+                handler.observe(anOrigin, aSignal);
+            } else {
+                //  Otherwise, grab the handler on the origin (or it's
+                //  supertype) that will execute when the signal fires.
+                sigInst = TP.sig.SignalMap.$getSignalInstance(aSignal);
+                currentHandler = anOrigin.getBestHandler(sigInst);
+
+                //  Install a handler *locally* on the origin that will
+                //  'callNextMethod' to do whatever the origin's type defines
+                //  and then a) restores the handler to what it was and b)
+                //  invokes the Promise's resolver.
+                anOrigin.defineHandler(
+                        aSignal,
+                        function(firedSignal) {
+                            this.callNextMethod();
+
+                            anOrigin[currentHandler[TP.NAME]] = currentHandler;
+                            resolver(firedSignal);
+                        }, {
+                            patchCallee: true
+                        });
+            }
         }).timeout(timeout));
 
     return this;
+}, {
+    patchCallee: false
 });
 
 //  ------------------------------------------------------------------------
