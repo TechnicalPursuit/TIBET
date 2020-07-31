@@ -656,7 +656,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.SelectingUIElementNode.Inst.defineMethod('isSelected',
+TP.xctrls.picker.Inst.defineMethod('isSelected',
 function(aValue, anAspect) {
 
     /**
