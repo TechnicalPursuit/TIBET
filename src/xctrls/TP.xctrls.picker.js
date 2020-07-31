@@ -212,9 +212,7 @@ function(aSignal) {
 
         triggerSignal,
 
-        payload,
-
-        incrementalVal;
+        payload;
 
     id = this.getLocalID();
 
@@ -233,23 +231,9 @@ function(aSignal) {
                     'trigger', triggerSignal,
                     'triggerPath', '#' + id,
                     'triggerTPDocument', this.getDocument(),
+                    'hideOn', 'UIDeactivate',
                     'sticky', true
                     );
-
-    //  Check to see if we want incremental value updates.
-    incrementalVal = this.getAttribute('ui:incremental');
-
-    //  There are 3 possible values for 'ui:incremental' - 'control',
-    //  'model' and 'both'. We handle 'model' and 'both' here.
-    if (incrementalVal === 'model' || incrementalVal === 'both') {
-        //  If the value is incremental, then a mouse up should hide the popup.
-        //  Mouse hovering will cause a 'UISelect', so we don't want to hide on
-        //  that.
-        payload.atPut('hideOn', 'UIDeactivate');
-    } else {
-        //  Otherwise, just hide on select.
-        payload.atPut('hideOn', 'UISelect');
-    }
 
     this.signal('OpenPopup', payload);
 
@@ -486,9 +470,10 @@ function() {
     //  aspect to the computed selection location.
     this.addBindingExpressionTo('bind:io', 'selection', selectionLoc);
 
-    //  Construct the popup's shared overlay so that we can reference it for
-    //  sizing before we actually load it.
-    TP.xctrls.popup.constructOverlay('XCtrlsPickerPopup', this.getDocument());
+    //  Obtain the popup's shared overlay. We don't assign it here, since we
+    //  don't need a reference here, but we want to make sure it's created so
+    //  that we can perform proper sizing before we actually load it.
+    TP.xctrls.popup.getOverlayWithID(this.getDocument(), 'XCtrlsPickerPopup');
 
     return this;
 });
