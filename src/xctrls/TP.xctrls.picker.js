@@ -21,6 +21,11 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:picker');
 //  don't allow instance creation
 TP.xctrls.picker.isAbstract(true);
 
+TP.xctrls.picker.addTraits(TP.dom.SelectingUIElementNode);
+
+TP.xctrls.picker.Inst.resolveTrait('isReadyToRender', TP.dom.UIElementNode);
+TP.xctrls.picker.Inst.resolveTrait('select', TP.dom.SelectingUIElementNode);
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
@@ -119,6 +124,8 @@ TP.xctrls.picker.Inst.defineAttribute('popupContentFirstElement',
     TP.xpc('//*[@id="XCtrlsPickerPopup"]/xctrls:content/*',
             TP.hc('shouldCollapse', true)));
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.xctrls.picker.Inst.defineMethod('constructContent',
@@ -374,10 +381,6 @@ function(aValue, shouldSignal) {
 
         flag;
 
-    if (TP.notValid(aValue)) {
-        return false;
-    }
-
     oldValue = this.getValue();
 
     newValue = this.produceValue('value', aValue);
@@ -513,6 +516,353 @@ function() {
      *     ignoring signals it's observing, etc.
      * @returns {TP.xctrls.picker} The receiver.
      */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  TP.dom.SelectingUIElementNode methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('addSelection',
+function(aValue, anAspect) {
+
+    /**
+     * @method addSelection
+     * @summary Adds a selection to the receiver. Note that this method does not
+     *     clear existing selections when processing the value(s) provided
+     *     unless the receiver is not one that 'allows multiples'.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be selected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Object[]} aValue The value to use when determining the
+     *      elements to add to the selection. Note that this can be an Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements should be selected.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not a selection was added.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.addSelection(aValue, anAspect);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('allowsMultiples',
+function() {
+
+    /**
+     * @method allowsMultiples
+     * @summary Returns true by default.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.allowsMultiples();
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('deselect',
+function(aValue, anIndex, shouldSignal) {
+
+    /**
+     * @method deselect
+     * @summary De-selects (clears) the element which has the provided value (if
+     *     found) or is at the provided index. Also note that if no value is
+     *     provided this will deselect (clear) all selected items.
+     * @param {Object} [aValue] The value to de-select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
+     * @returns {Boolean} Whether or not a selection was deselected.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.deselect(aValue, anIndex, shouldSignal);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('deselectAll',
+function() {
+
+    /**
+     * @method deselectAll
+     * @summary Clears any current selection(s).
+     * @returns {TP.xctrls.picker} The receiver.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.deselectAll();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('$getSelectionModel',
+function() {
+
+    /**
+     * @method $getSelectionModel
+     * @summary Returns the current selection model (and creates a new one if it
+     *     doesn't exist).
+     * @returns {TP.core.Hash|null} The selection model.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.$getSelectionModel();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.SelectingUIElementNode.Inst.defineMethod('isSelected',
+function(aValue, anAspect) {
+
+    /**
+     * @method isSelected
+     * @summary Checks to see if a control within the receiver containing the
+     *     supplied value is selected.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be selected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Object[]} aValue The value to use when determining the
+     *      whether a particular element is selected. Note that this can be an
+     *      Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements are selected.
+     * @returns {Boolean} Whether or not a control within the receiver is
+            selected.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.isSelected(aValue, anAspect);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('isScalarValued',
+function(aspectName) {
+
+    /**
+     * @method isScalarValued
+     * @summary Returns true if the receiver deals with scalar values.
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is scalar valued for.
+     * @returns {Boolean} For this type, this returns true.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.isScalarValued(aspectName);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('isSingleValued',
+function(aspectName) {
+
+    /**
+     * @method isSingleValued
+     * @summary If the aspect is 'value' this method returns true if the
+     *     receiver is configured to *not* allow multiple selection. Otherwise
+     *     it returns whatever the supertype returns.
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
+     * @returns {Boolean} If the aspectName is 'value', true if it does *not*
+     *     allow multiple selection, false if otherwise. And false for all other
+     *     aspects.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.isSingleValued(aspectName);
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('$refreshSelectionModelFor',
+function(anAspect) {
+
+    /**
+     * @method $refreshSelectionModelFor
+     * @summary Refreshes the underlying selection model based on state settings
+     *     in the UI.
+     * @description Note that the aspect can be one of the following:
+     *          'value'     ->  The value of the element (the default)
+     * @param {String} anAspect The property of the elements to use to
+     *      determine which elements should be selected.
+     * @returns {TP.xctrls.select} The receiver.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.$refreshSelectionModelFor(anAspect);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('removeSelection',
+function(aValue, anAspect) {
+
+    /**
+     * @method removeSelection
+     * @summary Removes a selection from the receiver. Note that this method
+     *     does not clear existing selections when processing the value(s)
+     *     provided.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be deselected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Object[]} aValue The value to use when determining the
+     *      elements to remove from the selection. Note that this can be an
+     *      Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements should be deselected.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not a selection was removed.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.removeSelection(aValue, anAspect);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('select',
+function(aValue, anIndex, shouldSignal) {
+
+    /**
+     * @method select
+     * @summary Selects the element which has the provided value (if found) or
+     *     is at the provided index.
+     *     Note that this method is roughly identical to setDisplayValue() with
+     *     the exception that, if the receiver allows multiple selection, this
+     *     method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @param {Object} aValue The value to select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.select(aValue, anIndex, shouldSignal);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.picker.Inst.defineMethod('selectAll',
+function() {
+
+    /**
+     * @method selectAll
+     * @summary Selects all elements with the same 'name' attribute as the
+     *     receiver. Note that for groupings of controls that don't allow
+     *     multiple selections (such as radiobuttons), this will raise an
+     *     'InvalidOperation' exception.
+     * @exception TP.sig.InvalidOperation
+     * @returns {TP.xctrls.picker} The receiver.
+     */
+
+    var content;
+
+    content = this.get('popupContentFirstElement');
+
+    if (TP.isValid(content)) {
+        return content.selectAll();
+    }
 
     return this;
 });
