@@ -185,9 +185,11 @@ function(aValue) {
         } else {
             label = '';
         }
-
-        this.get('label').setContent(label);
+    } else {
+        label = aValue;
     }
+
+    this.get('label').setContent(label);
 
     return this;
 });

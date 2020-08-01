@@ -1156,7 +1156,7 @@ function() {
 
             windowContext = this.getDriver().get('windowContext');
 
-            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loc = '~lib_test/src/xctrls/xctrls_select.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
         });
@@ -1175,64 +1175,110 @@ function() {
 
     //  ---
 
-    this.it('xctrls:list - initial setup', function(test, options) {
-
-        var select,
-
-            modelObj;
-
-        select = TP.byId('list8', windowContext);
-
-        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
-
-        test.assert.isEqualTo(
-            select.get('value'),
-            'bar');
-
-        test.assert.isEqualTo(
-            TP.val(modelObj.get('selection_set_1')),
-            'bar');
-    });
-
-    //  ---
-
-    this.it('xctrls:list - change value via user interaction', function(test, options) {
+    this.it('xctrls:select - initial setup', function(test, options) {
 
         var select,
 
             modelObj,
             firstSelectItem;
 
-        select = TP.byId('list8', windowContext);
+        select = TP.byId('select5', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
-        //  Change the content via 'user' interaction
-
-        test.andIfNotValidWaitFor(
-                function() {
-                    firstSelectItem = select.get('listitems').first();
-                    return firstSelectItem;
-                },
-                TP.gid(select),
-                'TP.sig.DidRenderData');
+        //  ---
 
         test.chain(
             function() {
                 test.getDriver().constructSequence().
-                    click(firstSelectItem).
+                    click(select).
                     run();
+            });
+
+        test.chain(
+            function() {
+                var selectList;
+
+                selectList = select.get('popupContentFirstElement');
+
+                test.andIfNotValidWaitFor(
+                        function() {
+                            firstSelectItem = selectList.get('listitems').first();
+                            return firstSelectItem;
+                        },
+                        TP.gid(selectList),
+                        'TP.sig.DidRenderData');
             });
 
         test.chain(
             function() {
                 test.assert.isEqualTo(
                     select.get('value'),
-                    'foo');
+                    'bar');
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_1')),
-                    'foo');
+                    'bar');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:select - change value via user interaction', function(test, options) {
+
+        var select,
+
+            modelObj,
+            firstSelectItem;
+
+        select = TP.byId('select5', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(select).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                var selectList;
+
+                selectList = select.get('popupContentFirstElement');
+
+                test.andIfNotValidWaitFor(
+                        function() {
+                            firstSelectItem = selectList.get('listitems').first();
+                            return firstSelectItem;
+                        },
+                        TP.gid(selectList),
+                        'TP.sig.DidRenderData');
+            });
+
+        test.chain(
+            function() {
+
+                test.chain(
+                    function() {
+                        test.getDriver().constructSequence().
+                            click(firstSelectItem).
+                            run();
+                    });
+
+                test.chain(
+                    function() {
+                        test.assert.isEqualTo(
+                            select.get('value'),
+                            'foo');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('selection_set_1')),
+                            'foo');
+                    });
             });
     });
 

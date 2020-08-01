@@ -411,7 +411,15 @@ function(aValue, shouldSignal) {
         }
 
         //  If the element is bound, then update its bound value.
+
+        //  NB: We need to flip this flag to false and then true after we're
+        //  done because we very well might be in the middle of a bind setting
+        //  operation, but we're a bit special in that we're also trying to keep
+        //  both our content element (a list, etc.) up-to-date as well as
+        //  ourself.
+        TP.$$settingFromBindMachinery = false;
         this.setBoundValueIfBound(this.getValue());
+        TP.$$settingFromBindMachinery = true;
     }
 
     //  If this flag is true, then that means that we're setting the value from
