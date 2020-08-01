@@ -4135,11 +4135,13 @@ function(shouldRender) {
         //  new repeat chunks that may be required.
         this.$refreshRepeatData(true);
 
-        return this;
+        return true;
     }
 
     didProcess = false;
     scopeVals = this.getBindingScopeValues();
+
+    valChanged = false;
 
     if (TP.elementHasAttribute(elem, 'bind:in', true)) {
         didProcess = true;
@@ -4159,7 +4161,7 @@ function(shouldRender) {
 
     //  If this element has a bind:scope, then refresh our bound descendants.
     if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
-        this.refreshBoundDescendants(shouldRender, false);
+        valChanged = this.refreshBoundDescendants(shouldRender, false);
     }
 
     if (!didProcess) {
@@ -4167,12 +4169,12 @@ function(shouldRender) {
         //  just call render() and return.
         this.render();
 
-        return this;
+        return valChanged;
     }
 
     //  If there is no attribute value, then just return
     if (TP.isEmpty(attrVal)) {
-        return this;
+        return valChanged;
     }
 
     //  Note here how we force the value of willRender to shouldRender (no
@@ -4391,10 +4393,13 @@ function(shouldRender, shouldSendEvent) {
      *     it didn't.
      * @param {Boolean} [shouldSendEvent=true] Whether or not we should send a
      *     custom native event that indicates that we refreshed the bindings.
-     * @returns {TP.dom.ElementNode} The receiver.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
      */
 
-    var boundDescendants,
+    var valChanged,
+
+        boundDescendants,
 
         allRefreshedElements;
 
@@ -4404,8 +4409,11 @@ function(shouldRender, shouldSendEvent) {
     //  for any 'in' or 'io' elements under them.
     boundDescendants = TP.wrap(this.$getBoundElements(true));
 
+    valChanged = false;
+
     boundDescendants.forEach(
         function(aDescendant) {
+            var testValChanged;
 
             //  NB: We call the primitive '$refresh' call here - otherwise,
             //  we'll end up recursing. Note that, even though boundDescendants
@@ -4413,7 +4421,13 @@ function(shouldRender, shouldSendEvent) {
             //  point, they will be filtered out by this method. Their
             //  descendants, the real bind:[in|io|out] elements, will be
             //  refreshed.
-            aDescendant.$refresh(shouldRender);
+            testValChanged = aDescendant.$refresh(shouldRender);
+
+            //  NB: We only flip this if the descendant returned true. Once
+            //  flipped to true, we never want to flip it back to false.
+            if (testValChanged) {
+                valChanged = true;
+            }
         });
 
     //  Send a custom DOM-level event to allow 3rd party libraries to know that
@@ -4423,7 +4437,7 @@ function(shouldRender, shouldSendEvent) {
         this.$sendNativeRefreshEvent();
     }
 
-    return this;
+    return valChanged;
 });
 
 //  ------------------------------------------------------------------------
