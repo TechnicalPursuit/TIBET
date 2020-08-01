@@ -1229,7 +1229,7 @@ function(options) {
         },
         function(err) {
             if (err instanceof AssertionFailed) {
-                testcase.fail(err);
+                return testcase.fail(err);
             } else if (err instanceof TP.extern.Promise.TimeoutError) {
                 //  Determine from the message whether it was the case itself or
                 //  the overall suite that failed. How will we know? If the
@@ -1237,12 +1237,12 @@ function(options) {
                 //  to be the computed value for time remaining in the test
                 //  suite.
                 if (timeout !== testcase.getTimeout()) {
-                    testcase.fail('Test suite timed out', TP.TIMED_OUT);
+                    return testcase.fail('Test suite timed out', TP.TIMED_OUT);
                 } else {
-                    testcase.fail('Test case timed out', TP.TIMED_OUT);
+                    return testcase.fail('Test case timed out', TP.TIMED_OUT);
                 }
             } else {
-                testcase.error(err);
+                return testcase.error(err);
             }
         });
 });
