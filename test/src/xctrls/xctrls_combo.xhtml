@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+    <!-- As a one dimensional Array, the item labels and values will be the same -->
+    <tibet:data name="urn:tibet:one_dim_array" content="TP.core.Hash">
+        <![CDATA[
+            {
+            "names": [
+                "Smith",
+                "Johnson",
+                "Williams",
+                "Jones",
+                "Brown",
+                "Davis",
+                "Miller",
+                "Wilson",
+                "Moore",
+                "Taylor"]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- As a two dimensional Array, the item values will come from the values in the first 'column' and item labels will come from the values in the second 'column' -->
+    <tibet:data name="urn:tibet:two_dim_array" content="TP.core.Hash">
+        <![CDATA[
+            {
+            "names": [
+                ["smith","Smith"],
+                ["johnson","Johnson"],
+                ["williams","Williams"],
+                ["jones","Jones"],
+                ["brown","Brown"],
+                ["davis","Davis"],
+                ["miller","Miller"],
+                ["wilson","Wilson"],
+                ["moore","Moore"],
+                ["taylor","Taylor"]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- As a JS 'object' hash, the item values will come from the 'keys' in the hash and item labels will come from the values 'hash' -->
+    <tibet:data name="urn:tibet:object_hash" content="TP.core.Hash">
+        <![CDATA[
+            {
+            "names": {
+                "smith":"Smith",
+                "johnson":"Johnson",
+                "williams":"Williams",
+                "jones":"Jones",
+                "brown":"Brown",
+                "davis":"Davis",
+                "miller":"Miller",
+                "wilson":"Wilson",
+                "moore":"Moore",
+                "taylor":"Taylor"
+                }
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The test data for selection tests -->
+    <tibet:data name="urn:tibet:selection_test_data" content="TP.core.Hash">
+        <![CDATA[
+            {
+            "data": [
+                ["foo","foo"],
+                ["bar","bar"],
+                ["baz","baz"]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The test data for value bound selection tests -->
+    <tibet:data name="urn:tibet:bound_selection_test_data" content="TP.core.Hash">
+        <![CDATA[
+        {"selection_set_1": "bar", "selection_set_2": ["foo", "baz"]}
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body data-theme="tpi">
+    <table>
+        <thead class="states">
+            <tr>
+                <th colspan="2">States</th>
+            </tr>
+        </thead>
+        <tbody class="states">
+            <tr>
+                <td>normal</td>
+                <td>
+                    <xctrls:combo/>
+                </td>
+            </tr>
+            <tr>
+                <td>:active</td>
+                <td>
+                    <xctrls:combo pclass:active="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td>:disabled</td>
+                <td>
+                    <xctrls:combo pclass:disabled="true" disabled="true"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    combo #1:
+    <br/>
+    A standard XControls combo showing dynamic content of a single dimensional Array.
+    <xctrls:combo id="combo1" tabindex="0" bind:in="{data: urn:tibet:one_dim_array#tibet(names)}" ui:incremental="model"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    combo #2:
+    <br/>
+    A standard XControls combo showing dynamic content of a two dimensional Array:
+    <xctrls:combo id="combo2" bind:in="{data: urn:tibet:two_dim_array#tibet(names)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    combo #3:
+    <br/>
+    A standard XControls combo showing dynamic content of an Object hash:
+    <xctrls:combo id="combo3" bind:in="{data: urn:tibet:object_hash#tibet(names)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    combo #4:
+    <br/>
+    A standard XControls combo with single selection enabled showing dynamic content:
+    <xctrls:combo id="combo4" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    combo #5:
+    <br/>
+    A standard XControls combo with single selection enabled showing dynamic content and value bound to a selection model:
+    <xctrls:combo id="combo5" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}"/>
+
+    <br/>
+    <br/>
+
+
+    <div class="controlBox">
+        <button onclick="TP.byId('combo1').signal('UIDisabled');">Disable combo #1</button>
+        <button onclick="TP.byId('combo1').signal('UIEnabled');">Enable combo #1</button>
+
+        <br/>
+
+        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
+        <button onclick="setTimeout(function() {TP.byId('combo1').signal('UIFocused');}, 100)">Focus combo #1</button>
+    </div>
+
+</body>
+</html>
