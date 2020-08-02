@@ -246,6 +246,7 @@
     <script src="~lib_test/src/xctrls/TP.xctrls_button_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_buttonitem_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_checkitem_Tests.js"/>
+    <script src="~lib_test/src/xctrls/TP.xctrls_combo_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_dialog_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_list_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_notifier_Tests.js"/>
