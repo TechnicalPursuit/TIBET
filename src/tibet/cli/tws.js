@@ -861,6 +861,16 @@ Cmd.prototype.executePush = function() {
         id,
         fullpath;
 
+    //  Have to fetch parameters to get the app name for the design doc. Note
+    //  that we don't use the results here, but we need to internally configure
+    //  the dbname, etc. for this run of the command for the benefit of commands
+    //  like 'pushDir', etc. below.
+    couch.getCouchParameters({
+        requestor: CLI,
+        confirm: this.options.confirm,
+        cfg_root: 'tds.tasks'
+    });
+
     flags = ['design', 'flows', 'map', 'tasks', 'views'];
 
     this.reparse({
@@ -950,6 +960,16 @@ Cmd.prototype.executePushDesign = function() {
 /**
  */
 Cmd.prototype.executePushFlows = function() {
+    //  Have to fetch parameters to get the app name for the design doc. Note
+    //  that we don't use the results here, but we need to internally configure
+    //  the dbname, etc. for this run of the command for the benefit of commands
+    //  like 'pushDir', etc. below.
+    couch.getCouchParameters({
+        requestor: CLI,
+        confirm: this.options.confirm,
+        cfg_root: 'tds.tasks'
+    });
+
     this.pushDir('~tws/flows');
 };
 
@@ -957,6 +977,16 @@ Cmd.prototype.executePushFlows = function() {
 /**
  */
 Cmd.prototype.executePushMap = function() {
+    //  Have to fetch parameters to get the app name for the design doc. Note
+    //  that we don't use the results here, but we need to internally configure
+    //  the dbname, etc. for this run of the command for the benefit of commands
+    //  like 'pushDir', etc. below.
+    couch.getCouchParameters({
+        requestor: CLI,
+        confirm: this.options.confirm,
+        cfg_root: 'tds.tasks'
+    });
+
     this.pushDir('~tws/tasks');
     this.pushDir('~tws/flows', {confirm: false});   //  only confirm once
 };
@@ -965,6 +995,16 @@ Cmd.prototype.executePushMap = function() {
 /**
  */
 Cmd.prototype.executePushTasks = function() {
+    //  Have to fetch parameters to get the app name for the design doc. Note
+    //  that we don't use the results here, but we need to internally configure
+    //  the dbname, etc. for this run of the command for the benefit of commands
+    //  like 'pushDir', etc. below.
+    couch.getCouchParameters({
+        requestor: CLI,
+        confirm: this.options.confirm,
+        cfg_root: 'tds.tasks'
+    });
+
     this.pushDir('~tws/tasks');
 };
 
