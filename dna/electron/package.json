@@ -3,13 +3,13 @@
     "version": "0.1.0",
     "main": "electron.js",
     "dependencies": {
-        "electron": "*",
         "marked": "^0.8.0",
         "marked-man": "^0.7.0",
         "minimist": "^1.2.5",
         "shelljs": "^0.8.4"
     },
     "devDependencies": {
+        "electron": "*",
         "stylelint": "^13.6.1",
         "stylelint-config-standard": "^20.0.0"
     },
