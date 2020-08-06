@@ -38,7 +38,9 @@
         "node": ">=12",
         "npm": ">=6"
     },
-    "scripts": {},
+    "scripts": {
+        "start": "tibet start"
+    },
     "preferGlobal": "false",
     "private": true
 }
