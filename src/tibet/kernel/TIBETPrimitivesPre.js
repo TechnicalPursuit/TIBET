@@ -527,7 +527,11 @@ TP.isFunction = function(anObj) {
      *     Function.
      */
 
-    return TP.ObjectProto.toString.call(anObj) === '[object Function]';
+    var str;
+
+    str = TP.ObjectProto.toString.call(anObj);
+
+    return str === '[object Function]' || str === '[object AsyncFunction]';
 };
 
 //  Manual setup
@@ -3745,7 +3749,11 @@ function(anObject) {
      * @returns {Boolean} Whether or not the supplied object is a method.
      */
 
-    return TP.ObjectProto.toString.call(anObject) === '[object Function]' &&
+    var str;
+
+    str = TP.ObjectProto.toString.call(anObject);
+
+    return (str === '[object Function]' || str === '[object AsyncFunction]') &&
             anObject[TP.OWNER] &&
             anObject[TP.TRACK] &&
             anObject[TP.OWNER] !== TP.NONE &&

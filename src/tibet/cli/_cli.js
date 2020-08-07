@@ -333,7 +333,8 @@ CLI.isFalse = function(aReference) {
  */
 CLI.isFunction = function(obj) {
     return typeof obj === 'function' &&
-        Object.prototype.toString.call(obj) === '[object Function]';
+        (Object.prototype.toString.call(obj) === '[object Function]' ||
+        Object.prototype.toString.call(obj) === '[object AsyncFunction]');
 };
 
 /**
