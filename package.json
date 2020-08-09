@@ -2,20 +2,33 @@
     "name": "tibet",
     "version": "5.1.0",
     "description": "The TIBET Platform.",
-    "keywords": ["CLI", "CouchDB", "Framework", "IDE", "Microservice", "MVC", "MVVC", "TIBET", "Workflow"],
+    "keywords": [
+        "CLI",
+        "CouchDB",
+        "Framework",
+        "IDE",
+        "Microservice",
+        "MVC",
+        "MVVC",
+        "TIBET",
+        "Workflow"
+    ],
     "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
         "email": "tibet@technicalpursuit.com",
         "url": "http://www.technicalpursuit.com"
     },
-    "contributors": [{
-        "name": "Scott Shattuck",
-        "email": "ss@technicalpursuit.com"
-    }, {
-        "name": "William J. Edney",
-        "email": "bedney@technicalpursuit.com"
-    }],
+    "contributors": [
+        {
+            "name": "Scott Shattuck",
+            "email": "ss@technicalpursuit.com"
+        },
+        {
+            "name": "William J. Edney",
+            "email": "bedney@technicalpursuit.com"
+        }
+    ],
     "repository": {
         "type": "git",
         "url": "http://github.com/TechnicalPursuit/TIBET"
@@ -37,25 +50,25 @@
         "man": "./doc/man"
     },
     "dependencies": {
-        "ace-builds": "^1.4.11",
-        "amazon-cognito-identity-js": "^4.3.2",
+        "ace-builds": "^1.4.12",
+        "amazon-cognito-identity-js": "^4.3.3",
         "ansi-256-colors": "^1.1.0",
         "ansi-styles": "^4.2.1",
-        "aws-sdk": "^2.704.0",
+        "aws-sdk": "^2.729.0",
         "bluebird": "^3.7.2",
         "bower": "^1.8.8",
-        "chokidar": "^3.4.0",
+        "chokidar": "^3.4.2",
         "codemirror": "github:TechnicalPursuit/codemirror",
         "cors": "^2.8.5",
         "d3-dispatch": "^1.0.6",
         "d3-interpolate": "^1.4.0",
-        "d3-selection": "^1.4.1",
+        "d3-selection": "^1.4.2",
         "diff": "^4.0.2",
         "express": "^4.17.1",
         "faye-websocket": "^0.11.3",
         "findit": "*",
         "follow": "^1.1.0",
-        "fuse.js": "^6.3.1",
+        "fuse.js": "^6.4.1",
         "handlebars": "^4.7.2",
         "has-ansi": "^4.0.0",
         "ip": "^1.1.5",
@@ -73,7 +86,7 @@
         "moment": "^2.27.0",
         "nano": "^8.1.0",
         "node-forge": "^0.9.1",
-        "npm": "^6.14.5",
+        "npm": "^6.14.7",
         "open-editor": "^2.0.1",
         "opener": "^1.5.1",
         "permessage-deflate": "^0.1.7",
@@ -97,8 +110,8 @@
         "babel-minify": "^0.5.1",
         "chai": "^4.2.0",
         "eslint": "^7.5.0",
-        "less": "^3.11.3",
-        "mocha": "^8.0.1",
+        "less": "^3.12.2",
+        "mocha": "^8.1.1",
         "mutation-summary": "github:TechnicalPursuit/mutation-summary",
         "node-sass": "^4.14.1",
         "puppeteer": "^4.0.1",
