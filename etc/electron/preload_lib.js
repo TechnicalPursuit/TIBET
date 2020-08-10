@@ -27,11 +27,18 @@
 
             fs,
             sh,
+            electron,
 
             fileDelete,
             fileExists,
             fileLoad,
             fileSave,
+
+            getAppVersion,
+
+            addListenerForMainEvent,
+            removeListenerForMainEvent,
+            sendEventToMain,
 
             commandSpawn;
 
@@ -39,6 +46,8 @@
 
         fs = require('fs');
         sh = require('shelljs');
+
+        electron = require('electron');
 
         //  ---
 
@@ -143,6 +152,16 @@
         /**
          *
          */
+        getAppVersion = function() {
+
+            return electron.ipcRenderer.invoke('getAppVersion');
+        };
+
+        //  ---
+
+        /**
+         *
+         */
         commandSpawn = function(command, args, onmsgcb, onerrcb) {
 
             var cmdObj,
@@ -220,12 +239,48 @@
 
         //  ---
 
+        /**
+         *
+         */
+        addListenerForMainEvent = function(signalName, handlerFunc) {
+
+            electron.ipcRenderer.on(signalName, handlerFunc);
+        };
+
+        //  ---
+
+        /**
+         *
+         */
+        removeListenerForMainEvent = function(signalName, handlerFunc) {
+
+            electron.ipcRenderer.removeListener(signalName, handlerFunc);
+        };
+
+        //  ---
+
+        /**
+         *
+         */
+        sendEventToMain = function(signalArgs) {
+
+            electron.ipcRenderer.invoke.apply(electron.ipcRenderer, signalArgs);
+        };
+
+        //  ---
+
         return {
             fileDelete: fileDelete,
             fileExists: fileExists,
             fileLoad: fileLoad,
             fileSave: fileSave,
-            commandSpawn: commandSpawn
+
+            getAppVersion: getAppVersion,
+
+            commandSpawn: commandSpawn,
+
+            addListenerForMainEvent: addListenerForMainEvent,
+            sendEventToMain: sendEventToMain
         };
     };
 
