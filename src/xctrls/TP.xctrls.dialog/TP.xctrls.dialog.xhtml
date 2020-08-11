@@ -5,12 +5,16 @@
         class="ALERT_TIER {{$SOURCE.(@class)}}"
         pclass:hidden="true"
         tibet:focuscontext="true">
-    <div tibet:pelem="header" drag:mover="true" drag:item=".."/>
-    <div tibet:pelem="body">
-        <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
-            <xctrls:content/>
-        </tibet:group>
+    <div>
+        <div>
+            <div tibet:pelem="closer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M0 43.06L18.06 25 .06 7l6.99-7 18 18L43 .06 49.88 7 32 24.94l18.01 18-7 7-18-18L6.93 50 0 43.06z"/></svg></div>
+            <div tibet:pelem="header" drag:mover="true" drag:item=".."/>
+            <div tibet:pelem="body">
+                    <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
+                            <xctrls:content/>
+                    </tibet:group>
+            </div>
+            <div tibet:pelem="footer" drag:resizer="true" drag:item=".."/>
+        </div>
     </div>
-    <div tibet:pelem="footer" drag:resizer="true" drag:item=".."/>
 </xctrls:dialog>
-

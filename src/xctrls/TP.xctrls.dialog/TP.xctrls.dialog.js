@@ -79,13 +79,13 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.dialog.Inst.defineAttribute('body',
-    TP.cpc('> *[tibet|pelem="body"]', TP.hc('shouldCollapse', true)));
+    TP.cpc(' [tibet|pelem="body"]', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.dialog.Inst.defineAttribute('header',
-    TP.cpc('> *[tibet|pelem="header"]', TP.hc('shouldCollapse', true)));
+    TP.cpc(' [tibet|pelem="header"]', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.dialog.Inst.defineAttribute('dialogcontent',
-    TP.cpc('> *[tibet|pelem="body"] > tibet|group > xctrls|content',
+    TP.cpc(' [tibet|pelem="body"] > tibet|group > xctrls|content',
         TP.hc('shouldCollapse', true)));
 
 TP.xctrls.dialog.Inst.defineAttribute('curtainWasShowing');

@@ -6,48 +6,111 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
-/* The dialog */
+
+
+/* The viewport-sized wrapper */
 xctrls|dialog {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 
+/* The flex container */
+xctrls|dialog > div {
+    /* flex container */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: var(--xctrls-dialog-valign);
+    min-height: 100vh;
+    padding: 0 var(--xctrls-dialog-viewport-pad);
+    position: relative;
+}
+
+/* The dialog */
+xctrls|dialog > div > div {
+    position: relative;
+    display: flow-root;
+    background-color: var(--xctrls-dialog-background-color);
+    margin-top: var(--xctrls-dialog-viewport-pad);
+    margin-right: auto;
+    margin-bottom: calc(var(--xctrls-dialog-viewport-pad) * 1.5);
+    margin-left: auto;
+    border: var(--xctrls-dialog-border);
+    border-radius: var(--xctrls-dialog-border-radius);
+    max-width: var(--xctrls-dialog-max-width);
+    box-shadow: 0 0 2rem rgba(0, 0, 0, 0.1);
+}
+
+  /* The closer control */
+  xctrls|dialog [tibet|pelem="closer"] {
     position: absolute;
+    top: var(--xctrls-dialog-closer-offset);
+    right: var(--xctrls-dialog-closer-offset);
+    height: var(--xctrls-dialog-closer-size);
+    width: var(--xctrls-dialog-closer-size);
+    border: var(--xctrls-dialog-closer-border);
+    border-radius: var(--xctrls-dialog-closer-border-radius);
+    background: var(--xctrls-dialog-closer-bkg);
+    display: flex;
+    cursor: pointer;
+  }
 
-    max-width: 600px;
-    max-height: 370px;
+  xctrls|dialog [tibet|pelem="closer"] svg {
+    width: var(--xctrls-dialog-closer-x-size);
+    height: auto;
+    margin: auto;
+  }
 
-    user-select: none;
+  xctrls|dialog [tibet|pelem="closer"] svg path {
+    fill: var(--xctrls-dialog-closer-color);
+  }
 
-    overflow: hidden;
-}
+  xctrls|dialog [tibet|pelem="closer"]:hover {
+    border: var(--xctrls-dialog-closer-hover-border);
+    background: var(--xctrls-dialog-closer-hover-bkg);
+  }
 
-/* Hovering over the dialog */
-xctrls|dialog:hover {
+  xctrls|dialog [tibet|pelem="closer"]:hover path {
+    fill: var(--xctrls-dialog-closer-hover-color);
+  }
 
-}
+  /* The header */
+  xctrls|dialog [tibet|pelem="header"] {
+    padding-top: 0;
+    padding-right: calc(var(--xctrls-dialog-closer-size) + (var(--xctrls-dialog-closer-offset) * 2));
+    padding-bottom: 0;
+    padding-left: var(--xctrls-dialog-content-pad);
+    background: var(--xctrls-dialog-header-bkg);
+    border-bottom: var(--xctrls-dialog-header-border-bottom);
+    display: flow-root;
+  }
 
-/* Focusing on the dialog */
-xctrls|dialog[pclass|focus] {
+  xctrls|dialog [tibet|pelem="header"] > * {
+    margin: 1rem 0;
+  }
 
-}
+  /* The body */
 
-/* The dialog header */
-xctrls|dialog > *[tibet|pelem="header"] {
+  xctrls|dialog [tibet|pelem="body"] {
+    padding: 0 var(--xctrls-dialog-content-pad);
+  }
 
-    position: absolute;
-}
+  /* The footer */
+  xctrls|dialog [tibet|pelem="footer"] {
+    display: flow-root;
+    background: var(--xctrls-dialog-footer-bkg);
+    border-top: var(--xctrls-dialog-footer-border-top);
+    padding: 0 var(--xctrls-dialog-content-pad);
+  }
 
-/* The dialog body */
-xctrls|dialog > *[tibet|pelem="body"] {
 
-    position: absolute;
 
-    overflow: hidden;
-}
 
-/* The dialog footer */
-xctrls|dialog > *[tibet|pelem="footer"] {
-
-    position: absolute;
-}
 
 xctrls|dialog .dialogContent {
 
