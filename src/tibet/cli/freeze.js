@@ -63,7 +63,7 @@ Cmd.NAME = 'freeze';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['minify', 'raw', 'all', 'zipped', 'brotlied'],
+        'boolean': ['minify', 'source', 'all', 'zipped', 'brotlied'],
         'string': ['tibet'],
         'default': {
             all: true,
@@ -78,7 +78,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw] [--zipped] [--brotlied]';
+Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--source] [--zipped] [--brotlied]';
 
 
 //  ---
@@ -231,22 +231,22 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    if (this.options.raw) {
-        this.log('freezing raw library source...');
+    if (this.options.source) {
+        this.log('freezing library source...');
         err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'src') + '/', infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/src: ' + err.stderr);
             return 1;
         }
 
-        this.log('freezing raw library tests...');
+        this.log('freezing library tests...');
         err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'test') + '/', infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/test: ' + err.stderr);
             return 1;
         }
 
-        this.log('freezing raw library demos...');
+        this.log('freezing library demos...');
         err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'demo') + '/', infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/demo: ' + err.stderr);
@@ -376,10 +376,10 @@ Cmd.prototype.execute = function() {
                 return;
             }
 
-            // Note that when raw is specified no copies of bundled code are
-            // kept, only the hook and loader files which are always pulled from
-            // bundles.
-            if (cmd.options.raw) {
+            //  Note that when source is specified no copies of bundled code are
+            //  kept, only the hook and loader files which are always pulled from
+            //  bundles.
+            if (cmd.options.source) {
                 sh.rm('-f', CLI.joinPaths(srcroot, filename));
             } else if (filename.indexOf('tibet_' + bundle + '.') === -1) {
                 sh.rm('-f', CLI.joinPaths(srcroot, filename));
