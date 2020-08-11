@@ -225,7 +225,7 @@ Cmd.prototype.execute = function() {
 
     helpers.link_apps_and_tibet(cmd, source, target, {config: bundle});
 
-    this.info('Application thawed. TIBET now boots from ~/node_modules/tibet.');
+    this.info('Application thawed. TIBET now boots from ./node_modules/tibet.');
 
     return 0;
 };
