@@ -63,7 +63,7 @@ Cmd.NAME = 'freeze';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['minify', 'source', 'all', 'zipped', 'brotlied'],
+        'boolean': ['minify', 'source', 'all', 'standalone', 'zipped', 'brotlied'],
         'string': ['tibet'],
         'default': {
             all: true,
@@ -104,8 +104,8 @@ Cmd.prototype.execute = function() {
         srcroot,
 
         lnflags,
-        linksrcdir,
-        linkdestdir,
+        nmsrcdir,
+        nmdestdir,
         srcdir,
 
         lnerr,
@@ -274,24 +274,63 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    //  Raw or not, we need to link a node_modules reference from TIBET into
-    //  location so things like `tibet test` and `tibet reflect` will run on a
-    //  frozen project.
-    lnflags = '-s';
-    if (this.options.force) {
-        lnflags += 'f';
-    }
+    nmsrcdir = CLI.joinPaths(app_npm, 'tibet', 'node_modules');
+    nmdestdir = CLI.joinPaths(infroot, 'node_modules');
 
-    //  We want the project's node_modules/tibet/node_modules dir linked into
-    //  place so CLI commands consistently find their dependencies.
-    linksrcdir = CLI.joinPaths(app_npm, 'tibet', 'node_modules');
-    linkdestdir = CLI.joinPaths(infroot, 'node_modules');
-    srcdir = path.relative(path.dirname(linkdestdir), linksrcdir);
+    //  The user specified standalone, which means we currently copy the CLI and
+    //  TDS code into the frozen app. We also make a *copy* (not a link) of
+    //  TIBET's node_modules directory into the standalone project.
+    if (this.options.standalone) {
 
-    lnerr = sh.ln(lnflags, srcdir, linkdestdir);
+        this.log('freezing developer cli resources...');
+        sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'cli'));
+        err = sh.cp('-Rn',
+                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'cli') + '/',
+                    CLI.joinPaths(infroot, 'src', 'tibet'));
+        if (sh.error()) {
+            this.error('Error cloning tibet cli: ' + err.stderr);
+            return 1;
+        }
 
-    if (sh.error()) {
-        this.error('Error relinking npm resources: ' + lnerr.stderr);
+        this.log('freezing developer tds resources...');
+        sh.mkdir('-p', CLI.joinPaths(infroot, 'tds'));
+        err = sh.cp('-Rn',
+                    CLI.joinPaths(app_npm, 'tibet', 'tds') + '/',
+                    infroot);
+        if (sh.error()) {
+            this.error('Error cloning tibet tds: ' + err.stderr);
+            return 1;
+        }
+
+        this.log('freezing developer node_modules resources...');
+        err = sh.cp('-Rn',
+                    nmsrcdir + '/',
+                    nmdestdir);
+
+        if (sh.error()) {
+            this.error('Error cloning tibet tds: ' + err.stderr);
+            return 1;
+        }
+
+    } else {
+
+        //  Since we're not standalone (source or not) we need to link TIBET's
+        //  node_modules reference from TIBET into location so things like
+        //  `tibet test` and `tibet reflect` will run on a frozen project.
+        lnflags = '-s';
+        if (this.options.force) {
+            lnflags += 'f';
+        }
+
+        //  We want the project's node_modules/tibet/node_modules dir linked into
+        //  place so CLI commands consistently find their dependencies.
+        srcdir = path.relative(path.dirname(nmdestdir), nmsrcdir);
+
+        lnerr = sh.ln(lnflags, srcdir, nmdestdir);
+
+        if (sh.error()) {
+            this.error('Error relinking npm resources: ' + lnerr.stderr);
+        }
     }
 
     //  ---
@@ -325,9 +364,9 @@ Cmd.prototype.execute = function() {
             filename = aFile.toString();
 
             // TODO: come up with a better solution. For now the two files we
-            // don't want to remove by default is tibet_developer.min.js or
-            // tibet_developer.br since the various tsh-related commands use
-            // those
+            // don't want to remove by default (if tibet_developer.min.js
+            // exists) is tibet_developer.min.js.gz or tibet_developer.min.js.br
+            // since the various tsh-related commands use those
             if (/tibet_developer\.min\.js/.test(filename)) {
                 if (/\.gz$/.test(filename)) {
                     sh.rm('-f', CLI.joinPaths(srcroot, filename));
