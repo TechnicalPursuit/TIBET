@@ -3,7 +3,7 @@
 \fBtibet-freeze\fR \- freezes the current project's TIBET library
 .SH SYNOPSIS
 .P
-\fBtibet freeze [\-\-tibet <bundle>] [\-\-minify] [\-\-all] [\-\-raw] [\-\-zipped]\fP
+\fBtibet freeze [\-\-tibet <bundle>] [\-\-minify] [\-\-all] [\-\-source] [\-\-standalone] [\-\-zipped] [\-\-brotlied]\fP
 .SH DESCRIPTION
 .P
 NOTE: this command will be removed in a future release once splitting
@@ -42,10 +42,15 @@ Controls whether you freeze minified source code and is used in conjunction
 with the \fB\-\-tibet\fP flag to filter bundles\. The default value is true, so only
 minified code is frozen by default\.
 .IP \(bu 2
-\fB\-\-raw\fP :
+\fB\-\-source\fP :
 Causes the current TIBET source tree to be copied into the target directory\.
 This option supports dynamic development with TIBET source code but does have a
 performance impact\.
+.IP \(bu 2
+\fB\-\-standalone\fP :
+Packages a completely standalone environment that will allow an application
+to use not only TIBET client code, but TDS server and TIBET CLI code all bundled
+within a standalone package\.
 .IP \(bu 2
 \fB\-\-zipped\fP :
 Controls whether zipped copies are preserved or pruned\. This flag works
