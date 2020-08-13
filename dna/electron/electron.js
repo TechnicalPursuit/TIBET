@@ -29,6 +29,7 @@ const electron = require('electron'),
     app = electron.app,                     //  Module to control application
                                             //  life.
     dialog = electron.dialog,               //  Module to create dialog.
+    Menu = electron.Menu,                   //  Module to manage menus.
     BrowserWindow = electron.BrowserWindow, //  Module to create browser window.
     PARSE_OPTIONS = CLI.PARSE_OPTIONS;
 
@@ -36,6 +37,7 @@ const electron = require('electron'),
 //  be closed automatically when the JavaScript object is garbage collected.
 let configure,
     createWindow,
+    setupAppMenu,
     mainWindow,
     logger,
     options,
@@ -72,6 +74,8 @@ configure = function() {
         scraping = false;
     }
 };
+
+//  ---
 
 /**
  * Primary function used to launch Electron. Marshals command line arguments as
@@ -169,13 +173,14 @@ createWindow = function() {
         }
     });
 
-    //  When the user tries to quit or close the main window running TIBET. Note
-    //  that the code in TIBET has a special case for the 'onbeforeunload' event
-    //  handler for Electron that always returns a value that causes this event
-    //  to be thrown.
+    //  Main window event handlers
+
+    //  Event emitted when the user tries to quit or close the main window
+    //  running TIBET. Note that the code in TIBET has a special case for the
+    //  'onbeforeunload' event handler for Electron that always returns a value
+    //  that causes this event to be thrown.
     mainWindow.webContents.on('will-prevent-unload',
     function(event) {
-
         var choice,
             leave;
 
@@ -197,13 +202,78 @@ createWindow = function() {
     });
 
     //  Emitted when the window is closed.
-    mainWindow.on('closed', function() {
-        //  Dereference the window object, usually you would store windows in an
-        //  array if your app supports multi windows, this is the time when you
-        //  should delete the corresponding element.
+    mainWindow.on('closed',
+        function() {
+            //  Dereference the window object, usually you would store windows
+            //  in an array if your app supports multi windows, this is the time
+            //  when you should delete the corresponding element.
         mainWindow = null;
     });
 };
+
+//  ---
+
+/**
+ * Function to set up the App menu.
+ */
+
+setupAppMenu = function() {
+
+    var appMenuTemplate,
+        menu;
+
+    appMenuTemplate = [
+        {
+            label: app.getName(),
+            submenu: [
+                {
+                    role: 'about'
+                },
+                {
+                    label: 'Version ' + app.getVersion(), enabled: false
+                },
+                {
+                    id: 'updater',
+                    label: 'Check for updates',
+                    enabled: false,
+                    click: () => {
+                        mainWindow.webContents.send(
+                            'TP.sig.CheckForUpdate', false);
+                    }
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    role: 'services'
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    role: 'hide'
+                },
+                {
+                    role: 'hideothers'
+                },
+                {
+                    role: 'unhide'
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    role: 'quit'
+                }
+            ]
+        }
+    ];
+
+    menu = Menu.buildFromTemplate(appMenuTemplate);
+    Menu.setApplicationMenu(menu);
+};
+
+//  ---
 
 /*
  * Configure the environment
@@ -211,13 +281,31 @@ createWindow = function() {
 configure();
 
 //  ---
-//  Event Handlers
+//  Set main process configuration
+//  ---
+
+/*
+ * Set this flag to true for forward compatibility (and to quiet log messages).
+ */
+app.allowRendererProcessReuse = true;
+
+/*
+ * If we're scraping, add a command line switch (to command line of the embedded
+ * Chrome engine) to bypass Chrome's site isolation testing.
+ */
+if (scraping) {
+    app.commandLine.appendSwitch('disable-site-isolation-trials');
+}
+
+
+//  ---
+//  Main process event handlers
 //  ---
 
 /**
- * This method will be called when code running in Electron's NodeJS process has
- * thrown an exception that has not been caught and has bubbled all of the way
- * up to the event loop.
+ * Event emitted when code running in Electron's NodeJS process has thrown an
+ * exception that has not been caught and has bubbled all of the way up to the
+ * event loop.
  */
 process.on('uncaughtException', function(err) {
     var str,
@@ -245,29 +333,25 @@ process.on('uncaughtException', function(err) {
     }
 });
 
-/*
- * Set this flag to true for forward compatibility (and to quiet log messages).
- */
-app.allowRendererProcessReuse = true;
-
-/*
- * If we're scraping, add a command line switch (to command line of the embedded
- * Chrome engine) to bypass Chrome's site isolation testing.
- */
-if (scraping) {
-    app.commandLine.appendSwitch('disable-site-isolation-trials');
-}
+//  ---
+//  Application object event handlers
+//  ---
 
 /**
- * This method will be called when Electron has finished initialization and is
- * ready to create browser windows. Some APIs can only be used after this event
- * occurs.
+ * Event emitted when Electron has finished initialization and is ready to
+ * create browser windows. Some APIs can only be used after this event occurs.
  */
-app.on('ready', createWindow);
+app.on('ready',
+        function() {
+            createWindow();
+            setupAppMenu();
+        });
 
+
+//  ---
 
 /**
- * This method will be called when all windows are closed.
+ * Event emitted when all windows are closed.
  */
 app.on('window-all-closed', function() {
     //  On OS X it is common for applications and their menu bar
@@ -278,9 +362,11 @@ app.on('window-all-closed', function() {
 });
 
 
+//  ---
+
 /**
- * This method will be called when the user launches the app, clicks on the Mac
- * OS X dock or Windows taskbar or tries to relaunch when already running.
+ * Event emitted when the user launches the app, clicks on the Mac OS X dock or
+ * Windows taskbar or tries to relaunch when already running.
  */
 app.on('activate', function() {
     //  On OS X it's common to re-create a window in the app when the
