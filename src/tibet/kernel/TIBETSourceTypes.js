@@ -1485,6 +1485,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     var origins,
         signals,
 
+        thisref,
+
         len,
         i,
         len2,
@@ -1492,8 +1494,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
         originID,
         sigName,
-
-        listener,
 
         entryKey;
 
@@ -1524,6 +1524,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         return false;
     }
 
+    thisref = this;
+
     len = signals.getSize();
 
     /* eslint-disable no-loop-func */
@@ -1542,22 +1544,29 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
             entryKey = originID + TP.JOIN + sigName;
             if (TP.notValid(this.get('$listeners').at(entryKey))) {
 
-                //  Create a listener Function that will signal with the
-                //  supplied signal origin and name with the native Event as the
-                //  payload.
-                listener = function(evt) {
-                            TP.signal(originID, sigName, TP.args(arguments, 1));
-                        };
+                (function(origin, signal) {
+                    var listener;
 
-                //  Add the listener to our listeners hash with the
-                //  origin/signal key as the key. This ensures that no more than
-                //  one entry for each origin/signal is added as a listener.
-                this.get('$listeners').atPut(entryKey, listener);
+                    //  Create a listener Function that will signal with the
+                    //  supplied signal origin and name with the native Event as
+                    //  the payload.
+                    listener = function(evt) {
+                                TP.signal(origin,
+                                            signal,
+                                            TP.args(arguments, 1));
+                            };
 
-                //  Message our external Electron library to register the
-                //  listener for this signal.
-                TP.extern.electron_lib_utils.addListenerForMainEvent(
-                                                        sigName, listener);
+                    //  Add the listener to our listeners hash with the
+                    //  origin/signal key as the key. This ensures that no more
+                    //  than one entry for each origin/signal is added as a
+                    //  listener.
+                    thisref.get('$listeners').atPut(entryKey, listener);
+
+                    //  Message our external Electron library to register the
+                    //  listener for this signal.
+                    TP.extern.electron_lib_utils.addListenerForMainEvent(
+                                                            signal, listener);
+                }(originID, sigName));
             }
         }
     }
