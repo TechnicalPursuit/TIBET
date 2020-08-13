@@ -134,7 +134,10 @@ createWindow = function() {
         height: 768,
         webPreferences: {
             preload: CLI.joinPaths(__dirname, './preload.js'),
-            webSecurity: scraping ? false : true
+            webSecurity: scraping ? false : true,
+            nodeIntegration: false,
+            enableRemoteModule: false,
+            contextIsolation: true
         }
     });
 
