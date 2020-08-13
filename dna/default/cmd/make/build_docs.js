@@ -199,7 +199,7 @@
                 template = make.template.compile(content);
                 content = template(options);
 
-                //  NOTE this depends on first line being the # {{topic}} line.
+                //  NOTE this depends on first line being the # \{{topic}} line.
                 options.firstline = content.split('\n')[0];
                 index.push(JSON.parse(JSON.stringify(options)));
 
