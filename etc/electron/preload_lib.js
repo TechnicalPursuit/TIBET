@@ -154,7 +154,7 @@
          */
         getAppVersion = function() {
 
-            return electron.ipcRenderer.invoke('getAppVersion');
+            return electron.ipcRenderer.invoke('TP.sig.getAppVersion');
         };
 
         //  ---
