@@ -97,10 +97,10 @@ createWindow = function() {
         logger.warn('No build directory. Must use a development boot.profile.');
         logger.warn('Run `tibet build` to create your app\'s production build.');
 
-        //  Found build directory - set the default to be development@developer.
+        //  No build directory - set the default to be development@developer.
         defaultProfile = 'development@developer';
     } else {
-        //  No build directory - set the default to be main@base.
+        //  Found build directory - set the default to be main@base.
         defaultProfile = 'main@base';
     }
 
