@@ -264,7 +264,8 @@
          */
         sendEventToMain = function(signalArgs) {
 
-            electron.ipcRenderer.invoke.apply(electron.ipcRenderer, signalArgs);
+            return electron.ipcRenderer.invoke.apply(electron.ipcRenderer,
+                                                        signalArgs);
         };
 
         //  ---

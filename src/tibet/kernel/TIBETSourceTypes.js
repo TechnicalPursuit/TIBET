@@ -1590,14 +1590,13 @@ function(aSignal, varargs) {
      * @param {String} aSignal The signal name to send to the main process.
      * @param {arguments} varargs Optional additional arguments for the
      *     constructor.
-     * @returns {TP.core.ElectronMain} The receiver.
+     * @returns {Promise} The Promise returned from sending the event to the
+     *     main process.
      */
 
     //  NB: We just pass along all arguments here - this call will 'do the right
     //  thing'.
-    TP.extern.electron_lib_utils.sendEventToMain(TP.ac(arguments));
-
-    return this;
+    return TP.extern.electron_lib_utils.sendEventToMain(TP.ac(arguments));
 });
 
 //  ========================================================================
