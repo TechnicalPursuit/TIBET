@@ -1439,7 +1439,12 @@ function(signalTypes) {
 //  ========================================================================
 
 TP.sig.Signal.defineSubtype('ElectronSignal');
+
+TP.sig.ElectronSignal.defineSubtype('CheckForUpdate');
+TP.sig.ElectronSignal.defineSubtype('CheckingForUpdate');
+TP.sig.ElectronSignal.defineSubtype('UpdateError');
 TP.sig.ElectronSignal.defineSubtype('UpdateAvailable');
+TP.sig.ElectronSignal.defineSubtype('UpdateNotAvailable');
 TP.sig.ElectronSignal.defineSubtype('UpdateDownloaded');
 
 //  ========================================================================
