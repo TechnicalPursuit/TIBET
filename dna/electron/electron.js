@@ -86,7 +86,8 @@ createWindow = function() {
     let builddir,
         fileUrl,
         paramStr,
-        profile;
+        profile,
+        defaultProfile;
 
     //  Verify build directory and add a development profile if not found.
     builddir = pkg.expandPath('~app_build');
@@ -96,13 +97,18 @@ createWindow = function() {
         logger.warn('No build directory. Must use a development boot.profile.');
         logger.warn('Run `tibet build` to create your app\'s production build.');
 
-        //  Don't replace existing...but ensure development as a base default.
-        profile = electronOpts['boot.profile'];
-        if (!profile) {
-            electronOpts['boot.profile'] = 'development@developer';
-            logger.warn('No boot.profile. Forcing boot.profile ' +
-                electronOpts['boot.profile']);
-        }
+        //  Found build directory - set the default to be development@developer.
+        defaultProfile = 'development@developer';
+    } else {
+        //  No build directory - set the default to be main@base.
+        defaultProfile = 'main@base';
+    }
+
+    //  Don't replace existing...but ensure default profile as a base default.
+    profile = electronOpts['boot.profile'];
+    if (!profile) {
+        electronOpts['boot.profile'] = defaultProfile;
+        logger.warn('No boot.profile. Forcing boot.profile ' + defaultProfile);
     }
 
     //  and load the index.html of the app.
