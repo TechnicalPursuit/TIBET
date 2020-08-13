@@ -1482,7 +1482,15 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     engine to add the observation, false otherwise.
      */
 
-    var originID,
+    var origins,
+        signals,
+
+        len,
+        i,
+        len2,
+        j,
+
+        originID,
         sigName,
 
         listener,
@@ -1497,31 +1505,63 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    originID = TP.gid(anOrigin);
-    sigName = TP.expandSignalName(aSignal.getSignalName());
-
-    //  Before we add the listener Function, we should check to see if we
-    //  already registered one for this origin/signal pair. If so, then we don't
-    //  need more than one.
-    entryKey = originID + TP.JOIN + sigName;
-    if (TP.notValid(this.get('$listeners').at(entryKey))) {
-
-        //  Create a listener Function that will signal with the supplied signal
-        //  origin and name with the native Event as the payload.
-        listener = function(evt) {
-                        TP.signal(originID, sigName, TP.args(arguments, 1));
-                    };
-
-        //  Add the listener to our listeners hash with the origin/signal key as
-        //  the key. This ensures that no more than one entry for each
-        //  origin/signal is added as a listener.
-        this.get('$listeners').atPut(entryKey, listener);
-
-        //  Message our external Electron library to register the listener for
-        //  this signal.
-        TP.extern.electron_lib_utils.addListenerForMainEvent(sigName,
-                                                                listener);
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
     }
+
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
+
+        return false;
+    }
+
+    len = signals.getSize();
+
+    /* eslint-disable no-loop-func */
+    for (i = 0; i < len; i++) {
+
+        sigName = TP.expandSignalName(signals.at(i).getSignalName());
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            originID = TP.gid(origins.at(j));
+
+            //  Before we add the listener Function, we should check to see if
+            //  we already registered one for this origin/signal pair. If so,
+            //  then we don't need more than one.
+            entryKey = originID + TP.JOIN + sigName;
+            if (TP.notValid(this.get('$listeners').at(entryKey))) {
+
+                //  Create a listener Function that will signal with the
+                //  supplied signal origin and name with the native Event as the
+                //  payload.
+                listener = function(evt) {
+                            TP.signal(originID, sigName, TP.args(arguments, 1));
+                        };
+
+                //  Add the listener to our listeners hash with the
+                //  origin/signal key as the key. This ensures that no more than
+                //  one entry for each origin/signal is added as a listener.
+                this.get('$listeners').atPut(entryKey, listener);
+
+                //  Message our external Electron library to register the
+                //  listener for this signal.
+                TP.extern.electron_lib_utils.addListenerForMainEvent(
+                                                        sigName, listener);
+            }
+        }
+    }
+    /* eslint-enable no-loop-func */
 
     //  Always tell the notification system to register our handler, etc.
     return true;
@@ -1548,10 +1588,19 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     engine to remove the observation, false otherwise.
      */
 
-    var originID,
+    var origins,
+        signals,
+
+        len,
+        i,
+        len2,
+        j,
+
+        originID,
         sigName,
 
         entryKey,
+
         listener;
 
     if (TP.sys.cfg('boot.context') !== 'electron') {
@@ -1562,22 +1611,51 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    originID = TP.gid(anOrigin);
-    sigName = TP.expandSignalName(aSignal.getSignalName());
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
+    }
 
-    //  Compute a origin/signal key and see if a listener is available for
-    //  removal.
-    entryKey = originID + TP.JOIN + sigName;
-    listener = this.get('$listeners').at(entryKey);
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
 
-    //  We found a valid listener - remove it from our listeners hash and
-    //  message our external Electron library to remove the listener for this
-    //  signal.
-    if (TP.isValid(listener)) {
-        this.get('$listeners').removeKey(entryKey);
+        return false;
+    }
 
-        TP.extern.electron_lib_utils.removeListenerForMainEvent(
-            sigName, listener);
+    len = signals.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        sigName = TP.expandSignalName(signals.at(i).getSignalName());
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            originID = TP.gid(origins.at(j));
+
+            //  Compute a origin/signal key and see if a listener is available
+            //  for removal.
+            entryKey = originID + TP.JOIN + sigName;
+            listener = this.get('$listeners').at(entryKey);
+
+            //  We found a valid listener - remove it from our listeners hash
+            //  and message our external Electron library to remove the listener
+            //  for this signal.
+            if (TP.isValid(listener)) {
+                this.get('$listeners').removeKey(entryKey);
+
+                TP.extern.electron_lib_utils.removeListenerForMainEvent(
+                    sigName, listener);
+            }
+        }
     }
 
     //  Always tell the notification system to remove our handler, etc.
