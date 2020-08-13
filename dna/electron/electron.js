@@ -19,6 +19,7 @@
 'use strict';
 
 const electron = require('electron'),
+    autoUpdater = require('electron-updater').autoUpdater,
     sh = require('shelljs'),
     minimist = require('minimist'),
 
@@ -28,9 +29,12 @@ const electron = require('electron'),
 
     app = electron.app,                     //  Module to control application
                                             //  life.
-    dialog = electron.dialog,               //  Module to create dialog.
+    ipcMain = electron.ipcMain,             //  Module to communicate with
+                                            //  renderer processes over IPC.
+    dialog = electron.dialog,               //  Module to create dialogs.
     Menu = electron.Menu,                   //  Module to manage menus.
     BrowserWindow = electron.BrowserWindow, //  Module to create browser window.
+    Notification = electron.Notification,   //  Module to create notifications.
     PARSE_OPTIONS = CLI.PARSE_OPTIONS;
 
 //  Keep a global reference of the window object, if you don't, the window will
@@ -384,5 +388,183 @@ app.on('activate', function() {
         createWindow();
     }
 });
+
+//  ---
+//  Auto updater configuration and event handlers
+//  ---
+
+//  We do *not* auto download and install by default.
+autoUpdater.autoDownload = false;
+
+//  ---
+
+/**
+ * Event emitted when the auto updater is checking for an available update.
+ */
+autoUpdater.on('checking-for-update', function(event) {
+    mainWindow.webContents.send('TP.sig.CheckingForUpdate', event);
+});
+
+//  ---
+
+/**
+ * Event emitted when the auto updater has an error.
+ */
+autoUpdater.on('error', function(event) {
+    mainWindow.webContents.send('TP.sig.UpdateError', event);
+});
+
+//  ---
+
+/**
+ * Event emitted when the auto updater has an update available.
+ */
+autoUpdater.on('update-available', function(event) {
+    mainWindow.webContents.send('TP.sig.UpdateAvailable', event);
+});
+
+//  ---
+
+/**
+ * Event emitted when the auto updater has no update available.
+ */
+autoUpdater.on('update-not-available', function(event) {
+    mainWindow.webContents.send('TP.sig.UpdateNotAvailable', event);
+});
+
+//  ---
+
+/**
+ * Event emitted when the auto updater has the latest update downloaded.
+ */
+autoUpdater.on('update-downloaded', function(event) {
+    mainWindow.webContents.send('TP.sig.UpdateDownloaded', event);
+});
+
+//  ---
+//  Event handlers defined for use by TIBET
+//  NB: These use the new-as-of-Electron-6 'invoke/handle' mechanism where
+//  'invoke' returns a Promise.
+//  ---
+
+/**
+ * Event emitted when TIBET wants the application version.
+ */
+ipcMain.handle('TP.sig.getAppVersion',
+    function() {
+        return app.getVersion();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to show a native notification.
+ */
+ipcMain.handle('TP.sig.ShowNativeNotification',
+    function(event, notificationConfig) {
+        var notifier;
+
+        notifier = new Notification(
+                    {
+                        title: notificationConfig.title,
+                        body: notificationConfig.body
+                    });
+
+        notifier.show();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to show a native dialog.
+ */
+ipcMain.handle('TP.sig.ShowNativeDialog',
+    function(event, dialogConfig) {
+        var choice;
+
+        choice = dialog.showMessageBoxSync(
+                    mainWindow,
+                    {
+                        type: dialogConfig.type,
+                        title: dialogConfig.title,
+                        message: dialogConfig.message,
+                        defaultId: dialogConfig.defaultId,
+                        cancelId: dialogConfig.cancelId,
+                        buttons: dialogConfig.buttons
+                    });
+
+        return choice;
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to show a native error dialog.
+ */
+ipcMain.handle('TP.sig.ShowNativeErrorDialog',
+    function(event, dialogConfig) {
+        dialog.showErrorBox(dialogConfig.title, dialogConfig.message);
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to tweak the update menu item in the App menu.
+ */
+ipcMain.handle('TP.sig.ChangeUpdaterMenuItem',
+    function(event, menuItemInfo) {
+        let menu,
+            menuItem;
+
+        menu = Menu.getApplicationMenu();
+        menuItem = menu.getMenuItemById('updater');
+
+        menuItem.label = menuItemInfo.label;
+        menuItem.enabled = menuItemInfo.enabled;
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to check to see if updates are available.
+ */
+ipcMain.handle('TP.sig.CheckForUpdates',
+    function() {
+        //  check to see if there are any available updates using autoUpdater.
+        autoUpdater.checkForUpdates();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to download the latest application version.
+ */
+ipcMain.handle('TP.sig.DownloadUpdate',
+    function() {
+        autoUpdater.downloadUpdate();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to install the latest version and restart the
+ * application.
+ */
+ipcMain.handle('TP.sig.InstallUpdateAndRestart',
+    function() {
+        autoUpdater.quitAndInstall();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET has determined that the app has started and is
+ * ready.
+ */
+ipcMain.handle('TP.sig.AppDidStart',
+    function() {
+        //  check to see if there are any available updates using autoUpdater.
+        autoUpdater.checkForUpdates();
+    });
 
 }());
