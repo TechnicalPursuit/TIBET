@@ -1435,6 +1435,263 @@ function(signalTypes) {
 });
 
 //  ========================================================================
+//  TP.sig.ElectronSignal
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('ElectronSignal');
+
+TP.sig.ElectronSignal.defineSubtype('CheckForUpdate');
+TP.sig.ElectronSignal.defineSubtype('CheckingForUpdate');
+TP.sig.ElectronSignal.defineSubtype('UpdateError');
+TP.sig.ElectronSignal.defineSubtype('UpdateAvailable');
+TP.sig.ElectronSignal.defineSubtype('UpdateNotAvailable');
+TP.sig.ElectronSignal.defineSubtype('UpdateDownloaded');
+
+//  ========================================================================
+//  TP.core.ElectronMain
+//  ========================================================================
+
+TP.sig.SignalSource.defineSubtype('TP.core.ElectronMain');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMain.Type.defineAttribute('$listeners', TP.hc());
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMain.Type.defineMethod('addObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Invoked by observe() to add an observation or activate
+     *     underlying signaling hooks necessary to ensure proper signaling.
+     * @param {Object|Object[]} anOrigin One or more origins to observe.
+     * @param {Object|Object[]} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    var origins,
+        signals,
+
+        thisref,
+
+        len,
+        i,
+        len2,
+        j,
+
+        originID,
+        sigName,
+
+        entryKey;
+
+    if (TP.sys.cfg('boot.context') !== 'electron') {
+        return this.raise('UnsupportedOperation');
+    }
+
+    if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
+    }
+
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
+
+        return false;
+    }
+
+    thisref = this;
+
+    len = signals.getSize();
+
+    /* eslint-disable no-loop-func */
+    for (i = 0; i < len; i++) {
+
+        sigName = TP.expandSignalName(signals.at(i).getSignalName());
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            originID = TP.gid(origins.at(j));
+
+            //  Before we add the listener Function, we should check to see if
+            //  we already registered one for this origin/signal pair. If so,
+            //  then we don't need more than one.
+            entryKey = originID + TP.JOIN + sigName;
+            if (TP.notValid(this.get('$listeners').at(entryKey))) {
+
+                (function(origin, signal) {
+                    var listener;
+
+                    //  Create a listener Function that will signal with the
+                    //  supplied signal origin and name with the native Event as
+                    //  the payload.
+                    listener = function(evt) {
+                                TP.signal(origin,
+                                            signal,
+                                            TP.args(arguments, 1));
+                            };
+
+                    //  Add the listener to our listeners hash with the
+                    //  origin/signal key as the key. This ensures that no more
+                    //  than one entry for each origin/signal is added as a
+                    //  listener.
+                    thisref.get('$listeners').atPut(entryKey, listener);
+
+                    //  Message our external Electron library to register the
+                    //  listener for this signal.
+                    TP.extern.electron_lib_utils.addListenerForMainEvent(
+                                                            signal, listener);
+                }(originID, sigName));
+            }
+        }
+    }
+    /* eslint-enable no-loop-func */
+
+    //  Always tell the notification system to register our handler, etc.
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMain.Type.defineMethod('removeObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Invoked by ignore() to remove an observation or deactivate
+     *     underlying signaling hooks necessary to ensure proper signaling.
+     * @param {Object|Object[]} anOrigin One or more origins to ignore.
+     * @param {Object|Object[]} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as
+     *     TP.CAPTURING or a specific function to manage the observe process.
+     *     IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    var origins,
+        signals,
+
+        len,
+        i,
+        len2,
+        j,
+
+        originID,
+        sigName,
+
+        entryKey,
+
+        listener;
+
+    if (TP.sys.cfg('boot.context') !== 'electron') {
+        return this.raise('UnsupportedOperation');
+    }
+
+    if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
+    }
+
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
+
+        return false;
+    }
+
+    len = signals.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        sigName = TP.expandSignalName(signals.at(i).getSignalName());
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            originID = TP.gid(origins.at(j));
+
+            //  Compute a origin/signal key and see if a listener is available
+            //  for removal.
+            entryKey = originID + TP.JOIN + sigName;
+            listener = this.get('$listeners').at(entryKey);
+
+            //  We found a valid listener - remove it from our listeners hash
+            //  and message our external Electron library to remove the listener
+            //  for this signal.
+            if (TP.isValid(listener)) {
+                this.get('$listeners').removeKey(entryKey);
+
+                TP.extern.electron_lib_utils.removeListenerForMainEvent(
+                    sigName, listener);
+            }
+        }
+    }
+
+    //  Always tell the notification system to remove our handler, etc.
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMain.Type.defineMethod('signalMain',
+function(aSignal, varargs) {
+
+    /**
+     * @method signalMain
+     * @summary Sends the specified signal to Electron's 'main' process.
+     * @param {String} aSignal The signal name to send to the main process.
+     * @param {arguments} varargs Optional additional arguments for the
+     *     constructor.
+     * @returns {Promise} The Promise returned from sending the event to the
+     *     main process.
+     */
+
+    //  NB: We just pass along all arguments here - this call will 'do the right
+    //  thing'.
+    return TP.extern.electron_lib_utils.sendEventToMain(TP.ac(arguments));
+});
+
+//  ========================================================================
 //  TP.sig.GeolocationSignal
 //  ========================================================================
 

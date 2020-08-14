@@ -14,7 +14,7 @@
 
 /* eslint-disable one-var */
 
-const {remote} = require('electron');
+const {remote, contextBridge} = require('electron');
 
 //  ---
 //  Common TIBET utilities that will be made available inside of TIBET under
@@ -22,7 +22,7 @@ const {remote} = require('electron');
 //  ---
 
 const lib_preload = require('./TIBET-INF/tibet/etc/electron/preload_lib.js');
-window.preload_lib_utils = lib_preload();
+contextBridge.exposeInMainWorld('preload_lib_utils', lib_preload());
 
 //  ---
 //  Other app-level utils. We recommend putting other application-level
@@ -32,10 +32,12 @@ window.preload_lib_utils = lib_preload();
 
 //  NB: Do *NOT* remove this object definition.
 const app_preload = {};
-window.preload_app_utils = app_preload;
+contextBridge.exposeInMainWorld('preload_app_utils', app_preload);
 
 //  A sample utility that will close the current window. This can be safely
-//  removed if not required.
+//  removed if not required (and probably should be since the default now for
+//  TIBET Electron apps is to turn off the 'remote' object - if you leave this
+//  code in, you need to set 'enableRemoteModule' to true in electron.js).
 app_preload.closeCurrentWindow = function() {
     let currentWindow;
 

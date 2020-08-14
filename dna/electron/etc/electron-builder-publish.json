@@ -1,0 +1,25 @@
+{
+    "appId": "com.technicalpursuit.ElectronAutoUpdate",
+    "publish": [{
+    }],
+    "asar": false,
+    "extraResources": [
+        {
+            "from": "./TIBET-INF/tibet/node_modules",
+            "to": "./app/TIBET-INF/tibet/node_modules",
+            "filter": ["!puppeteer/*"]
+        },
+        {
+            "from": "./build",
+            "to": "./app/build"
+        }
+    ],
+    "mac": {
+        "hardenedRuntime": true,
+        "gatekeeperAssess": false,
+        "entitlements": "./etc/mac_build_files/entitlements.mac.plist",
+        "entitlementsInherit": "./etc/mac_build_files/entitlements.mac.plist",
+        "target": ["dmg", "zip"]
+    },
+    "afterSign": "./etc/mac_build_files/notarize.js"
+}

@@ -21,7 +21,7 @@
 
 <h1 id="tibet-freeze1----freezes-the-current-projects-tibet-library">tibet-freeze(1) -- freezes the current project&#39;s TIBET library</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet freeze [--tibet &lt;bundle&gt;] [--minify] [--all] [--raw] [--zipped]</code></p>
+<p><code>tibet freeze [--tibet &lt;bundle&gt;] [--minify] [--all] [--source] [--standalone] [--zipped] [--brotlied]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>NOTE: this command will be removed in a future release once splitting
 of the TIBET npm package into <code>tibet-cli</code> and <code>tibet</code> is complete.</p>
@@ -54,10 +54,15 @@ Controls whether you freeze minified source code and is used in conjunction
 with the <code>--tibet</code> flag to filter bundles. The default value is true, so only
 minified code is frozen by default.</p>
 </li>
-<li><p><code>--raw</code> :
+<li><p><code>--source</code> :
 Causes the current TIBET source tree to be copied into the target directory.
 This option supports dynamic development with TIBET source code but does have a
 performance impact.</p>
+</li>
+<li><p><code>--standalone</code> :
+Packages a completely standalone environment that will allow an application
+to use not only TIBET client code, but TDS server and TIBET CLI code all bundled
+within a standalone package.</p>
 </li>
 <li><p><code>--zipped</code> :
 Controls whether zipped copies are preserved or pruned. This flag works

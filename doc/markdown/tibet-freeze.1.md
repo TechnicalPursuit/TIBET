@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-`tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw] [--zipped]`
+`tibet freeze [--tibet <bundle>] [--minify] [--all] [--source] [--standalone] [--zipped] [--brotlied]`
 
 ## DESCRIPTION
 
@@ -43,10 +43,15 @@ source found in the `~lib_build` directory.
 with the `--tibet` flag to filter bundles. The default value is true, so only
 minified code is frozen by default.
 
-  * `--raw` :
+  * `--source` :
     Causes the current TIBET source tree to be copied into the target directory.
 This option supports dynamic development with TIBET source code but does have a
 performance impact.
+
+  * `--standalone` :
+    Packages a completely standalone environment that will allow an application
+to use not only TIBET client code, but TDS server and TIBET CLI code all bundled
+within a standalone package.
 
   * `--zipped` :
     Controls whether zipped copies are preserved or pruned. This flag works

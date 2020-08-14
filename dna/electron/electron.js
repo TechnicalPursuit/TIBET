@@ -19,6 +19,7 @@
 'use strict';
 
 const electron = require('electron'),
+    autoUpdater = require('electron-updater').autoUpdater,
     sh = require('shelljs'),
     minimist = require('minimist'),
 
@@ -28,14 +29,19 @@ const electron = require('electron'),
 
     app = electron.app,                     //  Module to control application
                                             //  life.
-    dialog = electron.dialog,               //  Module to create dialog.
+    ipcMain = electron.ipcMain,             //  Module to communicate with
+                                            //  renderer processes over IPC.
+    dialog = electron.dialog,               //  Module to create dialogs.
+    Menu = electron.Menu,                   //  Module to manage menus.
     BrowserWindow = electron.BrowserWindow, //  Module to create browser window.
+    Notification = electron.Notification,   //  Module to create notifications.
     PARSE_OPTIONS = CLI.PARSE_OPTIONS;
 
 //  Keep a global reference of the window object, if you don't, the window will
 //  be closed automatically when the JavaScript object is garbage collected.
 let configure,
     createWindow,
+    setupAppMenu,
     mainWindow,
     logger,
     options,
@@ -73,6 +79,8 @@ configure = function() {
     }
 };
 
+//  ---
+
 /**
  * Primary function used to launch Electron. Marshals command line arguments as
  * well as any tibet.json "electron" options to configure the main window and
@@ -82,7 +90,8 @@ createWindow = function() {
     let builddir,
         fileUrl,
         paramStr,
-        profile;
+        profile,
+        defaultProfile;
 
     //  Verify build directory and add a development profile if not found.
     builddir = pkg.expandPath('~app_build');
@@ -92,13 +101,18 @@ createWindow = function() {
         logger.warn('No build directory. Must use a development boot.profile.');
         logger.warn('Run `tibet build` to create your app\'s production build.');
 
-        //  Don't replace existing...but ensure development as a base default.
-        profile = electronOpts['boot.profile'];
-        if (!profile) {
-            electronOpts['boot.profile'] = 'development@developer';
-            logger.warn('No boot.profile. Forcing boot.profile ' +
-                electronOpts['boot.profile']);
-        }
+        //  No build directory - set the default to be development@developer.
+        defaultProfile = 'development@developer';
+    } else {
+        //  Found build directory - set the default to be main@base.
+        defaultProfile = 'main@base';
+    }
+
+    //  Don't replace existing...but ensure default profile as a base default.
+    profile = electronOpts['boot.profile'];
+    if (!profile) {
+        electronOpts['boot.profile'] = defaultProfile;
+        logger.warn('No boot.profile. Forcing boot.profile ' + defaultProfile);
     }
 
     //  and load the index.html of the app.
@@ -124,7 +138,10 @@ createWindow = function() {
         height: 768,
         webPreferences: {
             preload: CLI.joinPaths(__dirname, './preload.js'),
-            webSecurity: scraping ? false : true
+            webSecurity: scraping ? false : true,
+            nodeIntegration: false,
+            enableRemoteModule: false,
+            contextIsolation: true
         }
     });
 
@@ -169,13 +186,14 @@ createWindow = function() {
         }
     });
 
-    //  When the user tries to quit or close the main window running TIBET. Note
-    //  that the code in TIBET has a special case for the 'onbeforeunload' event
-    //  handler for Electron that always returns a value that causes this event
-    //  to be thrown.
+    //  Main window event handlers
+
+    //  Event emitted when the user tries to quit or close the main window
+    //  running TIBET. Note that the code in TIBET has a special case for the
+    //  'onbeforeunload' event handler for Electron that always returns a value
+    //  that causes this event to be thrown.
     mainWindow.webContents.on('will-prevent-unload',
     function(event) {
-
         var choice,
             leave;
 
@@ -197,13 +215,78 @@ createWindow = function() {
     });
 
     //  Emitted when the window is closed.
-    mainWindow.on('closed', function() {
-        //  Dereference the window object, usually you would store windows in an
-        //  array if your app supports multi windows, this is the time when you
-        //  should delete the corresponding element.
+    mainWindow.on('closed',
+        function() {
+            //  Dereference the window object, usually you would store windows
+            //  in an array if your app supports multi windows, this is the time
+            //  when you should delete the corresponding element.
         mainWindow = null;
     });
 };
+
+//  ---
+
+/**
+ * Function to set up the App menu.
+ */
+
+setupAppMenu = function() {
+
+    var appMenuTemplate,
+        menu;
+
+    appMenuTemplate = [
+        {
+            label: app.getName(),
+            submenu: [
+                {
+                    role: 'about'
+                },
+                {
+                    label: 'Version ' + app.getVersion(), enabled: false
+                },
+                {
+                    id: 'updater',
+                    label: 'Check for updates',
+                    enabled: false,
+                    click: () => {
+                        mainWindow.webContents.send(
+                            'TP.sig.CheckForUpdate', false);
+                    }
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    role: 'services'
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    role: 'hide'
+                },
+                {
+                    role: 'hideothers'
+                },
+                {
+                    role: 'unhide'
+                },
+                {
+                    type: 'separator'
+                },
+                {
+                    role: 'quit'
+                }
+            ]
+        }
+    ];
+
+    menu = Menu.buildFromTemplate(appMenuTemplate);
+    Menu.setApplicationMenu(menu);
+};
+
+//  ---
 
 /*
  * Configure the environment
@@ -211,13 +294,31 @@ createWindow = function() {
 configure();
 
 //  ---
-//  Event Handlers
+//  Set main process configuration
+//  ---
+
+/*
+ * Set this flag to true for forward compatibility (and to quiet log messages).
+ */
+app.allowRendererProcessReuse = true;
+
+/*
+ * If we're scraping, add a command line switch (to command line of the embedded
+ * Chrome engine) to bypass Chrome's site isolation testing.
+ */
+if (scraping) {
+    app.commandLine.appendSwitch('disable-site-isolation-trials');
+}
+
+
+//  ---
+//  Main process event handlers
 //  ---
 
 /**
- * This method will be called when code running in Electron's NodeJS process has
- * thrown an exception that has not been caught and has bubbled all of the way
- * up to the event loop.
+ * Event emitted when code running in Electron's NodeJS process has thrown an
+ * exception that has not been caught and has bubbled all of the way up to the
+ * event loop.
  */
 process.on('uncaughtException', function(err) {
     var str,
@@ -245,29 +346,25 @@ process.on('uncaughtException', function(err) {
     }
 });
 
-/*
- * Set this flag to true for forward compatibility (and to quiet log messages).
- */
-app.allowRendererProcessReuse = true;
-
-/*
- * If we're scraping, add a command line switch (to command line of the embedded
- * Chrome engine) to bypass Chrome's site isolation testing.
- */
-if (scraping) {
-    app.commandLine.appendSwitch('disable-site-isolation-trials');
-}
+//  ---
+//  Application object event handlers
+//  ---
 
 /**
- * This method will be called when Electron has finished initialization and is
- * ready to create browser windows. Some APIs can only be used after this event
- * occurs.
+ * Event emitted when Electron has finished initialization and is ready to
+ * create browser windows. Some APIs can only be used after this event occurs.
  */
-app.on('ready', createWindow);
+app.on('ready',
+        function() {
+            createWindow();
+            setupAppMenu();
+        });
 
+
+//  ---
 
 /**
- * This method will be called when all windows are closed.
+ * Event emitted when all windows are closed.
  */
 app.on('window-all-closed', function() {
     //  On OS X it is common for applications and their menu bar
@@ -278,9 +375,11 @@ app.on('window-all-closed', function() {
 });
 
 
+//  ---
+
 /**
- * This method will be called when the user launches the app, clicks on the Mac
- * OS X dock or Windows taskbar or tries to relaunch when already running.
+ * Event emitted when the user launches the app, clicks on the Mac OS X dock or
+ * Windows taskbar or tries to relaunch when already running.
  */
 app.on('activate', function() {
     //  On OS X it's common to re-create a window in the app when the
@@ -289,5 +388,183 @@ app.on('activate', function() {
         createWindow();
     }
 });
+
+//  ---
+//  Auto updater configuration and event handlers
+//  ---
+
+//  We do *not* auto download and install by default.
+autoUpdater.autoDownload = false;
+
+//  ---
+
+/**
+ * Event emitted when the auto updater is checking for an available update.
+ */
+autoUpdater.on('checking-for-update', function(event) {
+    mainWindow.webContents.send('TP.sig.CheckingForUpdate', event);
+});
+
+//  ---
+
+/**
+ * Event emitted when the auto updater has an error.
+ */
+autoUpdater.on('error', function(event) {
+    mainWindow.webContents.send('TP.sig.UpdateError', event);
+});
+
+//  ---
+
+/**
+ * Event emitted when the auto updater has an update available.
+ */
+autoUpdater.on('update-available', function(event) {
+    mainWindow.webContents.send('TP.sig.UpdateAvailable', event);
+});
+
+//  ---
+
+/**
+ * Event emitted when the auto updater has no update available.
+ */
+autoUpdater.on('update-not-available', function(event) {
+    mainWindow.webContents.send('TP.sig.UpdateNotAvailable', event);
+});
+
+//  ---
+
+/**
+ * Event emitted when the auto updater has the latest update downloaded.
+ */
+autoUpdater.on('update-downloaded', function(event) {
+    mainWindow.webContents.send('TP.sig.UpdateDownloaded', event);
+});
+
+//  ---
+//  Event handlers defined for use by TIBET
+//  NB: These use the new-as-of-Electron-6 'invoke/handle' mechanism where
+//  'invoke' returns a Promise.
+//  ---
+
+/**
+ * Event emitted when TIBET wants the application version.
+ */
+ipcMain.handle('TP.sig.getAppVersion',
+    function() {
+        return app.getVersion();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to show a native notification.
+ */
+ipcMain.handle('TP.sig.ShowNativeNotification',
+    function(event, notificationConfig) {
+        var notifier;
+
+        notifier = new Notification(
+                    {
+                        title: notificationConfig.title,
+                        body: notificationConfig.body
+                    });
+
+        notifier.show();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to show a native dialog.
+ */
+ipcMain.handle('TP.sig.ShowNativeDialog',
+    function(event, dialogConfig) {
+        var choice;
+
+        choice = dialog.showMessageBoxSync(
+                    mainWindow,
+                    {
+                        type: dialogConfig.type,
+                        title: dialogConfig.title,
+                        message: dialogConfig.message,
+                        defaultId: dialogConfig.defaultId,
+                        cancelId: dialogConfig.cancelId,
+                        buttons: dialogConfig.buttons
+                    });
+
+        return choice;
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to show a native error dialog.
+ */
+ipcMain.handle('TP.sig.ShowNativeErrorDialog',
+    function(event, dialogConfig) {
+        dialog.showErrorBox(dialogConfig.title, dialogConfig.message);
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to tweak the update menu item in the App menu.
+ */
+ipcMain.handle('TP.sig.ChangeUpdaterMenuItem',
+    function(event, menuItemInfo) {
+        let menu,
+            menuItem;
+
+        menu = Menu.getApplicationMenu();
+        menuItem = menu.getMenuItemById('updater');
+
+        menuItem.label = menuItemInfo.label;
+        menuItem.enabled = menuItemInfo.enabled;
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to check to see if updates are available.
+ */
+ipcMain.handle('TP.sig.CheckForUpdates',
+    function() {
+        //  check to see if there are any available updates using autoUpdater.
+        autoUpdater.checkForUpdates();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to download the latest application version.
+ */
+ipcMain.handle('TP.sig.DownloadUpdate',
+    function() {
+        autoUpdater.downloadUpdate();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET wants to install the latest version and restart the
+ * application.
+ */
+ipcMain.handle('TP.sig.InstallUpdateAndRestart',
+    function() {
+        autoUpdater.quitAndInstall();
+    });
+
+//  ---
+
+/**
+ * Event emitted when TIBET has determined that the app has started and is
+ * ready.
+ */
+ipcMain.handle('TP.sig.AppDidStart',
+    function() {
+        //  check to see if there are any available updates using autoUpdater.
+        autoUpdater.checkForUpdates();
+    });
 
 }());
