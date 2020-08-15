@@ -796,8 +796,6 @@ Cmd.prototype.phaseThree = function(meta) {
     * At this point the develop branch is updated, tagged, and pushed and the
     * changes there have been merged into master, tagged, and pushed. So for the
     * most part you could say the release is built.
-    *
-    * Last step left: pack/publish to npm.
     */
 
     this.info('Read https://gist.github.com/coolaj86/1318304 and npm publish.');

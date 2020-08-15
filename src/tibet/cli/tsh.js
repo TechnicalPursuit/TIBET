@@ -394,7 +394,11 @@ Cmd.prototype.execute = function() {
             switch (msg.type()) {
                 case 'error':
                     if (/Failed to load/i.test(text)) {
-                        cmd.stderr(text + ' : ' + msg.location().url);
+                        cmd.stderr(text + ' ' +
+                                    '(' +
+                                    'in file : ' + msg.location().url + ' ' +
+                                    'at line: ' + msg.location().lineNumber +
+                                    ')');
                     } else {
                         cmd.stderr(msg);
                     }
