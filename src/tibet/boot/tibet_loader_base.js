@@ -3140,6 +3140,9 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
             return TP.boot.$uriLoadMozFile(targetUrl, returnType);
         }
 
+        TP.boot.$stderr('AccessException: ' + targetUrl,
+                        TP.boot.$ec(e));
+
         return null;
     }
 
@@ -3189,6 +3192,9 @@ TP.boot.$uriLoadIEFile = function(targetUrl, resultType) {
             httpObj.open(TP.HTTP_GET, targetUrl, false);
             httpObj.send(null);
         } catch (e) {
+            TP.boot.$stderr('AccessException: ' + targetUrl,
+                            TP.boot.$ec(e));
+
             //  An exception is thrown with 'The system cannot locate the
             //  resource specified' if file isn't there
             return null;
