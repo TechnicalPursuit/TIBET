@@ -1686,6 +1686,10 @@ function(aSignal, varargs) {
      *     main process.
      */
 
+    if (TP.sys.cfg('boot.context') !== 'electron') {
+        return this.raise('UnsupportedOperation');
+    }
+
     //  NB: We just pass along all arguments here - this call will 'do the right
     //  thing'.
     return TP.extern.electron_lib_utils.sendEventToMain(TP.ac(arguments));

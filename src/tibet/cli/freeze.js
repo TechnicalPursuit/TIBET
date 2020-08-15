@@ -282,14 +282,18 @@ Cmd.prototype.execute = function() {
     //  TIBET's node_modules directory into the standalone project.
     if (this.options.standalone) {
 
-        this.log('freezing developer cli resources...');
-        sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'cli'));
-        err = sh.cp('-Rn',
-                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'cli') + '/',
-                    CLI.joinPaths(infroot, 'src', 'tibet'));
-        if (sh.error()) {
-            this.error('Error cloning tibet cli: ' + err.stderr);
-            return 1;
+        //  If '--source' was supplied, then we already copied the entire
+        //  src/tibet directory above.
+        if (!this.options.source) {
+            this.log('freezing developer cli resources...');
+            sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'cli'));
+            err = sh.cp('-Rn',
+                        CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'cli') + '/',
+                        CLI.joinPaths(infroot, 'src', 'tibet'));
+            if (sh.error()) {
+                this.error('Error cloning tibet cli: ' + err.stderr);
+                return 1;
+            }
         }
 
         this.log('freezing developer tds resources...');
