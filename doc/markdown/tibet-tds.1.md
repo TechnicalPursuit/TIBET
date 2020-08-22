@@ -3,7 +3,13 @@
 
 ## SYNOPSIS
 
-`tibet tds start [<options>] [--env <name>]`
+`tibet start [--env <name>]
+    [--debug]
+    [--level=['all'|'trace'|'debug'|'info'|'warn'|
+                'error'|'fatal'|'system'|'off']]
+    [--debugger] [--port N] [--color[=true|false]] [--no-color]
+    [--https] [--https_port N]
+    [<options>]`
 
 ## DESCRIPTION
 
@@ -34,9 +40,29 @@ output of `tibet config tds` for a list of current options.
 the system when loading values from `tds.json`, the server's config file. Common
 values are `development` (the default), and `production`.
 
-  * `--tds.port` :
-    A commonly used `tibet config` option value which alters the port number the
-server should start on.
+  * `--debug` :
+    Sets the server's logging level to 'debug'.
+
+  * `--level` :
+    Sets the server's logging level to the supplied level.
+
+  * `--debugger` :
+    A flag which causes the hosting server to start in a debugging mode, waiting
+for a Node-compatible debugger to 'attach' itself to the process.
+
+  * `--port` :
+    A flag which alters the port number the server should start on.
+
+  * `--color` :
+    A flag which determines whether the output from this command will be
+colorized. You can use `--no-color` as an alternative to using `false` here.
+
+  * `--https` :
+    Whether or not the server should start in https mode.
+
+  * `--https_port` :
+    A flag which alters the port number the server should start on when the
+server is started in https mode.
 
 ## CONFIGURATION SETTINGS
 

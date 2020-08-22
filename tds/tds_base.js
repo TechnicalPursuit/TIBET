@@ -89,9 +89,9 @@
      */
     /* eslint-disable quote-props */
     TDS.PARSE_OPTIONS = {
-        'boolean': ['color', 'debug', 'verbose'],
-        'string': ['level', 'tds.log.level'],
-        'number': ['port', 'tds.port'],
+        'boolean': ['color', 'debug', 'https', 'no-color'],
+        'string': ['level'],
+        'number': ['port', 'https_port'],
         'default': {
             color: true
         }

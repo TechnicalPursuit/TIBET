@@ -54,15 +54,14 @@ Cmd.NAME = 'config';
 //  ---
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['users'],
-        'string': ['env'],
-        'default': {
-            'env': 'development'
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['users'],
+    string: ['env'],
+    default: {
+        'env': 'development'
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**

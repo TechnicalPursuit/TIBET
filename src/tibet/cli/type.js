@@ -74,13 +74,19 @@ Cmd.prototype.NEEDS_FORCE = false;
  */
 Cmd.prototype.TEMPLATE_KEY = 'typename';
 
+//  NOTE the parse options here are just for the 'tws' command itself.
+//  Subcommands need to parse via their own set of options.
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    string: ['name', 'supertype', 'dir', 'dna', 'package', 'config']
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
+
 /**
  * The command usage string.
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet type [--name] [[<root>.]<namespace>:]<typename> [--supertype <typename>]' +
-    ' [--dir <dirname>] [--dna <template>] [--package <pkgname>] [--config <cfgname>]';
+    'tibet type [--name [[<root>.]<namespace>:]<typename>] [--supertype <typename>] [--dir <dirname>] [--dna <template>] [--package <package>] [--config <cfgname>]';
 
 //  ---
 //  Instance Methods

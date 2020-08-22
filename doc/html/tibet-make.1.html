@@ -21,7 +21,8 @@
 
 <h1 id="tibet-make1----runs-a-function-as-a-task">tibet-make(1) -- runs a function as a task</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet make &lt;target&gt; [--list] [--private] [--timeout &lt;ms&gt;]</code></p>
+<p><code>tibet make &lt;target&gt; [--list] [--private] [--timeout &lt;ms&gt;] [--stack]
+    [--brotli] [--zip]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>This command runs lightweight commands in the form of functions, much like Grunt
 or Gulp. There&#39;s no dependency checking or true &#39;make&#39;-like functionality but
@@ -44,9 +45,18 @@ Used to list the available <code>tibet make</code> targets you can run.</p>
 Tells the <code>--list</code> operation to also include private tasks, tasks whose
 names begin with <code>_</code> so they are normally filtered by the list option.</p>
 </li>
+<li><p><code>--stack</code> :
+Tells the task machinery to print an output of the stack if it errors.</p>
+</li>
 <li><p><code>--timeout &lt;ms&gt;</code> :
 Gives you a way to provide a millisecond timeout value in which each task
 must complete successfully. The default is 15 seconds (15000).</p>
+</li>
+<li><p><code>--brotli</code> :
+Whether or not to generate brotli-compressed packages of JavaScript code.</p>
+</li>
+<li><p><code>--zip</code> :
+Whether or not to generate gzip-compressed packages of JavaScript code.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>

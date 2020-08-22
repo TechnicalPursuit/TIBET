@@ -60,19 +60,19 @@ Cmd.NAME = 'version';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['check'],
-        'default': {}
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['check', 'stack'],
+    default: {
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet version [--check] [--full]';
+Cmd.prototype.USAGE = 'tibet version [--check] [--stack]';
 
 
 //  ---

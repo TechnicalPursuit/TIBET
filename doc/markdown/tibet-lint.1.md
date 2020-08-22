@@ -3,19 +3,27 @@
 
 ## SYNOPSIS
 
-`tibet lint [[--filter] <filter>] [--force] [--nodes] [[--style] [--js] [--json] [--xml] [--only]] [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]`
+`tibet lint [[--filter] <filter>] [--force] [--list] [--nodes]
+    [[--js] [--json] [--no-js] [--no-json] [--no-style] [--no-xml]
+    [--only] [--style] [--xml]] [--quiet] [--scan] [--stop]
+    [package-opts] [eslint-opts] [stylelint-opts]`
 
 ## DESCRIPTION
 
 Runs a variety of lint tools on files specified in a TIBET package.
 
-The optional `filter` argument provides a string or regular expression
-used to filter file names. If the filter begins and ends with / it is
-treated as a regular expression for purposes of file filtering.
+The optional `filter` argument provides a string or regular expression used to
+filter file names. If the filter begins and ends with / it is treated as a
+regular expression for purposes of file filtering.
 
-`--force` overrides any information found in .tibelint.json which would otherwise
-keep lint from looking at files it thinks haven't changed since the last run.
-This is a flag you should always include in your CI / build configurations.
+`--force` overrides any information found in .tibetlint.json which would
+otherwise keep lint from looking at files it thinks haven't changed since the
+last run. This is a flag you should always include in your CI / build
+configurations.
+
+`--nodes` tells the linter to use the package node `src` and/or `href` values to
+locate files. This is the default as opposed to `--scan` which looks at the file
+system for raw files by extension.
 
 `--scan` overrides any package options and causes the lint command to scan the
 filesystem rather than using package configuration entries to determine the file
@@ -24,22 +32,19 @@ set to process.
 `--stop` tells the lint process to stop running after the first error condition,
 supporting a fast-fail approach for build scripts etc.
 
-`--nodes` tells the linter to use the package node `src` and/or `href` values to
-locate files. This is the default as opposed to `--scan` which looks at the file
-system for raw files by extension.
-
 The various "extension" flags (`--js`, `--json`, `--style`, `--xml`) tell lint
-whiich file types you want to scan. By default all are checked. You can combine
+which file types you want to scan. By default all are checked. You can combine
 any one of these flags with `--only` to lint only that type of file.
 
 `[package-opts]` refers to valid options for a TIBET Package object and help
 determine which subset of the application's manifests should be targeted. These
 include `--package`, `--config`, `--phase`, `--context`, etc. The targeted
 package@config defaults to `~app_cfg/main.xml` and its default config (usually
-`base`). See help on the `tibet package` command for more information.
+`base`). See help on the `tibet package` command for more information and for a
+complete set of flags.
 
-`[eslint-opts]` refers to `--esconfig`, `--esrules`, and `--esignore` which
-let you configure `eslint` to meet your specific needs. The linter will
+`[eslint-opts]` refers to `--esconfig`, `--esrules`, and `--esignore` which let
+you configure `eslint` to meet your specific needs. The linter will
 automatically take advantage of a `.eslintrc` file in your project.
 
 `[stylelint-opts]` refers to `--styleconfig` which allows you to specify a
@@ -53,10 +58,18 @@ the currently supported linters.
 
 ## OPTIONS
 
+  * `--filter` :
+    An alternate way to provide the filter expression to filter for file names
+to lint.
+
   * `--force`:
     Tell the linter to ignore any `tibetlint.json` file content which would
 limit the check to only changed files. With `--force` set all files will be
 checked even if they haven't changed since the last lint pass.
+
+  * `--list` :
+    Tell the linter to produce only the list of files it *would* lint and to
+*not* actually perform the linting operation on those files.
 
   * `--nodes` :
     Tell the linter not to scan but instead to use the nodes from the
@@ -81,7 +94,7 @@ makes direct use of.
 
 ## CONFIGURATION SETTINGS
 
-  * `boot.deafult_package`:
+  * `boot.default_package`:
     Read if no other default package information is available.
 
   * `cli.lint.js_extensions`:

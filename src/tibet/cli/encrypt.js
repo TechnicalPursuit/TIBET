@@ -58,11 +58,7 @@ Cmd.NAME = 'encrypt';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'string': ['text']
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -84,7 +80,7 @@ Cmd.prototype.execute = function() {
     var text;
 
     //  NOTE argv[0] is the command name.
-    text = this.options.text || this.getArgv()[1];
+    text = this.getArgv()[1];
     if (CLI.isEmpty(text)) {
         throw new Error('No text to encrypt.');
     }

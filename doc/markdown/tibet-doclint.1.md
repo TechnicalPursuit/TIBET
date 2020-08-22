@@ -3,7 +3,8 @@
 
 ## SYNOPSIS
 
-`tibet doclint [<target>] [--filter <filter>] [--missing] [--tap] [--context <app|lib|all>]`
+`tibet doclint [<target>] [--filter <filter>] [--missing]
+    [--tap[=true|false]] [--no-tap] [--context=['app'|'lib'|'all']]`
 
 ## DESCRIPTION
 
@@ -19,8 +20,8 @@ If you provide an optional string parameter it will be used as a target ID which
 must resolve via TP.bySystemId. Only methods owned by that target will be
 checked.
 
-If you provide a --filter the method names themselves will be filtered to match
-only the pattern or string provided.
+If you provide a `--filter` the method names themselves will be filtered to
+match only the pattern or string provided.
 
 If you specify `--missing` only missing comments will be reported. No additional
 checks on content will be performed.

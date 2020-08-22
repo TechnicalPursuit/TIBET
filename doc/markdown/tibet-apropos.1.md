@@ -3,7 +3,8 @@
 
 ## SYNOPSIS
 
-`tibet apropros <terms> [--comments] [--limit=N] [--ignorecase]`
+`tibet apropros <terms> [--comments] [--limit N]
+    [--ignorecase[=true|false]] [--no-ignorecase]`
 
 ## DESCRIPTION
 

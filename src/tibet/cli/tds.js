@@ -60,17 +60,18 @@ Cmd.NAME = 'tds';
 //  NOTE the parse options here are just for the 'tws' command itself.
 //  Subcommands need to parse via their own set of options.
 
-/* eslint-disable quote-props */
+//  We use the TDS's list here so we create a 'copy' and add to it.
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    CLI.blend({}, TDS.PARSE_OPTIONS),       //  we use the TDS's list here so
-    Cmd.Parent.prototype.PARSE_OPTIONS);    //  we create a 'copy' first.
-/* eslint-enable quote-props */
+    CLI.blend({
+        boolean: ['debugger']
+    }, TDS.PARSE_OPTIONS),
+Cmd.Parent.prototype.PARSE_OPTIONS);
 
 /**
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet tds start [--env <name>] [<tds options>]';
+Cmd.prototype.USAGE = 'tibet start [--env <name>] [--debug] [--level=[\'all\'|\'trace\'|\'debug\'|\'info\'|\'warn\'|\'error\'|\'fatal\'|\'system\'|\'off\']] [--debugger] [--port N] [--color[=true|false]] [--no-color] [--https] [--https_port N] [<options>]';
 
 
 //  ---
@@ -84,7 +85,6 @@ Cmd.prototype.executeStart = function() {
         args,       // Argument list for child process.
         nodeargs,   // Subset of arglist that are node-specific.
         serverargs, // Subset of arglist that are server-specific.
-        version,    // The current Node version.
         server,     // Spawned child process for the server.
         cmd,        // Closure'd var providing access to the command object.
         inuse;      // Flag to trap EADDRINUSE exceptions.
@@ -135,12 +135,7 @@ Cmd.prototype.executeStart = function() {
     }
 
     if (this.options.debugger && nodeargs.length === 0) {
-        version = process.versions.node;
-        if (parseInt(version.split('.'), 10) < 8) {
-            nodeargs.push('--inspect', '--debug-brk');
-        } else {
-            nodeargs.push('--inspect-brk');
-        }
+        nodeargs.push('--inspect-brk');
     }
 
     args = nodeargs.slice(0);

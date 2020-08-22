@@ -57,15 +57,14 @@ Cmd.NAME = 'doclint';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['tap', 'missing'],
-        'string': ['target', 'filter', 'context'],
-        'default': {
-            tap: true
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['tap', 'missing'],
+    string: ['target', 'filter', 'context'],
+    default: {
+        tap: true
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 
@@ -74,7 +73,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet doclint [<target>] [--filter <filter>] [--missing] [--tap] [--context <app|lib|all>]';
+    'tibet doclint [<target>] [--filter <filter>] [--missing] [--tap[=true|false]] [--no-tap] [--context <app|lib|all>]';
 
 //  ---
 //  Instance Methods

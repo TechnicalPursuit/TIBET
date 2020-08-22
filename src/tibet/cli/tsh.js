@@ -70,13 +70,11 @@ Cmd.NO_VALUE = '__TSH__NO_VALUE__TSH__';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-{
-    'boolean': ['color', 'errimg', 'help', 'usage', 'debug', 'tap',
-        'system', 'quiet'],
-    'string': ['script', 'url', 'params', 'level'],
-    'number': ['timeout'],
-    'default': {
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['break', 'silent', 'tap', 'verbose'],
+    string: ['package', 'profile', 'config', 'script'],
+    number: ['timeout'],
+    default: {
         color: true
     }
 },
@@ -94,7 +92,8 @@ Cmd.prototype.TIMEOUT = 15000;
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet tsh <script> [<headless_args>]';
+Cmd.prototype.USAGE = 'tibet tsh [--script=]<command> [--break] [--silent] [--verbose] [--package <package>] [--config <cfg>] [--profile <pkgcfg>] [--timeout <ms>] [--tap[=true|false]] [--no-tap] [<headless_args>]';
+
 
 //  ---
 //  Instance Methods
@@ -504,16 +503,16 @@ Cmd.prototype.execute = function() {
     }).then(function(context) {
 
         var input,
-            shouldPause;
+            shouldBreak;
 
         input = cmd.options.script;
-        shouldPause = cmd.options.pause;
+        shouldBreak = cmd.options.break;
 
         if (cmd.options.verbose) {
             cmd.stdout(input);
         }
 
-        return context.evaluate(function(tshInput, pauseBeforeExec) {
+        return context.evaluate(function(tshInput, breakBeforeExec) {
 
             return new Promise(function(resolve, reject) {
                 var handler;
@@ -593,7 +592,7 @@ Cmd.prototype.execute = function() {
                     resolve(results);
                 };
 
-                if (pauseBeforeExec) {
+                if (breakBeforeExec) {
                     /* eslint-disable no-debugger */
                     debugger;
                     /* eslint-enable no-debugger */
@@ -608,7 +607,7 @@ Cmd.prototype.execute = function() {
                     'onsuccess', handler,   //  success handler (same handler)
                     'onfail', handler));    //  failure handler (same handler)
             });
-        }, input, shouldPause);
+        }, input, shouldBreak);
 
     }).then(function(results) {
 

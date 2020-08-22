@@ -21,7 +21,8 @@
 
 <h1 id="tibet-doclint1----validates-method-comment-content">tibet-doclint(1) -- validates method comment content</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet doclint [&lt;target&gt;] [--filter &lt;filter&gt;] [--missing] [--tap] [--context &lt;app|lib|all&gt;]</code></p>
+<p><code>tibet doclint [&lt;target&gt;] [--filter &lt;filter&gt;] [--missing]
+    [--tap[=true|false]] [--no-tap] [--context=[&#39;app&#39;|&#39;lib&#39;|&#39;all&#39;]]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs the TSH <code>:doclint</code> command to validate method comment content.</p>
 <p>The doclint command uses TIBET reflection to find all methods in your
@@ -32,8 +33,8 @@ running <code>tibet lint</code> and <code>tibet test</code> on your code.</p>
 <p>If you provide an optional string parameter it will be used as a target ID which
 must resolve via TP.bySystemId. Only methods owned by that target will be
 checked.</p>
-<p>If you provide a --filter the method names themselves will be filtered to match
-only the pattern or string provided.</p>
+<p>If you provide a <code>--filter</code> the method names themselves will be filtered to
+match only the pattern or string provided.</p>
 <p>If you specify <code>--missing</code> only missing comments will be reported. No additional
 checks on content will be performed.</p>
 <p>The context (app, lib, or all) is generally defaulted based on any target data

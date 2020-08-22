@@ -3,11 +3,13 @@
 \fBtibet-package\fR \- list package assets either as asset paths or nodes
 .SH SYNOPSIS
 .P
-\fBtibet package [ [\-\-profile] <pkg_cfg> | [\-\-package <package>] [\-\-config <cfg>] ]
-    [\-\-phase <phase>] [\-\-all] [\-\-scripts] [\-\-styles] [\-\-images] [\-\-resources]
-    [\-\-templates] [\-\-inlined] [\-\-nodes]
+\fBtibet package [[\-\-profile <pkgcfg>] | [\-\-package <package>]
+    [\-\-config <cfg>]] [\-\-phase=['all'|'one'|'two'|'app'|'lib']]
+    [\-\-add <file_list>] [\-\-remove <file_list>]
+    [\-\-all] [\-\-unresolved] [\-\-unlisted] [\-\-inlined]
     [\-\-include <asset names>] [\-\-exclude <asset names>]
-    [\-\-add <list>] [\-\-remove <list>] [\-\-unresolved] [\-\-unlisted]\fP
+    [\-\-scripts] [\-\-resources] [\-\-images]
+    [\-\-silent] [\-\-fix] [\-\-verbose] [\-\-stack]\fP
 .SH DESCRIPTION
 .P
 Outputs a list of package assets either as asset nodes or asset paths\.
@@ -25,62 +27,72 @@ The underlying machinery of the \fBpackage\fP command is shared by a number of o
 TIBET commands, all of which leverage TIBET's application package/config files\.
 This includes the \fBrollup\fP, \fBresources\fP, and \fBlint\fP commands as well as any
 command line which launches TIBET headlessly to leverage reflection\.
+.P
+Note that this command can also take a set of open\-ended options that correspond
+to config 'boot\.' properties\. So, for instance, '\-\-boot\.minified=false' can be
+supplied on the command line and this will set the appropriate boot property\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
-\fBprofile\fP:
+\fB\-\-profile\fP:
 A profile in the form of package@config\.
 .IP \(bu 2
-\fBpackage\fP:
+\fB\-\-package\fP:
 The file path to the package to process\.
 .IP \(bu 2
-\fBconfig\fP:
+\fB\-\-config\fP:
 The name of an individual config to process\.
 .IP \(bu 2
-\fBphase\fP:
+\fB\-\-phase\fP:
 Boot phase subset to process <all | one | two | app | lib>\.
 .IP \(bu 2
-\fBall\fP:
-Process all the config tags in the package\.
-.IP \(bu 2
-\fBadd\fP:
+\fB\-\-add\fP:
 List of resources to add to the package\.
 .IP \(bu 2
-\fBremove\fP:
+\fB\-\-remove\fP:
 List of resources to remove from the package\.
 .IP \(bu 2
-\fBunresolved\fP:
+\fB\-\-all\fP:
+Process all the config tags in the package\.
+.IP \(bu 2
+\fB\-\-unresolved\fP:
 Output a list of unresolved (not found) assets of all types\.
 .IP \(bu 2
-\fBunlisted\fP:
+\fB\-\-unlisted\fP:
 Output a list of potentially overlooked source files\.
 .IP \(bu 2
-\fBinclude\fP:
+\fB\-\-inlined\fP:
+Include boot\.resourced resources (inlined URI content)
+.IP \(bu 2
+\fB\-\-include\fP:
 A space\-separated list of asset tags to include\.
 .IP \(bu 2
-\fBexclude\fP:
+\fB\-\-exclude\fP:
 A space\-separated list of asset tags to include\.
 .IP \(bu 2
-\fBnodes\fP:
-Output asset nodes rather than asset paths\.
-.IP \(bu 2
-\fBimages\fP:
+\fB\-\-images\fP:
 Include all image assets\.
 .IP \(bu 2
-\fBtemplates\fP:
-Include all template assets\.
-.IP \(bu 2
-\fBresources\fP:
+\fB\-\-resources\fP:
 Include all style, template, and resource assets\.
 .IP \(bu 2
-\fBscripts\fP:
+\fB\-\-scripts\fP:
 Include all JavaScript source\-containing assets\.
 .IP \(bu 2
-\fBstyles\fP:
-Include all CSS containing assets\.
+\fB\-\-silent\fP:
+Suppress all logging of 'duplicate assets' for quieter operation\.
 .IP \(bu 2
-\fBinlined\fP:
-Include boot\.resourced resources (inlined URI content)
+\fB\-\-fix\fP:
+Whether or not to add asset files that are found on disk but not as package
+entries (and need to be inserted) or package entries for which asset files can
+no longer be found (and need to be deleted)\.
+.IP \(bu 2
+\fB\-\-verbose\fP:
+Whether or not to log unlisted asset files that are found on disk but not as
+package entries\.
+.IP \(bu 2
+\fB\-\-stack\fP :
+Tells the packaging machinery to print an output of the stack if it errors\.
 
 .RE
 .SH CONFIGURATION SETTINGS

@@ -3,7 +3,9 @@
 
 ## SYNOPSIS
 
-`tibet couch <compactdb|createdb|listall|pushapp|removeapp|removedb|view> [<args>]`
+`tibet couch [--confirm[=true|false]] [--no-confirm]
+    <compactdb|createdb|listall|pushapp|removeapp|removedb|view>
+    [<args>]`
 
 ## DESCRIPTION
 

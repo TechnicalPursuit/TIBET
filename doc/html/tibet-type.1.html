@@ -21,7 +21,9 @@
 
 <h1 id="tibet-type1----creates-a-new-tibet-type">tibet-type(1) -- creates a new TIBET type</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet type [--name] [[&lt;root&gt;.]&lt;namespace&gt;:]&lt;typename&gt; [--supertype &lt;typename] [--dir &lt;dirname&gt;] [--dna &lt;template&gt;] [--package &lt;pkgname&gt;] [--config &lt;cfgname&gt;]</code></p>
+<p><code>tibet type [--name [[&lt;root&gt;.]&lt;namespace&gt;:]&lt;typename&gt;]
+    [--supertype &lt;typename] [--dir &lt;dirname&gt;] [--dna &lt;template&gt;]
+    [--package &lt;package&gt;] [--config &lt;cfg&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Creates a new TIBET type using the supplied type name and parameters.</p>
 <p>Type names can supply one, two or three parts, separated by <code>.</code> or <code>:</code>.</p>
@@ -40,6 +42,9 @@ the TIBET library.</p>
 optionally a template, style sheet, and test file.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
+<li><p><code>--name</code> :
+An alternate way to provide the type name to create.</p>
+</li>
 <li><p><code>--supertype</code> :
 The name of the supertype to use for the target type. This should be
 specified as a fully-qualified {root}.{namespace}.{typename} triplet.</p>

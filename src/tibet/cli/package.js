@@ -96,24 +96,23 @@ Cmd.NAME = 'package';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['all', 'scripts', 'resources', 'images', 'nodes',
-            'unresolved', 'inlined', 'unlisted'],
-        'string': ['package', 'config', 'include', 'exclude', 'phase',
-            'profile', 'add', 'remove'],
-        default: {
-            scripts: true,
-            resources: true,
-            images: true,
-            add: false,
-            remove: false,
-            fix: false,
-            unresolved: false,
-            unlisted: false
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['all', 'scripts', 'resources', 'images', 'unresolved',
+                'inlined', 'unlisted', 'silent', 'fix', 'verbose', 'stack'],
+    string: ['package', 'config', 'include', 'exclude', 'phase', 'profile', 'add',
+                'remove'],
+    default: {
+        scripts: true,
+        resources: true,
+        images: true,
+        add: false,
+        remove: false,
+        fix: false,
+        unresolved: false,
+        unlisted: false
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 
@@ -122,11 +121,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet package [[--profile ] <profile> | [--package <package>] [--config <cfg>]]\n' +
-    '\t[--phase <app|lib|all>] [--unresolved] [--unlisted]\n' +
-    '\t[--add <file_list>] [--remove <file_list>]\n' +
-    '\t[--include <asset names>] [--exclude <asset names>]\n' +
-    '\t[--scripts] [--resources] [--images] [--nodes]';
+    'tibet package [[--profile <pkgcfg>] | [--package <package>] [--config <cfg>]] [--phase=[\'all\'|\'one\'|\'two\'|\'app\'|\'lib\']] [--all] [--unresolved] [--unlisted] [--inlined] [--add <file_list>] [--remove <file_list>] [--include <asset names>] [--exclude <asset names>] [--scripts] [--resources] [--images] [--silent] [--fix] [--verbose] [--stack]';
 
 /**
  * List of any assets that need to be removed from the package during

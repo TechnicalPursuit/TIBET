@@ -79,14 +79,20 @@ Cmd.NAME = 'couch';
 
 //  NOTE the parse options here are just for the 'couch' command itself.
 //  Subcommands need to parse via their own set of options.
-Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['confirm'],
+    default: {
+        confirm: true
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 
 
 /**
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet couch <compactdb|createdb|listall|push|pushapp|removeapp|removedb|view> [<args>]';
+Cmd.prototype.USAGE = 'tibet couch [--confirm[=true|false]] [--no-confirm] <compactdb|createdb|listall|push|pushapp|removeapp|removedb|view> [<args>]';
 
 
 //  ---

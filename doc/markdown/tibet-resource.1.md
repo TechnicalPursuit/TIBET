@@ -3,7 +3,9 @@
 
 ## SYNOPSIS
 
-`tibet resource [--build] [--list] [--raw] [--type] [<package-opts>]`
+`tibet resource [--type <tname>] [--filter <filter>]
+    [--context=['app'|'lib'|'all']] [--profile <pkgcfg>]
+    [-all] [--build] [--list] [--raw] [--silent] [<package-opts>]`
 
 ## DESCRIPTION
 
@@ -30,9 +32,20 @@ built resources and include them.
 
 ## OPTIONS
 
+  * `--all` :
+    Tell the command to build all resources within the package.
+
   * `--build` :
     Tell the command to actually build resources and update the application
 package with any missing resource entries.
+
+  * `--context`:
+    Sets the context of the build run. The default is `app` if this command is
+run in a project (building only application-level resources) and `lib` if it is run within the TIBET library itself (building only library-level resources), ignoring any potential application resources. Other values are `lib` and `all`.
+
+  * `--filter`:
+    Sets a filter (which can be in RegExp syntax) to filter out resources that
+are not to be built.
 
   * `--list` :
     List but don't build the resources. This is the default flag.
@@ -42,9 +55,15 @@ package with any missing resource entries.
 references to files which may not exist since no checks are done and some
 client-side information is based on computed names from convention.
 
+  * `--profile`:
+    A profile in the form of package@config.
+
+  * `--silent`:
+    Suppress all logging for quieter operation.
+
   * `[package-opts]` :
     Refers to valid options for a TIBET Package object. These include --package,
---config, --phase, --assets, etc. The package@config defaults to
+--config, --phase, --context, etc. The package@config defaults to
 `~app_cfg/main.xml` and its default config (usually @base) so your typical
 configuration is built. See help on the `tibet package` command for more
 information.

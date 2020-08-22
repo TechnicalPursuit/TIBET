@@ -61,16 +61,15 @@ Cmd.NAME = 'freeze';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['minify', 'source', 'all', 'standalone', 'zipped', 'brotlied'],
-        'string': ['tibet'],
-        'default': {
-            all: true,
-            minify: true
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['minify', 'source', 'all', 'standalone', 'zipped', 'brotlied'],
+    string: ['tibet'],
+    default: {
+        all: true,
+        minify: true
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 
@@ -78,7 +77,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--source] [--zipped] [--brotlied]';
+Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--force] [--minify] [--all] [--standalone] [--source] [--zipped] [--brotlied]';
 
 
 //  ---

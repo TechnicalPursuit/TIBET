@@ -21,7 +21,9 @@
 
 <h1 id="tibet-tsh1----runs-a-tibet-shell-tsh-expression">tibet-tsh(1) -- runs a TIBET Shell (TSH) expression</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet tsh [--script=]&lt;command&gt; [&lt;headless_args&gt;]</code></p>
+<p><code>tibet tsh [--script=]&lt;command&gt; [--break] [--silent] [--verbose]
+    [--package &lt;package&gt;] [--config &lt;cfg&gt;] [--profile &lt;pkgcfg&gt;]
+    [--timeout &lt;ms&gt;] [--tap[=true|false]] [--no-tap] [&lt;headless_args&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs the TIBET headless environment to execute a TSH script.</p>
 <p>The script to execute is presumed to be the first argument, quoted as
@@ -36,12 +38,40 @@ provide to Headless Chrome.</p>
 A properly quoted command line for the TSH, escaped as necessary based on
 the requirements of your shell.</p>
 </li>
+<li><p><code>--script</code> :
+An optional argument used to define the <code>command</code>.</p>
+</li>
+<li><p><code>--break</code> :
+Whether or not the execution machinery should break and show the debugger
+<em>on the TIBET &#39;client-side&#39;</em>.</p>
+</li>
+<li><p><code>--silent</code> :
+Suppress all logging for quieter operation.</p>
+</li>
+<li><p><code>--verbose</code> :
+Whether or not to log the processing of the supplied script.</p>
+</li>
+<li><p><code>--package</code> :
+The file path to the package to load when running the script, rather than
+the standard boot package.</p>
+</li>
+<li><p><code>--config</code> :
+The name of an individual config to process.</p>
+</li>
+<li><p><code>--profile</code> :
+A profile in the form of package@config.</p>
+</li>
+<li><p><code>--timeout &lt;ms&gt;</code> :
+Gives you a way to provide a millisecond timeout value in which the shell
+script must complete successfully. The default is 15 seconds (15000).</p>
+</li>
+<li><p><code>--tap</code>:
+Turn on/off TAP output format. Using <code>--no-tap</code> will cause this command to
+<em>not</em> use TAP formatted output.</p>
+</li>
 <li><p><code>headless_args</code>
 Optional arguments to Headless Chrome which is responsible for processing
 the script.</p>
-</li>
-<li><p><code>--script</code> :
-An optional argument used to define the <code>command</code>.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>

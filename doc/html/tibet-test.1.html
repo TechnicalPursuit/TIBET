@@ -21,9 +21,11 @@
 
 <h1 id="tibet-test1----runs-unitfunctional-tests-on-your-application">tibet-test(1) -- runs unit/functional tests on your application</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet test [&lt;target&gt;] [--suite &lt;filter&gt;] [--cases &lt;filter&gt;] [--karma]
-    [--inherit] [--subtypes] [--ignore-only] [--ignore-skip] [--tap]
-    [--context &lt;app|lib|all&gt;] [--profile &lt;profilename&gt;]</code></p>
+<p><code>tibet test [[--target] &lt;target&gt;] [--suite &lt;suite&gt;] [--cases &lt;casename&gt;]
+    [--ignore-only] [--ignore-skip] [--inherit] [--subtypes]
+    [--tap[=true|false]] [--no-tap] [--profile &lt;pkgcfg&gt;]
+    [--config &lt;cfg&gt;] [--debug] [--verbose] [--selftest]
+    [--context=[&#39;app&#39;|&#39;lib&#39;|&#39;all&#39;]] [--karma[=true|false]] [--no-karma]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs unit, functional, and/or integration tests on your application.</p>
 <p>If the <code>--karma</code> flag is true, <code>tibet test</code> checks to see if the <code>karma-tibet</code>
@@ -54,6 +56,12 @@ An optional target, usually a type name, to run tests on. Unlike other test
 frameworks, TIBET&#39;s tests are typically associated with an object such as a
 type. This lets you quickly test a type by simply specifying it as a <code>target</code>.</p>
 </li>
+<li><p><code>--target</code> :
+An alternate way to provide the target, usually a type name to run tests on.</p>
+</li>
+<li><p><code>--suite</code> :
+A specific suite name or a /pattern/ to match to filter suite names.</p>
+</li>
 <li><p><code>--cases</code> :
 A specific case name or a /pattern/ to match to filter case names.</p>
 </li>
@@ -71,23 +79,34 @@ If a test has the &#39;skip&#39; flag set ignore it and run the test anyway.</p>
 <li><p><code>--inherit</code>:
 Include tests from the target object&#39;s inheritance chain in the tests.</p>
 </li>
-</ul>
-<ul>
-<li><p><code>--karma</code> :
-  Turns on/off the search for a <code>karma</code> binary and <code>karma.conf.js</code> file. Using
-<code>--no-karma</code> will force TIBET&#39;s basic headless test execution. The
-default value is false.</p>
-<ul>
 <li><p><code>--subtypes</code>:
 Include subtypes of a target type when selecting test suites.</p>
 </li>
-<li><p><code>--suite</code> :
-A specific suite name or a /pattern/ to match to filter suite names.</p>
-</li>
 <li><p><code>--tap</code>:
-Turn on/off TAP output format.</p>
+Turn on/off TAP output format. Using <code>--no-tap</code> will cause this command to
+<em>not</em> use TAP formatted output.</p>
 </li>
-</ul>
+<li><p><code>--profile</code>:
+A profile in the form of package@config.</p>
+</li>
+<li><p><code>--config</code>:
+The name of an individual config to process.</p>
+</li>
+<li><p><code>--debug</code> :
+Sets the test harness&#39;s logging level to &#39;debug&#39;.</p>
+</li>
+<li><p><code>--verbose</code> :
+Whether or not to log the script that has been generated to invoke the test
+machinery.</p>
+</li>
+<li><p><code>--selftest</code>:
+Whether or not to invoke the test harness&#39;s &#39;self test&#39; profile - i.e. the
+list of scripts that will test the test harness itself.</p>
+</li>
+<li><p><code>--karma</code> :
+Turns on/off the search for a <code>karma</code> binary and <code>karma.conf.js</code> file. Using
+<code>--no-karma</code> will force TIBET&#39;s basic headless test execution. The default value
+is false.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
