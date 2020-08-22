@@ -61,13 +61,13 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     CLI.blend({
         boolean: ['debugger', 'devtools', 'empty']
     }, CLI.PARSE_OPTIONS),
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.Parent.prototype.PARSE_OPTIONS);
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet electron [<path>|--empty] [--devtools] [--debugger] [<electron options>]';
+Cmd.prototype.USAGE = 'tibet electron [<path>|--empty] [--debugger] [--devtools] [<electron options>]';
 
 
 //  ---
@@ -120,6 +120,9 @@ Cmd.prototype.execute = function() {
     if (this.options.debugger) {
         args.push('--inspect-brk');
     }
+
+    //  NB: 'devtools' along with other Electron options will be passed along to
+    //  Electron.
 
     //  make sure there's at least a '.' on the command line for what to
     //  launch or electron won't actually try to load a file.

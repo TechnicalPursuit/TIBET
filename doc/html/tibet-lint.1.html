@@ -21,33 +21,37 @@
 
 <h1 id="tibet-lint1----runs-various-lint-tools-on-package-files">tibet-lint(1) -- runs various lint tools on package files</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet lint [[--filter] &lt;filter&gt;] [--force] [--nodes] [[--style] [--js] [--json] [--xml] [--only]] [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]</code></p>
+<p><code>tibet lint [[--filter] &lt;filter&gt;] [--force] [--list] [--nodes] [[--js] [--json]
+    [--no-js] [--no-json] [--no-style] [--no-xml] [--only] [--style] [--xml]]
+    [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs a variety of lint tools on files specified in a TIBET package.</p>
-<p>The optional <code>filter</code> argument provides a string or regular expression
-used to filter file names. If the filter begins and ends with / it is
-treated as a regular expression for purposes of file filtering.</p>
-<p><code>--force</code> overrides any information found in .tibelint.json which would otherwise
-keep lint from looking at files it thinks haven&#39;t changed since the last run.
-This is a flag you should always include in your CI / build configurations.</p>
+<p>The optional <code>filter</code> argument provides a string or regular expression used to
+filter file names. If the filter begins and ends with / it is treated as a
+regular expression for purposes of file filtering.</p>
+<p><code>--force</code> overrides any information found in .tibetlint.json which would
+otherwise keep lint from looking at files it thinks haven&#39;t changed since the
+last run. This is a flag you should always include in your CI / build
+configurations.</p>
+<p><code>--nodes</code> tells the linter to use the package node <code>src</code> and/or <code>href</code> values to
+locate files. This is the default as opposed to <code>--scan</code> which looks at the file
+system for raw files by extension.</p>
 <p><code>--scan</code> overrides any package options and causes the lint command to scan the
 filesystem rather than using package configuration entries to determine the file
 set to process.</p>
 <p><code>--stop</code> tells the lint process to stop running after the first error condition,
 supporting a fast-fail approach for build scripts etc.</p>
-<p><code>--nodes</code> tells the linter to use the package node <code>src</code> and/or <code>href</code> values to
-locate files. This is the default as opposed to <code>--scan</code> which looks at the file
-system for raw files by extension.</p>
 <p>The various &quot;extension&quot; flags (<code>--js</code>, <code>--json</code>, <code>--style</code>, <code>--xml</code>) tell lint
-whiich file types you want to scan. By default all are checked. You can combine
+which file types you want to scan. By default all are checked. You can combine
 any one of these flags with <code>--only</code> to lint only that type of file.</p>
 <p><code>[package-opts]</code> refers to valid options for a TIBET Package object and help
 determine which subset of the application&#39;s manifests should be targeted. These
 include <code>--package</code>, <code>--config</code>, <code>--phase</code>, <code>--context</code>, etc. The targeted
 package@config defaults to <code>~app_cfg/main.xml</code> and its default config (usually
-<code>base</code>). See help on the <code>tibet package</code> command for more information.</p>
-<p><code>[eslint-opts]</code> refers to <code>--esconfig</code>, <code>--esrules</code>, and <code>--esignore</code> which
-let you configure <code>eslint</code> to meet your specific needs. The linter will
+<code>base</code>). See help on the <code>tibet package</code> command for more information and for a
+complete set of flags.</p>
+<p><code>[eslint-opts]</code> refers to <code>--esconfig</code>, <code>--esrules</code>, and <code>--esignore</code> which let
+you configure <code>eslint</code> to meet your specific needs. The linter will
 automatically take advantage of a <code>.eslintrc</code> file in your project.</p>
 <p><code>[stylelint-opts]</code> refers to <code>--styleconfig</code> which allows you to specify a
 <code>.stylelintrc</code> file whose content should be used. The lint command relies on
@@ -58,10 +62,18 @@ For example: <code>--no-style --no-js --no-json --no-xml</code> will turn off al
 the currently supported linters.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
+<li><p><code>--filter</code> :
+An alternate way to provide the filter expression to filter for file names
+to lint.</p>
+</li>
 <li><p><code>--force</code>:
 Tell the linter to ignore any <code>tibetlint.json</code> file content which would
 limit the check to only changed files. With <code>--force</code> set all files will be
 checked even if they haven&#39;t changed since the last lint pass.</p>
+</li>
+<li><p><code>--list</code> :
+Tell the linter to produce only the list of files it <em>would</em> lint and to
+<em>not</em> actually perform the linting operation on those files.</p>
 </li>
 <li><p><code>--nodes</code> :
 Tell the linter not to scan but instead to use the nodes from the
@@ -87,7 +99,7 @@ Tells the linter to stop after the first file with errors.</p>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
 <ul>
-<li><p><code>boot.deafult_package</code>:
+<li><p><code>boot.default_package</code>:
 Read if no other default package information is available.</p>
 </li>
 <li><p><code>cli.lint.js_extensions</code>:

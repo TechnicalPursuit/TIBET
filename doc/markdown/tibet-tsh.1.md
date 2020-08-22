@@ -3,7 +3,9 @@
 
 ## SYNOPSIS
 
-`tibet tsh [--script=]<command> [<headless_args>]`
+`tibet tsh [--script=]<command> [--break] [--silent] [--verbose]
+    [--package <package>] [--config <cfg>] [--profile <pkgcfg>] [--timeout <ms>]
+    [--tap[=true|false]] [--no-tap] [<headless_args>]`
 
 ## DESCRIPTION
 
@@ -23,12 +25,40 @@ provide to Headless Chrome.
     A properly quoted command line for the TSH, escaped as necessary based on
 the requirements of your shell.
 
+  * `--script` :
+    An optional argument used to define the `command`.
+
+  * `--break` :
+    Whether or not the execution machinery should break and show the debugger
+*on the TIBET 'client-side'*.
+
+  * `--silent` :
+    Suppress all logging for quieter operation.
+
+  * `--verbose` :
+    Whether or not to log the processing of the supplied script.
+
+  * `--package` :
+    The file path to the package to load when running the script, rather than
+the standard boot package.
+
+  * `--config` :
+    The name of an individual config to process.
+
+  * `--profile` :
+    A profile in the form of package@config.
+
+  * `--timeout <ms>` :
+    Gives you a way to provide a millisecond timeout value in which the shell
+script must complete successfully. The default is 15 seconds (15000).
+
+  * `--tap`:
+    Turn on/off TAP output format. Using `--no-tap` will cause this command to
+*not* use TAP formatted output.
+
   * `headless_args`
     Optional arguments to Headless Chrome which is responsible for processing
 the script.
-
-  * `--script` :
-    An optional argument used to define the `command`.
 
 ## CONFIGURATION SETTINGS
 

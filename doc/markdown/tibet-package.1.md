@@ -3,11 +3,13 @@
 
 ## SYNOPSIS
 
-`tibet package [ [--profile] <pkg_cfg> | [--package <package>] [--config <cfg>] ]
-    [--phase <phase>] [--all] [--scripts] [--styles] [--images] [--resources]
-    [--templates] [--inlined] [--nodes]
+`tibet package [[--profile <pkgcfg>] | [--package <package>] [--config <cfg>]]
+    [--phase=['all'|'one'|'two'|'app'|'lib']]
+    [--add <file_list>] [--remove <file_list>]
+    [--all] [--unresolved] [--unlisted] [--inlined]
     [--include <asset names>] [--exclude <asset names>]
-    [--add <list>] [--remove <list>] [--unresolved] [--unlisted]`
+    [--scripts] [--resources] [--images]
+    [--silent] [--fix] [--verbose] [--stack]`
 
 ## DESCRIPTION
 
@@ -27,61 +29,71 @@ TIBET commands, all of which leverage TIBET's application package/config files.
 This includes the `rollup`, `resources`, and `lint` commands as well as any
 command line which launches TIBET headlessly to leverage reflection.
 
+Note that this command can also take a set of open-ended options that correspond
+to config 'boot.' properties. So, for instance, '--boot.minified=false' can be
+supplied on the command line and this will set the appropriate boot property.
+
 ## OPTIONS
 
-  * `profile`:
+  * `--profile`:
     A profile in the form of package@config.
 
-  * `package`:
+  * `--package`:
     The file path to the package to process.
 
-  * `config`:
+  * `--config`:
     The name of an individual config to process.
 
-  * `phase`:
+  * `--phase`:
     Boot phase subset to process <all | one | two | app | lib>.
 
-  * `all`:
-    Process all the config tags in the package.
-
-  * `add`:
+  * `--add`:
     List of resources to add to the package.
 
-  * `remove`:
+  * `--remove`:
     List of resources to remove from the package.
 
-  * `unresolved`:
+  * `--all`:
+    Process all the config tags in the package.
+
+  * `--unresolved`:
     Output a list of unresolved (not found) assets of all types.
 
-  * `unlisted`:
+  * `--unlisted`:
     Output a list of potentially overlooked source files.
 
-  * `include`:
+  * `--inlined`:
+    Include boot.resourced resources (inlined URI content)
+
+  * `--include`:
     A space-separated list of asset tags to include.
 
-  * `exclude`:
+  * `--exclude`:
     A space-separated list of asset tags to include.
 
-  * `nodes`:
-    Output asset nodes rather than asset paths.
-
-  * `images`:
+  * `--images`:
     Include all image assets.
 
-  * `templates`:
-    Include all template assets.
-
-  * `resources`:
+  * `--resources`:
     Include all style, template, and resource assets.
 
-  * `scripts`:
+  * `--scripts`:
     Include all JavaScript source-containing assets.
 
-  * `styles`:
-    Include all CSS containing assets.
+  * `--silent`:
+    Suppress all logging of 'duplicate assets' for quieter operation.
 
-  * `inlined`:
-    Include boot.resourced resources (inlined URI content)
+  * `--fix`:
+    Whether or not to add asset files that are found on disk but not as package
+entries (and need to be inserted) or package entries for which asset files can
+no longer be found (and need to be deleted).
+
+  * `--verbose`:
+    Whether or not to log unlisted asset files that are found on disk but not as
+package entries.
+
+  * `--stack` :
+    Tells the packaging machinery to print an output of the stack if it errors.
 
 ## CONFIGURATION SETTINGS
 

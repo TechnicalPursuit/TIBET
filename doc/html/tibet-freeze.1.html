@@ -21,7 +21,8 @@
 
 <h1 id="tibet-freeze1----freezes-the-current-projects-tibet-library">tibet-freeze(1) -- freezes the current project&#39;s TIBET library</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet freeze [--tibet &lt;bundle&gt;] [--minify] [--all] [--source] [--standalone] [--zipped] [--brotlied]</code></p>
+<p><code>tibet freeze [--tibet &lt;bundle&gt;] [--force] [--minify] [--all] [--standalone]
+    [--source] [--zipped] [--brotlied]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>NOTE: this command will be removed in a future release once splitting
 of the TIBET npm package into <code>tibet-cli</code> and <code>tibet</code> is complete.</p>
@@ -44,6 +45,10 @@ of <code>tibet_base.min.js</code> along with the load and hook files needed to b
 Takes a bundle name minus any <code>tibet_</code> prefix For example, <code>--tibet full</code>
 will freeze the <code>tibet_full</code> bundle. This flag defaults to the value <code>base</code> so
 <code>tibet_base</code> is frozen.</p>
+</li>
+<li><p><code>--force</code> :
+Required to actually cause a freeze operation to be performed when the
+project is already frozen.</p>
 </li>
 <li><p><code>--all</code> :
 Overrides any filtering of bundle content and preserves all bundles of TIBET

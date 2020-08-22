@@ -3,7 +3,8 @@
 \fBtibet-freeze\fR \- freezes the current project's TIBET library
 .SH SYNOPSIS
 .P
-\fBtibet freeze [\-\-tibet <bundle>] [\-\-minify] [\-\-all] [\-\-source] [\-\-standalone] [\-\-zipped] [\-\-brotlied]\fP
+\fBtibet freeze [\-\-tibet <bundle>] [\-\-force] [\-\-minify] [\-\-all] [\-\-standalone]
+    [\-\-source] [\-\-zipped] [\-\-brotlied]\fP
 .SH DESCRIPTION
 .P
 NOTE: this command will be removed in a future release once splitting
@@ -32,6 +33,10 @@ of \fBtibet_base\.min\.js\fP along with the load and hook files needed to boot\.
 Takes a bundle name minus any \fBtibet_\fP prefix For example, \fB\-\-tibet full\fP
 will freeze the \fBtibet_full\fP bundle\. This flag defaults to the value \fBbase\fP so
 \fBtibet_base\fP is frozen\.
+.IP \(bu 2
+\fB\-\-force\fP :
+Required to actually cause a freeze operation to be performed when the
+project is already frozen\.
 .IP \(bu 2
 \fB\-\-all\fP :
 Overrides any filtering of bundle content and preserves all bundles of TIBET

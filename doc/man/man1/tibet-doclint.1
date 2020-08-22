@@ -3,7 +3,8 @@
 \fBtibet-doclint\fR \- validates method comment content
 .SH SYNOPSIS
 .P
-\fBtibet doclint [<target>] [\-\-filter <filter>] [\-\-missing] [\-\-tap] [\-\-context <app|lib|all>]\fP
+\fBtibet doclint [<target>] [\-\-filter <filter>] [\-\-missing] [\-\-tap[=true|false]]
+    [\-\-no\-tap] [\-\-context=['app'|'lib'|'all']]\fP
 .SH DESCRIPTION
 .P
 Runs the TSH \fB:doclint\fP command to validate method comment content\.
@@ -18,8 +19,8 @@ If you provide an optional string parameter it will be used as a target ID which
 must resolve via TP\.bySystemId\. Only methods owned by that target will be
 checked\.
 .P
-If you provide a \-\-filter the method names themselves will be filtered to match
-only the pattern or string provided\.
+If you provide a \fB\-\-filter\fP the method names themselves will be filtered to
+match only the pattern or string provided\.
 .P
 If you specify \fB\-\-missing\fP only missing comments will be reported\. No additional
 checks on content will be performed\.

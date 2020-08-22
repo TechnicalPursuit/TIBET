@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-`tibet type [--name] [[<root>.]<namespace>:]<typename> [--supertype <typename] [--dir <dirname>] [--dna <template>] [--package <pkgname>] [--config <cfgname>]`
+`tibet type [--name [[<root>.]<namespace>:]<typename>] [--supertype <typename] [--dir <dirname>] [--dna <template>] [--package <package>] [--config <cfg>]`
 
 ## DESCRIPTION
 
@@ -29,6 +29,9 @@ Depending on the DNA chosen the result will be creation of the type and
 optionally a template, style sheet, and test file.
 
 ## OPTIONS
+
+  * `--name` :
+    An alternate way to provide the type name to create.
 
   * `--supertype` :
     The name of the supertype to use for the target type. This should be

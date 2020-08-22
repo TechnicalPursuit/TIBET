@@ -3,7 +3,8 @@
 \fBtibet-make\fR \- runs a function as a task
 .SH SYNOPSIS
 .P
-\fBtibet make <target> [\-\-list] [\-\-private] [\-\-timeout <ms>]\fP
+\fBtibet make <target> [\-\-list] [\-\-private] [\-\-timeout <ms>] [\-\-stack] [\-\-brotli]
+    [\-\-zip]\fP
 .SH DESCRIPTION
 .P
 This command runs lightweight commands in the form of functions, much like Grunt
@@ -30,9 +31,18 @@ Used to list the available \fBtibet make\fP targets you can run\.
 Tells the \fB\-\-list\fP operation to also include private tasks, tasks whose
 names begin with \fB_\fP so they are normally filtered by the list option\.
 .IP \(bu 2
+\fB\-\-stack\fP :
+Tells the task machinery to print an output of the stack if it errors\.
+.IP \(bu 2
 \fB\-\-timeout <ms>\fP :
 Gives you a way to provide a millisecond timeout value in which each task
 must complete successfully\. The default is 15 seconds (15000)\.
+.IP \(bu 2
+\fB\-\-brotli\fP :
+Whether or not to generate brotli\-compressed packages of JavaScript code\.
+.IP \(bu 2
+\fB\-\-zip\fP :
+Whether or not to generate gzip\-compressed packages of JavaScript code\.
 
 .RE
 .SH CONFIGURATION SETTINGS

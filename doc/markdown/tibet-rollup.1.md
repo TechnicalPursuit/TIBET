@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-`tibet rollup [package-opts] [--headers] [--minify]`
+`tibet rollup [package-opts] [--headers] [--minify] [--debug]`
 
 ## DESCRIPTION
 
@@ -12,9 +12,9 @@ Creates a concatenated and optionally minified version of a `package@config`.
 This command is normally invoked via `tibet build` rather than manually, however
 you can use it directly if you desire.
 
-Output from this command is written to stdout for use in redirection.
-By default the output is not minified but it does it contain filename
-data (aka 'headers') to assist TIBET by providing file load metadata.
+Output from this command is written to stdout for use in redirection. By default
+the output is not minified but it does it contain filename data (aka 'headers')
+to assist TIBET by providing file load metadata.
 
 You can minify output via the `--minify` flag, and turn off headers via
 `--no-headers` should you choose. Normally these flags are managed by one
@@ -36,6 +36,10 @@ TIBET reflection operations at runtime.
     Signifies that the rollup output should pass through the minification
 process. Note that overly agressive obfuscation will cause TIBET code to fail.
 Future additions to TIBET will support more agressive minification.
+
+  * `--debug` :
+    Tells the rollup process to print the output that it is generating to
+stdout.
 
   * `[package-opts]` :
     Refers to valid options for a TIBET Package object. See help from the `tibet

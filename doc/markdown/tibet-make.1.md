@@ -3,7 +3,8 @@
 
 ## SYNOPSIS
 
-`tibet make <target> [--list] [--private] [--timeout <ms>]`
+`tibet make <target> [--list] [--private] [--timeout <ms>] [--stack] [--brotli]
+    [--zip]`
 
 ## DESCRIPTION
 
@@ -31,9 +32,18 @@ there is no concrete `clean` command the `tibet` command will delegate to the
     Tells the `--list` operation to also include private tasks, tasks whose
 names begin with `_` so they are normally filtered by the list option.
 
+  * `--stack` :
+    Tells the task machinery to print an output of the stack if it errors.
+
   * `--timeout <ms>` :
     Gives you a way to provide a millisecond timeout value in which each task
 must complete successfully. The default is 15 seconds (15000).
+
+  * `--brotli` :
+    Whether or not to generate brotli-compressed packages of JavaScript code.
+
+  * `--zip` :
+    Whether or not to generate gzip-compressed packages of JavaScript code.
 
 ## CONFIGURATION SETTINGS
 

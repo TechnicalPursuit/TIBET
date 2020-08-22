@@ -3,9 +3,11 @@
 
 ## SYNOPSIS
 
-`tibet test [<target>] [--suite <filter>] [--cases <filter>] [--karma]
-    [--inherit] [--subtypes] [--ignore-only] [--ignore-skip] [--tap]
-    [--context <app|lib|all>] [--profile <profilename>]`
+`tibet test [[--target] <target>] [--suite <suite>] [--cases <casename>]
+    [--ignore-only] [--ignore-skip] [--inherit] [--subtypes]
+    [--tap[=true|false]] [--no-tap] [--profile <pkgcfg>] [--config <cfg>]
+    [--debug] [--verbose] [--selftest] [--context=['app'|'lib'|'all']]
+    [--karma[=true|false]] [--no-karma]`
 
 ## DESCRIPTION
 
@@ -46,6 +48,12 @@ default. Future versions will support additional test output formatters.
 frameworks, TIBET's tests are typically associated with an object such as a
 type. This lets you quickly test a type by simply specifying it as a `target`.
 
+  * `--target` :
+    An alternate way to provide the target, usually a type name to run tests on.
+
+  * `--suite` :
+    A specific suite name or a /pattern/ to match to filter suite names.
+
   * `--cases` :
     A specific case name or a /pattern/ to match to filter case names.
 
@@ -63,19 +71,34 @@ resources. Other values are `lib` and `all`.
   * `--inherit`:
     Include tests from the target object's inheritance chain in the tests.
 
-* `--karma` :
-    Turns on/off the search for a `karma` binary and `karma.conf.js` file. Using
-`--no-karma` will force TIBET's basic headless test execution. The
-default value is false.
-
   * `--subtypes`:
     Include subtypes of a target type when selecting test suites.
 
-  * `--suite` :
-    A specific suite name or a /pattern/ to match to filter suite names.
-
   * `--tap`:
-    Turn on/off TAP output format.
+    Turn on/off TAP output format. Using `--no-tap` will cause this command to
+*not* use TAP formatted output.
+
+  * `--profile`:
+    A profile in the form of package@config.
+
+  * `--config`:
+    The name of an individual config to process.
+
+  * `--debug` :
+    Sets the test harness's logging level to 'debug'.
+
+  * `--verbose` :
+    Whether or not to log the script that has been generated to invoke the test
+machinery.
+
+  * `--selftest`:
+    Whether or not to invoke the test harness's 'self test' profile - i.e. the
+list of scripts that will test the test harness itself.
+
+  * `--karma` :
+    Turns on/off the search for a `karma` binary and `karma.conf.js` file. Using
+`--no-karma` will force TIBET's basic headless test execution. The default value
+is false.
 
 ## CONFIGURATION SETTINGS
 

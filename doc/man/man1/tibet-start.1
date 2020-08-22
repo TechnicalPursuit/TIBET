@@ -3,7 +3,11 @@
 \fBtibet-start\fR \- starts the project's TIBET Data Server
 .SH SYNOPSIS
 .P
-\fBtibet start [<options>] [\-\-env <name>]\fP
+\fBtibet start [\-\-env <name>] [\-\-debug]
+    [\-\-level=['all'|'trace'|'debug'|'info'|'warn'|'error'|'fatal'|'system'|'off']]
+    [\-\-debugger] [\-\-port N] [\-\-color[=true|false]] [\-\-no\-color]
+    [\-\-https] [\-\-https_port N]
+    [<options>]\fP
 .SH DESCRIPTION
 .P
 Performs project\-specific start operations\.
@@ -54,9 +58,29 @@ Specify an environment value to control the server\. This value is used by
 the system when loading values from \fBtds\.json\fP, the server's config file\. Common
 values are \fBdevelopment\fP (the default), and \fBproduction\fP\|\.
 .IP \(bu 2
-\fB\-\-tds\.port\fP :
-A commonly used \fBtibet config\fP option value which alters the port number the
-server should start on\.
+\fB\-\-debug\fP :
+Sets the server's logging level to 'debug'\.
+.IP \(bu 2
+\fB\-\-level\fP :
+Sets the server's logging level to the supplied level\.
+.IP \(bu 2
+\fB\-\-debugger\fP :
+A flag which causes the hosting server to start in a debugging mode, waiting
+for a Node\-compatible debugger to 'attach' itself to the process\.
+.IP \(bu 2
+\fB\-\-port\fP :
+A flag which alters the port number the server should start on\.
+.IP \(bu 2
+\fB\-\-color\fP :
+A flag which determines whether the output from this command will be
+colorized\. You can use \fB\-\-no\-color\fP as an alternative to using \fBfalse\fP here\.
+.IP \(bu 2
+\fB\-\-https\fP :
+Whether or not the server should start in https mode\.
+.IP \(bu 2
+\fB\-\-https_port\fP :
+A flag which alters the port number the server should start on when the
+server is started in https mode\.
 
 .RE
 .SH CONFIGURATION SETTINGS

@@ -65,22 +65,20 @@ Cmd.NAME = 'user';
 //  ---
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'string': ['pass', 'env', 'role', 'org', 'unit'],
-        'default': {
-            'env': 'development'
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    string: ['pass', 'env', 'role', 'org', 'unit'],
+    default: {
+        'env': 'development'
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet user <username> [--pass <password>] ' +
-    '[--env <env>] [--role <role|roles>] [--org <org|orgs>] [--unit unit]';
+Cmd.prototype.USAGE = 'tibet user <username> [--pass <password>] [--env <env>] [--role <role|roles>] [--org <org|orgs>] [--unit unit]';
 
 
 //  ---

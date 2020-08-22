@@ -3,9 +3,11 @@
 \fBtibet-test\fR \- runs unit/functional tests on your application
 .SH SYNOPSIS
 .P
-\fBtibet test [<target>] [\-\-suite <filter>] [\-\-cases <filter>] [\-\-karma]
-    [\-\-inherit] [\-\-subtypes] [\-\-ignore\-only] [\-\-ignore\-skip] [\-\-tap]
-    [\-\-context <app|lib|all>] [\-\-profile <profilename>]\fP
+\fBtibet test [[\-\-target] <target>] [\-\-suite <suite>] [\-\-cases <casename>]
+    [\-\-ignore\-only] [\-\-ignore\-skip] [\-\-inherit] [\-\-subtypes]
+    [\-\-tap[=true|false]] [\-\-no\-tap] [\-\-profile <pkgcfg>] [\-\-config <cfg>]
+    [\-\-debug] [\-\-verbose] [\-\-selftest] [\-\-context=['app'|'lib'|'all']]
+    [\-\-karma[=true|false]] [\-\-no\-karma]\fP
 .SH DESCRIPTION
 .P
 Runs unit, functional, and/or integration tests on your application\.
@@ -45,6 +47,12 @@ An optional target, usually a type name, to run tests on\. Unlike other test
 frameworks, TIBET's tests are typically associated with an object such as a
 type\. This lets you quickly test a type by simply specifying it as a \fBtarget\fP\|\.
 .IP \(bu 2
+\fB\-\-target\fP :
+An alternate way to provide the target, usually a type name to run tests on\.
+.IP \(bu 2
+\fB\-\-suite\fP :
+A specific suite name or a /pattern/ to match to filter suite names\.
+.IP \(bu 2
 \fB\-\-cases\fP :
 A specific case name or a /pattern/ to match to filter case names\.
 .IP \(bu 2
@@ -61,26 +69,35 @@ If a test has the 'skip' flag set ignore it and run the test anyway\.
 .IP \(bu 2
 \fB\-\-inherit\fP:
 Include tests from the target object's inheritance chain in the tests\.
-
-.RE
-.RS 0
-.IP \(bu 2
-\fB\-\-karma\fP :
-  Turns on/off the search for a \fBkarma\fP binary and \fBkarma\.conf\.js\fP file\. Using
-\fB\-\-no\-karma\fP will force TIBET's basic headless test execution\. The
-default value is false\.
-.RS
 .IP \(bu 2
 \fB\-\-subtypes\fP:
 Include subtypes of a target type when selecting test suites\.
 .IP \(bu 2
-\fB\-\-suite\fP :
-A specific suite name or a /pattern/ to match to filter suite names\.
-.IP \(bu 2
 \fB\-\-tap\fP:
-Turn on/off TAP output format\.
-
-.RE
+Turn on/off TAP output format\. Using \fB\-\-no\-tap\fP will cause this command to
+\fInot\fR use TAP formatted output\.
+.IP \(bu 2
+\fB\-\-profile\fP:
+A profile in the form of package@config\.
+.IP \(bu 2
+\fB\-\-config\fP:
+The name of an individual config to process\.
+.IP \(bu 2
+\fB\-\-debug\fP :
+Sets the test harness's logging level to 'debug'\.
+.IP \(bu 2
+\fB\-\-verbose\fP :
+Whether or not to log the script that has been generated to invoke the test
+machinery\.
+.IP \(bu 2
+\fB\-\-selftest\fP:
+Whether or not to invoke the test harness's 'self test' profile \- i\.e\. the
+list of scripts that will test the test harness itself\.
+.IP \(bu 2
+\fB\-\-karma\fP :
+Turns on/off the search for a \fBkarma\fP binary and \fBkarma\.conf\.js\fP file\. Using
+\fB\-\-no\-karma\fP will force TIBET's basic headless test execution\. The default value
+is false\.
 
 .RE
 .SH CONFIGURATION SETTINGS

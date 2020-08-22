@@ -59,17 +59,17 @@ Cmd.NAME = 'apropos';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['comments', 'ignorecase'],
-        'number': ['limit'],
-        'string': [],
-        'default': {
-            comments: false,
-            ignorecase: true
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['comments', 'ignorecase'],
+    number: ['limit'],
+    string: [],
+    default: {
+        comments: false,
+        ignorecase: true,
+        limit: 2
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -77,7 +77,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet apropos <terms> [--comments] [--limit=N] [--no-ignorecase]';
+    'tibet apropos <terms> [--comments] [--limit N] [--ignorecase[=true|false]] [--no-ignorecase]';
 
 //  ---
 //  Instance Methods

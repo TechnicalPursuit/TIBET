@@ -57,18 +57,17 @@ Cmd.NAME = 'reflect';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['owners', 'types',
-            'methods', 'attributes',
-            'known', 'hidden',
-            'unique', 'inherited', 'introduced', 'local', 'overridden'],
-        'string': ['context', 'target', 'filter', 'interface'],
-        'default': {
-            context: 'app'
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['owners', 'types', 'methods', 'attributes',
+                'known', 'hidden',
+                'unique', 'inherited', 'introduced', 'local', 'overridden',
+                'verbose'],
+    string: ['context', 'target', 'filter', 'interface'],
+    default: {
+        context: 'app'
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -76,11 +75,12 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet reflect [<target>] [--filter <filter>] ' +
+    'tibet reflect [[--target] <target>] [--filter <filter>] ' +
         '[--owners] [--types] [--methods] [--attributes]' +
         '[--known] [--hidden]' +
         '[--unique] [--inherited] [--introduced] [--local] [--overridden]' +
-        '[--interface <interface>]';
+        '[--context=[\'app\'|\'lib\'|\'all\']] [--interface <interface>]' +
+        '[--verbose]';
 
 //  ---
 //  Instance Methods

@@ -3,7 +3,7 @@
 \fBtibet-version\fR \- displays the current project and TIBET version
 .SH SYNOPSIS
 .P
-\fBtibet version [\-\-check]\fP
+\fBtibet version [\-\-check] [\-\-stack]\fP
 .SH DESCRIPTION
 .P
 Displays the current version of TIBET\. Also available as the
@@ -18,6 +18,9 @@ version of TIBET has been published\.
 Tell TIBET to check the current project TIBET version against the latest
 released version\. This operation relies on \fBnpm info tibet \-\-json\fP to return
 data about publicly available TIBET releases\.
+.IP \(bu 2
+\fB\-\-stack\fP :
+Tells the version checking machinery to print an output of the stack if it errors\.
 
 .RE
 .SH CONFIGURATION SETTINGS

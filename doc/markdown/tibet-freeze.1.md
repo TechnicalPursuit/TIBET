@@ -3,7 +3,8 @@
 
 ## SYNOPSIS
 
-`tibet freeze [--tibet <bundle>] [--minify] [--all] [--source] [--standalone] [--zipped] [--brotlied]`
+`tibet freeze [--tibet <bundle>] [--force] [--minify] [--all] [--standalone]
+    [--source] [--zipped] [--brotlied]`
 
 ## DESCRIPTION
 
@@ -33,6 +34,10 @@ of `tibet_base.min.js` along with the load and hook files needed to boot.
     Takes a bundle name minus any `tibet_` prefix For example, `--tibet full`
 will freeze the `tibet_full` bundle. This flag defaults to the value `base` so
 `tibet_base` is frozen.
+
+  * `--force` :
+    Required to actually cause a freeze operation to be performed when the
+project is already frozen.
 
   * `--all` :
     Overrides any filtering of bundle content and preserves all bundles of TIBET
