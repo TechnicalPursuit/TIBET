@@ -56,7 +56,7 @@ Cmd.NAME = 'echo';
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet echo [args]';
+Cmd.prototype.USAGE = 'tibet echo [<args>]';
 
 
 //  ---

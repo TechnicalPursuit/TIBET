@@ -91,13 +91,13 @@ Cmd.prototype.PACKAGED_RESOURCE = /.+\.(js|jscript|json|xml|xhtml|xsl|xsd|css)$/
  * @type {Object}
  */
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['force', 'list', 'update'],
-        'string': ['dir', 'dna', 'name'],
-        'default': {}
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['force', 'list', 'update'],
+    string: ['dir', 'dna', 'name'],
+    default: {
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**

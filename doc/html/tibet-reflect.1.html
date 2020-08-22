@@ -21,10 +21,12 @@
 
 <h1 id="tibet-reflect1----reflects-on-tibet-objects-and-methods">tibet-reflect(1) -- reflects on TIBET objects and methods</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet reflect [target] [--interface &lt;interface&gt;] [--filter &lt;filter&gt;]
-    [--context=[&#39;app&#39;|&#39;lib&#39;|&#39;all&#39;]] [--types] [--methods] [--attributes]
-    [--owners] [--slots] [--known] [--hidden] [--unique] [--inherited]
-    [--local] [--introduced] [--overridden]</code></p>
+<p><code>tibet reflect [[--target] &lt;target&gt;] [--filter &lt;filter&gt;]
+    [--owners] [--types] [--methods] [--attributes]
+    [--known] [--hidden]
+    [--unique] [--inherited] [--introduced] [--local] [--overridden]
+    [--context=[&#39;app&#39;|&#39;lib&#39;|&#39;all&#39;]] [--interface &lt;interface&gt;]
+    [--verbose]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Runs the TSH :reflect command to show object or system reflection data.</p>
 <p>You can list all of TIBET&#39;s types via <code>tibet reflect --types</code> or list all
@@ -54,14 +56,40 @@ syntax is possible to the extent your shell will allow it. For example, using
 <li><p><code>target</code> :
 An optional target, usually a type name, to check.</p>
 </li>
+<li><p><code>--target</code> :
+An alternate way to provide the target, usually a type name, to check.</p>
+</li>
 <li><p><code>--attributes</code> :
 Signify that the search should work against attributes. This can list all
 attributes (or a subset by combining with <code>--filter</code>) or just the attributes of
 a particular target.</p>
 </li>
+<li><p><code>--context</code> :</p>
+</li>
 <li><p><code>--filter</code> :
 An optional regular expression, expressed in /foo/ig form. This filter will
 be applied to fully-qualified method names.</p>
+</li>
+<li><p><code>--known</code> :</p>
+<p>Filter only slots that are known (see the TIBET Inheritance system).</p>
+</li>
+<li><p><code>--hidden</code> :</p>
+<p>Filter for slots that are hidden (see the TIBET Inheritance system).</p>
+</li>
+<li><p><code>--unique</code> :</p>
+<p>Filter for slots that are unique (see the TIBET Inheritance system).</p>
+</li>
+<li><p><code>--inherited</code> :</p>
+<p>Filter for slots that are inherited (see the TIBET Inheritance system).</p>
+</li>
+<li><p><code>--introduced</code> :</p>
+<p>Filter for slots that are introduced (see the TIBET Inheritance system).</p>
+</li>
+<li><p><code>--local</code> :</p>
+<p>Filter for slots that are local (see the TIBET Inheritance system).</p>
+</li>
+<li><p><code>--overridden</code> :</p>
+<p>Filter for slots that are overridden (see the TIBET Inheritance system).</p>
 </li>
 <li><p><code>--interface</code> :
 An interface value from the <code>TP.SLOT_FILTERS</code> list in TIBET. Note that not
@@ -78,13 +106,13 @@ when reflecting on a function. In that case it should return a list of the
 owners (implementers) of the function. You can also use this flag alone to list
 all known <code>owners</code> of methods in the system.</p>
 </li>
-<li><p><code>--slots</code> :
-Focus the search on attributes if no other flags are provided. Otherwise
-focus on all keys on the target object, not just methods etc.</p>
-</li>
 <li><p><code>--types</code> :
 Normally used to list all types, or to filter types in conjunction with the
 <code>--filter</code> option.</p>
+</li>
+<li><p><code>--verbose</code> :
+Whether or not to log the script that has been generated to feed to the
+reflection machinery.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>

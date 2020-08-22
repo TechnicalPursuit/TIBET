@@ -130,20 +130,19 @@ Cmd.prototype.specified = [];
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['build', 'list', 'raw'],
-        'string': ['context', 'type'],
-        'default': {
-            build: false,
-            list: false,
-            raw: false,
-            scripts: false,
-            resources: true,
-            images: false
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['all', 'build', 'list', 'raw', 'silent'],
+    string: ['context', 'filter', 'profile', 'type'],
+    default: {
+        build: false,
+        list: false,
+        raw: false,
+        scripts: false,
+        resources: true,
+        images: false
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -157,7 +156,10 @@ Cmd.prototype.TIMEOUT = 30000;
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet resource [--type <tname>] [--raw] [--build] [--list] [package-opts]';
+Cmd.prototype.USAGE = 'tibet resource [--type <tname>] [--filter <filter>]' +
+    ' [--context=[\'app\'|\'lib\'|\'all\']]' +
+    ' [--profile <pkgcfg>]' +
+    ' [-all] [--build] [--list] [--raw] [--silent] [<package-opts>]';
 
 
 //  ---

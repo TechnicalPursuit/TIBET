@@ -62,7 +62,7 @@ Cmd.NAME = '_couchdb';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-boolean: ['confirm'],
+    boolean: ['confirm'],
     default: {
         confirm: true
     }

@@ -3,7 +3,8 @@
 
 ## SYNOPSIS
 
-`tibet clone <target>|[--name <appname>] [--dir <dirname>] [--dna <template>] [--list] [--force] [--update]`
+`tibet clone <target>|[--name <appname>] [--dir <dirname>]
+    [--dna <template>] [--list] [--force] [--update]`
 
 ## DESCRIPTION
 

@@ -58,17 +58,16 @@ Cmd.NAME = 'strip';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['selftest', 'inherit', 'subtypes', 'ignore-only',
-                    'ignore-skip', 'tap', 'ok'],
-        'string': ['target', 'suite', 'cases', 'context', 'profile', 'config'],
-        'default': {
-            tap: true,
-            ok: true
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['selftest', 'inherit', 'subtypes', 'ignore-only',
+                'ignore-skip', 'tap', 'ok'],
+    string: ['target', 'suite', 'cases', 'context', 'profile', 'config'],
+    default: {
+        tap: true,
+        ok: true
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**

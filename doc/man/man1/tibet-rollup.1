@@ -3,7 +3,7 @@
 \fBtibet-rollup\fR \- concatenates a package@config's resources
 .SH SYNOPSIS
 .P
-\fBtibet rollup [package\-opts] [\-\-headers] [\-\-minify]\fP
+\fBtibet rollup [package\-opts] [\-\-headers] [\-\-minify] [\-\-debug]\fP
 .SH DESCRIPTION
 .P
 Creates a concatenated and optionally minified version of a \fBpackage@config\fP\|\.
@@ -11,9 +11,9 @@ Creates a concatenated and optionally minified version of a \fBpackage@config\fP
 This command is normally invoked via \fBtibet build\fP rather than manually, however
 you can use it directly if you desire\.
 .P
-Output from this command is written to stdout for use in redirection\.
-By default the output is not minified but it does it contain filename
-data (aka 'headers') to assist TIBET by providing file load metadata\.
+Output from this command is written to stdout for use in redirection\. By default
+the output is not minified but it does it contain filename data (aka 'headers')
+to assist TIBET by providing file load metadata\.
 .P
 You can minify output via the \fB\-\-minify\fP flag, and turn off headers via
 \fB\-\-no\-headers\fP should you choose\. Normally these flags are managed by one
@@ -38,6 +38,10 @@ process\. Note that overly agressive obfuscation will cause TIBET code to fail\.
 Future additions to TIBET will support more agressive minification\.
 
 .RE
+.IP \(bu 2
+\fB\-\-debug\fP :
+Tells the rollup process to print the output that it is generating to
+stdout\.
 .IP \(bu 2
 \fB[package\-opts]\fP :
 Refers to valid options for a TIBET Package object\. See help from the \fBtibet

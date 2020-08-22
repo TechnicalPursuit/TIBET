@@ -3,7 +3,9 @@
 \fBtibet-type\fR \- creates a new TIBET type
 .SH SYNOPSIS
 .P
-\fBtibet type [\-\-name] [[<root>\.]<namespace>:]<typename> [\-\-supertype <typename] [\-\-dir <dirname>] [\-\-dna <template>] [\-\-package <pkgname>] [\-\-config <cfgname>]\fP
+\fBtibet type [\-\-name [[<root>\.]<namespace>:]<typename>]
+    [\-\-supertype <typename] [\-\-dir <dirname>] [\-\-dna <template>]
+    [\-\-package <package>] [\-\-config <cfg>]\fP
 .SH DESCRIPTION
 .P
 Creates a new TIBET type using the supplied type name and parameters\.
@@ -28,6 +30,9 @@ Depending on the DNA chosen the result will be creation of the type and
 optionally a template, style sheet, and test file\.
 .SH OPTIONS
 .RS 0
+.IP \(bu 2
+\fB\-\-name\fP :
+An alternate way to provide the type name to create\.
 .IP \(bu 2
 \fB\-\-supertype\fP :
 The name of the supertype to use for the target type\. This should be

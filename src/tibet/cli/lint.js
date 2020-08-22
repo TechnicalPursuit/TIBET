@@ -75,22 +75,30 @@ Cmd.LAST_RUN_DATA = '~/.tibetlint.json';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['scan', 'stop', 'list', 'nodes', 'quiet',
-            'style', 'js', 'json', 'xml', 'only', 'force'],
-        'string': ['esconfig', 'esrules', 'esignore', 'styleconfig',
-            'package', 'config', 'phase', 'filter', 'context'],
-        'default': {
-            style: true,
-            js: true,
-            json: true,
-            xml: true,
-            nodes: true,
-            scan: CLI.inLibrary()
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['force', 'list', 'nodes', 'scan', 'stop', 'quiet',
+                //  package options
+                'all', 'images', 'inlined', 'resources', 'scripts', 'unlisted',
+                    'unresolved',
+                'js', 'json', '--no-js', '--no-json', '--no-style', '--no-xml',
+                    'only', 'style', 'xml'],
+    string: ['filter',
+                //  package options
+                'add', 'all', 'config', 'context', 'exclude', 'include',
+                    'package', 'phase', 'profile', 'remove',
+                'esconfig', 'esrules', 'esignore',
+                'styleconfig'
+    ],
+    default: {
+        style: true,
+        js: true,
+        json: true,
+        xml: true,
+        nodes: true,
+        scan: CLI.inLibrary()
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -119,7 +127,7 @@ Cmd.prototype.XML_EXTENSIONS = ['atom', 'gpx', 'kml', 'rdf', 'rss', 'svg',
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet lint [[--filter] <filter>] [--context=app|lib|all] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]';
+    'tibet lint [[--filter] <filter>] [--force] [--list] [--nodes] [[--js] [--json] [--no-js] [--no-json] [--no-style] [--no-xml] [--only] [--style] [--xml]] [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]';
 
 
 //  ---
@@ -663,13 +671,12 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
  */
 Cmd.prototype.getScannedAssetList = function() {
 
+    /* eslint-disable no-unused-vars */
     var cwd,
         dir,
         file,
-        /* eslint-disable no-unused-vars */
         ignores,
         lib,
-        /* eslint-enable no-unused-vars */
         list,
         root;
 
@@ -681,6 +688,7 @@ Cmd.prototype.getScannedAssetList = function() {
     } else {
         ignores = '';
     }
+    /* eslint-enable no-unused-vars */
 
     //  If we got an unlabeled argument in position 1 consider it the directory
     //  path to be scanned. we allow this to be a virtual path provided that the

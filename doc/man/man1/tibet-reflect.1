@@ -3,10 +3,12 @@
 \fBtibet-reflect\fR \- reflects on TIBET objects and methods
 .SH SYNOPSIS
 .P
-\fBtibet reflect [target] [\-\-interface <interface>] [\-\-filter <filter>]
-    [\-\-context=['app'|'lib'|'all']] [\-\-types] [\-\-methods] [\-\-attributes]
-    [\-\-owners] [\-\-slots] [\-\-known] [\-\-hidden] [\-\-unique] [\-\-inherited]
-    [\-\-local] [\-\-introduced] [\-\-overridden]\fP
+\fBtibet reflect [[\-\-target] <target>] [\-\-filter <filter>]
+    [\-\-owners] [\-\-types] [\-\-methods] [\-\-attributes]
+    [\-\-known] [\-\-hidden]
+    [\-\-unique] [\-\-inherited] [\-\-introduced] [\-\-local] [\-\-overridden]
+    [\-\-context=['app'|'lib'|'all']] [\-\-interface <interface>]
+    [\-\-verbose]\fP
 .SH DESCRIPTION
 .P
 Runs the TSH :reflect command to show object or system reflection data\.
@@ -43,14 +45,40 @@ syntax is possible to the extent your shell will allow it\. For example, using
 \fBtarget\fP :
 An optional target, usually a type name, to check\.
 .IP \(bu 2
+\fB\-\-target\fP :
+An alternate way to provide the target, usually a type name, to check\.
+.IP \(bu 2
 \fB\-\-attributes\fP :
 Signify that the search should work against attributes\. This can list all
 attributes (or a subset by combining with \fB\-\-filter\fP) or just the attributes of
 a particular target\.
 .IP \(bu 2
+\fB\-\-context\fP :
+.IP \(bu 2
 \fB\-\-filter\fP :
 An optional regular expression, expressed in /foo/ig form\. This filter will
 be applied to fully\-qualified method names\.
+.IP \(bu 2
+\fB\-\-known\fP :
+Filter only slots that are known (see the TIBET Inheritance system)\.
+.IP \(bu 2
+\fB\-\-hidden\fP :
+Filter for slots that are hidden (see the TIBET Inheritance system)\.
+.IP \(bu 2
+\fB\-\-unique\fP :
+Filter for slots that are unique (see the TIBET Inheritance system)\.
+.IP \(bu 2
+\fB\-\-inherited\fP :
+Filter for slots that are inherited (see the TIBET Inheritance system)\.
+.IP \(bu 2
+\fB\-\-introduced\fP :
+Filter for slots that are introduced (see the TIBET Inheritance system)\.
+.IP \(bu 2
+\fB\-\-local\fP :
+Filter for slots that are local (see the TIBET Inheritance system)\.
+.IP \(bu 2
+\fB\-\-overridden\fP :
+Filter for slots that are overridden (see the TIBET Inheritance system)\.
 .IP \(bu 2
 \fB\-\-interface\fP :
 An interface value from the \fBTP\.SLOT_FILTERS\fP list in TIBET\. Note that not
@@ -67,13 +95,13 @@ when reflecting on a function\. In that case it should return a list of the
 owners (implementers) of the function\. You can also use this flag alone to list
 all known \fBowners\fP of methods in the system\.
 .IP \(bu 2
-\fB\-\-slots\fP :
-Focus the search on attributes if no other flags are provided\. Otherwise
-focus on all keys on the target object, not just methods etc\.
-.IP \(bu 2
 \fB\-\-types\fP :
 Normally used to list all types, or to filter types in conjunction with the
 \fB\-\-filter\fP option\.
+.IP \(bu 2
+\fB\-\-verbose\fP :
+Whether or not to log the script that has been generated to feed to the
+reflection machinery\.
 
 .RE
 .SH CONFIGURATION SETTINGS

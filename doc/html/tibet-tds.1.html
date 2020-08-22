@@ -21,7 +21,13 @@
 
 <h1 id="tibet-tds1----starts-the-projects-tibet-data-server">tibet-tds(1) -- starts the project&#39;s TIBET Data Server</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet tds start [&lt;options&gt;] [--env &lt;name&gt;]</code></p>
+<p><code>tibet start [--env &lt;name&gt;]
+    [--debug]
+    [--level=[&#39;all&#39;|&#39;trace&#39;|&#39;debug&#39;|&#39;info&#39;|&#39;warn&#39;|
+                &#39;error&#39;|&#39;fatal&#39;|&#39;system&#39;|&#39;off&#39;]]
+    [--debugger] [--port N] [--color[=true|false]] [--no-color]
+    [--https] [--https_port N]
+    [&lt;options&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Starts the project&#39;s TIBET Data Server, if available.</p>
 <p>Many TIBET dna templates provide a simple Node.js-based server. If
@@ -43,9 +49,29 @@ Specify an environment value to control the server. This value is used by
 the system when loading values from <code>tds.json</code>, the server&#39;s config file. Common
 values are <code>development</code> (the default), and <code>production</code>.</p>
 </li>
-<li><p><code>--tds.port</code> :
-A commonly used <code>tibet config</code> option value which alters the port number the
-server should start on.</p>
+<li><p><code>--debug</code> :
+Sets the server&#39;s logging level to &#39;debug&#39;.</p>
+</li>
+<li><p><code>--level</code> :
+Sets the server&#39;s logging level to the supplied level.</p>
+</li>
+<li><p><code>--debugger</code> :
+A flag which causes the hosting server to start in a debugging mode, waiting
+for a Node-compatible debugger to &#39;attach&#39; itself to the process.</p>
+</li>
+<li><p><code>--port</code> :
+A flag which alters the port number the server should start on.</p>
+</li>
+<li><p><code>--color</code> :
+A flag which determines whether the output from this command will be
+colorized. You can use <code>--no-color</code> as an alternative to using <code>false</code> here.</p>
+</li>
+<li><p><code>--https</code> :
+Whether or not the server should start in https mode.</p>
+</li>
+<li><p><code>--https_port</code> :
+A flag which alters the port number the server should start on when the
+server is started in https mode.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>

@@ -25,10 +25,11 @@ No process environment variables are required by this command.
 
 ### Run it :)
 
-    Welcome to TIBET! This quickstart content is intended to get you up and running
-    with a minimum of overhead so we'll be working with a limited set of commands
-    and using their default options. Once you're done, check out the documentation
-    at https://www.technicalpursuit.com/docs/index.html to dive deeper into TIBET.
+    Welcome to TIBET! This quickstart content is intended to get you up and
+    running with a minimum of overhead so we'll be working with a limited set of
+    commands and using their default options. Once you're done, check out the
+    documentation at https://www.technicalpursuit.com/docs/index.html to dive
+    deeper into TIBET.
 
     CREATE A NEW PROJECT
 

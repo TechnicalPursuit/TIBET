@@ -3,7 +3,9 @@
 \fBtibet-resource\fR \- builds template/css/resource files and config entries
 .SH SYNOPSIS
 .P
-\fBtibet resource [\-\-build] [\-\-list] [\-\-raw] [\-\-type] [<package\-opts>]\fP
+\fBtibet resource [\-\-type <tname>] [\-\-filter <filter>]
+    [\-\-context=['app'|'lib'|'all']] [\-\-profile <pkgcfg>]
+    [\-all] [\-\-build] [\-\-list] [\-\-raw] [\-\-silent] [<package\-opts>]\fP
 .SH DESCRIPTION
 .P
 Reflects on application resource requirements and builds rollup resources\.
@@ -29,9 +31,20 @@ built resources and include them\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
+\fB\-\-all\fP :
+Tell the command to build all resources within the package\.
+.IP \(bu 2
 \fB\-\-build\fP :
 Tell the command to actually build resources and update the application
 package with any missing resource entries\.
+.IP \(bu 2
+\fB\-\-context\fP:
+Sets the context of the build run\. The default is \fBapp\fP if this command is
+run in a project (building only application\-level resources) and \fBlib\fP if it is run within the TIBET library itself (building only library\-level resources), ignoring any potential application resources\. Other values are \fBlib\fP and \fBall\fP\|\.
+.IP \(bu 2
+\fB\-\-filter\fP:
+Sets a filter (which can be in RegExp syntax) to filter out resources that
+are not to be built\.
 .IP \(bu 2
 \fB\-\-list\fP :
 List but don't build the resources\. This is the default flag\.
@@ -41,9 +54,15 @@ Don't filter out the raw output from the client list\. This will include
 references to files which may not exist since no checks are done and some
 client\-side information is based on computed names from convention\.
 .IP \(bu 2
+\fB\-\-profile\fP:
+A profile in the form of package@config\.
+.IP \(bu 2
+\fB\-\-silent\fP:
+Suppress all logging for quieter operation\.
+.IP \(bu 2
 \fB[package\-opts]\fP :
 Refers to valid options for a TIBET Package object\. These include \-\-package,
-\-\-config, \-\-phase, \-\-assets, etc\. The package@config defaults to
+\-\-config, \-\-phase, \-\-context, etc\. The package@config defaults to
 \fB~app_cfg/main\.xml\fP and its default config (usually @base) so your typical
 configuration is built\. See help on the \fBtibet package\fP command for more
 information\.

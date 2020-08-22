@@ -3,10 +3,12 @@
 
 ## SYNOPSIS
 
-`tibet reflect [target] [--interface <interface>] [--filter <filter>]
-    [--context=['app'|'lib'|'all']] [--types] [--methods] [--attributes]
-    [--owners] [--slots] [--known] [--hidden] [--unique] [--inherited]
-    [--local] [--introduced] [--overridden]`
+`tibet reflect [[--target] <target>] [--filter <filter>]
+    [--owners] [--types] [--methods] [--attributes]
+    [--known] [--hidden]
+    [--unique] [--inherited] [--introduced] [--local] [--overridden]
+    [--context=['app'|'lib'|'all']] [--interface <interface>]
+    [--verbose]`
 
 ## DESCRIPTION
 
@@ -44,14 +46,47 @@ syntax is possible to the extent your shell will allow it. For example, using
   * `target` :
     An optional target, usually a type name, to check.
 
+  * `--target` :
+    An alternate way to provide the target, usually a type name, to check.
+
   * `--attributes` :
     Signify that the search should work against attributes. This can list all
 attributes (or a subset by combining with `--filter`) or just the attributes of
 a particular target.
 
+  * `--context` :
+
   * `--filter` :
     An optional regular expression, expressed in /foo/ig form. This filter will
 be applied to fully-qualified method names.
+
+  * `--known` :
+
+    Filter only slots that are known (see the TIBET Inheritance system).
+
+  * `--hidden` :
+
+    Filter for slots that are hidden (see the TIBET Inheritance system).
+
+  * `--unique` :
+
+    Filter for slots that are unique (see the TIBET Inheritance system).
+
+  * `--inherited` :
+
+    Filter for slots that are inherited (see the TIBET Inheritance system).
+
+  * `--introduced` :
+
+    Filter for slots that are introduced (see the TIBET Inheritance system).
+
+  * `--local` :
+
+    Filter for slots that are local (see the TIBET Inheritance system).
+
+  * `--overridden` :
+
+    Filter for slots that are overridden (see the TIBET Inheritance system).
 
   * `--interface` :
     An interface value from the `TP.SLOT_FILTERS` list in TIBET. Note that not
@@ -68,13 +103,13 @@ when reflecting on a function. In that case it should return a list of the
 owners (implementers) of the function. You can also use this flag alone to list
 all known `owners` of methods in the system.
 
-  * `--slots` :
-    Focus the search on attributes if no other flags are provided. Otherwise
-focus on all keys on the target object, not just methods etc.
-
   * `--types` :
     Normally used to list all types, or to filter types in conjunction with the
 `--filter` option.
+
+  * `--verbose` :
+    Whether or not to log the script that has been generated to feed to the
+reflection machinery.
 
 ## CONFIGURATION SETTINGS
 

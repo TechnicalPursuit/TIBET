@@ -21,7 +21,9 @@
 
 <h1 id="tibet-resource1----builds-templatecssresource-files-and-config-entries">tibet-resource(1) -- builds template/css/resource files and config entries</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet resource [--build] [--list] [--raw] [--type] [&lt;package-opts&gt;]</code></p>
+<p><code>tibet resource [--type &lt;tname&gt;] [--filter &lt;filter&gt;]
+    [--context=[&#39;app&#39;|&#39;lib&#39;|&#39;all&#39;]] [--profile &lt;pkgcfg&gt;]
+    [-all] [--build] [--list] [--raw] [--silent] [&lt;package-opts&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Reflects on application resource requirements and builds rollup resources.</p>
 <p>The <code>tibet resource</code> command is used to build JavaScript-based versions of
@@ -41,9 +43,20 @@ updating the package this command ensures the <code>rollup</code> command will f
 built resources and include them.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
+<li><p><code>--all</code> :
+Tell the command to build all resources within the package.</p>
+</li>
 <li><p><code>--build</code> :
 Tell the command to actually build resources and update the application
 package with any missing resource entries.</p>
+</li>
+<li><p><code>--context</code>:
+Sets the context of the build run. The default is <code>app</code> if this command is
+run in a project (building only application-level resources) and <code>lib</code> if it is run within the TIBET library itself (building only library-level resources), ignoring any potential application resources. Other values are <code>lib</code> and <code>all</code>.</p>
+</li>
+<li><p><code>--filter</code>:
+Sets a filter (which can be in RegExp syntax) to filter out resources that
+are not to be built.</p>
 </li>
 <li><p><code>--list</code> :
 List but don&#39;t build the resources. This is the default flag.</p>
@@ -53,9 +66,15 @@ Don&#39;t filter out the raw output from the client list. This will include
 references to files which may not exist since no checks are done and some
 client-side information is based on computed names from convention.</p>
 </li>
+<li><p><code>--profile</code>:
+A profile in the form of package@config.</p>
+</li>
+<li><p><code>--silent</code>:
+Suppress all logging for quieter operation.</p>
+</li>
 <li><p><code>[package-opts]</code> :
 Refers to valid options for a TIBET Package object. These include --package,
---config, --phase, --assets, etc. The package@config defaults to
+--config, --phase, --context, etc. The package@config defaults to
 <code>~app_cfg/main.xml</code> and its default config (usually @base) so your typical
 configuration is built. See help on the <code>tibet package</code> command for more
 information.</p>

@@ -74,24 +74,23 @@ Cmd.NAME = 'test';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['selftest', 'inherit', 'subtypes', 'ignore-only',
-                    'ignore-skip', 'tap', 'ok', 'karma'],
-        'string': ['target', 'suite', 'cases', 'context', 'profile', 'config'],
-        'default': {
-            tap: true,
-            ok: true
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['debug', 'selftest', 'inherit', 'subtypes', 'ignore-only',
+                'ignore-skip', 'tap', 'ok', 'karma', 'verbose'],
+    string: ['target', 'suite', 'cases', 'context', 'profile', 'config'],
+    default: {
+        tap: true,
+        ok: true
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--no-tap] [--no-ok] [--profile <profile>] [--config <config>]';
+Cmd.prototype.USAGE = 'tibet test [[--target] <target>] [--suite <suite>] [--target <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--inherit] [--subtypes] [--tap[=true|false]] [--no-tap] [--profile <pkgcfg>] [--config <cfg>] [--debug] [--verbose] [--selftest] [--context=[\'app\'|\'lib\'|\'all\']] [--karma[=true|false]] [--no-karma]';
 
 //  ---
 //  Instance Methods

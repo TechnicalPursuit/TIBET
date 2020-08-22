@@ -55,7 +55,7 @@ Cmd.NAME = 'deploy';
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet deploy {helper} [options]';
+Cmd.prototype.USAGE = 'tibet deploy <helper> [<options>]';
 
 
 //  ---

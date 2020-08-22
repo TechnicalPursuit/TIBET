@@ -21,21 +21,24 @@
 
 <h1 id="tibet-electron1----start-a-tibet-electron-application">tibet-electron(1) -- start a TIBET electron application</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet electron [&lt;path&gt;] [--empty] [--devtools] [--debugger] [&lt;electron options&gt;]</code></p>
+<p><code>tibet electron [&lt;path&gt;|--empty] [--debugger] [--devtools]
+    [&lt;electron options&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Starts an Electron application by invoking the Electron binary with appropriate
 ocmmand line arguments and flags.</p>
 <p>By default the file <code>electron.js</code> in the standard TIBET electron project dna is
 launched. This file is similar in scope and content to the default file you&#39;ll
 find in Electron&#39;s standard <code>electron-quick-start</code> project.</p>
-<p>You can use the --devtools flag, specific to TIBET, to let the logic in
-<code>electron.js</code> determine whether to open Chrome DevTools or not on startup.</p>
+<p>You can use the <code>--devtools</code> flag, specific to TIBET&#39;s version of &#39;electron.js&#39;,
+to let the logic in that file determine whether to open Chrome DevTools or not
+on startup.</p>
 <p>The <code>--debugger</code> flag is a common flag in TIBET which will add <code>inspect-brk</code> to
 the command line so the application is launched with debugger access to the main
 process.</p>
 <p>The <code>--empty</code> flag offers a way to open an empty Electron application shell.
 This command option will let you see the full set of Electron command line
-options in the console and will open a clean Electron environment.</p>
+options in the console and will open a clean Electron environment. This command
+option overrides any supplied path.</p>
 <p>All other command line arguments are passed as-is to the Electron binary. See
 the output from the <code>--empty</code> flag version for Electron&#39;s description of these
 options.</p>

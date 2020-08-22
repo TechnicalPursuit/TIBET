@@ -120,13 +120,19 @@ Cmd.VIEWS = {
 
 //  NOTE the parse options here are just for the 'tws' command itself.
 //  Subcommands need to parse via their own set of options.
-Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['confirm'],
+    default: {
+        confirm: true
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 
 /**
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet tws <cancel|disable|enable|init|list|push|remove|restart|retry|submit|validate> [<flags>]';
+Cmd.prototype.USAGE = 'tibet tws [--confirm[=true|false]] [--no-confirm] <cancel|disable|enable|init|list|push|remove|restart|retry|submit|validate> [<flags>]';
 
 
 //  ---

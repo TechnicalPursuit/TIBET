@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-`tibet version [--check]`
+`tibet version [--check] [--stack]`
 
 ## DESCRIPTION
 
@@ -19,6 +19,9 @@ version of TIBET has been published.
     Tell TIBET to check the current project TIBET version against the latest
 released version. This operation relies on `npm info tibet --json` to return
 data about publicly available TIBET releases.
+
+  * `--stack` :
+    Tells the version checking machinery to print an output of the stack if it errors.
 
 ## CONFIGURATION SETTINGS
 

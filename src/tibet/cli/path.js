@@ -54,7 +54,7 @@ Cmd.NAME = 'path';
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet path <path>';
+Cmd.prototype.USAGE = 'tibet path <virtual_path>';
 
 
 //  ---

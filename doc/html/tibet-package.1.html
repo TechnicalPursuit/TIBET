@@ -21,11 +21,13 @@
 
 <h1 id="tibet-package1----list-package-assets-either-as-asset-paths-or-nodes">tibet-package(1) -- list package assets either as asset paths or nodes</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet package [ [--profile] &lt;pkg_cfg&gt; | [--package &lt;package&gt;] [--config &lt;cfg&gt;] ]
-    [--phase &lt;phase&gt;] [--all] [--scripts] [--styles] [--images] [--resources]
-    [--templates] [--inlined] [--nodes]
+<p><code>tibet package [[--profile &lt;pkgcfg&gt;] | [--package &lt;package&gt;]
+    [--config &lt;cfg&gt;]] [--phase=[&#39;all&#39;|&#39;one&#39;|&#39;two&#39;|&#39;app&#39;|&#39;lib&#39;]]
+    [--add &lt;file_list&gt;] [--remove &lt;file_list&gt;]
+    [--all] [--unresolved] [--unlisted] [--inlined]
     [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]
-    [--add &lt;list&gt;] [--remove &lt;list&gt;] [--unresolved] [--unlisted]</code></p>
+    [--scripts] [--resources] [--images]
+    [--silent] [--fix] [--verbose] [--stack]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Outputs a list of package assets either as asset nodes or asset paths.</p>
 <p>This command is a useful way to view the files TIBET will load or process
@@ -39,61 +41,70 @@ project&#39;s <code>~app_cmd/make</code> directory for specifics.</p>
 TIBET commands, all of which leverage TIBET&#39;s application package/config files.
 This includes the <code>rollup</code>, <code>resources</code>, and <code>lint</code> commands as well as any
 command line which launches TIBET headlessly to leverage reflection.</p>
+<p>Note that this command can also take a set of open-ended options that correspond
+to config &#39;boot.&#39; properties. So, for instance, &#39;--boot.minified=false&#39; can be
+supplied on the command line and this will set the appropriate boot property.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>profile</code>:
+<li><p><code>--profile</code>:
 A profile in the form of package@config.</p>
 </li>
-<li><p><code>package</code>:
+<li><p><code>--package</code>:
 The file path to the package to process.</p>
 </li>
-<li><p><code>config</code>:
+<li><p><code>--config</code>:
 The name of an individual config to process.</p>
 </li>
-<li><p><code>phase</code>:
+<li><p><code>--phase</code>:
 Boot phase subset to process &lt;all | one | two | app | lib&gt;.</p>
 </li>
-<li><p><code>all</code>:
-Process all the config tags in the package.</p>
-</li>
-<li><p><code>add</code>:
+<li><p><code>--add</code>:
 List of resources to add to the package.</p>
 </li>
-<li><p><code>remove</code>:
+<li><p><code>--remove</code>:
 List of resources to remove from the package.</p>
 </li>
-<li><p><code>unresolved</code>:
+<li><p><code>--all</code>:
+Process all the config tags in the package.</p>
+</li>
+<li><p><code>--unresolved</code>:
 Output a list of unresolved (not found) assets of all types.</p>
 </li>
-<li><p><code>unlisted</code>:
+<li><p><code>--unlisted</code>:
 Output a list of potentially overlooked source files.</p>
 </li>
-<li><p><code>include</code>:
+<li><p><code>--inlined</code>:
+Include boot.resourced resources (inlined URI content)</p>
+</li>
+<li><p><code>--include</code>:
 A space-separated list of asset tags to include.</p>
 </li>
-<li><p><code>exclude</code>:
+<li><p><code>--exclude</code>:
 A space-separated list of asset tags to include.</p>
 </li>
-<li><p><code>nodes</code>:
-Output asset nodes rather than asset paths.</p>
-</li>
-<li><p><code>images</code>:
+<li><p><code>--images</code>:
 Include all image assets.</p>
 </li>
-<li><p><code>templates</code>:
-Include all template assets.</p>
-</li>
-<li><p><code>resources</code>:
+<li><p><code>--resources</code>:
 Include all style, template, and resource assets.</p>
 </li>
-<li><p><code>scripts</code>:
+<li><p><code>--scripts</code>:
 Include all JavaScript source-containing assets.</p>
 </li>
-<li><p><code>styles</code>:
-Include all CSS containing assets.</p>
+<li><p><code>--silent</code>:
+Suppress all logging of &#39;duplicate assets&#39; for quieter operation.</p>
 </li>
-<li><p><code>inlined</code>:
-Include boot.resourced resources (inlined URI content)</p>
+<li><p><code>--fix</code>:
+Whether or not to add asset files that are found on disk but not as package
+entries (and need to be inserted) or package entries for which asset files can
+no longer be found (and need to be deleted).</p>
+</li>
+<li><p><code>--verbose</code>:
+Whether or not to log unlisted asset files that are found on disk but not as
+package entries.</p>
+</li>
+<li><p><code>--stack</code> :
+Tells the packaging machinery to print an output of the stack if it errors.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>

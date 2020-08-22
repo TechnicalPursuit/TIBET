@@ -66,21 +66,21 @@ Cmd.NAME = 'rollup';
  */
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    {
-        'boolean': ['headers', 'minify'],
-        'string': ['package', 'config', 'phase'],
-        'default': {
-            color: false,
-            headers: true,
-            'package': CLI.inProject() ? '~app_cfg/main' : '~lib_cfg/TIBET',
-            'phase': CLI.inProject() ? 'two' : 'one',
-            //  TODO:   don't hardcode this. should be a getcfg value or
-            //  lookup, not something the command line parser fills in for us
-            config: 'base'
-        }
-    },
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+    boolean: ['debug', 'headers', 'minify'],
+    string: ['package', 'config', 'phase'],
+    default: {
+        color: false,
+        debug: false,
+        headers: true,
+        package: CLI.inProject() ? '~app_cfg/main' : '~lib_cfg/TIBET',
+        phase: CLI.inProject() ? 'two' : 'one',
+        //  TODO:   don't hardcode this. should be a getcfg value or
+        //  lookup, not something the command line parser fills in for us
+        config: 'base'
+    }
+},
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -94,7 +94,7 @@ Cmd.prototype.TIMEOUT = 1000 * 60 * 5;
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify]';
+Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify] [--debug]';
 
 
 //  ---
