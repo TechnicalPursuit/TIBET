@@ -5,9 +5,9 @@
 
 `tibet test [[--target] <target>] [--suite <suite>] [--cases <casename>]
     [--ignore-only] [--ignore-skip] [--inherit] [--subtypes]
-    [--tap[=true|false]] [--no-tap] [--profile <pkgcfg>] [--config <cfg>]
-    [--debug] [--verbose] [--selftest] [--context=['app'|'lib'|'all']]
-    [--karma[=true|false]] [--no-karma]`
+    [--tap[=true|false]] [--no-tap] [--profile <pkgcfg>]
+    [--config <cfg>] [--debug] [--verbose] [--selftest]
+    [--context=['app'|'lib'|'all']] [--karma[=true|false]] [--no-karma]`
 
 ## DESCRIPTION
 

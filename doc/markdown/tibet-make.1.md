@@ -3,8 +3,8 @@
 
 ## SYNOPSIS
 
-`tibet make <target> [--list] [--private] [--timeout <ms>] [--stack] [--brotli]
-    [--zip]`
+`tibet make <target> [--list] [--private] [--timeout <ms>] [--stack]
+    [--brotli] [--zip]`
 
 ## DESCRIPTION
 

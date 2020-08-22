@@ -3,8 +3,8 @@
 
 ## SYNOPSIS
 
-`tibet freeze [--tibet <bundle>] [--force] [--minify] [--all] [--standalone]
-    [--source] [--zipped] [--brotlied]`
+`tibet freeze [--tibet <bundle>] [--force] [--minify] [--all]
+    [--standalone] [--source] [--zipped] [--brotlied]`
 
 ## DESCRIPTION
 

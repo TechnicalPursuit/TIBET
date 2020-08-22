@@ -3,9 +3,10 @@
 
 ## SYNOPSIS
 
-`tibet lint [[--filter] <filter>] [--force] [--list] [--nodes] [[--js] [--json]
-    [--no-js] [--no-json] [--no-style] [--no-xml] [--only] [--style] [--xml]]
-    [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]`
+`tibet lint [[--filter] <filter>] [--force] [--list] [--nodes]
+    [[--js] [--json] [--no-js] [--no-json] [--no-style] [--no-xml]
+    [--only] [--style] [--xml]] [--quiet] [--scan] [--stop]
+    [package-opts] [eslint-opts] [stylelint-opts]`
 
 ## DESCRIPTION
 

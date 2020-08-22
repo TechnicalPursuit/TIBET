@@ -3,8 +3,8 @@
 
 ## SYNOPSIS
 
-`tibet doclint [<target>] [--filter <filter>] [--missing] [--tap[=true|false]]
-    [--no-tap] [--context=['app'|'lib'|'all']]`
+`tibet doclint [<target>] [--filter <filter>] [--missing]
+    [--tap[=true|false]] [--no-tap] [--context=['app'|'lib'|'all']]`
 
 ## DESCRIPTION
 

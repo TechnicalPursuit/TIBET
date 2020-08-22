@@ -5,7 +5,8 @@
 
 `tibet start [--env <name>]
     [--debug]
-    [--level=['all'|'trace'|'debug'|'info'|'warn'|'error'|'fatal'|'system'|'off']]
+    [--level=['all'|'trace'|'debug'|'info'|'warn'|
+                'error'|'fatal'|'system'|'off']]
     [--debugger] [--port N] [--color[=true|false]] [--no-color]
     [--https] [--https_port N]
     [<options>]`

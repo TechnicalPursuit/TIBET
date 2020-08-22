@@ -3,8 +3,8 @@
 
 ## SYNOPSIS
 
-`tibet package [[--profile <pkgcfg>] | [--package <package>] [--config <cfg>]]
-    [--phase=['all'|'one'|'two'|'app'|'lib']]
+`tibet package [[--profile <pkgcfg>] | [--package <package>]
+    [--config <cfg>]] [--phase=['all'|'one'|'two'|'app'|'lib']]
     [--add <file_list>] [--remove <file_list>]
     [--all] [--unresolved] [--unlisted] [--inlined]
     [--include <asset names>] [--exclude <asset names>]

@@ -4,8 +4,8 @@
 ## SYNOPSIS
 
 `tibet tsh [--script=]<command> [--break] [--silent] [--verbose]
-    [--package <package>] [--config <cfg>] [--profile <pkgcfg>] [--timeout <ms>]
-    [--tap[=true|false]] [--no-tap] [<headless_args>]`
+    [--package <package>] [--config <cfg>] [--profile <pkgcfg>]
+    [--timeout <ms>] [--tap[=true|false]] [--no-tap] [<headless_args>]`
 
 ## DESCRIPTION
 
