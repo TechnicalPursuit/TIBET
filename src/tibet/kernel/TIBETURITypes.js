@@ -7138,7 +7138,7 @@ async function() {
 
         //  Force refresh of any package data, particularly related to the
         //  URI we're referencing.
-        TP.boot.$refreshPackages(changedLoc);
+        await TP.boot.$refreshPackages(changedLoc);
 
         callback();
 
