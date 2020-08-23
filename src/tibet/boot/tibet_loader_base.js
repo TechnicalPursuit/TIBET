@@ -8743,7 +8743,10 @@ TP.boot.$updateDependentVars = function() {
     //  level so that no node filtering of phase two nodes is done. the
     //  result is that the system thinks we're in both phase one and phase
     //  two from a node filtering perspective
-    TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
+    if (!TP.sys.hasLoaded()) {
+        TP.sys.setcfg('boot.phase_two',
+                        TP.sys.cfg('boot.two_phase') === false);
+    }
 
     //  Reconfigure style color settings to match any updates to color scheme.
     scheme = TP.sys.cfg('boot.color.scheme');
