@@ -137,7 +137,7 @@ function(aURI, aDocument, aRequest, scriptElemAttrs) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getAllScriptPaths',
-async function(packageConfig, phase) {
+async function(packageConfig, phase, useCache) {
 
     /**
      * @method getAllScriptPaths
@@ -147,6 +147,9 @@ async function(packageConfig, phase) {
      *     with an optional [@config] section. For example 'hello@base'.
      * @param {String} [phase] Optional phase specifier. Use TP.PHASE_ONE or
      *     TP.PHASE_TWO to set a specific phase. Default is both.
+     * @param {Boolean} [useCache=true] Should packages containing the scripts
+     *     use the boot system package cache. If false, the supplied package
+     *     will be flushed from the cache and reloaded.
      * @returns {String[]} An Array of script paths in the supplied package and
      *     config.
      */
@@ -202,7 +205,8 @@ async function(packageConfig, phase) {
             TP.isValid(phase) ? phase === TP.PHASE_ONE : true);
         TP.sys.setcfg('boot.phase_two',
             TP.isValid(phase) ? phase === TP.PHASE_TWO : true);
-        packageAssets = await TP.boot.$listPackageAssets(uri, cfgName);
+        packageAssets = await TP.boot.$listPackageAssets(
+                                        uri, cfgName, null, useCache);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
         //  tell what the script list is.
@@ -241,7 +245,7 @@ async function(packageConfig, phase) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getAllPackagePaths',
-async function(packageConfig, phase) {
+async function(packageConfig, phase, useCache) {
 
     /**
      * @method getAllPackagePaths
@@ -251,6 +255,9 @@ async function(packageConfig, phase) {
      *     with an optional [@config] section. For example 'hello@base'.
      * @param {String} [phase] Optional phase specifier. Use TP.PHASE_ONE or
      *     TP.PHASE_TWO to set a specific phase. Default is both.
+     * @param {Boolean} [useCache=true] Should packages containing the scripts
+     *     use the boot system package cache. If false, the supplied package
+     *     will be flushed from the cache and reloaded.
      * @returns {String[]} An Array of package paths in the supplied package and
      *     config.
      */
@@ -306,7 +313,8 @@ async function(packageConfig, phase) {
             TP.isValid(phase) ? phase === TP.PHASE_ONE : true);
         TP.sys.setcfg('boot.phase_two',
             TP.isValid(phase) ? phase === TP.PHASE_TWO : true);
-        packageAssets = await TP.boot.$listPackageAssets(uri, cfgName, null, true);
+        packageAssets = await TP.boot.$listPackageAssets(
+                                        uri, cfgName, null, useCache, true);
     } catch (e) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
         //  tell what the script list is.
@@ -758,7 +766,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('importPackage',
-async function(packageConfig, shouldSignal) {
+async function(packageConfig, useCache, shouldSignal) {
 
     /**
      * @method importPackage
@@ -767,6 +775,9 @@ async function(packageConfig, shouldSignal) {
      *     rolled up resources in the form of TP.uc() content.
      * @param {String} packageConfig The package name to locate and import along
      *     with an optional [@config] section. For example 'hello@base'.
+     * @param {Boolean} [useCache=true] Should packages containing the scripts
+     *     use the boot system package cache. If false, the supplied package
+     *     will be flushed from the cache and reloaded.
      * @param {Boolean} [shouldSignal=false] Should scripts signal Change once
      *     they've completed their import process?
      * @returns {Promise} A promise which resolves based on success.
@@ -778,7 +789,8 @@ async function(packageConfig, shouldSignal) {
 
         promise;
 
-    packageScriptPaths = await TP.sys.getAllScriptPaths(packageConfig);
+    packageScriptPaths = await TP.sys.getAllScriptPaths(
+                                        packageConfig, null, useCache);
     if (TP.isNull(packageScriptPaths)) {
         //  Could be an unloaded/unexpanded manifest...meaning we can't really
         //  tell what the script list is. Trigger a failure.
