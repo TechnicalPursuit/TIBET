@@ -150,7 +150,6 @@
     --xctrls-dialog-border: none; /* border shorthand values */
     --xctrls-dialog-border-radius: 3px;
 
-
     --xctrls-dialog-closer-size: 30px;
     --xctrls-dialog-closer-x-size: 40%; /* size of 'x' symbol relative to closer size */
     --xctrls-dialog-closer-offset: 5px; /* distance from top and right edges of header */
@@ -165,9 +164,9 @@
     --xctrls-dialog-content-pad: 1rem;
 
     --xctrls-dialog-background-color: white;
-    --xctrls-dialog-header-bkg: hsla(0,0%,0%,.05);
+    --xctrls-dialog-header-bkg: hsla(0, 0%, 0%, 0.05);
     --xctrls-dialog-header-border-bottom: none;
-    --xctrls-dialog-footer-bkg: hsla(0,0%,0%,.05);
+    --xctrls-dialog-footer-bkg: hsla(0, 0%, 0%, 0.05);
     --xctrls-dialog-footer-border-top: none;
 
     /* xctrls|list variables */
