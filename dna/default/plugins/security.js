@@ -45,6 +45,7 @@
         app.use(helmet.xssFilter());
 
         //  Should be more configurable. This is just a placeholder for now.
+        /* eslint-disable quotes */
         app.use(helmet.contentSecurityPolicy({
             directives: {
                 reportUri: '/',
@@ -54,6 +55,7 @@
             },
             reportOnly: true
         }));
+        /* eslint-enable quotes */
 
         //  Should be more configurable. These are disabled by default.
         // app.use(helmet.hpkp());
