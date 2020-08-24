@@ -1554,10 +1554,10 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
                     //  Create a listener Function that will signal with the
                     //  supplied signal origin and name with the native Event as
                     //  the payload.
-                    listener = function(evt) {
+                    listener = function(evt, payload) {
                                 TP.signal(origin,
                                             signal,
-                                            TP.args(arguments, 1));
+                                            payload);
                             };
 
                     //  Add the listener to our listeners hash with the
