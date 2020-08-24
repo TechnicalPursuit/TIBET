@@ -1444,6 +1444,8 @@ function(signalTypes) {
 
 TP.sig.Signal.defineSubtype('ElectronSignal');
 
+TP.sig.ElectronSignal.defineSubtype('MessageReceived');
+
 TP.sig.ElectronSignal.defineSubtype('CheckForUpdate');
 TP.sig.ElectronSignal.defineSubtype('CheckingForUpdate');
 TP.sig.ElectronSignal.defineSubtype('UpdateError');
@@ -1698,6 +1700,339 @@ function(aSignal, varargs) {
     //  thing'.
     return TP.extern.electron_lib_utils.sendEventToMain(TP.ac(arguments));
 });
+
+//  ========================================================================
+//  TP.core.ElectronMessageSource
+//  ========================================================================
+
+TP.sig.MessageSource.defineSubtype('core.ElectronMessageSource');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMessageSource.Type.defineMethod('isSupported',
+function() {
+
+    /**
+     * @method isSupported
+     * @summary Whether or not events from this source can be sent.
+     * @returns {Boolean} Whether or not events can be sent.
+     */
+
+    return TP.sys.cfg('boot.context') === 'electron';
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  The list of standard handler names that instances of this type will
+//  automatically add listeners for. For Electron message sources, there are
+//  none.
+TP.core.ElectronMessageSource.Inst.defineAttribute(
+    '$standardEventHandlerNames', TP.ac());
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMessageSource.Inst.defineMethod('activate',
+function() {
+
+    /**
+     * @method activate
+     * @summary Opens the connection to a remote messaging source.
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidSource
+     * @exception TP.sig.InvalidSourceType
+     * @returns {Boolean} Whether or not the connection opened successfully.
+     */
+
+    //  If we're not running in Electron, then we can't activate.
+    if (TP.sys.cfg('boot.context') !== 'electron') {
+        return false;
+    }
+
+    //  If we're active and have a real source object nothing to do.
+    if (this.isActive() && TP.isValid(this.get('source'))) {
+        return true;
+    }
+
+    //  Our source is the TP.core.ElectronMain type - it is what we'll be
+    //  receiving signals from.
+    this.set('source', TP.core.ElectronMain);
+
+    //  The receiver is now active.
+    this.isActive(true);
+
+    //  Observe the TP.core.ElectronMain type (our source) for the generic
+    //  'message received' signal. This is generic but will have an encoded
+    //  signal name that will be dispatched for more-specific purposes.
+    this.observe(TP.core.ElectronMain, 'TP.sig.MessageReceived');
+
+    //  Signal the Electron-side machinery to activate its watcher.
+    TP.core.ElectronMain.signalMain('TP.sig.ActivateWatcher');
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMessageSource.Inst.defineHandler('MessageReceived',
+function(aSignal) {
+
+    /**
+     * @method handleElectionFileChange
+     * @summary Handles when a TDS-managed resource has changed.
+     * @param {TP.sig.MessageReceived} aSignal The signal indicating that a
+     *     TDS-managed resource has changed.
+     * @returns {TP.core.ElectronMessageSource} The receiver.
+     */
+
+    var evt,
+        signalName;
+
+    evt = aSignal.getPayload();
+
+    //  If a signalName was placed onto the event by the caller, then use it.
+    signalName = evt.signalName || 'TP.sig.ElectronFileChange';
+
+    this.signal(signalName, evt);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMessageSource.Inst.defineMethod('deactivate',
+function(closed) {
+
+    /**
+     * @method deactivate
+     * @summary Deactivates observation of the message source.
+     * @param {Boolean} [closed=false] True to tell deactivate any remote
+     *     connection that the receiver is managing is already closed so skip
+     *     any internal close call.
+     * @returns {Boolean} Whether or not the connection closed successfully.
+     */
+
+    if (!this.isActive()) {
+        return true;
+    }
+
+    //  Ignore the TP.core.ElectronMain type (our source) for the generic
+    //  'message received' signal.
+    this.ignore(TP.core.ElectronMain, 'TP.sig.MessageReceived');
+
+    //  Signal the Electron-side machinery to deactivate its watcher.
+    TP.core.ElectronMain.signalMain('TP.sig.DeactivateWatcher');
+
+    //  The receiver is now inactive.
+    this.isActive(false);
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMessageSource.Inst.defineMethod('setupCustomHandlers',
+function(signalTypes) {
+
+    /**
+     * @method setupCustomHandlers
+     * @summary Sets up handlers for 'custom' server-side events.
+     * @description The Server-Sent Events specification does not specify that
+     *     the 'onmessage' handler will fire when there is a custom 'event' (as
+     *     specified by the 'event:' tag in the received data). We check the
+     *     signal types being observed for a REMOTE_NAME which allows it to
+     *     adapt to server event names which should map to that signal type and
+     *     register a low-level handler accordingly.
+     * @param {TP.sig.SourceSignal[]} signalTypes An Array of
+     *     TP.sig.SourceSignal subtypes to check for custom handler
+     *     registration.
+     * @exception TP.sig.InvalidSource
+     * @returns {TP.sig.RemoteMessageSource} The receiver.
+     */
+
+    //  TP.core.ElectronMessageSource has no custom handlers.
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElectronMessageSource.Inst.defineMethod('teardownCustomHandlers',
+function(signalTypes) {
+
+    /**
+     * @method teardownCustomHandlers
+     * @summary Tears down handlers for 'custom' server-side events.
+     * @description Because the Server-Sent Events specification does not
+     *     specify that the general 'message' handler will fire when there is a
+     *     custom 'event' (as specified by the 'event:' tag in the received
+     *     data), we look at the signals being registered and if they have a
+     *     'REMOTE_NAME' slot, we use that to unregister a handler with our
+     *     private source object.
+     * @param {TP.sig.SourceSignal[]} signalTypes An Array of
+     *     TP.sig.SourceSignal subtypes to check for custom handler
+     *     registration.
+     * @returns {TP.sig.RemoteMessageSource} The receiver.
+     */
+
+    //  TP.core.ElectronMessageSource has no custom handlers.
+    return this;
+});
+
+//  ========================================================================
+//  TP.uri.ElectronURLHandler
+//  ========================================================================
+
+TP.uri.FileURLHandler.defineSubtype('ElectronFileURLHandler');
+
+TP.uri.ElectronFileURLHandler.addTraits(TP.uri.RemoteURLWatchHandler);
+
+//  ------------------------------------------------------------------------
+
+TP.uri.ElectronFileURLHandler.Type.defineMethod('getWatcherSourceType',
+function() {
+
+    /**
+     * @method getWatcherSourceType
+     * @summary Returns the TIBET type of the watcher signal source. For the
+     *     Electron source, this is TP.core.ElectronMessageSource
+     * @returns {TP.core.ElectronMessageSource} The type that will be
+     *     instantiated to make a watcher for the supplied URI.
+     */
+
+    return TP.core.ElectronMessageSource;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.ElectronFileURLHandler.Type.defineMethod('getWatcherSignalType',
+function() {
+
+    /**
+     * @method getWatcherSignalType
+     * @summary Returns the TIBET type of the watcher signal. This will be the
+     *     signal that the signal source sends when it wants to notify URIs of
+     *     changes.
+     * @returns {TP.sig.ElectronFileChange} The type that will be instantiated
+     *     to construct new signals that notify observers that the *remote*
+     *     version of the supplied URI's resource has changed.
+     */
+
+    return TP.sig.ElectronFileChange;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.ElectronFileURLHandler.Type.defineMethod('activateRemoteWatch',
+function() {
+
+    /**
+     * @method activateRemoteWatch
+     * @summary Performs any processing necessary to activate observation of
+     *     remote URL changes.
+     * @returns {TP.meta.uri.ElectronFileURLHandler} The receiver.
+     */
+
+    var sourceType,
+        signalSource,
+        signalType;
+
+    sourceType = this.getWatcherSourceType();
+
+    signalSource = sourceType.construct();
+    if (TP.notValid(signalSource)) {
+        return this.raise('InvalidURLWatchSource');
+    }
+
+    signalType = this.getWatcherSignalType();
+    this.observe(signalSource, signalType);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.ElectronFileURLHandler.Type.defineMethod('deactivateRemoteWatch',
+function() {
+
+    /**
+     * @method deactivateRemoteWatch
+     * @summary Performs any processing necessary to shut down observation of
+     *     remote URL changes.
+     * @returns {TP.meta.uri.ElectronFileURLHandler} The receiver.
+     */
+
+    var sourceType,
+        signalSource,
+        signalType;
+
+    sourceType = this.getWatcherSourceType();
+
+    signalSource = sourceType.construct();
+    if (TP.notValid(signalSource)) {
+        return this.raise('InvalidURLWatchSource');
+    }
+
+    signalType = this.getWatcherSignalType();
+    this.ignore(signalSource, signalType);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.ElectronFileURLHandler.Type.defineHandler('ElectronFileChange',
+function(aSignal) {
+
+    /**
+     * @method handleElectionFileChange
+     * @summary Handles when a TDS-managed resource has changed.
+     * @param {TP.sig.ElectronFileChange} aSignal The signal indicating that a
+     *     TDS-managed resource has changed.
+     * @returns {TP.meta.uri.ElectronFileURLHandler} The receiver.
+     */
+
+    var payload,
+        path,
+        fileName,
+        url;
+
+    //  Make sure that we have a payload
+    if (TP.notValid(payload = aSignal.getPayload())) {
+        return this;
+    }
+
+    //  If we can't determine the file path we can't take action in any case.
+    path = TP.hc(payload).at('path');
+    if (TP.isEmpty(path)) {
+        return this;
+    }
+
+    //  Strip any enclosing quotes from the path.
+    path = path.asString().stripEnclosingQuotes();
+
+    fileName = TP.uriExpandPath(path);
+
+    //  If we can successfully create a URL from the payload, then process the
+    //  change.
+    if (TP.isURI(url = TP.uc(fileName))) {
+        TP.uri.URI.processRemoteResourceChange(url);
+    }
+
+    return this;
+});
+
+//  =======================================================================
+//  Registration
+//  ========================================================================
+
+//  Make sure the remote url watcher knows about this handler type, but wait to
+//  do this after the type has been fully configured to avoid api check error.
+TP.uri.RemoteURLWatchHandler.registerWatcher(TP.uri.ElectronFileURLHandler);
 
 //  ========================================================================
 //  TP.sig.GeolocationSignal
@@ -4170,6 +4505,12 @@ TP.sig.RemoteSourceSignal.defineSubtype('SourceReconnecting');
 TP.sig.RemoteSourceSignal.defineSubtype('SourceError');
 
 TP.sig.RemoteSourceSignal.defineSubtype('RemoteURLChange');
+
+//  =======================================================================
+//  TP.sig.ElectronFileChange
+//  ========================================================================
+
+TP.sig.RemoteURLChange.defineSubtype('ElectronFileChange');
 
 //  ------------------------------------------------------------------------
 //  end
