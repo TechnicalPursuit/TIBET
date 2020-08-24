@@ -58,6 +58,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.TDSURLHandler.Type.defineMethod('getWatcherSourceType',
+function() {
+
+    /**
+     * @method getWatcherSourceType
+     * @summary Returns the TIBET type of the watcher signal source. Typically,
+     *     this is one of the prebuilt TIBET watcher types, like
+     *     TP.core.SSEMessageSource for Server-Sent Event sources.
+     * @returns {TP.core.SSEMessageSource} The type that will be instantiated to
+     *     make a watcher for the supplied URI.
+     */
+
+    return TP.core.SSEMessageSource;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.TDSURLHandler.Type.defineMethod('patch',
 function(targetURI, aRequest) {
 
