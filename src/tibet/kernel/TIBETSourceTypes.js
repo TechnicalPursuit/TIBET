@@ -71,7 +71,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 });
 
 //  ------------------------------------------------------------------------
-//  Inst Attributes
+//  Instance Attributes
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalSource.Inst.defineAttribute('observers');
@@ -157,7 +157,7 @@ TP.sig.SignalSource.defineSubtype('URISignalSource');
 TP.sig.URISignalSource.isAbstract(true);
 
 //  ------------------------------------------------------------------------
-//  Inst Attributes
+//  Instance Attributes
 //  ------------------------------------------------------------------------
 
 TP.sig.URISignalSource.Inst.defineAttribute('uri');
@@ -201,7 +201,7 @@ interface. Examples include web sockets and server-sent events.
 TP.sig.SignalSource.defineSubtype('sig.MessageSource');
 
 //  ------------------------------------------------------------------------
-//  Inst Attributes
+//  Instance Attributes
 //  ------------------------------------------------------------------------
 
 TP.sig.MessageSource.Inst.defineAttribute('active', false);
@@ -868,9 +868,8 @@ function() {
 
     /**
      * @method isSupported
-     * @summary Whether or not the Server-Sent Events system is supported in the
-     *     current environment.
-     * @returns {Boolean} Whether or not Server-Sent Events are supported.
+     * @summary Whether or not events from this source can be sent.
+     * @returns {Boolean} Whether or not events can be sent.
      */
 
     return TP.isValid(TP.global.EventSource);
@@ -1177,9 +1176,8 @@ function() {
 
     /**
      * @method isSupported
-     * @summary Whether or not WebSockets are supported in the current
-     *     environment.
-     * @returns {Boolean} Whether or not WebSockets are supported.
+     * @summary Whether or not events from this source can be sent.
+     * @returns {Boolean} Whether or not events can be sent.
      */
 
     return TP.isValid(TP.global.WebSocket);
