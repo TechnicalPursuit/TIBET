@@ -75,7 +75,7 @@
             if (params.template.startsWith('~')) {
                 templatePath = TDS.expandPath(params.template);
 
-                //  File has to reside _inside_ the project...
+                //  File has to reside inside the project...
                 if (templatePath.indexOf(
                         TDS.expandPath('~tds_templates')) !== 0) {
                     return TDS.Promise.reject(new Error(

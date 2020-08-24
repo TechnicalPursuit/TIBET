@@ -2073,7 +2073,7 @@
 
         //  Since the CLI can be invoked from anywhere we need to be explicit
         //  here relative to the cwd. If we find a project file, and it's
-        //  'tibet' we're truly _inside_ the library.
+        //  'tibet' we're truly inside the library.
 
         cwd = this.getCurrentDirectory();
 
