@@ -13,18 +13,18 @@
 //  ========================================================================
 
 /*
-TP.sig.SignalSource is the core signaling type from which all other signal
+TP.core.SignalSource is the core signaling type from which all other signal
 sources derive. Signal sources are objects that throw off signals; devices like
 mice and keyboards and remote sources like server-sent event servers.
 */
 
-TP.lang.Object.defineSubtype('sig.SignalSource');
+TP.lang.Object.defineSubtype('core.SignalSource');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalSource.Type.defineMethod('addObserver',
+TP.core.SignalSource.Type.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -48,7 +48,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalSource.Type.defineMethod('removeObserver',
+TP.core.SignalSource.Type.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -74,13 +74,13 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalSource.Inst.defineAttribute('observers');
+TP.core.SignalSource.Inst.defineAttribute('observers');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalSource.Inst.defineMethod('addObserver',
+TP.core.SignalSource.Inst.defineMethod('addObserver',
 function(aSignal, aHandler, aPolicy) {
 
     /**
@@ -103,7 +103,7 @@ function(aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalSource.Inst.defineMethod('hasObservers',
+TP.core.SignalSource.Inst.defineMethod('hasObservers',
 function() {
 
     /**
@@ -121,7 +121,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalSource.Inst.defineMethod('removeObserver',
+TP.core.SignalSource.Inst.defineMethod('removeObserver',
 function(aSignal, aHandler, aPolicy) {
 
     /**
@@ -143,30 +143,30 @@ function(aSignal, aHandler, aPolicy) {
 });
 
 //  ========================================================================
-//  TP.sig.URISignalSource
+//  TP.core.URISignalSource
 //  ========================================================================
 
 /*
- * TP.sig.URISignalSource is a set of traits for various signal source subtypes
+ * TP.core.URISignalSource is a set of traits for various signal source subtypes
  * which use a URI to define their endpoint (SSE, socket, etc.).
  */
 
-TP.sig.SignalSource.defineSubtype('URISignalSource');
+TP.core.SignalSource.defineSubtype('URISignalSource');
 
 //  This is intended for use as a set of traits, not a concrete type.
-TP.sig.URISignalSource.isAbstract(true);
+TP.core.URISignalSource.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sig.URISignalSource.Inst.defineAttribute('uri');
+TP.core.URISignalSource.Inst.defineAttribute('uri');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.URISignalSource.Inst.defineMethod('setURI',
+TP.core.URISignalSource.Inst.defineMethod('setURI',
 function(aURI) {
 
     /**
@@ -174,7 +174,7 @@ function(aURI) {
      * @summary Defines the endpoint URI for the receiver.
      * @param {TP.uri.URI} aURI The URI representing the signal endpoint.
      * @exception TP.sig.InvalidURI
-     * @returns {TP.sig.SignalSource} A new instance.
+     * @returns {TP.core.SignalSource} A new instance.
      */
 
     var uri;
@@ -190,46 +190,46 @@ function(aURI) {
 });
 
 //  ========================================================================
-//  TP.sig.MessageSource
+//  TP.core.MessageSource
 //  ========================================================================
 
 /*
-TP.sig.MessageSource provides a common supertype for objects with an onmessage
+TP.core.MessageSource provides a common supertype for objects with an onmessage
 interface. Examples include web sockets and server-sent events.
 */
 
-TP.sig.SignalSource.defineSubtype('sig.MessageSource');
+TP.core.SignalSource.defineSubtype('MessageSource');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineAttribute('active', false);
+TP.core.MessageSource.Inst.defineAttribute('active', false);
 
 //  The list of standard handler names that instances of this type will
 //  automatically add listeners for.
-TP.sig.MessageSource.Inst.defineAttribute(
+TP.core.MessageSource.Inst.defineAttribute(
     '$standardEventHandlerNames', TP.ac('open', 'close', 'error', 'message'));
 
 //  The private TP.core.Hash containing a map of custom event names to the
 //  handlers that were installed for each one so that we can unregister them.
-TP.sig.MessageSource.Inst.defineAttribute('$customEventHandlers');
+TP.core.MessageSource.Inst.defineAttribute('$customEventHandlers');
 
-TP.sig.MessageSource.Inst.defineAttribute('errorCount', 0);
+TP.core.MessageSource.Inst.defineAttribute('errorCount', 0);
 
-TP.sig.MessageSource.Inst.defineAttribute('source');
+TP.core.MessageSource.Inst.defineAttribute('source');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('init',
+TP.core.MessageSource.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Initialize a new signal instance.
-     * @returns {TP.sig.MessageSource} A new instance.
+     * @returns {TP.core.MessageSource} A new instance.
      */
 
     this.callNextMethod();
@@ -241,7 +241,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('activate',
+TP.core.MessageSource.Inst.defineMethod('activate',
 function() {
 
     /**
@@ -259,7 +259,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('addObserver',
+TP.core.MessageSource.Inst.defineMethod('addObserver',
 function(aSignal, aHandler, aPolicy) {
 
     /**
@@ -328,7 +328,7 @@ function(aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('deactivate',
+TP.core.MessageSource.Inst.defineMethod('deactivate',
 function(closed) {
 
     /**
@@ -378,7 +378,7 @@ function(closed) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('isActive',
+TP.core.MessageSource.Inst.defineMethod('isActive',
 function(aFlag) {
 
     /**
@@ -398,7 +398,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('removeObserver',
+TP.core.MessageSource.Inst.defineMethod('removeObserver',
 function(aSignal, aHandler, aPolicy) {
 
     /**
@@ -468,7 +468,7 @@ function(aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('setupCustomHandlers',
+TP.core.MessageSource.Inst.defineMethod('setupCustomHandlers',
 function(signalTypes) {
 
     /**
@@ -478,7 +478,7 @@ function(signalTypes) {
      * @param {TP.sig.SourceSignal[]} signalTypes An Array of
      *     TP.sig.SourceSignal subtypes to check for custom handler
      *     registration.
-     * @returns {TP.sig.MessageSource} The receiver.
+     * @returns {TP.core.MessageSource} The receiver.
      */
 
     TP.override();
@@ -488,7 +488,7 @@ function(signalTypes) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('setupStandardHandlers',
+TP.core.MessageSource.Inst.defineMethod('setupStandardHandlers',
 function() {
 
     /**
@@ -496,7 +496,7 @@ function() {
      * @summary Sets up the 'standard' handlers for messages coming from a
      *     remote connection.
      * @exception TP.sig.InvalidSource
-     * @returns {TP.sig.MessageSource} The receiver.
+     * @returns {TP.core.MessageSource} The receiver.
      */
 
     var source,
@@ -526,7 +526,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('teardownCustomHandlers',
+TP.core.MessageSource.Inst.defineMethod('teardownCustomHandlers',
 function(signalTypes) {
 
     /**
@@ -536,7 +536,7 @@ function(signalTypes) {
      * @param {TP.sig.SourceSignal[]} signalTypes An Array of
      *     TP.sig.SourceSignal subtypes to check for custom handler
      *     registration.
-     * @returns {TP.sig.MessageSource} The receiver.
+     * @returns {TP.core.MessageSource} The receiver.
      */
 
     TP.override();
@@ -544,14 +544,14 @@ function(signalTypes) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineMethod('teardownStandardHandlers',
+TP.core.MessageSource.Inst.defineMethod('teardownStandardHandlers',
 function(signalTypes) {
 
     /**
      * @method teardownStandardHandlers
      * @summary Tears down the 'standard' handlers for messages coming from a
      *     remote connection.
-     * @returns {TP.sig.MessageSource} The receiver.
+     * @returns {TP.core.MessageSource} The receiver.
      */
 
     var source,
@@ -580,7 +580,7 @@ function(signalTypes) {
 //  Instance Handlers
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageSource.Inst.defineHandler('AppShutdown',
+TP.core.MessageSource.Inst.defineHandler('AppShutdown',
 function(aSignal) {
 
     /**
@@ -589,7 +589,7 @@ function(aSignal) {
      *     deactivate the signal source to avoid leaving open connections.
      * @param {TP.sig.AppShutdown} aSignal The signal indicating that the
      *     application is to be shut down.
-     * @returns {TP.sig.MessageSource} The receiver.
+     * @returns {TP.core.MessageSource} The receiver.
      */
 
     this.deactivate();
@@ -598,23 +598,23 @@ function(aSignal) {
 });
 
 //  ========================================================================
-//  TP.sig.MessageConnection
+//  TP.core.MessageConnection
 //  ========================================================================
 
 /*
-TP.sig.MessageSource provides a common supertype for objects with an onmessage
+TP.core.MessageSource provides a common supertype for objects with an onmessage
 interface. Examples include worker threads, server sent events, etc.
 */
 
-TP.sig.MessageSource.defineSubtype('sig.MessageConnection');
+TP.core.MessageSource.defineSubtype('MessageConnection');
 
-TP.sig.MessageConnection.isAbstract(true);
+TP.core.MessageConnection.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageConnection.Inst.defineMethod('send',
+TP.core.MessageConnection.Inst.defineMethod('send',
 function(message) {
 
     /**
@@ -632,7 +632,7 @@ function(message) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageConnection.Inst.defineMethod('sendMessage',
+TP.core.MessageConnection.Inst.defineMethod('sendMessage',
 function(message) {
 
     /**
@@ -647,7 +647,7 @@ function(message) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageConnection.Inst.defineMethod('serializeMessage',
+TP.core.MessageConnection.Inst.defineMethod('serializeMessage',
 function(message) {
 
     /**
@@ -670,24 +670,24 @@ function(message) {
 });
 
 //  ========================================================================
-//  TP.sig.RemoteMessageSource
+//  TP.core.RemoteMessageSource
 //  ========================================================================
 
-TP.sig.MessageSource.defineSubtype('sig.RemoteMessageSource');
+TP.core.MessageSource.defineSubtype('RemoteMessageSource');
 
-TP.sig.RemoteMessageSource.addTraits(TP.sig.URISignalSource);
+TP.core.RemoteMessageSource.addTraits(TP.core.URISignalSource);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sig.RemoteMessageSource.Inst.defineAttribute('sourceParams');
+TP.core.RemoteMessageSource.Inst.defineAttribute('sourceParams');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.RemoteMessageSource.Inst.defineMethod('init',
+TP.core.RemoteMessageSource.Inst.defineMethod('init',
 function(aURI, sourceParams) {
 
     /**
@@ -697,7 +697,7 @@ function(aURI, sourceParams) {
      *     messaging source.
      * @param {TP.core.Hash} [sourceParams] Optional parameters used by the
      *     receiver to configure the message source.
-     * @returns {TP.sig.RemoteMessageSource} A new instance.
+     * @returns {TP.core.RemoteMessageSource} A new instance.
      */
 
     this.callNextMethod();
@@ -714,7 +714,7 @@ function(aURI, sourceParams) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.RemoteMessageSource.Inst.defineMethod('activate',
+TP.core.RemoteMessageSource.Inst.defineMethod('activate',
 function() {
 
     /**
@@ -765,7 +765,7 @@ function() {
     //  Install an unload observer on the main window to close the source before
     //  leaving.
     //  TODO: Shouldn't this be moved to an AppShutdown handler like the
-    //  TP.sig.MessageSource defines above... and then it needs to subscribe to
+    //  TP.core.MessageSource defines above... and then it needs to subscribe to
     //  those.
     window.addEventListener('unload',
         function() {
@@ -783,7 +783,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.RemoteMessageSource.Inst.defineMethod('constructSource',
+TP.core.RemoteMessageSource.Inst.defineMethod('constructSource',
 function() {
 
     /**
@@ -816,7 +816,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.RemoteMessageSource.Inst.defineMethod('getSourceType',
+TP.core.RemoteMessageSource.Inst.defineMethod('getSourceType',
 function() {
 
     /**
@@ -832,7 +832,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.RemoteMessageSource.Inst.defineMethod('onopen',
+TP.core.RemoteMessageSource.Inst.defineMethod('onopen',
 function(evt) {
 
     /**
@@ -841,7 +841,7 @@ function(evt) {
      *     the receiver is managing has opened a connection to its remote
      *     server.
      * @param {MessageEvent} evt The event sent by the underlying system.
-     * @returns {TP.sig.RemoteMessageSource} The receiver.
+     * @returns {TP.core.RemoteMessageSource} The receiver.
      */
 
     var source,
@@ -863,7 +863,7 @@ function(evt) {
 //  TP.core.SSEMessageSource
 //  ========================================================================
 
-TP.sig.RemoteMessageSource.defineSubtype('core.SSEMessageSource');
+TP.core.RemoteMessageSource.defineSubtype('SSEMessageSource');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -1030,7 +1030,7 @@ function(signalTypes) {
      *     TP.sig.SourceSignal subtypes to check for custom handler
      *     registration.
      * @exception TP.sig.InvalidSource
-     * @returns {TP.sig.RemoteMessageSource} The receiver.
+     * @returns {TP.core.RemoteMessageSource} The receiver.
      */
 
     var source,
@@ -1113,7 +1113,7 @@ function(signalTypes) {
      * @param {TP.sig.SourceSignal[]} signalTypes An Array of
      *     TP.sig.SourceSignal subtypes to check for custom handler
      *     registration.
-     * @returns {TP.sig.RemoteMessageSource} The receiver.
+     * @returns {TP.core.RemoteMessageSource} The receiver.
      */
 
     var source,
@@ -1155,10 +1155,10 @@ function(signalTypes) {
 //  TP.core.Socket
 //  ========================================================================
 
-TP.sig.RemoteMessageSource.defineSubtype('TP.core.Socket');
+TP.core.RemoteMessageSource.defineSubtype('Socket');
 
 //  Mix in send capability.
-TP.core.Socket.addTraits(TP.sig.MessageConnection);
+TP.core.Socket.addTraits(TP.core.MessageConnection);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -1457,7 +1457,7 @@ TP.sig.ElectronSignal.defineSubtype('UpdateDownloaded');
 //  TP.core.ElectronMain
 //  ========================================================================
 
-TP.sig.SignalSource.defineSubtype('TP.core.ElectronMain');
+TP.core.SignalSource.defineSubtype('ElectronMain');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -1705,7 +1705,7 @@ function(aSignal, varargs) {
 //  TP.core.ElectronMessageSource
 //  ========================================================================
 
-TP.sig.MessageSource.defineSubtype('core.ElectronMessageSource');
+TP.core.MessageSource.defineSubtype('ElectronMessageSource');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -1852,7 +1852,7 @@ function(signalTypes) {
      *     TP.sig.SourceSignal subtypes to check for custom handler
      *     registration.
      * @exception TP.sig.InvalidSource
-     * @returns {TP.sig.RemoteMessageSource} The receiver.
+     * @returns {TP.core.RemoteMessageSource} The receiver.
      */
 
     //  TP.core.ElectronMessageSource has no custom handlers.
@@ -1876,7 +1876,7 @@ function(signalTypes) {
      * @param {TP.sig.SourceSignal[]} signalTypes An Array of
      *     TP.sig.SourceSignal subtypes to check for custom handler
      *     registration.
-     * @returns {TP.sig.RemoteMessageSource} The receiver.
+     * @returns {TP.core.RemoteMessageSource} The receiver.
      */
 
     //  TP.core.ElectronMessageSource has no custom handlers.
@@ -2046,7 +2046,7 @@ TP.sig.GeolocationSignal.defineSubtype('GeolocationError');
 //  TP.core.Geolocation
 //  ========================================================================
 
-TP.sig.MessageSource.defineSubtype('TP.core.Geolocation');
+TP.core.MessageSource.defineSubtype('Geolocation');
 
 /**
  * Dictionary of window GID to geo watch objects. Used to capture registrations
@@ -2242,7 +2242,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 //  TP.core.MediaQuery
 //  ========================================================================
 
-TP.sig.MessageSource.defineSubtype('TP.core.MediaQuery');
+TP.core.MessageSource.defineSubtype('MediaQuery');
 
 /**
  * The count of observers. Incremented via addObserver, decremented via
@@ -2426,25 +2426,25 @@ function(aSignal, aHandler, aPolicy) {
 });
 
 //  ========================================================================
-//  TP.sig.MutationSignalSource
+//  TP.core.MutationSignalSource
 //  ========================================================================
 
 /*
 */
 
-TP.sig.SignalSource.defineSubtype('sig.MutationSignalSource');
+TP.core.SignalSource.defineSubtype('MutationSignalSource');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.sig.MutationSignalSource.Type.defineAttribute('queries');
+TP.core.MutationSignalSource.Type.defineAttribute('queries');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.MutationSignalSource.Type.defineMethod('initialize',
+TP.core.MutationSignalSource.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -2600,7 +2600,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MutationSignalSource.Type.defineMethod('watchDocument',
+TP.core.MutationSignalSource.Type.defineMethod('watchDocument',
 function(aDocument) {
 
     /**
@@ -2609,7 +2609,7 @@ function(aDocument) {
      * @param {Document} aDocument The document to register a Mutation Observer
      *     on.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.meta.sig.MutationSignalSource} The MutationSignalSource
+     * @returns {TP.meta.core.MutationSignalSource} The MutationSignalSource
      *     type.
      */
 
@@ -2833,7 +2833,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MutationSignalSource.Type.defineMethod('unwatchDocument',
+TP.core.MutationSignalSource.Type.defineMethod('unwatchDocument',
 function(aDocument) {
 
     /**
@@ -2842,7 +2842,7 @@ function(aDocument) {
      * @param {Document} aDocument The document to remove a Mutation Observer
      *     from.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.meta.sig.MutationSignalSource} The MutationSignalSource
+     * @returns {TP.meta.core.MutationSignalSource} The MutationSignalSource
      *     type.
      */
 
@@ -2854,7 +2854,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MutationSignalSource.Type.defineHandler('MutationEvent',
+TP.core.MutationSignalSource.Type.defineHandler('MutationEvent',
 function(aMutationRecord) {
 
     /**
@@ -2862,7 +2862,7 @@ function(aMutationRecord) {
      * @summary Responds to notifications that a mutation has occurred.
      * @param {MutationRecord} aMutationRecord The incoming mutation record.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.meta.sig.MutationSignalSource} The MutationSignalSource
+     * @returns {TP.meta.core.MutationSignalSource} The MutationSignalSource
      *     type.
      */
 
@@ -3210,7 +3210,7 @@ function(aMutationRecord) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MutationSignalSource.Type.defineMethod('addSubtreeQuery',
+TP.core.MutationSignalSource.Type.defineMethod('addSubtreeQuery',
 function(observer, queryPath, queryContext) {
 
     /**
@@ -3230,7 +3230,7 @@ function(observer, queryPath, queryContext) {
      *     If the supplied observer isn't a Node, this parameter *must* be
      *     supplied.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.meta.sig.MutationSignalSource} The receiver.
+     * @returns {TP.meta.core.MutationSignalSource} The receiver.
      */
 
     var observerGID,
@@ -3259,7 +3259,7 @@ function(observer, queryPath, queryContext) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MutationSignalSource.Type.defineMethod('removeSubtreeQuery',
+TP.core.MutationSignalSource.Type.defineMethod('removeSubtreeQuery',
 function(observer) {
 
     /**
@@ -3273,7 +3273,7 @@ function(observer) {
      * @param {Node} observer The object that was interested in subtree
      *     mutations in its document.
      * @exception TP.sig.InvalidNode
-     * @returns {TP.meta.sig.MutationSignalSource} The receiver.
+     * @returns {TP.meta.core.MutationSignalSource} The receiver.
      */
 
     this.get('queries').removeKey(TP.gid(observer));
@@ -3283,7 +3283,7 @@ function(observer) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MutationSignalSource.Type.defineMethod('executeSubtreeQueryAndDispatch',
+TP.core.MutationSignalSource.Type.defineMethod('executeSubtreeQueryAndDispatch',
 function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
 
     /**
@@ -3301,7 +3301,7 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
      * @param {Node[]} removedNodes The nodes that were removed in the mutation.
      * @param {Document} aDocument The document that the mutation occurred in.
      * @exception TP.sig.InvalidParameter
-     * @returns {TP.meta.sig.MutationSignalSource} The receiver.
+     * @returns {TP.meta.core.MutationSignalSource} The receiver.
      */
 
     var queryObserver,
@@ -3406,26 +3406,26 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
 });
 
 //  ========================================================================
-//  TP.sig.ResizeSignalSource
+//  TP.core.ResizeSignalSource
 //  ========================================================================
 
-TP.sig.SignalSource.defineSubtype('sig.ResizeSignalSource');
+TP.core.SignalSource.defineSubtype('ResizeSignalSource');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.sig.ResizeSignalSource.Type.defineAttribute('defaultSignal',
+TP.core.ResizeSignalSource.Type.defineAttribute('defaultSignal',
     'TP.sig.DOMResize');
 
 //  The low-level handler function
-TP.sig.ResizeSignalSource.Type.defineAttribute('$handlerFunc');
+TP.core.ResizeSignalSource.Type.defineAttribute('$handlerFunc');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.ResizeSignalSource.Type.defineMethod('initialize',
+TP.core.ResizeSignalSource.Type.defineMethod('initialize',
 function() {
 
     /**
@@ -3437,7 +3437,7 @@ function() {
         //  NB: 'this' is the element that the resize handler was
         //  installed for - don't bind this unless you want to lose the
         //  reference.
-        TP.wrap(this).signal(TP.sig.ResizeSignalSource.get('defaultSignal'));
+        TP.wrap(this).signal(TP.core.ResizeSignalSource.get('defaultSignal'));
     });
 
     return this;
@@ -3445,7 +3445,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.ResizeSignalSource.Type.defineMethod('addObserver',
+TP.core.ResizeSignalSource.Type.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -3561,7 +3561,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.ResizeSignalSource.Type.defineMethod('removeObserver',
+TP.core.ResizeSignalSource.Type.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -3664,14 +3664,14 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 });
 
 //  ========================================================================
-//  TP.sig.VisibilitySignalSource
+//  TP.core.VisibilitySignalSource
 //  ========================================================================
 
-TP.sig.SignalSource.defineSubtype('sig.VisibilitySignalSource');
+TP.core.SignalSource.defineSubtype('VisibilitySignalSource');
 
 //  ------------------------------------------------------------------------
 
-TP.sig.VisibilitySignalSource.Type.defineMethod('addObserver',
+TP.core.VisibilitySignalSource.Type.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -3811,7 +3811,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.VisibilitySignalSource.Type.defineMethod('removeObserver',
+TP.core.VisibilitySignalSource.Type.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -3921,10 +3921,10 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.URISignalSource.defineSubtype('core.Worker');
+TP.core.URISignalSource.defineSubtype('Worker');
 
 //  Mix in send capability.
-TP.core.Worker.addTraits(TP.sig.MessageConnection);
+TP.core.Worker.addTraits(TP.core.MessageConnection);
 
 TP.core.Worker.Inst.resolveTraits(TP.ac('sendMessage'), TP.core.Worker);
 
@@ -4194,7 +4194,7 @@ function(message) {
 //  TP.core.PromiseWorker
 //  ========================================================================
 
-TP.core.Worker.defineSubtype('TP.core.PromiseWorker');
+TP.core.Worker.defineSubtype('PromiseWorker');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

@@ -2585,7 +2585,7 @@ function() {
      * @returns {Object|TP.lang.RootObject} The signal type's owner.
      */
 
-    return TP.sig.ResizeSignalSource;
+    return TP.core.ResizeSignalSource;
 });
 
 //  ------------------------------------------------------------------------
@@ -2606,7 +2606,7 @@ function() {
      * @returns {Object|TP.lang.RootObject} The signal type's owner.
      */
 
-    return TP.sig.VisibilitySignalSource;
+    return TP.core.VisibilitySignalSource;
 });
 
 //  ---
