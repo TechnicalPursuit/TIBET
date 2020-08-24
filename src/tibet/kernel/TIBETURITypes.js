@@ -12857,7 +12857,7 @@ function() {
      *     make a watcher for the supplied URI.
      */
 
-    return TP.core.SSEMessageSource;
+    return TP.override();
 });
 
 //  ------------------------------------------------------------------------
