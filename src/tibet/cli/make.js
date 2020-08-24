@@ -833,6 +833,24 @@ Cmd.prototype.cfg = Cmd.prototype.getcfg;
  * Returns the name of the current project as defined in the Package.NPM_FILE.
  * @returns {String} The project name.
  */
+Cmd.prototype.getNPMProjectName = function() {
+    return CLI.getNPMProjectName();
+};
+
+
+/**
+ * Returns the name of the current project as defined in the tibet.json file.
+ * @returns {String} The project name.
+ */
+Cmd.prototype.getTIBETProjectName = function() {
+    return CLI.getTIBETProjectName();
+};
+
+
+/**
+ * Returns the name of the current project as defined in the tibet.json file.
+ * @returns {String} The project name.
+ */
 Cmd.prototype.getProjectName = function() {
     return CLI.getProjectName();
 };

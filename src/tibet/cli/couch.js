@@ -613,7 +613,7 @@ Cmd.prototype.executePushapp = function() {
             if (sh.test('-d', CLI.joinPaths(fullpath, db_app))) {
                 fullpath = CLI.joinPaths(fullpath, db_app);
             } else {
-                fullpath = CLI.joinPaths(fullpath, CLI.getProjectName());
+                fullpath = CLI.joinPaths(fullpath, CLI.getTIBETProjectName());
             }
             newdoc = couch.populateDesignDoc(newdoc, fullpath, params, true);
 

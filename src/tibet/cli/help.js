@@ -260,7 +260,7 @@ Cmd.prototype.executeForCommand = function(command) {
     topics = this.executeTopics(true);
 
     if (CLI.inProject()) {
-        prefix = CLI.getProjectName().toLowerCase() + '-';
+        prefix = CLI.getTIBETProjectName().toLowerCase() + '-';
         topic = command.indexOf(prefix) === 0 ? command : prefix + command;
         if (topics.indexOf(topic) !== -1) {
             subjects.push(topic);

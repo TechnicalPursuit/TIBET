@@ -109,7 +109,7 @@ Cmd.prototype.configure = function() {
     inProj = CLI.inProject();
 
     options.appname = options.appname ||
-        inProj ? CLI.cfg('npm.name') : '';
+        inProj ? CLI.getTIBETProjectName() : '';
 
     parts = name.split(/[\.:]/g);
     switch (parts.length) {
@@ -209,7 +209,7 @@ Cmd.prototype.configureForDNA = function(config) {
 
     if (CLI.isEmpty(options.pkgname)) {
         options.pkgname = inProj ?
-            '~app_cfg/' + CLI.getcfg('npm.name') + '.xml' :
+            '~app_cfg/' + CLI.getTIBETProjectName() + '.xml' :
             '~lib_cfg/lib_namespaces.xml';
     }
 
