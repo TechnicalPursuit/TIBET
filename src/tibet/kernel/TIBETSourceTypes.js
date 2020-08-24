@@ -251,7 +251,10 @@ function() {
      * @returns {Boolean} Whether or not the activation was successful.
      */
 
-    TP.override();
+    //  The receiver is now active.
+    this.isActive(true);
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -342,6 +345,9 @@ function(closed) {
     if (!this.isActive()) {
         return true;
     }
+
+    //  The receiver is now inactive.
+    this.isActive(false);
 
     source = this.get('source');
     if (TP.notValid(source)) {
