@@ -78,7 +78,8 @@ Cmd.prototype.execute = function() {
 
     context = {};
 
-    context.name = CLI.getcfg('npm.name');
+    context.name = CLI.getTIBETProjectName();
+    context.package = CLI.getNPMProjectName();
     context.version = CLI.getcfg('npm.version');
 
     context.in_library = CLI.inLibrary(Cmd);
