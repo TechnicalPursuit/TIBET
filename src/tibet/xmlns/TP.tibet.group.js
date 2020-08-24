@@ -84,7 +84,7 @@ function(aRequest) {
         query = TP.apc(query);
         context = elemTPNode.getNativeDocument();
 
-        TP.sig.MutationSignalSource.addSubtreeQuery(
+        TP.core.MutationSignalSource.addSubtreeQuery(
                 elem,
                 query,
                 context);
@@ -125,7 +125,7 @@ function(aRequest) {
 
     //  We're going away - remove the subtree query that we registered when we
     //  got attached into this DOM.
-    TP.sig.MutationSignalSource.removeSubtreeQuery(elem);
+    TP.core.MutationSignalSource.removeSubtreeQuery(elem);
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.

@@ -16,7 +16,7 @@
 //  TP.core.Device
 //  ========================================================================
 
-TP.sig.SignalSource.defineSubtype('core.Device');
+TP.core.SignalSource.defineSubtype('core.Device');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
