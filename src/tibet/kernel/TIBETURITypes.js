@@ -7118,7 +7118,7 @@ async function() {
             pkgcfg = TP.isEmpty(TP.boot.$$bootconfig) ?
                 TP.boot.$$bootfile :
                 TP.boot.$$bootfile + '@' + TP.boot.$$bootconfig;
-            await TP.sys.importPackage(pkgcfg, true);
+            await TP.sys.importPackage(pkgcfg, false, true);
         }
 
         //  Trigger post-processing for specific URIs.
@@ -7138,7 +7138,7 @@ async function() {
 
         //  Force refresh of any package data, particularly related to the
         //  URI we're referencing.
-        TP.boot.$refreshPackages(changedLoc);
+        await TP.boot.$refreshPackages(changedLoc);
 
         callback();
 

@@ -8743,7 +8743,10 @@ TP.boot.$updateDependentVars = function() {
     //  level so that no node filtering of phase two nodes is done. the
     //  result is that the system thinks we're in both phase one and phase
     //  two from a node filtering perspective
-    TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
+    if (!TP.sys.hasLoaded()) {
+        TP.sys.setcfg('boot.phase_two',
+                        TP.sys.cfg('boot.two_phase') === false);
+    }
 
     //  Reconfigure style color settings to match any updates to color scheme.
     scheme = TP.sys.cfg('boot.color.scheme');
@@ -10878,7 +10881,7 @@ TP.boot.$isLoadedScript = function(aURI) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$listConfigAssets = async function(anElement, aList, configName, includePkgs, includeAlacarte) {
+TP.boot.$listConfigAssets = async function(anElement, aList, configName, useCache, includePkgs, includeAlacarte) {
 
     /**
      * @method $listConfigAssets
@@ -10888,6 +10891,9 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
      * @param {Element} anElement The config element to begin listing from.
      * @param {String[]} aList The array of asset descriptions to expand upon.
      * @param {String} [configName] Specific config name to expand, if any.
+     * @param {Boolean} [useCache=true] Should packages containing the scripts
+     *     use the package cache. If false, the supplied package will be flushed
+     *     from the cache and reloaded.
      * @param {Boolean} [includePkgs=false] Whether or not to include nested
      *     package nodes.
      * @param {Boolean} [includeAlacarte=true] Whether or not to include
@@ -10979,7 +10985,8 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
                     }
 
                     await TP.boot.$listConfigAssets(
-                            config, result, cfg, includePkgs, includeAlacarte);
+                            config, result, cfg, useCache,
+                            includePkgs, includeAlacarte);
 
                     break;
 
@@ -11023,7 +11030,8 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
                     }
 
                     await TP.boot.$listPackageAssets(
-                            src, config, result, includePkgs, includeAlacarte);
+                            src, config, result, useCache,
+                            includePkgs, includeAlacarte);
 
                     break;
 
@@ -11120,7 +11128,7 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, include
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$listPackageAssets = async function(aPackage, aConfig, aList,
+TP.boot.$listPackageAssets = async function(aPackage, aConfig, aList, useCache,
 includePkgs, includeAlacarte) {
 
     /**
@@ -11132,6 +11140,9 @@ includePkgs, includeAlacarte) {
      * @param {string} aPackage The package name or path to list.
      * @param {string} aConfig The ID of the config in the package to list.
      * @param {String[]} [aList] The array of asset descriptions to expand upon.
+     * @param {Boolean} [useCache=true] Should packages containing the scripts
+     *     use the package cache. If false, the supplied package will be flushed
+     *     from the cache and reloaded.
      * @param {Boolean} [includePkgs=false] Whether or not to include nested
      *     package nodes.
      * @param {Boolean} [includeAlacarte=true] Whether or not to include
@@ -11166,7 +11177,7 @@ includePkgs, includeAlacarte) {
 
     try {
         doc = TP.boot.$$packages[path];
-        if (TP.boot.$notValid(doc)) {
+        if (useCache === false || TP.boot.$notValid(doc)) {
             //  Try to load it now...
             TP.boot.$$packages[path] =
                     await TP.boot.$uriLoad(path, TP.DOM, 'manifest');
@@ -11195,7 +11206,8 @@ includePkgs, includeAlacarte) {
         }
         result = aList || [];
         await TP.boot.$listConfigAssets(
-                        node, result, config, includePkgs, includeAlacarte);
+                        node, result, config, useCache,
+                        includePkgs, includeAlacarte);
     } finally {
         TP.boot.$popPackage();
     }
@@ -11423,7 +11435,7 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
 
     //  Grab the list of resources using that package and config.
     packageAssets = await TP.boot.$listPackageAssets(
-                                    package, config, null, false, false);
+                                package, config, null, true, false, false);
 
     //  If we're running in a non-Team TIBET environment, that means that we're
     //  running with at least the lib (and possibly the app) in a form where
@@ -11447,7 +11459,7 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
 
         //  Grab the list of resources using that package and config.
         teamTIBETAssets = await TP.boot.$listPackageAssets(
-                                    package, config, null, false, false);
+                                package, config, null, true, false, false);
 
         //  Reset config in case we want to use it later.
         config = TP.sys.cfg('boot.config');
