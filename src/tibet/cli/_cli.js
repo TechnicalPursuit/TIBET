@@ -1128,8 +1128,26 @@ CLI.getPackage = function() {
  * Returns the name of the current project as defined in the Package.NPM_FILE.
  * @returns {String} The project name.
  */
-CLI.getProjectName = function() {
+CLI.getNPMProjectName = function() {
     return this.config.npm.name;
+};
+
+
+/**
+ * Returns the name of the current project as defined in the tibet.json file.
+ * @returns {String} The project name.
+ */
+CLI.getTIBETProjectName = function() {
+    return this.config.tibet.project.name;
+};
+
+
+/**
+ * Returns the name of the current project as defined in the tibet.json file.
+ * @returns {String} The project name.
+ */
+CLI.getProjectName = function() {
+    return this.getTIBETProjectName();
 };
 
 
