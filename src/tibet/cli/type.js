@@ -86,7 +86,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet type [--name [[<root>.]<namespace>:]<typename>] [--supertype <typename>] [--dir <dirname>] [--dna <template>] [--package <package>] [--config <cfgname>]';
+    'tibet type [[--name] [<root>.][<namespace>(.|:)]]<typename> [--supertype <typename>] [--dir <dirname>] [--dna <template>] [--package <package>] [--config <cfgname>]';
 
 //  ---
 //  Instance Methods
