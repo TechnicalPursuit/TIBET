@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-`tibet type [--name [[<root>.]<namespace>:]<typename>]
+`tibet type [[--name] [<root>.][<namespace>(.|:)]]<typename>
     [--supertype <typename] [--dir <dirname>] [--dna <template>]
     [--package <package>] [--config <cfg>]`
 
@@ -43,10 +43,10 @@ specified as a fully-qualified {root}.{namespace}.{typename} triplet.
     The name of the dna (essentially a directory reference) to clone and process
 to produce the new type. The default is `default`. Other options are `content`
 for `TP.core.Content` subtypes, `controller` for `TP.core.Controller` subtypes,
-`computedtag` for `TP.tag.ComputedTag` and `templatedtag` for
-`TP.tag.TemplatedTag` subtypes. (As you can see the dna name is often simply
-the lowercased name of a type to use as the supertype, but each does in fact
-refer to a unique dna directory.
+`actiontag`, `computedtag`, `infotag`, and `templatedtag` for `TP.tag.*`
+subtypes. (As you can see the dna name is often simply the lowercased name of a
+type to use as the supertype, but each does in fact refer to a unique dna
+directory.
 
   * `--config` :
     Used as the name of the config package in the cfg package file that the
@@ -68,7 +68,7 @@ the TIBET library is `~lib_src/{{type_nsname}}`.
 
 ## CONFIGURATION SETTINGS
 
-  * `npm.name`:
+  * `tibet.project.name`:
     The 'appname' as represented by the name of the project.
 
 ## ENVIRONMENT VARIABLES

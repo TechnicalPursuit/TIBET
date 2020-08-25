@@ -1,51 +1,66 @@
-.TH "TIBET\-TYPE" "1" "August 2020" "" ""
+.TH "TIBET\-TAG" "1" "August 2020" "" ""
 .SH "NAME"
-\fBtibet-type\fR \- creates a new TIBET type
+\fBtibet-tag\fR \- creates a new TIBET tag
 .SH SYNOPSIS
 .P
-\fBtibet type [[\-\-name] [<root>\.][<namespace>(\.|:)]]<typename>
+\fBtibet tag [[\-\-name] [<root>\.][<namespace>(\.|:)]]<tagname>
+    [\-\-action | \-\-compiled | \-\-info | \-\-templated]
     [\-\-supertype <typename] [\-\-dir <dirname>] [\-\-dna <template>]
     [\-\-package <package>] [\-\-config <cfg>]\fP
 .SH DESCRIPTION
 .P
-Creates a new TIBET type using the supplied type name and parameters\.
+Creates a new TIBET tag using the supplied tag name and parameters\.
 .P
-Type names can supply one, two or three parts, separated by \fB\|\.\fP or \fB:\fP\|\.
+Tag names can supply one, two or three parts, separated by \fB\|\.\fP or \fB:\fP\|\.
 .P
 If three parts are supplied, they are used as the root namespace,
-the type namespace and the type name, respectively\.
+the tag namespace and the tag name, respectively\.
 .P
-If two parts are supplied, they are used for the type namespace and the type
+If two parts are supplied, they are used for the tag namespace and the tag
 name and the root namespace is defaulted to either \fBAPP\fP or \fBTP\fP, depending on
 whether this command is being executed in an application project or the TIBET
 library\.
 .P
 If one part is supplied, and this command is being executed in an application
-project, the type namespace is defaulted to the application project name and
+project, the tag namespace is defaulted to the application project name and
 the root namespace is defaulted as it is when two parts are supplied\. It is not
 a valid operation to execute this command with one part when executed inside of
 the TIBET library\.
 .P
-Depending on the DNA chosen the result will be creation of the type and
+Depending on the DNA chosen the result will be creation of the tag and
 optionally a template, style sheet, and test file\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
 \fB\-\-name\fP :
-An alternate way to provide the type name to create\.
+An alternate way to provide the tag name to create\.
 .IP \(bu 2
 \fB\-\-supertype\fP :
-The name of the supertype to use for the target type\. This should be
+The name of the supertype to use for the target tag\. This should be
 specified as a fully\-qualified {root}\.{namespace}\.{typename} triplet\.
+.IP \(bu 2
+\fB\-\-action\fP:
+Specify that the new tag should be an action tag and use the appropriate dna
+and supertype for a \fBTP\.tag\.ActionTag\fP subtype\.
+.IP \(bu 2
+\fB\-\-compiled\fP:
+Specify that the new tag should be a compiled tag and use the appropriate
+dna and supertype for a \fBTP\.tag\.CompiledTag\fP subtype\.
+.IP \(bu 2
+\fB\-\-info\fP:
+Specify that the new tag should be an info tag and use the appropriate
+dna and supertype for a \fBTP\.tag\.InfoTag\fP subtype\.
+.IP \(bu 2
+\fB\-\-templated\fP:
+Specify that the new tag should be a templated tag and use the appropriate
+dna and supertype for a \fBTP\.tag\.TemplatedTag\fP subtype\. This is the default\.
 .IP \(bu 2
 \fB\-\-dna\fP :
 The name of the dna (essentially a directory reference) to clone and process
-to produce the new type\. The default is \fBdefault\fP\|\. Other options are \fBcontent\fP
-for \fBTP\.core\.Content\fP subtypes, \fBcontroller\fP for \fBTP\.core\.Controller\fP subtypes,
-\fBactiontag\fP, \fBcomputedtag\fP, \fBinfotag\fP, and \fBtemplatedtag\fP for \fBTP\.tag\.*\fP
-subtypes\. (As you can see the dna name is often simply the lowercased name of a
-type to use as the supertype, but each does in fact refer to a unique dna
-directory\.
+to produce the new type\. The default is \fBtemplatedtag\fP\|\. Other tag\-specific
+options are \fBactiontag\fP, \fBcomputedtag\fP and \fBinfotag\fP\|\. (As you can see the dna
+name is often simply the lowercased name of a type to use as the supertype, but
+each does in fact refer to a unique dna directory\.
 .IP \(bu 2
 \fB\-\-config\fP :
 Used as the name of the config package in the cfg package file that the
@@ -77,54 +92,31 @@ The 'appname' as represented by the name of the project\.
 .P
 No process environment variables are required by this command\.
 .SH EXAMPLES
-.SS Create a new type in the default application namespace
+.SS Create a new tag in the default application namespace
 .P
 .RS 2
 .nf
-$ tibet type testing
+$ tibet tag header
 
-working in: /Users/ss/temporary/tmp/test/_testing_
-processing files\.\.\.
+working in: /Users/ss/temporary/hello/_header_
+processing directories\.\.\.
+processing templates\.\.\.
 templating complete\.\.\.
 positioning files\.\.\.
 positioning complete\.\.\.
 adjusting package entries\.\.\.
-<script src="~app_src/APP\.test\.testing\.js"/> (added)
-<script src="~app_src/APP\.test\.testing_test\.js"/> (added)
+<package src="~app_tags/APP\.hello\.header/"/> (added)
 New configuration entries created\. Review/Rebuild as needed\.
 Cleaning up working directory\.
-Type DNA 'default' cloned to ~app_src as 'testing'\.
+Type DNA 'templatedtag' cloned to ~app_tags/APP\.hello\.header as 'header'\.
 .fi
 .RE
 .P
-In this case we can see TIBET has generated a type as well as an associated
-unit test file\.
-.SS Create a new custom type in a specific namespace
+Note that the \fBtag\fP command does not define new namespaces so if you use this
+approach you should be referring to an existing namespace or you should be
+prepared to define the namespace as part of your application startup sequence\.
 .P
-.RS 2
-.nf
-$ tibet type APP\.special\.Type
-
-working in: /Users/ss/temporary/tmp/test/_Type_
-processing files\.\.\.
-templating complete\.\.\.
-positioning files\.\.\.
-positioning complete\.\.\.
-adjusting package entries\.\.\.
-<script src="~app_src/APP\.special\.Type\.js"/> (added)
-<script src="~app_src/APP\.special\.Type_test\.js"/> (added)
-New configuration entries created\. Review/Rebuild as needed\.
-Cleaning up working directory\.
-Type DNA 'default' cloned to ~app_src as 'Type'\.
-.fi
-.RE
-.P
-Note that the current \fBtype\fP command does not define new namespaces so if you
-use this approach you should be referring to an existing namespace or you should
-be prepared to define the namespace as part of your application startup
-sequence\.
-.P
-Also note that TIBET has also updated the package@config so our types load:
+Also note that TIBET has also updated the package@config so our tag loads:
 .P
 .RS 2
 .nf
@@ -132,20 +124,7 @@ Also note that TIBET has also updated the package@config so our types load:
     <!\-\- put your source scripts here \-\->
     \.\.\.
 
-    <script src="~app_src/APP\.special\.Type\.js"/>
-</config>
-.fi
-.RE
-.P
-\|\.\.\.and so do their tests:
-.P
-.RS 2
-.nf
-<config id="tests">
-    <!\-\- put your test scripts here \-\->
-    \.\.\.
-
-    <script src="~app_src/APP\.special\.Type_test\.js"/>
+    <script src="~app_src/APP\.hello\.Header\.js"/>
 </config>
 .fi
 .RE
@@ -159,6 +138,8 @@ This command has no client\-side TSH peer command\.
 tibet\-clone(1)
 .IP \(bu 2
 tibet\-package(1)
+.IP \(bu 2
+tibet\-type(1)
 
 .RE
 
