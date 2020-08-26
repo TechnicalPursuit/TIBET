@@ -726,7 +726,7 @@ function(aSignal) {
         if (!processed) {
 
             //  NB: This will only actually process the resource change if the
-            //  'uri.process_remote_changes' flag is true. Otherwise, it just
+            //  'uri.source.process_changes' flag is true. Otherwise, it just
             //  tracks changes.
             TP.uri.URI.processRemoteResourceChange(url);
         }

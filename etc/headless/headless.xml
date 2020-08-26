@@ -7,7 +7,7 @@
     <property name="boot.inlined" value="false"/>
     <property name="boot.use_login" value="false"/>
     <property name="sherpa.enabled" value="false"/>
-    <property name="uri.watch_remote_changes" value="false"/>
+    <property name="uri.source.watch_changes" value="false"/>
 </config>
 
 <config id="base">

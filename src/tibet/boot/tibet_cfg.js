@@ -2065,11 +2065,11 @@
     //  the default type used to handle URI routing decisions.
     TP.sys.setcfg('uri.router', 'TP.uri.URIRouter');
 
-    //  should we watch remote resources configured to be 'watched'?
-    TP.sys.setcfg('uri.watch_remote_changes', false);
-
     //  should we take action when notified of a remote uri change?
-    TP.sys.setcfg('uri.process_remote_changes', false);
+    TP.sys.setcfg('uri.source.process_changes', false);
+
+    //  should we watch remote resources configured to be 'watched'?
+    TP.sys.setcfg('uri.source.watch_changes', false);
 
     //  ---
     //  CouchDB

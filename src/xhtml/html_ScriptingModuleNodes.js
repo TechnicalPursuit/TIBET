@@ -58,7 +58,7 @@ function() {
         len,
         i;
 
-    if (TP.sys.cfg('uri.watch_remote_changes')) {
+    if (TP.sys.cfg('uri.source.watch_changes')) {
 
         //  Build a CSS query of the watched source paths that can be tested
         //  against all of the 'script' elements in the top-level window's

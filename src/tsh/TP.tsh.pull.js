@@ -54,10 +54,10 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    //  We need to turn on 'uri.process_remote_changes' since the user is
+    //  We need to turn on 'uri.source.process_changes' since the user is
     //  forcing it at this point. We capture the existing value first though.
-    shouldProcessValue = TP.sys.cfg('uri.process_remote_changes');
-    TP.sys.setcfg('uri.process_remote_changes', true);
+    shouldProcessValue = TP.sys.cfg('uri.source.process_changes');
+    TP.sys.setcfg('uri.source.process_changes', true);
 
     if (shell.getArgument(aRequest, 'tsh:all', null, false)) {
 
@@ -79,8 +79,8 @@ function(aRequest) {
         }
     }
 
-    //  Put 'uri.process_remote_changes' cfg property back to its original value.
-    TP.sys.setcfg('uri.process_remote_changes', shouldProcessValue);
+    //  Put 'uri.source.process_changes' cfg property back to its original value.
+    TP.sys.setcfg('uri.source.process_changes', shouldProcessValue);
 
     aRequest.complete(TP.TSH_NO_VALUE);
 

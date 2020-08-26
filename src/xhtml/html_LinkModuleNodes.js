@@ -168,7 +168,7 @@ function(aRequest) {
                 //  attribute, but from all of the @imports referenced
                 //  (recursively) in the sheet for that href.
 
-                watchingChanges = TP.sys.cfg('uri.watch_remote_changes');
+                watchingChanges = TP.sys.cfg('uri.source.watch_changes');
 
                 //  Note that this method, by default, will recursively retrieve
                 //  @import hrefs.

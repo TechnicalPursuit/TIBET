@@ -85,12 +85,12 @@ function(aRequest) {
     dataURI = TP.uc('urn:tibet:changedClientURIs');
     dataURI.setResource(TP.ac());
 
-    shouldWatchURI = TP.uc('urn:tibet:watch_remote_changes');
-    shouldWatchValue = TP.sys.cfg('uri.watch_remote_changes');
+    shouldWatchURI = TP.uc('urn:tibet:watch_changes');
+    shouldWatchValue = TP.sys.cfg('uri.source.watch_changes');
     shouldWatchURI.setContent('{"selected":' + shouldWatchValue + '}');
 
-    shouldProcessURI = TP.uc('urn:tibet:process_remote_changes');
-    shouldProcessValue = TP.sys.cfg('uri.process_remote_changes');
+    shouldProcessURI = TP.uc('urn:tibet:process_changes');
+    shouldProcessValue = TP.sys.cfg('uri.source.process_changes');
     shouldProcessURI.setContent('{"selected":' + shouldProcessValue + '}');
 
     return;
@@ -428,18 +428,18 @@ function(aSignal) {
         processIsSelected;
 
     shouldWatchSelectedURI = TP.uc(
-        'urn:tibet:watch_remote_changes#jpath($.selected)');
+        'urn:tibet:watch_changes#jpath($.selected)');
     watchIsSelected =
         TP.ifEmpty(shouldWatchSelectedURI.getResource().get('result'),
-                    TP.sys.cfg('uri.watch_remote_changes'));
-    TP.sys.setcfg('uri.watch_remote_changes', watchIsSelected);
+                    TP.sys.cfg('uri.source.watch_changes'));
+    TP.sys.setcfg('uri.source.watch_changes', watchIsSelected);
 
     shouldProcessSelectedURI = TP.uc(
-        'urn:tibet:process_remote_changes#jpath($.selected)');
+        'urn:tibet:process_changes#jpath($.selected)');
     processIsSelected =
         TP.ifEmpty(shouldProcessSelectedURI.getResource().get('result'),
-                    TP.sys.cfg('uri.process_remote_changes'));
-    TP.sys.setcfg('uri.process_remote_changes', processIsSelected);
+                    TP.sys.cfg('uri.source.process_changes'));
+    TP.sys.setcfg('uri.source.process_changes', processIsSelected);
 
     if (!watchIsSelected) {
         this.get('processRemoteChangesCheckbox').setAttrDisabled(true);
@@ -529,8 +529,8 @@ function(shouldObserve) {
     var shouldWatchURI,
         shouldProcessURI;
 
-    shouldWatchURI = TP.uc('urn:tibet:watch_remote_changes');
-    shouldProcessURI = TP.uc('urn:tibet:process_remote_changes');
+    shouldWatchURI = TP.uc('urn:tibet:watch_changes');
+    shouldProcessURI = TP.uc('urn:tibet:process_changes');
 
     if (shouldObserve) {
         this.observe(shouldWatchURI, 'ValueChange');
