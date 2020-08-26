@@ -58,7 +58,7 @@ Cmd.NAME = 'tws';
 /**
  * The required list of core views for the TWS and this command to function.
  * These views are guaranteed to be inserted with `tws init` even if they have
- * no counterpart in the ~tds_task_defs directory.
+ * no counterpart in the ~task_defs directory.
  * @type {Object}
  */
 Cmd.VIEWS = {
@@ -526,7 +526,7 @@ Cmd.prototype.executeInit = function() {
         //  Need to get any views, shows, lists, etc. for the app in question
         //  and load them into the design doc if they're missing. We don't
         //  delete anything from the doc during init processing.
-        fullpath = CLI.expandPath(CLI.getcfg('path.tds_task_defs'));
+        fullpath = CLI.expandPath(CLI.getcfg('path.task_defs'));
         if (sh.test('-e', fullpath)) {
             doc = couch.populateDesignDoc(doc, fullpath, params, true);
         }
@@ -859,7 +859,7 @@ Cmd.prototype.executeListViews = function() {
 /**
  * Pushes content to the TWS database. You can push individual JSON documents,
  * directories containing JSON documents, or design document content from the
- * ~tds_task_defs directory depending on the flags and parameters you provide on
+ * ~task_defs directory depending on the flags and parameters you provide on
  * the command line.
  */
 Cmd.prototype.executePush = function() {

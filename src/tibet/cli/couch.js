@@ -609,7 +609,7 @@ Cmd.prototype.executePushapp = function() {
 
             //  Ensure we also capture any views, shows, lists, etc...
             //  NOTE we add appname if actual app directory isn't found.
-            fullpath = CLI.expandPath(CLI.getcfg('path.tds_couch_defs'));
+            fullpath = CLI.expandPath(CLI.getcfg('path.couch_defs'));
             if (sh.test('-d', CLI.joinPaths(fullpath, db_app))) {
                 fullpath = CLI.joinPaths(fullpath, db_app);
             } else {
@@ -829,7 +829,7 @@ Cmd.prototype.executePushapp = function() {
                 //  Ensure we also capture any views, shows, lists, etc...
                 //  NOTE we add 'default' if the actual app directory isn't
                 //  found.
-                fullpath = CLI.expandPath(CLI.getcfg('path.tds_couch_defs'));
+                fullpath = CLI.expandPath(CLI.getcfg('path.couch_defs'));
                 if (sh.test('-d', CLI.joinPaths(fullpath, db_app))) {
                     fullpath = CLI.joinPaths(fullpath, db_app);
                 } else {

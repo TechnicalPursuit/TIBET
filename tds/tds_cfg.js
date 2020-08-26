@@ -40,11 +40,11 @@
         setcfg('path.user_file', '~/users.json');
 
         //  paths specific to definitions used to push "couchapp" content
-        setcfg('path.tds_couch_defs', '~/couch/app');
+        setcfg('path.couch_defs', '~/couch/app');
         setcfg('path.couchapp', '~/couch/tws');
 
         //  paths specific to definitions used to push TWS documents
-        setcfg('path.tds_task_defs', '~/couch/tws');
+        setcfg('path.task_defs', '~/couch/tws');
         setcfg('path.tws', '~/couch/tws');
 
         //  Security-related keys. These start out null but will take on values
