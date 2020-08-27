@@ -964,7 +964,8 @@
             };
 
             //  Build a pattern we can use to test against ignore files.
-            ignore = TDS.getcfg('tds.watch.ignore');
+            //  NOTE this pattern is defined by a shared uri.source.* key.
+            ignore = TDS.getcfg('uri.source.watch_ignore');
             if (ignore) {
                 pattern = ignore.reduce(function(str, item) {
                     return str ? str + '|' + escaper(item) : escaper(item);

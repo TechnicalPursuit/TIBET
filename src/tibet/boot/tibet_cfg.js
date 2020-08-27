@@ -753,17 +753,6 @@
     TP.sys.setcfg('tds.user.uri', '/whoami');
     TP.sys.setcfg('tds.vcard.uri', '/vcard');
 
-    //  remote resources that we should try to watch. NOTE that these should be
-    //  provided as virtual paths or wildcard expressions to match effectively
-    //  since they're shared between client and server.
-    TP.sys.setcfg('tds.watch.include',
-        ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
-
-    //  remote resources that we should try to watch. NOTE that these should
-    //  be provided as virtual paths or wildcard expressions to match since
-    //  they're shared between client and server.
-    TP.sys.setcfg('tds.watch.exclude', ['~app/TIBET-INF/tibet', '*.bak$']);
-
     //  what url does client use to connect to the TDS watch SSE endpoint (and
     //  where does the TDS watch plugin configure its route to listen).
     TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
@@ -2065,11 +2054,26 @@
     //  the default type used to handle URI routing decisions.
     TP.sys.setcfg('uri.router', 'TP.uri.URIRouter');
 
+    //  ---
+    //  URI Watch
+    //  ---
+
     //  should we take action when notified of a remote uri change?
     TP.sys.setcfg('uri.source.process_changes', false);
 
     //  should we watch remote resources configured to be 'watched'?
     TP.sys.setcfg('uri.source.watch_changes', false);
+
+    //  remote resources that we should try to watch. NOTE that these should be
+    //  provided as virtual paths or wildcard expressions to match effectively
+    //  since they're shared between client and server.
+    TP.sys.setcfg('uri.source.watch_include',
+        ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
+
+    //  remote resources that we should try to watch. NOTE that these should
+    //  be provided as virtual paths or wildcard expressions to match since
+    //  they're shared between client and server.
+    TP.sys.setcfg('uri.source.watch_exclude', ['~app/TIBET-INF/tibet', '*.bak$']);
 
     //  ---
     //  CouchDB

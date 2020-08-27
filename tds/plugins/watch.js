@@ -187,13 +187,13 @@
                     /\//g, '\\/');
             };
 
-            include = TDS.getcfg('tds.watch.include');
+            include = TDS.getcfg('uri.source.watch_include');
 
             if (typeof include === 'string') {
                 try {
                     include = JSON.parse(include);
                 } catch (e) {
-                    logger.error('Invalid tds.watch.include value: ' +
+                    logger.error('Invalid uri.source.watch_include value: ' +
                         e.message);
                 }
             }
@@ -212,13 +212,13 @@
             }
 
             //  Build a pattern we can use to test against ignore files.
-            exclude = TDS.getcfg('tds.watch.exclude');
+            exclude = TDS.getcfg('uri.source.watch_exclude');
 
             if (typeof exclude === 'string') {
                 try {
                     exclude = JSON.parse(exclude);
                 } catch (e) {
-                    logger.error('Invalid tds.watch.exclude value: ' +
+                    logger.error('Invalid uri.source.watch_exclude value: ' +
                         e.message);
                 }
             }
@@ -261,7 +261,7 @@
 
         //  The primary change handler function.
         watcher.on('change', function(file) {
-            var ignoreChangedFiles,
+            var ignoredFilesList,
                 ignoreIndex,
                 fullpath,
                 tibetpath,
@@ -272,14 +272,15 @@
                 len,
                 result;
 
-            ignoreChangedFiles = TDS.getcfg('tds.watch.ignore_changed_files');
-
-            if (ignoreChangedFiles) {
-                ignoreIndex = ignoreChangedFiles.indexOf(file);
+            //  Files marked 'nowatch' from the "client side" are placed in
+            //  an internal list we use as part of the overall ignore filtering.
+            //  Check that list here before assuming we should process change.
+            ignoredFilesList = TDS.getcfg('uri.$$ignored_changes_list');
+            if (ignoredFilesList) {
+                ignoreIndex = ignoredFilesList.indexOf(file);
 
                 if (ignoreIndex !== -1) {
-                    ignoreChangedFiles.splice(ignoreIndex, 1);
-
+                    ignoredFilesList.splice(ignoreIndex, 1);
                     return;
                 }
             }
