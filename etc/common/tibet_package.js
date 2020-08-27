@@ -2676,6 +2676,12 @@
         lib_path = this.joinPaths(lib_root, 'tds/tds_cfg');
         require.uncache(lib_path);
         require(lib_path)(this.setcfg.bind(this));
+
+        //  Repeat for Electron configuration data. NOTE we have to pass in the
+        //  setcfg call to force actual execution/setting of TDS config data.
+        lib_path = this.joinPaths(lib_root, 'etc/electron/electron_cfg');
+        require.uncache(lib_path);
+        require(lib_path)(this.setcfg.bind(this));
     };
 
 
