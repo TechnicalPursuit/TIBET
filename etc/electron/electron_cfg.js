@@ -29,6 +29,9 @@
      */
     Config = function(setcfg) {
 
+        setcfg('electron.updater.download', false);
+        setcfg('electron.updater.onstart', false);
+
         //  top-level dir used in the main Electron process to determine where
         //  to set cwd for the watcher. This should almost always be left as
         //  ~app to ensure the watcher's set up to cover all app resources. Use

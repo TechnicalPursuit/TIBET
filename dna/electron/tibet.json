@@ -7,6 +7,13 @@
         "dna": "{{dna}}"
     },
     "electron": {
-        "boot.profile": "development@developer"
+        "//": "NOTE only boot.* params are used on startup URL",
+        "boot": {
+            "profile": "development"
+        },
+        "updater": {
+            "download": false,
+            "onstart": false
+        }
     }
 }
