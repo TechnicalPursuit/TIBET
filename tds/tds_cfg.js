@@ -40,11 +40,11 @@
         setcfg('path.user_file', '~/users.json');
 
         //  paths specific to definitions used to push "couchapp" content
-        setcfg('path.tds_couch_defs', '~/couch/app');
+        setcfg('path.couch_defs', '~/couch/app');
         setcfg('path.couchapp', '~/couch/tws');
 
         //  paths specific to definitions used to push TWS documents
-        setcfg('path.tds_task_defs', '~/couch/tws');
+        setcfg('path.task_defs', '~/couch/tws');
         setcfg('path.tws', '~/couch/tws');
 
         //  Security-related keys. These start out null but will take on values
@@ -173,12 +173,14 @@
         //  top-level dir used in the TDS watch plugin to determine where to set
         //  up the cwd for the watcher. This should almost always be left as
         //  ~app to ensure the watcher's set up to cover all app resources. Use
-        //  tds.watch.include and tds.watch.exclude to include and exclude any
-        //  specific subdirectories or files below the overall root. NOTE that
-        //  those parameters are shared client/server so they're in tibet_cfg.
+        //  uri.source.watch_include and uri.source.watch_exclude to include and
+        //  exclude any specific subdirectories or files below the overall root.
+        //  NOTE that uri.source.* parameters are shared client/server so
+        //  they're in tibet_cfg rather than this TDS-only config file.
         setcfg('tds.watch.root', '~app');
 
-        setcfg('tds.watch.heartbeat', 10000);
+        setcfg('tds.watch.heartbeat', 10000);   //  aka sse-heartbeat
+        setcfg('tds.watch.retry', 3000);        //  aka sse.retry cfg
 
         setcfg('tds.webdav.mount', '/');
         setcfg('tds.webdav.root', '~app');

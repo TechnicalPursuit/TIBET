@@ -69,7 +69,7 @@
                 patchRoot,
                 url,
                 err,
-                ignoreChangedFiles,
+                ignoredFilesList,
                 localPath;
 
             err = function(code, message) {
@@ -160,13 +160,16 @@
                     text = content;
                 }
 
+                //  Files marked 'nowatch' from the "client side" are placed in
+                //  an internal list we use as part of the overall ignore filtering.
+                //  Add the file to that list if the flag is set to ignore it.
                 if (data.nowatch === true) {
-                    ignoreChangedFiles =
-                        TDS.getcfg('tds.watch.ignore_changed_files');
-                    if (!ignoreChangedFiles) {
-                        ignoreChangedFiles = [];
-                        TDS.setcfg('tds.watch.ignore_changed_files',
-                                    ignoreChangedFiles);
+                    ignoredFilesList =
+                        TDS.getcfg('uri.$$ignored_changes_list');
+                    if (!ignoredFilesList) {
+                        ignoredFilesList = [];
+                        TDS.setcfg('uri.$$ignored_changes_list',
+                                    ignoredFilesList);
                     }
 
                     localPath = url.replace(TDS.expandPath('~app'), '');
@@ -174,7 +177,7 @@
                         localPath = localPath.slice(1);
                     }
 
-                    ignoreChangedFiles.push(localPath);
+                    ignoredFilesList.push(localPath);
                 }
 
                 text = TDS.normalizeLineEndings(text);

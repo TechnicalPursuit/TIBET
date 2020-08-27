@@ -13,8 +13,8 @@
  * @summary A URL handler that manages URLs coming from uri. Changes from
  *     CouchDB come in the form of the CouchDB changes feed, which this handler
  *     can be configured to observe. NOTE that CouchDB observations are done
- *     independently of the 'tds.watch' configuration. This independence lets
- *     you interact with both the TDS and CouchDB as needed.
+ *     independently of the URI source watch configuration. This independence
+ *     lets you interact with both the TDS and CouchDB as needed.
  */
 
 //  ------------------------------------------------------------------------
@@ -726,7 +726,7 @@ function(aSignal) {
         if (!processed) {
 
             //  NB: This will only actually process the resource change if the
-            //  'uri.process_remote_changes' flag is true. Otherwise, it just
+            //  'uri.source.process_changes' flag is true. Otherwise, it just
             //  tracks changes.
             TP.uri.URI.processRemoteResourceChange(url);
         }

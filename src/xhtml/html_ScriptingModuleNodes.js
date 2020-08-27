@@ -58,13 +58,13 @@ function() {
         len,
         i;
 
-    if (TP.sys.cfg('uri.watch_remote_changes')) {
+    if (TP.sys.cfg('uri.source.watch_changes')) {
 
         //  Build a CSS query of the watched source paths that can be tested
         //  against all of the 'script' elements in the top-level window's
         //  document. This is where all TIBET code resides. We only want to set
         //  up observations on scripts that are under those paths.
-        watchSources = TP.sys.cfg('tds.watch.include');
+        watchSources = TP.sys.cfg('uri.source.watch_include');
         query = 'script[src^="' + TP.uriExpandPath(watchSources.at(0)) + '"]';
 
         for (i = 1; i < watchSources.getSize(); i++) {

@@ -22,6 +22,8 @@ const electron = require('electron'),
     autoUpdater = require('electron-updater').autoUpdater,
     sh = require('shelljs'),
     minimist = require('minimist'),
+    chokidar = require('chokidar'),
+    path = require('path'),
 
     CLI = require('./TIBET-INF/tibet/src/tibet/cli/_cli'),
     Logger = require('./TIBET-INF/tibet/etc/common/tibet_logger'),
@@ -42,13 +44,17 @@ const electron = require('electron'),
 let configure,
     createWindow,
     setupAppMenu,
+    setupWatcherCfg,
+    activateWatcher,
     mainWindow,
     logger,
     options,
     pkg,
     json,
-    electronOpts,
-    scraping;
+    scraping,
+    watchcfg,
+    watchRoot,
+    include;
 
 //  ---
 //  Main Functions
@@ -71,9 +77,11 @@ configure = function() {
 
     //  Load JSON to acquire any params for the file URL we'll try to launch.
     json = require('./tibet.json');
-    electronOpts = json.electron || {};
+    pkg.setcfg({electron: json.electron || {}});
 
-    scraping = electronOpts.scraping;
+    logger.verbose(CLI.beautify(JSON.stringify(pkg.getcfg('electron'))));
+
+    scraping = pkg.getcfg('electron.scraping');
     if (!scraping) {
         scraping = false;
     }
@@ -91,7 +99,8 @@ createWindow = function() {
         fileUrl,
         paramStr,
         profile,
-        defaultProfile;
+        defaultProfile,
+        electronOpts;
 
     //  Verify build directory and add a development profile if not found.
     builddir = pkg.expandPath('~app_build');
@@ -109,9 +118,9 @@ createWindow = function() {
     }
 
     //  Don't replace existing...but ensure default profile as a base default.
-    profile = electronOpts['boot.profile'];
+    profile = pkg.getcfg('electron.boot.profile');
     if (!profile) {
-        electronOpts['boot.profile'] = defaultProfile;
+        pkg.setcfg('electron.boot.profile', defaultProfile);
         logger.warn('No boot.profile. Forcing boot.profile ' + defaultProfile);
     }
 
@@ -120,11 +129,22 @@ createWindow = function() {
 
     //  Loop over params and add them to the URL
     paramStr = '';
+    electronOpts = pkg.getcfg('electron');
     Object.keys(electronOpts).forEach(function(item) {
+        let key;
+
+        //  Strip leading 'electron.' so we have the "pure config name".
+        key = item.replace('electron.', '');
+
+        //  Only boot.* params go on the TIBET URL we launch from.
+        if (key.indexOf('boot.') !== 0) {
+            return;
+        }
+
         if (electronOpts[item] === true) {
-            paramStr += item + '&';
+            paramStr += key + '&';
         } else {
-            paramStr += item + '=' + electronOpts[item] + '&';
+            paramStr += key + '=' + electronOpts[item] + '&';
         }
     });
 
@@ -144,6 +164,8 @@ createWindow = function() {
             contextIsolation: true
         }
     });
+
+    logger.verbose('Launching ' + fileUrl);
 
     mainWindow.loadURL(fileUrl);
 
@@ -288,6 +310,185 @@ setupAppMenu = function() {
 
 //  ---
 
+setupWatcherCfg = function() {
+
+    var escaper,
+        exclude,
+        pattern;
+
+    //  Expand out the path we'll be watching. This should almost always
+    //  be the application root.
+    watchRoot = path.resolve(pkg.expandPath(
+        pkg.getcfg('uri.source.watch_root') || '~app'));
+
+    logger.debug('Electron FileWatch interface rooted at: ' + watchRoot);
+
+    //  Helper function for escaping regex metacharacters. NOTE
+    //  that we need to take "ignore format" things like path/*
+    //  and make it path/.* or the regex will fail. Also note we special
+    //  case ~ to allow virtual path matches.
+    escaper = function(str) {
+        return str.replace(
+            /\*/g, '.*').replace(
+            /\./g, '\\.').replace(
+            /\~/g, '\\~').replace(
+            /\//g, '\\/');
+    };
+
+    include = pkg.getcfg('uri.source.watch_include');
+
+    if (typeof include === 'string') {
+        try {
+            include = JSON.parse(include);
+        } catch (e) {
+            logger.error('Invalid uri.source.watch_include value: ' +
+                e.message);
+        }
+    }
+
+    if (CLI.notEmpty(include)) {
+        //  Build list of 'files', 'directories', etc. But keep in mind
+        //  this is a file-based system so don't retain virtual paths.
+        include = include.map(function(item) {
+            //  item will often be a virtual path or file ref. we want
+            //  to use the full path, or whatever value is given.
+            return path.resolve(pkg.expandPath(item));
+        });
+    } else {
+        //  Watch everything under the watch root
+        include = watchRoot;
+    }
+
+    //  Build a pattern we can use to test against ignore files.
+    exclude = pkg.getcfg('uri.source.watch_exclude');
+
+    if (typeof exclude === 'string') {
+        try {
+            exclude = JSON.parse(exclude);
+        } catch (e) {
+            logger.error('Invalid uri.source.watch_exclude value: ' +
+                e.message);
+        }
+    }
+
+    if (exclude) {
+        pattern = exclude.reduce(function(str, item) {
+            var fullpath;
+
+            fullpath = pkg.expandPath(item);
+            return str ?
+                str + '|' + escaper(fullpath) :
+                escaper(fullpath);
+        }, '');
+
+        pattern += '|\\.git|\\.svn|node_modules|[\\/\\\\]\\..';
+
+        try {
+            pattern = new RegExp(pattern);
+        } catch (e) {
+            return logger.error('Error creating RegExp: ' +
+                e.message);
+        }
+    } else {
+        pattern = /\.git|\.svn|node_modules|[\/\\]\../;
+    }
+
+    watchcfg = {
+        ignored: pattern,
+        cwd: watchRoot,
+        ignoreInitial: true,
+        ignorePermissionErrors: true,
+        persistent: true
+    };
+};
+
+//  ---
+
+activateWatcher = function() {
+
+    var watcher;
+
+    watcher = chokidar.watch(include, watchcfg);
+
+    //  The primary change handler function.
+    watcher.on('change', function(file) {
+        var ignoredFilesList,
+            ignoreIndex,
+            fullpath,
+            tibetpath,
+            extname,
+            procs,
+            shouldSignal,
+            i,
+            len,
+            result,
+            entry,
+            sigName;
+
+        //  Files marked 'nowatch' from the "client side" are placed in an
+        //  internal list we use as part of the overall ignore filtering.
+        //  Check that list here before assuming we should process change.
+        ignoredFilesList = pkg.getcfg('uri.$$ignored_changes_list');
+        if (ignoredFilesList) {
+            ignoreIndex = ignoredFilesList.indexOf(file);
+
+            if (ignoreIndex !== -1) {
+                ignoredFilesList.splice(ignoreIndex, 1);
+                return;
+            }
+        }
+
+        fullpath = CLI.joinPaths(watchRoot, file);
+        tibetpath = CLI.getVirtualPath(fullpath);
+        extname = path.extname(fullpath);
+        extname = extname.charAt(0) === '.' ? extname.slice(1) : extname;
+
+        logger.debug('Processing file change to ' + tibetpath);
+
+        //  Perform any extension-specific processing for the file.
+        //  TODO: Scott - Fix me and make processors real :-)
+        if (procs) {
+
+            logger.debug('Running processors for ' + extname);
+
+            //  Proc can preventDefault by returning non-true. If any
+            //  processor prevents default then we don't signal.
+            len = procs.length;
+            for (i = 0; i < len; i++) {
+                try {
+                    result = procs[i](fullpath);
+                } catch (e) {
+                    logger.error('Error running processor: ' +
+                        e.message);
+                }
+
+                if (result === false) {
+                    shouldSignal = false;
+                }
+            }
+        }
+
+        //  If any processor prevented signaling log it and bail early.
+        if (shouldSignal === false) {
+            logger.debug('Notification prevented for ' + extname);
+            return;
+        }
+
+        sigName = pkg.getcfg('electron.watch.event',
+                                'TP.sig.ElectronFileChange');
+        entry = {
+            path: tibetpath,
+            event: 'fileChange',
+            details: {},
+            signalName: sigName
+        };
+
+        mainWindow.webContents.send('TP.sig.MessageReceived', entry);
+    });
+};
+
+//  ---
+
 /*
  * Configure the environment
  */
@@ -358,6 +559,7 @@ app.on('ready',
         function() {
             createWindow();
             setupAppMenu();
+            setupWatcherCfg();
         });
 
 
@@ -563,8 +765,31 @@ ipcMain.handle('TP.sig.InstallUpdateAndRestart',
  */
 ipcMain.handle('TP.sig.AppDidStart',
     function() {
-        //  check to see if there are any available updates using autoUpdater.
-        autoUpdater.checkForUpdates();
+
+        if (pkg.getcfg('electron.updater.onstart') === true) {
+            autoUpdater.checkForUpdates();
+        }
+
+    });
+
+//  ---
+
+/**
+ * Event emitted when
+ */
+ipcMain.handle('TP.sig.ActivateWatcher',
+    function() {
+        activateWatcher();
+    });
+
+//  ---
+
+/**
+ * Event emitted when
+ */
+ipcMain.handle('TP.sig.DeactivateWatcher',
+    function() {
+        logger.debug('TODO: Deactivate the watcher here.');
     });
 
 }());

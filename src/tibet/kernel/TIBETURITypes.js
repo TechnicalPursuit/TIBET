@@ -1011,7 +1011,7 @@ function(aURI) {
         count;
 
     //  Track system-wide process flag.
-    shouldProcess = TP.sys.cfg('uri.process_remote_changes');
+    shouldProcess = TP.sys.cfg('uri.source.process_changes');
     watched = aURI.isWatched();
 
     //  If we're supposed to process AND the uri is configured for processing
@@ -7188,7 +7188,7 @@ function() {
     /**
      * @method watch
      * @summary Flags the URL as being active for remote change processing. When
-     *     uri.watch_remote_changes is true and uri.process_remote_changes is
+     *     uri.source.watch_changes is true and uri.source.process_changes is
      *     true this flag will be checked to ensure the specific URI is not
      *     excluded from processing. It's not usually necessary to set this to
      *     true if the URL would pass remote URL isWatchableURI testing.
@@ -7228,7 +7228,7 @@ function() {
     /**
      * @method unwatch
      * @summary Flags the URL as not processing remote change notices. When
-     *     uri.watch_remote_changes is true and uri.process_remote_changes is
+     *     uri.source.watch_changes is true and uri.source.process_changes is
      *     true this flag will be checked to ensure the specific URI is not
      *     excluded from processing.
      * @returns {TP.uri.URL} The receiver.
@@ -12627,7 +12627,7 @@ function() {
         return this;
     }
 
-    TP.sys.setcfg('uri.watch_remote_changes', true);
+    TP.sys.setcfg('uri.source.watch_changes', true);
 
     //  These get registered by the types which want activate/deactivate calls.
     watchers = TP.uri.RemoteURLWatchHandler.get('watchers');
@@ -12657,7 +12657,7 @@ function(aFilterFunction) {
 
     var watchers;
 
-    TP.sys.setcfg('uri.watch_remote_changes', false);
+    TP.sys.setcfg('uri.source.watch_changes', false);
 
     watchers = TP.uri.RemoteURLWatchHandler.get('watchers');
     if (TP.isEmpty(watchers)) {
@@ -12744,7 +12744,7 @@ function() {
      * @method initialize.
      * @summary Performs one-time setup for the type on startup/import.
      * @description For this type that includes signing up for AppShutdown and
-     *     activating any registered watchers if uri.watch_remote_changes is
+     *     activating any registered watchers if uri.source.watch_changes is
      *     set.
      */
 
@@ -12752,7 +12752,7 @@ function() {
     this.observe(TP.sys, 'TP.sig.AppShutdown');
 
     //  Activate if we're already set to watch based on startup config data.
-    if (TP.sys.cfg('uri.watch_remote_changes')) {
+    if (TP.sys.cfg('uri.source.watch_changes')) {
         TP.uri.RemoteURLWatchHandler.activateWatchers();
     }
 
