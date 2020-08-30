@@ -218,7 +218,7 @@ Cmd.prototype.execute = function() {
     args.push(options.nsroot + '.' + options.nsname + '.' + options.name);
 
     args.push('--dna', options.dna);
-    args.push('--supertype', '\'' + options.supertype + '\'');
+    args.push('--supertype', options.supertype);
 
     if (options.dir) {
         args.push('--dir', options.dir);
