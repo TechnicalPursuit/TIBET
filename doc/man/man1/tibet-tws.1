@@ -17,7 +17,7 @@ data which drives it\.
 .P
 Required CouchDB parameters such as server URL and database name are first
 checked against \fBENVIRONMENT VARIABLES\fP, then against a set of TIBET
-configuration values rooted on \fBtds\.tasks\fP\|\.
+configuration values rooted on \fBtws\fP\|\.
 .P
 If the \fB\-\-confirm\fP flag is active (the default) parameter values that are
 discovered are presented to you for confirmation/adjustment\. Prompting can be
@@ -53,20 +53,20 @@ general you can set the TIBET configuration value \fBcli\.tws\.confirm\fP to fal
 .SH CONFIGURATION SETTINGS
 .RS 0
 .IP \(bu 2
-\fBtds\.tasks\.scheme\fP :
+\fBtws\.scheme\fP :
 The CouchDB server scheme\. Default is \fBhttp\fP\|\.
 .IP \(bu 2
-\fBtds\.tasks\.host\fP :
+\fBtws\.host\fP :
 The CouchDB server hostname or IP address\. Default is \fB127\.0\.0\.1\fP\|\.
 .IP \(bu 2
-\fBtds\.tasks\.port\fP :
+\fBtws\.port\fP :
 The CouchDB server port\. Default is \fB5984\fP\|\.
 .IP \(bu 2
-\fBtds\.tasks\.db_name\fP:
+\fBtws\.db_name\fP:
 The CouchDB database name to use\. Defaults to the current project name +
 \fB_tasks\fP\|\.
 .IP \(bu 2
-\fBtds\.tasks\.app_name\fP:
+\fBtws\.app_name\fP:
 The CouchDB application name to use\. Defaults to \fBtws\fP\|\.
 
 .RE

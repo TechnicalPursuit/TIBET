@@ -319,7 +319,7 @@ setupWatcherCfg = function() {
     //  Expand out the path we'll be watching. This should almost always
     //  be the application root.
     watchRoot = path.resolve(pkg.expandPath(
-        pkg.getcfg('uri.source.watch_root') || '~app'));
+        pkg.getcfg('electron.watch.root') || '~app'));
 
     logger.debug('Electron FileWatch interface rooted at: ' + watchRoot);
 
@@ -335,13 +335,13 @@ setupWatcherCfg = function() {
             /\//g, '\\/');
     };
 
-    include = pkg.getcfg('uri.source.watch_include');
+    include = pkg.getcfg('uri.watch.include');
 
     if (typeof include === 'string') {
         try {
             include = JSON.parse(include);
         } catch (e) {
-            logger.error('Invalid uri.source.watch_include value: ' +
+            logger.error('Invalid uri.watch.include value: ' +
                 e.message);
         }
     }
@@ -360,13 +360,13 @@ setupWatcherCfg = function() {
     }
 
     //  Build a pattern we can use to test against ignore files.
-    exclude = pkg.getcfg('uri.source.watch_exclude');
+    exclude = pkg.getcfg('uri.watch.exclude');
 
     if (typeof exclude === 'string') {
         try {
             exclude = JSON.parse(exclude);
         } catch (e) {
-            logger.error('Invalid uri.source.watch_exclude value: ' +
+            logger.error('Invalid uri.watch.exclude value: ' +
                 e.message);
         }
     }

@@ -255,7 +255,7 @@
             logger.debug('submitting job data: ' + TDS.beautify(job));
 
             db = TDS.getCouchDatabase({
-                db_name: TDS.cfg('tds.tasks.db_name'),
+                cfg_root: 'tws',
                 confirm: false
             });
 

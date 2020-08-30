@@ -210,7 +210,7 @@
     //  ---
 
     TDS.ifDryrun = function() {
-        return TDS.cfg('tds.tasks.dryrun') === true;
+        return TDS.cfg('tws.dryrun') === true;
     };
 
     //  ---
@@ -815,8 +815,8 @@
         var opts;
 
         opts = options || {};
-        opts.requestor = TDS;
-        opts.cfg_root = 'tds.couch';
+        opts.requestor = opts.requestor || TDS;
+        opts.cfg_root = opts.cfg_root || 'couch';
 
         return couch.getCouchConnection(opts);
     };
@@ -835,8 +835,8 @@
         var opts;
 
         opts = options || {};
-        opts.requestor = TDS;
-        opts.cfg_root = 'tds.couch';
+        opts.requestor = opts.requestor || TDS;
+        opts.cfg_root = opts.cfg_root || 'couch';
 
         return couch.getCouchDatabase(opts);
     };
@@ -851,8 +851,8 @@
         var opts;
 
         opts = options || {};
-        opts.requestor = TDS;
-        opts.cfg_root = 'tds.couch';
+        opts.requestor = opts.requestor || TDS;
+        opts.cfg_root = opts.cfg_root || 'couch';
 
         return couch.getCouchParameters(opts);
     };
@@ -865,8 +865,8 @@
         var opts;
 
         opts = options || {};
-        opts.requestor = TDS;
-        opts.cfg_root = 'tds.couch';
+        opts.requestor = opts.requestor || TDS;
+        opts.cfg_root = opts.cfg_root || 'couch';
 
         return couch.getCouchURL(opts);
     };
@@ -1371,7 +1371,7 @@
             str,
             chunk;
 
-        if (property.indexOf('tds.') !== 0) {
+        if (property.indexOf('tds.') !== 0 && property.indexOf('tws.') !== 0) {
             return;
         }
 

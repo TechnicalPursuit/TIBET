@@ -35,10 +35,10 @@
         //  top-level dir used in the main Electron process to determine where
         //  to set cwd for the watcher. This should almost always be left as
         //  ~app to ensure the watcher's set up to cover all app resources. Use
-        //  uri.source.watch_include and uri.source.watch_exclude to include and
-        //  exclude any specific subdirectories or files below the watch.root.
-        //  NOTE that uri.source.* parameters are shared client/server so
-        //  they're in tibet_cfg rather than this TDS-only config file.
+        //  uri.watch.include and uri.watch.exclude to include and exclude any
+        //  specific subdirectories or files below the watch.root. NOTE that
+        //  uri.source.* parameters are shared client/server so they're in
+        //  tibet_cfg rather than this TDS-only config file.
         setcfg('electron.watch.root', '~app');
 
         setcfg('electron.watch.heartbeat', 10000);   //  aka sse-heartbeat

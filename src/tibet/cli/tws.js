@@ -467,7 +467,7 @@ Cmd.prototype.executeInit = function() {
     params = couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        cfg_root: 'tws'
     });
 
     db_url = params.db_url;
@@ -806,7 +806,7 @@ Cmd.prototype.executeListViews = function() {
     params = couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        cfg_root: 'tws'
     });
 
     this.dbGet('_design/' + params.db_app, {}, params).then(function(result) {
@@ -874,7 +874,7 @@ Cmd.prototype.executePush = function() {
     couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        cfg_root: 'tws'
     });
 
     flags = ['design', 'flows', 'map', 'tasks', 'views'];
@@ -920,7 +920,7 @@ Cmd.prototype.executePushDesign = function() {
     params = couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        cfg_root: 'tws'
     });
 
     db_app = params.db_app;
@@ -973,7 +973,7 @@ Cmd.prototype.executePushFlows = function() {
     couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        cfg_root: 'tws'
     });
 
     this.pushDir('~tws/flows');
@@ -990,7 +990,7 @@ Cmd.prototype.executePushMap = function() {
     couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        cfg_root: 'tws'
     });
 
     this.pushDir('~tws/tasks');
@@ -1008,7 +1008,7 @@ Cmd.prototype.executePushTasks = function() {
     couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tds.tasks'
+        cfg_root: 'tws'
     });
 
     this.pushDir('~tws/tasks');
