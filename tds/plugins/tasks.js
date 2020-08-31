@@ -177,11 +177,13 @@
         //  Ensure we have default option slotting for this plugin.
         options.tds_tasks = options.tds_tasks || {};
 
-        dbParams = TDS.getCouchParameters();
+        dbParams = TDS.getCouchParameters({
+            cfg_root: 'tws'
+        });
         db_url = dbParams.db_url;
+        db_name = dbParams.db_name;
+        db_app = dbParams.db_app;
 
-        db_name = TDS.cfg('tds.tasks.db_name') || dbParams.db_name;
-        db_app = TDS.cfg('tds.tasks.db_app') || dbParams.db_app;
         doc_name = '_design/' + db_app;
 
         //  ---
@@ -1571,13 +1573,13 @@
 
         feedopts = {
             db: db_url + '/' + db_name,
-        //    feed: TDS.getcfg('tds.tasks.watch.feed') || 'continuous',
-            heartbeat: TDS.getcfg('tds.tasks.watch.heartbeat') || 1000,
-            confirm_timeout: TDS.getcfg('tds.tasks.watch.confirm_timeout') || 5000,
-        //    inactivity_ms: TDS.getcfg('tds.tasks.watch.inactivity_ms') || null,
-        //    initial_retry_delay: TDS.getcfg('tds.tasks.watch.initial_retry_delay') || 1000,
-        //    max_retry_seconds: TDS.getcfg('tds.tasks.watch.max_retry_seconds') || 360,
-        //    response_grace_time: TDS.getcfg('tds.tasks.watch.response_grace_time') || 5000,
+        //    feed: TDS.getcfg('tws.watch.feed') || 'continuous',
+            heartbeat: TDS.getcfg('tws.watch.heartbeat') || 1000,
+            confirm_timeout: TDS.getcfg('tws.watch.confirm_timeout') || 5000,
+        //    inactivity_ms: TDS.getcfg('tws.watch.inactivity_ms') || null,
+        //    initial_retry_delay: TDS.getcfg('tws.watch.initial_retry_delay') || 1000,
+        //    max_retry_seconds: TDS.getcfg('tws.watch.max_retry_seconds') || 360,
+        //    response_grace_time: TDS.getcfg('tws.watch.response_grace_time') || 5000,
             since: 'now'
         };
 
@@ -1611,7 +1613,7 @@
                     /\//g, '\\/');
             };
 
-            filter = TDS.cfg('tds.tasks.watch.filter');
+            filter = TDS.cfg('tws.watch.filter');
             if (filter) {
                 regex = new RegExp(escaper(filter));
                 if (regex) {
@@ -1793,7 +1795,7 @@
         //  Routes
         //  ---
 
-        app.post(TDS.cfg('tds.tasks.job.uri'), loggedInOrLocalDev,
+        app.post(TDS.cfg('tws.job.uri'), loggedInOrLocalDev,
             options.parsers.json, TDS.workflow.job);
     };
 

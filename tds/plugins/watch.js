@@ -187,13 +187,13 @@
                     /\//g, '\\/');
             };
 
-            include = TDS.getcfg('uri.source.watch_include');
+            include = TDS.getcfg('uri.watch.include');
 
             if (typeof include === 'string') {
                 try {
                     include = JSON.parse(include);
                 } catch (e) {
-                    logger.error('Invalid uri.source.watch_include value: ' +
+                    logger.error('Invalid uri.watch.include value: ' +
                         e.message);
                 }
             }
@@ -212,13 +212,13 @@
             }
 
             //  Build a pattern we can use to test against ignore files.
-            exclude = TDS.getcfg('uri.source.watch_exclude');
+            exclude = TDS.getcfg('uri.watch.exclude');
 
             if (typeof exclude === 'string') {
                 try {
                     exclude = JSON.parse(exclude);
                 } catch (e) {
-                    logger.error('Invalid uri.source.watch_exclude value: ' +
+                    logger.error('Invalid uri.watch.exclude value: ' +
                         e.message);
                 }
             }

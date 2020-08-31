@@ -25,7 +25,7 @@
 
         //  Point to the configured TWS database for this project.
         db = TDS.getCouchDatabase({
-            db_name: TDS.cfg('tds.tasks.db_name')
+            cfg_root: 'tws'
         });
 
 

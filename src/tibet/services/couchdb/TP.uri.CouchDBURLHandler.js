@@ -42,9 +42,9 @@ TP.uri.CouchDBURLHandler.Type.defineConstant(
 //  Configuration names for the include/exclude configuration setting for the
 //  remote url watcher types which mix this in.
 TP.uri.CouchDBURLHandler.set('includeConfigName',
-    'tds.couch.watch.include');
+    'couch.watch.include');
 TP.uri.CouchDBURLHandler.set('excludeConfigName',
-    'tds.couch.watch.exclude');
+    'couch.watch.exclude');
 
 //  Server roots that have been authenticated.
 TP.uri.CouchDBURLHandler.Type.defineAttribute('authenticatedRoots');

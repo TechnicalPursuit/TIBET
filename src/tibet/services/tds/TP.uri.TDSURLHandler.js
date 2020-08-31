@@ -33,9 +33,9 @@ TP.uri.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName',
 
 //  NOTE that these use the more generic 'uri.source.' config roots.
 TP.uri.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName',
-    'uri.source.watch_include');
+    'uri.watch.include');
 TP.uri.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName',
-    'uri.source.watch_exclude');
+    'uri.watch.exclude');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

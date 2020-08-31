@@ -18,7 +18,7 @@ data which drives it.
 
 Required CouchDB parameters such as server URL and database name are first
 checked against `ENVIRONMENT VARIABLES`, then against a set of TIBET
-configuration values rooted on `tds.tasks`.
+configuration values rooted on `tws`.
 
 If the `--confirm` flag is active (the default) parameter values that are
 discovered are presented to you for confirmation/adjustment. Prompting can be
@@ -48,20 +48,20 @@ general you can set the TIBET configuration value `cli.tws.confirm` to false.
 
 ## CONFIGURATION SETTINGS
 
-  * `tds.tasks.scheme` :
+  * `tws.scheme` :
     The CouchDB server scheme. Default is `http`.
 
-  * `tds.tasks.host` :
+  * `tws.host` :
     The CouchDB server hostname or IP address. Default is `127.0.0.1`.
 
-  * `tds.tasks.port` :
+  * `tws.port` :
     The CouchDB server port. Default is `5984`.
 
-  * `tds.tasks.db_name`:
+  * `tws.db_name`:
     The CouchDB database name to use. Defaults to the current project name +
     `_tasks`.
 
-  * `tds.tasks.app_name`:
+  * `tws.app_name`:
     The CouchDB application name to use. Defaults to `tws`.
 
 ## ENVIRONMENT VARIABLES

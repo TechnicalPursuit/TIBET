@@ -749,9 +749,10 @@
 
     TP.sys.setcfg('tds.auth.uri', '/login');
     TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
-    TP.sys.setcfg('tds.tasks.job.uri', '/_tws/jobs');
     TP.sys.setcfg('tds.user.uri', '/whoami');
     TP.sys.setcfg('tds.vcard.uri', '/vcard');
+
+    TP.sys.setcfg('tws.job.uri', '/_tws/jobs');
 
     //  what url does client use to connect to the TDS watch SSE endpoint (and
     //  where does the TDS watch plugin configure its route to listen).
@@ -761,14 +762,6 @@
     //  NOTE that this is also used in the client to map SSE event to a TIBET
     //  signal picked up by the TDSURLHandler.
     TP.sys.setcfg('tds.watch.event', 'fileChange');
-
-    //  Includes/excludes for couchdb observations. Note that these are used for
-    //  change notification when TIBET has been booted as a CouchApp (i.e.
-    //  directly from CouchDB).
-    TP.sys.setcfg('tds.couch.watch.include',
-        ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
-    TP.sys.setcfg('tds.couch.watch.exclude', ['~app/TIBET-INF/tibet']);
-
 
     //  What URI does the client use for generic WebDAV calls? NOTE this is also
     //  where the TDS webdav plugin will register.
@@ -2067,13 +2060,13 @@
     //  remote resources that we should try to watch. NOTE that these should be
     //  provided as virtual paths or wildcard expressions to match effectively
     //  since they're shared between client and server.
-    TP.sys.setcfg('uri.source.watch_include',
+    TP.sys.setcfg('uri.watch.include',
         ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
 
     //  remote resources that we should try to watch. NOTE that these should
     //  be provided as virtual paths or wildcard expressions to match since
     //  they're shared between client and server.
-    TP.sys.setcfg('uri.source.watch_exclude', ['~app/TIBET-INF/tibet', '*.bak$']);
+    TP.sys.setcfg('uri.watch.exclude', ['~app/TIBET-INF/tibet', '*.bak$']);
 
     //  ---
     //  CouchDB
@@ -2101,6 +2094,14 @@
         // '{dbname}/_changes?feed=eventsource',                  //  no docs
         // '{dbname}/_changes?feed=eventsource&include_docs=true' //  with docs
     ]);
+
+    //  Includes/excludes for couchdb observations. Note that these are used for
+    //  change notification when TIBET has been booted as a CouchApp (i.e.
+    //  directly from CouchDB).
+    TP.sys.setcfg('couch.watch.include',
+        ['~app_src', '~app_styles', '~app_cfg', '~app/tibet.json']);
+    TP.sys.setcfg('couch.watch.exclude', ['~app/TIBET-INF/tibet']);
+
 
     //  ---
     //  Amazon Web Services

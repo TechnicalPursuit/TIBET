@@ -172,13 +172,13 @@
 
         feedopts = {
             db: db_url + '/' + db_name,
-        //    feed: TDS.getcfg('tds.couch.watch.feed') || 'continuous',
-            heartbeat: TDS.getcfg('tds.couch.watch.heartbeat') || 1000,
-            confirm_timeout: TDS.getcfg('tds.couch.watch.confirm_timeout') || 5000,
-        //    inactivity_ms: TDS.getcfg('tds.couch.watch.inactivity_ms') || null,
-        //    initial_retry_delay: TDS.getcfg('tds.couch.watch.initial_retry_delay') || 1000,
-        //    max_retry_seconds: TDS.getcfg('tds.couch.watch.max_retry_seconds') || 360,
-        //    response_grace_time: TDS.getcfg('tds.couch.watch.response_grace_time') || 5000,
+        //    feed: TDS.getcfg('couch.watch.feed') || 'continuous',
+            heartbeat: TDS.getcfg('couch.watch.heartbeat') || 1000,
+            confirm_timeout: TDS.getcfg('couch.watch.confirm_timeout') || 5000,
+        //    inactivity_ms: TDS.getcfg('couch.watch.inactivity_ms') || null,
+        //    initial_retry_delay: TDS.getcfg('couch.watch.initial_retry_delay') || 1000,
+        //    max_retry_seconds: TDS.getcfg('couch.watch.max_retry_seconds') || 360,
+        //    response_grace_time: TDS.getcfg('couch.watch.response_grace_time') || 5000,
             since: 'now'
         };
 
@@ -362,7 +362,7 @@
                 regex,
                 result;
 
-            filter = TDS.cfg('tds.couch.watch.filter');
+            filter = TDS.cfg('couch.watch.filter');
             if (filter) {
                 regex = new RegExp(escaper(filter));
                 if (regex) {
@@ -616,7 +616,7 @@
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
                         //  so we force a default value as content for empty.
-                        content = '' + data || TDS.getcfg('tds.couch.watch.empty');
+                        content = '' + data || TDS.getcfg('couch.watch.empty');
 
                         type = mime.lookup(path.extname(fullpath).slice(1));
 
@@ -744,7 +744,7 @@
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
                         //  so we force a default value as content for empty.
-                        content = '' + data || TDS.getcfg('tds.couch.watch.empty');
+                        content = '' + data || TDS.getcfg('couch.watch.empty');
 
                         //  Set the compression level for gzip to the one our
                         //  database is configured to use for attachments.
@@ -964,8 +964,8 @@
             };
 
             //  Build a pattern we can use to test against ignore files.
-            //  NOTE this pattern is defined by a shared uri.source.* key.
-            ignore = TDS.getcfg('uri.source.watch_ignore');
+            //  NOTE this pattern is defined by a shared uri.watch.* key.
+            ignore = TDS.getcfg('uri.watch.exclude');
             if (ignore) {
                 pattern = ignore.reduce(function(str, item) {
                     return str ? str + '|' + escaper(item) : escaper(item);
@@ -1005,7 +1005,7 @@
             //  We need to create the watcher to avoid glitches with the overall
             //  watch processing...but we don't want to actually process changes
             //  if the fs2couch flag is off.
-            if (!TDS.getcfg('tds.couch.watch.fs2couch')) {
+            if (!TDS.getcfg('couch.watch.fs2couch')) {
                 return;
             }
 
@@ -1030,7 +1030,7 @@
 
         //  Couch-To-FS
 
-        if (TDS.getcfg('tds.couch.watch.couch2fs')) {
+        if (TDS.getcfg('couch.watch.couch2fs')) {
 
             //  Access the database configuration data. We use this for gzip
             //  level confirmation and other potential processing.

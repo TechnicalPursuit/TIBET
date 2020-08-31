@@ -25,7 +25,9 @@
 
         //  TODO: add db_name etc. here to control which database to use.
         //  NOTE: this uses exported COUCH_DATABASE value by default.
-        db = TDS.getCouchDatabase({});
+        db = TDS.getCouchDatabase({
+            cfg_root: 'couch'
+        });
 
         //  ---
         //  Helpers

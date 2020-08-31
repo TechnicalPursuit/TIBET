@@ -31,6 +31,26 @@
      */
     Config = function(setcfg) {
 
+        setcfg('couch.db_app', 'tibet');
+        setcfg('couch.db_name', null);
+        setcfg('couch.host', '127.0.0.1');
+        setcfg('couch.port', '5984');
+        setcfg('couch.scheme', 'http');
+
+        setcfg('couch.watch.empty', '\n');
+        setcfg('couch.watch.feed', 'continuous');
+        setcfg('couch.watch.filter', '*');
+        setcfg('couch.watch.heartbeat', 500);
+        setcfg('couch.watch.inactivity_ms', null);
+        setcfg('couch.watch.initial_retry_delay', 1000);
+        setcfg('couch.watch.max_retry_seconds', 360);
+        setcfg('couch.watch.response_grace_time', 5000);
+        setcfg('couch.watch.root', '~app');
+
+        setcfg('couch.watch.couch2fs', true);
+        setcfg('couch.watch.fs2couch', true);
+
+
         setcfg('path.tds_file', '~/tds.json');
         setcfg('path.tds_plugins', '~/plugins');
         setcfg('path.tds_processors', '~tds_plugins/processors');
@@ -117,25 +137,6 @@
         setcfg('tds.cli.commands', ['type', 'build', 'deploy', 'package',
             'open']);
 
-        setcfg('tds.couch.db_app', 'tibet');
-        setcfg('tds.couch.db_name', null);
-        setcfg('tds.couch.host', '127.0.0.1');
-        setcfg('tds.couch.port', '5984');
-        setcfg('tds.couch.scheme', 'http');
-
-        setcfg('tds.couch.watch.empty', '\n');
-        setcfg('tds.couch.watch.feed', 'continuous');
-        setcfg('tds.couch.watch.filter', '*');
-        setcfg('tds.couch.watch.heartbeat', 500);
-        setcfg('tds.couch.watch.inactivity_ms', null);
-        setcfg('tds.couch.watch.initial_retry_delay', 1000);
-        setcfg('tds.couch.watch.max_retry_seconds', 360);
-        setcfg('tds.couch.watch.response_grace_time', 5000);
-        setcfg('tds.couch.watch.root', '~app');
-
-        setcfg('tds.couch.watch.couch2fs', true);
-        setcfg('tds.couch.watch.fs2couch', true);
-
         setcfg('tds.patch.root', '~');
 
         setcfg('tds.pouch.name', 'tds');
@@ -149,18 +150,6 @@
 
         setcfg('tds.static.private', []);
 
-        setcfg('tds.tasks.db_app', 'tws');
-        setcfg('tds.tasks.db_name', 'tasks');   //  often a suffix on proj db
-
-        setcfg('tds.tasks.dryrun', false);
-
-        setcfg('tds.tasks.watch.feed', 'continuous');
-        setcfg('tds.tasks.watch.heartbeat', 500);
-        setcfg('tds.tasks.watch.inactivity_ms', null);
-        setcfg('tds.tasks.watch.initial_retry_delay', 1000);
-        setcfg('tds.tasks.watch.max_retry_seconds', 360);
-        setcfg('tds.tasks.watch.response_grace_time', 5000);
-
         //  NOTE these are off here. We want to force them to be turned on via
         //  the tds.json file which will enforce an environment-based setting.
         setcfg('tds.use_admin', false);
@@ -173,10 +162,10 @@
         //  top-level dir used in the TDS watch plugin to determine where to set
         //  up the cwd for the watcher. This should almost always be left as
         //  ~app to ensure the watcher's set up to cover all app resources. Use
-        //  uri.source.watch_include and uri.source.watch_exclude to include and
-        //  exclude any specific subdirectories or files below the overall root.
-        //  NOTE that uri.source.* parameters are shared client/server so
-        //  they're in tibet_cfg rather than this TDS-only config file.
+        //  uri.watch.include and uri.watch.exclude to include and exclude any
+        //  specific subdirectories or files below the overall root. NOTE that
+        //  uri.source.* parameters are shared client/server so they're in
+        //  tibet_cfg rather than this TDS-only config file.
         setcfg('tds.watch.root', '~app');
 
         setcfg('tds.watch.heartbeat', 10000);   //  aka sse-heartbeat
@@ -184,6 +173,25 @@
 
         setcfg('tds.webdav.mount', '/');
         setcfg('tds.webdav.root', '~app');
+
+        //  ---
+        //  tws
+        //  ---
+
+        setcfg('tws.db_app', 'tws');
+        setcfg('tws.db_name', 'tasks');   //  often a suffix on proj db
+        setcfg('tws.host', '127.0.0.1');
+        setcfg('tws.port', '5984');
+        setcfg('tws.scheme', 'http');
+
+        setcfg('tws.dryrun', false);
+
+        setcfg('tws.watch.feed', 'continuous');
+        setcfg('tws.watch.heartbeat', 500);
+        setcfg('tws.watch.inactivity_ms', null);
+        setcfg('tws.watch.initial_retry_delay', 1000);
+        setcfg('tws.watch.max_retry_seconds', 360);
+        setcfg('tws.watch.response_grace_time', 5000);
     };
 
     module.exports = Config;

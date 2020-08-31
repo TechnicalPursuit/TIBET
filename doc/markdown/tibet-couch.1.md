@@ -88,19 +88,19 @@ URL-encoded value.
 
 ## CONFIGURATION SETTINGS
 
-  * `tds.couch.scheme` :
+  * `couch.scheme` :
     The CouchDB server scheme. Default is `http`.
 
-  * `tds.couch.host` :
+  * `couch.host` :
     The CouchDB server hostname or IP address. Default is `127.0.0.1`.
 
-  * `tds.couch.port` :
+  * `couch.port` :
     The CouchDB server port. Default is `5984`.
 
-  * `tds.couch.db_name`:
+  * `couch.db_name`:
     The CouchDB database name to use. Defaults to the current project name.
 
-  * `tds.couch.app_name`:
+  * `couch.app_name`:
     The CouchDB application name to use. Defaults to the current project name.
 
 ## ENVIRONMENT VARIABLES
