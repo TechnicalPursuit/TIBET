@@ -47,6 +47,7 @@ let configure,
     setupWatcherCfg,
     activateWatcher,
     mainWindow,
+    mainContents,
     logger,
     options,
     pkg,
@@ -165,6 +166,9 @@ createWindow = function() {
         }
     });
 
+    //  Grab the browser window's web contents which we use a lot below.
+    mainContents = mainWindow.webContents;
+
     logger.verbose('Launching ' + fileUrl);
 
     mainWindow.loadURL(fileUrl);
@@ -174,7 +178,7 @@ createWindow = function() {
     //  not there.
     if (process.argv.indexOf('--devtools') !== -1) {
         //  Open the DevTools.
-        mainWindow.webContents.openDevTools();
+        mainContents.openDevTools();
     }
 
     //  If we're configured for scraping, then remove 'x-frame-options' headers
@@ -183,7 +187,7 @@ createWindow = function() {
         //  It is important when performing tasks like scraping web pages, to
         //  ignore the 'x-frame-options' header and allow access to iframe
         //  content.
-        mainWindow.webContents.session.webRequest.onHeadersReceived(
+        mainContents.session.webRequest.onHeadersReceived(
             function(details, callback) {
                 var entries;
 
@@ -200,7 +204,7 @@ createWindow = function() {
     }
 
     //  Log client console to main console...
-    mainWindow.webContents.on('console-message',
+    mainContents.on('console-message',
     function(event, level, message, line, sourceId) {
         //  Use process.stdout here to avoid extra newlines in output stream.
         if (options.verbose) {
@@ -214,7 +218,7 @@ createWindow = function() {
     //  running TIBET. Note that the code in TIBET has a special case for the
     //  'onbeforeunload' event handler for Electron that always returns a value
     //  that causes this event to be thrown.
-    mainWindow.webContents.on('will-prevent-unload',
+    mainContents.on('will-prevent-unload',
     function(event) {
         var choice,
             leave;
@@ -272,7 +276,7 @@ setupAppMenu = function() {
                     label: 'Check for updates',
                     enabled: false,
                     click: () => {
-                        mainWindow.webContents.send(
+                        mainContents.send(
                             'TP.sig.CheckForUpdate', false);
                     }
                 },
@@ -483,7 +487,7 @@ activateWatcher = function() {
             signalName: sigName
         };
 
-        mainWindow.webContents.send('TP.sig.MessageReceived', entry);
+        mainContents.send('TP.sig.MessageReceived', entry);
     });
 };
 
@@ -604,7 +608,7 @@ autoUpdater.autoDownload = false;
  * Event emitted when the auto updater is checking for an available update.
  */
 autoUpdater.on('checking-for-update', function(event) {
-    mainWindow.webContents.send('TP.sig.CheckingForUpdate', event);
+    mainContents.send('TP.sig.CheckingForUpdate', event);
 });
 
 //  ---
@@ -613,7 +617,7 @@ autoUpdater.on('checking-for-update', function(event) {
  * Event emitted when the auto updater has an error.
  */
 autoUpdater.on('error', function(event) {
-    mainWindow.webContents.send('TP.sig.UpdateError', event);
+    mainContents.send('TP.sig.UpdateError', event);
 });
 
 //  ---
@@ -622,7 +626,7 @@ autoUpdater.on('error', function(event) {
  * Event emitted when the auto updater has an update available.
  */
 autoUpdater.on('update-available', function(event) {
-    mainWindow.webContents.send('TP.sig.UpdateAvailable', event);
+    mainContents.send('TP.sig.UpdateAvailable', event);
 });
 
 //  ---
@@ -631,7 +635,7 @@ autoUpdater.on('update-available', function(event) {
  * Event emitted when the auto updater has no update available.
  */
 autoUpdater.on('update-not-available', function(event) {
-    mainWindow.webContents.send('TP.sig.UpdateNotAvailable', event);
+    mainContents.send('TP.sig.UpdateNotAvailable', event);
 });
 
 //  ---
@@ -640,7 +644,7 @@ autoUpdater.on('update-not-available', function(event) {
  * Event emitted when the auto updater has the latest update downloaded.
  */
 autoUpdater.on('update-downloaded', function(event) {
-    mainWindow.webContents.send('TP.sig.UpdateDownloaded', event);
+    mainContents.send('TP.sig.UpdateDownloaded', event);
 });
 
 //  ---
@@ -731,7 +735,7 @@ ipcMain.handle('TP.sig.ChangeUpdaterMenuItem',
  * Event emitted when TIBET wants to check to see if updates are available.
  */
 ipcMain.handle('TP.sig.CheckForUpdates',
-    function() {
+    function(event, payload) {
         //  check to see if there are any available updates using autoUpdater.
         autoUpdater.checkForUpdates();
     });
@@ -742,7 +746,7 @@ ipcMain.handle('TP.sig.CheckForUpdates',
  * Event emitted when TIBET wants to download the latest application version.
  */
 ipcMain.handle('TP.sig.DownloadUpdate',
-    function() {
+    function(event, payload) {
         autoUpdater.downloadUpdate();
     });
 
@@ -753,7 +757,7 @@ ipcMain.handle('TP.sig.DownloadUpdate',
  * application.
  */
 ipcMain.handle('TP.sig.InstallUpdateAndRestart',
-    function() {
+    function(event, payload) {
         autoUpdater.quitAndInstall();
     });
 
@@ -764,7 +768,7 @@ ipcMain.handle('TP.sig.InstallUpdateAndRestart',
  * ready.
  */
 ipcMain.handle('TP.sig.AppDidStart',
-    function() {
+    function(event, payload) {
 
         if (pkg.getcfg('electron.updater.onstart') === true) {
             autoUpdater.checkForUpdates();
@@ -778,7 +782,7 @@ ipcMain.handle('TP.sig.AppDidStart',
  * Event emitted when
  */
 ipcMain.handle('TP.sig.ActivateWatcher',
-    function() {
+    function(event, payload) {
         activateWatcher();
     });
 
@@ -788,7 +792,7 @@ ipcMain.handle('TP.sig.ActivateWatcher',
  * Event emitted when
  */
 ipcMain.handle('TP.sig.DeactivateWatcher',
-    function() {
+    function(event, payload) {
         logger.debug('TODO: Deactivate the watcher here.');
     });
 

@@ -1,5 +1,5 @@
 {
-    "appId": "com.technicalpursuit.ElectronAutoUpdate",
+    "appId": "org.electronjs.{{appname}}",
     "asar": false,
     "extraResources": [
         {
