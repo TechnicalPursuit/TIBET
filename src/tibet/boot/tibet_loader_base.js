@@ -26,13 +26,13 @@
 /* eslint new-cap:0, no-alert:0, indent:0, eqeqeq:0 */
 (function(root) {
 
-    TP = root.TP || this.TP;
+TP = root.TP || this.TP;
 
-    //  If we can't find the TP reference, or we're part of tibet_loader and
-    //  we're loading due to a location change that should route we exit.
-    if (!TP || TP.$$nested_loader) {
-        return;
-    }
+//  If we can't find the TP reference, or we're part of tibet_loader and
+//  we're loading due to a location change that should route we exit.
+if (!TP || TP.$$nested_loader) {
+    return;
+}
 
 //  ============================================================================
 //  Electron Overrides / Updates
