@@ -1515,10 +1515,14 @@ This set of functions provides access to the host, port, protocol, and pathname
 which were used to load TIBET, as well as the 'launch path'.
 */
 
-//  first define whether we were loaded from file url or a web server
-TP.sys.$httpBased = window.location.protocol.indexOf('file') !== 0;
-
+//  first capture the scheme we were booted from
 TP.sys.$scheme = window.location.protocol.slice(0, -1);
+
+//  whether we're http based or not depends on whether we were loaded from file
+//  url, a web server or other mechanism (i.e. browser extension)
+TP.sys.$httpBased = TP.sys.$scheme !== 'file' &&
+                    TP.sys.$scheme !== 'chrome-extension';
+
 TP.sys.$pathname = decodeURI(window.location.pathname);
 
 if (TP.sys.$httpBased) {
