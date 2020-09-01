@@ -659,7 +659,7 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
             try {
                 displayName = owner.getID() + '.' + track + '.' + methodName;
             } catch (e) {
-                top.console.log(
+                TP.topWindow.console.log(
                     'Can\'t compute owner ID for: ' + TP.str(owner) +
                     ' for method named: ' + methodName +
                     ' on track: ' + track +

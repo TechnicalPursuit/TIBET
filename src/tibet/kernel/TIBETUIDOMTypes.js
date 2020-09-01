@@ -4921,11 +4921,11 @@ function(aPointOrObject) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
+        //  Note here that we pass 'TP.topWindow' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                            top,
+                            TP.topWindow,
                             TP.elementGetIFrameWindow(winFrameElem));
     } else {
         frameOffsetXAndY = TP.ac(0, 0);
@@ -5000,11 +5000,11 @@ function(aRectOrObject) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
+        //  Note here that we pass 'TP.topWindow' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                            top,
+                            TP.topWindow,
                             TP.elementGetIFrameWindow(winFrameElem));
     } else {
         frameOffsetXAndY = TP.ac(0, 0);
@@ -5067,11 +5067,11 @@ function(aPointOrObject) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
+        //  Note here that we pass 'TP.topWindow' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                            top,
+                            TP.topWindow,
                             TP.elementGetIFrameWindow(winFrameElem));
     } else {
         frameOffsetXAndY = TP.ac(0, 0);
@@ -5130,11 +5130,11 @@ function(aPointOrObject) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
+        //  Note here that we pass 'TP.topWindow' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                            top,
+                            TP.topWindow,
                             TP.elementGetIFrameWindow(winFrameElem));
     } else {
         frameOffsetXAndY = TP.ac(0, 0);

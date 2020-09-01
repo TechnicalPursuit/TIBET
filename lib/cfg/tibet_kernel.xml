@@ -19,9 +19,12 @@
 
     <script>
         <![CDATA[
-            if (TP.sys.cfg('boot.context') === 'electron') {
-                TP.registerExternalObject('electron_lib_utils', window.preload_lib_utils);
-                TP.registerExternalObject('electron_app_utils', window.preload_app_utils);
+            if (TP.sys.cfg('boot.context') === 'electron' &&
+                TP.inExtension !== true) {
+                    TP.registerExternalObject(
+                        'electron_lib_utils', window.preload_lib_utils);
+                    TP.registerExternalObject(
+                        'electron_app_utils', window.preload_app_utils);
             };
         ]]>
     </script>

@@ -7301,6 +7301,10 @@ function(aURI, aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  the most recent 'communication' object
+//  (i.e. the native XHR or WebSocket object)
+TP.uri.ChromeExtURL.Inst.defineAttribute('commObject');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------

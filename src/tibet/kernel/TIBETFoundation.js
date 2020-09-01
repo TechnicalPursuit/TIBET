@@ -2402,8 +2402,8 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         }
     } catch (e) {
         //  don't let log errors trigger recursion, but don't bury them either.
-        top.console.error('Error logging onerror: ' + e.message);
-        top.console.error(str || msg);
+        TP.topWindow.console.error('Error logging onerror: ' + e.message);
+        TP.topWindow.console.error(str || msg);
     }
 
     //  last chance...invoke the debugger :)

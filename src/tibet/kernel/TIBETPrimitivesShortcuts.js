@@ -2761,7 +2761,7 @@ function(aURIOrRoute, winContext, event) {
         } else {
             //  This is a link anchor target - build up the proper adjusted
             //  path and set it.
-            loc = top.location.toString();
+            loc = TP.topWindow.location.toString();
 
             head = TP.uriHead(loc);
             tail = TP.uriFragmentParameters(loc);

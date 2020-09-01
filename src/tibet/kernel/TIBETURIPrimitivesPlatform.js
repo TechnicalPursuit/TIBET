@@ -221,7 +221,7 @@ TP.hc(
             path = path.slice(0, path.indexOf('#'));
         }
 
-        if (TP.sys.cfg('boot.context') === 'electron') {
+        if (TP.sys.cfg('boot.context') === 'electron' && !TP.inExtension) {
             //  following operation uses local name, not web format
             fname = TP.uriInLocalFormat(path);
 
@@ -447,7 +447,7 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        if (TP.sys.cfg('boot.context') === 'electron') {
+        if (TP.sys.cfg('boot.context') === 'electron' && !TP.inExtension) {
             //  following operation uses local name, not web format
             fname = TP.uriInLocalFormat(path);
 
@@ -812,7 +812,7 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        if (TP.sys.cfg('boot.context') === 'electron') {
+        if (TP.sys.cfg('boot.context') === 'electron' && !TP.inExtension) {
             //  following operation uses local name, not web format
             fname = TP.uriInLocalFormat(path);
 
@@ -1194,7 +1194,7 @@ TP.hc(
 
         body = TP.ifKeyInvalid(request, 'body', '');
 
-        if (TP.sys.cfg('boot.context') === 'electron') {
+        if (TP.sys.cfg('boot.context') === 'electron' && !TP.inExtension) {
             //  following operation uses local name, not web format
             fname = TP.uriInLocalFormat(path);
 

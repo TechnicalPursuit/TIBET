@@ -32,6 +32,28 @@
         return;
     }
 
+    //  Track whether we're inside of a Chromium extension or not. Note that
+    //  this is very sensitive code given that it's happening early in the
+    //  booting of TIBET. Therefore, it's very pendantic.
+
+    //  There are two properties that we're trying to set here:
+    //  1. Whether or not we're in an extension (which is different from the
+    //  boot context, such as 'brower', 'electron' or 'headless');
+    //  2. The top-level window, which for an extension is *never* 'top'.
+
+    TP.inExtension = false;
+    if (root.location) {
+        //  If the root has a '.location' slot, that means it's a real window.
+        if (root.location.protocol.slice(0, -1) === 'chrome-extension') {
+            TP.topWindow = window;
+            TP.inExtension = true;
+        } else {
+            TP.topWindow = top;
+        }
+    } else {
+        TP.topWindow = root;
+    }
+
     /**
      * With the setcfg function in place we can now set the baseline properties
      * required to ensure things can boot. Additional settings at the end of
@@ -675,6 +697,12 @@
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
     }
 
+    //  If we're running inside of an extension, then we always use the console
+    //  as our boot reporter.
+    if (TP.inExtension === true) {
+        TP.sys.setcfg('boot.reporter', 'console');
+    }
+
     //  ---
     //  debug properties
     //  ---
@@ -839,16 +867,16 @@
         }
 
         //  If this window isn't the same as the top-level window
-        if (window !== top) {
+        if (window !== TP.topWindow) {
 
             //  If the top-level window doesn't have a name, assign one.
-            if (!top.name) {
-                top.name = 'window_0';
+            if (!TP.topWindow.name) {
+                TP.topWindow.name = 'window_0';
             }
 
             //  TODO: This only handles one level of nesting from the top down
             //  to our window.
-            path = top.name + '.' + window.name;
+            path = TP.topWindow.name + '.' + window.name;
         } else {
             path = window.name;
         }

@@ -1589,7 +1589,7 @@ TP.hc(
         //  On Mozilla, we don't place this property on any other Window than
         //  the top-level Window. There used to be a problem with this firing
         //  multiple times if multiple frames were instrumented with this hook.
-        if (aWindow.name !== top.name) {
+        if (aWindow.name !== TP.topWindow.name) {
             return;
         }
 
@@ -1655,7 +1655,7 @@ TP.hc(
 
         //  On Webkit we don't set up a hook for any window other than the
         //  top-level one.
-        if (aWindow.name !== top.name) {
+        if (aWindow.name !== TP.topWindow.name) {
             return;
         }
 

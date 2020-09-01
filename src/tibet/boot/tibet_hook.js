@@ -31,6 +31,20 @@
 
 //  ----------------------------------------------------------------------------
 
+//  Determine whether we're inside of a Chromium extension or not and set the
+//  '$$root.topWindow' slot appropriately. Note that this is very sensitive code
+//  given that it's happening early in the booting of TIBET. Therefore, it's very
+//  pendantic.
+
+if (root.location &&
+    root.location.protocol.slice(0, -1) === 'chrome-extension') {
+    root.$$topWindow = window;
+} else {
+    root.$$topWindow = top;
+}
+
+//  ----------------------------------------------------------------------------
+
 //  Patch ID from iframes onto the window name slot.
 if (root.frameElement) {
     root.name = root.frameElement.id;
@@ -59,7 +73,7 @@ if (root.$$hooked === true) {
 //  ----------------------------------------------------------------------------
 
 //  Obvious check is 'top' where we expect 99% of TIBET applications to load.
-if (!top.$$TIBET) {
+if (!root.$$topWindow.$$TIBET) {
 
     $$find = function(aWindowOrFrame) {
         var win;
@@ -67,7 +81,7 @@ if (!top.$$TIBET) {
         win = aWindowOrFrame || root;
         if (win.$$TIBET) {
             return win;
-        } else if (win === top) {
+        } else if (win === root.$$topWindow) {
             //  Can't go any higher.
             return;
         }
@@ -83,42 +97,44 @@ if (!top.$$TIBET) {
     if (!tibet) {
 
         //  No TIBET and no config. Log to system console.
-        top.console.log('TIBET hook in \'' + root.name +
+        root.$$topWindow.console.log('TIBET hook in \'' + root.name +
             '\' unable to find TIBET.');
 
         //  Without TIBET we presume the user opened a tibet-hooked page but did
         //  that outside of a TIBET application. The idea here is to store that
         //  page in session storage and try to boot TIBET via a root (/) url. If
         //  that works TIBET will set the home page when it sees session value.
-        if (top.sessionStorage) {
-            top.sessionStorage.setItem('TIBET.project.home_page',
-                top.location.toString());
+        if (root.$$topWindow.sessionStorage) {
+            root.$$topWindow.sessionStorage.setItem('TIBET.project.home_page',
+                root.$$topWindow.location.toString());
         }
 
         //  Rebuild the URL, minus any server path portion.
         $$fragment = /#/.test($$location) ?
             $$location.slice($$location.indexOf('#')) : '';
 
-        $$location = '' + top.location.protocol + '//' + top.location.host +
-            $$fragment;
+        $$location = '' + root.$$topWindow.location.protocol + '//' +
+                        root.$$topWindow.location.host +
+                        $$fragment;
 
-        top.location = $$location;
+        root.$$topWindow.location = $$location;
         return;
     } else {
         //  If TIBET is found then the current page shouldn't be preserved as a
         //  session var to drive home page on startup. Clear any value we have.
-        if (top.sessionStorage) {
-            top.sessionStorage.removeItem('TIBET.project.home_page');
+        if (root.$$topWindow.sessionStorage) {
+            root.$$topWindow.sessionStorage.removeItem(
+                                                'TIBET.project.home_page');
         }
     }
 
 } else {
-    tibet = top.$$TIBET;
+    tibet = root.$$topWindow.$$TIBET;
 
     //  If TIBET is found then the current page shouldn't be preserved as a
     //  session var to drive home page on startup. Clear any value we have.
-    if (top.sessionStorage) {
-        top.sessionStorage.removeItem('TIBET.project.home_page');
+    if (root.$$topWindow.sessionStorage) {
+        root.$$topWindow.sessionStorage.removeItem('TIBET.project.home_page');
     }
 }
 

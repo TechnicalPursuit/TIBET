@@ -1092,8 +1092,8 @@ TP.core.RepositionMonitor.Type.defineAttribute(
         //  This monitor checks global position - if the target element's Window
         //  is not 'top', then we need to make sure to compute the offset.
         win = TP.nodeGetWindow(elem);
-        if (win !== top) {
-            frameOffsetXAndY = TP.windowComputeWindowOffsets(top, win);
+        if (win !== TP.topWindow) {
+            frameOffsetXAndY = TP.windowComputeWindowOffsets(TP.topWindow, win);
         } else {
             frameOffsetXAndY = TP.ac(0, 0);
         }
@@ -2996,11 +2996,11 @@ function(wantsTransformed) {
     evtWin = TP.eventGetWindow(this.getEvent());
 
     if (TP.isElement(winFrameElem = evtWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
+        //  Note here that we pass 'TP.topWindow' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         eventOffsetXAndY = TP.windowComputeWindowOffsets(
-                            top,
+                            TP.topWindow,
                             TP.elementGetIFrameWindow(winFrameElem),
                             wantsTransformed);
     } else {

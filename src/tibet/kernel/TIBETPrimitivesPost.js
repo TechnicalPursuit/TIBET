@@ -2196,7 +2196,7 @@ function(anObject, assignIfAbsent) {
         //  use it
         if (TP.isEmpty(localID)) {
             if (assign) {
-                if (obj === window.top) {
+                if (obj === TP.topWindow) {
                     localID = 'top';
                 } else {
                     localID = TP.getNextWindowName();
