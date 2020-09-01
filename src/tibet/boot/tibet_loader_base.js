@@ -9326,6 +9326,17 @@ isECMAModule) {
         //  source attribute, which TIBET uses as an alternative
         elem.setAttribute('source', scriptUrl);
 
+        //  if we're in a Chromium extension, we cannot execute script inline
+        //  due to security restrictions. In this case, we still append the
+        //  element but we set its type to something Chromium so it won't try to
+        //  execute it. We then eval the script to actually execute it.
+        if (TP.inExtension === true) {
+            elem.setAttribute('type', 'tibetscript');
+            /* eslint-disable no-eval */
+            eval(jsSrc);
+            /* eslint-enable no-eval */
+        }
+
         result = TP.boot.$nodeAppendChild(scriptHead, elem);
     } catch (e) {
         $ERROR = e;
