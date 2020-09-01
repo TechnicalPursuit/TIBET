@@ -30,7 +30,16 @@ root.$$TIBET = root;
  * Pre-start checks.
  */
 
-if (root === top) {
+//  Track whether we're inside of a Chromium extension or not. Note that this is
+//  very sensitive code given that it's happening early in the booting of TIBET.
+//  Therefore, it's very pendantic.
+
+if (root.location &&
+    root.location.protocol.slice(0, -1) === 'chrome-extension') {
+    //  empty
+    //  NB: We can't set any 'TP' properties here when we're in an extension
+    //  since 'TP' doesn't exist yet. That's ok - later code will do that.
+} else if (root === top) {
 
     //  Even if we exit this function we need to help the rest of tibet_loader's
     //  modules find the TP reference. The hook file portion may still run.
@@ -50,6 +59,11 @@ if (root === top) {
         return;
     }
 
+    if (TP) {
+        TP.topWindow = top;
+        TP.inExtension = false;
+    }
+
 } else {
 
     //  If we're being loaded into a frame other than TOP that's not a good
@@ -61,6 +75,9 @@ if (root === top) {
         //  tibet_loader's modules find the TP reference.
         root.TP = top.TP;
         TP = root.TP;
+
+        TP.topWindow = top;
+        TP.inExtension = false;
 
         //  See if we can trigger the router to route us based on the URL we're
         //  being loaded from (typically index.html via a "/" or "#" link).

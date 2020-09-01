@@ -55,7 +55,7 @@ function(options) {
     var sourceEntries,
         data;
 
-    sourceEntries = TP.hc(top.sessionStorage);
+    sourceEntries = TP.hc(TP.topWindow.sessionStorage);
 
     if (TP.isValid(sourceEntries)) {
         data = sourceEntries.collect(
@@ -99,7 +99,7 @@ function(anAspect, options) {
     source.get('additionalConfig').atPut(
                     TP.ATTR + '_class', 'doublewide');
 
-    source.setPrimaryEntry(top.sessionStorage[anAspect]);
+    source.setPrimaryEntry(TP.topWindow.sessionStorage[anAspect]);
 
     return source;
 });

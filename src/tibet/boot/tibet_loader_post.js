@@ -1729,8 +1729,8 @@ TP.boot.initializeCanvasDocument = function(aDocument) {
 
     //  NOTE: special case here, when processing documents into the ui
     //  frame in particular we want to manage the title
-    if (doc.parent === top) {
-        top.document.title = doc.title;
+    if (doc.parent === TP.topWindow) {
+        TP.topWindow.document.title = doc.title;
     }
 
     //  Set up the document's event handlers, etc.

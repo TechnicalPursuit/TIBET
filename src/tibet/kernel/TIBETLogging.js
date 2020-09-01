@@ -3189,7 +3189,7 @@ function(anEntry) {
         case 'trace':
             //  Chrome at least treats 'debug' as a 'verbose' mode so use that
             //  if found, otherwise just use standard logging.
-            writer = TP.isValid(top.console.debug) ? 'debug' : 'log';
+            writer = TP.isValid(TP.topWindow.console.debug) ? 'debug' : 'log';
             break;
         default:
             //  debug, system, all
@@ -3213,9 +3213,9 @@ function(anEntry) {
     }
 
     try {
-        top.console[writer](content);
+        TP.topWindow.console[writer](content);
     } catch (e) {
-        top.console.log(content);
+        TP.topWindow.console.log(content);
     }
 
     //  Verify one last thing...we didn't just blow the stack did we? For some
@@ -3402,7 +3402,7 @@ function(anEntry) {
         return this;
     }
 
-    top.console.log(content);
+    TP.topWindow.console.log(content);
 
     return this;
 });
@@ -3595,9 +3595,9 @@ function(anEntry) {
         }
 
         try {
-            top.console[writer](message);
+            TP.topWindow.console[writer](message);
         } catch (e) {
-            top.console.log(message);
+            TP.topWindow.console.log(message);
         }
     } else {
 

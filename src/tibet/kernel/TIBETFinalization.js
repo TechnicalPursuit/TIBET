@@ -193,7 +193,7 @@ function() {
 
     //  Install the patches for various native prototypes, etc. in the current
     //  code frame (where we are executing).
-    TP.boot.installPatches(top);
+    TP.boot.installPatches(TP.topWindow);
 
     //  Capture the list of type initializers. We'll invoke these first to
     //  ensure the types are properly set up, then let completion on that
@@ -709,7 +709,7 @@ function() {
             } else if (!TP.sys.hasFeature('sherpa') && hasBootToggle) {
 
                 //  No hook file in the boot screen so we initialize manually.
-                bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), top);
+                bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), TP.topWindow);
                 if (TP.isValid(bootTPFrameElem)) {
                     TP.boot.initializeCanvas(
                         bootTPFrameElem.getContentWindow().getNativeWindow());
@@ -772,7 +772,7 @@ function() {
             //  With sherpa in place the normal TP.core.Keyboard hook won't be
             //  installed in UIBOOT, we need to do a lower level listener so
             //  when/if that UI becomes primary we have event hooks in place.
-            bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), top);
+            bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), TP.topWindow);
             if (TP.isValid(bootTPFrameElem)) {
                 try {
                     bootdoc = bootTPFrameElem.getContentDocument().

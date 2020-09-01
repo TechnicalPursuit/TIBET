@@ -7726,7 +7726,7 @@ function(aSignal) {
         if (TP.notEmpty(homeURL)) {
             this.getHistory().pushLocation(homeURL);
         } else if (TP.sys.cfg('route.onstart')) {
-            this.getRouter().route(top.location.toString());
+            this.getRouter().route(TP.topWindow.location.toString());
         }
 
         try {
@@ -8874,7 +8874,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
                     ', \'' + entry.at(1) + '\', \'' + url + '\')');
         }
 
-        loc = top.location.toString();
+        loc = TP.topWindow.location.toString();
 
         //  Compute the right path to push. We don't push changes to the base
         //  URL unless configured explicitly for that feature. In all other

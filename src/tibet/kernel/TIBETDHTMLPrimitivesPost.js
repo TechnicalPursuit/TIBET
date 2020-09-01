@@ -2970,11 +2970,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     }
 
     if (TP.isElement(elemWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
+        //  Note here that we pass 'TP.topWindow' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                            top,
+                            TP.topWindow,
                             elemWin,
                             wantsTransformed);
     } else {
@@ -3048,11 +3048,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
+        //  Note here that we pass 'TP.topWindow' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetX = TP.windowComputeWindowOffsets(
-                        top,
+                        TP.topWindow,
                         TP.elementGetIFrameWindow(winFrameElem)).first();
     } else {
         frameOffsetX = 0;
@@ -3117,11 +3117,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
+        //  Note here that we pass 'TP.topWindow' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetY = TP.windowComputeWindowOffsets(
-                        top,
+                        TP.topWindow,
                         TP.elementGetIFrameWindow(winFrameElem)).last();
     } else {
         frameOffsetY = 0;
@@ -3188,11 +3188,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
+        //  Note here that we pass 'TP.topWindow' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                            top,
+                            TP.topWindow,
                             TP.elementGetIFrameWindow(winFrameElem));
     } else {
         frameOffsetXAndY = TP.ac(0, 0);
@@ -8735,7 +8735,7 @@ function(aWindow) {
     //  propagate the 'title' content from the document that we're drawing up
     //  onto the *top* document
     docTitle = TP.documentGetTitleContent(aWindow.document);
-    TP.documentSetTitleContent(top.document, docTitle);
+    TP.documentSetTitleContent(TP.topWindow.document, docTitle);
 
     TP.elementBubbleXMLNSAttributesOnDescendants(
                             aWindow.document.documentElement);
@@ -8832,7 +8832,7 @@ function(aWindow) {
         TP.core.History.captureDocumentLocation(aWindow.document);
 
         docTitle = TP.documentGetTitleContent(aWindow.document);
-        TP.documentSetTitleContent(top.document, docTitle);
+        TP.documentSetTitleContent(TP.topWindow.document, docTitle);
     }
 
     //  final operation is to signal that we've done the work
@@ -9402,7 +9402,7 @@ function(aWindow) {
 
     //  If the window is the top level window, just return an empty
     //  array here
-    if (aWindow === aWindow.top) {
+    if (aWindow === TP.topWindow) {
         return arr;
     }
 
@@ -9410,14 +9410,14 @@ function(aWindow) {
 
     //  While the parent window isn't the top window, add its name
     //  to the list.
-    while (win !== aWindow.top) {
+    while (win !== TP.topWindow) {
         //  NOTE that this will assign unique names to intermediate frames
         arr.push(TP.lid(win));
         win = win.parent;
     }
 
     //  Go ahead and add the top-level window's name to our array
-    arr.push(TP.lid(aWindow.top));
+    arr.push(TP.lid(TP.topWindow));
 
     //  Reverse the array so that top's name is first, followed by
     //  all of the frames between top and ourselves in descending

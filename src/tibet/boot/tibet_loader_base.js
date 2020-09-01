@@ -698,8 +698,8 @@ window.onerror = function(msg, url, line, column, errorObj) {
         TP.boot.$stderr(str, TP.FATAL);
     } catch (e) {
         //  don't let log errors trigger recursion, but don't bury them either.
-        top.console.error('Error logging onerror: ' + e.message);
-        top.console.error(str || msg);
+        TP.topWindow.console.error('Error logging onerror: ' + e.message);
+        TP.topWindow.console.error(str || msg);
     }
 
     //  set a non-zero status to signify that an error occurred to callers
@@ -1775,11 +1775,11 @@ TP.sys.getHomeURL = function(checkSession) {
 
     var homeURL;
 
-    if (checkSession && top.sessionStorage) {
-        homeURL = top.sessionStorage.getItem('TIBET.project.home_page');
+    if (checkSession && TP.topWindow.sessionStorage) {
+        homeURL = TP.topWindow.sessionStorage.getItem('TIBET.project.home_page');
 
         //  This is a "one time use" value. Clear after fetching.
-        top.sessionStorage.removeItem('TIBET.project.home_page');
+        TP.topWindow.sessionStorage.removeItem('TIBET.project.home_page');
     }
 
     //  NOTE that the session.home_page value is set during startup to preserve
@@ -4008,7 +4008,7 @@ TP.sys.getWindowById = function(anID, aWindow) {
     //  Three most common names in typical TIBET code (top, UIBOOT, UIROOT):
     switch (anID.toLowerCase()) {
         case 'top':
-            return top;
+            return TP.topWindow;
         case 'uiroot':
             frame = TP.boot.getUIRoot();
             if (frame) {
@@ -5352,28 +5352,28 @@ TP.boot.$consoleReporter = function(entry) {
 
     switch (level) {
     case TP.boot.TRACE:
-        top.console.log(msg);
+        TP.topWindow.console.log(msg);
         break;
     case TP.boot.DEBUG:
-        top.console.log(msg);
+        TP.topWindow.console.log(msg);
         break;
     case TP.boot.INFO:
-        top.console.log(msg);
+        TP.topWindow.console.log(msg);
         break;
     case TP.boot.WARN:
-        top.console.warn(msg);
+        TP.topWindow.console.warn(msg);
         break;
     case TP.boot.ERROR:
-        top.console.error(msg);
+        TP.topWindow.console.error(msg);
         break;
     case TP.boot.FATAL:
-        top.console.error(msg);
+        TP.topWindow.console.error(msg);
         break;
     case TP.boot.SYSTEM:
-        top.console.log(msg);
+        TP.topWindow.console.log(msg);
         break;
     default:
-        top.console.log(msg);
+        TP.topWindow.console.log(msg);
         break;
     }
 };
@@ -5519,28 +5519,28 @@ TP.boot.$headlessReporter = function(entry) {
 
     switch (level) {
     case TP.boot.TRACE:
-        top.console.log('trace ' + msg);
+        TP.topWindow.console.log('trace ' + msg);
         break;
     case TP.boot.DEBUG:
-        top.console.log('debug ' + msg);
+        TP.topWindow.console.log('debug ' + msg);
         break;
     case TP.boot.INFO:
-        top.console.log('info ' + msg);
+        TP.topWindow.console.log('info ' + msg);
         break;
     case TP.boot.WARN:
-        top.console.warn('warn ' + msg);
+        TP.topWindow.console.warn('warn ' + msg);
         break;
     case TP.boot.ERROR:
-        top.console.error('error ' + msg);
+        TP.topWindow.console.error('error ' + msg);
         break;
     case TP.boot.FATAL:
-        top.console.error('fatal ' + msg);
+        TP.topWindow.console.error('fatal ' + msg);
         break;
     case TP.boot.SYSTEM:
-        top.console.log('system ' + msg);
+        TP.topWindow.console.log('system ' + msg);
         break;
     default:
-        top.console.log(msg);
+        TP.topWindow.console.log(msg);
         break;
     }
 
@@ -6609,7 +6609,7 @@ TP.boot.$displayMessage = function(aString, flush) {
         msgNode = TP.boot.$documentFromString(
             '<div xmlns="http://www.w3.org/1999/xhtml"><div></div></div>');
         if (!msgNode) {
-            top.console.error('Unable to create log message template.');
+            TP.topWindow.console.error('Unable to create log message template.');
 
             buffer = TP.boot.$flushUIBuffer(TP.boot.shouldStop());
 
@@ -6642,8 +6642,8 @@ TP.boot.$displayMessage = function(aString, flush) {
                 TP.boot.$xmlEscape(message) + '</pre></div></div>');
 
             if (!msgNode) {
-                top.console.error('Unable to create log message element.');
-                top.console.error(message);
+                TP.topWindow.console.error('Unable to create log message element.');
+                TP.topWindow.console.error(message);
 
                 buffer = TP.boot.$flushUIBuffer(TP.boot.shouldStop());
                 msgNode = elem.ownerDocument.createTextNode(
@@ -11582,7 +11582,7 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
             var projectProfile;
 
             projectProfile = TP.sys.cfg('boot.profile') || 'main@production';
-            top.localStorage.setItem(
+            TP.topWindow.localStorage.setItem(
                 'TIBET.boot.cached_project_profile', projectProfile);
 
             if (libCacheNeedsPopulating) {
@@ -11595,10 +11595,10 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
                 //  Store the project name and version number into local storage
                 //  so that we can find and compare against them in future
                 //  loadings of this application.
-                top.localStorage.setItem(
+                TP.topWindow.localStorage.setItem(
                     'TIBET.boot.cached_project_name',
                     TP.sys.cfg('project.name'));
-                top.localStorage.setItem(
+                TP.topWindow.localStorage.setItem(
                     'TIBET.boot.cached_project_version',
                     TP.sys.cfg('project.version'));
                 return cache.addAll(appPaths);
@@ -11710,7 +11710,7 @@ TP.boot.configureAndPopulateCaches = function() {
                 projectProfile = TP.sys.cfg('boot.profile') ||
                                     'main@production';
 
-                cachedProjectProfile = top.localStorage.getItem(
+                cachedProjectProfile = TP.topWindow.localStorage.getItem(
                                         'TIBET.boot.cached_project_profile');
 
                 //  If there was no cached version or it doesn't match the
@@ -11722,7 +11722,7 @@ TP.boot.configureAndPopulateCaches = function() {
                     libOutOfDate = true;
                     appOutOfDate = true;
 
-                    top.localStorage.removeItem(
+                    TP.topWindow.localStorage.removeItem(
                                         'TIBET.boot.cached_project_profile');
 
                     removeLibCache = true;
@@ -11736,11 +11736,11 @@ TP.boot.configureAndPopulateCaches = function() {
                 //  and reload it.
 
                 projectName = TP.sys.cfg('project.name');
-                cachedProjectName = top.localStorage.getItem(
+                cachedProjectName = TP.topWindow.localStorage.getItem(
                                         'TIBET.boot.cached_project_name');
 
                 projectVersion = TP.sys.cfg('project.version');
-                cachedProjectVersion = top.localStorage.getItem(
+                cachedProjectVersion = TP.topWindow.localStorage.getItem(
                                         'TIBET.boot.cached_project_version');
 
                 //  If there was no cached version or it doesn't match the
@@ -11752,9 +11752,9 @@ TP.boot.configureAndPopulateCaches = function() {
                     cachedProjectVersion !== projectVersion) {
 
                     appOutOfDate = true;
-                    top.localStorage.removeItem(
+                    TP.topWindow.localStorage.removeItem(
                                         'TIBET.boot.cached_project_name');
-                    top.localStorage.removeItem(
+                    TP.topWindow.localStorage.removeItem(
                                         'TIBET.boot.cached_project_version');
 
                     removeAppCache = true;
@@ -12194,11 +12194,11 @@ TP.boot.launch = function(options) {
     //  If we're booting in response to a login page sequence we may have had
     //  client-side fragment information tucked away. Check for that and restore
     //  it if we find any (and clear it for any future processing).
-    if (top.sessionStorage) {
-        hash = top.sessionStorage.getItem('TIBET.boot.fragment');
+    if (TP.topWindow.sessionStorage) {
+        hash = TP.topWindow.sessionStorage.getItem('TIBET.boot.fragment');
         if (hash) {
-            top.sessionStorage.removeItem('TIBET.boot.fragment');
-            top.location.hash = hash;
+            TP.topWindow.sessionStorage.removeItem('TIBET.boot.fragment');
+            TP.topWindow.location.hash = hash;
         }
     }
 
