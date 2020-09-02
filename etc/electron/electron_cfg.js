@@ -43,6 +43,8 @@
 
         setcfg('electron.watch.heartbeat', 10000);   //  aka sse-heartbeat
         setcfg('electron.watch.retry', 3000);        //  aka sse.retry cfg
+
+        setcfg('electron.exit_on_last_window_close', true);
     };
 
     module.exports = Config;
