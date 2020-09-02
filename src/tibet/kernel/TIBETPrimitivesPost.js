@@ -3467,6 +3467,35 @@ function(anObject, aRequest, stdinContent) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('object',
+function(anObject) {
+
+    /**
+     * @method object
+     * @alias obj
+     * @summary Returns the 'plain object' representations of the object.
+     * @param {Object} anObject The object to convert to a plain object.
+     * @returns {Object} The object converted to a plain object.
+     */
+    if (anObject === null) {
+        return 'null';
+    } else if (anObject === undefined) {
+        return 'undefined';
+    }
+
+    if (TP.canInvoke(anObject, 'asObject')) {
+        return anObject.asObject();
+    }
+
+    return anObject;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('obj', TP.object);
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('objectSize',
 function(anObject) {
 
@@ -3474,7 +3503,7 @@ function(anObject) {
      * @method objectSize
      * @alias size
      * @summary Returns the best size for the object, or TP.NO_SIZE if the
-     *     object doens't appear to have a size.
+     *     object doesn't appear to have a size.
      * @param {Object} anObject The object to query for size.
      * @returns {Number} The size, or TP.NO_SIZE if no size is found.
      */

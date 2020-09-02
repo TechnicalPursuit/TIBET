@@ -1692,13 +1692,33 @@ function(aSignal, varargs) {
      *     main process.
      */
 
+    var args,
+
+        sigArgs,
+
+        len,
+        i;
+
     if (TP.sys.cfg('boot.context') !== 'electron') {
         return this.raise('UnsupportedOperation');
     }
 
+    //  Grab all of the arguments into an Array and build a new Array of the
+    //  '(plain) object representation' of those arguments. This is needed to
+    //  serialize properly over the wire.
+
+    args = TP.ac(arguments);
+
+    sigArgs = TP.ac();
+
+    len = args.getSize();
+    for (i = 0; i < len; i++) {
+        sigArgs.push(TP.obj(args.at(i)));
+    }
+
     //  NB: We just pass along all arguments here - this call will 'do the right
     //  thing'.
-    return TP.extern.electron_lib_utils.sendEventToMain(TP.ac(arguments));
+    return TP.extern.electron_lib_utils.sendEventToMain(sigArgs);
 });
 
 //  ========================================================================
