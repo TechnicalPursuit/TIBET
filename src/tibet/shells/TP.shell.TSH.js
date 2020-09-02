@@ -1869,6 +1869,10 @@ function(aRequest) {
         realCmd = true;
     }
 
+    //  Prepend the word 'tibet' onto the front of the command. This will force
+    //  commands coming from TSH to run as 'tibet' subcommands.
+    cmd = 'tibet ' + cmd;
+
     //  ---
     //  Assemble the spawn arguments
     //  ---
