@@ -166,7 +166,6 @@
 
             var cmdObj,
 
-                tibetPath,
                 spawnArgs;
 
             /*
@@ -206,10 +205,9 @@
                 }
             };
 
-            tibetPath = sh.which('tibet').toString();
-            if (tibetPath) {
+            if (command) {
                 spawnArgs = args.slice();
-                return CLI.spawnAsync(cmdObj, tibetPath, spawnArgs).then(
+                return CLI.spawnAsync(cmdObj, command, spawnArgs).then(
                     function(result) {
                         var spawnResult;
 
