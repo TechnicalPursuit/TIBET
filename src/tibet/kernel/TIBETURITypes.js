@@ -6139,7 +6139,9 @@ function(url) {
     path = url.slice(url.indexOf(':') + 1);
 
     //  then we chop off any leading '//', if its there
-    path = path.chop('//');
+    if (path.startsWith('//')) {
+        path = path.slice(2);
+    }
 
     //  now remove any parameter or fragment portions...
     if (/\?/.test(path)) {
