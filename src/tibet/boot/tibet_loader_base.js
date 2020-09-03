@@ -1716,6 +1716,8 @@ TP.sys.getLaunchRoot = function() {
         loc = decodeURI(window.location.toString());
         loc = loc.split(/[#?]/)[0];
         str = loc.slice(0, loc.lastIndexOf(':') + 1);
+    } else if (TP.inExtension) {
+        str = 'chrome-extension://';
     } else {
         //  on unix-style platforms there's no drive spec to mess things up
         //  when resolving 'absolute' paths starting with '/'

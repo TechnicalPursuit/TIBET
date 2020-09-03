@@ -697,12 +697,6 @@
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
     }
 
-    //  If we're running inside of an extension, then we always use the console
-    //  as our boot reporter.
-    if (TP.inExtension === true) {
-        TP.sys.setcfg('boot.reporter', 'console');
-    }
-
     //  ---
     //  debug properties
     //  ---
