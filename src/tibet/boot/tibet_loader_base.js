@@ -1716,6 +1716,8 @@ TP.sys.getLaunchRoot = function() {
         loc = decodeURI(window.location.toString());
         loc = loc.split(/[#?]/)[0];
         str = loc.slice(0, loc.lastIndexOf(':') + 1);
+    } else if (TP.inExtension) {
+        str = 'chrome-extension://';
     } else {
         //  on unix-style platforms there's no drive spec to mess things up
         //  when resolving 'absolute' paths starting with '/'
@@ -10306,7 +10308,6 @@ TP.boot.$expandConfig = async function(anElement, configName) {
                     }
 
                     src = TP.boot.$getFullPath(child, src);
-                    child.setAttribute('src', src);
 
                     config = child.getAttribute('config') ||
                         anElement.getAttribute('config') ||
@@ -11040,7 +11041,6 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, useCach
                     src = TP.boot.$getFullPath(child, src);
 
                     if (includePkgs) {
-                        child.setAttribute('src', src);
                         result.push(child);
                     }
 

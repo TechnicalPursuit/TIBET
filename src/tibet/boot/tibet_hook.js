@@ -38,7 +38,11 @@
 
 if (root.location &&
     root.location.protocol.slice(0, -1) === 'chrome-extension') {
-    root.$$topWindow = window;
+    if (root.name === 'UIROOT' || root.name === 'UIBOOT') {
+        root.$$topWindow = parent;
+    } else if (root.parent.name === 'UIROOT') {
+        root.$$topWindow = parent.parent;
+    }
 } else {
     root.$$topWindow = top;
 }
