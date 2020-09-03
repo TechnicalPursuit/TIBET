@@ -3048,6 +3048,413 @@ function() {
 //  HTTPURL
 //  ========================================================================
 
+TP.uri.HTTPURL.Inst.describe('get URI parts',
+function() {
+
+    this.it('HTTPURL: get parts with no path, fragment, port, query, user or password', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('http://www.foo.com');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'http',
+                TP.sc('Expected: ', '"http"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'http://www.foo.com',
+                TP.sc('Expected: ', '"http://www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                '/',
+                TP.sc('Expected: ', '"/"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('fragment');
+        test.assert.isEmpty(
+                val,
+                TP.sc('fragment should be empty'));
+
+        val = url.get('hostname');
+        test.assert.isEqualTo(
+                val,
+                'www.foo.com',
+                TP.sc('Expected: ', '"www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('port');
+        test.assert.isEmpty(
+                val,
+                TP.sc('port should be empty'));
+
+        val = url.get('query');
+        test.assert.isEmpty(
+                val,
+                TP.sc('query should be empty'));
+
+        val = url.get('user');
+        test.assert.isEmpty(
+                val,
+                TP.sc('user should be empty'));
+
+        val = url.get('password');
+        test.assert.isEmpty(
+                val,
+                TP.sc('password should be empty'));
+    });
+
+    //  ---
+
+    this.it('HTTPURL: get parts with real path but no fragment, port, query, user or password', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('http://www.foo.com/bar/baz');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'http',
+                TP.sc('Expected: ', '"http"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'http://www.foo.com',
+                TP.sc('Expected: ', '"http://www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                '/bar/baz',
+                TP.sc('Expected: ', '"/bar/baz"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('fragment');
+        test.assert.isEmpty(
+                val,
+                TP.sc('fragment should be empty'));
+
+        val = url.get('hostname');
+        test.assert.isEqualTo(
+                val,
+                'www.foo.com',
+                TP.sc('Expected: ', '"www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('port');
+        test.assert.isEmpty(
+                val,
+                TP.sc('port should be empty'));
+
+        val = url.get('query');
+        test.assert.isEmpty(
+                val,
+                TP.sc('query should be empty'));
+
+        val = url.get('user');
+        test.assert.isEmpty(
+                val,
+                TP.sc('user should be empty'));
+
+        val = url.get('password');
+        test.assert.isEmpty(
+                val,
+                TP.sc('password should be empty'));
+    });
+
+    //  ---
+
+    this.it('HTTPURL: get parts with real path but no port, query, user or password', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('http://www.foo.com/bar/baz#goo');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'http',
+                TP.sc('Expected: ', '"http"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'http://www.foo.com',
+                TP.sc('Expected: ', '"http://www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                '/bar/baz',
+                TP.sc('Expected: ', '"/bar/baz"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('fragment');
+        test.assert.isEqualTo(
+                val,
+                'goo',
+                TP.sc('Expected: ', '"goo"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('hostname');
+        test.assert.isEqualTo(
+                val,
+                'www.foo.com',
+                TP.sc('Expected: ', '"www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('port');
+        test.assert.isEmpty(
+                val,
+                TP.sc('port should be empty'));
+
+        val = url.get('query');
+        test.assert.isEmpty(
+                val,
+                TP.sc('query should be empty'));
+
+        val = url.get('user');
+        test.assert.isEmpty(
+                val,
+                TP.sc('user should be empty'));
+
+        val = url.get('password');
+        test.assert.isEmpty(
+                val,
+                TP.sc('password should be empty'));
+    });
+
+    //  ---
+
+    this.it('HTTPURL: get parts with real path but no port, user or password', function(test, options) {
+
+        var url,
+            val;
+
+        //  RFC 3986 says that the fragment should come *after* the query.
+        url = TP.uc('http://www.foo.com/bar/baz?moo=goo#goo');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'http',
+                TP.sc('Expected: ', '"http"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'http://www.foo.com',
+                TP.sc('Expected: ', '"http://www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                '/bar/baz',
+                TP.sc('Expected: ', '"/bar/baz"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('fragment');
+        test.assert.isEqualTo(
+                val,
+                'goo',
+                TP.sc('Expected: ', '"goo"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('hostname');
+        test.assert.isEqualTo(
+                val,
+                'www.foo.com',
+                TP.sc('Expected: ', '"www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('port');
+        test.assert.isEmpty(
+                val,
+                TP.sc('port should be empty'));
+
+        val = url.get('query');
+        test.assert.isEqualTo(
+                val,
+                '?moo=goo',
+                TP.sc('Expected: ', '"?moo=goo"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('user');
+        test.assert.isEmpty(
+                val,
+                TP.sc('user should be empty'));
+
+        val = url.get('password');
+        test.assert.isEmpty(
+                val,
+                TP.sc('password should be empty'));
+    });
+
+    //  ---
+
+    this.it('HTTPURL: get parts with real path but no user or password', function(test, options) {
+
+        var url,
+            val;
+
+        //  RFC 3986 says that the fragment should come *after* the query.
+        url = TP.uc('http://www.foo.com:9999/bar/baz?moo=goo#goo');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'http',
+                TP.sc('Expected: ', '"http"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'http://www.foo.com:9999',
+                TP.sc('Expected: ', '"http://www.foo.com:9999"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                '/bar/baz',
+                TP.sc('Expected: ', '"/bar/baz"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('fragment');
+        test.assert.isEqualTo(
+                val,
+                'goo',
+                TP.sc('Expected: ', '"goo"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('hostname');
+        test.assert.isEqualTo(
+                val,
+                'www.foo.com',
+                TP.sc('Expected: ', '"www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('port');
+        test.assert.isEqualTo(
+                val,
+                '9999',
+                TP.sc('Expected: ', '"9999"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('query');
+        test.assert.isEqualTo(
+                val,
+                '?moo=goo',
+                TP.sc('Expected: ', '"?moo=goo"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('user');
+        test.assert.isEmpty(
+                val,
+                TP.sc('user should be empty'));
+
+        val = url.get('password');
+        test.assert.isEmpty(
+                val,
+                TP.sc('password should be empty'));
+    });
+
+    //  ---
+
+    this.it('HTTPURL: get parts with all paths', function(test, options) {
+
+        var url,
+            val;
+
+        //  RFC 3986 says that the fragment should come *after* the query.
+        url = TP.uc('http://me:secret@www.foo.com:9999/bar/baz?moo=goo#goo');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'http',
+                TP.sc('Expected: ', '"http"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'http://me:secret@www.foo.com:9999',
+                TP.sc('Expected: ', '"http://me:secret@www.foo.com:9999"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                '/bar/baz',
+                TP.sc('Expected: ', '"/bar/baz"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('fragment');
+        test.assert.isEqualTo(
+                val,
+                'goo',
+                TP.sc('Expected: ', '"goo"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('hostname');
+        test.assert.isEqualTo(
+                val,
+                'www.foo.com',
+                TP.sc('Expected: ', '"www.foo.com"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('port');
+        test.assert.isEqualTo(
+                val,
+                '9999',
+                TP.sc('Expected: ', '"9999"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('query');
+        test.assert.isEqualTo(
+                val,
+                '?moo=goo',
+                TP.sc('Expected: ', '"?moo=goo"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('user');
+        test.assert.isEqualTo(
+                val,
+                'me',
+                TP.sc('Expected: ', '"me"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('password');
+        test.assert.isEqualTo(
+                val,
+                'secret',
+                TP.sc('Expected: ', '"secret"',
+                        ' and got instead: ', val, '.'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.HTTPURL.Inst.describe('getResource',
 function() {
 
@@ -3675,6 +4082,98 @@ function() {
 //  ========================================================================
 //  FileURL
 //  ========================================================================
+
+TP.uri.FileURL.Inst.describe('get URI parts',
+function() {
+
+    this.it('FileURL: get parts with no path', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('file://');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'file',
+                TP.sc('Expected: ', '"file"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'file://',
+                TP.sc('Expected: ', '"file://"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEmpty(
+                val,
+                TP.sc('path should be empty'));
+    });
+
+    this.it('FileURL: get parts with simple path', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('file:///');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'file',
+                TP.sc('Expected: ', '"file"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'file://',
+                TP.sc('Expected: ', '"file://"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                '/',
+                TP.sc('Expected: ', '"/"',
+                        ' and got instead: ', val, '.'));
+    });
+
+    this.it('FileURL: get parts with real path', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('file:///foo/bar/baz');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'file',
+                TP.sc('Expected: ', '"file"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'file://',
+                TP.sc('Expected: ', '"file://"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                '/foo/bar/baz',
+                TP.sc('Expected: ', '"/foo/bar/baz"',
+                        ' and got instead: ', val, '.'));
+    });
+
+});
+
+//  ------------------------------------------------------------------------
 
 TP.uri.FileURL.Inst.describe('getResource',
 function() {
@@ -5013,6 +5512,114 @@ function() {
     this.it('sets values persistently', function(test, options) {
         localURI.setValue('blahblah');
         this.assert.isEqualTo(localURI.getValue(), 'blahblah');
+    });
+
+});
+
+//  ========================================================================
+//  ChromeExtURL
+//  ========================================================================
+
+TP.uri.ChromeExtURL.Inst.describe('get URI parts',
+function() {
+
+    this.it('ChromeExtURL: get parts with no component ID and no path', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('chrome-extension://');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'chrome-extension',
+                TP.sc('Expected: ', '"chrome-extension"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'chrome-extension://',
+                TP.sc('Expected: ', '"chrome-extension://"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEmpty(
+                val,
+                TP.sc('path should be empty'));
+    });
+
+    this.it('ChromeExtURL: get parts with component ID but no path', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('chrome-extension://cfpjcjnelndiecgakkdonjlodoglobmm');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'chrome-extension',
+                TP.sc('Expected: ', '"chrome-extension"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'chrome-extension://cfpjcjnelndiecgakkdonjlodoglobmm',
+                TP.sc('Expected: ', '"chrome-extension://cfpjcjnelndiecgakkdonjlodoglobmm"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('componentID');
+
+        test.assert.isEqualTo(
+                val,
+                'cfpjcjnelndiecgakkdonjlodoglobmm',
+                TP.sc('Expected: ', '"cfpjcjnelndiecgakkdonjlodoglobmm"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEmpty(
+                val,
+                TP.sc('path should be empty'));
+    });
+
+    this.it('ChromeExtURL: get parts with component ID and real path', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('chrome-extension://cfpjcjnelndiecgakkdonjlodoglobmm/foo/bar.xhtml');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'chrome-extension',
+                TP.sc('Expected: ', '"chrome-extension"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'chrome-extension://cfpjcjnelndiecgakkdonjlodoglobmm',
+                TP.sc('Expected: ', '"chrome-extension://cfpjcjnelndiecgakkdonjlodoglobmm/foo/bar.xhtml"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('componentID');
+
+        test.assert.isEqualTo(
+                val,
+                'cfpjcjnelndiecgakkdonjlodoglobmm',
+                TP.sc('Expected: ', '"cfpjcjnelndiecgakkdonjlodoglobmm"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                '/foo/bar.xhtml',
+                TP.sc('Expected: ', '"/foo/bar.xhtml"',
+                        ' and got instead: ', val, '.'));
     });
 
 });

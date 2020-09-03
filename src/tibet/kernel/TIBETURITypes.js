@@ -5195,13 +5195,6 @@ function(schemeSpecificString) {
     var match,
         hash;
 
-            /*
-    //  NOTE that the concept of 'primary' and 'fragment' aren't relevant
-    //  for this type, so we don't invoke the supertype method here, we set
-    //  our primary href directly.
-    this.$set('primaryLocation',
-        this.$get('scheme') + ':' + schemeSpecificString);
-            */
     this.callNextMethod();
 
     match = TP.uri.URN.URN_NSS_REGEX.exec(schemeSpecificString);
@@ -6139,7 +6132,9 @@ function(url) {
     path = url.slice(url.indexOf(':') + 1);
 
     //  then we chop off any leading '//', if its there
-    path = path.chop('//');
+    if (path.startsWith('//')) {
+        path = path.slice(2);
+    }
 
     //  now remove any parameter or fragment portions...
     if (/\?/.test(path)) {
@@ -7305,6 +7300,8 @@ function(aURI, aRequest) {
 //  (i.e. the native XHR or WebSocket object)
 TP.uri.ChromeExtURL.Inst.defineAttribute('commObject');
 
+TP.uri.ChromeExtURL.Inst.defineAttribute('componentID');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -7321,6 +7318,8 @@ function(schemeSpecificString) {
      * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
+    var dict;
+
     this.callNextMethod();
 
     //  TODO TODO TODO TODO TODO
@@ -7329,9 +7328,14 @@ function(schemeSpecificString) {
     //  invoke the parser directly because of the ambiguities with the style
     //  string parser.
     /* eslint-disable new-cap */
-    return TP.core.Hash.URI_STRING_PARSER('chrome-extension:' +
-        schemeSpecificString);
+    dict = TP.core.Hash.URI_STRING_PARSER('chrome-extension:' +
+                                            schemeSpecificString);
     /* eslint-enable new-cap */
+
+    this.set('path', dict.at('path'));
+    this.set('componentID', dict.at('hostname'));
+
+    return dict;
 });
 
 //  ========================================================================
@@ -7701,7 +7705,7 @@ function(schemeSpecificString) {
 
     dict = TP.hc(
             'source', str,
-            'scheme', natURL.protocol.slice(-1),
+            'scheme', natURL.protocol.slice(0, -1),
             'authority', natURL.host,
             'userinfo', natURL.username + ':' + natURL.password,
             'user', natURL.username,

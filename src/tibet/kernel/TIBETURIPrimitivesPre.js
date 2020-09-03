@@ -2413,26 +2413,20 @@ function(aURI) {
         return;
     }
 
-    if (TP.sys.isHTTPBased() || TP.sys.isWin()) {
-        //  On HTTP uris you need the host:port portion as a root. To find that
-        //  we essentially scan for the 3rd '/' since that sets off the root
-        //  from the remaining portions of the URL. On windows if you don't
-        //  include the drive spec in the root the files won't be found. This is
-        //  consistent with IE behavior.
-        parts = path.split('://');
+    //  On HTTP uris you need the host:port portion as a root. To find that
+    //  we essentially scan for the 3rd '/' since that sets off the root
+    //  from the remaining portions of the URL. On windows if you don't
+    //  include the drive spec in the root the files won't be found. This is
+    //  consistent with IE behavior.
+    parts = path.split('://');
 
-        if (/\//.test(parts.at(1))) {
-            //  If there's a path portion split that off.
-            str = parts.at(0) +
-                    '://' +
-                    parts.at(1).slice(0, parts.at(1).indexOf('/'));
-        } else {
-            str = path;
-        }
+    if (/\//.test(parts.at(1))) {
+        //  If there's a path portion split that off.
+        str = parts.at(0) +
+                '://' +
+                parts.at(1).slice(0, parts.at(1).indexOf('/'));
     } else {
-        //  on unix-style platforms there's no drive spec to mess things up
-        //  when resolving 'absolute' paths starting with '/'
-        str = 'file://';
+        str = path;
     }
 
     return str;
