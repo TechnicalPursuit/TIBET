@@ -7305,6 +7305,8 @@ function(aURI, aRequest) {
 //  (i.e. the native XHR or WebSocket object)
 TP.uri.ChromeExtURL.Inst.defineAttribute('commObject');
 
+TP.uri.ChromeExtURL.Inst.defineAttribute('componentID');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -7321,6 +7323,8 @@ function(schemeSpecificString) {
      * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
+    var dict;
+
     this.callNextMethod();
 
     //  TODO TODO TODO TODO TODO
@@ -7329,9 +7333,14 @@ function(schemeSpecificString) {
     //  invoke the parser directly because of the ambiguities with the style
     //  string parser.
     /* eslint-disable new-cap */
-    return TP.core.Hash.URI_STRING_PARSER('chrome-extension:' +
-        schemeSpecificString);
+    dict = TP.core.Hash.URI_STRING_PARSER('chrome-extension:' +
+                                            schemeSpecificString);
     /* eslint-enable new-cap */
+
+    this.set('path', dict.at('path'));
+    this.set('componentID', dict.at('hostname'));
+
+    return dict;
 });
 
 //  ========================================================================
