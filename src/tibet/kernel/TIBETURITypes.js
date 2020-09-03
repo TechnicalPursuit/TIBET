@@ -5195,13 +5195,6 @@ function(schemeSpecificString) {
     var match,
         hash;
 
-            /*
-    //  NOTE that the concept of 'primary' and 'fragment' aren't relevant
-    //  for this type, so we don't invoke the supertype method here, we set
-    //  our primary href directly.
-    this.$set('primaryLocation',
-        this.$get('scheme') + ':' + schemeSpecificString);
-            */
     this.callNextMethod();
 
     match = TP.uri.URN.URN_NSS_REGEX.exec(schemeSpecificString);
