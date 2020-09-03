@@ -2052,7 +2052,10 @@ function(aSignal) {
 
 //  Make sure the remote url watcher knows about this handler type, but wait to
 //  do this after the type has been fully configured to avoid api check error.
-TP.uri.RemoteURLWatchHandler.registerWatcher(TP.uri.ElectronFileURLHandler);
+if (TP.sys.cfg('boot.context') === 'electron' && !TP.inExtension) {
+    TP.uri.RemoteURLWatchHandler.registerWatcher(
+                                        TP.uri.ElectronFileURLHandler);
+}
 
 //  ========================================================================
 //  TP.sig.GeolocationSignal
