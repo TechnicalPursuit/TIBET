@@ -7710,7 +7710,7 @@ function(schemeSpecificString) {
 
     dict = TP.hc(
             'source', str,
-            'scheme', natURL.protocol.slice(-1),
+            'scheme', natURL.protocol.slice(0, -1),
             'authority', natURL.host,
             'userinfo', natURL.username + ':' + natURL.password,
             'user', natURL.username,
