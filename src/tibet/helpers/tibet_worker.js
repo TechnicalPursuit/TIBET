@@ -35,6 +35,24 @@ self.evalJS = function(src) {
      *     and makes it available in this thread. Note that this is a
      *     synchronous operation.
      * @param {String} src The JavaScript source text.
+     * @returns Object The return value produced by the eval invocation.
+     */
+
+    /* eslint-disable no-eval */
+    return eval(src);
+    /* eslint-enable no-eval */
+};
+
+//  ------------------------------------------------------------------------
+
+self.evalJSNoReturn = function(src) {
+
+    /**
+     * @method evalJSNoReturn
+     * @summary Evaluates JavaScript source code from the supplied source String
+     *     and makes it available in this thread. This method does not produce a
+     *     return value. Note that this is a synchronous operation.
+     * @param {String} src The JavaScript source text.
      */
 
     /* eslint-disable no-eval */
@@ -101,7 +119,7 @@ self.addEventListener(
                         msgResult.result.push(arguments[i]);
                     }
 
-                    self.postMessage(JSON.stringify(msgResult));
+                    self.postMessage(msgResult);
                 };
 
                 //  Push the callback function onto the end of the '.params'
@@ -132,7 +150,7 @@ self.addEventListener(
 
                 //  Post the message result back to the code that triggered this
                 //  worker.
-                self.postMessage(JSON.stringify(msgResult));
+                self.postMessage(msgResult);
             }
 
             return;

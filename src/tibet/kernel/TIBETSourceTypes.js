@@ -652,10 +652,12 @@ function(message) {
 
     /**
      * @method serializeMessage
-     * @summary Serializes a message object to produce a string message. If the
-     *     message object implements an 'asMessage' method that method is
-     *     invoked, otherwise the default is JSON.stringify.
+     * @summary Serializes a message object to produce a representation that can
+     *     be sent as a message. If the message object implements an 'asMessage'
+     *     method that method is invoked, otherwise the default representation
+     *     is returned as one that the message channel can understand.
      * @param {Object} message The object to serialize.
+     * @returns {Object} The supplied message serialized.
      */
 
     if (TP.isString(message)) {
@@ -666,6 +668,7 @@ function(message) {
         return message.asMessage();
     }
 
+    //  The default for all message connections is a String of JSON.
     return JSON.stringify(message);
 });
 
@@ -3977,6 +3980,8 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
+    this.defineDependencies('TP.extern.Promise');
+
     this.set('$workerPoolDict', TP.hc());
 
     return;
@@ -4213,44 +4218,146 @@ function(message) {
     return this;
 });
 
-//  ========================================================================
-//  TP.core.PromiseWorker
-//  ========================================================================
-
-TP.core.Worker.defineSubtype('PromiseWorker');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.PromiseWorker.Type.defineMethod('initialize',
-function() {
+TP.core.Worker.Inst.defineMethod('sendMessageAndWait',
+function(message, resultProcessor, errorProcessor) {
 
     /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
+     * @method sendMessageAndWait
+     * @summary Sends a string to the remote end of the connection and awaits
+     *     for a result from that remote end (which is when the returned Promise
+     *     resolves).
+     * @param {String} message The string to send to the end of the connection.
+     * @param {Function} [resultProcessor] An optional Function to process
+     *     results when they come in. This Function should take a single
+     *     parameter which will be the raw result data and should return data
+     *     processed in whatever way the caller wants it.
+     * @param {Function} [errorProcessor] An optional Function to process
+     *     errors when they come in. This Function should take a single
+     *     parameter which will be an Error object and should return an Error
+     *     object constructed in whatever way the caller wants it.
+     * @returns Promise A promise that will resolve when the send is complete.
      */
 
-    this.defineDependencies('TP.extern.Promise');
+    var workerThread,
+        newPromise;
 
-    return;
+    if (TP.isEmpty(message)) {
+        return this.raise('InvalidParameter', 'No message provided.');
+    }
+
+    workerThread = this.get('$thread');
+
+    //  Construct a Promise around sending the supplied source code to the
+    //  worker for evaluation.
+    newPromise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+
+            workerThread.onmessage = function(e) {
+
+                var data,
+                    result;
+
+                data = e.data;
+                result = data.result;
+
+                if (TP.isCallable(resultProcessor)) {
+                    result = resultProcessor(result);
+                }
+
+                if (TP.isValid(result)) {
+                    //  Run the Promise resolver with the result returned in the
+                    //  message event.
+                    return resolver(result);
+                } else {
+                    return resolver();
+                }
+            };
+
+            workerThread.onerror = function(e) {
+
+                var err;
+
+                if (TP.isEvent(e)) {
+                    //  Convert from an ErrorEvent into a real Error object.
+                    err = new Error(e.message, e.filename, e.lineno);
+                } else {
+                    err = e;
+                }
+
+                if (TP.isCallable(errorProcessor)) {
+                    err = errorProcessor(err);
+                }
+
+                if (TP.isError(err)) {
+                    //  Run the Promise rejector with the Error object
+                    //  constructed from the data returned in the error event
+                    //  and possibly massaged by the error processor.
+                    return rejector(err);
+                } else {
+                    return rejector();
+                }
+            };
+
+            //  Send a message to the worker. Note that this method will
+            //  automatically serialize the message.
+            this.send(message);
+        }.bind(this));
+
+    return newPromise;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Inst.defineMethod('serializeMessage',
+function(message) {
+
+    /**
+     * @method serializeMessage
+     * @summary Serializes a message object to produce a representation that can
+     *     be sent as a message. If the message object implements an 'asMessage'
+     *     method that method is invoked, otherwise the default representation
+     *     is returned as one that the message channel can understand.
+     * @param {Object} message The object to serialize.
+     * @returns {Object} The supplied message serialized.
+     */
+
+    if (TP.isString(message)) {
+        return message;
+    }
+
+    if (TP.canInvoke('asMessage')) {
+        return message.asMessage();
+    }
+
+    //  Worker threads will use the standard Structured Clone Algorithm to
+    //  serialize their data when sent data via postMessage, so we just return
+    //  the original object (making sure it's a POJO).
+    return TP.obj(message);
+});
+
+//  ========================================================================
+//  TP.core.GenericWorker
+//  ========================================================================
+
+TP.core.Worker.defineSubtype('GenericWorker');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.PromiseWorker.Inst.defineMethod('init',
+TP.core.GenericWorker.Inst.defineMethod('init',
 function(aURI) {
 
     /**
      * @method init
      * @summary Initializes a new instance of the receiver. Note that
-     *     PromiseWorker ignores any URI provided, forcing the underlying
+     *     GenericWorker ignores any URI provided, forcing the underlying
      *     worker thread to use the tibet_helper.js script as the base.
      *     Use the 'import' function of the returned instance to add a target
      *     script with a returned Promise you can chain to.
-     * @returns {TP.core.PromiseWorker|undefined} A new instance.
+     * @returns {TP.core.GenericWorker|undefined} A new instance.
      */
 
     var uri;
@@ -4267,11 +4374,39 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PromiseWorker.Inst.defineMethod('eval',
+TP.core.GenericWorker.Inst.defineMethod('eval',
 function(jsSrc) {
 
     /**
      * @method eval
+     * @summary Evaluates the supplied JavaScript source code inside of the
+     *     worker thread that this object represents and returns the value.
+     * @param {String} jsSrc The source code to evaluate inside of the worker.
+     * @returns Promise A promise that will resolve when the evaluation is
+     *     complete with the value that was produced by executing the code in
+     *     the receiver's thread.
+     */
+
+    if (TP.isEmpty(jsSrc)) {
+        return this.raise('InvalidParameter', 'No source code provided.');
+    }
+
+    //  Post a message telling the worker helper stub code loaded into the
+    //  thread to evaluate the supplied source code.
+    return this.sendMessageAndWait(TP.hc(
+            'funcRef', 'evalJS',    //  func ref in worker
+            'thisRef', 'self',      //  this ref in worker
+            'params', TP.ac(jsSrc)  //  params ref - JSONified structure
+    ));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.GenericWorker.Inst.defineMethod('$evalNoReturn',
+function(jsSrc) {
+
+    /**
+     * @method $evalNoReturn
      * @summary Evaluates the supplied JavaScript source code inside of the
      *     worker thread that this object represents.
      * @param {String} jsSrc The source code to evaluate inside of the worker.
@@ -4279,54 +4414,22 @@ function(jsSrc) {
      *     complete.
      */
 
-    var workerThread,
-        newPromise;
-
     if (TP.isEmpty(jsSrc)) {
         return this.raise('InvalidParameter', 'No source code provided.');
     }
 
-    workerThread = this.get('$thread');
-
-    //  Construct a Promise around sending the supplied source code to the
-    //  worker for evaluation.
-    newPromise = TP.extern.Promise.construct(
-        function(resolver, rejector) {
-
-            workerThread.onmessage = function(e) {
-
-                //  Run the Promise resolver with the data returned in the
-                //  message event.
-                return resolver(e.data);
-            };
-
-            workerThread.onerror = function(e) {
-
-                var err;
-
-                //  Convert from an ErrorEvent into a real Error object
-                err = new Error(e.message, e.filename, e.lineno);
-
-                //  Run the Promise rejector with the Error object constructed
-                //  from the data returned in the error event.
-                return rejector(err);
-            };
-
-            //  Post a message telling the worker helper stub code loaded into
-            //  the thread to evaluate the supplied source code.
-            workerThread.postMessage({
-                funcRef: 'evalJS',      //  func ref in worker
-                thisRef: 'self',        //  this ref in worker
-                params: TP.ac(jsSrc)    //  params ref - JSONified structure
-            });
-        });
-
-    return newPromise;
+    //  Post a message telling the worker helper stub code loaded into the
+    //  thread to evaluate the supplied source code.
+    return this.sendMessageAndWait(TP.hc(
+            'funcRef', 'evalJSNoReturn',    //  func ref in worker
+            'thisRef', 'self',              //  this ref in worker
+            'params', TP.ac(jsSrc)          //  params ref - JSONified structure
+    ));
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.PromiseWorker.Inst.defineMethod('import',
+TP.core.GenericWorker.Inst.defineMethod('import',
 function(aCodeURL) {
 
     /**
@@ -4339,10 +4442,7 @@ function(aCodeURL) {
      *     complete.
      */
 
-    var url,
-
-        workerThread,
-        newPromise;
+    var url;
 
     if (!TP.isURIString(aCodeURL) && !TP.isURI(aCodeURL)) {
         return this.raise('InvalidURL',
@@ -4351,45 +4451,18 @@ function(aCodeURL) {
 
     url = TP.uc(aCodeURL).getLocation();
 
-    workerThread = this.get('$thread');
-
-    newPromise = TP.extern.Promise.construct(
-        function(resolver, rejector) {
-
-            workerThread.onmessage = function(e) {
-
-                //  Run the Promise resolver with the data returned in the
-                //  message event.
-                return resolver(e.data);
-            };
-
-            workerThread.onerror = function(e) {
-
-                var err;
-
-                //  Convert from an ErrorEvent into a real Error object
-                err = new Error(e.message, e.filename, e.lineno);
-
-                //  Run the Promise rejector with the Error object constructed
-                //  from the data returned in the error event.
-                return rejector(err);
-            };
-
-            //  Post a message telling the worker helper stub code loaded into
-            //  the thread to import source code from the supplied URL.
-            workerThread.postMessage({
-                funcRef: 'importJS',    //  func ref in worker
-                thisRef: 'self',        //  'this' ref in worker
-                params: TP.ac(url)      //  params ref - JSONified structure
-            });
-        });
-
-    return newPromise;
+    //  Post a message telling the worker helper stub code loaded into the
+    //  thread to import source code from the supplied URL.
+    return this.sendMessageAndWait(TP.hc(
+            'funcRef', 'importJS',  //  func ref in worker
+            'thisRef', 'self',      //  'this' ref in worker
+            'params', TP.ac(url)    //  params ref - JSONified structure
+    ));
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.PromiseWorker.Inst.defineMethod('defineWorkerMethod',
+TP.core.GenericWorker.Inst.defineMethod('defineWorkerMethod',
 function(name, body, async) {
 
     /**
@@ -4431,15 +4504,15 @@ function(name, body, async) {
 
     isAsync = TP.ifInvalid(async, false);
 
-    //  Use our 'eval' method to evaluate the code. This is *not* the regular JS
-    //  'eval' global call - this method evaluates the code over in worker
-    //  thread and returns a Promise that will resolve when that is done.
+    //  Use our '$evalNoReturn' method to evaluate the code. This is *not* the
+    //  regular JS 'eval' global call - this method evaluates the code over in
+    //  worker thread and returns a Promise that will resolve when that is done.
     /* eslint-disable no-eval */
-    promise = this.eval(methodSrc);
+    promise = this.$evalNoReturn(methodSrc);
     /* eslint-enable no-eval */
 
     //  Attach to the Promise that was returned from evaluating the code.
-    promise.then(
+    promise = promise.then(
         function() {
 
             var peerMethod;
@@ -4447,57 +4520,17 @@ function(name, body, async) {
             //  Now, define that method on *this* object to call over into the
             //  worker thread to invoke what we just eval'ed over there.
             peerMethod = function() {
-                var args,
-                    workerThread,
-                    newPromise;
+                var args;
 
                 args = Array.prototype.slice.call(arguments);
 
-                workerThread = this.get('$thread');
-
-                newPromise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
-
-                        workerThread.onmessage = function(e) {
-
-                            var data;
-
-                            //  Run the Promise resolver with the result data
-                            //  returned in the message event (if there is
-                            //  result data).
-                            data = JSON.parse(e.data);
-                            if (TP.isValid(data)) {
-                                return resolver(data.result);
-                            }
-
-                            //  No result data - so just call the resolver.
-                            return resolver();
-                        };
-
-                        workerThread.onerror = function(e) {
-
-                            var err;
-
-                            //  Convert from an ErrorEvent into a real Error
-                            //  object
-                            err = new Error(e.message, e.filename, e.lineno);
-
-                            //  Run the Promise rejector with the Error object
-                            //  constructed from the data returned in the error
-                            //  event.
-                            return rejector(err);
-                        };
-
-                        workerThread.postMessage({
-                            funcRef: name,      //  func ref in worker
-                            thisRef: 'self',    //  this ref in worker
-                            params: args,       //  params ref - JSONified
+                return this.sendMessageAndWait(TP.hc(
+                            'funcRef', name,    //  func ref in worker
+                            'thisRef', 'self',  //  this ref in worker
+                            'params', args,     //  params ref - JSONified
                                                 //  structure
-                            async: isAsync
-                        });
-                    });
-
-                return newPromise;
+                            'async', isAsync
+                ));
             };
 
             //  Install that method on ourself.
@@ -4505,7 +4538,7 @@ function(name, body, async) {
         }.bind(this)).catch(
         function(err) {
             TP.ifError() ?
-                TP.error('Error creating TP.core.PromiseWorker Promise: ' +
+                TP.error('Error creating TP.core.GenericWorker Promise: ' +
                             TP.str(err)) : 0;
         });
 
