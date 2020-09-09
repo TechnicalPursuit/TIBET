@@ -9611,6 +9611,40 @@ function(aWindow) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('windowIsVisible',
+function(aWindow) {
+
+    /**
+     * @method windowIsVisible
+     * @summary Checks to see whether the supplied native window is visible to
+     *     the user.
+     * @param {Window} aWindow The window to test.
+     * @returns {Boolean} Whether or not the supplied native window is visible
+     *     to the user.
+     */
+
+    //  check out the window...might not be a window ;)
+    if (!TP.isWindow(aWindow)) {
+        return false;
+    }
+
+    //  There are some checks we do because environments, such as Chrome
+    //  Devtools, lie to us when using 'visibilityState' (i.e. the 'devtools
+    //  page' is 'visible' when it's really not).
+    if (TP.inExtension === true) {
+        if (aWindow === TP.topWindow ||
+            aWindow === TP.sys.getWindowById('uiroot') ||
+            aWindow === TP.sys.getWindowById('uiboot')) {
+            return false;
+        }
+    }
+
+    //  As a fallback, we leverage visibility state.
+    return aWindow.document.visibilityState === 'visible';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('windowMoveBy',
 function(aWindow, deltaX, deltaY) {
 
