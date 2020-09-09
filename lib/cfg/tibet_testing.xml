@@ -82,6 +82,7 @@
     <config ref="tokenizer"/>
     <config ref="uri"/>
     <config ref="values"/>
+    <config ref="worker"/>
     <config ref="xctrls"/>
     <config ref="xs"/>
     <config ref="xslt"/>
@@ -198,6 +199,10 @@
 
 <config id="values">
     <script src="~lib_test/src/tibet/values/Value_Tests.js"/>
+</config>
+
+<config id="worker">
+    <script src="~lib_test/src/tibet/worker/TP.core.Worker_Tests.js"/>
 </config>
 
 <config id="bind">
