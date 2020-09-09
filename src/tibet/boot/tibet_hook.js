@@ -36,6 +36,11 @@
 //  given that it's happening early in the booting of TIBET. Therefore, it's very
 //  pendantic.
 
+//  NOTE: TIBET is loaded into the 'dev tools page' of a Chromium extension.
+//  This logic will properly 'wire' the $$topWindow slot for that case.
+//  Individual panels (which will *not* be in the same Window hierarchy) must
+//  have their individual $$topWindow slots populated when they are instrumented
+//  after creation.
 if (root.location &&
     root.location.protocol.slice(0, -1) === 'chrome-extension') {
     if (root.name === 'UIROOT' || root.name === 'UIBOOT') {

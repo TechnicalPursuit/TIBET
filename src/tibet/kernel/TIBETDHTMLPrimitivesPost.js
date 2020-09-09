@@ -2970,11 +2970,12 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     }
 
     if (TP.isElement(elemWin.frameElement)) {
-        //  Note here that we pass 'TP.topWindow' as the first argument since we
-        //  really just want the offset of winFrameElem from the top (which
-        //  will be 0,0 offset from itself).
+        //  Note here that we pass the result of obtaining the top window for
+        //  the supplied element as the first argument since we really just want
+        //  the offset of winFrameElem from the top (which will be 0,0 offset
+        //  from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                            TP.topWindow,
+                            TP.nodeGetTopWindow(anElement),
                             elemWin,
                             wantsTransformed);
     } else {
@@ -3048,11 +3049,12 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'TP.topWindow' as the first argument since we
-        //  really just want the offset of winFrameElem from the top (which
-        //  will be 0,0 offset from itself).
+        //  Note here that we pass the result of obtaining the top window for
+        //  the supplied element as the first argument since we really just want
+        //  the offset of winFrameElem from the top (which will be 0,0 offset
+        //  from itself).
         frameOffsetX = TP.windowComputeWindowOffsets(
-                        TP.topWindow,
+                        TP.nodeGetTopWindow(anElement),
                         TP.elementGetIFrameWindow(winFrameElem)).first();
     } else {
         frameOffsetX = 0;
@@ -3117,11 +3119,12 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'TP.topWindow' as the first argument since we
-        //  really just want the offset of winFrameElem from the top (which
-        //  will be 0,0 offset from itself).
+        //  Note here that we pass the result of obtaining the top window for
+        //  the supplied element as the first argument since we really just want
+        //  the offset of winFrameElem from the top (which will be 0,0 offset
+        //  from itself).
         frameOffsetY = TP.windowComputeWindowOffsets(
-                        TP.topWindow,
+                        TP.nodeGetTopWindow(anElement),
                         TP.elementGetIFrameWindow(winFrameElem)).last();
     } else {
         frameOffsetY = 0;
@@ -3188,11 +3191,12 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'TP.topWindow' as the first argument since we
-        //  really just want the offset of winFrameElem from the top (which
-        //  will be 0,0 offset from itself).
+        //  Note here that we pass the result of obtaining the top window for
+        //  the supplied element as the first argument since we really just want
+        //  the offset of winFrameElem from the top (which will be 0,0 offset
+        //  from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                            TP.topWindow,
+                            TP.nodeGetTopWindow(anElement),
                             TP.elementGetIFrameWindow(winFrameElem));
     } else {
         frameOffsetXAndY = TP.ac(0, 0);
@@ -8735,7 +8739,7 @@ function(aWindow) {
     //  propagate the 'title' content from the document that we're drawing up
     //  onto the *top* document
     docTitle = TP.documentGetTitleContent(aWindow.document);
-    TP.documentSetTitleContent(TP.topWindow.document, docTitle);
+    TP.documentSetTitleContent(aWindow.$$topWindow.document, docTitle);
 
     TP.elementBubbleXMLNSAttributesOnDescendants(
                             aWindow.document.documentElement);
@@ -8832,7 +8836,7 @@ function(aWindow) {
         TP.core.History.captureDocumentLocation(aWindow.document);
 
         docTitle = TP.documentGetTitleContent(aWindow.document);
-        TP.documentSetTitleContent(TP.topWindow.document, docTitle);
+        TP.documentSetTitleContent(aWindow.$$topWindow.document, docTitle);
     }
 
     //  final operation is to signal that we've done the work

@@ -2301,6 +2301,34 @@ function(anElement, aContent) {
 //  NODE PRIMITIVES
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeGetTopWindow',
+function(aNode) {
+
+    /**
+     * @method nodeGetTopWindow
+     * @summary Returns the node's 'top' window - that is, the window that
+     *     represents the 'top' of the window hierarchy where the node is
+     *     situated.
+     * @param {Node} aNode The node to use.
+     * @exception TP.sig.InvalidNode
+     * @returns {Window} The supplied node's top-level window.
+     */
+
+    var win;
+
+    //  The node is in a window context that has a '$$topWindow' reference wired
+    //  in - this takes precedence over everything else.
+    win = TP.nodeGetWindow(aNode).$$topWindow;
+    if (TP.isWindow(win)) {
+        return win;
+    }
+
+    //  Otherwise, just return what TIBET considers to be its top-level window.
+    return TP.topWindow;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeGetWindow',
 function(aNode) {
 
