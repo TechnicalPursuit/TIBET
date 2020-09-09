@@ -735,22 +735,26 @@ function(aWindow, afterWaitMS) {
                         resolver(thisref.apply(thisref, arglist));
                     };
 
-                    //  Call requestAnimationFrame with the a Function that
-                    //  wraps the Function that we calculated above in a
-                    //  setTimeout that will invoke after the supplied number of
-                    //  milliseconds (or 0).
-                    //  This will 'schedule' the call for just after next time
-                    //  the screen is repainted.
-                    cancellationID = win.requestAnimationFrame(
-                                function() {
-                                    //  NB: We reset the returned Promise's
-                                    //  'cancellationID' here to what the
-                                    //  setTimeout() returns so that once this
-                                    //  method is triggered, the process can
-                                    //  still be cancelled.
-                                    promise.cancellationID =
+                    if (!TP.windowIsVisible(win)) {
+                        cancellationID = setTimeout(func, 0);
+                    } else {
+                        //  Call requestAnimationFrame with the a Function that
+                        //  wraps the Function that we calculated above in a
+                        //  setTimeout that will invoke after the supplied
+                        //  number of milliseconds (or 0).
+                        //  This will 'schedule' the call for just after next
+                        //  time the screen is repainted.
+                        cancellationID = win.requestAnimationFrame(
+                                    function() {
+                                        //  NB: We reset the returned Promise's
+                                        //  'cancellationID' here to what the
+                                        //  setTimeout() returns so that once
+                                        //  this method is triggered, the
+                                        //  process can still be cancelled.
+                                        promise.cancellationID =
                                                     setTimeout(func, waitMS);
-                                });
+                                    });
+                    }
                 });
 
     promise.cancellationID = cancellationID;
@@ -821,11 +825,15 @@ function(aWindow) {
                         resolver(thisref.apply(thisref, arglist));
                     };
 
-                    //  Call requestAnimationFrame with the a Function that
-                    //  uses the Function that we calculated above.
-                    //  This will 'schedule' the call for just before next time
-                    //  the screen is repainted.
-                    cancellationID = win.requestAnimationFrame(func);
+                    if (!TP.windowIsVisible(win)) {
+                        cancellationID = setTimeout(func, 0);
+                    } else {
+                        //  Call requestAnimationFrame with the a Function that
+                        //  uses the Function that we calculated above.
+                        //  This will 'schedule' the call for just before next
+                        //  time the screen is repainted.
+                        cancellationID = win.requestAnimationFrame(func);
+                    }
                 });
 
     promise.cancellationID = cancellationID;
