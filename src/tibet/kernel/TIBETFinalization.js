@@ -521,8 +521,24 @@ function() {
                 //  Recapture starting time in case we broke for debugging.
                 TP.boot.$uitime = new Date();
 
-                //  Load the UI. This will ultimately trigger UIReady.
-                TP.sys.loadUIRoot();
+                //  If we're in an extension environment, then just signal
+                //  AppWillStart and AppStart manually. Otherwise, load the root
+                //  page.
+                if (TP.inExtension === true) {
+                    //  Signal we are starting. This provides a hook for
+                    //  extensions etc. to tap into the startup sequence before
+                    //  routing or other behaviors but after we're sure the UI
+                    //  is finalized.
+                    TP.signal('TP.sys', 'AppWillStart');
+
+                    //  Signal actual start. The default handler on Application
+                    //  will invoke the start() method in response to this
+                    //  signal.
+                    TP.signal('TP.sys', 'AppStart');
+                } else {
+                    //  Load the UI. This will ultimately trigger UIReady.
+                    TP.sys.loadUIRoot();
+                }
             }).queueAfterNextRepaint(rootWindow);
 
             //  If caching of the app has been deferred (probably because this
