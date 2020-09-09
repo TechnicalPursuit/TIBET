@@ -279,6 +279,7 @@
             commandSpawn: commandSpawn,
 
             addListenerForMainEvent: addListenerForMainEvent,
+            removeListenerForMainEvent: removeListenerForMainEvent,
             sendEventToMain: sendEventToMain
         };
     };
