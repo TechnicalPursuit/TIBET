@@ -7697,36 +7697,45 @@ function(aSignal) {
 
         var elem,
             rootWin,
-            homeURL;
+            homeURL,
 
-        //  Grab the UI root window and focus it if possible.
-        if (TP.isElement(elem = signal.at('ApplicationTag'))) {
-            if (TP.isWindow(rootWin = TP.nodeGetWindow(elem))) {
-                rootWin.focus();
+            evt;
+
+        //  If we're not running in a Chromium extension, then focus the root
+        //  window, set up the home page configuration and populate the window's
+        //  history.
+        if (TP.inExtension !== true) {
+
+            //  Grab the UI root window and focus it if possible.
+            if (TP.isElement(elem = signal.at('ApplicationTag'))) {
+                if (TP.isWindow(rootWin = TP.nodeGetWindow(elem))) {
+                    rootWin.focus();
+                }
             }
-        }
 
-        //  Note that we check and clear sessionStorage here to avoid having any
-        //  values set by a bookmark or reload operation on a hooked file from
-        //  hanging around and affecting future operations.
-        if (TP.global.sessionStorage) {
-            homeURL = TP.global.sessionStorage.getItem(
-                'TIBET.project.home_page');
+            //  Note that we check and clear sessionStorage here to avoid having
+            //  any values set by a bookmark or reload operation on a hooked file
+            //  from hanging around and affecting future operations.
+            if (TP.global.sessionStorage) {
+                homeURL = TP.global.sessionStorage.getItem(
+                    'TIBET.project.home_page');
+                if (TP.notEmpty(homeURL)) {
+                    //  Preserve the value in runtime config to support the
+                    //  TP.sys.getHomeURL call.
+                    TP.sys.setcfg('session.home_page', homeURL);
+
+                    TP.global.sessionStorage.removeItem(
+                                    'TIBET.project.home_page');
+                }
+            }
+
+            //  If we're asked to trigger routing on startup do that to properly
+            //  set the initial path context.
             if (TP.notEmpty(homeURL)) {
-                //  Preserve the value in runtime config to support the
-                //  TP.sys.getHomeURL call.
-                TP.sys.setcfg('session.home_page', homeURL);
-
-                TP.global.sessionStorage.removeItem('TIBET.project.home_page');
+                this.getHistory().pushLocation(homeURL);
+            } else if (TP.sys.cfg('route.onstart')) {
+                this.getRouter().route(TP.topWindow.location.toString());
             }
-        }
-
-        //  If we're asked to trigger routing on startup do that to properly set
-        //  the initial path context.
-        if (TP.notEmpty(homeURL)) {
-            this.getHistory().pushLocation(homeURL);
-        } else if (TP.sys.cfg('route.onstart')) {
-            this.getRouter().route(TP.topWindow.location.toString());
         }
 
         try {
@@ -7737,6 +7746,13 @@ function(aSignal) {
             //  etc.)
             TP.sys.hasStarted(true);
         }
+
+        //  Either way, we should broadcast a native TIBETAppDidStart event to
+        //  let components (especially those in Chromium extensions) know that
+        //  TIBET is started.
+        evt = TP.topWindow.document.createEvent('Event');
+        evt.initEvent('TIBETAppDidStart', true, true);
+        TP.topWindow.document.body.dispatchEvent(evt);
 
         //  Signal that everything is ready and that the application did start.
         this.signal('TP.sig.AppDidStart');
