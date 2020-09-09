@@ -1843,7 +1843,7 @@ function() {
         if (TP.isValid(this.$timer)) {
             if (this.$get('$useRAF')) {
                 //  if we're using requestAnimationFrame, clear it
-                window.cancelAnimFrame(this.$timer);
+                window.cancelAnimationFrame(this.$timer);
             } else {
                 clearTimeout(this.$timer);
             }
