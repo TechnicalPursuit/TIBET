@@ -9391,6 +9391,7 @@ function(aWindow) {
      */
 
     var arr,
+        topWin,
         win;
 
     if (!TP.isWindow(aWindow)) {
@@ -9399,33 +9400,32 @@ function(aWindow) {
 
     arr = TP.ac();
 
-    //  Note that we use '==' and '!=' in these comparisons, not what
-    //  you'd expect when comparing window pointers. But it seems
-    //  like some browsers (IE) sometimes won't compare these
-    //  properly using strict equality...
+    topWin = aWindow.$$topWindow;
+    if (TP.notValid(topWin)) {
+        topWin = TP.topWindow;
+    }
 
-    //  If the window is the top level window, just return an empty
-    //  array here
-    if (aWindow === TP.topWindow) {
+    //  If the window is the top level window, just return an empty array here.
+    if (aWindow === topWin) {
         return arr;
     }
 
     win = aWindow.parent;
 
-    //  While the parent window isn't the top window, add its name
-    //  to the list.
-    while (win !== TP.topWindow) {
+    //  While the parent window isn't the top window, add its name to the
+    //  list.
+    while (win !== topWin) {
         //  NOTE that this will assign unique names to intermediate frames
         arr.push(TP.lid(win));
         win = win.parent;
     }
 
-    //  Go ahead and add the top-level window's name to our array
-    arr.push(TP.lid(TP.topWindow));
+    //  Go ahead and add the top-level window's name to our array.
+    arr.push(TP.lid(topWin));
 
-    //  Reverse the array so that top's name is first, followed by
-    //  all of the frames between top and ourselves in descending
-    //  order, followed by our name
+    //  Reverse the array so that top's name is first, followed by all of the
+    //  frames between top and ourselves in descending order, followed by our
+    //  name.
     arr.reverse();
 
     return arr;
