@@ -709,7 +709,8 @@ function() {
             } else if (!TP.sys.hasFeature('sherpa') && hasBootToggle) {
 
                 //  No hook file in the boot screen so we initialize manually.
-                bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), TP.topWindow);
+                bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'),
+                                    TP.topWindow);
                 if (TP.isValid(bootTPFrameElem)) {
                     TP.boot.initializeCanvas(
                         bootTPFrameElem.getContentWindow().getNativeWindow());

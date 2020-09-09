@@ -1076,6 +1076,7 @@ TP.core.RepositionMonitor.Type.defineAttribute(
         var elem,
 
             win,
+            topWin,
             frameOffsetXAndY,
 
             oldTop,
@@ -1090,10 +1091,13 @@ TP.core.RepositionMonitor.Type.defineAttribute(
         }
 
         //  This monitor checks global position - if the target element's Window
-        //  is not 'top', then we need to make sure to compute the offset.
+        //  is not it's 'top' Window, then we need to make sure to compute the
+        //  offset.
         win = TP.nodeGetWindow(elem);
-        if (win !== TP.topWindow) {
-            frameOffsetXAndY = TP.windowComputeWindowOffsets(TP.topWindow, win);
+        topWin = TP.nodeGetTopWindow(elem);
+
+        if (win !== topWin) {
+            frameOffsetXAndY = TP.windowComputeWindowOffsets(topWin, win);
         } else {
             frameOffsetXAndY = TP.ac(0, 0);
         }
@@ -2982,6 +2986,8 @@ function(wantsTransformed) {
         point,
 
         evtWin,
+        target,
+        topWin,
 
         winFrameElem,
 
@@ -2993,14 +2999,22 @@ function(wantsTransformed) {
         return point;
     }
 
-    evtWin = TP.eventGetWindow(this.getEvent());
+    evtWin = TP.eventGetWindow(evt);
 
     if (TP.isElement(winFrameElem = evtWin.frameElement)) {
-        //  Note here that we pass 'TP.topWindow' as the first argument since we
-        //  really just want the offset of winFrameElem from the top (which
-        //  will be 0,0 offset from itself).
+        target = TP.eventGetTarget(evt);
+        if (TP.isElement(target)) {
+            topWin = TP.nodeGetTopWindow(target);
+        } else {
+            topWin = TP.topWindow;
+        }
+
+        //  Note here that we pass the result of obtaining the top window for
+        //  the supplied element as the first argument since we really just want
+        //  the offset of winFrameElem from the top (which will be 0,0 offset
+        //  from itself).
         eventOffsetXAndY = TP.windowComputeWindowOffsets(
-                            TP.topWindow,
+                            topWin,
                             TP.elementGetIFrameWindow(winFrameElem),
                             wantsTransformed);
     } else {

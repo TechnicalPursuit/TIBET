@@ -1770,6 +1770,9 @@ TP.boot.initializeCanvasWindow = function(aWindow) {
 
     TP.boot.installPatches(win);
 
+    //  install the $$TIBET slot
+    win.$$TIBET = TP.sys.getLaunchWindow();
+
     //  install load/unload hook functions so TIBET will get the right
     //  event notifications
     TP.core.Window.installLoadUnloadHooks(win);

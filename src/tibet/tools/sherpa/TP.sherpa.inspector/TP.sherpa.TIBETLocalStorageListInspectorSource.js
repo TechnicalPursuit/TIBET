@@ -55,7 +55,7 @@ function(options) {
     var sourceEntries,
         data;
 
-    sourceEntries = TP.hc(TP.topWindow.localStorage);
+    sourceEntries = TP.hc(TP.global.localStorage);
 
     if (TP.isValid(sourceEntries)) {
         data = sourceEntries.collect(
@@ -99,7 +99,7 @@ function(anAspect, options) {
     source.get('additionalConfig').atPut(
                     TP.ATTR + '_class', 'doublewide');
 
-    source.setPrimaryEntry(TP.topWindow.localStorage[anAspect]);
+    source.setPrimaryEntry(TP.global.localStorage[anAspect]);
 
     return source;
 });
