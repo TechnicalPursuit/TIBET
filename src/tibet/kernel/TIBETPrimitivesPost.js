@@ -2210,8 +2210,6 @@ function(anObject, assignIfAbsent) {
                     return null;
                 }
             }
-
-            return;
         }
 
         return localID;
