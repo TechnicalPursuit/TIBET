@@ -10,6 +10,18 @@
 
 (function(root) {
 
+    var tds_auth_uri;
+
+    //  If TIBET has loaded we can ask cfg for the value...(or it can be spoofed
+    //  in script content in the login page itself).
+    try {
+        tds_auth_uri = root.TP.tds_auth_uri ||
+            root.TP.sys.getcfg('tds.auth.uri') ||
+            root.TP.cfg.tds.auth.uri;
+    } catch {
+        tds_auth_uri = '/login';
+    }
+
     root.login = function() {
         var usernameField,
             passwordField,
@@ -81,12 +93,11 @@
                     void 0;
                 }
 
-                //  On success we want to go to the "post login" page.
-                pathname = pathname.toString().replace(/\/login/, '/');
-                window.location.replace(pathname);
+                //  Go "home" and let it route now that authenticated.
+                window.location.replace('/');
             } else {
                 //  If we failed to log in remain on the login page.
-                window.location.replace(pathname + 'login');
+                window.location.replace(tds_auth_uri);
             }
         };
 
