@@ -1,0 +1,35 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+div[tibet|tag="lama:drawer"].corner {
+
+    max-width: 512px;
+    max-height: 256px;
+}
+
+div[tibet|tag="lama:drawer"]:not([pclass|closed]):not([pclass|hidden]).corner {
+
+    width: 48%;
+    height: 48%;
+}
+
+div[tibet|tag="lama:drawer"]:not([pclass|closed]):not([pclass|hidden]).h-edge.north {
+
+    height: var(--lama-drawer-north-open-height);
+}
+
+div[tibet|tag="lama:drawer"]:not([pclass|closed]):not([pclass|hidden]).h-edge.south {
+
+    height: var(--lama-drawer-south-open-height);
+}
+
+div[tibet|tag="lama:drawer"]:not([pclass|closed]):not([pclass|hidden]).v-edge.east {
+
+    width: var(--lama-drawer-east-open-width);
+}
+
+div[tibet|tag="lama:drawer"]:not([pclass|closed]):not([pclass|hidden]).v-edge.west {
+
+    width: var(--lama-drawer-west-open-width);
+}

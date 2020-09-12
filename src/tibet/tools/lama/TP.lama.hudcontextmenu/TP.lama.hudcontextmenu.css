@@ -1,0 +1,83 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+lama|hudcontextmenu {
+
+    display: block;
+
+    width: 128px;
+    height: 256px;
+
+    background-color: #efefef;
+
+    border: 1px solid #666;
+    border-radius: 5px;
+
+    box-shadow: 3px 3px 3px #aaa;
+}
+
+xctrls|popup[class~="lamahudcontextmenu"] {
+
+    z-index: var(--tibet-CONTEXT-MENU-TIER);
+}
+
+lama|hudcontextmenu > .header {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    left: 0;
+
+    height: 30px;
+
+    margin: 2px;
+
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+
+    background-color: #efefef;
+
+    min-width: auto;
+
+    border: 1px solid #666;
+
+    overflow: hidden;
+
+    text-align: center;
+}
+
+lama|hudcontextmenu > .header > .title {
+
+    font-weight: bold;
+    font-size: 108%;
+
+    line-height: 30px;
+}
+
+lama|hudcontextmenu > .content {
+
+    position: absolute;
+
+    top: 31px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    min-width: auto;
+
+    margin: 2px;
+
+    border: 1px solid #666;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+
+    background-color: #fff;
+
+    overflow: hidden;
+
+    text-align: center;
+}

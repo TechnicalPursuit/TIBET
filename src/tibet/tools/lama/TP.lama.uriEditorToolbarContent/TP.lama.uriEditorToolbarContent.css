@@ -1,0 +1,97 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+lama|uriEditorToolbarContent {
+
+    display: flex;
+
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+
+    height: 100%;
+}
+
+lama|uriEditorToolbarContent > button {
+
+    height: 1.5em;
+
+    margin-bottom: 5px;
+    margin-right: 2px;
+
+    font-size: 12px;
+
+    line-height: 1;
+
+    border: 0;
+    box-shadow: none;
+    background-color: transparent;
+
+    text-decoration: underline;
+}
+
+lama|uriEditorToolbarContent > button[action="revert"] {
+}
+
+lama|uriEditorToolbarContent > xctrls|itemgroup {
+
+    font-size: 12px;
+
+    margin-right: 5px;
+}
+
+lama|uriEditorToolbarContent xctrls|radioitem > xctrls|label,
+lama|uriEditorToolbarContent xctrls|radioitem:hover > xctrls|label {
+
+    background-color: initial !important;
+}
+
+lama|uriEditorToolbarContent > .detach_mark {
+
+    display: block;
+
+    margin: 4px;
+
+    width: 16px;
+    height: 16px;
+
+    background-color: white;
+    color: #333;
+
+    border: 1px solid #666;
+    border-radius: 9px;
+
+    line-height: 14px;
+    text-align: center;
+
+    font-family: "arial", "helvetica", "clean", sans-serif;
+    font-size: 12px;
+
+    cursor: pointer;
+
+    background-size: 14px 14px;
+    background-image: url("../media/call49.svg");
+    background-position-x: 1px;
+}
+
+lama|uriEditorToolbarContent > .detach_mark:hover {
+
+    background-color: gold;
+}
+
+lama|uriEditorToolbarContent[class~="tabbed"] {
+
+    height: auto;
+}
+
+lama|uriEditorToolbarContent[class~="tabbed"] > .detach_mark {
+
+    display: none;
+}
+
+lama|uriEditorToolbarContent[class~="tabbed"] > xctrls|itemgroup {
+
+    margin-top: 2px;
+}

@@ -1,0 +1,17 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|sync {
+
+    position: relative;
+
+    height: 24px;
+    width: 24px;
+
+    background-size: 24px;
+    background-position: center 3px;
+    background-repeat: no-repeat;
+    background-image: url("~ide_root/media/ic_sync_black_24px.svg");
+
+    cursor: pointer;
+}

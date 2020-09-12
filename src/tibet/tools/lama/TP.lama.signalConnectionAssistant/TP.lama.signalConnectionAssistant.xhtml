@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<lama:signalConnectionAssistant>
+    <div class="head"/>
+    <div class="body">
+        <div class="sourceSignalFieldGroup">
+            <label for="signalConnectionAssistant_SourceSignalNameField">Signals:</label>
+            <input type="text" id="signalConnectionAssistant_SourceSignalNameField" autofocus="autofocus" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalName)}" ui:incremental="model" autocomplete="off"/>
+        </div>
+        <xctrls:list id="signalConnectionAssistant_SourceSignalList" bind:in="{data: urn:tibet:signalnamelist}" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.chosenSourceSignalName)}"/>
+
+        <div class="destinationSignalFieldGroup">
+            <label for="signalConnectionAssistant_DestinationHandlerNameField">Handlers:</label>
+            <input type="text" id="signalConnectionAssistant_DestinationHandlerNameField" autofocus="autofocus" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredDestinationHandlerName)}" ui:incremental="model" autocomplete="off"/>
+        </div>
+        <xctrls:list id="signalConnectionAssistant_DestinationSignalList" bind:in="{data: urn:tibet:handlernamelist}" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.chosenDestinationHandlerName)}"/>
+
+        <div class="signalOriginFieldGroup">
+            <label for="signalConnectionAssistant_signalOriginField">Origin:</label>
+            <input type="text" id="signalConnectionAssistant_signalOriginField" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalOrigin)}" ui:incremental="model" autocomplete="off"/>
+        </div>
+
+        <div class="signalPolicyFieldGroup">
+            <label for="signalConnectionAssistant_signalPolicyField">Policy:</label>
+            <select id="signalConnectionAssistant_signalPolicyField" class="policy_select" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredSourceSignalPolicy)}">
+                <option value="">Choose...</option>
+                <option value="OBSERVER_FIRING">OBSERVER_FIRING</option>
+                <option value="DOM_FIRING">DOM_FIRING</option>
+                <option value="RESPONDER_FIRING">RESPONDER_FIRING</option>
+                <option value="BIND_FIRING">BIND_FIRING</option>
+                <option value="EXCEPTION_FIRING">EXCEPTION_FIRING</option>
+                <option value="FIRE_ONE">FIRE_ONE</option>
+                <option value="INHERITANCE_FIRING">INHERITANCE_FIRING</option>
+            </select>
+        </div>
+
+        <div class="signalPayloadControlGroup">
+            <label>Payload entries (click + to add):</label>
+            <button class="inserter" on:click="{signal: InsertItem, origin: signalConnectionAssistant_PayloadEntries, payload: {source: 'urn:tibet:sig_payload_data_blank', copy: true}}"></button>
+        </div>
+
+        <div class="signalPayloadGroup" bind:scope="urn:tibet:signalConnectionAssistant_source#jpath($.info)">
+            <tibet:group focuswrap="true" id="signalConnectionAssistant_PayloadEntries" bind:repeat="signalPayload">
+                <input type="text" bind:io="{value: payloadEntryName}" tabindex="0"/>
+                <input type="text" bind:io="{value: payloadEntryValue}" tabindex="0"/>
+                <span class="deleter" on:click="{signal: DeleteItem, origin: signalConnectionAssistant_PayloadEntries, payload: {index: TP.TARGET}}"/>
+            </tibet:group>
+        </div>
+    </div>
+    <div class="foot">
+        <code id="generatedAttr"/>
+        <button on:click="DialogCancel">Cancel</button>
+        <button on:click="DialogOk">Make Connection</button>
+        <button class="inserter" on:click="{signal: AddSignalHandler}"/>
+    </div>
+</lama:signalConnectionAssistant>

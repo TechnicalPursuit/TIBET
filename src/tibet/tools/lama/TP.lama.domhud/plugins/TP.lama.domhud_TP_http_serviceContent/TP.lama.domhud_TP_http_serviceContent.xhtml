@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<lama:domhud_TP_http_serviceContent bind:in="urn:tibet:domhud_target_source">
+
+    <tibet:group focuswrap="true" autofocus="autofocus" bind:scope="urn:tibet:domhud_attr_source">
+        <span class="dom_attributes" bind:scope="#jpath($.info)">
+            <label for="remote_location">Remote Location:</label>
+            <input id="remote_location" type="text" class="propName" bind:io="{value: href}" tabindex="0"/>
+            <label for="result_location"><a href="#" on:click="BrowseToURI">Result Location:</a></label>
+            <input id="result_location" type="text" class="propName" bind:io="{value: result}" tabindex="0"/>
+            <label for="HTTP_body"><a href="#" on:click="BrowseToURI">HTTP body:</a></label>
+            <input id="HTTP_body" type="text" class="propName" bind:io="{value: body}" tabindex="0"/>
+            <label for="HTTP_method">HTTP method:</label>
+            <input for="HTTP_method" type="text" class="propName" bind:io="{value: method}" tabindex="0"/>
+            <label for="HTTP_mime_type">HTTP MIME type:</label>
+            <input id="HTTP_mime_type" type="text" class="propName" bind:io="{value: mimetype}" tabindex="0"/>
+        </span>
+    </tibet:group>
+
+    <button on:click="RefreshFromRemote">Refresh Result from Remote</button>
+
+</lama:domhud_TP_http_serviceContent>
+

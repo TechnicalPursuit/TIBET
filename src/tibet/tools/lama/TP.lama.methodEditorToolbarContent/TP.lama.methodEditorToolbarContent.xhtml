@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<lama:methodEditorToolbarContent>
+    <span class="detach_mark" on:click="TP.sig.DetachIntoConsoleTab">
+        <xctrls:hint>Detach editor into tab</xctrls:hint>
+    </span>
+    <button action="apply" disabled="disabled" on:click="TP.sig.ResourceApply">Apply
+        <xctrls:hint>Apply changes to local version</xctrls:hint>
+    </button>
+    <button action="push" disabled="disabled" on:click="TP.sig.ResourcePush">Push
+        <xctrls:hint>Push changes to remote version</xctrls:hint>
+    </button>
+    <button action="revert" disabled="disabled" on:click="TP.sig.ResourceRevert">Undo
+        <xctrls:hint>Revert changes from local version</xctrls:hint>
+    </button>
+</lama:methodEditorToolbarContent>
+

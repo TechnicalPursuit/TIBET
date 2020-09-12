@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<lama:about>
+    <div class="content">
+        <a target="_blank" href="https://www.technicalpursuit.com"><img src="~lib_media/tibet_logo.svg" alt="TIBET Logo" class="logo"/></a>
+        <div class="product">TIBET<span class="trade">&#x2122;</span></div>
+        <div class="version">{{TP.env.libVersion}}</div>
+        <div class="tagline">The sum of the parts, not some of the parts.&#x2122;</div>
+        <div class="actions">
+            <button on:click="Feedback">
+                Feedback
+                <xctrls:hint>send email feedback</xctrls:hint>
+            </button>
+            <button on:click="Help">
+                Support
+                <xctrls:hint>visit the support page</xctrls:hint>
+            </button>
+            <button on:click="Issue">
+                Issue
+                <xctrls:hint>file an issue</xctrls:hint>
+            </button>
+        </div>
+        <div class="copyright">Copyright &#xa9; 1999-2019 Technical Pursuit Inc, All Rights Reserved.</div>
+    </div>
+    <div class="footer">
+        <div class="appinfo">{{TP.cfg.project.name}} v{{TP.cfg.project.version}}</div>
+        <div class="trigger button" on:click="UIToggle" alt="TIBET Logo">
+            <xctrls:hint>About</xctrls:hint>
+        </div>
+    </div>
+</lama:about>
+

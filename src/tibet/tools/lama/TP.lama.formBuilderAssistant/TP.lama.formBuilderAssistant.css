@@ -1,0 +1,166 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|formBuilderAssistant {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    overflow: hidden;
+}
+
+lama|formBuilderAssistant > .head {
+}
+
+lama|formBuilderAssistant > .body {
+
+    position: absolute;
+    display: grid;
+
+    grid-template-rows: 2em 2em 2em 1fr;
+    grid-template-areas:
+        "insertion_point_group"
+        "insertion_position_group"
+        "editor_field_label"
+        "editor_field_wrapper";
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 3em;
+
+    text-align: left;
+}
+
+lama|formBuilderAssistant > .body .insertionPointGroup {
+
+    grid-area: insertion_point_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+lama|formBuilderAssistant > .body .insertionPointGroup label {
+
+    font-weight: bold;
+
+    margin-top: 5px;
+}
+
+lama|formBuilderAssistant > .body #formBuilderAssistant_InsertionBreadcrumb {
+
+    position: relative;
+
+    display: block;
+
+    top: 5px;
+    left: 5px;
+}
+
+lama|formBuilderAssistant > .body #formBuilderAssistant_InsertionBreadcrumb > .content div.item {
+
+    color: black;
+}
+
+lama|formBuilderAssistant > .body .insertionPositionGroup {
+
+    grid-area: insertion_position_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+lama|formBuilderAssistant > .body .insertionPositionGroup label {
+
+    font-weight: bold;
+}
+
+lama|formBuilderAssistant > .body .insertionPositionGroup .insertionRadios {
+
+    display: flex;
+
+    margin: 0;
+}
+
+lama|formBuilderAssistant > .body .insertionPositionGroup .insertionRadios li {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 5px;
+}
+
+lama|formBuilderAssistant > .body .insertionPositionGroup .insertionRadios li input {
+
+    margin-right: 4px;
+}
+
+lama|formBuilderAssistant > .body .insertionPositionGroup .insertionRadios li label {
+
+    margin-left: 0;
+    margin-right: 4px;
+
+    font-weight: normal;
+}
+
+lama|formBuilderAssistant > .body .editorFieldLabel {
+
+    grid-area: editor_field_label;
+
+    position: absolute;
+
+    top: 5px;
+    left: 5px;
+
+    font-weight: bold;
+}
+
+lama|formBuilderAssistant > .body .editorFieldWrapper {
+
+    grid-area: editor_field_wrapper;
+
+    position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+}
+
+lama|formBuilderAssistant > .body .editorFieldWrapper > textarea {
+
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+
+    box-sizing: border-box;
+}
+
+lama|formBuilderAssistant > .foot {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+
+    height: 3em;
+}

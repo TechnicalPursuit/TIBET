@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<lama:bookmarkMenuContent id="LamaBookmarkMenu" pclass:hidden="true" bind:in="{data: urn:tibet:lama_bookmarks}">
+    <div class="header"/>
+    <div class="body">
+        <ul on:mouseup="SelectMenuItem" on:dragup="SelectMenuItem"/>
+    </div>
+    <div class="footer">
+        <lama:scrollbutton orientation="up" on:click="ScrollUp">
+            <span class="icon"/>
+        </lama:scrollbutton>
+        <lama:scrollbutton orientation="down" on:click="ScrollDown">
+            <span class="icon"/>
+        </lama:scrollbutton>
+    </div>
+</lama:bookmarkMenuContent>
+

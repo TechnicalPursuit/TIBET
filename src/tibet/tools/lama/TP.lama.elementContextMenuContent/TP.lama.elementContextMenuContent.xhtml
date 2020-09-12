@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+<lama:elementContextMenuContent tibet:no-compile="true">
+    <ul on:mouseup="SelectMenuItem" on:dragup="SelectMenuItem">
+        <li data-cmd=":inspect $HALO">Inspect</li>
+        <li data-cmd="TP.bySystemId('UIROOT#LamaHalo').inspectTargetAspect(TP.ac('Structure'))">Edit Structure</li>
+        <li data-cmd="TP.bySystemId('UIROOT#LamaHalo').inspectTargetAspect(TP.ac('Style'))">Edit Style</li>
+        <li data-cmd="TP.bySystemId('UIROOT#LamaHalo').openExternalEditor(TP.ac('Structure'))">Open Structure</li>
+        <li data-cmd="TP.bySystemId('UIROOT#LamaHalo').openExternalEditor(TP.ac('Style'))">Open Style</li>
+        <li data-cmd="TP.bySystemId('Lama').makeCustomTagFrom($HALO)">Make Custom Tag</li>
+        <li data-cmd="TP.bySystemId('UIROOT#LamaHalo').emptyTarget()">Empty Content</li>
+        <li data-cmd="TP.bySystemId('UIROOT#LamaHalo').deleteTarget()">Delete</li>
+    </ul>
+</lama:elementContextMenuContent>
+

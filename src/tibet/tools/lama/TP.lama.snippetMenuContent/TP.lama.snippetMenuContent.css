@@ -1,0 +1,132 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+lama|snippetMenuContent {
+
+    display: block;
+
+    width: 10em;
+    height: 17em;
+
+    background-color: white;
+
+    border: 1px solid #666;
+    border-radius: 5px;
+
+    box-shadow: 3px 3px 3px #aaa;
+}
+
+lama|snippetMenuContent > .body {
+
+    position: absolute;
+
+    top: 0;
+    bottom: 36px;
+    right: 0;
+    left: 0;
+
+    min-width: auto;
+
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-left: 2px;
+
+    background-color: #fff;
+
+    overflow: auto;
+}
+
+lama|snippetMenuContent > .body > ul {
+
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    line-height: 29px;
+}
+
+lama|snippetMenuContent > .body > ul > li {
+
+    border: 0;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #efefef;
+
+    padding-left: 5px;
+    padding-right: 5px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+lama|snippetMenuContent > .body > ul > li:hover {
+
+    background-color: #ddd;
+
+    border-top: 1px solid #666;
+    border-bottom: 1px solid #666;
+}
+
+lama|snippetMenuContent > .body > ul > li:last-child:hover {
+
+    border-bottom: 1px solid #666;
+}
+
+lama|snippetMenuContent > .footer {
+
+    position: absolute;
+
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    height: 32px;
+
+    background-color: #efefef;
+
+    border-top: solid 1px #666;
+
+    margin-right: 2px;
+    margin-left: 2px;
+    margin-bottom: 2px;
+}
+
+lama|snippetMenuContent > .footer > lama|scrollbutton {
+
+}
+
+lama|snippetMenuContent > .footer > lama|scrollbutton[orientation="up"] {
+
+    top: 5px;
+    right: 5em;
+}
+
+lama|snippetMenuContent > .footer > lama|scrollbutton[orientation="up"] .icon::after {
+
+    /* This is the same as '&#8593' */
+    content: "\2191";
+}
+
+lama|snippetMenuContent > .footer > lama|scrollbutton[orientation="down"] {
+
+    top: 5px;
+    right: 3em;
+}
+
+lama|snippetMenuContent > .footer > lama|scrollbutton[orientation="down"] .icon::after {
+
+    /* This is the same as '&#8595' */
+    content: "\2193";
+}
+
+lama|snippetMenuContent[class~="overflowing"] .footer > lama|scrollbutton {
+
+    display: block;
+}

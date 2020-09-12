@@ -1,0 +1,27 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|statusbar {
+
+    display: block;
+    position: absolute;
+
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    left: 1px;
+
+    padding-left: 25px;
+
+    border: 1px solid #666;
+
+    cursor: pointer;
+
+    background-color: rgb(255, 215, 0);
+
+    font-size: 12px;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-weight: bold;
+
+    z-index: 27000;
+}

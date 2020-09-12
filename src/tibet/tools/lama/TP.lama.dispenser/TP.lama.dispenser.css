@@ -1,0 +1,45 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+lama|dispenser {
+
+    display: block;
+    position: absolute;
+
+    bottom: 0;
+    left: 32px;
+
+    width: 68px;
+    height: 18px;
+
+    margin-bottom: 5px;
+
+    line-height: 18px;
+
+    border: 1px solid #666;
+    border-bottom: 0;
+    border-radius: 5px;
+
+    background: white;
+}
+
+lama|dispenseritem {
+
+    display: block;
+    position: relative;
+
+    height: 14px;
+    width: 58px;
+
+    margin: 3px 4px;
+
+    border: 1px solid #666;
+    border-top: 1px dashed #666;
+
+    box-shadow: 1px 1px 2px #aaa;
+
+    background-color: white;
+
+    cursor: pointer;
+}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<lama:workbench>
+
+    <div class="header">
+        <div class="workbench-nav">
+            <button id="navigatehome" class="navigation" on:click="NavigateHome">
+                <xctrls:hint>Navigate Home</xctrls:hint>
+            </button>
+            <button id="navigateback" class="navigation" on:click="NavigateBack">
+                <xctrls:hint>Navigate Back</xctrls:hint>
+            </button>
+            <button id="navigateforward" class="navigation" on:click="NavigateForward">
+                <xctrls:hint>Navigate Forward</xctrls:hint>
+            </button>
+        </div>
+        <div class="workbench-path">
+            <div class="breadcrumbs">
+                <lama:breadcrumb id="LamaBreadcrumb"/>
+            </div>
+            <div class="bookmarks">
+                <button id="addbookmark" class="bookmarking" on:click="AddBookmark">
+                    <xctrls:hint>Add Bookmark</xctrls:hint>
+                </button>
+                <button id="showbookmarks" class="bookmarking" on:UIActivate="{signal: TogglePopup, payload: {contentURI: urn:tibet:TP.lama.bookmarkMenuContent, hideOn: UISelect, overlayID: BookmarksPopup, sticky: true}}">
+                    <xctrls:hint>Show Bookmarks</xctrls:hint>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <lama:inspector id="LamaInspector"/>
+    </div>
+
+    <div class="footer">
+        <lama:statusbar id="LamaStatusbar"/>
+        <div class="systemToolbar">
+            <button id="snippetMenuTrigger" on:UIActivate="{signal: TogglePopup, payload: {contentURI: urn:tibet:TP.lama.snippetMenuContent, hideOn: UISelect, overlayID: SnippetsPopup, sticky: true}}">
+                <xctrls:hint>Snippet menu</xctrls:hint>
+            </button>
+
+            <button class="spacer"/>
+
+            <xctrls:itemgroup id="workbenchProjectButtons" itemtoggle="false">
+                <xctrls:buttonitem id="TestButton" class="test" on:click="TSHTest">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>test</xctrls:value>
+                    <xctrls:hint>Test project</xctrls:hint>
+                </xctrls:buttonitem>
+                <xctrls:buttonitem id="BuildButton" class="build" on:click="TSHBuild">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>build</xctrls:value>
+                    <xctrls:hint>Build Project</xctrls:hint>
+                </xctrls:buttonitem>
+                <xctrls:buttonitem id="DeployButton" class="deploy" on:click="TSHDeploy">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>deploy</xctrls:value>
+                    <xctrls:hint>Deploy Project</xctrls:hint>
+                </xctrls:buttonitem>
+                <xctrls:buttonitem id="RefreshButton" class="refresh" on:click="TSHRefresh">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>refresh</xctrls:value>
+                    <xctrls:hint>Refresh Screen</xctrls:hint>
+                </xctrls:buttonitem>
+            </xctrls:itemgroup>
+
+            <button class="spacer"/>
+
+            <xctrls:itemgroup id="workbenchToggleButtons" multiple="true">
+                <xctrls:buttonitem id="haloToggleButton" class="halo" on:click="ToggleHalo">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>halo</xctrls:value>
+                    <xctrls:hint>Toggle Halo</xctrls:hint>
+                </xctrls:buttonitem>
+                <xctrls:buttonitem id="outlineToggleButton" class="outline" on:click="ToggleOutlines">
+                    <xctrls:label>&#160;</xctrls:label>
+                    <xctrls:value>outline</xctrls:value>
+                    <xctrls:hint>Toggle Outlines</xctrls:hint>
+                </xctrls:buttonitem>
+            </xctrls:itemgroup>
+
+            <button class="spacer"/>
+
+            <lama:dispenser id="LamaDispenser" dnd:vend="tofu"/>
+
+        </div>
+        <lama:toolbar/>
+    </div>
+
+    <lama:opener class="north west"/>
+
+    <lama:scrollbutton class="west" orientation="right" on:click="ScrollRight">
+        <span class="icon"/>
+    </lama:scrollbutton>
+    <lama:scrollbutton class="west" orientation="left" on:click="ScrollLeft">
+        <span class="icon"/>
+    </lama:scrollbutton>
+
+    <lama:opener class="north east"/>
+
+    <lama:scrollbutton class="east" orientation="right" on:click="ScrollRight">
+        <span class="icon"/>
+    </lama:scrollbutton>
+
+    <lama:scrollbutton class="east" orientation="left" on:click="ScrollLeft">
+        <span class="icon"/>
+    </lama:scrollbutton>
+</lama:workbench>

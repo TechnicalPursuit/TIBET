@@ -1,0 +1,30 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+.lama-hud {
+
+    --lama-hud-highlight-color: rgba(254, 214, 49, 0.3);
+}
+
+/* stylelint-disable selector-type-no-unknown */
+.lama-hud *|app {
+    /* stylelint-enable selector-type-no-unknown */
+
+    /* For highlighting below */
+    margin: 1px;
+
+    /* allow overflow so we can work with tools open around app tag */
+    overflow: auto;
+}
+
+.lama-hud.lama-hud-highlighting *.lama-hud-highlight,
+.lama-hud.lama-hud-highlighting *|*[class~="lama-hud-highlight"] {
+
+    background-color: var(--lama-hud-highlight-color) !important;
+}
+
+.lama-hud.lama-hud-highlighting tr.lama-hud-highlight {
+
+    background-color: var(--lama-hud-highlight-color) !important;
+}

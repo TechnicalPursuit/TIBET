@@ -1,0 +1,60 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|connector {
+
+    z-index: var(--tibet-CONNECTOR-TIER);
+}
+
+lama|connector div {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    display: none;
+
+    background-color: black;
+
+    pointer-events: none;
+}
+
+lama|connector div[part="horizontal"] {
+
+    width: 1px;
+
+    /* This matches the 'connector thickness' setting in the connector
+        JavaScript code */
+    height: var(--lama-connector-thickness);
+}
+
+lama|connector div[part="vertical"] {
+
+    /* This matches the 'connector thickness' setting in the connector
+        JavaScript code */
+    width: var(--lama-connector-thickness);
+
+    height: 1px;
+}
+
+lama|connector div[part="launchpad"] {
+
+    /* These all match the 'launch size' setting in the connector JavaScript
+        code */
+    width: var(--lama-connector-launchsize);
+
+    height: var(--lama-connector-launchsize);
+
+    clip: rect(0 var(--lama-connector-launchsize) var(--lama-connector-launchsize) 0);
+}
+
+lama|connector div[part="destination"] {
+
+    background-color: transparent;
+
+    width: 1px;
+    height: 2px;
+
+    border: solid 2px black;
+}

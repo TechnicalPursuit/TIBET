@@ -1,0 +1,60 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+lama|splitbar {
+
+    position: absolute;
+
+    top: 50%;
+    height: 18px;
+    left: 0;
+    right: 0;
+    width: auto;
+
+    margin-top: -9px;
+    z-index: 1;
+
+    background: #f9f9f9;
+}
+
+lama|splitbar > .handle {
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    height: 10px;
+    width: 10px;
+
+    margin-top: -6px;
+    margin-left: -6px;
+
+    border-radius: 8px;
+    border: 1px solid #666;
+
+    background-color: white;
+
+    z-index: 1;
+}
+
+lama|splitbar > .handle:hover {
+
+    background-color: gold;
+}
+
+lama|splitbar > .bar {
+
+    position: relative;
+
+    top: 9px;
+
+    height: 1px;
+
+    background-color: #666;
+
+    border-bottom: 1px solid white;
+
+    margin: 0;
+}

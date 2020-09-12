@@ -1,0 +1,41 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+
+lama|positionManipulator {
+
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: var(--tibet-HALO-POPUP-TIER);
+}
+
+lama|positionManipulator #offsetparentoutline {
+
+    position: absolute;
+    border: dotted 2px orange;
+}
+
+lama|positionManipulator .guide {
+
+    position: absolute;
+}
+
+lama|positionManipulator #offsetguide {
+
+    width: 25%;
+    background: linear-gradient(to top right, transparent calc(50% - 1px), red, transparent calc(50% + 1px));
+}
+
+lama|positionManipulator .readout {
+
+    width: 10em;
+    height: 1.5em;
+
+    color: red;
+
+    padding-top: 5px;
+    padding-left: 5px;
+
+    border: none;
+}

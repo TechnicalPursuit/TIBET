@@ -1,0 +1,53 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+lama|domhud_TP_http_serviceContent {
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    margin: 2px 0 0 4px;
+
+    overflow: auto;
+}
+
+lama|domhud_TP_http_serviceContent .dom_attributes {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 100%;
+
+    padding: 4px;
+
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    grid-auto-rows: 30px;
+}
+
+lama|domhud_TP_http_serviceContent .dom_attributes label {
+
+    padding-top: 5px;
+}
+
+lama|domhud_TP_http_serviceContent .dom_attributes label > a {
+
+    color: inherit;
+    text-decoration: none;
+}
+
+lama|domhud_TP_http_serviceContent .dom_attributes label > a:hover {
+
+    font-weight: bold;
+}
+
+lama|domhud_TP_http_serviceContent .dom_attributes input.propName {
+
+    width: calc(100% - 11px);
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}

@@ -1,0 +1,83 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|typedisplay {
+
+    display: block;
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    overflow: auto;
+}
+
+lama|typedisplay > .body {
+
+    font-size: 10px;
+
+    width: 100%;
+    min-height: 100%;
+
+    line-height: 1.3;
+}
+
+lama|typedisplay > .body .section {
+
+    min-height: 3em;
+}
+
+lama|typedisplay > .body .section:last-child {
+
+    margin-bottom: 0;
+}
+
+lama|typedisplay > .body .header {
+
+    font-size: 130%;
+    font-weight: bold;
+
+    line-height: 2;
+
+    background-color: gold;
+
+    text-align: center;
+}
+
+lama|typedisplay > .body .content {
+
+    font-size: 120%;
+
+    text-align: center;
+}
+
+lama|typedisplay .content > table {
+
+    width: 100%;
+}
+
+lama|typedisplay .content th,
+lama|typedisplay .content td {
+
+    max-width: 175px;
+
+    padding: 4px;
+    border: 1px solid gold;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+lama|typedisplay .content td:hover {
+
+    background-color: cornsilk;
+    cursor: pointer;
+}
+
+lama|inspectoritem[childtype="lama:typedisplay"] {
+
+    /* CSS custom property */
+    --lama-inspector-width: 2;
+}

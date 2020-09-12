@@ -1,0 +1,27 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+lama|typesToolbarContent {
+
+    display: flex;
+
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+
+    height: 100%;
+}
+
+lama|typesToolbarContent > button.addtype {
+
+    width: 24px;
+    height: 24px;
+
+    margin: 0;
+
+    background-color: transparent;
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+}

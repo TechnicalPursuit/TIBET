@@ -1,0 +1,190 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|styleshud {
+
+    width: 100%;
+    height: 100%;
+
+    background: white;
+}
+
+lama|styleshud > ul {
+
+    position: absolute;
+
+    top: 39px;
+    right: 0;
+    bottom: 8px;
+    left: 0;
+
+    height: auto;
+    width: auto;
+
+    margin: 0;
+    padding: 0;
+
+    color: #666;
+
+    font-size: 60%;
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-weight: normal;
+
+    overflow: auto;
+}
+
+/* All items */
+
+lama|styleshud > ul.content > li.item {
+
+    margin: 1px 8px;
+
+    padding-left: 1.5em;
+}
+
+/* Selector items */
+
+lama|styleshud > ul.content > li.selector {
+
+    height: 1.75em;
+    line-height: 1.75em;
+
+    border: 1px solid #666;
+    border-radius: 5px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+lama|styleshud > ul.content > li.selector:hover {
+
+    background-color: #cdd7e2;
+
+    color: black;
+}
+
+lama|styleshud > ul.content > li.selector[pclass|selected] {
+
+    background-color: #91a9c0;
+
+    color: black;
+
+    border: 1px solid black;
+}
+
+lama|styleshud > ul.content > li.selector[pclass|selected]:hover {
+
+    background-color: #91a9c0;
+}
+
+lama|styleshud > ul.content > li.selector span.lock {
+
+    background-image: url("../media/ic_lock_black_24px.svg");
+
+    position: absolute;
+
+    left: 11px;
+
+    width: 12px;
+    height: 12px;
+
+    background-size: 12px 12px;
+
+    margin-top: 3px;
+}
+
+/* Cascaded item */
+
+lama|styleshud > ul.content > li.cascaded {
+
+    height: 1.75em;
+    line-height: 1.75em;
+
+    border: 1px solid #666;
+    border-radius: 5px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+/* spacer items */
+
+lama|styleshud > ul.content > li.spacer {
+
+    background-color: transparent;
+
+    height: 4px;
+
+    border: none;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    cursor: default;
+}
+
+lama|styleshud > ul.content > li.spacer.lama-styleshud-droptarget {
+
+    background-color: #91a9c0;
+}
+
+lama|styleshud > ul.content > li.selector.lama-styleshud-droptarget {
+
+    font-weight: bold;
+
+    border: 1px dashed black;
+
+    box-shadow: 2px 2px 2px #e0e0e0;
+}
+
+lama|styleshud > ul.content > li.selector.lama-styleshud-droptarget[pclass|selected] {
+
+    font-weight: bold;
+}
+
+lama|styleshud > ul.content > li.selector.lama-styleshud-droptarget[pclass|selected]:hover {
+
+    font-weight: bold;
+}
+
+/* We omitted 'lama|tile' here because of this bug in stylelint:
+ * https://github.com/stylelint/stylelint/issues/2711
+ */
+
+#StyleSummary_Tile {
+
+    min-width: 300px;
+    min-height: 270px;
+}
+
+#StyleSummary_Tile > .body {
+
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-size: 100%;
+
+    background: white;
+    padding: 8px;
+}
+
+#StyleSummary_Tile > .header {
+
+    background: #cdd7e2;
+}
+
+#StyleSummary_Tile > .header > .minimize_mark {
+
+    visibility: hidden;
+}
+
+#StyleSummary_Tile > .footer {
+
+    background: #f9f9f9;
+}

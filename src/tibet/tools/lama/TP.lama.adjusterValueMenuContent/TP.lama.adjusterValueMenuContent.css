@@ -1,0 +1,75 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+lama|adjusterValueMenuContent {
+
+    display: block;
+
+    position: absolute;
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+
+    width: max-content;
+    height: 10em;
+
+    min-width: 10em;
+    min-height: 1em;
+
+    background-color: white;
+
+    border: 1px solid #666;
+    border-radius: 5px;
+
+    box-shadow: 3px 3px 3px #aaa;
+
+    overflow: auto;
+}
+
+lama|adjusterValueMenuContent > .body {
+
+}
+
+lama|adjusterValueMenuContent > .body > ul {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
+
+    margin: 5px;
+    padding: 0;
+}
+
+lama|adjusterValueMenuContent > .body > ul > li {
+
+    display: block;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    text-align: center;
+
+    cursor: pointer;
+}
+
+lama|adjusterValueMenuContent > .body > ul > li:hover {
+
+    text-decoration: underline;
+}
+
+/*
+lama|adjusterValueMenuContent > .body > ul > li:hover {
+
+    background-color: #ddd;
+
+    border-top: 1px solid #666;
+    border-bottom: 1px solid #666;
+}
+
+lama|adjusterValueMenuContent > .body > ul > li:last-child:hover {
+
+    border-bottom: 1px solid #666;
+}
+*/

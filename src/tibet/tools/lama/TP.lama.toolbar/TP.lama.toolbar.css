@@ -1,0 +1,21 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+lama|toolbar {
+
+    display: block;
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    height: 30px;
+
+    margin-right: 30px;
+}
+
+div[tibet|tag="lama:drawer"][pclass|closed] lama|toolbar {
+
+    display: none;
+}

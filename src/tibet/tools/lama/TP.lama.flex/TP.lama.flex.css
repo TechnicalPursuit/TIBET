@@ -1,0 +1,12 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|flex {
+
+    display: flex;
+}
+
+lama|flex > * {
+
+    flex: 1;
+}

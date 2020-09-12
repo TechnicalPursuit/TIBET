@@ -1,0 +1,266 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+lama|changes {
+
+    display: block;
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+}
+
+lama|changes > .header {
+
+    position: absolute;
+
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+
+    height: 30px;
+
+    border: 0;
+    border-top-left-radius: 5px;
+
+    background-color: #efefef;
+}
+
+lama|changes > .header > lama|count[name="client"] {
+
+    position: absolute;
+
+    left: 50%;
+
+    margin-left: -52px;
+}
+
+lama|changes > .header > lama|sync {
+
+    position: absolute;
+
+    left: 50%;
+
+    margin-left: -11px;
+}
+
+lama|changes > .header > lama|count[name="server"] {
+
+    position: absolute;
+
+    left: 50%;
+
+    margin-left: 20px;
+}
+
+lama|changes > .content {
+
+    position: absolute;
+
+    top: 31px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    min-width: 0;
+    max-width: none;
+
+    background-color: white;
+
+    border-top: 1px solid #aaa;
+}
+
+lama|changes > .content > span {
+
+    line-height: 2em;
+
+    margin: 0;
+    padding: 0;
+}
+
+lama|changes > .content > xctrls|panelbox {
+
+    width: 100%;
+    height: 100%;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|content .title {
+
+    position: absolute;
+
+    left: 0;
+    margin-top: 6px;
+    margin-left: 20px;
+
+    height: 1.5em;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|content #watchRemoteChanges {
+
+    position: absolute;
+
+    right: 220px;
+
+    height: 1.5em;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|content #processRemoteChanges {
+
+    position: absolute;
+
+    right: 20px;
+
+    height: 1.5em;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|content #PushAllButton {
+
+    position: absolute;
+
+    right: 20px;
+
+    height: 1.5em;
+
+    line-height: 1;
+
+    border: 0;
+
+    box-shadow: none;
+
+    text-decoration: underline;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|content #PushAllButton:focus {
+
+    background: cornsilk;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|content #PushAllButton:hover {
+
+    background: gold;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|content xctrls|list {
+
+    position: absolute;
+
+    top: 2.2em;
+    right: 0;
+    bottom: 2.2em;
+    left: 0;
+
+    width: auto;
+    height: auto;
+
+    min-height: auto;
+    margin: 0 20px 4px;
+
+    line-height: 2em;
+    border-radius: 0;
+    border: 0;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|list xctrls|textitem {
+
+    border-right: 0;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|list xctrls|textitem:first-child {
+
+    border-top: #efefef;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|list xctrls|textitem button {
+
+    position: absolute;
+    display: none;
+
+    right: 5px;
+
+    font-size: 75%;
+
+    margin: 0;
+    margin-top: 2px;
+
+    padding-top: 0;
+
+    vertical-align: middle;
+
+    border: 0;
+    box-shadow: none;
+}
+
+lama|changes #LamaChangesPanelbox xctrls|list xctrls|textitem:hover button {
+
+    display: inline-block;
+}
+
+lama|changes > .header > .trigger.button {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    width: 42px;
+    height: 30px;
+
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    background-size: 20px;
+    background-position: 12px;
+    background-repeat: no-repeat;
+
+    background-image: url("~ide_root/media/ic_change_history_black_24px.svg");
+
+    cursor: pointer;
+}
+
+lama|changes > .header > .trigger.button:hover {
+
+    background-color: gold;
+
+    color: #333;
+}
+
+@keyframes pulse {
+
+    0% {
+        background: transparent;
+    }
+
+    50% {
+        background: gold;
+    }
+
+    100% {
+        background: transparent;
+    }
+}
+
+lama|count[class~="contentrefreshed"] {
+
+    animation: pulse 2s ease-in-out alternate;
+}
+
+/*
+ * if the right side (containing changes) is closed then we can only view the
+ * trigger, not the rest of the header components (like toggle etc).
+ */
+#background:not(.edge-east-open) lama|changes > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.south.east.corner[pclass|closed] lama|changes > .content {
+
+    display: none;
+}
+
+#background:not(.edge-east-open) .framing.corner:not([pclass|closed]) lama|changes > .header > * {
+
+    display: block;
+}

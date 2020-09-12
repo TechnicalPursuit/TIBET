@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+
+    <title>TIBET 5.0</title>
+
+    <!-- Resets for various browsers -->
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet_reset.css"/>
+
+    <!-- Baseline TIBET CSS -->
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <!-- app/devtool framing -->
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet_framing.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_deps/codemirror/lib/codemirror.css"/>
+    <link type="text/css" rel="stylesheet" href="~ide_root/cm_theme/elegant.css"/>
+
+    <!-- Note the alternate value for the 'type' attribute here - this is
+        because this file contains TIBET extended syntax (in this case, embedded
+        virtual URIs).
+    -->
+    <link type="text/x-tibet-css" rel="stylesheet" href="~ide_root/styles/lama_framing.css"/>
+
+    <link type="text/x-tibet-css" rel="stylesheet" href="~ide_root/styles/lama_xctrls.css"/>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <!-- Common data structures -->
+
+    <tibet:data name="urn:tibet:dom_attr_data_blank">
+        <![CDATA[
+        {"tagAttrName":"", "tagAttrValue":""}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:style_prop_data_blank">
+        <![CDATA[
+        {"rulePropName":"", "rulePropValue":""}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:sig_payload_data_blank">
+        <![CDATA[
+        {"payloadEntryName":"", "payloadEntryValue":""}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:bind_expr_data_blank">
+        <![CDATA[
+        {"attributeName": "bind:io", "expressionAspect":"", "expressionValue":""}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:deploy_prop_data_blank">
+        <![CDATA[
+        {"propName":"", "propValue":""}
+        ]]>
+    </tibet:data>
+
+</head>
+<body xmlns:pclass="urn:tibet:pseudoclass">
+
+<div id="background" class="noselect">
+
+    <lama:hud pclass:closed="true">
+
+        <div id="northwest" tibet:tag="lama:drawer" class="framing corner north west" pclass:closed="true" pclass:hidden="true">
+            <lama:about/>
+        </div>
+
+        <div id="north" tibet:tag="lama:drawer" class="framing h-edge north center" pclass:closed="true" pclass:hidden="true">
+            <lama:workbench id="LamaWorkbench"/>
+            <div id="northResizer" class="h-resizer" drag:resizer="true" drag:side="BOTTOM" drag:item="../.." drag:workers="ALTER_SHERPA_CUSTOM_PROPERTY" drag:property="--lama-drawer-north-open-height"/>
+        </div>
+
+        <div id="northeast" tibet:tag="lama:drawer" class="framing corner north east" pclass:closed="true" pclass:hidden="true">
+           <lama:settings/>
+        </div>
+
+        <div id="west" tibet:tag="lama:drawer" class="framing v-edge middle west" pclass:closed="true" pclass:hidden="true">
+            <lama:opener class="west">
+                <xctrls:hint>DOM</xctrls:hint>
+            </lama:opener>
+            <lama:splitbox>
+                <lama:domhud id="DOMHUD"/>
+                <lama:splitbar/>
+                <lama:styleshud id="StylesHUD"/>
+            </lama:splitbox>
+            <lama:opener class="west">
+                <xctrls:hint>Styles</xctrls:hint>
+            </lama:opener>
+        </div>
+
+        <div id="center" class="middle center fullscreen">
+            <div id="content">
+                <!-- This will be moved with the arrival of the <lama:world/> tag. SCREEN_O will remain the default screen. This content div will then be repurposed to be the 'tools layer'. -->
+                <iframe id="SCREEN_0" frameborder="0"></iframe>
+            </div>
+        </div>
+
+        <div id="east" tibet:tag="lama:drawer" class="framing v-edge middle east" pclass:closed="true" pclass:hidden="true">
+            <lama:opener class="east">
+                <xctrls:hint>Responders</xctrls:hint>
+            </lama:opener>
+            <lama:splitbox>
+                <lama:respondershud id="RespondersHUD"/>
+                <lama:splitbar/>
+                <lama:bindshud id="BindsHUD"/>
+            </lama:splitbox>
+            <lama:opener class="east">
+                <xctrls:hint>Binds</xctrls:hint>
+            </lama:opener>
+        </div>
+
+        <div id="southwest" tibet:tag="lama:drawer" class="framing corner south west" pclass:closed="true" pclass:hidden="true">
+           <lama:screens/>
+        </div>
+
+        <div id="south" tibet:tag="lama:drawer" class="framing h-edge south center" pclass:closed="true" pclass:hidden="true">
+            <div id="southResizer" class="h-resizer" drag:resizer="true" drag:side="TOP" drag:item="../.." drag:workers="ALTER_SHERPA_CUSTOM_PROPERTY" drag:property="--lama-drawer-south-open-height"/>
+            <xctrls:tabbar id="LamaConsoleTabbar" bind:io="{data: urn:tibet:lama_south_drawer_tabs, value: urn:tibet:lama_current_south_drawer_tab#tibet(selection)}" tibet:ctrl="LamaConsole" tooltips="true">
+                <tibet:template>
+                    <xctrls:tabitem>
+                        <xctrls:label>[[value.1]]</xctrls:label>
+                        <div class="close_mark" on:click="RemoveConsoleTab"/>
+                        <xctrls:value>[[value.0]]</xctrls:value>
+                    </xctrls:tabitem>
+                </tibet:template>
+            </xctrls:tabbar>
+            <div class="statusReadout" tibet:no-mutations="true">
+                <div id="mouseReadout"></div>
+                <div id="keyboardReadout"></div>
+            </div>
+            <xctrls:panelbox id="LamaConsolePanelbox" bind:in="urn:tibet:lama_current_south_drawer_tab#tibet(selection)">
+                <xctrls:panel>
+                    <xctrls:value>TSH</xctrls:value>
+                    <xctrls:content/>
+                </xctrls:panel>
+            </xctrls:panelbox>
+
+            <lama:opener class="south west"/>
+            <lama:opener class="south east"/>
+            <div name="outputmode" class="indicator" onclick="TP.byId('LamaConsole', TP.sys.getUIRoot()).increaseOutputDisplayMode()">
+                &#160;
+                <xctrls:hint>Change mode</xctrls:hint>
+            </div>
+            <div id="doit" class="doit" onclick="TP.signal(null, 'TP.sig.ConsoleInput', TP.hc('useLastIfEmpty', true))">
+                <xctrls:hint>Execute input</xctrls:hint>
+            </div>
+            <button id="addsnippet" on:click="AddSnippet" tibet:ctrl="LamaConsole">
+                <xctrls:hint>Add Snippet</xctrls:hint>
+            </button>
+        </div>
+
+        <div id="southeast" tibet:tag="lama:drawer" class="framing corner south east" pclass:closed="true" pclass:hidden="true">
+            <lama:changes/>
+        </div>
+
+        <lama:connector id="LamaConnector"/>
+
+        <xctrls:notifier id="LamaNotifier"/>
+        <xctrls:value id="LamaNotifierContent"/>
+
+        <xctrls:dialog id="systemDialog" modal="true" curtainID="systemCurtain"/>
+
+        <div id="commonTileLayer"/>
+
+        <xctrls:list id="TSHCompleterList" pclass:hidden="true"/>
+
+        <lama:toggle/>
+
+    </lama:hud>
+
+</div>
+
+<xctrls:curtain id="systemCurtain"/>
+
+</body>
+</html>
