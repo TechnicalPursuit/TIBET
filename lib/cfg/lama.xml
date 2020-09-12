@@ -1,0 +1,237 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="lama" default="base" basedir="~ide_root">
+
+<config id="base">
+
+    <script src="~lib_deps/d3-interpolate-tpi.min.js"
+        if="boot.minified"  no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/d3-interpolate-tpi.js"
+        unless="boot.minified" no-lint="no-lint"/>
+
+    <script src="./src/TP.lama.Element.js"/>
+
+    <script src="./src/TP.tibet.lama.js"/>
+
+    <script src="./src/TP.lama.IDE.js"/>
+
+    <script src="./src/TP.lama.ConsoleService.js"/>
+
+    <script src="./src/TP.lama.pp.js"/>
+
+    <script src="./src/TP.log.LamaLayout.js"/>
+    <script src="./src/TP.log.LamaTestLogLayout.js"/>
+    <script src="./src/TP.log.LamaAppender.js"/>
+    <script src="./src/TP.log.LamaTestAppender.js"/>
+
+    <script src="./src/TP.lama.menucontent.js"/>
+    <script src="./src/TP.lama.hudsidebar.js"/>
+
+    <script src="./src/TP.lama.ToolAPI.js"/>
+
+    <script src="./src/TP.lama.canvastool.js"/>
+    <script src="./src/TP.lama.manipulator.js"/>
+
+    <script src="./TP.lama.groupingtool/TP.lama.groupingTool.js"/>
+
+    <script src="./TP.lama.dimensionsManipulator/TP.lama.dimensionsManipulator.js"/>
+    <script src="./TP.lama.gridManipulator/TP.lama.gridManipulator.js"/>
+    <script src="./TP.lama.positionManipulator/TP.lama.positionManipulator.js"/>
+
+    <script src="./TP.lama.about/TP.lama.about.js"/>
+    <script src="./TP.lama.adjuster/TP.lama.adjuster.js"/>
+    <script src="./TP.lama.connector/TP.lama.connector.js"/>
+    <script src="./TP.lama.console/TP.lama.console.js"/>
+    <script src="./TP.lama.halo/TP.lama.halo.js"/>
+    <script src="./TP.lama.computedTagContextMenuContent/TP.lama.computedTagContextMenuContent.js"/>
+    <script src="./TP.lama.templatedTagContextMenuContent/TP.lama.templatedTagContextMenuContent.js"/>
+    <script src="./TP.lama.hud/TP.lama.hud.js"/>
+    <script src="./TP.lama.world/TP.lama.world.js"/>
+    <script src="./TP.lama.screen/TP.lama.screen.js"/>
+    <script src="./TP.lama.flex/TP.lama.flex.js"/>
+    <script src="./TP.lama.toggle/TP.lama.toggle.js"/>
+    <script src="./TP.lama.tile/TP.lama.tile.js"/>
+    <script src="./TP.lama.breadcrumb/TP.lama.breadcrumb.js"/>
+    <script src="./TP.lama.urieditor/TP.lama.urieditor.js"/>
+    <script src="./TP.lama.methodeditor/TP.lama.methodeditor.js"/>
+    <script src="./TP.lama.typedisplay/TP.lama.typedisplay.js"/>
+    <script src="./TP.lama.drawer/TP.lama.drawer.js"/>
+    <script src="./TP.lama.tofu/TP.lama.tofu.js"/>
+    <script src="./TP.lama.workbench/TP.lama.workbench.js"/>
+    <script src="./TP.lama.opener/TP.lama.opener.js"/>
+    <script src="./TP.lama.screens/TP.lama.screens.js"/>
+    <script src="./TP.lama.scrollbutton/TP.lama.scrollbutton.js"/>
+    <script src="./TP.lama.splitbox/TP.lama.splitbox.js"/>
+    <script src="./TP.lama.splitbar/TP.lama.splitbar.js"/>
+    <script src="./TP.lama.dispenser/TP.lama.dispenser.js"/>
+    <script src="./TP.lama.dispenseritem/TP.lama.dispenseritem.js"/>
+    <script src="./TP.lama.readout/TP.lama.readout.js"/>
+    <script src="./TP.lama.consoleoutput/TP.lama.consoleoutput.js"/>
+    <script src="./TP.lama.halocontextmenu/TP.lama.halocontextmenu.js"/>
+    <script src="./TP.lama.hudcontextmenu/TP.lama.hudcontextmenu.js"/>
+
+    <script src="./TP.lama.domhud/TP.lama.domhud.js"/>
+    <script src="./TP.lama.domhudContextMenuContent/TP.lama.domhudContextMenuContent.js"/>
+    <script src="./TP.lama.domhudItemContextMenuContent/TP.lama.domhudItemContextMenuContent.js"/>
+
+    <script src="./TP.lama.respondershud/TP.lama.respondershud.js"/>
+    <script src="./TP.lama.respondershudContextMenuContent/TP.lama.respondershudContextMenuContent.js"/>
+    <script src="./TP.lama.respondershudItemContextMenuContent/TP.lama.respondershudItemContextMenuContent.js"/>
+
+    <script src="./TP.lama.styleshud/TP.lama.styleshud.js"/>
+    <script src="./TP.lama.styleshudContextMenuContent/TP.lama.styleshudContextMenuContent.js"/>
+    <script src="./TP.lama.styleshudItemContextMenuContent/TP.lama.styleshudItemContextMenuContent.js"/>
+
+    <script src="./TP.lama.bindshud/TP.lama.bindshud.js"/>
+    <script src="./TP.lama.bindshudContextMenuContent/TP.lama.bindshudContextMenuContent.js"/>
+    <script src="./TP.lama.bindshudItemContextMenuContent/TP.lama.bindshudItemContextMenuContent.js"/>
+
+    <script src="./TP.lama.inspector/TP.lama.inspector.js"/>
+
+    <script src="./TP.lama.inspector/TP.lama.AppRootInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.TSHRootInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.TDSRootInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.TWSRootInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.RemoteRootInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.SupportRootInspectorSource.js"/>
+
+    <script src="./TP.lama.inspector/couch/TP.lama.CouchDBRootInspectorSource.js"/>
+    <script src="./TP.lama.inspector/couch/TP.lama.CouchDBSubInspectorSources.js"/>
+
+    <script src="./TP.lama.inspector/aws/TP.lama.AWSRootInspectorSource.js"/>
+    <script src="./TP.lama.inspector/aws/TP.lama.AWSSubInspectorSources.js"/>
+
+    <script src="./TP.lama.inspector/salesforce/TP.lama.SalesforceRootInspectorSource.js"/>
+    <script src="./TP.lama.inspector/salesforce/TP.lama.SalesforceSubInspectorSources.js"/>
+
+    <script src="./TP.lama.inspector/TP.lama.TIBETConfigListInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.TIBETLocalStorageListInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.TIBETSessionStorageListInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.TIBETSignalMapListInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.TIBETRouteListInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.TIBETTypeListInspectorSource.js"/>
+    <script src="./TP.lama.inspector/TP.lama.TIBETURIListInspectorSource.js"/>
+
+    <script src="./TP.lama.inspector/TP.lama.RouteEntryInspectorSource.js"/>
+
+    <script src="./TP.lama.inspectoritem/TP.lama.inspectoritem.js"/>
+
+    <script src="./TP.lama.outliner/TP.lama.outliner.js"/>
+    <script src="./TP.lama.changes/TP.lama.changes.js"/>
+    <script src="./TP.lama.count/TP.lama.count.js"/>
+    <script src="./TP.lama.sync/TP.lama.sync.js"/>
+    <script src="./TP.lama.settings/TP.lama.settings.js"/>
+    <script src="./TP.lama.statusbar/TP.lama.statusbar.js"/>
+    <script src="./TP.lama.bookmarkMenuContent/TP.lama.bookmarkMenuContent.js"/>
+    <script src="./TP.lama.snippetMenuContent/TP.lama.snippetMenuContent.js"/>
+    <script src="./TP.lama.toolbar/TP.lama.toolbar.js"/>
+    <script src="./TP.lama.typeToolbarContent/TP.lama.typeToolbarContent.js"/>
+    <script src="./TP.lama.typesToolbarContent/TP.lama.typesToolbarContent.js"/>
+    <script src="./TP.lama.methodsToolbarContent/TP.lama.methodsToolbarContent.js"/>
+    <script src="./TP.lama.urisToolbarContent/TP.lama.urisToolbarContent.js"/>
+    <script src="./TP.lama.uriEditorToolbarContent/TP.lama.uriEditorToolbarContent.js"/>
+    <script src="./TP.lama.methodEditorToolbarContent/TP.lama.methodEditorToolbarContent.js"/>
+    <script src="./TP.lama.elementContextMenuContent/TP.lama.elementContextMenuContent.js"/>
+
+    <script src="./TP.lama.tofuInsertionAssistant/TP.lama.tofuInsertionAssistant.js"/>
+
+    <script src="./TP.lama.bindingConnectionAssistant/TP.lama.bindingConnectionAssistant.js"/>
+
+    <script src="./TP.lama.signalConnectionAssistant/TP.lama.signalConnectionAssistant.js"/>
+
+    <script src="./TP.lama.domhud/plugins/TP.lama.domhud_elementContent.js"/>
+    <script src="./TP.lama.domhud/plugins/TP.lama.domhud_genericElementContent/TP.lama.domhud_genericElementContent.js"/>
+    <script src="./TP.lama.domhud/plugins/TP.lama.domhud_TP_http_serviceContent/TP.lama.domhud_TP_http_serviceContent.js"/>
+
+    <script src="./TP.lama.styleshud/plugins/TP.lama.styleshud_ruleContent/TP.lama.styleshud_ruleContent.js"/>
+
+    <script src="./TP.lama.adjuster/TP.lama.adjuster_editor/TP.lama.adjuster_editor.js"/>
+    <script src="./TP.lama.adjuster/TP.lama.adjuster_editor/plugins/TP.lama.adjuster_genericPropertyEditor/TP.lama.adjuster_genericPropertyEditor.js"/>
+    <script src="./TP.lama.adjuster/TP.lama.adjuster_editor/plugins/TP.lama.adjuster_genericPropertyEditor/CustomEditors.js"/>
+
+    <script src="./TP.lama.adjusterNameMenuContent/TP.lama.adjusterNameMenuContent.js"/>
+    <script src="./TP.lama.adjusterValueMenuContent/TP.lama.adjusterValueMenuContent.js"/>
+
+    <script src="./TP.lama.formBuilderAssistant/TP.lama.formBuilderAssistant.js"/>
+
+    <script src="./TP.lama.couchDocumentURIInsertionAssistant/TP.lama.couchDocumentURIInsertionAssistant.js"/>
+    <script src="./TP.lama.couchViewURIInsertionAssistant/TP.lama.couchViewURIInsertionAssistant.js"/>
+
+    <!-- These may create subtypes defined in TP.lama.inspector.js, so we need
+         to place them *after* that in the load order. -->
+    <script src="./src/TIBETNativeTypes_Additions.js"/>
+    <script src="./src/TP.dom.Node_Additions.js"/>
+    <script src="./src/TP.uri.URI_Additions.js"/>
+    <script src="./src/TP.html_Additions.js"/>
+    <script src="./src/TP.lang.RootObject_Additions.js"/>
+    <script src="./src/TP.lang.Namespace_Additions.js"/>
+    <script src="./src/TP.xctrls_Additions.js"/>
+    <script src="./src/TP.http_Additions.js"/>
+
+    <script src="~lib_deps/csstree-tpi.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('csstree', window.csstree);
+        ]]>
+    </script>
+
+    <script src="~lib_deps/mutation-summary-tpi.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.registerExternalObject('MutationSummary', window.MutationSummary);
+        ]]>
+    </script>
+
+    <resource href="~ide_root/xhtml/lama_framing.xhtml"/>
+    <resource href="~ide_root/xhtml/lama_console_templates.xhtml"/>
+
+    <resource href="~ide_root/styles/lama_xctrls.css"/>
+    <resource href="~ide_root/styles/lama_pp.css"/>
+
+    <resource href="~ide_root/schema/tibet_tooling_types.json"/>
+
+    <resource href="~ide_root/TP.lama.tofuInsertionAssistant/insertion_templates.xml"/>
+    <resource href="~ide_root/TP.lama.adjuster/css-schema.xml"/>
+    <resource href="~ide_root/TP.lama.inspector/couch/auth_panel.xhtml"/>
+    <resource href="~ide_root/TP.lama.inspector/aws/auth_panel.xhtml"/>
+
+    <resource href="~ide_root/TP.lama.halo/TP.lama.halo_injected.css"/>
+    <resource href="~ide_root/TP.lama.hud/TP.lama.hud_injected.css"/>
+    <resource href="~ide_root/TP.lama.groupingtool/TP.lama.grouping_injected.css"/>
+    <resource href="~ide_root/TP.lama.outliner/TP.lama.outliner_injected.css"/>
+
+    <resource href="~ide_root/media/ic_list_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_home_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_play_arrow_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_keyboard_arrow_right_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_keyboard_arrow_left_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_playlist_add_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_change_history_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_playlist_play_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_traffic_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_build_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_cloud_upload_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_format_shapes_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_code_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_settings_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/baseline-cached-24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/baseline-view_module-24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/baseline-dashboard-24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_add_circle_outline_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_sync_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_crop_free_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_filter_1_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_filter_none_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/ic_assignment_turned_in_black_24px.svg" no-inline="true"/>
+    <resource href="~ide_root/media/call49.svg" no-inline="true"/>
+
+    <resource href="~ide_root/cm_theme/elegant.css" no-inline="true"/>
+
+    <resource href="~lib_fonts/inconsolata-v12-latin-ext_latin-regular.woff2" no-inline="true"/>
+    <resource href="~lib_fonts/inconsolata-v12-latin-ext_latin-700.woff2" no-inline="true"/>
+
+</config>
+
+</package>
+
