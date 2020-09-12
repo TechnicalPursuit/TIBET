@@ -5521,7 +5521,7 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  one or more origins are required. warn if we don't get an array.
     if (!TP.isArray(originSet)) {
-        //  TODO: this causes sherpa logging to recurse endlessly due to furing
+        //  TODO: this causes lama logging to recurse endlessly due to furing
         //  DOMContentLoaded without an origin array every time it appends.
         // TP.ifWarn() ? TP.warn('DOM firing without origin array: ' +
             // TP.ifEmpty(sig.getSignalName(), TP.ANY)) : 0;
@@ -5532,7 +5532,7 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  set up the signal name, using TP.ANY if we can't get one
     if (TP.isEmpty(signame = sig.getSignalName())) {
-        //  TODO: this can potentially cause sherpa to recurse. commented out
+        //  TODO: this can potentially cause lama to recurse. commented out
         //  for now. see comments in earlier block.
         // TP.ifWarn() ? TP.warn('DOM firing without signal name from: ' +
         //    origins.join(', ')) : 0;

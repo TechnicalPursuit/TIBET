@@ -1,0 +1,9 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+.lama-grouping-grouped,
+*[class~="lama-grouping-grouped"] {
+
+    outline: dashed 2px red;
+}

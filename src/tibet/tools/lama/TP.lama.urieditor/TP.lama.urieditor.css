@@ -1,0 +1,156 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|urieditor {
+
+    display: flex;
+    position: absolute;
+
+    flex-direction: column;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+lama|urieditor > .body {
+
+    position: relative;
+
+    flex-grow: 1;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+lama|urieditor > .body .schemaDisplay .jsonPropName {
+
+    font-weight: bold;
+}
+
+lama|urieditor > .body .schemaDisplay .jsonPropName:hover {
+
+    outline: solid 1px black;
+}
+
+lama|urieditor > .body .schemaDisplay .jsonPropName[lama|connector-activated] {
+
+    outline: solid 2px black;
+}
+
+lama|urieditor > .head {
+
+    left: 0;
+    right: 0;
+}
+
+lama|urieditor > .foot {
+
+    display: none;
+
+    justify-content: flex-end;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    border-top: dotted 1px black;
+}
+
+lama|urieditor[detached] > .foot {
+
+    display: flex;
+}
+
+lama|urieditor > .foot > button {
+
+    margin-bottom: 2px;
+    margin-right: 2px;
+
+    font-size: 10px;
+
+    line-height: 0.8;
+}
+
+lama|urieditor > .foot > button[action="revert"] {
+
+    margin-right: auto;
+}
+
+lama|urieditor > .foot > .detach_mark {
+
+    display: block;
+
+    margin: 0.25em;
+
+    margin-left: 0;
+    margin-right: 0;
+
+    width: 16px;
+    height: 16px;
+
+    background-color: white;
+    color: #333;
+
+    border: 1px solid #666;
+    border-radius: 9px;
+
+    line-height: 14px;
+    text-align: center;
+
+    font-family: "arial", "helvetica", "clean", sans-serif;
+    font-size: 12px;
+
+    cursor: pointer;
+
+    background-size: 14px 14px;
+    background-image: url("../media/call49.svg");
+    background-position-x: 1px;
+}
+
+lama|urieditor > .foot > .detach_mark:hover {
+
+    background-color: gold;
+}
+
+lama|urieditor xctrls|panelbox {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+lama|urieditor xctrls|panelbox > xctrls|panel {
+
+    width: 100%;
+    height: 100%;
+
+    text-align: left;
+}
+
+lama|urieditor xctrls|codeeditor > .CodeMirror {
+
+    font-size: 12px;
+    height: 100%;
+}
+
+lama|urieditor xctrls|codeeditor > .CodeMirror-scroll {
+
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+lama|inspectoritem[childtype="lama:urieditor"] {
+
+    /* CSS custom property */
+    --lama-inspector-width: 2;
+}

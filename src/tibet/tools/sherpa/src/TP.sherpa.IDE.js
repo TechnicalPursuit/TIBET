@@ -3051,16 +3051,23 @@ function(aSummary, removedNodes) {
     //  TP.PREVIOUS_POSITION slot.
     roots = removedNodes.filter(
         function(aNode) {
-            var len,
+            var nodePosition,
+
+                len,
                 i,
 
                 removedNode;
+
+            nodePosition = aNode[TP.PREVIOUS_POSITION];
+            if (TP.notValid(nodePosition)) {
+                return false;
+            }
 
             len = removedNodes.getSize();
             for (i = 0; i < len; i++) {
                 removedNode = removedNodes.at(i);
                 if (aNode !== removedNode &&
-                    aNode[TP.PREVIOUS_POSITION].startsWith(
+                    nodePosition.startsWith(
                         removedNode[TP.PREVIOUS_POSITION])) {
                     return false;
                 }
@@ -5447,6 +5454,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     var isAttrChange,
 
         visualAppElem,
+        visualRootElem,
 
         appDescendantsToProcess,
 
@@ -5456,6 +5464,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
         visualSourceSearchElem,
 
         visualSourceDocument,
+        visualGeneratorDocument,
 
         sourceLoc,
         sourceURI,
@@ -5536,6 +5545,17 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
     visualAppElem = TP.unwrap(this.getAppElement());
 
+    //  If there was no visual app element, then we'll just the first mutated
+    //  node's document documentElement.
+    if (TP.notValid(visualAppElem)) {
+        visualRootElem = TP.nodeGetDocument(mutatedNodes.first()).
+                                                        documentElement;
+        visualRootElem[TP.PREVIOUS_POSITION] =
+            TP.nodeGetDocumentPosition(visualRootElem);
+    } else {
+        visualRootElem = visualAppElem;
+    }
+
     //  If the operation is not TP.DELETE, then we can be a little more
     //  efficient by filtering mutations by filtering out any nodes that mutated
     //  that are not under the visual app element. Note that we cannot do this
@@ -5544,7 +5564,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     if (operation !== TP.DELETE || isAttrChange) {
         appDescendantsToProcess = mutatedNodes.filter(
             function(anElem) {
-                return visualAppElem.contains(anElem);
+                return visualRootElem.contains(anElem);
             });
     } else {
         appDescendantsToProcess = mutatedNodes;
@@ -5561,7 +5581,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
     visualGeneratorElem = mutationAncestor;
 
     while (TP.isElement(visualGeneratorElem) &&
-            visualGeneratorElem !== visualAppElem) {
+            visualGeneratorElem !== visualRootElem) {
         visualGeneratorTPElem = TP.wrap(visualGeneratorElem);
         if (visualGeneratorTPElem.sherpaShouldAlterTemplate()) {
             break;
@@ -5608,11 +5628,18 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
             visualGeneratorElem[TP.PREVIOUS_POSITION] = '';
         }
     } else {
-        //  Otherwise, grab the computed resource URI for the 'template' of the
-        //  tag source element.
-        sourceLoc = TP.wrap(visualGeneratorElem).
+        visualGeneratorTPElem = TP.wrap(visualGeneratorElem);
+
+        if (TP.isKindOf(visualGeneratorTPElem, TP.tag.TemplatedTag)) {
+            //  Otherwise, grab the computed resource URI for the 'template' of
+            //  the tag source element.
+            sourceLoc = TP.wrap(visualGeneratorElem).
                         getType().
                         computeResourceURI('template');
+        } else {
+            visualGeneratorDocument = TP.nodeGetDocument(visualGeneratorElem);
+            sourceLoc = visualGeneratorDocument[TP.SRC_LOCATION];
+        }
     }
 
     if (TP.isEmpty(sourceLoc) || sourceLoc === TP.NO_RESULT) {

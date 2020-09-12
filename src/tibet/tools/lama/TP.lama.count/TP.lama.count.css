@@ -1,0 +1,51 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|count {
+
+    display: inline-block;
+    position: relative;
+
+    top: 3px;
+    height: 20px;
+    width: 32px;
+
+    background-color: #fff;
+
+    border: 1px solid #666;
+    border-radius: 10px;
+
+    line-height: 20px;
+
+    cursor: pointer;
+}
+
+lama|count:hover {
+
+    background-color: gold;
+}
+
+lama|count[pclass|selected] {
+
+    background-color: cornsilk;
+}
+
+lama|count[pclass|selected]:hover {
+
+    background-color: gold;
+}
+
+lama|count[nonzero="true"]:hover {
+
+    background-color: gold;
+}
+
+lama|count[nonzero="true"][pclass|selected] {
+
+    background-color: gold;
+}
+
+lama|count[nonzero="true"][pclass|selected]:hover {
+
+    background-color: gold;
+}

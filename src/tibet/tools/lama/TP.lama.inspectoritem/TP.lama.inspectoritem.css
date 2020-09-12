@@ -1,0 +1,102 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+
+lama|inspectoritem {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-weight: 400;
+
+    position: relative;
+
+    overflow: hidden;
+
+    min-width: 250px;
+
+    /* CSS custom property */
+    --lama-inspector-width: 1;
+}
+
+lama|inspectoritem > div {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    margin: 0.25em;
+    padding: 0.25em;
+
+    border: solid 1px #aaa;
+    border-radius: 3px;
+}
+
+lama|inspectoritem > div.scrollable {
+
+    overflow: auto;
+}
+
+lama|inspectoritem > div.wrapped {
+
+    white-space: pre-wrap;
+}
+
+lama|inspectoritem > div.noselect {
+
+    user-select: none;
+}
+
+lama|inspectoritem > div.readonly {
+
+    border: dashed 1px #aaa;
+}
+
+lama|inspectoritem > div.usermessage {
+
+    display: flex;
+
+    border: none;
+
+    font-size: 131%;
+    font-family: "arial", "helvetica", "clean", sans-serif;
+    color: #999;
+
+    align-items: center;
+    justify-content: center;
+}
+
+lama|inspectoritem > div.usermessage a {
+    color: #999;
+}
+
+lama|inspectoritem > div > textarea {
+
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 90%;
+
+    margin: 0;
+    padding: 0;
+
+    border: none;
+    border-radius: initial;
+
+    width: 100%;
+    height: 100%;
+}
+
+lama|inspectoritem[childtype="html:div"] {
+}
+
+lama|inspectoritem[childtype="html:iframe"] > iframe {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}
+
+lama|inspectoritem[class~="doublewide"] {
+
+    /* CSS custom property */
+    --lama-inspector-width: 2;
+}

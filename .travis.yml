@@ -60,7 +60,7 @@ before_script:
     # - tibet config karma.boot.script=":test --context='app'"
     - tibet config karma.boot.profile="main@contributor"
     - tibet config karma.script=":test --context='all'"
-    - tibet config sherpa.enabled=false
+    - tibet config lama.enabled=false
 
     # Configure Headless Chrome
     - export CHROME_BIN=/usr/bin/google-chrome

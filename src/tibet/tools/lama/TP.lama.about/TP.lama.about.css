@@ -1,0 +1,206 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+lama|about {
+
+    display: block;
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+}
+
+lama|about > .footer {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 30px;
+
+    border-top: 1px solid white;
+
+    background-color: #efefef;
+}
+
+.framing.north.west.corner[pclass|closed] lama|about > .footer > .appinfo {
+
+    display: none;
+}
+
+.edge-west-open .framing.north.west.corner[pclass|closed] lama|about > .footer > .appinfo {
+
+    display: block;
+}
+
+lama|about > .footer > .appinfo {
+
+    position: absolute;
+
+    left: 0;
+    right: 49px;
+
+    height: 100%;
+
+    margin: 8px;
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 100%;
+
+    line-height: 100%;
+    text-align: center;
+}
+
+lama|about > .footer > .trigger.button {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    width: 42px;
+    height: 30px;
+
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+
+    background-size: 24px;
+    background-position: 12px;
+    background-repeat: no-repeat;
+
+    background-image: url("~lib_media/tibet_logo.svg");
+
+    cursor: pointer;
+}
+
+lama|about > .footer > .trigger.button:hover {
+
+    background-color: gold;
+
+    color: #333;
+}
+
+lama|about > .content {
+
+    position: absolute;
+
+    top: 0;
+    bottom: 31px;
+    left: 0;
+    right: 0;
+
+    min-width: 0;
+    max-width: none;
+
+    background-color: white;
+
+    border-bottom: 1px solid #aaa;
+}
+
+lama|about > .content > .actions {
+
+    display: flex;
+
+    width: 100%;
+}
+
+lama|about > .content > .actions > button {
+
+    flex: 1;
+
+    margin: 12px;
+    margin-top: 24px;
+}
+
+lama|about > .content img.logo {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 48px;
+    height: 48px;
+
+    margin: 12px;
+}
+
+lama|about > .content > .product {
+
+    float: left;
+
+    margin-top: 18px;
+    margin-left: 84px;
+
+    font-size: 36px;
+    line-height: 48px;
+}
+
+lama|about > .content > .product > .trade {
+
+    display: inline-block;
+
+    vertical-align: top;
+
+    margin-top: -12px;
+    margin-left: 3px;
+
+    font-size: 14px;
+    line-height: 48px;
+}
+
+lama|about > .content > .tagline {
+
+    width: 100%;
+
+    float: left;
+    clear: left;
+
+    margin-left: 12px;
+    margin-top: 12px;
+
+    font-size: 16px;
+    color: #910;
+}
+
+lama|about > .content > .version {
+
+    float: left;
+
+    margin-top: 34px;
+    margin-left: 12px;
+
+    text-align: left;
+
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    font-size: 12px;
+    color: #000;
+}
+
+lama|about > .content > .copyright {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    margin: 12px;
+
+    font-size: 12px;
+    color: black;
+}
+
+/* Rules that trigger when the corner is closed */
+
+.framing.north.west.corner[pclass|closed] lama|about > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.north.west.corner[pclass|closed] lama|about > .content {
+
+    display: none;
+}

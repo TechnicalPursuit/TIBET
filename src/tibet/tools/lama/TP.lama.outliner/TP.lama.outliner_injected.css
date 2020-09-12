@@ -1,0 +1,89 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+.lama-outliner {
+
+    --lama-outliner-rotate-X: 0deg;
+    --lama-outliner-rotate-Y: 0deg;
+    --lama-outliner-scale: 0;
+
+    --lama-outliner-distance-Z: 50;
+
+    transform-style: preserve-3d;
+
+    outline: dashed 1px darkgray;
+
+    overflow: visible !important;
+
+    transform: rotateX(var(--lama-outliner-rotate-X)) rotateY(var(--lama-outliner-rotate-Y)) scale(var(--lama-outliner-scale));
+}
+
+.lama-outliner > * {
+
+    /* Need to force opacity, or otherwise 'extrusion' won't work. See:
+     * https://bugs.chromium.org/p/chromium/issues/detail?id=646993
+     */
+    opacity: 1 !important;
+}
+
+.lama-outliner * {
+
+    transform-style: preserve-3d;
+
+    transform: translateZ(var(--lama-outliner-distance-Z) px);
+}
+
+.lama-outliner *.lama-outliner-overflowed,
+.lama-outliner *[class~="lama-outliner-overflowed"] {
+
+    overflow: visible !important;
+}
+
+.lama-outliner *.lama-outliner-containingblock {
+
+    outline-style: solid;
+}
+
+.lama-outliner::before,
+.lama-outliner *::before {
+
+    position: absolute;
+
+    font-family: "Lucida Sans", "Lucida Grande", "Verdana", "Arial", sans-serif;
+    font-size: 10px;
+
+    content: attr(lama_outliner-tagname);
+
+    min-width: 2em;
+    min-height: 1em;
+
+    text-align: center;
+
+    color: black;
+    background-color: lightgray;
+}
+
+.lama-outliner:not(.lama-outliner-haloed),
+.lama-outliner:not([class~="lama-outliner-haloed"]),
+.lama-outliner *:not(.lama-outliner-haloed),
+.lama-outliner *:not([class~="lama-outliner-haloed"]) {
+
+    outline: dashed 1px lightgray;
+}
+
+.lama-outliner.lama-outliner-haloed,
+.lama-outliner[class~="lama-outliner-haloed"],
+.lama-outliner *.lama-outliner-haloed,
+.lama-outliner *[class~="lama-outliner-haloed"] {
+
+    outline: dashed 1px black;
+}
+
+.lama-outliner.lama-outliner-droptarget,
+.lama-outliner[class~="lama-outliner-droptarget"],
+.lama-outliner .lama-outliner-droptarget,
+.lama-outliner *|*[class~="lama-outliner-droptarget"] {
+
+    outline: solid 2px black;
+}

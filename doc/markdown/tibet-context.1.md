@@ -79,7 +79,7 @@ No process environment variables are required by this command.
         "boot": {
             "profile": null,
             "package": "~lib_cfg/TIBET.xml",
-            "configs": ["base", "base-inlined", "baseui", "baseui-inlined", "contributor", "developer", "full", "hook", "inlined", "kernel", "loader", "login", "sherpa-inlined", "small", "standard", "test-inlined", "testing", "worker", "xctrls-inlined"],
+            "configs": ["base", "base-inlined", "baseui", "baseui-inlined", "contributor", "developer", "full", "hook", "inlined", "kernel", "loader", "login", "lama-inlined", "small", "standard", "test-inlined", "testing", "worker", "xctrls-inlined"],
             "config": "base"
         }
     }

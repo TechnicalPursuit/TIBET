@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<lama:screens id="LamaScreens">
+    <div class="header">
+        <div name="showall" on:click="ShowAllScreens" class="button">
+            <xctrls:hint>Show All</xctrls:hint>
+        </div>
+        <div class="trigger button" on:click="UIToggle">
+            <xctrls:hint>Thumbnail</xctrls:hint>
+        </div>
+    </div>
+    <div class="content">
+        <xctrls:panelbox id="LamaScreensPanelbox">
+            <xctrls:panel pclass:selected="true">
+                <xctrls:value>URIs</xctrls:value>
+                <xctrls:content>
+                    <span>
+                        <button id="AddLocationButton" on:click="AddLocation">Add Location</button>
+                    </span>
+                    <xctrls:list bind:in="{data: urn:tibet:lama_screenlocs}" on:dblclick="NavigateToScreen">
+                        <tibet:template>
+                            <xctrls:textitem>
+                                <xctrls:label>[[value.1]]<button on:click="RemoveLocation">Remove</button></xctrls:label>
+                                <xctrls:value>[[value.0]]</xctrls:value>
+                            </xctrls:textitem>
+                        </tibet:template>
+                    </xctrls:list>
+                </xctrls:content>
+            </xctrls:panel>
+        </xctrls:panelbox>
+    </div>
+</lama:screens>

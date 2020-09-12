@@ -77,7 +77,7 @@ function(aName, aValue, force) {
 //  producing String representation.
 TP.sys.defineGlobal('$$markers',
     TP.ac(
-        '$$recursive_sherpa_pp',
+        '$$recursive_lama_pp',
         '$$recursive_asObject',
         '$$recursive_asDumpString',
         '$$recursive_asHTMLString',
@@ -512,7 +512,7 @@ function() {
                         });
 
                     TP.boot.$getStageInfo('starting').head =
-                        'Launching TIBET Sherpa&#8482; IDE...';
+                        'Launching TIBET Lama&#8482; IDE...';
                 }
 
                 //  If we initialized without error move on to starting.
@@ -711,7 +711,7 @@ function() {
 
             //  NOTE that we don't have logic here. Formerly we'd trigger app
             //  start signaling here but we have to let that happen via either
-            //  the tibet:root or tibet:sherpa tag processing for proper
+            //  the tibet:root or tibet:lama tag processing for proper
             //  sequencing.
             if (inHeadless) {
                 //  Signal we are starting. This provides a hook for extensions
@@ -722,7 +722,7 @@ function() {
                 //  Signal actual start. The default handler on Application will
                 //  invoke the start() method in response to this signal.
                 TP.signal('TP.sys', 'AppStart');
-            } else if (!TP.sys.hasFeature('sherpa') && hasBootToggle) {
+            } else if (!TP.sys.hasFeature('lama') && hasBootToggle) {
 
                 //  No hook file in the boot screen so we initialize manually.
                 bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'),
@@ -774,7 +774,7 @@ function() {
             toggleKey = 'TP.sig.' + toggleKey;
         }
 
-        if (!TP.sys.hasFeature('sherpa')) {
+        if (!TP.sys.hasFeature('lama')) {
 
             /* eslint-disable no-extra-parens */
             //  set up keyboard toggle to show/hide the boot UI
@@ -786,7 +786,7 @@ function() {
 
         } else {
 
-            //  With sherpa in place the normal TP.core.Keyboard hook won't be
+            //  With lama in place the normal TP.core.Keyboard hook won't be
             //  installed in UIBOOT, we need to do a lower level listener so
             //  when/if that UI becomes primary we have event hooks in place.
             bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), TP.topWindow);

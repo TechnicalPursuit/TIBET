@@ -668,7 +668,7 @@ function(aSignal) {
      *     currently editing changes.
      * @param {TP.sig.ValueChange} aSignal The TIBET signal which triggered this
      *     method.
-     * @returns {TP.sherpa.urieditor} The receiver.
+     * @returns {TP.lama.urieditor} The receiver.
      */
 
     var newContent;
@@ -1051,7 +1051,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  Sherpa Methods
+//  Lama Methods
 //  ------------------------------------------------------------------------
 
 TP.dom.ReactElement.Inst.defineMethod('resolveAspectForInspector',

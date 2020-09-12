@@ -768,16 +768,16 @@ function(aStr) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('isSherpaNode',
+TP.definePrimitive('isLamaNode',
 function(aNode) {
 
     /**
-     * @method isSherpaNode
-     * @summary Returns whether the node exists in the Sherpa context (i.e. is a
-     *     node that has been used to build the Sherpa, rather than a part of
+     * @method isLamaNode
+     * @summary Returns whether the node exists in the Lama context (i.e. is a
+     *     node that has been used to build the Lama, rather than a part of
      *     the author's application).
      * @param {Node} aNode The node to test.
-     * @returns {Boolean} Whether or not the node is part of the Sherpa itself
+     * @returns {Boolean} Whether or not the node is part of the Lama itself
      *     or not.
      */
 
@@ -787,13 +787,13 @@ function(aNode) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
-    //  Make sure the Sherpa is running
-    if (!TP.sys.hasFeature('sherpa')) {
+    //  Make sure the Lama is running
+    if (!TP.sys.hasFeature('lama')) {
         return false;
     }
 
     //  If it's a descendant under the 'background' element (but not in a canvas
-    //  iframe), then it's part of the Sherpa.
+    //  iframe), then it's part of the Lama.
     backgroundElem = TP.byId('background', TP.sys.getUIRoot(true), false);
 
     return TP.nodeContainsNode(backgroundElem, aNode);

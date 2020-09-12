@@ -1,0 +1,99 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+lama|settings {
+
+    display: block;
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+}
+
+lama|settings a {
+
+    font-size: 131%;
+
+    color: #999;
+}
+
+lama|settings > .footer {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 30px;
+
+    border-top: 1px solid white;
+
+    background-color: #efefef;
+}
+
+lama|settings > .footer > .trigger.button {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 42px;
+    height: 30px;
+
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    background-size: 20px;
+    background-position: 12px;
+    background-repeat: no-repeat;
+
+    background-image: url("~ide_root/media/ic_settings_black_24px.svg");
+
+    cursor: pointer;
+}
+
+lama|settings > .footer > .trigger.button:hover {
+
+    background-color: gold;
+
+    color: #333;
+}
+
+lama|settings > .content {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 31px;
+    left: 0;
+
+    min-width: 0;
+    max-width: none;
+
+    background-color: white;
+
+    border-bottom: 1px solid #aaa;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+lama|settings > .content > div {
+}
+
+/* Rules that trigger when the corner is closed */
+
+.framing.north.east.corner[pclass|closed] lama|settings > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.north.east.corner[pclass|closed] lama|settings > .content {
+
+    display: none;
+}

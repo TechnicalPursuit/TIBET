@@ -140,8 +140,8 @@
     //  keep going in an attempt to get more information about the problem
     TP.sys.setcfg('boot.stop_onerror', false);
 
-    //  should we show the Sherpa's (TIBET developer tool) UI or show the
-    //  application's home page (when the Sherpa is loaded)? by default we show
+    //  should we show the Lama's (TIBET developer tool) UI or show the
+    //  application's home page (when the Lama is loaded)? by default we show
     //  the home page.
     TP.sys.setcfg('boot.show_ide', false);
 
@@ -913,7 +913,7 @@
     //  default conf uses UIBOOT and UIROOT installed in the context where this
     //  script is found. The UIBOOT iframe is typically set to console.html
     //  while the UIROOT value can vary between a number of values depending on
-    //  whether the Sherpa is running (framing) and whether they want a
+    //  whether the Lama is running (framing) and whether they want a
     //  multi-screen configuration (screens).
 
     //  the ID to search for and/or generate for the UI root display IFRAME.
@@ -1127,8 +1127,8 @@
     TP.sys.setcfg('path.tibet_src', '~lib_src/tibet');
     TP.sys.setcfg('path.xctrls_src', '~lib_src/xctrls');
 
-    //  Sherpa (external IDE components).
-    TP.sys.setcfg('path.ide_root', '~lib_src/tibet/tools/sherpa');
+    //  Lama (external IDE components).
+    TP.sys.setcfg('path.ide_root', '~lib_src/tibet/tools/lama');
     TP.sys.setcfg('path.ide_src', '~ide_root/src');
 
     //  The set of lib paths that could be cached but are loaded before the
@@ -1633,127 +1633,127 @@
 
 
     //  ---
-    //  sherpa processing
+    //  lama processing
     //  ---
 
-    //  should the sherpa currently be active? default is true. if the code
+    //  should the lama currently be active? default is true. if the code
     //  hasn't loaded it won't matter, and if it has then it'll activate.
-    TP.sys.setcfg('sherpa.enabled', true);
+    TP.sys.setcfg('lama.enabled', true);
 
-    //  if the Sherpa is running, we use this flag to determine whether or not
+    //  if the Lama is running, we use this flag to determine whether or not
     //  to autodefine tags that are not known by the system. NOTE: This flag is
     //  set to false and should *not* be set to true except by runtime
     //  machinery. Otherwise, all plain XML tags will be 'autodefined', which is
     //  definitely not what we want (especially on startup).
-    TP.sys.setcfg('sherpa.autodefine_missing_tags', false);
+    TP.sys.setcfg('lama.autodefine_missing_tags', false);
 
-    //  how many screens should the Sherpa display?
-    TP.sys.setcfg('sherpa.num_screens', 1);
+    //  how many screens should the Lama display?
+    TP.sys.setcfg('lama.num_screens', 1);
 
     //  which output formatter should be used for presentation output?
-    TP.sys.setcfg('sherpa.default_format', 'sherpa:pp');
+    TP.sys.setcfg('lama.default_format', 'lama:pp');
 
-    //  what is the default depth for a sherpa pretty-print descent?
-    TP.sys.setcfg('sherpa.pp.level', 2);
+    //  what is the default depth for a lama pretty-print descent?
+    TP.sys.setcfg('lama.pp.level', 2);
 
     //  what level do we stop doing full function bodies and do we include
     //  comments or just the method signature when we output?
-    TP.sys.setcfg('sherpa.pp.function_level', 1);
-    TP.sys.setcfg('sherpa.pp.function_comments', false);
+    TP.sys.setcfg('lama.pp.function_level', 1);
+    TP.sys.setcfg('lama.pp.function_comments', false);
 
     //  should the console suspend normal output?
-    TP.sys.setcfg('sherpa.silent', false);
+    TP.sys.setcfg('lama.silent', false);
 
     //  should the console auto-login to the shell?
-    TP.sys.setcfg('sherpa.auto_login', true);
+    TP.sys.setcfg('lama.auto_login', true);
 
-    //  how long should the sherpa console wait before allowing 'eval mark'
+    //  how long should the lama console wait before allowing 'eval mark'
     //  editing (in ms) ?
-    TP.sys.setcfg('sherpa.eval_mark_time', 5000);
+    TP.sys.setcfg('lama.eval_mark_time', 5000);
 
-    //  the amount of time that the Sherpa should wait before clearing newly
+    //  the amount of time that the Lama should wait before clearing newly
     //  mutated nodes mutation flags
-    TP.sys.setcfg('sherpa.mutation_flag_clear_timeout', 5000);
+    TP.sys.setcfg('lama.mutation_flag_clear_timeout', 5000);
 
-    //  the amount of time that the Sherpa should wait before clearing the
-    //  'shouldProcessDOMMutations' flag. This flag is used to tell the Sherpa
+    //  the amount of time that the Lama should wait before clearing the
+    //  'shouldProcessDOMMutations' flag. This flag is used to tell the Lama
     //  to catch DOM mutations on the current UI canvas DOM and update the
     //  corresponding source DOM
-    TP.sys.setcfg('sherpa.mutation_track_clear_timeout', 1000);
+    TP.sys.setcfg('lama.mutation_track_clear_timeout', 1000);
 
     //  how long should the HUD wait after the last key up before resetting the
     //  keyboard/mouse readout back to info from the last mouse move event (in
     //  ms) ?
-    TP.sys.setcfg('sherpa.readout_mouse_reset_time', 1000);
+    TP.sys.setcfg('lama.readout_mouse_reset_time', 1000);
 
     //  the id of the element under the mark holding the prompt
-    TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
+    TP.sys.setcfg('lama.console_prompt', 'lamaPrompt');
 
     //  should the console display stack information? only for lowest-level
     //  debugging, otherwise tends to be annoying to users.
-    TP.sys.setcfg('sherpa.console_stack', false);
+    TP.sys.setcfg('lama.console_stack', false);
 
-    //  the amount of time that the Sherpa notifier will wait before fading out
-    TP.sys.setcfg('sherpa.notifier_fadeout_delay', 1500);
+    //  the amount of time that the Lama notifier will wait before fading out
+    TP.sys.setcfg('lama.notifier_fadeout_delay', 1500);
 
-    //  the amount of time that the Sherpa notifier will take to fade out.
-    TP.sys.setcfg('sherpa.notifier_fadeout_duration', 1000);
+    //  the amount of time that the Lama notifier will take to fade out.
+    TP.sys.setcfg('lama.notifier_fadeout_duration', 1000);
 
-    //  the toggle key for the Sherpa
-    TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
+    //  the toggle key for the Lama
+    TP.sys.setcfg('lama.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
-    //  should the TIBET icon which identifies the sherpa:toggle be visible?
-    TP.sys.setcfg('sherpa.show_toggle', true);
+    //  should the TIBET icon which identifies the lama:toggle be visible?
+    TP.sys.setcfg('lama.show_toggle', true);
 
-    //  the output mode that the Sherpa will start with - 'none', 'one' or
+    //  the output mode that the Lama will start with - 'none', 'one' or
     //  'all'.
-    TP.sys.setcfg('sherpa.tdc.output_mode', 'none');
+    TP.sys.setcfg('lama.tdc.output_mode', 'none');
 
-    //  the amount of time that the Sherpa TDC will wait before fading out an
+    //  the amount of time that the Lama TDC will wait before fading out an
     //  output item.
-    TP.sys.setcfg('sherpa.tdc.item_fadeout_delay', 2000);
+    TP.sys.setcfg('lama.tdc.item_fadeout_delay', 2000);
 
-    //  the amount of time that the Sherpa TDC will take to fade out an output
+    //  the amount of time that the Lama TDC will take to fade out an output
     //  item.
-    TP.sys.setcfg('sherpa.tdc.item_fadeout_duration', 2000);
+    TP.sys.setcfg('lama.tdc.item_fadeout_duration', 2000);
 
     //  the minimum width of an inspector item
-    TP.sys.setcfg('sherpa.inspector.min_item_width', 200);
+    TP.sys.setcfg('lama.inspector.min_item_width', 200);
 
     //  the minimum number of inspector items when computing 'empty space'
     //  across the inspector
-    TP.sys.setcfg('sherpa.inspector.min_item_count', 3);
+    TP.sys.setcfg('lama.inspector.min_item_count', 3);
 
-    //  the ACE theme that the Sherpa will use for its tools (the console and
+    //  the ACE theme that the Lama will use for its tools (the console and
     //  editors).
-    TP.sys.setcfg('sherpa.rich_input_theme', 'dawn');
+    TP.sys.setcfg('lama.rich_input_theme', 'dawn');
 
     //  the root entries and their types in the inspector
-    TP.sys.setcfg('sherpa.inspector_root_sources',
+    TP.sys.setcfg('lama.inspector_root_sources',
         [
-            ['APP', 'TP.sherpa.AppRootInspectorSource'],
-            ['Remote', 'TP.sherpa.RemoteRootInspectorSource'],
-            ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
-            ['Tag Store', 'TP.sherpa.TWSRootInspectorSource'],
-            ['Summit', 'TP.sherpa.TWSRootInspectorSource'],
-            ['Support', 'TP.sherpa.SupportRootInspectorSource']
+            ['APP', 'TP.lama.AppRootInspectorSource'],
+            ['Remote', 'TP.lama.RemoteRootInspectorSource'],
+            ['TIBET', 'TP.lama.TIBETRootInspectorSource'],
+            ['Tag Store', 'TP.lama.TWSRootInspectorSource'],
+            ['Summit', 'TP.lama.TWSRootInspectorSource'],
+            ['Support', 'TP.lama.SupportRootInspectorSource']
         ]);
 
     //  REST entries for the REST inspector
-    TP.sys.setcfg('sherpa.inspector_rest_sources',
+    TP.sys.setcfg('lama.inspector_rest_sources',
         [
-            ['CouchDB', 'TP.sherpa.CouchDBRootInspectorSource'],
-            ['AWS', 'TP.sherpa.AWSRootInspectorSource'],
-            ['Salesforce', 'TP.sherpa.SalesforceRootInspectorSource'],
-            ['TDS', 'TP.sherpa.TDSRootInspectorSource'],
-            ['TWS', 'TP.sherpa.TWSRootInspectorSource']
+            ['CouchDB', 'TP.lama.CouchDBRootInspectorSource'],
+            ['AWS', 'TP.lama.AWSRootInspectorSource'],
+            ['Salesforce', 'TP.lama.SalesforceRootInspectorSource'],
+            ['TDS', 'TP.lama.TDSRootInspectorSource'],
+            ['TWS', 'TP.lama.TWSRootInspectorSource']
         ]);
 
 
-    //  the initial location to load into screen_0 in the Sherpa. Note this
-    //  might be the same as 'project.homepage', but the Sherpa contains
+    //  the initial location to load into screen_0 in the Lama. Note this
+    //  might be the same as 'project.homepage', but the Lama contains
     //  machinery to manually replace 'tibet:root' with the app's app tag.
-    TP.sys.setcfg('path.sherpa_screen_0', '~boot_xhtml/home.xhtml');
+    TP.sys.setcfg('path.lama_screen_0', '~boot_xhtml/home.xhtml');
 
 
     //  ---
@@ -1980,7 +1980,7 @@
     //  what tag should be used in place of the default {{appname}}.app tag.
     TP.sys.setcfg('tibet.apptag', null);
 
-    //  theme support specific to 'lib'. This defines the theme for the Sherpa
+    //  theme support specific to 'lib'. This defines the theme for the Lama
     //  as well as the theme used by xctrls when dragged in via tofu etc.
     TP.sys.setcfg('tibet.theme.default', 'tpi');
     TP.sys.setcfg('tibet.theme.list', ['tpi']);

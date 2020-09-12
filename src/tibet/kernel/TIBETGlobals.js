@@ -965,7 +965,7 @@ TP.TIBET_PRIVATE = 'tp_tibet_private';
 TP.PREVIOUS_POSITION = 'tp_previous_position';
 TP.INSERTION_POSITION = 'tp_insertion_position';
 TP.RESIZE_LISTENERS = 'tp_resize_listeners';
-TP.SHERPA_MUTATION = 'tp_sherpa_mutated';
+TP.SHERPA_MUTATION = 'tp_lama_mutated';
 TP.OLD_OVERFLOW = 'tp_old_overflow';
 TP.BUSY_ELEMENT = 'tp_busy_element';
 TP.BUSY_MSG_ELEMENT = 'tp_busy_msg_element';
@@ -1449,7 +1449,7 @@ TP.VALID = 'valid';
 
 TP.FACET_NAMES = [TP.READONLY, TP.RELEVANT, TP.REQUIRED, TP.VALID];
 
-//  sherpa operations
+//  lama operations
 TP.ASSIST = 'assist';
 TP.EDIT = 'edit';
 
@@ -3166,9 +3166,9 @@ TP.regex.STYLE_STRING = /([-\w]+)\s*:\s*([^/]+?)\s*($|;)/g; //  needs reset
 //  Used by the CSS processor
 TP.EMPTY_ARRAY = [];
 
-//  CSS classes used by the Sherpa to visually manipulate elements on its
+//  CSS classes used by the Lama to visually manipulate elements on its
 //  canvas.
-TP.regex.SHERPA_CSS_CLASS = /sherpa-[A-Za-z0-9-]+ ?/g;  //  needs reset
+TP.regex.SHERPA_CSS_CLASS = /lama-[A-Za-z0-9-]+ ?/g;  //  needs reset
 
 //  ---
 //  data binding

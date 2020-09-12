@@ -1208,6 +1208,10 @@ TP.w3.Xmlns.Type.defineConstant(
         'http://www.technicalpursuit.com/2020/http');
 
 TP.w3.Xmlns.Type.defineConstant(
+        'LAMA',
+        'http://www.technicalpursuit.com/2020/lama');
+
+TP.w3.Xmlns.Type.defineConstant(
         'ON',
         'http://www.technicalpursuit.com/2014/on');
 
@@ -1498,6 +1502,11 @@ TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
                             'mimetype', TP.ietf.mime.XML,
                             'prefix', 'kml',
                             'rootElement', 'kml'),
+            TP.w3.Xmlns.LAMA,
+                    TP.hc('uri', TP.w3.Xmlns.LAMA,
+                            'mimetype', TP.ietf.mime.XML,
+                            'prefix', 'lama',
+                            'rootElement', ''),
             TP.w3.Xmlns.MATHML,
                     TP.hc('uri', TP.w3.Xmlns.MATHML,
                             'mimetype', TP.ietf.mime.XML,

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<lama:uriEditorToolbarContent>
+    <xctrls:itemgroup>
+        <xctrls:radioitem pclass:checked="true" on:click="ShowData">
+            <xctrls:label>data</xctrls:label>
+            <xctrls:value>data</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem on:click="ShowSchema">
+            <xctrls:label>schema</xctrls:label>
+            <xctrls:value>schema</xctrls:value>
+        </xctrls:radioitem>
+    </xctrls:itemgroup>
+    <span class="detach_mark" on:click="TP.sig.DetachIntoConsoleTab">
+        <xctrls:hint>Detach editor into tab</xctrls:hint>
+    </span>
+    <button action="apply" disabled="disabled" on:click="TP.sig.ResourceApply">Apply
+        <xctrls:hint>Apply changes to local version</xctrls:hint>
+    </button>
+    <button action="push" disabled="disabled" on:click="TP.sig.ResourcePush">Push
+        <xctrls:hint>Push changes to remote version</xctrls:hint>
+    </button>
+    <button action="revert" disabled="disabled" on:click="TP.sig.ResourceRevert">Undo
+        <xctrls:hint>Revert changes from local version</xctrls:hint>
+    </button>
+    <button action="refresh" disabled="disabled" on:click="{signal: 'TP.sig.ResourceRevert', payload: {refresh: true}}">Refresh
+        <xctrls:hint>Refresh changes from remote version</xctrls:hint>
+    </button>
+</lama:uriEditorToolbarContent>
+

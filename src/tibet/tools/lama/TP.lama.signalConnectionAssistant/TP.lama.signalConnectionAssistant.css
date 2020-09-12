@@ -1,0 +1,324 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|signalConnectionAssistant {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    overflow: hidden;
+}
+
+lama|signalConnectionAssistant > .head {
+}
+
+lama|signalConnectionAssistant > .body {
+
+    position: absolute;
+    display: grid;
+
+    grid-template-rows: 3em 1fr 3em 3em 4em;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "source_field_group destination_field_group"
+        "source_input_list destination_input_list"
+        "source_origin_field_group source_payload_control_group"
+        "source_policy_field_group source_payload_group"
+        "source_policy_field_group source_payload_group";
+
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 7em;
+
+    text-align: left;
+}
+
+lama|signalConnectionAssistant > .body .sourceSignalFieldGroup {
+
+    grid-area: source_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+lama|signalConnectionAssistant > .body .sourceSignalFieldGroup > label {
+
+    font-weight: bold;
+}
+
+lama|signalConnectionAssistant > .body .sourceSignalFieldGroup > input {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+lama|signalConnectionAssistant > .body #signalConnectionAssistant_SourceSignalList {
+
+    grid-area: source_input_list;
+
+    position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 0;
+    left: 5px;
+
+    width: auto;
+
+    line-height: 1.5;
+}
+
+lama|signalConnectionAssistant > .body .destinationSignalFieldGroup {
+
+    grid-area: destination_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+lama|signalConnectionAssistant > .body .destinationSignalFieldGroup > label {
+
+    font-weight: bold;
+}
+
+lama|signalConnectionAssistant > .body .destinationSignalFieldGroup > input {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+lama|signalConnectionAssistant > .body #signalConnectionAssistant_DestinationSignalList {
+
+    grid-area: destination_input_list;
+
+    position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 0;
+    left: 5px;
+
+    width: auto;
+
+    line-height: 1.5;
+}
+
+lama|signalConnectionAssistant > .body .signalOriginFieldGroup {
+
+    grid-area: source_origin_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+lama|signalConnectionAssistant > .body .signalOriginFieldGroup > label {
+
+    font-weight: bold;
+}
+
+lama|signalConnectionAssistant > .body .signalOriginFieldGroup > input {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+lama|signalConnectionAssistant > .body .signalPolicyFieldGroup {
+
+    grid-area: source_policy_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+lama|signalConnectionAssistant > .body .signalPolicyFieldGroup > label {
+
+    font-weight: bold;
+}
+
+lama|signalConnectionAssistant > .body .signalPolicyFieldGroup > input {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+lama|signalConnectionAssistant > .body .signalPayloadControlGroup {
+
+    grid-area: source_payload_control_group;
+
+    position: absolute;
+    display: flex;
+
+    top: 8px;
+    right: 5px;
+    left: 5px;
+
+    align-items: center;
+    justify-content: flex-end;
+}
+
+lama|signalConnectionAssistant > .body .signalPayloadControlGroup > label {
+
+    font-weight: bold;
+}
+
+lama|signalConnectionAssistant > .body .signalPayloadControlGroup > .inserter {
+
+    top: 2px;
+    right: 0;
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+}
+
+lama|signalConnectionAssistant > .body .signalPayloadGroup {
+
+    grid-area: source_payload_group;
+
+    position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+}
+
+lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    border: dotted 1px gray;
+
+    overflow-y: auto;
+}
+
+lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries > span {
+
+    display: flex;
+
+    width: 100%;
+}
+
+lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries > span input {
+
+    width: auto;
+    height: 1em;
+
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 2px;
+}
+
+lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries .deleter {
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-image: url("../media/ic_close_black_24px.svg");
+}
+
+lama|signalConnectionAssistant > .foot {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+
+    height: 7em;
+}
+
+lama|signalConnectionAssistant > .foot #generatedAttr {
+
+    display: inline-block;
+
+    width: 90%;
+    height: 4em;
+
+    padding: 0 12px;
+    margin: 0 20px;
+
+    font-size: 100%;
+    line-height: 1.2em;
+
+    border: dotted 1px black;
+
+    text-align: left;
+
+    background-color: cornsilk;
+
+    overflow: auto;
+
+    word-break: break-word;
+
+    user-select: text;
+}
+
+lama|signalConnectionAssistant > .foot .inserter {
+
+    display: inline-block;
+
+    float: right;
+
+    margin: 6px;
+    cursor: pointer;
+
+    width: 20px;
+    height: 20px;
+
+    background-size: 18px 18px;
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+}

@@ -1,0 +1,204 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|halo {
+
+    display: block;
+    position: absolute;
+
+    /* Set an initial top, left width and height - the halo code will overwrite
+     * this values dynamically as the halo is targeted. */
+    --lama-halo-top: 200px;
+    --lama-halo-left: 200px;
+    --lama-halo-width: 100px;
+    --lama-halo-height: 100px;
+
+    --lama-halo-corner-size: 7px;
+    --lama-halo-corner-offset: -7px;
+
+    min-width: calc((var(--lama-halo-corner-size) * 3) + 3px);
+    min-height: calc((var(--lama-halo-corner-size) * 3) + 2px);
+
+    z-index: var(--tibet-HALO-TIER);
+
+    outline: dashed 1px #666;
+
+    /* Turn off pointer events so that elements *under* the halo can receive
+        events */
+    pointer-events: none;
+
+    box-shadow: 3px 3px 3px #aaa;
+}
+
+lama|halo:not([pclass|hidden]) {
+
+    top: var(--lama-halo-top);
+    left: var(--lama-halo-left);
+
+    width: var(--lama-halo-width);
+    height: var(--lama-halo-height);
+}
+
+/* In effect when the halo is focused on a target that is not a 'displayed'
+ * element (note that this is *not* the same as 'non visible') */
+lama|halo[no-display="true"] {
+
+    background-color: #fff2aa;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.62' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+lama|halo[no-display="true"][ancestor="head"] {
+
+    left: calc(50% - (var(--lama-halo-width) / 2));
+}
+
+lama|halo[no-display="true"][ancestor="body"] {
+
+    top: auto !important;
+    bottom: var(--lama-halo-corner-size) !important;
+
+    left: calc(50% - (var(--lama-halo-width) / 2));
+}
+
+lama|halo[mini-size="true"] {
+
+    --lama-halo-corner-size: 3.5px;
+    --lama-halo-corner-offset: -3.5px;
+}
+
+lama|halo[micro-size="true"] {
+
+    --lama-halo-corner-size: 0;
+    --lama-halo-corner-offset: 0;
+
+    background-color: red;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.62' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+lama|halo > div.haloCorner {
+
+    position: absolute;
+
+    width: 10px;
+    height: 10px;
+}
+
+lama|halo[mini-size="true"] > div.haloCorner {
+
+    width: 5px;
+    height: 5px;
+}
+
+lama|halo[micro-size="true"] > div.haloCorner {
+
+    width: 0;
+    height: 0;
+}
+
+div.haloCorner {
+
+    border: solid 1px black;
+    border-radius: 0.7em;
+
+    background-color: gold;
+
+    transition: opacity 0.25s ease-out;
+
+    pointer-events: auto;
+}
+
+div.haloCorner:hover {
+
+    opacity: 1;
+}
+
+/* TP.NORTHWEST */
+#haloCorner-Northwest {
+
+    top: var(--lama-halo-corner-offset);
+    left: var(--lama-halo-corner-offset);
+}
+
+#haloCorner-Northwest:hover {
+
+    opacity: 1;
+
+    background-color: cornsilk;
+}
+
+/* TP.NORTH */
+#haloCorner-North {
+
+    top: var(--lama-halo-corner-offset);
+    left: calc(50% - var(--lama-halo-corner-size));
+}
+
+/* TP.NORTHEAST */
+#haloCorner-Northeast {
+
+    top: var(--lama-halo-corner-offset);
+    right: var(--lama-halo-corner-offset);
+}
+
+/* TP.WEST */
+#haloCorner-West {
+
+    left: var(--lama-halo-corner-offset);
+    top: calc(50% - var(--lama-halo-corner-size) - 1px);
+}
+
+/* TP.EAST */
+#haloCorner-East {
+
+    right: var(--lama-halo-corner-offset);
+    top: calc(50% - var(--lama-halo-corner-size) - 1px);
+}
+
+/* TP.SOUTHWEST */
+#haloCorner-Southwest {
+
+    bottom: var(--lama-halo-corner-offset);
+    left: var(--lama-halo-corner-offset);
+}
+
+#haloCorner-Southwest:hover {
+
+    opacity: 1;
+
+    background-color: cornsilk;
+}
+
+/* TP.SOUTH */
+#haloCorner-South {
+
+    left: calc(50% - var(--lama-halo-corner-size));
+    bottom: var(--lama-halo-corner-offset);
+}
+
+/* TP.SOUTHEAST */
+#haloCorner-Southeast {
+
+    bottom: var(--lama-halo-corner-offset);
+    right: var(--lama-halo-corner-offset);
+}
+
+#haloCorner-Southeast:hover {
+
+    opacity: 1;
+
+    background-color: cornsilk;
+}
+
+/* Halo breadcrumb */
+lama|halo > lama|breadcrumb {
+
+    top: -18px;
+
+    /* Turn pointer events back on for the breadcrumb */
+    pointer-events: auto;
+}
+
+div[busyfor="LamaHalo"] {
+
+    z-index: var(--tibet-HUD-TIER);
+}

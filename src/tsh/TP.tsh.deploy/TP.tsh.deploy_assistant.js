@@ -57,7 +57,7 @@ function() {
     //  Grab the 'deployment information entries' that the user's profile is
     //  storing for us.
     deployInfos =
-        TP.uc('urn:tibet:sherpa_deployinfos').getResource().get('result');
+        TP.uc('urn:tibet:lama_deployinfos').getResource().get('result');
 
     //  Put a copy of the 'info' aspect (a POJO) found in the binding store into
     //  the deployment information entries.
@@ -244,7 +244,7 @@ function(takePropsFromStore) {
     //  storing for us. If we have an entry here for helper properties, then we
     //  will use that.
     deployInfos =
-        TP.uc('urn:tibet:sherpa_deployinfos').getResource().get('result');
+        TP.uc('urn:tibet:lama_deployinfos').getResource().get('result');
 
     //  Grab the current binding backing store.
 

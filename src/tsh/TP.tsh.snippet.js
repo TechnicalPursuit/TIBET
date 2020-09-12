@@ -67,10 +67,10 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    //  This command only works in the context of a loaded and enabled Sherpa
-    if (!TP.sys.hasFeature('sherpa')) {
+    //  This command only works in the context of a loaded and enabled Lama
+    if (!TP.sys.hasFeature('lama')) {
         aRequest.stdout(
-                'The :snippet command requires a loaded and enabled Sherpa');
+                'The :snippet command requires a loaded and enabled Lama');
         aRequest.complete(TP.TSH_NO_VALUE);
 
         return aRequest;

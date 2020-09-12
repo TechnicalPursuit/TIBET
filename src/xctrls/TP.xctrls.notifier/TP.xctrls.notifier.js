@@ -389,7 +389,7 @@ function(info) {
     notifierContentURI = TP.uc('urn:tibet:notifiercontent');
     notifierContentURI.setResource(contentElem);
 
-    if (TP.sys.hasFeature('sherpa')) {
+    if (TP.sys.hasFeature('lama')) {
         tpDoc = TP.sys.getUIRoot().getDocument();
     } else {
         tpDoc = TP.sys.getUICanvas().getDocument();

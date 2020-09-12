@@ -1221,7 +1221,7 @@ Cmd.prototype.updatePackage = function() {
     //  Get package information in expanded form so we can check against any
     //  potentially nested config structures. Being able to nest makes it easy
     //  to iterate while still being able to organize into different config
-    //  bundles for different things (like sherpa vs. test vs. xctrls).
+    //  bundles for different things (like lama vs. test vs. xctrls).
     inlinePkgOpts = {
         package: pkgName,
         config: inlineCfgName,
@@ -1259,7 +1259,7 @@ Cmd.prototype.updatePackage = function() {
     //  Get package information in expanded form so we can check against any
     //  potentially nested config structures. Being able to nest makes it easy
     //  to iterate while still being able to organize into different config
-    //  bundles for different things (like sherpa vs. test vs. xctrls).
+    //  bundles for different things (like lama vs. test vs. xctrls).
     resourcePkgOpts = {
         package: pkgName,
         config: resourceCfgName,

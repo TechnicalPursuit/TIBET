@@ -1,0 +1,91 @@
+@import url("~ide_root/styles/lama_pp.css");
+
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|console {
+
+    display: block;
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    z-index: var(--tibet-CONSOLE-INPUT-TIER);
+
+    text-align: left;
+    line-height: 1;
+}
+
+lama|console[pclass|hidden] {
+
+    height: 0;
+}
+
+lama|console > xctrls|codeeditor {
+
+    overflow: hidden;
+}
+
+lama|console > xctrls|codeeditor .ace_editor {
+
+    margin-top: 3px;
+}
+
+lama|console > xctrls|codeeditor > div {
+
+    background-color: transparent !important;
+}
+
+lama|console > xctrls|codeeditor > .CodeMirror {
+
+    height: 100%;
+
+    background-color: transparent;
+}
+
+lama|console > xctrls|codeeditor[pclass|focus] > .CodeMirror {
+
+    background-color: white;
+}
+
+lama|console > xctrls|codeeditor[pclass|focus]:hover > .CodeMirror {
+
+    background-color: white;
+}
+
+lama|console > xctrls|codeeditor:hover > .CodeMirror {
+
+    background-color: cornsilk;
+}
+
+lama|console > xctrls|codeeditor .autocomplete-highlight-marker {
+
+    position: absolute; /* without this positions will be wrong */
+
+    background-color: white;
+    border: solid 1px blue;
+
+    height: 13px !important;
+
+    opacity: 0.4;
+
+    z-index: 1000;      /* in front of all other markers (but not the text :-( ) */
+}
+
+div[tibet|tag="lama:drawer"][pclass|closed] lama|console > xctrls|codeeditor .CodeMirror-scroll {
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+}
+
+.match_history_entry::before {
+
+    content: "\00BB  ";
+
+    color: #387df1;
+}

@@ -1,0 +1,295 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+lama|tofuInsertionAssistant {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    overflow: hidden;
+}
+
+lama|tofuInsertionAssistant > .head {
+}
+
+lama|tofuInsertionAssistant > .body {
+
+    position: absolute;
+    display: grid;
+
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 2em 2em 3em 1fr;
+    grid-template-areas:
+        "insertion_point_group insertion_point_group"
+        "insertion_position_group insertion_position_group"
+        "type_chooser_field_group attributes_control_group"
+        "type_chooser_list attributes_group";
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 7em;
+
+    text-align: left;
+}
+
+lama|tofuInsertionAssistant > .body .insertionPointGroup {
+
+    grid-area: insertion_point_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+lama|tofuInsertionAssistant > .body .insertionPointGroup label {
+
+    font-weight: bold;
+
+    margin-top: 5px;
+}
+
+lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_InsertionBreadcrumb {
+
+    position: relative;
+
+    display: block;
+
+    top: 5px;
+    left: 5px;
+}
+
+lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_InsertionBreadcrumb > .content div.item {
+
+    color: black;
+}
+
+lama|tofuInsertionAssistant > .body .insertionPositionGroup {
+
+    grid-area: insertion_position_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+lama|tofuInsertionAssistant > .body .insertionPositionGroup label {
+
+    font-weight: bold;
+}
+
+lama|tofuInsertionAssistant > .body .insertionPositionGroup .insertionRadios {
+
+    display: flex;
+
+    margin: 0;
+}
+
+lama|tofuInsertionAssistant > .body .insertionPositionGroup .insertionRadios li {
+
+    display: flex;
+
+    align-items: center;
+
+    margin-left: 5px;
+}
+
+lama|tofuInsertionAssistant > .body .insertionPositionGroup .insertionRadios li input {
+
+    margin-right: 4px;
+}
+
+lama|tofuInsertionAssistant > .body .insertionPositionGroup .insertionRadios li label {
+
+    margin-left: 0;
+    margin-right: 4px;
+
+    font-weight: normal;
+}
+
+lama|tofuInsertionAssistant > .body .typeChooserFieldGroup {
+
+    grid-area: type_chooser_field_group;
+
+    position: absolute;
+    display: flex;
+
+    left: 5px;
+    right: 5px;
+
+    align-items: center;
+}
+
+lama|tofuInsertionAssistant > .body .typeChooserFieldGroup > label {
+
+    font-weight: bold;
+}
+
+lama|tofuInsertionAssistant > .body .typeChooserFieldGroup > input {
+
+    width: 100%;
+
+    margin-left: 5px;
+    margin-right: 0;
+}
+
+lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_TagTypes {
+
+    grid-area: type_chooser_list;
+
+    position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+
+    width: auto;
+
+    line-height: 1.5;
+}
+
+lama|tofuInsertionAssistant > .body .attributesControlGroup {
+
+    grid-area: attributes_control_group;
+
+    position: absolute;
+    display: flex;
+
+    top: 8px;
+    right: 5px;
+    left: 5px;
+
+    align-items: center;
+    justify-content: flex-end;
+}
+
+lama|tofuInsertionAssistant > .body .attributesControlGroup > label {
+
+    font-weight: bold;
+}
+
+lama|tofuInsertionAssistant > .body .attributesControlGroup > .inserter {
+
+    top: 2px;
+    right: 0;
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 75%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-image: url("../media/ic_add_circle_outline_black_24px.svg");
+}
+
+lama|tofuInsertionAssistant > .body .attributesGroup {
+
+    grid-area: attributes_group;
+
+    position: absolute;
+
+    top: 0;
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+}
+
+lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    border: dotted 1px gray;
+
+    overflow-y: auto;
+}
+
+lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries > span {
+
+    display: flex;
+
+    width: 100%;
+}
+
+lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries > span input {
+
+    width: auto;
+    height: 1em;
+
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 2px;
+}
+
+lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries .deleter {
+
+    width: 24px;
+    height: 24px;
+
+    cursor: pointer;
+
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-image: url("../media/ic_close_black_24px.svg");
+}
+
+lama|tofuInsertionAssistant > .foot {
+
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+
+    height: 7em;
+}
+
+lama|tofuInsertionAssistant > .foot #generatedTag {
+
+    display: inline-block;
+
+    width: 90%;
+    height: 4em;
+
+    padding: 0 12px;
+    margin: 0 20px;
+
+    font-size: 100%;
+    line-height: 1.2em;
+
+    border: dotted 1px black;
+
+    text-align: left;
+
+    background-color: cornsilk;
+
+    overflow: auto;
+
+    word-break: break-word;
+
+    user-select: text;
+}

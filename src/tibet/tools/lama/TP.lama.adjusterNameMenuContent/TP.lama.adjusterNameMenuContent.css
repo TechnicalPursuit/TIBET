@@ -1,0 +1,82 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+lama|adjusterNameMenuContent {
+
+    display: block;
+
+    position: absolute;
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+
+    width: 7em;
+    height: 5em;
+
+    background-color: white;
+
+    border: 1px solid #666;
+    border-radius: 5px;
+
+    box-shadow: 3px 3px 3px #aaa;
+}
+
+lama|adjusterNameMenuContent > .body {
+
+    position: absolute;
+
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    min-width: auto;
+
+    margin: 2px;
+
+    background-color: #fff;
+
+    overflow: auto;
+}
+
+lama|adjusterNameMenuContent > .body > ul {
+
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    line-height: 29px;
+}
+
+lama|adjusterNameMenuContent > .body > ul > li {
+
+    border: 0;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid #efefef;
+
+    padding-left: 5px;
+    padding-right: 5px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+lama|adjusterNameMenuContent > .body > ul > li:hover {
+
+    background-color: #ddd;
+
+    border-top: 1px solid #666;
+    border-bottom: 1px solid #666;
+}
+
+lama|adjusterNameMenuContent > .body > ul > li:last-child:hover {
+
+    border-bottom: 1px solid #666;
+}

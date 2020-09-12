@@ -1,0 +1,387 @@
+/*
+    CSS styles for 'xctrls' controls within the Lama.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+
+/* Inspector lists */
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|list {
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: 100%;
+    width: 100%;
+
+    max-height: initial;
+
+    line-height: 1.5em;
+
+    border: none;
+
+    overflow-y: auto;
+}
+
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|list *[tibet|pelem="choices"] {
+
+}
+
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|list *[tibet|pelem="choices"] > xctrls|textitem {
+
+}
+
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|list *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+lama|inspectoritem[childtype="xctrls:list"] {
+
+}
+
+/* Inspector tables */
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|table {
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: 100%;
+    width: 100%;
+
+    max-height: initial;
+
+    line-height: 1.5em;
+
+    border: none;
+
+    overflow-y: auto;
+}
+
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|table *[tibet|pelem="choices"] {
+
+}
+
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|table *[tibet|pelem="choices"] > xctrls|textitem {
+
+}
+
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|table *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+lama|inspectoritem[childtype="xctrls:table"] {
+
+}
+
+/* Inspector property sheets */
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|propertysheet label {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 90%;
+
+    line-height: 1.8;
+}
+
+lama|inspector#LamaInspector lama|inspectoritem > xctrls|propertysheet input {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 73%;
+}
+
+/* The notifier */
+xctrls|notifier#LamaNotifier {
+
+    top: 56px;
+    right: 72px;
+    left: 72px;
+
+    margin-bottom: 4px;
+
+    line-height: 2;
+
+    background-color: cornsilk;
+
+    transition: opacity var(--lama-notifier-fadeout-duration) ease var(--lama-notifier-fadeout-delay);
+}
+
+xctrls|notifier#LamaNotifier > xctrls|content {
+
+    margin-left: 2px;
+    margin-right: 2px;
+
+    border-radius: 4px;
+
+    font-size: 12px;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+}
+
+#background.edge-north-open xctrls|notifier#LamaNotifier {
+
+    /* Note here how we have to use the LESS 'escape' mechanism. The LESS parser
+     isn't smart enough to handle CSS custom properties within function
+     expressions */
+    top: calc(var(--lama-drawer-north-open-height) + 5px + 16px);
+}
+
+/* When the west drawer is open */
+#background.edge-west-open xctrls|notifier#LamaNotifier {
+
+    margin-left: var(--lama-edge-west-open-margin);
+}
+
+/* When the west drawer is closed */
+#background:not(.edge-west-open) xctrls|notifier#LamaNotifier {
+
+    margin-left: 0;
+}
+
+/* When the east drawer is open */
+#background.edge-east-open xctrls|notifier#LamaNotifier {
+
+    margin-right: var(--lama-edge-east-open-margin);
+}
+
+/* When the east drawer is closed */
+#background:not(.edge-east-open) xctrls|notifier#LamaNotifier {
+
+    margin-right: 0;
+}
+
+/* The console tabbar */
+xctrls|tabbar#LamaConsoleTabbar {
+
+    position: absolute;
+
+    top: 4px;
+    right: 203px;
+    left: 30px;
+
+    height: 22px;
+
+    /* 250 more than our 'lama:drawer' parent */
+    z-index: 26500;
+}
+
+xctrls|tabbar#LamaConsoleTabbar xctrls|tabitem {
+
+    font-size: 77%;
+    padding-bottom: 5px;
+    padding-right: 10px;
+}
+
+xctrls|tabbar#LamaConsoleTabbar xctrls|tabitem:first-child > .close_mark {
+
+    display: none;
+}
+
+xctrls|panelbox#LamaConsolePanelbox {
+
+    position: absolute;
+
+    top: 24px;
+    right: 30px;
+    bottom: 4px;
+    left: 30px;
+
+    border: solid 1px #aaa;
+}
+
+xctrls|panelbox#LamaConsolePanelbox xctrls|panel {
+
+    width: 100%;
+    height: 100%;
+
+    text-align: left;
+}
+
+/* The snippets popup */
+xctrls|popup#SnippetsPopup {
+
+    z-index: var(--tibet-CONTEXT-MENU-TIER);
+}
+
+/* The bookmarks popup */
+xctrls|popup#BookmarksPopup {
+
+    z-index: var(--tibet-CONTEXT-MENU-TIER);
+}
+
+/* The adjuster popup */
+xctrls|popup#AdjusterPopup {
+
+    z-index: var(--tibet-CONTEXT-MENU-TIER);
+}
+
+xctrls|list#TSHCompleterList {
+
+    position: absolute !important;
+
+    bottom: 64px;
+    left: 280px;
+    width: 23em;
+
+    min-height: 1.5em;
+    max-height: calc(15em + 5px);
+
+    line-height: 1.5em;
+
+    border: 1px solid #999;
+    border-radius: 0;
+    box-shadow: 2px 2px 1px rgba(128, 128, 128, 0.3);
+
+    overflow-y: auto;
+
+    z-index: var(--tibet-CONTEXT-MENU-TIER);
+}
+
+xctrls|list#TSHCompleterList *[tibet|pelem="choices"] {
+
+}
+
+xctrls|list#TSHCompleterList *[tibet|pelem="choices"] > xctrls|textitem {
+
+    background-color: white;
+}
+
+xctrls|list#TSHCompleterList *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label {
+
+    font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    letter-spacing: 1px;
+    color: #666;
+}
+
+xctrls|list#TSHCompleterList *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label span.match_result {
+
+    color: black;
+    font-weight: bold;
+}
+
+/* The adjuster tooltip */
+xctrls|tooltip#AdjusterTooltip {
+
+    max-width: 300px;
+
+    font-size: 77%;
+
+    transition: none;
+}
+
+xctrls|tooltip#AdjusterTooltip[pclass|active] {
+
+    opacity: 1;
+}
+
+xctrls|tooltip#AdjusterTooltip span.propertyName {
+
+    font-weight: bold;
+}
+
+/* CouchDB sub inspector stuff */
+lama|inspectoritem > div.couchdbsubinspectorsauth {
+
+    font-size: 100%;
+    text-align: center;
+}
+
+lama|inspectoritem > div.couchdbsubinspectorsauth > label {
+
+    font-size: 93%;
+    line-height: 1.5em;
+}
+
+lama|inspectoritem > div.couchdbsubinspectorsauth > input {
+
+    height: 1.25em;
+
+    font-size: 93%;
+    line-height: 1em;
+}
+
+lama|inspectoritem > div.couchdbsubinspectorsauth > button {
+
+    height: 2em;
+
+    margin-top: 1em;
+    font-size: 85%;
+}
+
+lama|inspectoritem > div.couchtools > a {
+
+    display: inline-block;
+
+    margin-top: 1em;
+
+    font-size: 93%;
+}
+
+/* AWS sub inspector stuff */
+lama|inspectoritem > div.awssubinspectorsauth {
+
+    font-size: 100%;
+    text-align: center;
+}
+
+lama|inspectoritem > div.awssubinspectorsauth > label {
+
+    font-size: 93%;
+    line-height: 1.5em;
+}
+
+lama|inspectoritem > div.awssubinspectorsauth > input {
+
+    height: 1.25em;
+
+    font-size: 93%;
+    line-height: 1em;
+}
+
+lama|inspectoritem > div.awssubinspectorsauth > button {
+
+    height: 2em;
+
+    margin-top: 1em;
+
+    font-size: 85%;
+}
+
+/* Salesforce sub inspector stuff */
+lama|inspectoritem > div.salesforcesubinspectorsauth > div.textarea_wrapper {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 3.75em;
+}
+
+lama|inspectoritem > div.salesforcesubinspectorsauth > div.textarea_wrapper > textarea {
+
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+
+    font-size: 93%;
+    line-height: 1em;
+}
+
+lama|inspectoritem > div.salesforcesubinspectorsauth > button {
+
+    position: absolute;
+
+    bottom: 1em;
+}
+
+lama|inspectoritem > div.salesforcesubinspectorsauth > a {
+
+    position: absolute;
+
+    bottom: 0;
+}
