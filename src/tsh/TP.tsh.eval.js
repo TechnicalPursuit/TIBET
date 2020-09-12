@@ -1480,10 +1480,10 @@ function(REQUEST$$, CMDTYPE$$) {
         // SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
         SCRIPT$$ = $SCRIPT;
 
-        //  Tell the main Sherpa object that it should go ahead and process DOM
+        //  Tell the main Lama object that it should go ahead and process DOM
         //  mutations to the source DOM.
-        if (TP.sys.hasFeature('sherpa')) {
-            TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+        if (TP.sys.hasFeature('lama')) {
+            TP.bySystemId('Lama').set('shouldProcessDOMMutations', true);
         }
 
         FLAG$$ = TP.sys.shouldThrowExceptions();
@@ -1578,10 +1578,10 @@ function(REQUEST$$, CMDTYPE$$) {
                 TIME$$ = TP.ifInvalid($REQUEST.get('$evaltime'), 0);
                 $REQUEST.set('$evaltime', TIME$$ + (END$$ - START$$));
 
-                //  An exception was thrown - no sense in having the main Sherpa
+                //  An exception was thrown - no sense in having the main Lama
                 //  object process DOM mutations to the source DOM.
-                if (TP.sys.hasFeature('sherpa')) {
-                    TP.bySystemId('Sherpa').set('shouldProcessDOMMutations',
+                if (TP.sys.hasFeature('lama')) {
+                    TP.bySystemId('Lama').set('shouldProcessDOMMutations',
                                                 false);
                 }
 

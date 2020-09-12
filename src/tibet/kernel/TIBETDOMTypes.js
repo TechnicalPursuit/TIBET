@@ -3747,11 +3747,11 @@ function(aDocument) {
         return this;
     }
 
-    //  If the Sherpa is loaded, we turn *off* processing of DOM mutations so
+    //  If the Lama is loaded, we turn *off* processing of DOM mutations so
     //  that changes to recasting elements below will not propagate into source
     //  documents.
-    if (TP.sys.hasFeature('sherpa')) {
-        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', false);
+    if (TP.sys.hasFeature('lama')) {
+        TP.bySystemId('Lama').set('shouldProcessDOMMutations', false);
     }
 
     //  Compute the CSS query path, indicating that we want a path that will
@@ -3761,10 +3761,10 @@ function(aDocument) {
 
     allInstances = TP.ac();
 
-    //  Get the Sherpa world (if we're running the Sherpa).
-    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    //  Get the Lama world (if we're running the Lama).
+    world = TP.byId('LamaWorld', TP.sys.getUIRoot());
 
-    //  If we have a valid Sherpa world, then scan its documents for instances.
+    //  If we have a valid Lama world, then scan its documents for instances.
     if (TP.isValid(world)) {
         //  Get all of the world's documents
         screenDocs = world.getScreenDocuments();
@@ -3835,8 +3835,8 @@ function(aDocument) {
                     //  about. Therefore we force the system to autodefine
                     //  missing tags here.
                     autodefineMissingTags =
-                        TP.sys.cfg('sherpa.autodefine_missing_tags');
-                    TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
+                        TP.sys.cfg('lama.autodefine_missing_tags');
+                    TP.sys.setcfg('lama.autodefine_missing_tags', true);
 
                     //  Grab both the old and new nodes being transformed,
                     //  clone them and clean them. This provides the best
@@ -3863,7 +3863,7 @@ function(aDocument) {
                     aTPElem.compile(null, true, authoredElem);
 
                     //  Put the autodefine setting back to what it was.
-                    TP.sys.setcfg('sherpa.autodefine_missing_tags',
+                    TP.sys.setcfg('lama.autodefine_missing_tags',
                                     autodefineMissingTags);
 
                     //  The native node might have changed under the covers
@@ -3904,8 +3904,8 @@ function(aDocument) {
                             if (!TP.nodeEqualsNode(
                                     oldNodeClone, newNodeClone)) {
 
-                                if (TP.sys.hasFeature('sherpa')) {
-                                    TP.bySystemId('Sherpa').
+                                if (TP.sys.hasFeature('lama')) {
+                                    TP.bySystemId('Lama').
                                         updateUICanvasSource(
                                             TP.ac(oldNode),
                                             oldParentNode,
@@ -5344,7 +5344,7 @@ function() {
      * @method isRecasting
      * @summary Returns whether or not the receiver is considered to be in state
      *     of 'recasting' - that is, TIBET's processing and rendering machinery
-     *     are re-processing it (probably in a Sherpa development session).
+     *     are re-processing it (probably in a Lama development session).
      * @returns {Boolean} Whether or not the receiver is empty.
      */
 
@@ -14408,8 +14408,8 @@ function(storageInfo) {
 
             case 'class':
 
-                attrValue = attrValue.strip(/sherpa(\-\w+)+\s{0,}/g).trim();
-                attrValue = attrValue.strip(/\s{0,}sherpa(\-\w+)+/g).trim();
+                attrValue = attrValue.strip(/lama(\-\w+)+\s{0,}/g).trim();
+                attrValue = attrValue.strip(/\s{0,}lama(\-\w+)+/g).trim();
 
                 if (TP.isEmpty(attrValue)) {
                     continue;

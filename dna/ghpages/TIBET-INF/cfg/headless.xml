@@ -11,7 +11,7 @@
 <config id="properties" if="boot.phase_one">
     <property name="boot.inlined" value="false"/>
     <property name="boot.use_login" value="false"/>
-    <property name="sherpa.enabled" value="false"/>
+    <property name="lama.enabled" value="false"/>
     <property name="uri.source.watch_changes" value="false"/>
 
     <!-- Because when running in headless mode the package name is 'headless',

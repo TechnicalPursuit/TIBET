@@ -2523,16 +2523,16 @@ function(aRequest) {
     //  perform any work to connect the previous section(s) of pipe
     this.$connectPipeSections(cmds, request);
 
-    //  Tell the main Sherpa object that it should go ahead and process DOM
+    //  Tell the main Lama object that it should go ahead and process DOM
     //  mutations to the source DOM.
 
-    //  Note here how we also check to make sure we have a real Sherpa object.
+    //  Note here how we also check to make sure we have a real Lama object.
     //  That's because this code can sometimes run in a 'packaging' environment
-    //  where the command is being invoked, hasFeature('Sherpa') is true,
-    //  TP.sys.cfg('sherpa.enabled') is true, but no real Sherpa has been
+    //  where the command is being invoked, hasFeature('Lama') is true,
+    //  TP.sys.cfg('lama.enabled') is true, but no real Lama has been
     //  allocated
-    if (TP.sys.hasFeature('sherpa') && TP.isValid(TP.bySystemId('Sherpa'))) {
-        TP.bySystemId('Sherpa').set('shouldProcessDOMMutations', true);
+    if (TP.sys.hasFeature('lama') && TP.isValid(TP.bySystemId('Lama'))) {
+        TP.bySystemId('Lama').set('shouldProcessDOMMutations', true);
     }
 
     service = TP.tsh.RunService.getDefaultInstance();

@@ -27,7 +27,7 @@
         "selector-attribute-quotes": "always",
 
         "selector-type-no-unknown": [ true, {
-            "ignoreNamespaces": [ "tibet", "tsh", "sherpa", "xctrls" ],
+            "ignoreNamespaces": [ "tibet", "tsh", "lama", "xctrls" ],
             "ignoreTypes": [ "/*/" ]
         }],
 
@@ -42,7 +42,7 @@
         "**/node_modules/**",
         "deps/**",
         "lib/src/**",
-        "**/sherpa/cm_theme/*",
+        "**/lama/cm_theme/*",
         "**/build/**",
         "**/*.__*__.*.js",
         "**/boot/styles/**"

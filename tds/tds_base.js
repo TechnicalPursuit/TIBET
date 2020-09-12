@@ -425,8 +425,8 @@
 
             buildmsg,
             buildstr,
-            sherpastr,
-            nonsherpastr;
+            lamastr,
+            nonlamastr;
 
         project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
         project += ' ' + TDS.colorize(
@@ -467,14 +467,14 @@
                         (port === 80 ? '' : ':' + port), 'host') +
                     TDS.colorize(' (production build)', 'dim');
 
-        sherpastr = project +
+        lamastr = project +
                     TDS.colorize(' @ ', 'dim') +
                     TDS.colorize(protocol + '://' + host +
                         (port === 80 ? '' : ':' + port +
                          '#?boot.profile=development@developer'),
                         'host');
 
-        nonsherpastr = project +
+        nonlamastr = project +
                     TDS.colorize(' @ ', 'dim') +
                     TDS.colorize(protocol + '://' + host +
                         (port === 80 ? '' : ':' + port +
@@ -497,15 +497,15 @@
                     process.stdout.write(msg);
                 }
             }
-        } else if (TDS.getcfg('sherpa.enabled')) {
-            //  And a sherpa-enabled link for those who want to run the sherpa.
-            msg = sherpastr;
+        } else if (TDS.getcfg('lama.enabled')) {
+            //  And a lama-enabled link for those who want to run the lama.
+            msg = lamastr;
 
             logger.system(msg,
                 {
                     comp: 'TDS',
                     type: 'tds',
-                    name: 'sherpa'
+                    name: 'lama'
                 });
 
             if (!TDS.hasConsole()) {
@@ -542,9 +542,9 @@
                 }
             }
         } else {
-            //  Output a development link for non-sherpa operation ala the basic
+            //  Output a development link for non-lama operation ala the basic
             //  quickstart/essentials guide approach to development.
-            msg = nonsherpastr;
+            msg = nonlamastr;
 
             logger.system(msg,
                 {

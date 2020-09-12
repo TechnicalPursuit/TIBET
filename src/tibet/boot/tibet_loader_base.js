@@ -1797,8 +1797,8 @@ TP.sys.getHomeURL = function(checkSession) {
 
     homeURL = homeURL || TP.sys.cfg('project.home_page');
 
-    if (TP.sys.cfg('sherpa.enabled')) {
-        homeURL = homeURL || TP.sys.cfg('path.sherpa_screen_0');
+    if (TP.sys.cfg('lama.enabled')) {
+        homeURL = homeURL || TP.sys.cfg('path.lama_screen_0');
     }
 
     homeURL = homeURL || TP.sys.cfg('path.blank_page');
@@ -4038,7 +4038,7 @@ TP.sys.getWindowById = function(anID, aWindow) {
     }
 
     //  shortcut for UIROOT and UIROOT.SCREEN_0 which are common lookups based
-    //  on the canvas in either standard or sherpa-enabled operation.
+    //  on the canvas in either standard or lama-enabled operation.
     if (TP.boot.$isWindow(context[anID])) {
         return context[anID];
     } else if (TP.boot.$isElement(context[anID])) {
@@ -9141,7 +9141,7 @@ TP.boot.$sourceUrlImport = function(scriptUrl, targetDoc, callback, shouldThrow)
     handler = function(evt) {
 
         var postImports,
-            sherpa,
+            lama,
             type,
             len,
             i;
@@ -9154,12 +9154,12 @@ TP.boot.$sourceUrlImport = function(scriptUrl, targetDoc, callback, shouldThrow)
 
         //  if the system is already running we need to initialize any types
         //  that haven't had that done (invoking it on an previous type won't
-        //  matter). We also signal if the sherpa is active to let it know about
+        //  matter). We also signal if the lama is active to let it know about
         //  the type.
         if (TP.sys.hasStarted()) {
 
-            //  Whether or not the Sherpa is loaded
-            sherpa = TP.sys.hasFeature('sherpa');
+            //  Whether or not the Lama is loaded
+            lama = TP.sys.hasFeature('lama');
 
             postImports = TP.boot.$$postImports;
 
@@ -9183,7 +9183,7 @@ TP.boot.$sourceUrlImport = function(scriptUrl, targetDoc, callback, shouldThrow)
                         }
                     }
 
-                    if (sherpa) {
+                    if (lama) {
                         TP.signal(type, 'TypeLoaded');
                     }
                 } catch (e) {
@@ -9237,7 +9237,7 @@ isECMAModule) {
         jsSrcUrl,
         oldScript,
         postImports,
-        sherpa,
+        lama,
         type,
         len,
         i,
@@ -9389,11 +9389,11 @@ isECMAModule) {
 
     //  if the system is already running we need to initialize any types that
     //  haven't had that done (invoking it on an previous type won't matter).
-    //  We also signal if the sherpa is active to let it know about the type.
+    //  We also signal if the lama is active to let it know about the type.
     if (TP.sys.hasStarted()) {
 
-        //  Whether or not the Sherpa is loaded
-        sherpa = TP.sys.hasFeature('sherpa');
+        //  Whether or not the Lama is loaded
+        lama = TP.sys.hasFeature('lama');
 
         postImports = TP.boot.$$postImports;
 
@@ -9416,7 +9416,7 @@ isECMAModule) {
                     }
                 }
 
-                if (sherpa) {
+                if (lama) {
                     TP.signal(type, 'TypeLoaded');
                 }
             } catch (e) {

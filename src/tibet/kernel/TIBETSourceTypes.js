@@ -2480,10 +2480,10 @@ function() {
 
     //  We capture this in the outer scope for one of the mutation filter
     //  functions below. In this way, we don't have to fetch it each time.
-    var hasSherpa,
-        sherpaObj;
+    var hasLama,
+        lamaObj;
 
-    hasSherpa = TP.sys.hasFeature('sherpa');
+    hasLama = TP.sys.hasFeature('lama');
 
     this.set('queries', TP.hc());
 
@@ -2576,15 +2576,15 @@ function() {
                 return true;
             }
 
-            //  See if the Sherpa is currently processing DOM mutations. If so,
+            //  See if the Lama is currently processing DOM mutations. If so,
             //  then that means that we should just return true here.
-            if (hasSherpa) {
-                if (TP.notValid(sherpaObj)) {
-                    sherpaObj = TP.bySystemId('Sherpa');
+            if (hasLama) {
+                if (TP.notValid(lamaObj)) {
+                    lamaObj = TP.bySystemId('Lama');
                 }
 
-                if (TP.isValid(sherpaObj) &&
-                    sherpaObj.get('shouldProcessDOMMutations')) {
+                if (TP.isValid(lamaObj) &&
+                    lamaObj.get('shouldProcessDOMMutations')) {
                     return true;
                 }
             }
@@ -2894,8 +2894,8 @@ function(aMutationRecord) {
 
     var targetNode,
 
-        processForSherpa,
-        sherpaObj,
+        processForLama,
+        lamaObj,
 
         targetShouldTrack,
 
@@ -2931,13 +2931,13 @@ function(aMutationRecord) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  See if the Sherpa is currently processing DOM mutations. If so, then
+    //  See if the Lama is currently processing DOM mutations. If so, then
     //  that will factor into whether or not we will ignore this event or not.
-    processForSherpa = false;
-    sherpaObj = TP.bySystemId('Sherpa');
-    if (TP.isValid(sherpaObj) &&
-        sherpaObj.get('shouldProcessDOMMutations')) {
-        processForSherpa = true;
+    processForLama = false;
+    lamaObj = TP.bySystemId('Lama');
+    if (TP.isValid(lamaObj) &&
+        lamaObj.get('shouldProcessDOMMutations')) {
+        processForLama = true;
     }
 
     //  If the target is an Element and it has a 'tibet:no-mutations'
@@ -2948,10 +2948,10 @@ function(aMutationRecord) {
         targetShouldTrack = TP.elementGetAttribute(
                 targetNode, 'tibet:no-mutations', true);
 
-        //  NB: Note how we also take processForSherpa into account here.
+        //  NB: Note how we also take processForLama into account here.
         if ((targetShouldTrack === 'true' ||
             targetShouldTrack === TP.ANCESTOR_OR_SELF) &&
-            !processForSherpa) {
+            !processForLama) {
                 return this;
             }
     }
@@ -3059,10 +3059,10 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:no-mutations', true);
 
-                                //  NB: Note how we also take processForSherpa
+                                //  NB: Note how we also take processForLama
                                 //  into account here.
                                 if (val === TP.ANCESTOR_OR_SELF &&
-                                    !processForSherpa) {
+                                    !processForLama) {
                                     return false;
                                 }
                             }
@@ -3083,10 +3083,10 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                         ans, 'tibet:no-mutations', true);
 
-                                //  NB: Note how we also take processForSherpa
+                                //  NB: Note how we also take processForLama
                                 //  into account here.
                                 if ((val === 'true' || val === TP.ANCESTOR) &&
-                                    !processForSherpa) {
+                                    !processForLama) {
                                     return false;
                                 }
                             }
@@ -3140,10 +3140,10 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:no-mutations', true);
 
-                                //  NB: Note how we also take processForSherpa
+                                //  NB: Note how we also take processForLama
                                 //  into account here.
                                 if (val === TP.ANCESTOR_OR_SELF &&
-                                    !processForSherpa) {
+                                    !processForLama) {
                                     return false;
                                 }
                             }
@@ -3164,10 +3164,10 @@ function(aMutationRecord) {
                                 val = TP.elementGetAttribute(
                                         ans, 'tibet:no-mutations', true);
 
-                                //  NB: Note how we also take processForSherpa
+                                //  NB: Note how we also take processForLama
                                 //  into account here.
                                 if ((val === 'true' || val === TP.ANCESTOR) &&
-                                    !processForSherpa) {
+                                    !processForLama) {
                                     return false;
                                 }
                             }

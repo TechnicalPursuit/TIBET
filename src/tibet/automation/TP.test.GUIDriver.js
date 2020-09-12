@@ -499,8 +499,8 @@ function() {
     if (TP.sys.cfg('tibet.tdc') === true) {
         TP.elementHide(TP.byId('UIBOOT', top, false));
         TP.elementShow(TP.byId('UIROOT', top, false));
-    } else if (TP.sys.cfg('sherpa.enabled') === true) {
-        //  TODO: Make the appropriate GUI window show for the Sherpa, etc.
+    } else if (TP.sys.cfg('lama.enabled') === true) {
+        //  TODO: Make the appropriate GUI window show for the Lama, etc.
         void 0;
     }
     */
@@ -525,8 +525,8 @@ function() {
     if (TP.sys.cfg('tibet.tdc') === true) {
         TP.elementHide(TP.byId('UIROOT', top, false));
         TP.elementShow(TP.byId('UIBOOT', top, false));
-    } else if (TP.sys.cfg('sherpa.enabled') === true) {
-        //  TODO: Make the appropriate log window show for the Sherpa, etc.
+    } else if (TP.sys.cfg('lama.enabled') === true) {
+        //  TODO: Make the appropriate log window show for the Lama, etc.
         void 0;
     }
     */

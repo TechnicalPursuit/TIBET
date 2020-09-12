@@ -1109,7 +1109,7 @@ function() {
                 bookmarkEntries = TP.ac();
             }
 
-            TP.uc('urn:tibet:sherpa_bookmarks').setResource(
+            TP.uc('urn:tibet:lama_bookmarks').setResource(
                                             bookmarkEntries,
                                             TP.hc('observeResource', true,
                                                     'signalChange', true));
@@ -1132,7 +1132,7 @@ function() {
                     });
             }
 
-            TP.uc('urn:tibet:sherpa_deployinfos').setResource(
+            TP.uc('urn:tibet:lama_deployinfos').setResource(
                                             deployInfoEntries,
                                             TP.hc('observeResource', true,
                                                     'signalChange', true));
@@ -1146,7 +1146,7 @@ function() {
                 screenLocEntries = TP.ac();
             }
 
-            TP.uc('urn:tibet:sherpa_screenlocs').setResource(
+            TP.uc('urn:tibet:lama_screenlocs').setResource(
                                             screenLocEntries,
                                             TP.hc('observeResource', true,
                                                     'signalChange', true));
@@ -1160,7 +1160,7 @@ function() {
                 editorTabEntries = TP.ac();
             }
 
-            TP.uc('urn:tibet:sherpa_consoletabs').setResource(
+            TP.uc('urn:tibet:lama_consoletabs').setResource(
                                             editorTabEntries,
                                             TP.hc('observeResource', true,
                                                     'signalChange', true));
@@ -1181,7 +1181,7 @@ function() {
             //  ---
 
             bookmarkEntries = TP.ac();
-            TP.uc('urn:tibet:sherpa_bookmarks').setResource(
+            TP.uc('urn:tibet:lama_bookmarks').setResource(
                                             bookmarkEntries,
                                             TP.hc('observeResource', true,
                                                     'signalChange', true));
@@ -1191,7 +1191,7 @@ function() {
             //  ---
 
             deployInfoEntries = TP.hc();
-            TP.uc('urn:tibet:sherpa_deployinfos').setResource(
+            TP.uc('urn:tibet:lama_deployinfos').setResource(
                                             deployInfoEntries,
                                             TP.hc('observeResource', true,
                                                     'signalChange', true));
@@ -1262,7 +1262,7 @@ function() {
         //  ---
 
         bookmarkEntries =
-            TP.uc('urn:tibet:sherpa_bookmarks').getResource().get('result');
+            TP.uc('urn:tibet:lama_bookmarks').getResource().get('result');
         if (TP.isEmpty(bookmarkEntries)) {
             bookmarkEntries = TP.ac();
         }
@@ -1272,7 +1272,7 @@ function() {
         //  ---
 
         editorTabEntries =
-            TP.uc('urn:tibet:sherpa_consoletabs').getResource().get('result');
+            TP.uc('urn:tibet:lama_consoletabs').getResource().get('result');
         if (TP.isEmpty(editorTabEntries)) {
             editorTabEntries = TP.ac();
         }
@@ -1282,7 +1282,7 @@ function() {
         //  ---
 
         deployInfoEntries =
-            TP.uc('urn:tibet:sherpa_deployinfos').getResource().get('result');
+            TP.uc('urn:tibet:lama_deployinfos').getResource().get('result');
         if (TP.isEmpty(deployInfoEntries)) {
             deployInfoEntries = TP.hc();
         }
@@ -1292,7 +1292,7 @@ function() {
         //  ---
 
         screenLocEntries =
-            TP.uc('urn:tibet:sherpa_screenlocs').getResource().get('result');
+            TP.uc('urn:tibet:lama_screenlocs').getResource().get('result');
 
         if (TP.isEmpty(screenLocEntries)) {
             screenLocEntries = TP.ac();
@@ -3973,7 +3973,7 @@ function(aRequest) {
 
             output +=
                 '<dt>' +
-                    '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').get(\'$consoleGUI\').setInputContent(\':' + kvPair.first() + ' \'); return false;">' +
+                    '<a href="#" onclick="TP.bySystemId(\'LamaConsoleService\').get(\'$consoleGUI\').setInputContent(\':' + kvPair.first() + ' \'); return false;">' +
                     kvPair.first() +
                     '</a>' +
                 '</dt>' +

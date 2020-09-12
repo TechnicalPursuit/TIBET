@@ -1160,9 +1160,9 @@ function(aDocument, themeName) {
         //  Grab the 'lib' theme so that we can use it.
         libTheme = TP.sys.getcfg('tibet.theme.default');
 
-        //  If we're running the Sherpa and the document is the UIRoot document,
+        //  If we're running the Lama and the document is the UIRoot document,
         //  then we don't use the 'project' theme.
-        if (TP.sys.hasFeature('sherpa') &&
+        if (TP.sys.hasFeature('lama') &&
             aDocument === TP.sys.getUIRoot(true).document) {
             projectTheme = '';
         } else {

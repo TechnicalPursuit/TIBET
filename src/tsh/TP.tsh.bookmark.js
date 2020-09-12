@@ -67,10 +67,10 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    //  This command only works in the context of a loaded and enabled Sherpa
-    if (!TP.sys.hasFeature('sherpa')) {
+    //  This command only works in the context of a loaded and enabled Lama
+    if (!TP.sys.hasFeature('lama')) {
         aRequest.stdout(
-                'The :bookmark command requires a loaded and enabled Sherpa');
+                'The :bookmark command requires a loaded and enabled Lama');
         aRequest.complete(TP.TSH_NO_VALUE);
 
         return aRequest;
@@ -82,7 +82,7 @@ function(aRequest) {
     isRemove = shell.getArgument(aRequest, 'tsh:remove', false);
     isRemoveAll = shell.getArgument(aRequest, 'tsh:removeall', false);
 
-    bookmarks = TP.uc('urn:tibet:sherpa_bookmarks').getResource().get('result');
+    bookmarks = TP.uc('urn:tibet:lama_bookmarks').getResource().get('result');
 
     //  First form - remove all bookmarks:
     //  :bookmark --removeall
@@ -215,7 +215,7 @@ function(aRequest) {
 
 TP.shell.TSH.addHelpTopic('bookmark',
     TP.tsh.bookmark.Type.getMethod('tshExecute'),
-    'Allows addition and removal of commonly used bookmarks of the Sherpa' +
+    'Allows addition and removal of commonly used bookmarks of the Lama' +
         ' Inspector.',
     ':bookmark [<path> [<description>]] [--remove=N] [--removeall]',
     'Coming Soon');

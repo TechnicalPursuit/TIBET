@@ -98,7 +98,7 @@ tsh|deploy_assistant > .body .propertiesControlGroup > .inserter {
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;
-    background-image: url("../../../src/tibet/tools/sherpa/media/ic_add_circle_outline_black_24px.svg");
+    background-image: url("../../../src/tibet/tools/lama/media/ic_add_circle_outline_black_24px.svg");
 }
 
 tsh|deploy_assistant > .body .propertiesGroup {
@@ -157,7 +157,7 @@ tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries .deleter {
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;
-    background-image: url("../../../src/tibet/tools/sherpa/media/ic_close_black_24px.svg");
+    background-image: url("../../../src/tibet/tools/lama/media/ic_close_black_24px.svg");
 }
 
 tsh|deploy_assistant > .foot {

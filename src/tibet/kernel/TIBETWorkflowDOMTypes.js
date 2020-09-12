@@ -1545,12 +1545,12 @@ function(aNode, aProcessor) {
             if (TP.notEmpty(elemKey) &&
                 elemKey !== 'processingroot' &&
                 type === TP.dom.XMLElementNode &&
-                TP.sys.cfg('sherpa.autodefine_missing_tags')) {
+                TP.sys.cfg('lama.autodefine_missing_tags')) {
 
-                //  If the Sherpa is loaded and has been configured to
+                //  If the Lama is loaded and has been configured to
                 //  automatically define missing tags, then we do so.
-                if (TP.sys.hasFeature('sherpa')) {
-                    TP.sherpa.IDE.replaceWithUnknownElementProxy(node);
+                if (TP.sys.hasFeature('lama')) {
+                    TP.lama.IDE.replaceWithUnknownElementProxy(node);
                 }
             }
 

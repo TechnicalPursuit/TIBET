@@ -7265,7 +7265,7 @@ TP.core.Application.Type.defineAttribute('singleton');
 
 /**
  * An array of controller instances which represent the current controller
- * stack. The list always ends with an Application instance or Sherpa instance
+ * stack. The list always ends with an Application instance or Lama instance
  * which serve as common backstops for controller signal handling.
  * @type {TP.core.Object[]}
  */
@@ -7274,7 +7274,7 @@ TP.core.Application.Inst.defineAttribute('controllers');
 /**
  * An array of custom controllers pushed/popped via the pushController and
  * popController methods. Note that these controllers are always backed by
- * the current route controller, application instance, and Sherpa instance.
+ * the current route controller, application instance, and Lama instance.
  * @type {TP.core.Object[]}
  */
 TP.core.Application.Inst.defineAttribute('customControllers');
@@ -7305,7 +7305,7 @@ function() {
 
     //  Refresh the UI canvas frame's whole document to start things off. This
     //  will update any data bindings that need it throughout the whole
-    //  document. Note that, in a non-Sherpa-loaded app, that the UI canvas
+    //  document. Note that, in a non-Lama-loaded app, that the UI canvas
     //  frame and the UI root frame are the same. In either case, what we want
     //  to update is the *canvas* frame here.
     TP.sys.getUICanvas().getDocument().refresh();
@@ -7351,7 +7351,7 @@ function() {
 
     var controllers,
 
-        sherpa,
+        lama,
 
         router,
         routeControllerType,
@@ -7364,13 +7364,13 @@ function() {
     controllers = TP.ac();
     this.$set('controllers', controllers, false);
 
-    //  If the system has initialized and we're loading the Sherpa, then try to
+    //  If the system has initialized and we're loading the Lama, then try to
     //  make it the last (i.e. topmost) controller if an instance can be found
-    //  under the system ID 'Sherpa'.
-    if (TP.sys.hasInitialized() && TP.sys.hasFeature('sherpa')) {
-        sherpa = TP.bySystemId('Sherpa');
-        if (TP.isValid(sherpa)) {
-            controllers.push(sherpa);
+    //  under the system ID 'Lama'.
+    if (TP.sys.hasInitialized() && TP.sys.hasFeature('lama')) {
+        lama = TP.bySystemId('Lama');
+        if (TP.isValid(lama)) {
+            controllers.push(lama);
         }
     }
 
@@ -7412,7 +7412,7 @@ function() {
 
     //  Since we've been 'push'ing, we need to reverse to make sure things are
     //  in the proper order (most specific controllers to least specific - like
-    //  Application, Sherpa, etc.).
+    //  Application, Lama, etc.).
     controllers.reverse();
 
     this.changed('Controllers', TP.UPDATE, TP.hc(TP.NEWVAL, controllers));

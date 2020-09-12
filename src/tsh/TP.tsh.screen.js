@@ -56,10 +56,10 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    //  This command only works in the context of a loaded and enabled Sherpa
-    if (!TP.sys.hasFeature('sherpa')) {
+    //  This command only works in the context of a loaded and enabled Lama
+    if (!TP.sys.hasFeature('lama')) {
         aRequest.stdout(
-                'The :screen command requires a loaded and enabled Sherpa');
+                'The :screen command requires a loaded and enabled Lama');
         aRequest.complete(TP.TSH_NO_VALUE);
 
         return aRequest;
@@ -77,7 +77,7 @@ function(aRequest) {
     screenNum = TP.nc(arg0);
     if (TP.isNumber(screenNum)) {
 
-        screens = TP.byId('SherpaWorld', TP.sys.getUIRoot()).get('screens');
+        screens = TP.byId('LamaWorld', TP.sys.getUIRoot()).get('screens');
         if (screenNum < 0 || screenNum > screens.getSize() - 1) {
             aRequest.stdout('screen index is invalid: ' + screenNum);
             aRequest.complete(TP.TSH_NO_VALUE);
