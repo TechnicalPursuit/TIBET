@@ -3466,7 +3466,7 @@ function() {
         TP.wrap(this).signal(TP.core.ResizeSignalSource.get('defaultSignal'));
     });
 
-    return this;
+    return;
 });
 
 //  ------------------------------------------------------------------------
