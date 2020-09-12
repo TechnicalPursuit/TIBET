@@ -798,9 +798,6 @@ Cmd.prototype.phaseThree = function(meta) {
     * most part you could say the release is built.
     */
 
-    this.info('Read https://gist.github.com/coolaj86/1318304 and npm publish.');
-    this.info('\n\n');
-
     this.info('Release is done.');
     this.info('\n\n');
 
