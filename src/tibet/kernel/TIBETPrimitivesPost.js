@@ -3475,6 +3475,7 @@ function(anObject) {
      * @param {Object} anObject The object to convert to a plain object.
      * @returns {Object} The object converted to a plain object.
      */
+
     if (anObject === null) {
         return 'null';
     } else if (anObject === undefined) {
@@ -3485,7 +3486,7 @@ function(anObject) {
         return anObject.asObject();
     }
 
-    return anObject;
+    return TP.val(anObject, 'value', false);
 });
 
 //  ------------------------------------------------------------------------
