@@ -3475,6 +3475,7 @@ function(anObject) {
      * @param {Object} anObject The object to convert to a plain object.
      * @returns {Object} The object converted to a plain object.
      */
+
     if (anObject === null) {
         return 'null';
     } else if (anObject === undefined) {
@@ -3485,7 +3486,7 @@ function(anObject) {
         return anObject.asObject();
     }
 
-    return anObject;
+    return TP.val(anObject, 'value', false);
 });
 
 //  ------------------------------------------------------------------------
@@ -3891,11 +3892,11 @@ function(anObject, anAspect, autoCollapse) {
      *     methods such as get(), at(), etc. to get the best result. NOTE that
      *     the TP.val() function is aliased to this function as a 'shorthand'.
      * @param {Object} anObject The object to interrogate.
-     * @param {String|Function} anAspect The aspect whose value to get. Default
-     *     is 'value'. If a Function is supplied here it will be called with the
+     * @param {String|Function} [anAspect='value'] The aspect whose value to
+     *     get. If a Function is supplied here it will be called with the
      *     initial value and is expected to return the extracted value.
-     * @param {Boolean} autoCollapse Whether to collapse Array results if
-     *     there's only one item in them. The default is false.
+     * @param {Boolean} [autoCollapse=false] Whether to collapse Array results
+     *     if there's only one item in them.
      * @returns {Object} The object's value, as defined by that object's
      *     semantics.
      */

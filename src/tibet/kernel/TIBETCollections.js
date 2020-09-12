@@ -964,11 +964,9 @@ function() {
         for (i = 0; i < len; i++) {
             val = this.at(i);
 
-            //  Make sure to recurse so we end up with versions of all values.
-            if (TP.canInvoke(val, 'asObject')) {
-                val = val.asObject();
-            }
-            obj[i] = val;
+            //  Make sure to recurse in so that we end up with plain Object
+            //  versions of all values.
+            obj[i] = TP.obj(val);
         }
     } finally {
         delete this[marker];
@@ -5138,10 +5136,7 @@ function() {
 
             //  Make sure to recurse in so that we end up with plain Object
             //  versions of all values.
-            if (TP.canInvoke(val, 'asObject')) {
-                val = val.asObject();
-            }
-            obj[keys[i]] = val;
+            obj[keys[i]] = TP.obj(val);
         }
     } finally {
         delete this[marker];
