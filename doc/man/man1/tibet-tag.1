@@ -6,7 +6,7 @@
 \fBtibet tag [[\-\-name] [<root>\.][<namespace>(\.|:)]]<tagname>
     [\-\-action | \-\-compiled | \-\-info | \-\-templated]
     [\-\-supertype <typename] [\-\-dir <dirname>] [\-\-dna <template>]
-    [\-\-package <package>] [\-\-config <cfg>]\fP
+    [\-\-xmlns <nsuri>] [\-\-package <package>] [\-\-config <cfg>]\fP
 .SH DESCRIPTION
 .P
 Creates a new TIBET tag using the supplied tag name and parameters\.
@@ -34,6 +34,10 @@ optionally a template, style sheet, and test file\.
 .IP \(bu 2
 \fB\-\-name\fP :
 An alternate way to provide the tag name to create\.
+.IP \(bu 2
+\fB\-\-xmlns\fP :
+Lets you define a specific XMLNS URI for any XHTML and CSS references\. The
+default will be \fBurn:app:\fP or the standard TIBET prefix URI\.
 .IP \(bu 2
 \fB\-\-supertype\fP :
 The name of the supertype to use for the target tag\. This should be

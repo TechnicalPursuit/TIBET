@@ -24,7 +24,7 @@
 <p><code>tibet tag [[--name] [&lt;root&gt;.][&lt;namespace&gt;(.|:)]]&lt;tagname&gt;
     [--action | --compiled | --info | --templated]
     [--supertype &lt;typename] [--dir &lt;dirname&gt;] [--dna &lt;template&gt;]
-    [--package &lt;package&gt;] [--config &lt;cfg&gt;]</code></p>
+    [--xmlns &lt;nsuri&gt;] [--package &lt;package&gt;] [--config &lt;cfg&gt;]</code></p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Creates a new TIBET tag using the supplied tag name and parameters.</p>
 <p>Tag names can supply one, two or three parts, separated by <code>.</code> or <code>:</code>.</p>
@@ -45,6 +45,10 @@ optionally a template, style sheet, and test file.</p>
 <ul>
 <li><p><code>--name</code> :
 An alternate way to provide the tag name to create.</p>
+</li>
+<li><p><code>--xmlns</code> :
+Lets you define a specific XMLNS URI for any XHTML and CSS references. The
+default will be <code>urn:app:</code> or the standard TIBET prefix URI.</p>
 </li>
 <li><p><code>--supertype</code> :
 The name of the supertype to use for the target tag. This should be

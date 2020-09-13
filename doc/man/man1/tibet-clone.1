@@ -4,7 +4,7 @@
 .SH SYNOPSIS
 .P
 \fBtibet clone <target>|[\-\-name <appname>] [\-\-dir <dirname>]
-    [\-\-dna <template>] [\-\-list] [\-\-force] [\-\-update]\fP
+    [\-\-dna <template>] [\-\-xmlns <nsuri>] [\-\-list] [\-\-force] [\-\-update]\fP
 .SH DESCRIPTION
 .P
 Clones a template directory, considered the \fBdna\fP, to create a new project\.
@@ -35,6 +35,10 @@ subdirectory\.
 Lets you clone any valid template in TIBET's \fBdna\fP directory or a
 directory of your choosing\. This latter option lets you create your own reusable
 custom application templates\.
+.IP \(bu 2
+\fB\-\-xmlns\fP :
+Lets you define a specific XMLNS URI for any XHTML and CSS references\. The
+default will be \fBurn:app:\fP or the standard TIBET prefix URI\.
 .IP \(bu 2
 \fB\-\-force\fP :
 Required if you use \fB\|\.\fP as a simple reminder to be careful\. You can also
