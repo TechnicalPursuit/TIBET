@@ -1,0 +1,23 @@
+{
+    "name": "tibetlama",
+    "version": "0.1.0",
+    "dependencies": {
+        "marked": "^0.8.0",
+        "marked-man": "^0.7.0",
+        "minimist": "^1.2.5",
+        "shelljs": "^0.8.4"
+    },
+    "devDependencies": {
+        "stylelint": "^13.6.1",
+        "stylelint-config-standard": "^20.0.0"
+    },
+    "engines": {
+        "node": ">=12",
+        "npm": ">=6"
+    },
+    "scripts": {
+        "start": "tibet start"
+    },
+    "preferGlobal": "false",
+    "private": true
+}

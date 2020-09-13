@@ -1,0 +1,10 @@
+/**
+ * @file tibet_reset.css
+ * @overview A common baseline (reset) for TIBET-based applications.
+ */
+
+/* Refresh periodically from http://necolas.github.io/normalize.css. */
+@import url("normalize.css");
+
+/* For applications/widgets the normalize.css sheet isn't enough. */
+@import url("tibet_normalize.css");

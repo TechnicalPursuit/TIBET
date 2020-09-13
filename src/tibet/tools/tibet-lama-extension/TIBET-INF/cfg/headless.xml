@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="headless" default="base" basedir="~lib">
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDITING NOT RECOMMENDED -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="properties" if="boot.phase_one">
+    <property name="boot.inlined" value="false"/>
+    <property name="boot.use_login" value="false"/>
+    <property name="sherpa.enabled" value="false"/>
+    <property name="uri.source.watch_changes" value="false"/>
+
+    <!-- Because when running in headless mode the package name is 'headless',
+    we don't want the derived project name to be 'headless'. Therefore, we
+    manually set it here. -->
+    <property name="project.name" value="tibetlama"/>
+</config>
+
+<config id="base">
+    <config ref="properties"/>
+    <package src="~app_cfg/main.xml" config="developer"/>
+</config>
+
+<config id="reflection">
+    <config ref="properties"/>
+
+    <!-- the two properties here ensure full source/comments -->
+    <property name="boot.teamtibet" value="true"/>
+    <property name="boot.minified" value="false"/>
+
+    <package src="~app_cfg/main.xml" config="developer"/>
+</config>
+
+</package>

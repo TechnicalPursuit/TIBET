@@ -1,0 +1,25 @@
+{
+    "manifest_version": 2,
+    "name": "tibetlama",
+    "description": "",
+    "version": "1.0",
+    "devtools_page": "./tibetlama.xhtml",
+    "background": {
+        "persistent": true,
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "run_at": "document_start"
+        }
+    ],
+    "permissions": [
+        "http://*/*/",
+        "file://*/*/"
+    ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; default-src 'self'; object-src 'none'; report-uri '/'"
+}

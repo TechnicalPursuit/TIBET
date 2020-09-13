@@ -1,0 +1,18 @@
+/**
+ * @overview 'APP.tibetlama.app' styles.
+ */
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace tibetlama url("urn:app:tibetlama");
+
+/**
+ * If you don't transform from XML form (tags in the page remain in their
+ * <tibetlama:app/> form) use rules of this form:
+ */
+tibetlama|app {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}

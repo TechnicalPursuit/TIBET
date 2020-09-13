@@ -1,0 +1,497 @@
+@namespace url("http://www.w3.org/1999/xhtml");
+
+@namespace pclass url("urn:tibet:pseudoclass");
+
+html,
+body,
+#background,
+iframe {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    background-color: #fff;
+    color: #000;
+}
+
+body {
+
+    font: 13px/1.231 "arial", "helvetica", "clean", sans-serif;
+}
+
+/* iframes won't size using just trbl dimensions */
+iframe {
+
+    width: 100%;
+    height: 100%;
+}
+
+#background {
+
+    position: absolute;
+
+    background-color: #fff;
+    overflow: hidden;
+}
+
+div {
+
+    margin: 0;
+
+    padding: 0;
+
+    border: 0;
+}
+
+.framing {
+
+    position: absolute;
+
+    z-index: var(--tibet-HUD-TIER);
+}
+
+.drawer {
+
+    position: absolute;
+
+    overflow: hidden;
+}
+
+#home,
+#center,
+#content {
+
+    position: absolute;
+}
+
+/* -----------------------------*
+ * Corner definition            *
+ * ---------------------------- */
+
+.framing.corner {
+
+    text-align: center;
+
+    border: 1px solid #666;
+
+    background-color: #ddd;
+}
+
+.framing.corner > * {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    margin: 1px;
+
+    border: 1px solid #666;
+
+    background-color: #eee;
+}
+
+/* -----------------------------*
+ * Horizontal edge definition   *
+ * ---------------------------- */
+
+.h-edge {
+
+    font-weight: normal;
+    font-size: 138.5%;
+
+    border: 1px solid #666;
+
+    background-color: #ddd;
+}
+
+.h-edge > * {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    border: 1px solid #666;
+
+    background-color: #eee;
+
+    margin: 1px;
+}
+
+/* -----------------------------*
+ * Vertical edge definition     *
+ * ---------------------------- */
+
+.v-edge {
+
+    color: #fff;
+
+    font-weight: bold;
+    font-size: 138.5%;
+
+    line-height: 28px;
+
+    border: 1px solid #666;
+
+    background-color: #ddd;
+}
+
+.v-edge > * {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    border: 1px solid #666;
+
+    margin: 1px;
+
+    background-color: #eee;
+}
+
+/* -----------------------------*
+ * Compass div layout           *
+ * ---------------------------- */
+
+.framing.north {
+
+    top: 0;
+
+    height: 32px;
+
+    line-height: 32px;
+
+    border-top: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom: 1px solid #666;
+}
+
+.framing.north .drawer {
+
+    margin-top: 0;
+}
+
+.middle {
+
+    top: 36px;
+    bottom: 36px;
+
+    height: auto;
+
+    border-radius: 5px;
+}
+
+.framing.south {
+
+    bottom: 0;
+
+    height: 32px;
+
+    border-bottom: 0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    margin-bottom: 0;
+}
+
+.framing.south .drawer {
+
+    margin-bottom: 0;
+}
+
+.framing.west {
+
+    left: 0;
+    width: 48px;
+
+    border-left: 0;
+}
+
+.framing.west .drawer {
+
+    margin-left: 0;
+}
+
+.center {
+
+    left: 52px;
+    right: 52px;
+
+    width: auto;
+}
+
+.framing.east {
+
+    right: 0;
+
+    width: 48px;
+
+    border-right: 0;
+}
+
+.framing.east .drawer {
+
+    margin-right: 0;
+}
+
+.framing.north.west {
+
+    border-bottom-left-radius: 0;
+}
+
+.framing.north.center {
+
+    text-align: center;
+}
+
+.framing.north.east {
+
+    border-bottom-right-radius: 0;
+}
+
+.middle.west {
+
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.middle.center {
+
+    width: auto;
+    height: auto;
+
+    border-radius: 5px;
+
+    text-align: center;
+}
+
+.middle.east {
+
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.framing.south.west {
+
+    border-top-left-radius: 0;
+}
+
+.framing.south.center {
+
+    text-align: center;
+
+    font-weight: normal;
+    font-size: 108%;
+}
+
+.framing.south.east {
+
+    border-top-right-radius: 0;
+}
+
+/* -----------------------------*
+ * Drawer refinements           *
+ * ---------------------------- */
+
+.framing.north .drawer {
+
+    border-top: 0;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.framing.south .drawer {
+
+    border-bottom: 0;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.framing.middle .drawer {
+
+    border-radius: 4px;
+}
+
+.framing.west .drawer {
+
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.framing.east .drawer {
+
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.framing.north.west .drawer {
+
+    border-top: 0;
+    border-left: 0;
+}
+
+.framing.north.east .drawer {
+
+    border-top: 0;
+    border-right: 0;
+}
+
+.framing.south.west .drawer {
+
+    border-bottom: 0;
+    border-left: 0;
+}
+
+.framing.south.east .drawer {
+
+    border-bottom: 0;
+    border-right: 0;
+    border-top-right-radius: 0;
+}
+
+/* -----------------------------*
+ * Additional refinements       *
+ * ---------------------------- */
+
+.home {
+
+    height: 100%;
+    width: 100%;
+}
+
+.home img {
+
+    height: 54px;
+    width: 25px;
+
+    margin-top: 2px;
+}
+
+.north[pclass|hidden] .home img {
+
+    display: none;
+}
+
+#center {
+
+    border: 1px solid #666;
+
+    background-color: #ddd;
+
+    overflow: hidden;
+
+    transition: top 0.5s, right 0.5s, bottom 0.5s, left 0.5s;
+}
+
+#center #content {
+
+    background: #fff;
+
+    border-radius: 4px;
+
+    margin: 1px;
+
+    border: 1px solid #666;
+}
+
+#center iframe {
+
+    background-color: #fff;
+
+    border-radius: 4px;
+}
+
+#content {
+
+    box-sizing: border-box;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    overflow: auto;
+
+    /* border: 1px solid #666; */
+}
+
+/* Hide drawers and expand center content */
+
+#center.fullscreen {
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.framing.north,
+.framing.south {
+
+    transition: height 0.5s;
+}
+
+.framing.h-edge.north.no_transition,
+.framing.h-edge.south.no_transition {
+
+    transition: none;
+}
+
+.framing.east,
+.framing.west {
+
+    transition: width 0.5s;
+}
+
+.framing.v-edge.east.no_transition,
+.framing.v-edge.west.no_transition {
+
+    transition: none;
+}
+
+.framing.north[pclass|hidden] {
+
+    top: -2px;
+
+    height: 0;
+}
+
+.framing.west[pclass|hidden] {
+
+    left: -2px;
+
+    width: 0;
+}
+
+.framing.south[pclass|hidden] {
+
+    bottom: -2px;
+
+    height: 0;
+}
+
+.framing.east[pclass|hidden] {
+
+    right: -2px;
+
+    width: 0;
+}
