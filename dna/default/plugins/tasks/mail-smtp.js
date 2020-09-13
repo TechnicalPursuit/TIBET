@@ -106,7 +106,7 @@
             //  NodeJS TLSSocket options - we allow 'unauthorized' (i.e.
             //  self-signed certificate) access to the underlying server.
             smtpOpts.tls = smtpOpts.tls ||
-                                {rejectUnauthorized: false};
+                                {ciphers: 'SSLv3', rejectUnauthorized: false};
 
             //  Decrypt the username, which should always be provided from the
             //  database and stored in encrypted form.

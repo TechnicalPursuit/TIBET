@@ -475,6 +475,14 @@
                 }
 
                 jwt.verify(token, secret, function(err, decoded) {
+                    var checkorg,
+                        checkunit,
+                        checkrole,
+
+                        cookieorg,
+                        idx,
+                        specificrole;
+
                     if (err) {
                         res.status(401);
                         res.send('{ok: false}');
@@ -483,19 +491,40 @@
 
                     // logger.info('token: ' + JSON.stringify(decoded));
 
-                    if (!compareProfileItem(org, decoded.org, profile.orgJoin)) {
+                    checkorg = org;
+                    checkunit = unit;
+                    checkrole = role;
+
+                    //  If there's a cookie with a 'userorg', then use it to
+                    //  determine a specifically-associated role for this org.
+                    cookieorg = req.cookies.userorg;
+                    if (cookieorg) {
+                        idx = decoded.org.indexOf(cookieorg);
+                        if (idx !== -1) {
+                            specificrole = decoded.role[idx];
+                            if (specificrole) {
+                                checkorg = [cookieorg];
+                                checkrole = [specificrole];
+                            }
+                        }
+                    }
+
+                    if (!compareProfileItem(
+                            checkorg, decoded.org, profile.orgJoin)) {
                         res.status(401);
                         res.send('{ok: false}');
                         return;
                     }
 
-                    if (!compareProfileItem(unit, decoded.unit, profile.unitJoin)) {
+                    if (!compareProfileItem(
+                            checkunit, decoded.unit, profile.unitJoin)) {
                         res.status(401);
                         res.send('{ok: false}');
                         return;
                     }
 
-                    if (!compareProfileItem(role, decoded.role, profile.roleJoin)) {
+                    if (!compareProfileItem(
+                            checkrole, decoded.role, profile.roleJoin)) {
                         res.status(401);
                         res.send('{ok: false}');
                         return;

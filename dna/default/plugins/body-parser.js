@@ -25,6 +25,8 @@
             bodyLimit,
             bodyParser,
             jsonParser,
+            xmlParser,
+            textParser,
             meta,
             TDS,
             urlEncoded,
@@ -42,6 +44,7 @@
         TDS.prelog('system', 'loading middleware', meta);
 
         bodyParser = require('body-parser');
+        require('body-parser-xml')(bodyParser);
 
         //  ---
         //  Initialization
@@ -55,9 +58,17 @@
 
         /**
          */
+        textParser = bodyParser.text({
+            limit: bodyLimit,
+            type: 'text/*',
+            defaultCharset: 'utf-8'
+        });
+
+        /**
+         */
         jsonParser = bodyParser.json({
-                limit: bodyLimit
-            });
+            limit: bodyLimit
+        });
 
         /**
          */
@@ -73,14 +84,22 @@
             limit: bodyLimit
         });
 
+        /**
+         */
+        xmlParser = bodyParser.xml({
+            limit: bodyLimit
+        });
+
         //  ---
         //  Sharing
         //  ---
 
         options.parsers = {
+            text: textParser,
             json: jsonParser,
             urlencoded: urlEncoded,
-            urlextended: urlExtended
+            urlextended: urlExtended,
+            xml: xmlParser
         };
 
         return options.parsers;
