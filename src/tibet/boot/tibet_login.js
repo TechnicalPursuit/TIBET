@@ -18,21 +18,16 @@
         tds_auth_uri = root.TP.tds_auth_uri ||
             root.TP.sys.getcfg('tds.auth.uri') ||
             root.TP.cfg.tds.auth.uri;
-    } catch {
+    } catch (err) {
         tds_auth_uri = '/login';
     }
 
     root.login = function() {
         var usernameField,
             passwordField,
-
             loc,
             hash,
-
-            pathname,
-
             xhr,
-
             dat;
 
         if (!top.sessionStorage) {
@@ -63,8 +58,6 @@
             }
             loc = loc.slice(0, loc.indexOf('#'));
         }
-
-        pathname = top.location.pathname;
 
         xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
