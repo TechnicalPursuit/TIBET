@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="tibetlama" default="production" basedir="~app_cfg">
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDITING NOT RECOMMENDED -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<!-- here to default apps to boot minified production config -->
+<config id="production">
+    <package src="production.xml" config="minified"/>
+</config>
+
+<config id="base">
+    <package src="tibet.xml" config="base"/>
+    <package src="tibetlama.xml" config="base"/>
+</config>
+
+<config id="baseui">
+    <package src="tibet.xml" config="baseui"/>
+    <package src="tibetlama.xml" config="baseui"/>
+</config>
+
+<config id="full">
+    <package src="tibet.xml" config="full"/>
+    <package src="tibetlama.xml" config="full"/>
+</config>
+
+<config id="developer">
+    <package src="tibet.xml" config="developer"/>
+    <package src="tibetlama.xml" config="developer"/>
+</config>
+
+<config id="contributor">
+    <package src="tibet.xml" config="contributor"/>
+    <package src="tibetlama.xml" config="contributor"/>
+</config>
+
+</package>

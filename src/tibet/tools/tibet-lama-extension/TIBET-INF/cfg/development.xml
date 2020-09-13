@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="tibetlama" default="base" basedir="~app_cfg">
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT BELOW AS NEEDED    -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="properties" if="boot.phase_one">
+    <property name="boot.level" value="debug"/>
+    <property name="boot.console_log" value="false"/>
+
+    <property name="boot.minified" value="false"/>
+    <property name="boot.inlined" value="false"/>
+
+    <property name="debug.use_debugger" value="true"/>
+    <property name="debug.register_recursion" value="true"/>
+
+    <property name="log.inferences" value="true"/>
+    <property name="log.null_namespaces" value="true"/>
+    <property name="log.stack" value="true"/>
+    <property name="log.signal_stack" value="true"/>
+
+    <property name="tibet.$debug" value="true"/>
+    <property name="tibet.$verbose" value="true"/>
+
+    <property name="uri.source.watch_changes" value="true"/>
+    <property name="uri.source.process_changes" value="true"/>
+
+    <property name="sherpa.enabled" value="true"/>
+    <property name="sherpa.pp.function_comments" value="true"/>
+</config>
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="base">
+    <config ref="properties"/>
+    <package src="main.xml" config="base"/>
+</config>
+
+<config id="baseui">
+    <config ref="properties"/>
+    <package src="main.xml" config="baseui"/>
+</config>
+
+<config id="full">
+    <config ref="properties"/>
+    <package src="main.xml" config="full"/>
+</config>
+
+<config id="developer">
+    <config ref="properties"/>
+    <package src="main.xml" config="developer"/>
+</config>
+
+<config id="contributor">
+    <config ref="properties"/>
+    <package src="main.xml" config="contributor"/>
+</config>
+
+</package>
+

@@ -1,0 +1,9 @@
+{
+    "//" : "TIBET project file. Set configuration parameters here.",
+    "project": {
+        "name": "tibetlama"
+    },
+    "tibet": {
+        "dna": "devtool"
+    }
+}

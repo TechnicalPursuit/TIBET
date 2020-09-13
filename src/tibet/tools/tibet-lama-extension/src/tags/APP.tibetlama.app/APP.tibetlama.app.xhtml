@@ -1,0 +1,20 @@
+<tibetlama:app id="app">
+    <h1 class="hello">
+        Welcome to your new TIBET application!
+    </h1>
+
+    <div class="startup">
+        {{:if TP.has.sherpa}}
+        <p><a href="#" on:click="ToggleSherpa">Activate the TIBET Sherpa&#8482;</a> to begin your development cycle.</p>
+        {{/:if}}
+
+        <p>{{:if TP.has.sherpa}}Click the link above or use{{:else}}Use {{/:if}} <code>Alt-UpArrow</code> to toggle the {{:if TP.has.sherpa}}Sherpa{{:else}}boot log{{/:if}}.</p>
+
+        <br/><br/>
+        <p>This content is found in your application's "app tag" xhtml template file.</p>
+        <p>Edit the xhtml in <code>public/src/tags/APP.tibetlama.app</code> to get started.</p>
+
+        <br/><br/>
+        <p>For a tutorial introduction see the <a target="_blank" href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a>.</p>
+    </div>
+</tibetlama:app>

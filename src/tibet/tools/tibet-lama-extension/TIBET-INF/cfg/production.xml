@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="tibetlama" default="minified" basedir="~app_cfg">
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="minified">
+    <script src="~app_build/tibet.min.js" if="boot.phase_one"/>
+    <script src="~app_build/app.min.js" if="boot.phase_two"/>
+</config>
+
+<config id="debug">
+    <script src="~app_build/tibet.js" if="boot.phase_one"/>
+    <script src="~app_build/app.js" if="boot.phase_two"/>
+</config>
+
+</package>

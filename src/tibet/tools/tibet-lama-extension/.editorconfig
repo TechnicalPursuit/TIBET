@@ -1,0 +1,52 @@
+# unifying the coding style for different editors and IDEs => editorconfig.org
+
+root = true
+
+###########################################################
+; common
+###########################################################
+
+[*]
+charset = utf-8
+
+end_of_line = LF
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+indent_style = space
+indent_size = 4
+
+###########################################################
+; javascript
+###########################################################
+
+[*.js]
+indent_size = 4
+
+[*.json]
+indent_size = 4
+
+###########################################################
+; css
+###########################################################
+
+[*.scss]
+indent_size = 4
+
+###########################################################
+; make
+###########################################################
+
+[Makefile]
+indent_style = tab
+
+[makefile]
+indent_style = tab
+
+###########################################################
+; markdown
+###########################################################
+
+[*.md]
+trim_trailing_whitespace = false
+

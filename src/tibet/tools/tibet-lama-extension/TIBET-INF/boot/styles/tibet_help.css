@@ -1,0 +1,107 @@
+/**
+ * @file tibet_help.css
+ * @overview Simple styles that apply to HTML pages generated as HTML
+ *     alternatives to the TIBET man pages.
+ */
+
+body {
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
+    margin: 36px auto;
+}
+
+#background {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 960px;
+    margin: auto;
+}
+
+#header {
+    display: block;
+    position: absolute;
+    margin: 36px auto;
+}
+
+#header .lead {
+    margin-left: 112px;
+    font-size: 138.5%;
+    font-weight: bold;
+}
+
+#header .follow {
+    margin-left: 112px;
+}
+
+#header a.image-link img {
+    margin-bottom: 36px;
+    float: left;
+    border: 1px solid #666;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 2px #999;
+    width: 64px;
+    height: 64px;
+    cursor: pointer;
+}
+
+#content {
+    display: block;
+    position: absolute;
+    top: 124px;
+    bottom: 64px;
+    right: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    margin: auto;
+    overflow: auto;
+    background: url("../media/tibet_world.gif") center center no-repeat;
+    font-size: 93%;
+}
+
+h1 {
+    font-size: 123.1%;
+    margin: 1em 0 2em;
+}
+
+h2,
+h3 {
+    font-size: 100%;
+    color: #555;
+    margin-top: 2em;
+}
+
+code {
+    font-size: 108%;
+}
+
+a.crossref {
+    color: #910;
+}
+
+.toc dt {
+    line-height: 2em;
+    float: left;
+    clear: left;
+    width: 20%;
+}
+
+.toc dd {
+    line-height: 2em;
+    float: left;
+}
+
+#footer {
+    position: absolute;
+    top: auto;
+    height: 36px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #eee;
+    text-align: center;
+    font-size: 77%;
+    line-height: 36px;
+}
