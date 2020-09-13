@@ -222,9 +222,9 @@ Cmd.prototype.configureXMLNS = function(appname) {
         return xmlns;
     }
 
-    return CLI.inProject() ?
-            'urn:app:' + (appname || this.options.appname || this.options.name) :
-            'http://www.technicalpursuit.com/1999/tibet';
+    return CLI.inLibrary() ?
+            'http://www.technicalpursuit.com/1999/tibet' :
+            'urn:app:' + (appname || this.options.appname || this.options.name);
 };
 
 
