@@ -42,6 +42,7 @@ lib/src
 *~
 ehthumbs.db
 Icon?
+package-lock.json
 Thumbs.db
 /.tibetlint.json
 
