@@ -5,7 +5,7 @@
 
 `tibet type [[--name] [<root>.][<namespace>(.|:)]]<typename>
     [--supertype <typename] [--dir <dirname>] [--dna <template>]
-    [--package <package>] [--config <cfg>]`
+    [--xmlns <nsuri>] [--package <package>] [--config <cfg>]`
 
 ## DESCRIPTION
 
@@ -47,6 +47,10 @@ for `TP.core.Content` subtypes, `controller` for `TP.core.Controller` subtypes,
 subtypes. (As you can see the dna name is often simply the lowercased name of a
 type to use as the supertype, but each does in fact refer to a unique dna
 directory.
+
+  * `--xmlns` :
+    Lets you define a specific XMLNS URI for any XHTML and CSS references. The
+default will be `urn:app:{{appname}}` or the standard TIBET prefix URI.
 
   * `--config` :
     Used as the name of the config package in the cfg package file that the

@@ -64,7 +64,7 @@ Cmd.NAME = 'clone';
  */
 Cmd.prototype.USAGE =
     'tibet clone [[--name] <name>] [[--dir] <dirname>|.] [--dna <template>]' +
-    ' [--list] [--force] [--update]';
+    ' [--xmlns <nsuri>] [--list] [--force] [--update]';
 
 //  ---
 //  Instance Methods
@@ -116,7 +116,9 @@ Cmd.prototype.configure = function() {
     }
     options.dna = options.dna || this.DNA_DEFAULT;
 
-    this.trace(CLI.beautify(JSON.stringify(options)));
+    options.xmlns = options.xmlns || this.configureXMLNS();
+
+    this.trace('configure:\n' + CLI.beautify(JSON.stringify(options)));
 
     return options;
 };

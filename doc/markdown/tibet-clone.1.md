@@ -4,7 +4,7 @@
 ## SYNOPSIS
 
 `tibet clone <target>|[--name <appname>] [--dir <dirname>]
-    [--dna <template>] [--list] [--force] [--update]`
+    [--dna <template>] [--xmlns <nsuri>] [--list] [--force] [--update]`
 
 ## DESCRIPTION
 
@@ -36,6 +36,10 @@ subdirectory.
     Lets you clone any valid template in TIBET's `dna` directory or a
 directory of your choosing. This latter option lets you create your own reusable
 custom application templates.
+
+  * `--xmlns` :
+    Lets you define a specific XMLNS URI for any XHTML and CSS references. The
+default will be `urn:app:{{appname}}` or the standard TIBET prefix URI.
 
   * `--force` :
     Required if you use `.` as a simple reminder to be careful. You can also

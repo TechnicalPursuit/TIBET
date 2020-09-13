@@ -4,6 +4,7 @@
         "name": "{{appname}}"
     },
     "tibet": {
-        "dna": "{{dna}}"
+        "dna": "{{dna}}",
+        "xmlns": "{{xmlns}}"
     }
 }

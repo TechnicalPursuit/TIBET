@@ -11,5 +11,5 @@ TP.defineNamespace('APP.{{appname}}');
 /**
  * Define the XML namespace and prefix for any tags in the application.
  */
-TP.w3.Xmlns.registerNSInfo('urn:app:{{appname}}',
+TP.w3.Xmlns.registerNSInfo('{{xmlns}}',
     TP.hc('prefix', '{{appname}}'));

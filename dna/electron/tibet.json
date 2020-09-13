@@ -4,7 +4,8 @@
         "name": "{{appname}}"
     },
     "tibet": {
-        "dna": "{{dna}}"
+        "dna": "{{dna}}",
+        "xmlns": "{{xmlns}}"
     },
     "electron": {
         "//": "NOTE only boot.* params are used on startup URL",

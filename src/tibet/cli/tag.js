@@ -57,10 +57,13 @@ Cmd.NAME = 'tag';
  */
 Cmd.prototype.DEFAULT_DNA = 'templatedtag';
 
-//  NOTE the parse options here are just for the 'tws' command itself.
-//  Subcommands need to parse via their own set of options.
+/*
+ * Add command line options. NOTE that in this case the tag command does _NOT_
+ * inherit from the `type` or `_dna` commands so it needs to list all the
+ * options the type command requires (along with its own custom flags).
+ */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    string: ['name', 'supertype', 'dir', 'dna', 'package', 'config'],
+    string: ['name', 'dir', 'dna', 'xmlns', 'supertype', 'package', 'config'],
     boolean: ['action', 'computed', 'info', 'templated']
 },
 Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -124,8 +127,11 @@ Cmd.prototype.configure = function() {
             break;
     }
 
-    options.dna = this.configureDNA();
-    options.supertype = this.configureSupertype();
+    options.dna = options.dna || this.configureDNA();
+    options.supertype = options.supertype || this.configureSupertype();
+    options.xmlns = options.xmlns || this.configureXMLNS();
+
+    this.trace('configure:\n' + CLI.beautify(JSON.stringify(options)));
 
     return options;
 };
@@ -199,6 +205,30 @@ Cmd.prototype.configureSupertype = function() {
 
 
 /**
+ * Return a valid XMLNS uri value based on command line input and default values
+ * which respect whether you are in a project or the library.
+ * @param {String} appname The application name to use (defaults to --name or the
+ *     current TIBET project name.
+ * @returns {String} The xmlns URI.
+ */
+Cmd.prototype.configureXMLNS = function(appname) {
+    var xmlns;
+
+    //  Define an XMLNS value. This is used for CSS url() sections as well as
+    //  any tag-related definitions. NOTE the value for lib is set to the value
+    //  we use for 'tibet:' prefixes elsewhere in the library.
+    xmlns = this.options.xmlns || CLI.getcfg('tibet.xmlns');
+    if (CLI.notEmpty(xmlns)) {
+        return xmlns;
+    }
+
+    return CLI.inProject() ?
+            'urn:app:' + (appname || this.options.appname || this.options.name) :
+            'http://www.technicalpursuit.com/1999/tibet';
+};
+
+
+/**
  * Runs the specific command in question.
  * @returns {Number} A return code. Non-zero indicates an error.
  */
@@ -219,6 +249,7 @@ Cmd.prototype.execute = function() {
 
     args.push('--dna', options.dna);
     args.push('--supertype', options.supertype);
+    args.push('--xmlns', options.xmlns);
 
     if (options.dir) {
         args.push('--dir', options.dir);
