@@ -10308,6 +10308,7 @@ TP.boot.$expandConfig = async function(anElement, configName) {
                     }
 
                     src = TP.boot.$getFullPath(child, src);
+                    child.setAttribute('src', src);
 
                     config = child.getAttribute('config') ||
                         anElement.getAttribute('config') ||
@@ -11039,6 +11040,7 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, useCach
 
                     //  Make sure to fully expand the path.
                     src = TP.boot.$getFullPath(child, src);
+                    child.setAttribute('src', src);
 
                     if (includePkgs) {
                         result.push(child);
