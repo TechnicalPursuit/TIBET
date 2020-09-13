@@ -6,7 +6,7 @@
 `tibet tag [[--name] [<root>.][<namespace>(.|:)]]<tagname>
     [--action | --compiled | --info | --templated]
     [--supertype <typename] [--dir <dirname>] [--dna <template>]
-    [--package <package>] [--config <cfg>]`
+    [--xmlns <nsuri>] [--package <package>] [--config <cfg>]`
 
 ## DESCRIPTION
 
@@ -35,6 +35,10 @@ optionally a template, style sheet, and test file.
 
   * `--name` :
     An alternate way to provide the tag name to create.
+
+  * `--xmlns` :
+    Lets you define a specific XMLNS URI for any XHTML and CSS references. The
+default will be `urn:app:{{appname}}` or the standard TIBET prefix URI.
 
   * `--supertype` :
     The name of the supertype to use for the target tag. This should be

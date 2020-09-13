@@ -74,10 +74,11 @@ Cmd.prototype.NEEDS_FORCE = false;
  */
 Cmd.prototype.TEMPLATE_KEY = 'typename';
 
-//  NOTE the parse options here are just for the 'tws' command itself.
-//  Subcommands need to parse via their own set of options.
+/*
+ * Add the command line options not found in our parent's list.
+ */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    string: ['name', 'supertype', 'dir', 'dna', 'package', 'config']
+    string: ['supertype', 'package', 'config']
 },
 Cmd.Parent.prototype.PARSE_OPTIONS);
 
@@ -86,7 +87,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet type [[--name] [<root>.][<namespace>(.|:)]]<typename> [--supertype <typename>] [--dir <dirname>] [--dna <template>] [--package <package>] [--config <cfgname>]';
+    'tibet type [[--name] [<root>.][<namespace>(.|:)]]<typename> [--supertype <typename>] [--xmlns <nsuri>] [--dir <dirname>] [--dna <template>] [--package <package>] [--config <cfgname>]';
 
 //  ---
 //  Instance Methods
@@ -143,6 +144,10 @@ Cmd.prototype.configure = function() {
     options.dna = options.dna || this.DNA_DEFAULT;
 
     options[this.TEMPLATE_KEY] = options.name;
+
+    options.xmlns = options.xmlns || this.configureXMLNS();
+
+    this.trace('configure:\n' + CLI.beautify(JSON.stringify(options)));
 
     return options;
 };
@@ -910,6 +915,7 @@ Cmd.prototype.getTemplateParameters = function() {
         obj,
         name,
         dna,
+        xmlns,
         params;
 
     if (this.params) {
@@ -920,12 +926,14 @@ Cmd.prototype.getTemplateParameters = function() {
 
     name = options.name;
     dna = path.basename(options.dna);
+    xmlns = options.xmlns;
 
     //  NOTE that we don't use the full path for the dna reference here to avoid
     //  embedding real paths in the output.
     obj = {};
     obj[this.TEMPLATE_KEY] = name;
     obj.dna = dna;
+    obj.xmlns = xmlns;
 
     obj.nsroot = options.nsroot;
     obj.nsname = options.nsname;
@@ -933,7 +941,7 @@ Cmd.prototype.getTemplateParameters = function() {
     params = CLI.blend(obj, options);
     this.params = params;
 
-    this.trace(CLI.beautify(JSON.stringify(params)));
+    this.trace('template params:\n' + CLI.beautify(JSON.stringify(params)));
 
     return params;
 };

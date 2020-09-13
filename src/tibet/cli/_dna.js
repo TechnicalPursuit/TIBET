@@ -93,7 +93,7 @@ Cmd.prototype.PACKAGED_RESOURCE = /.+\.(js|jscript|json|xml|xhtml|xsl|xsd|css)$/
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
     boolean: ['force', 'list', 'update'],
-    string: ['dir', 'dna', 'name'],
+    string: ['dir', 'dna', 'name', 'xmlns'],
     default: {
     }
 },
@@ -823,6 +823,7 @@ Cmd.prototype.getTemplateParameters = function() {
         obj,
         name,
         dna,
+        xmlns,
         params;
 
     if (this.params) {
@@ -833,19 +834,45 @@ Cmd.prototype.getTemplateParameters = function() {
 
     name = options.name;
     dna = options.dna;
+    xmlns = options.xmlns;
 
     //  NOTE that we don't use the full path for the dna reference here to avoid
     //  embedding real paths in the output.
     obj = {};
     obj[this.TEMPLATE_KEY] = name;
     obj.dna = dna.slice(dna.lastIndexOf('/') + 1);
+    obj.xmlns = xmlns;
 
     params = CLI.blend(obj, options);
     this.params = params;
 
-    this.trace(CLI.beautify(JSON.stringify(params)));
+    this.trace('template params:\n' + CLI.beautify(JSON.stringify(params)));
 
     return params;
+};
+
+
+/**
+ * Return a valid XMLNS uri value based on command line input and default values
+ * which respect whether you are in a project or the library.
+ * @param {String} appname The application name to use (defaults to --name or the
+ *     current TIBET project name.
+ * @returns {String} The xmlns URI.
+ */
+Cmd.prototype.configureXMLNS = function(appname) {
+    var xmlns;
+
+    //  Define an XMLNS value. This is used for CSS url() sections as well as
+    //  any tag-related definitions. NOTE the value for lib is set to the value
+    //  we use for 'tibet:' prefixes elsewhere in the library.
+    xmlns = this.options.xmlns || CLI.getcfg('tibet.xmlns');
+    if (CLI.notEmpty(xmlns)) {
+        return xmlns;
+    }
+
+    return CLI.inProject() ?
+            'urn:app:' + (appname || this.options.appname || this.options.name) :
+            'http://www.technicalpursuit.com/1999/tibet';
 };
 
 
