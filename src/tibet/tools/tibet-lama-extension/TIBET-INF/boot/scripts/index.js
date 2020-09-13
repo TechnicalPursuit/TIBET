@@ -5,10 +5,10 @@ window.addEventListener('load',
             console.log('booting TIBET');
 
             TP.sys.setcfg('boot.profile', 'development');
-
             //  TP.sys.setcfg('boot.teamtibet', true);
 
             TP.boot.launch();
+
             return;
         }
 
@@ -16,7 +16,7 @@ window.addEventListener('load',
         //  about that in a reasonable fashion so the UI doesn't just look hung.
         if (top.UIBOOT && top.UIBOOT.contentDocument) {
             top.UIBOOT.contentDocument.getElementById('BOOT-IMAGE').src =
-                './TIBET-INF/boot/media/alert.png';
+                '../media/alert.png';
             top.UIBOOT.contentDocument.getElementById('BOOT-SUBHEAD').innerHTML =
                 'Error loading. Was the project initialized via `tibet init`?';
         }

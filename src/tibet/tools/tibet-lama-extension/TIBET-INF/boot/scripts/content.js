@@ -4,7 +4,7 @@
 window.addEventListener('load',
     function() {
 
-        console.log('running content_script.js load');
+        console.log('running content.js load');
 
         document.body.addEventListener(
             'TIBETAppDidStart',

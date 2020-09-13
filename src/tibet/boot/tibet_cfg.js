@@ -216,6 +216,10 @@
     //  Ensure we use the tibet_dir approach to computing root paths.
     TP.sys.setcfg('boot.rootcomp', 'tibet_dir');
 
+    //  Set values we can use in boot logic to load TIBET in extensions.
+    TP.sys.setcfg('boot.devtools_offset', '../../../..');
+    TP.sys.setcfg('boot.devtools_root', '/');
+
     //  ---
     //  package/config setup
     //  ---

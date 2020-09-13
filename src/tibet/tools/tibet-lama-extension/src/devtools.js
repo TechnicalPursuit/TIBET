@@ -76,8 +76,8 @@ window.addEventListener('load',
                 chrome.devtools.panels.create(
                     'TIBET-Lama',       //  title for the panel tab
                     '',                 //  path to an icon
-                    'main_panel.xhtml', //  path to page for injecting into the
-                                        //  tab's area
+                    //  path to page for injecting into the tab's area
+                    './src/panels/main_panel/main_panel.xhtml',
                     panelDidCreate
                 );
             });

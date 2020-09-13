@@ -3,17 +3,17 @@
     "name": "tibetlama",
     "description": "",
     "version": "1.0",
-    "devtools_page": "./tibetlama.xhtml",
+    "devtools_page": "./TIBET-INF/boot/xhtml/tibetlama.xhtml",
     "background": {
         "persistent": true,
         "scripts": [
-            "background.js"
+            "./TIBET-INF/boot/scripts/background.js"
         ]
     },
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["content.js"],
+            "js": ["./TIBET-INF/boot/scripts/content.js"],
             "run_at": "document_start"
         }
     ],

@@ -7831,6 +7831,25 @@ TP.boot.$getAppHead = function() {
         }
     }
 
+    //  When loading in devtools using our "standard layout" for boot script and
+    //  file locations we need to manage the offset from chrome-extension://.
+    if (TP.inExtension === true) {
+
+        path = decodeURI(window.location.toString());
+
+        //  Combine current path with the src path in case of relative path
+        //  specification (common) and we should end up with a workable
+        //  offset.
+        if (TP.boot.$notEmpty(path)) {
+            path = TP.boot.$uriJoinPaths(path,
+                TP.sys.cfg('boot.devtools_offset'));
+        }
+
+        TP.boot.$$apphead = path;
+
+        return TP.boot.$$apphead;
+    }
+
     //  HTTP or similar protocol where we're likely rooted from some host
     //  and a path directly to the index.html (or no visible path at all).
 
