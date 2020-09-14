@@ -6,5 +6,37 @@
     "tibet": {
         "dna": "devtool",
         "xmlns": "urn:app:tibetlama"
+    },
+    "devtools": {
+        "blank_page": "./TIBET-INF/boot/xhtml/panel_blank.xhtml",
+        "panels": [
+        {
+            "title": "TIBET Lama",
+            "icon": "./TIBET-INF/boot/media/app_logo.png",
+            "content": "<tibetlama:lama/>"
+        },
+        {
+            "title": "TIBET TDC",
+            "icon": "./TIBET-INF/boot/media/app_logo.png",
+            "content": "<tibetlama:tdc/>"
+        }
+        ],
+        "sidebars": [
+        {
+            "title": "Responders",
+            "panel": "elements",
+            "content": "<tibetlama:responders/>"
+        },
+        {
+            "title": "Bindings",
+            "panel": "elements",
+            "content": "<tibetlama:bindings/>"
+        },
+        {
+            "title": "on:*",
+            "panel": "sources",
+            "content": "<tibetlama:onstars/>"
+        }
+        ]
     }
 }

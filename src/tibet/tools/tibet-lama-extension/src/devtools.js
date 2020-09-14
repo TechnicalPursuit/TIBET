@@ -8,6 +8,20 @@
 'use strict';
 
 
+/**
+ */
+const isInstrumented = function(aWindow) {
+
+    if (!aWindow) {
+        return false;
+    }
+
+    return aWindow.$$topWindow !== undefined;
+};
+
+
+/**
+ */
 const instrumentWindow = function(aWindow) {
 
     if (!aWindow) {
@@ -58,7 +72,13 @@ const panelDidCreate = function(extensionPanel, info) {
     extensionPanel.onShown.addListener((panelWin) => {
         var msg;
 
+        if (isInstrumented(panelWin)) {
+            return;
+        }
+
         panelWindow = instrumentWindow(panelWin);
+
+//  TODO: do we need this data flush thing for sidebars?
 
         //  Flush any queued data to the panel.
         msg = data.shift();
@@ -87,7 +107,8 @@ const panelDidCreate = function(extensionPanel, info) {
 const sidebarDidCreate = function(sidebarPanel, info) {
     var panelWindow,
         data,
-        port;
+        port,
+        blank;
 
     data = [];
     port = chrome.runtime.connect({name: 'devtools'});
@@ -104,19 +125,14 @@ const sidebarDidCreate = function(sidebarPanel, info) {
         }
     });
 
-    //  Instrument with window ref etc. etc.
+    //  Instrument with window ref etc. etc. and render initial content.
     sidebarPanel.onShown.addListener((panelWin) => {
+        if (isInstrumented(panelWin)) {
+            return;
+        }
 
         panelWindow = instrumentWindow(panelWin);
 
-        /*
-        panelWin.document.body.addEventListener('ContentLoaded', function() {
-            console.log('sidebar window document loaded');
-        });
-        */
-
-        //  TODO: if we've done this once we probably don't need to do it again,
-        //  we could just let the panel "refresh" rather than re-building it.
         //  Set content to actually trigger TIBET-enhanced rendering.
         const win = TP.wrap(panelWin);
         win.getDocument().getBody().setContent(info.content);
@@ -125,74 +141,36 @@ const sidebarDidCreate = function(sidebarPanel, info) {
     //  We have to set page content at least once to initialize the panel. If we
     //  don't do this we never seem to get the onShown event notification.
     //  NOTE there's no callback, returned promise, etc. for this operation.
-    sidebarPanel.setPage(info.page);
+    blank = TP.sys.getcfg('devtools.blank_page');
+    sidebarPanel.setPage(blank);
 };
 
 
 /**
  */
-const PANELS = [
-{
-    title: 'TIBET Lama',       //  title for the panel tab
-    path: '',                 //  path to an icon
-    page: './TIBET-INF/boot/xhtml/panel_blank.xhtml',
-    content: '<tibetlama:lama/>',
-    callback: panelDidCreate
-},
-{
-    title: 'TIBET TDC',       //  title for the panel tab
-    path: '',                 //  path to an icon
-    page: './TIBET-INF/boot/xhtml/panel_blank.xhtml',
-    content: '<tibetlama:tdc/>',
-    callback: panelDidCreate
-}
-];
-
-
-/**
- */
-const SIDEBARS = [
-{
-    title: 'Responders',
-    panel: chrome.devtools.panels.elements,
-    page: './TIBET-INF/boot/xhtml/panel_blank.xhtml',
-    content: '<tibetlama:responders/>',
-    callback: sidebarDidCreate
-},
-{
-    title: 'Bindings',
-    panel: chrome.devtools.panels.elements,
-    page: './TIBET-INF/boot/xhtml/panel_blank.xhtml',
-    content: '<tibetlama:bindings/>',
-    callback: sidebarDidCreate
-},
-{
-    title: 'on:*',
-    panel: chrome.devtools.panels.sources,
-    page: './TIBET-INF/boot/xhtml/panel_blank.xhtml',
-    content: '<tibetlama:onstars/>',
-    callback: sidebarDidCreate
-}
-];
-
-
-/**
- */
 const createExtensionUI = function() {
+    var panels,
+        sidebars,
+        blank;
 
-    PANELS.forEach(function(info) {
+    blank = TP.sys.getcfg('devtools.blank_page');
+
+    panels = TP.sys.getcfg('devtools.panels');
+    sidebars = TP.sys.getcfg('devtools.sidebars');
+
+    panels.forEach(function(info) {
         chrome.devtools.panels.create(
-            info.title, info.path, info.page, (pane) => {
-                info.callback(pane, info);
+            info.title, info.icon, blank, (pane) => {
+                panelDidCreate(pane, info);
             });
     });
 
-    SIDEBARS.forEach(function(info) {
-        info.panel.createSidebarPane(info.title, (pane) => {
-                info.callback(pane, info);
+    sidebars.forEach(function(info) {
+        chrome.devtools.panels[info.panel].createSidebarPane(info.title,
+            (pane) => {
+                sidebarDidCreate(pane, info);
             });
     });
-
 };
 
 
