@@ -38,9 +38,8 @@
     <package src="~app_tags/APP.tibetlama.app/"/>
     <package src="~app_tags/APP.tibetlama.lama/"/>
     <package src="~app_tags/APP.tibetlama.tdc/"/>
-    <package src="~app_tags/APP.tibetlama.responders/"/>
-    <package src="~app_tags/APP.tibetlama.bindings/"/>
-    <package src="~app_tags/APP.tibetlama.onstars/"/>
+    <package src="~app_tags/APP.tibetlama.elements/"/>
+    <package src="~app_tags/APP.tibetlama.sources/"/>
 </config>
 
 

@@ -1,5 +1,5 @@
 {
-    "//": "TIBET project file. Set configuration parameters here.",
+    "//": "TIBET project configuration file for TIBET Lama devtools extension.",
     "project": {
         "name": "tibetlama"
     },
@@ -23,20 +23,14 @@
         ],
         "sidebars": [
         {
-            "title": "Responders",
+            "title": "TIBET",
             "panel": "elements",
-            "content": "<tibetlama:responders/>"
+            "content": "<tibetlama:elements/>"
         },
         {
-            "title": "Bindings",
-            "panel": "elements",
-            "content": "<tibetlama:bindings/>"
-        },
-        {
-            "title": "on:*",
+            "title": "TIBET",
             "panel": "sources",
-            "content": "<tibetlama:onstars/>",
-            "disabled": true
+            "content": "<tibetlama:sources/>"
         }
         ]
     }

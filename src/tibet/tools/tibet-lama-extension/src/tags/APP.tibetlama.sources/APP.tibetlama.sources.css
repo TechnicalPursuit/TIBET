@@ -1,24 +1,24 @@
 /**
- * @overview 'APP.tibetlama.bindings' styles.
+ * @overview 'APP.tibetlama.sources' styles.
  */
 
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 @namespace tibetlama url("urn:app:tibetlama");
 
 /**
- * If your template/compute process transforms <tibetlama:bindings/> tags
+ * If your template/compute process transforms <tibetlama:sources/> tags
  * from namespaced XML into XHTML with a tibet:tag attribute so they render
- * in the page similar to <div tibet:tag="tibetlama:bindings"/> place your
+ * in the page similar to <div tibet:tag="tibetlama:sources"/> place your
  * style in rules with the following root form:
  */
-*[tibet|tag="tibetlama:bindings"] {
+*[tibet|tag="tibetlama:sources"] {
     /* style here for xhtml converted tags */
 }
 
 /**
  * If you don't transform from XML form (tags in the page remain in their
- * <tibetlama:bindings/> form) use rules of this form:
+ * <tibetlama:sources/> form) use rules of this form:
  */
-tibetlama|bindings {
+tibetlama|sources {
     /* style here for pure XML tags */
 }

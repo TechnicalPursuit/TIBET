@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    basedir="~app_tags/APP.tibetlama.onstars"
-    name="tibetlama.onstars" default="base">
+    basedir="~app_tags/APP.tibetlama.sources"
+    name="tibetlama.sources" default="base">
 
 
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
@@ -15,18 +15,18 @@
 
 <config id="scripts">
     <!-- tag-related source file references here -->
-    <script src="APP.tibetlama.onstars.js"/>
+    <script src="APP.tibetlama.sources.js"/>
 </config>
 
 <config id="resources">
     <!-- tag-related resource entries here -->
-    <resource href="APP.tibetlama.onstars.xhtml"/>
-    <resource href="APP.tibetlama.onstars.css"/>
+    <resource href="APP.tibetlama.sources.xhtml"/>
+    <resource href="APP.tibetlama.sources.css"/>
 </config>
 
 <config id="tests">
     <!-- tag-related test scripts here -->
-    <script src="APP.tibetlama.onstars_test.js"/>
+    <script src="APP.tibetlama.sources_test.js"/>
 </config>
 
 

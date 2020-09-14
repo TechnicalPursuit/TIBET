@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    basedir="~app_tags/APP.tibetlama.bindings"
-    name="tibetlama.bindings" default="base">
+    basedir="~app_tags/APP.tibetlama.elements"
+    name="tibetlama.elements" default="base">
 
 
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
@@ -15,18 +15,18 @@
 
 <config id="scripts">
     <!-- tag-related source file references here -->
-    <script src="APP.tibetlama.bindings.js"/>
+    <script src="APP.tibetlama.elements.js"/>
 </config>
 
 <config id="resources">
     <!-- tag-related resource entries here -->
-    <resource href="APP.tibetlama.bindings.xhtml"/>
-    <resource href="APP.tibetlama.bindings.css"/>
+    <resource href="APP.tibetlama.elements.xhtml"/>
+    <resource href="APP.tibetlama.elements.css"/>
 </config>
 
 <config id="tests">
     <!-- tag-related test scripts here -->
-    <script src="APP.tibetlama.bindings_test.js"/>
+    <script src="APP.tibetlama.elements_test.js"/>
 </config>
 
 

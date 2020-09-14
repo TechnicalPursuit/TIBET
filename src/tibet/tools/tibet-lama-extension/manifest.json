@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "tibetlama",
-    "description": "",
+    "description": "TIBET Lama developer extension for Chrome DevTools",
     "version": "1.0",
     "devtools_page": "./TIBET-INF/boot/xhtml/tibetlama.xhtml",
     "background": {
@@ -21,5 +21,5 @@
         "http://*/*/",
         "file://*/*/"
     ],
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; default-src 'self'; object-src 'none'; report-uri '/'"
+    "content_security_policy": "script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; default-src 'self'; object-src 'none'; report-uri '/'"
 }
