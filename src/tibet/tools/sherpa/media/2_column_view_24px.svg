@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg style="fill: rgb(0, 0, 0);" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
-  <path d="M 13 5 L 13 11 L 18 11 L 18 5 L 13 5 Z M 7 11 L 12 11 L 12 5 L 7 5 L 7 11 Z M 7 18 L 12 18 L 12 12 L 7 12 L 7 18 Z M 13 18 L 18 18 L 18 12 L 13 12 L 13 18 Z" bx:origin="0 0"/>
-  <path d="M0 0h24v24H0z" style="fill: none;"/>
-</svg>

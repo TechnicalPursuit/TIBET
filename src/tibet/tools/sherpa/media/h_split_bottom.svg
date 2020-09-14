@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 40 40" preserveAspectRatio="xMidYMid meet">
-	<path fill="none" stroke="#FFFFFF" d="M3.083,7.333V23.667H27.915999999999997V7.333H3.083ZM24.915,16.833H6.083V10.331999999999997H24.915999999999997L24.915,16.833L24.915,16.833Z" stroke-width="3" stroke-linejoin="round" opacity="0" transform="matrix(1,0,0,1,4,4)" style="stroke-linejoin: round; opacity: 0;"/>
-	<path fill="#000000" stroke="none" d="M3.083,7.333V23.667H27.915999999999997V7.333H3.083ZM24.915,16.833H6.083V10.331999999999997H24.915999999999997L24.915,16.833L24.915,16.833Z" transform="matrix(1,0,0,1,4,4)"/>
-	<rect x="0" y="0" width="32" height="32" r="0" rx="0" ry="0" fill="#000000" stroke="#000" opacity="0" style="opacity: 0;"/>
-</svg>

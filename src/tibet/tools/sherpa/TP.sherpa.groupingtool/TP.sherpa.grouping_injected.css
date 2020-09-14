@@ -1,9 +1,0 @@
-@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
-@namespace pclass url("urn:tibet:pseudoclass");
-@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
-
-.sherpa-grouping-grouped,
-*[class~="sherpa-grouping-grouped"] {
-
-    outline: dashed 2px red;
-}
