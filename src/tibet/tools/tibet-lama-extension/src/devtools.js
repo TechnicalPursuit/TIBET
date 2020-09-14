@@ -127,6 +127,7 @@ const panelDidCreate = function(extensionPanel, info) {
         var msg;
 
         console.log('showing panel: ' + info.title);
+        TP.signal(extensionPanel, 'PanelShow', TP.sig.RESPONDER_FIRING);
 
         if (isInstrumented(panelWin)) {
             return;
@@ -161,6 +162,11 @@ const panelDidCreate = function(extensionPanel, info) {
         };
 
         return;
+    });
+
+    extensionPanel.onHidden.addListener((panelWin) => {
+        console.log('hiding panel: ' + info.title);
+        TP.signal(extensionPanel, 'PanelHide', TP.sig.RESPONDER_FIRING);
     });
 };
 
@@ -213,6 +219,7 @@ const sidebarDidCreate = function(sidebarPane, info) {
         var msg;
 
         console.log('showing sidebar: ' + info.title);
+        TP.signal(sidebarPane, 'SidebarShow', TP.sig.RESPONDER_FIRING);
 
         if (isInstrumented(panelWin)) {
             return;
@@ -245,6 +252,12 @@ const sidebarDidCreate = function(sidebarPane, info) {
         sidebarPane.fromPanel = function(aMsg) {
             port.postMessage(aMsg);
         };
+    });
+
+    sidebarPane.onHidden.addListener((panelWin) => {
+        console.log('hiding sidebar: ' + info.title);
+        TP.signal(sidebarPane, 'SidebarHide', TP.sig.RESPONDER_FIRING);
+
     });
 
     //  We have to set page content at least once to initialize the panel. If we

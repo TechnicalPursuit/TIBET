@@ -18,6 +18,7 @@
     <!-- put non-bundle source file references here -->
     <script src="APP.tibetlama.js"/>
     <script src="APP.tibetlama.Application.js"/>
+    <script src="APP.tibetlama.RouteController.js"/>
 </config>
 
 <config id="resources">
