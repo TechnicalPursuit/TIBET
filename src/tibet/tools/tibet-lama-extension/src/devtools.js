@@ -159,6 +159,9 @@ const createExtensionUI = function() {
     sidebars = TP.sys.getcfg('devtools.sidebars');
 
     panels.forEach(function(info) {
+        if (info.disabled) {
+            return;
+        }
         chrome.devtools.panels.create(
             info.title, info.icon, blank, (pane) => {
                 panelDidCreate(pane, info);
@@ -166,6 +169,9 @@ const createExtensionUI = function() {
     });
 
     sidebars.forEach(function(info) {
+        if (info.disabled) {
+            return;
+        }
         chrome.devtools.panels[info.panel].createSidebarPane(info.title,
             (pane) => {
                 sidebarDidCreate(pane, info);

@@ -35,7 +35,8 @@
         {
             "title": "on:*",
             "panel": "sources",
-            "content": "<tibetlama:onstars/>"
+            "content": "<tibetlama:onstars/>",
+            "disabled": true
         }
         ]
     }
