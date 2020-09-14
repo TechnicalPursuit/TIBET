@@ -77,7 +77,7 @@ window.addEventListener('load',
                     'TIBET-Lama',       //  title for the panel tab
                     '',                 //  path to an icon
                     //  path to page for injecting into the tab's area
-                    '../../../src/panels/main_panel/main_panel.xhtml',
+                    '../../../src/panel.xhtml',
                     panelDidCreate
                 );
             });

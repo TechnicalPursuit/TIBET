@@ -1,9 +1,10 @@
 {
-    "//" : "TIBET project file. Set configuration parameters here.",
+    "//": "TIBET project file. Set configuration parameters here.",
     "project": {
         "name": "tibetlama"
     },
     "tibet": {
-        "dna": "devtool"
+        "dna": "devtool",
+        "xmlns": "urn:app:tibetlama"
     }
 }

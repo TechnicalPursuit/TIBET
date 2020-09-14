@@ -1,0 +1,24 @@
+/**
+ * @overview 'APP.tibetlama.tdc' styles.
+ */
+
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace tibetlama url("urn:app:tibetlama");
+
+/**
+ * If your template/compute process transforms <tibetlama:tdc/> tags
+ * from namespaced XML into XHTML with a tibet:tag attribute so they render
+ * in the page similar to <div tibet:tag="tibetlama:tdc"/> place your
+ * style in rules with the following root form:
+ */
+*[tibet|tag="tibetlama:tdc"] {
+    /* style here for xhtml converted tags */
+}
+
+/**
+ * If you don't transform from XML form (tags in the page remain in their
+ * <tibetlama:tdc/> form) use rules of this form:
+ */
+tibetlama|tdc {
+    /* style here for pure XML tags */
+}

@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
-
-<package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="tibetlama" default="base" basedir="~app_src">
+<package xmlns="http://www.technicalpursuit.com/1999/tibet" name="tibetlama" default="base" basedir="~app_src">
 
 
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
@@ -18,10 +16,8 @@
 
 <config id="scripts">
     <!-- put non-bundle source file references here -->
-    <script src="APP.tibetlama.js" />
-    <!--script src="APP.tibetlama.Object.js" /-->
-    <script src="APP.tibetlama.Application.js" />
-    <!--script src="APP.tibetlama.RouteController.js" /-->
+    <script src="APP.tibetlama.js"/>
+    <script src="APP.tibetlama.Application.js"/>
 </config>
 
 <config id="resources">
@@ -34,12 +30,17 @@
 
 <config id="tests">
     <!-- put non-bundle test scripts here -->
-    <script src="~app_test/APP_test.js" />
+    <script src="~app_test/APP_test.js"/>
 </config>
 
 <config id="bundles">
     <!-- put bundle (tag) references here (updated by CLI) -->
     <package src="~app_tags/APP.tibetlama.app/"/>
+    <package src="~app_tags/APP.tibetlama.lama/"/>
+    <package src="~app_tags/APP.tibetlama.tdc/"/>
+    <package src="~app_tags/APP.tibetlama.responders/"/>
+    <package src="~app_tags/APP.tibetlama.bindings/"/>
+    <package src="~app_tags/APP.tibetlama.onstars/"/>
 </config>
 
 

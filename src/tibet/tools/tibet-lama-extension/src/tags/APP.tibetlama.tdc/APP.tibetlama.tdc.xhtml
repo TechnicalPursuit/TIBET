@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+
+<tibetlama:tdc>
+{{:if TP.has.lama}}
+<a href="#" onclick="TP.bySystemId('LamaConsoleService').sendConsoleRequest('target = TP.elementGetGeneratingElement(TP.byId(\'' + event.target.id + '\', null, false)); :halo target ; :inspect $HALO --path=\'__TARGET__/Structure\''); return false;" tibet:no-rewrite="true">&lt;tibetlama:tdc/&gt;</a>
+{{:else}}
+<a href="#" onclick="alert('Edit APP.tibetlama.tdc.xhtml.')">&lt;tibetlama:tdc/&gt;</a>
+{{/:if}}
+</tibetlama:tdc>
