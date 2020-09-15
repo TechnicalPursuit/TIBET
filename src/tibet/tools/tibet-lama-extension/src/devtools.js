@@ -15,6 +15,68 @@
 
 'use strict';
 
+let port;
+
+const log = function(...args) {
+    console.log('TIBET Lama (devtools.js) -', ...args);
+};
+
+//  ---
+//  postMessage Plumbing
+//  ---
+
+const createCommChannel = function() {
+
+    //  Hack into the background.js page and connect the console ;)
+    chrome.runtime.getBackgroundPage(function(page) {
+        page.consoleHook = console;
+    });
+
+    port = chrome.runtime.connect({name: 'devtools'});
+
+    /**
+     * Listen for inbound messages from the app and dispatch them to the
+     * local window so code in devtools can see and respond to them.
+     * @param {Object} msg The message in object form (may be a string).
+     */
+    port.onMessage.addListener(function(msg) {
+        log('message from app: ', msg);
+
+        //  Post to our window ;) Why? Because we can't actually talk to
+        //  code in the window... but code in the window can watch the
+        //  window for messages and filter based on the 'type'.
+        window.postMessage({type: 'TO_DEVTOOLS', payload: msg}, '*');
+    });
+
+
+    /**
+     * Listen for messages to our window. Some of these will be from
+     * ourselves (per port.onMessage above) but we filter those.
+     * @param {MessageEvent} event The message-specific event.
+     */
+    window.addEventListener('message', function(event) {
+
+        //  Source has to be the local window. This ensures we're only going
+        //  to process messages going from our window to the app window.
+        if (event.source !== window) {
+            return;
+        }
+
+        if (event.data && event.data.type &&
+                event.data.type === 'FROM_DEVTOOLS') {
+
+            log('message to app: ', event.data.payload);
+
+            //  Send message from devtools to the app side by posting it to
+            //  our end of the channel. NOTE we only send the payload.
+            port.postMessage(event.data.payload);
+        }
+
+    }, false);
+
+};
+
+
 //  ---
 //  Window Functions
 //  ---
@@ -52,7 +114,7 @@ const isInstrumented = function(aWindow) {
 const instrumentWindow = function(aWindow) {
 
     if (!aWindow) {
-        console.error('missing window parameter');
+        log('missing window parameter');
         return;
     }
 
@@ -60,11 +122,11 @@ const instrumentWindow = function(aWindow) {
     //  panels between top and bottom).
     try {
         if (aWindow.$$topWindow) {
-            console.log('ignoring instrumented window');
+            log('ignoring instrumented window');
             return;
         }
 
-        console.log('instrumenting window');
+        log('instrumenting window');
 
         aWindow.$$topWindow = aWindow;
         TP.boot.initializeCanvas(aWindow);
@@ -72,7 +134,7 @@ const instrumentWindow = function(aWindow) {
         return aWindow;
 
     } catch (e) {
-        console.log('ignoring cross-origin window');
+        log('ignoring cross-origin window');
 
         //  Be sure to return undefined, not the window, to indicate failure.
         return;
@@ -98,38 +160,20 @@ const instrumentWindow = function(aWindow) {
  * }
  */
 const panelDidCreate = function(extensionPanel, info) {
-    var panelWindow,
-        data,
-        port;
+    var panelWindow;
 
-    console.log('created panel: ' + info.title);
-
-    //  TODO:   one port to devtools? If so we need to filter messages by panel
-    //  ID or some other filter to avoid messaging all panels. Also, we don't
-    //  want the same "data buffer" so we should check up on that.
-    data = [];
-    port = chrome.runtime.connect({name: 'devtools'});
-
-    port.onMessage.addListener((msg) => {
-        //  Write information to the panel, if exists.
-        //  If we don't have a panel reference (yet), queue the data.
-        if (panelWindow) {
-            panelWindow.toPanel(msg);
-        } else {
-            data.push(msg);
-        }
-    });
+    log('created panel ' + info.title);
 
     //  Add listener for onShown and use that to capture and instrument the
     //  window. NOTE that the extensionPanel passed to the panelDidCreate method
     //  is NOT a window but for TIBET operation we need the window handle.
     extensionPanel.onShown.addListener((panelWin) => {
-        var msg;
 
-        console.log('showing panel: ' + info.title);
-        TP.signal(extensionPanel, 'PanelShow', TP.sig.RESPONDER_FIRING);
+        log('showing panel ' + info.title);
 
         if (isInstrumented(panelWin)) {
+            TP.signal(TP.gid(panelWin),
+                'PanelShow', TP.hc(info), TP.sig.RESPONDER_FIRING);
             return;
         }
 
@@ -146,27 +190,18 @@ const panelDidCreate = function(extensionPanel, info) {
         const win = TP.wrap(panelWin);
         win.getDocument().getBody().setContent(info.content);
 
-        //  TODO:   clean this up
-
-        //  Flush any queued data to the panel.
-        msg = data.shift();
-        while (msg) {
-            panelWin.toPanel(msg);
-            msg = data.shift();
-        }
-
-        //  Define a method that will route messages from the panel back
-        //  into the port (that is connected to the background page).
-        extensionPanel.fromPanel = function(aMsg) {
-            port.postMessage(aMsg);
-        };
+        TP.signal(TP.gid(panelWin),
+            'PanelShow', TP.hc(info), TP.sig.RESPONDER_FIRING);
 
         return;
     });
 
     extensionPanel.onHidden.addListener((panelWin) => {
-        console.log('hiding panel: ' + info.title);
-        TP.signal(extensionPanel, 'PanelHide', TP.sig.RESPONDER_FIRING);
+        log('hiding panel ' + info.title);
+        if (isInstrumented(panelWin)) {
+            TP.signal(
+                TP.gid(panelWin), 'PanelHide', TP.hc(info), TP.sig.RESPONDER_FIRING);
+        }
     });
 };
 
@@ -190,38 +225,20 @@ const panelDidCreate = function(extensionPanel, info) {
  */
 const sidebarDidCreate = function(sidebarPane, info) {
     var panelWindow,
-        data,
-        port,
         blank;
 
-    console.log('created sidebar: ' + info.title);
-
-    //  TODO:   one port to devtools? If so we need to filter messages by panel
-    //  ID or some other filter to avoid messaging all panels. Also, we don't
-    //  want the same "data buffer" so we should check up on that.
-    data = [];
-    port = chrome.runtime.connect({name: 'devtools'});
-
-    port.onMessage.addListener((msg) => {
-        //  Write information to the panel, if exists.
-        //  If we don't have a panel reference (yet), queue the data.
-        if (panelWindow) {
-            panelWindow.toPanel(msg);
-        } else {
-            data.push(msg);
-        }
-    });
+    log('created sidebar ' + info.title);
 
     //  Instrument with window ref etc. etc. and render initial content.
     //  NOTE that this must be done in the onShown handler during the first
     //  display operation for the pane. The window is not real until then.
     sidebarPane.onShown.addListener((panelWin) => {
-        var msg;
 
-        console.log('showing sidebar: ' + info.title);
-        TP.signal(sidebarPane, 'SidebarShow', TP.sig.RESPONDER_FIRING);
+        log('showing sidebar ' + info.title);
 
         if (isInstrumented(panelWin)) {
+            TP.signal(TP.gid(panelWin),
+                'SidebarShow', TP.hc(info), TP.sig.RESPONDER_FIRING);
             return;
         }
 
@@ -238,26 +255,18 @@ const sidebarDidCreate = function(sidebarPane, info) {
         const win = TP.wrap(panelWin);
         win.getDocument().getBody().setContent(info.content);
 
-        //  TODO:   clean this up
+        TP.signal(TP.gid(panelWin),
+            'SidebarShow', TP.hc(info), TP.sig.RESPONDER_FIRING);
 
-        //  Flush any queued data to the panel.
-        msg = data.shift();
-        while (msg) {
-            panelWin.toPanel(msg);
-            msg = data.shift();
-        }
-
-        //  Define a method that will route messages from the panel back
-        //  into the port (that is connected to the background page).
-        sidebarPane.fromPanel = function(aMsg) {
-            port.postMessage(aMsg);
-        };
+        return;
     });
 
     sidebarPane.onHidden.addListener((panelWin) => {
-        console.log('hiding sidebar: ' + info.title);
-        TP.signal(sidebarPane, 'SidebarHide', TP.sig.RESPONDER_FIRING);
-
+        log('hiding sidebar ' + info.title);
+        if (isInstrumented(panelWin)) {
+            TP.signal(TP.gid(panelWin),
+                'SidebarHide', TP.hc(info), TP.sig.RESPONDER_FIRING);
+        }
     });
 
     //  We have to set page content at least once to initialize the panel. If we
@@ -344,7 +353,10 @@ function() {
     document.body.addEventListener(
         'TIBETAppDidStart',
         function(evt) {
-            console.log('devtools TIBETAppDidStart');
+            log('TIBETAppDidStart');
+
+            createCommChannel();
+
             createExtensionUI();
         });
 },

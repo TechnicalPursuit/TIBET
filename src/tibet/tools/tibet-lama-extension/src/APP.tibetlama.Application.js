@@ -9,3 +9,4 @@ APP.tibetlama.Application.Inst.defineHandler('UIActivate',
 function(aSignal) {
     console.log('Application instance UIActivate');
 });
+

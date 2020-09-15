@@ -1,10 +1,19 @@
-/* global chrome:false
-   consoleFoo:true
-*/
+/**
+ * @overview Logic for the devtools "background" page of the extension. This
+ *     file simply connects the two ends of our port.onMessage pipeline between
+ *     devtools (devtools.js) logic and inspected window (content.js) logic.
+ * @copyright Copyright (C) 2020 Technical Pursuit Inc. All rights reserved.
+ */
 
-//  ----------------------------------------------------------------------------
-//  DevTools Connections
-//  ----------------------------------------------------------------------------
+/* global chrome:false consoleHook:true */
+/* eslint indent:0, consistent-this:0, one-var: 0 */
+
+//  NOTE NOTE NOTE this MUST be outside the IFFE to work correctly.
+consoleHook = console;
+
+(function() {
+
+'use strict';
 
 var devtoolsPorts,
     contentScriptPorts;
@@ -12,16 +21,33 @@ var devtoolsPorts,
 devtoolsPorts = [];
 contentScriptPorts = [];
 
-consoleFoo = console;
 
+/**
+ *
+ */
+const log = function(...args) {
+    //  NOTE: use consoleHook because we'll remap it from devtools.js when the
+    //  window has loaded to a console you can actually see ;).
+    consoleHook.log('TIBET Lama (background.js) -', ...args);
+};
+
+
+/**
+ *
+ */
 chrome.runtime.onConnect.addListener(function(port) {
 
+     log('onConnect');
+
     //  Wire up the 'devtools' side of the connection.
+    //  These are messages from DevTools toward the inspected window.
     if (port.name === 'devtools') {
 
         devtoolsPorts.push(port);
 
-        //  Remove port when destroyed (eg when devtools instance is closed)
+        /**
+         * Remove port when destroyed (eg when devtools instance is closed)
+         */
         port.onDisconnect.addListener(function() {
             var i;
 
@@ -31,10 +57,13 @@ chrome.runtime.onConnect.addListener(function(port) {
             }
         });
 
+        /**
+         *
+         */
         port.onMessage.addListener(function(msg) {
 
             //  Received message from devtools.
-            consoleFoo.log('Received message from devtools page', msg);
+            log('relaying message from devtools: ', msg);
 
             //  Post the message to all of the content script pages.
             contentScriptPorts.forEach(function(contentScriptPort) {
@@ -46,11 +75,14 @@ chrome.runtime.onConnect.addListener(function(port) {
     }
 
     //  Wire up the 'content script' side of the connection.
+    //  These are messages from the inspected window toward DevTools.
     if (port.name === 'contentscript') {
 
         contentScriptPorts.push(port);
 
-        //  Remove port when destroyed (eg when devtools instance is closed)
+        /**
+         * Remove port when destroyed (eg when devtools instance is closed)
+         */
         port.onDisconnect.addListener(function() {
             var i;
 
@@ -60,10 +92,13 @@ chrome.runtime.onConnect.addListener(function(port) {
             }
         });
 
+        /**
+         *
+         */
         port.onMessage.addListener(function(msg) {
 
             //  Received message from a content script.
-            consoleFoo.log('Received message from contents script', msg);
+            log('relaying message from app: ', msg);
 
             //  Post the message to all of the devtools pages.
             devtoolsPorts.forEach(function(devToolsPort) {
@@ -75,3 +110,4 @@ chrome.runtime.onConnect.addListener(function(port) {
     }
 });
 
+}());
