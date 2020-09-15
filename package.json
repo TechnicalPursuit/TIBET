@@ -85,7 +85,7 @@
         "minimist": "*",
         "moment": "^2.27.0",
         "nano": "^8.1.0",
-        "node-forge": "^0.9.1",
+        "node-forge": "^0.10.0",
         "npm": "^6.14.8",
         "open-editor": "^2.0.1",
         "opener": "^1.5.2",
