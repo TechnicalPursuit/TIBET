@@ -16,7 +16,8 @@ function(aSignal) {
  */
 APP.tibetlama.RouteController.Inst.defineHandler('PanelShow',
 function(aSignal) {
-    console.log('RouteController instance PanelShow');
+    console.log('RouteController instance PanelShow' +
+    ' from ' + aSignal.getPayload().at('title'));
 });
 
 /**
