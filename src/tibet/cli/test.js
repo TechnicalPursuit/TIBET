@@ -98,6 +98,9 @@ Cmd.prototype.USAGE = 'tibet test [[--target] <target>] [--suite <suite>] [--tar
 
 /**
  * Execute either Karma or headless-based testing.
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
  */
 Cmd.prototype.execute = function() {
     var karmafile;

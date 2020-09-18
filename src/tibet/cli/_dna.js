@@ -139,7 +139,9 @@ Cmd.prototype.configureForDNA = function(config) {
 
 /**
  * Runs the specific command in question.
- * @returns {Number} A return code. Non-zero indicates an error.
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
  */
 Cmd.prototype.execute = function() {
     var options,

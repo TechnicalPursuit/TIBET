@@ -80,7 +80,9 @@ Cmd.prototype.USAGE = 'tibet start [--env <name>] [--debug] [--level=[\'all\'|\'
 /**
  * Runs the command. For this type the goal is to provide easy startup of the
  * local TIBET server.
- * @returns {Number} A return code. Non-zero indicates an error.
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
  */
 Cmd.prototype.execute = function() {
 

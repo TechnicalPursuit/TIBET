@@ -217,7 +217,9 @@ Cmd.prototype.constructResults = function() {
 /**
  * Performs lint processing, verifying TIBET's xml configuration files
  * first, then any assets listed as part of the project in its manifest(s).
- * @returns {Number} A return code. Non-zero indicates an error.
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
  */
 Cmd.prototype.execute = function() {
 
