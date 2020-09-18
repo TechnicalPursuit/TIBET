@@ -411,7 +411,9 @@ Cmd.prototype.parse = function(argv) {
 
 /**
  * Perform the actual command processing. Typically you want to override this.
- * @returns {Number} A return code. Non-zero indicates an error.
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
  */
 Cmd.prototype.execute = function() {
     return 0;
@@ -440,6 +442,9 @@ Cmd.prototype.prompt = CLI.prompt;
  * template method you should normally leave as is. Override execute() to change
  * the core functionality for your command.
  * @param {Array} [argv] An optional arguments array to be used for parse().
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
  */
 Cmd.prototype.run = function(argv) {
 

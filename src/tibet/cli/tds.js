@@ -81,17 +81,20 @@ Cmd.prototype.USAGE = 'tibet start [--env <name>] [--debug] [--level=[\'all\'|\'
 /**
  */
 Cmd.prototype.executeStart = function() {
-    var child,      // The child_process module.
-        args,       // Argument list for child process.
-        nodeargs,   // Subset of arglist that are node-specific.
-        serverargs, // Subset of arglist that are server-specific.
-        server,     // Spawned child process for the server.
-        cmd,        // Closure'd var providing access to the command object.
-        inuse;      // Flag to trap EADDRINUSE exceptions.
+    var child,          //  The child_process module.
+        ChromeLauncher, //  The module that launches Chrome for debugging.
+        args,           //  Argument list for child process.
+        nodeargs,       //  Subset of arglist that are node-specific.
+        serverargs,     //  Subset of arglist that are server-specific.
+        server,         //  Spawned child process for the server.
+        cmd,            //  Closure'd var providing access to the command
+                        //  object.
+        inuse;          //  Flag to trap EADDRINUSE exceptions.
 
     cmd = this;
 
     child = require('child_process');
+    ChromeLauncher = require('chrome-launcher');
 
     if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
@@ -136,6 +139,11 @@ Cmd.prototype.executeStart = function() {
 
     if (this.options.debugger && nodeargs.length === 0) {
         nodeargs.push('--inspect-brk');
+
+        //  Auto-launch Chrome to connect to debugger.
+        ChromeLauncher.launch({
+            chromeFlags: ['--auto-open-devtools-for-tabs']
+        });
     }
 
     args = nodeargs.slice(0);

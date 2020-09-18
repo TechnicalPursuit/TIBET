@@ -80,21 +80,26 @@ Cmd.prototype.USAGE = 'tibet start [--env <name>] [--debug] [--level=[\'all\'|\'
 /**
  * Runs the command. For this type the goal is to provide easy startup of the
  * local TIBET server.
- * @returns {Number} A return code. Non-zero indicates an error.
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
  */
 Cmd.prototype.execute = function() {
 
-    var sh,         // The shelljs module.
-        child,      // The child_process module.
-        args,       // Argument list for child process.
-        nodeargs,   // Subset of arglist that are node-specific.
-        serverargs, // Subset of arglist that are server-specific.
-        server,     // Spawned child process for the server.
-        noop,       // Empty hook function to trigger signal passing to client.
-        cmd,        // Closure'd var providing access to the command object.
-        inuse,      // Flag to trap EADDRINUSE exceptions.
-        msg,        // Shared message content.
-        url;        // Url for file-based launch messaging.
+    var sh,             //  The shelljs module.
+        child,          //  The child_process module.
+        ChromeLauncher, //  The module that launches Chrome for debugging.
+        args,           //  Argument list for child process.
+        nodeargs,       //  Subset of arglist that are node-specific.
+        serverargs,     //  Subset of arglist that are server-specific.
+        server,         //  Spawned child process for the server.
+        noop,           //  Empty hook function to trigger signal passing to
+                        //  client.
+        cmd,            //  Closure'd var providing access to the command
+                        //  object.
+        inuse,          //  Flag to trap EADDRINUSE exceptions.
+        msg,            //  Shared message content.
+        url;            //  Url for file-based launch messaging.
 
     cmd = this;
 
@@ -104,6 +109,7 @@ Cmd.prototype.execute = function() {
 
     sh = require('shelljs');
     child = require('child_process');
+    ChromeLauncher = require('chrome-launcher');
 
     // Make sure we work from the launch (and hence server.js) location.
     process.chdir(CLI.getAppHead());
@@ -163,6 +169,11 @@ Cmd.prototype.execute = function() {
 
         if (this.options.debugger && nodeargs.length === 0) {
             nodeargs.push('--inspect-brk');
+
+            //  Auto-launch Chrome to connect to debugger.
+            ChromeLauncher.launch({
+                chromeFlags: ['--auto-open-devtools-for-tabs']
+            });
         }
 
         args = nodeargs.slice(0);

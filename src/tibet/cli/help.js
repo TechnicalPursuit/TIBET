@@ -92,7 +92,9 @@ Cmd.prototype.usage = function() {
 /**
  * Runs the help command, outputting a list of usage strings for any commands
  * found.
- * @returns {Number} A return code.
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
  */
 Cmd.prototype.execute = function() {
     var command,

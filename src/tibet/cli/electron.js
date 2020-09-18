@@ -19,10 +19,13 @@
 
 var CLI,
     Cmd,
-    nodecli;
+    nodecli,
+    ChromeLauncher;
 
 CLI = require('./_cli');
 nodecli = require('shelljs-nodecli');
+
+ChromeLauncher = require('chrome-launcher');
 
 //  ---
 //  Type Construction
@@ -76,7 +79,9 @@ Cmd.prototype.USAGE = 'tibet electron [<path>|--empty] [--debugger] [--devtools]
 
 /**
  * Runs the command.
- * @returns {Number} A return code. Non-zero indicates an error.
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
  */
 Cmd.prototype.execute = function() {
 
@@ -119,6 +124,11 @@ Cmd.prototype.execute = function() {
     //  If our TIBET-style debugger flag is set push on inspection arguments.
     if (this.options.debugger) {
         args.push('--inspect-brk');
+
+        //  Auto-launch Chrome to connect to debugger.
+        ChromeLauncher.launch({
+            chromeFlags: ['--auto-open-devtools-for-tabs']
+        });
     }
 
     //  NB: 'devtools' along with other Electron options will be passed along to
