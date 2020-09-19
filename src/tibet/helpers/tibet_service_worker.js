@@ -208,6 +208,8 @@ self.receiveMessageFromPage = function(msgObjContent) {
      *     controlling page.
      * @param {Object} msgObjContent The POJO object that contains data received
      *     from the controlling page.
+     * @returns {Promise} A Promise that will resolve when the 'command' that is
+     *     specified has completed.
      */
 
     var propData,
@@ -227,6 +229,8 @@ self.receiveMessageFromPage = function(msgObjContent) {
         default:
             break;
     }
+
+    return Promise.resolve();
 };
 
 //  ----------------------------------------------------------------------------

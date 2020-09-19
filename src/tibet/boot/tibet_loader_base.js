@@ -11909,6 +11909,8 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
      * @summary Receives a message (via postMessage) from the Service Worker.
      * @param {Object} msgObjContent The POJO object that contains data received
      *     from the service worker.
+     * @returns {Promise} A Promise that will resolve when the 'command' that is
+     *     specified has completed.
      */
 
     var moduleName,
@@ -11940,6 +11942,8 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
             }
         }
     }
+
+    return Promise.resolve();
 };
 
 //  ----------------------------------------------------------------------------
@@ -12027,6 +12031,11 @@ TP.boot.setupServiceWorker = function() {
                                     TP.boot.receiveMessageFromServiceWorker(
                                                     event.data).then(
                                        function(result) {
+                                           //  Send a message back to the
+                                           //  service worker that we got
+                                           //  everything ok and with whatever
+                                           //  result came from processing the
+                                           //  receiving of the message.
                                             event.ports[0].postMessage({
                                                 error: null,
                                                 msg: 'ok',
