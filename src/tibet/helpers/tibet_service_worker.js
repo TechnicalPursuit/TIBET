@@ -22,12 +22,15 @@ self.addEventListener('activate', function(event) {
 //  that TIBET is sending from the main window.
 self.addEventListener('message', function(event) {
 
-    self.receiveMessageFromPage(event.data);
-
-    event.ports[0].postMessage({
-        error: null,
-        msg: 'ok'
-    });
+    self.receiveMessageFromPage(event.data).then(
+        function(result) {
+            //  Send a message back to the main window that we got everything ok.
+            event.ports[0].postMessage({
+                error: null,
+                msg: 'ok',
+                payload: result
+            });
+        });
 });
 
 //  ----------------------------------------------------------------------------
