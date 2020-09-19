@@ -41,7 +41,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
     //  Wire up the 'devtools' side of the connection.
     //  These are messages from DevTools toward the inspected window.
-    if (port.name === 'devtools') {
+    if (port.name === 'tibet_devtools') {
 
         devtoolsPorts.push(port);
 
@@ -76,7 +76,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
     //  Wire up the 'content script' side of the connection.
     //  These are messages from the inspected window toward DevTools.
-    if (port.name === 'contentscript') {
+    if (port.name === 'tibet_inspected') {
 
         contentScriptPorts.push(port);
 
@@ -98,7 +98,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         port.onMessage.addListener(function(msg) {
 
             //  Received message from a content script.
-            log('relaying message from app: ', msg);
+            log('relaying message to devtools: ', msg);
 
             //  Post the message to all of the devtools pages.
             devtoolsPorts.forEach(function(devToolsPort) {

@@ -41,12 +41,12 @@
     //  boot context, such as 'brower', 'electron' or 'headless');
     //  2. The top-level window, which for an extension is *never* 'top'.
 
-    TP.inExtension = false;
+    TP.$$inExtension = false;
     if (root.location) {
         //  If the root has a '.location' slot, that means it's a real window.
         if (root.location.protocol.slice(0, -1) === 'chrome-extension') {
             TP.topWindow = window;
-            TP.inExtension = true;
+            TP.$$inExtension = true;
         } else {
             TP.topWindow = top;
         }

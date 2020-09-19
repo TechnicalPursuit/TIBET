@@ -32,7 +32,7 @@ const createCommChannel = function() {
         page.consoleHook = console;
     });
 
-    port = chrome.runtime.connect({name: 'devtools'});
+    port = chrome.runtime.connect({name: 'tibet_devtools'});
 
     /**
      * Listen for inbound messages from the app and dispatch them to the

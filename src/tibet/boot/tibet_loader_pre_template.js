@@ -61,7 +61,7 @@ if (root.location &&
 
     if (TP) {
         TP.topWindow = top;
-        TP.inExtension = false;
+        TP.$$inExtension = false;
     }
 
 } else {
@@ -77,7 +77,7 @@ if (root.location &&
         TP = root.TP;
 
         TP.topWindow = top;
-        TP.inExtension = false;
+        TP.$$inExtension = false;
 
         //  See if we can trigger the router to route us based on the URL we're
         //  being loaded from (typically index.html via a "/" or "#" link).
@@ -1383,6 +1383,17 @@ TP.sys.hasStarted = function(aFlag) {
     }
 
     return this.started;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.sys.inExtension = function(aFlag) {
+
+    if (aFlag !== undefined) {
+        TP.$$inExtension = aFlag;
+    }
+
+    return TP.$$inExtension === true;
 };
 
 //  ----------------------------------------------------------------------------

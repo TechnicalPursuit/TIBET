@@ -9,19 +9,19 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {APP.tibetlama.ExtensionBridge}
+ * @type {TP.lama.ExtensionBridge}
  * @summary
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('APP.tibetlama.ExtensionBridge');
+TP.lang.Object.defineSubtype('TP.lama.ExtensionBridge');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-APP.tibetlama.ExtensionBridge.Inst.defineMethod('init',
+TP.lama.ExtensionBridge.Inst.defineMethod('init',
 function(onmessage, onerror) {
 
     /**
@@ -33,12 +33,14 @@ function(onmessage, onerror) {
      * @param {Function} [onerror] Optional onerror handler. Defaults to the
      *     receiving type's onerror method, allowing you to create custom
      *     worker subtypes with specific methods for message error handling.
-     * @returns {APP.tibetlama.ExtensionBridge} A new instance.
+     * @returns {TP.lama.ExtensionBridge} A new instance.
      */
 
     var handler;
 
     this.callNextMethod();
+
+    TP.debug('installing devtools message bridge');
 
     try {
 
@@ -67,25 +69,7 @@ function(onmessage, onerror) {
 
 //  ------------------------------------------------------------------------
 
-APP.tibetlama.ExtensionBridge.Inst.defineHandler('HaloDidFocus',
-function(aSignal) {
-
-    var focusedID;
-
-    console.log('Halo did focus');
-
-    focusedID =
-        TP.wrap(aSignal.getOrigin()).get('currentTargetTPElem').getGlobalID();
-
-    TP.topWindow.postMessage(
-        {type: 'FROM_APP', payload: 'halo did focus: ' + focusedID});
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-APP.tibetlama.ExtensionBridge.Inst.defineMethod('onerror',
+TP.lama.ExtensionBridge.Inst.defineMethod('onerror',
 function(evt) {
 
     /**
@@ -93,15 +77,23 @@ function(evt) {
      * @summary The method that is invoked when the web socket that the receiver
      *     is managing has encountered an error.
      * @param {ErrorEvent} evt The event sent by the underlying system.
-     * @returns {APP.tibetlama.ExtensionBridge} The receiver.
+     * @returns {TP.lama.ExtensionBridge} The receiver.
      */
+
+    TP.debug('devtools bridge onerror');
 
     if (evt.source !== TP.topWindow) {
         return this;
     }
 
-    if (evt.data.type && evt.data.type === 'TO_APP') {
-        TP.error(evt);
+    if (TP.sys.inExtension() === true) {
+        if (evt.data.type && evt.data.type === 'TO_DEVTOOLS') {
+            TP.error(evt);
+        }
+    } else {
+        if (evt.data.type && evt.data.type === 'FROM_DEVTOOLS') {
+            TP.error(evt);
+        }
     }
 
     return this;
@@ -109,7 +101,7 @@ function(evt) {
 
 //  ------------------------------------------------------------------------
 
-APP.tibetlama.ExtensionBridge.Inst.defineMethod('onmessage',
+TP.lama.ExtensionBridge.Inst.defineMethod('onmessage',
 function(evt) {
 
     /**
@@ -117,18 +109,45 @@ function(evt) {
      * @summary The method that is invoked when the web socket that the receiver
      *     is managing has data ready to be processed.
      * @param {MessageEvent} evt The event sent by the underlying system.
-     * @returns {APP.tibetlama.ExtensionBridge} The receiver.
+     * @returns {TP.lama.ExtensionBridge} The receiver.
      */
+
+    TP.debug('devtools bridge onmessage');
 
     if (evt.source !== TP.topWindow) {
         return this;
     }
 
-    if (evt.data.type && evt.data.type === 'TO_APP') {
-        TP.info(evt.data);
+    if (TP.sys.inExtension() === true) {
+        if (evt.data.type && evt.data.type === 'TO_DEVTOOLS') {
+            TP.info(evt.data);
+        }
+    } else {
+        if (evt.data.type && evt.data.type === 'FROM_DEVTOOLS') {
+            TP.info(evt.data);
+        }
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lama.ExtensionBridge.Inst.defineMethod('send',
+function(payload) {
+    var message;
+
+    message = {
+        payload: TP.ifInvalid(payload, TP.hc())
+    };
+
+    if (TP.sys.inExtension() === true) {
+        message.type = 'FROM_DEVTOOLS';
+    } else {
+        message.type = 'TO_DEVTOOLS';
+    }
+
+    TP.topWindow.postMessage(message);
 });
 
 //  ------------------------------------------------------------------------

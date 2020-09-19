@@ -12,7 +12,7 @@
  */
 
 //  ========================================================================
-//  TP.sys Primitives
+//  TP.lama.*
 //  ========================================================================
 
 TP.sys.addFeatureTest('lama',
@@ -22,7 +22,8 @@ function() {
     //  to both have the 'TP.lama.IDE' type loaded *and* have the Lama
     //  enabled for opening. The Lama HUD doesn't necessarily have to be open.
     return TP.isType(TP.sys.getTypeByName('TP.lama.IDE')) &&
-            TP.sys.cfg('lama.enabled') === true;
+            TP.sys.cfg('lama.enabled') === true &&
+            TP.sys.inExtension() !== true;
 });
 
 //  ========================================================================
