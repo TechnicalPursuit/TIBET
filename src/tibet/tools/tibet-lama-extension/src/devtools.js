@@ -28,9 +28,7 @@ const log = function(...args) {
 const createCommChannel = function() {
 
     //  Hack into the background.js page and connect the console ;)
-    chrome.runtime.getBackgroundPage(function(page) {
-        page.consoleHook = console;
-    });
+    chrome.extension.getBackgroundPage().console = console;
 
     port = chrome.runtime.connect({name: 'tibet_devtools'});
 
@@ -355,9 +353,9 @@ function() {
         function(evt) {
             log('TIBETAppDidStart');
 
-            createCommChannel();
-
             createExtensionUI();
+
+            createCommChannel();
         });
 },
 false);
