@@ -2,11 +2,37 @@
 /**
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
- *     OSI-aExtensionProxyroved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
 //  ------------------------------------------------------------------------
+
+
+//  ========================================================================
+//  TP.sig.DevtoolsSignal (and subtypes)
+//  ========================================================================
+
+//  A signal used by others to send a message through this bridge. The app's
+//  Application instance handles these signals and then passes them to its
+//  current bridge instance for processing.
+TP.sig.ResponderSignal.defineSubtype('DevtoolsMessage');
+
+//  Signals fired by this bridge but not handled by it. These signals are the
+//  bridge's way of communicating with the TIBET application instance (and any
+//  other responders in the chain at signaling time).
+
+TP.sig.ResponderSignal.defineSubtype('DevtoolsIO');
+TP.sig.DevtoolsIO.defineSubtype('DevtoolsInput');
+TP.sig.DevtoolsIO.defineSubtype('DevtoolsOutput');
+
+TP.sig.ERROR.defineSubtype('DevtoolsError');
+TP.sig.DevtoolsError.defineSubtype('DevtoolsInputError');
+TP.sig.DevtoolsError.defineSubtype('DevtoolsOutputError');
+
+//  ========================================================================
+//  TP.lama.ExtensionBridge
+//  ========================================================================
 
 /**
  * @type {TP.lama.ExtensionBridge}
@@ -40,7 +66,7 @@ function(onmessage, onerror) {
 
     this.callNextMethod();
 
-    TP.debug('installing devtools message bridge');
+    TP.debug('installing devtools extension bridge');
 
     try {
 
@@ -89,10 +115,12 @@ function(evt) {
     if (TP.sys.inExtension() === true) {
         if (evt.data.type && evt.data.type === 'TO_DEVTOOLS') {
             TP.error(evt);
+            this.signal('DevtoolsInputError', evt);
         }
     } else {
         if (evt.data.type && evt.data.type === 'FROM_DEVTOOLS') {
             TP.error(evt);
+            this.signal('DevtoolsOutputError', evt);
         }
     }
 
@@ -120,11 +148,11 @@ function(evt) {
 
     if (TP.sys.inExtension() === true) {
         if (evt.data.type && evt.data.type === 'TO_DEVTOOLS') {
-            TP.info(evt.data);
+            this.signal('DevtoolsInput', evt);
         }
     } else {
         if (evt.data.type && evt.data.type === 'FROM_DEVTOOLS') {
-            TP.info(evt.data);
+            this.signal('DevtoolsOutput', evt);
         }
     }
 
@@ -134,20 +162,37 @@ function(evt) {
 //  ------------------------------------------------------------------------
 
 TP.lama.ExtensionBridge.Inst.defineMethod('send',
-function(payload) {
-    var message;
+function(message) {
 
-    message = {
-        payload: TP.ifInvalid(payload, TP.hc())
+    /**
+     */
+
+    var event,
+        payload;
+
+    if (TP.isString(message)) {
+        payload = {
+            message: message
+        };
+    } else if (TP.canInvoke(message, 'getPayload')) {
+        payload = message.getPayload();
+    } else {
+        payload = message;
+    }
+
+    payload = TP.ifInvalid(TP.obj(payload), {});
+
+    event = {
+        payload: payload
     };
 
     if (TP.sys.inExtension() === true) {
-        message.type = 'FROM_DEVTOOLS';
+        event.type = 'FROM_DEVTOOLS';
     } else {
-        message.type = 'TO_DEVTOOLS';
+        event.type = 'TO_DEVTOOLS';
     }
 
-    TP.topWindow.postMessage(message);
+    TP.topWindow.postMessage(event);
 });
 
 //  ------------------------------------------------------------------------

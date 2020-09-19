@@ -1225,7 +1225,8 @@ TP.sig.BINDSelectionSignal.defineSubtype('DeleteSelection');
 
 TP.sig.Signal.defineSubtype('ResponderSignal');
 
-TP.sig.ResponderSignal.Type.defineAttribute('defaultPolicy', TP.RESPONDER_FIRING);
+TP.sig.ResponderSignal.Type.defineAttribute('defaultPolicy',
+    TP.RESPONDER_FIRING);
 
 //  ResponderSignals should traverse the controller chain...but not
 //  ResponderSignal itself. NOTE that being a controller signal is inherited but

@@ -7853,6 +7853,69 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Application.Inst.defineHandler('DevtoolsInput',
+function(aSignal) {
+
+    //  DevtoolsInput is our from app to devtools signal. If we're in
+    //  the app we want to ignore these.
+    if (!TP.sys.inExtension() || aSignal.getOrigin() === this) {
+        aSignal.preventDefault();
+        aSignal.stopPropagation();
+        return this;
+    }
+
+    TP.debug('the app sends its love...');
+    TP.debug('...and: ' + aSignal.getPayload());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineHandler('DevtoolsMessage',
+function(aSignal) {
+
+    /**
+     * @method handleDevtoolsMessage
+     * @summary Handles requests to send information across the devtools
+     *     extension bridge (if active). Consumers of the bridge signal a
+     *     'DevtoolsMessage' and it's picked up here, then forwarded to
+     *     the bridge instance to handle.
+     * @param {TP.sig.DevtoolsMessage} aSignal The message-bearing signal.
+     * @returns {TP.core.Application} The receiver.
+     */
+
+    var bridge;
+
+    bridge = this.getDevtoolsBridge();
+    if (TP.isValid(bridge)) {
+        return bridge.send(aSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineHandler('DevtoolsOutput',
+function(aSignal) {
+
+    //  DevtoolsOutput is from extension to app signal. If we're in the
+    //  extension we want to ignore these.
+    if (TP.sys.inExtension() || aSignal.getOrigin() === this) {
+        aSignal.preventDefault();
+        aSignal.stopPropagation();
+        return this;
+    }
+
+    TP.debug('devtools sends its love...');
+    TP.debug('...and: ' + aSignal.getPayload());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Application.Inst.defineHandler('RouteFinalize',
 function(aSignal) {
 
