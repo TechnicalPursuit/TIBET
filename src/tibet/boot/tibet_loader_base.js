@@ -1716,7 +1716,7 @@ TP.sys.getLaunchRoot = function() {
         loc = decodeURI(window.location.toString());
         loc = loc.split(/[#?]/)[0];
         str = loc.slice(0, loc.lastIndexOf(':') + 1);
-    } else if (TP.inExtension) {
+    } else if (TP.sys.inExtension()) {
         str = 'chrome-extension://';
     } else {
         //  on unix-style platforms there's no drive spec to mess things up
@@ -7833,7 +7833,7 @@ TP.boot.$getAppHead = function() {
 
     //  When loading in devtools using our "standard layout" for boot script and
     //  file locations we need to manage the offset from chrome-extension://.
-    if (TP.inExtension === true) {
+    if (TP.sys.inExtension() === true) {
 
         path = decodeURI(window.location.toString());
 
@@ -9351,7 +9351,7 @@ isECMAModule) {
         //  due to security restrictions. In this case, we still append the
         //  element but we set its type to something Chromium so it won't try to
         //  execute it. We then eval the script to actually execute it.
-        if (TP.inExtension === true) {
+        if (TP.sys.inExtension() === true) {
             elem.setAttribute('type', 'tibetscript');
             /* eslint-disable no-eval */
             eval(jsSrc);

@@ -5,13 +5,10 @@
  * @copyright Copyright (C) 2020 Technical Pursuit Inc. All rights reserved.
  */
 
-/* global chrome:false consoleHook:true */
+/* global chrome:false */
 /* eslint indent:0, consistent-this:0, one-var: 0 */
 
-//  NOTE NOTE NOTE this MUST be outside the IFFE to work correctly.
-consoleHook = console;
-
-(function() {
+(function(root) {
 
 'use strict';
 
@@ -25,23 +22,20 @@ contentScriptPorts = [];
 /**
  *
  */
-const log = function(...args) {
-    //  NOTE: use consoleHook because we'll remap it from devtools.js when the
-    //  window has loaded to a console you can actually see ;).
-    consoleHook.log('TIBET Lama (background.js) -', ...args);
-};
-
-
-/**
- *
- */
 chrome.runtime.onConnect.addListener(function(port) {
 
-     log('onConnect');
+    //  NOTE: we create a closure'd logging routine that captures the console
+    //  instance from 'root' (which is updated in devtools.js) so that we can
+    //  actually see console output from the background page.
+    const log = function(...args) {
+        root.console.log('TIBET Lama (background.js) -', ...args);
+    };
+
+    log('onConnect');
 
     //  Wire up the 'devtools' side of the connection.
     //  These are messages from DevTools toward the inspected window.
-    if (port.name === 'devtools') {
+    if (port.name === 'tibet_devtools') {
 
         devtoolsPorts.push(port);
 
@@ -76,7 +70,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
     //  Wire up the 'content script' side of the connection.
     //  These are messages from the inspected window toward DevTools.
-    if (port.name === 'contentscript') {
+    if (port.name === 'tibet_inspected') {
 
         contentScriptPorts.push(port);
 
@@ -98,7 +92,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         port.onMessage.addListener(function(msg) {
 
             //  Received message from a content script.
-            log('relaying message from app: ', msg);
+            log('relaying message to devtools: ', msg);
 
             //  Post the message to all of the devtools pages.
             devtoolsPorts.forEach(function(devToolsPort) {
@@ -110,4 +104,4 @@ chrome.runtime.onConnect.addListener(function(port) {
     }
 });
 
-}());
+}(this));

@@ -20,7 +20,7 @@
     <script>
         <![CDATA[
             if (TP.sys.cfg('boot.context') === 'electron' &&
-                TP.inExtension !== true) {
+                TP.sys.inExtension() !== true) {
                     TP.registerExternalObject(
                         'electron_lib_utils', window.preload_lib_utils);
                     TP.registerExternalObject(

@@ -17,6 +17,7 @@
     <script src="./src/TP.lama.IDE.js"/>
 
     <script src="./src/TP.lama.ConsoleService.js"/>
+    <script src="./src/TP.lama.ExtensionBridge.js"/>
 
     <script src="./src/TP.lama.pp.js"/>
 

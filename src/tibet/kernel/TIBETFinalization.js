@@ -524,7 +524,7 @@ function() {
                 //  If we're in an extension environment, then just signal
                 //  AppWillStart and AppStart manually. Otherwise, load the root
                 //  page.
-                if (TP.inExtension === true) {
+                if (TP.sys.inExtension() === true) {
                     //  Signal we are starting. This provides a hook for
                     //  extensions etc. to tap into the startup sequence before
                     //  routing or other behaviors but after we're sure the UI

@@ -4,9 +4,6 @@ window.addEventListener('load',
 
             console.log('booting TIBET');
 
-            TP.sys.setcfg('boot.profile', 'development');
-            //  TP.sys.setcfg('boot.teamtibet', true);
-
             TP.boot.launch();
 
             return;

@@ -7280,6 +7280,13 @@ TP.core.Application.Inst.defineAttribute('controllers');
 TP.core.Application.Inst.defineAttribute('customControllers');
 
 /**
+ * Reference to an optional messagePort bridge between devtools and the running
+ * TIBET application. This bridge connects TIBET instances running in apps with
+ * the TIBET instance running in the optional Lama devtools extension.
+ */
+TP.core.Application.Inst.defineAttribute('devtoolsBridge');
+
+/**
  * The router type whose route method is used to process client-side routes.
  * @type {TP.uri.URIRouter}
  */
@@ -7418,6 +7425,21 @@ function() {
     this.changed('Controllers', TP.UPDATE, TP.hc(TP.NEWVAL, controllers));
 
     return controllers;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('getDevtoolsBridge',
+function() {
+
+    /**
+     * @method getDevtoolsBridge
+     * @summary Returns any current instance of extension bridge used to message
+     *     between the application and TIBET-driven devtools extensions.
+     * @returns {TP.lama.ExtensionBridge} An optional bridge instance.
+     */
+
+    return this.$get('devtoolsBridge');
 });
 
 //  ------------------------------------------------------------------------
@@ -7698,13 +7720,13 @@ function(aSignal) {
         var elem,
             rootWin,
             homeURL,
-
+            bridge,
             evt;
 
         //  If we're not running in a Chromium extension, then focus the root
         //  window, set up the home page configuration and populate the window's
         //  history.
-        if (TP.inExtension !== true) {
+        if (TP.sys.inExtension() !== true) {
 
             //  Grab the UI root window and focus it if possible.
             if (TP.isElement(elem = signal.at('ApplicationTag'))) {
@@ -7736,6 +7758,15 @@ function(aSignal) {
             } else if (TP.sys.cfg('route.onstart')) {
                 this.getRouter().route(TP.topWindow.location.toString());
             }
+        }
+
+        //  Install debugger bridge as needed. Installation is done by the
+        //  bridge instance when it's created.
+        if (TP.sys.inExtension() === true ||
+                TP.sys.hasFeature('lama') &&
+                TP.isValid(TP.bySystemId('TP.lama.ExtensionBridge'))) {
+            bridge = TP.lama.ExtensionBridge.construct();
+            this.set('devtoolsBridge', bridge);
         }
 
         try {
@@ -7816,6 +7847,69 @@ function(aSignal) {
 
     //  Call terminate and, if it was defined, navigate to the URI given.
     TP.sys.terminate(exitToURI);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineHandler('DevtoolsInput',
+function(aSignal) {
+
+    //  DevtoolsInput is our from app to devtools signal. If we're in
+    //  the app we want to ignore these.
+    if (!TP.sys.inExtension() || aSignal.getOrigin() === this) {
+        aSignal.preventDefault();
+        aSignal.stopPropagation();
+        return this;
+    }
+
+    TP.debug('the app sends its love...');
+    TP.debug('...and: ' + aSignal.getPayload());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineHandler('DevtoolsMessage',
+function(aSignal) {
+
+    /**
+     * @method handleDevtoolsMessage
+     * @summary Handles requests to send information across the devtools
+     *     extension bridge (if active). Consumers of the bridge signal a
+     *     'DevtoolsMessage' and it's picked up here, then forwarded to
+     *     the bridge instance to handle.
+     * @param {TP.sig.DevtoolsMessage} aSignal The message-bearing signal.
+     * @returns {TP.core.Application} The receiver.
+     */
+
+    var bridge;
+
+    bridge = this.getDevtoolsBridge();
+    if (TP.isValid(bridge)) {
+        return bridge.send(aSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineHandler('DevtoolsOutput',
+function(aSignal) {
+
+    //  DevtoolsOutput is from extension to app signal. If we're in the
+    //  extension we want to ignore these.
+    if (TP.sys.inExtension() || aSignal.getOrigin() === this) {
+        aSignal.preventDefault();
+        aSignal.stopPropagation();
+        return this;
+    }
+
+    TP.debug('devtools sends its love...');
+    TP.debug('...and: ' + aSignal.getPayload());
 
     return this;
 });

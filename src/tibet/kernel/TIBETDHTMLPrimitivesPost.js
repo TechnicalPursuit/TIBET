@@ -9631,7 +9631,7 @@ function(aWindow) {
     //  There are some checks we do because environments, such as Chrome
     //  Devtools, lie to us when using 'visibilityState' (i.e. the 'devtools
     //  page' is 'visible' when it's really not).
-    if (TP.inExtension === true) {
+    if (TP.sys.inExtension() === true) {
         if (aWindow === TP.topWindow ||
             aWindow === TP.sys.getWindowById('uiroot') ||
             aWindow === TP.sys.getWindowById('uiboot')) {

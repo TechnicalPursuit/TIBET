@@ -5,33 +5,33 @@
     },
     "tibet": {
         "dna": "devtool",
-        "xmlns": "urn:app:tibetlama"
+        "xmlns": "urn:app:tibetlama",
+        "lama": {
+            "enabled": false
+        }
+    },
+    "boot": {
+        "profile": "development@developer"
     },
     "devtools": {
         "blank_page": "./TIBET-INF/boot/xhtml/panel_blank.xhtml",
-        "panels": [
-        {
+        "panels": [{
             "title": "TIBET Lama",
             "icon": "./TIBET-INF/boot/media/app_logo.png",
             "content": "<tibetlama:lama/>"
-        },
-        {
+        }, {
             "title": "TIBET TDC",
             "icon": "./TIBET-INF/boot/media/app_logo.png",
             "content": "<tibetlama:tdc/>"
-        }
-        ],
-        "sidebars": [
-        {
+        }],
+        "sidebars": [{
             "title": "TIBET",
             "panel": "elements",
             "content": "<tibetlama:elements/>"
-        },
-        {
+        }, {
             "title": "TIBET",
             "panel": "sources",
             "content": "<tibetlama:sources/>"
-        }
-        ]
+        }]
     }
 }

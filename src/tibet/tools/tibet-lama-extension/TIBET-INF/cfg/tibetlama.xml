@@ -19,8 +19,6 @@
     <script src="APP.tibetlama.js"/>
     <script src="APP.tibetlama.Application.js"/>
     <script src="APP.tibetlama.RouteController.js"/>
-
-    <script src="APP.tibetlama.ExtensionBridge.js"/>
 </config>
 
 <config id="resources">

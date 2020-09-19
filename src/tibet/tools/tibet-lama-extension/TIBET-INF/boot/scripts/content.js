@@ -36,7 +36,7 @@ function() {
         log('TIBETAppDidStart');
 
         //  Create a message port from devtools to our window.
-        port = chrome.runtime.connect({name: 'contentscript'});
+        port = chrome.runtime.connect({name: 'tibet_inspected'});
 
 
         /**
@@ -50,7 +50,7 @@ function() {
             //  Post to our window ;) Why? Because we can't actually talk to
             //  code in the window... but code in the window can watch the
             //  window for messages and filter based on the 'type'.
-            window.postMessage({type: 'TO_APP', payload: msg}, '*');
+            window.postMessage({type: 'FROM_DEVTOOLS', payload: msg}, '*');
         });
 
 
@@ -68,7 +68,7 @@ function() {
             }
 
             if (event.data && event.data.type &&
-                    event.data.type === 'FROM_APP') {
+                    event.data.type === 'TO_DEVTOOLS') {
 
                 log('message to devtools: ', event.data.payload);
 
