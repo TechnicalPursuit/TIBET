@@ -11861,9 +11861,7 @@ TP.boot.configureAndPopulateCaches = function() {
 
                     return promise.then(
                         function() {
-                            return TP.boot.sendMessageToServiceWorker(
-                                    navigator.serviceWorker.controller,
-                                    {
+                            return TP.boot.sendMessageToServiceWorker({
                                         command: 'setcfgprop',
                                         payload: '{"boot.use_sw_cache":true}'
                                     });
@@ -11875,9 +11873,7 @@ TP.boot.configureAndPopulateCaches = function() {
                 //  supposed to use the cache to vend files, since we're going
                 //  to populate it now.
                 return promise.then(function() {
-                        return TP.boot.sendMessageToServiceWorker(
-                                navigator.serviceWorker.controller,
-                                {
+                        return TP.boot.sendMessageToServiceWorker({
                                     command: 'setcfgprop',
                                     payload: '{"boot.use_sw_cache":false}'
                                 });
@@ -11890,9 +11886,7 @@ TP.boot.configureAndPopulateCaches = function() {
                         //  Now that the cache population is done, send a
                         //  message over to the ServiceWorker telling it to
                         //  turn caching back on.
-                        return TP.boot.sendMessageToServiceWorker(
-                                navigator.serviceWorker.controller,
-                                {
+                        return TP.boot.sendMessageToServiceWorker({
                                     command: 'setcfgprop',
                                     payload: '{"boot.use_sw_cache":true}'
                                 });
@@ -11948,12 +11942,11 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.sendMessageToServiceWorker = function(sender, msgObjContent) {
+TP.boot.sendMessageToServiceWorker = function(msgObjContent) {
 
     /**
      * @method sendMessageToServiceWorker
      * @summary Sends a message (via postMessage) to the Service Worker.
-     * @param {ServiceWorker} sender The service worker to post the message to.
      * @param {Object} msgObjContent The POJO object that contains data to send
      *     to the service worker.
      * @returns {Promise} A Promise that will resolve when the ServiceWorker has
@@ -11975,7 +11968,8 @@ TP.boot.sendMessageToServiceWorker = function(sender, msgObjContent) {
                 }
             };
 
-            sender.postMessage(msgObjContent, [messageChannel.port2]);
+            navigator.serviceWorker.controller.postMessage(
+                                msgObjContent, [messageChannel.port2]);
         });
 
     return listenerPromise;
@@ -12057,9 +12051,7 @@ TP.boot.setupServiceWorker = function() {
 
                 //  Send a message over to the Service Worker giving it all of
                 //  the cfg data that we have.
-                return TP.boot.sendMessageToServiceWorker(
-                        navigator.serviceWorker.controller,
-                        {
+                return TP.boot.sendMessageToServiceWorker({
                             command: 'setcfg',
                             payload: cacheCfgBody
                         });
