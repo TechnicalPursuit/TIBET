@@ -1818,8 +1818,17 @@ function(aSignal) {
 
     evt = aSignal.getPayload();
 
-    //  If a signalName was placed onto the event by the caller, then use it.
-    signalName = evt.signalName || 'TP.sig.ElectronFileChange';
+    //  Map over the event. In the SSE code, this is done by using a REMOTE_NAME
+    //  along with special handlers. For Electron, our approach can be simpler.
+    switch (evt.event) {
+        case 'fileChange':
+            signalName = 'TP.sig.ElectronFileChange';
+            break;
+        default:
+            //  Not an event name we recognize, so we can't map it to a signal
+            //  name. Return here.
+            return;
+    }
 
     this.signal(signalName, evt);
 
