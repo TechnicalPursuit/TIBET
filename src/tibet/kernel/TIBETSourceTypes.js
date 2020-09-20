@@ -1806,10 +1806,11 @@ TP.core.ElectronMessageSource.Inst.defineHandler('MessageReceived',
 function(aSignal) {
 
     /**
-     * @method handleElectionFileChange
-     * @summary Handles when a TDS-managed resource has changed.
-     * @param {TP.sig.MessageReceived} aSignal The signal indicating that a
-     *     TDS-managed resource has changed.
+     * @method handleElectionMessageReceived
+     * @summary Handles when we receive a message from the Electron main
+     *     process.
+     * @param {TP.sig.MessageReceived} aSignal The signal indicating that the
+     *     main process wants to communicate with us.
      * @returns {TP.core.ElectronMessageSource} The receiver.
      */
 
