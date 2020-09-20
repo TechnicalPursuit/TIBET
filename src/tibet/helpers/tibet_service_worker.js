@@ -1,3 +1,9 @@
+var msgHandler,
+    bootSystemPort,
+    channelPromiseCBs;
+
+//  ----------------------------------------------------------------------------
+
 //  Add a listener to intercept 'install' events for when Service Worker is
 //  installed.
 self.addEventListener('install', function(event) {
@@ -18,17 +24,74 @@ self.addEventListener('activate', function(event) {
 
 //  ----------------------------------------------------------------------------
 
-//  Add a listener to intercept 'message' events. This is used to trap messages
-//  that TIBET is sending from the main window.
-self.addEventListener('message', function(event) {
+//  Add a listener to *the service worker* to intercept 'message' events. This is
+//  used only once - to receive the port that the TIBET boot system wants to
+//  send us to communicate.
+self.addEventListener('message', msgHandler = function(event) {
 
+    //  Remove the handler (this method) on *the service worker* in preparation
+    //  for installing a handler on the port that we've been handed.
+    self.removeEventListener('message', msgHandler);
+
+    //  Grab the port that we're supposed to use to communicate back to the
+    //  TIBET boot system.
+    bootSystemPort = event.ports[0];
+
+    //  Process any data that this 'port setup' message sent us.
     self.receiveMessageFromPage(event.data).then(
         function(result) {
-            //  Send a message back to the main window that we got everything ok.
-            event.ports[0].postMessage({
+            //  The port is set up - add an event listener to process messages
+            //  from our companion port.
+            bootSystemPort.addEventListener(
+                'message',
+                function(event2) {
+                    self.receiveMessageFromPage(event2.data).then(
+                        function(result2) {
+                            //  We only send this back if the received message
+                            //  is *not* an ack - otherwise, we'll endlessly
+                            //  loop back and forth with the boot system.
+                            if (!event2.data.ack) {
+                                bootSystemPort.postMessage({
+                                    error: null,
+                                    msg: 'ok',
+                                    payload: result2,
+                                    ack: true
+                                });
+                            }
+                        },
+                        function(reason2) {
+                            //  We only send this back if the received message
+                            //  is *not* an ack - otherwise, we'll endlessly
+                            //  loop back and forth with the boot system.
+                            if (!event2.data.ack) {
+                                bootSystemPort.postMessage({
+                                    error: reason2,
+                                    msg: 'error',
+                                    ack: true
+                                });
+                            }
+                        });
+                });
+
+            //  Start the sending of messages on this port.
+            bootSystemPort.start();
+
+            bootSystemPort.postMessage({
                 error: null,
                 msg: 'ok',
-                payload: result
+                payload: result,
+                ack: true
+            });
+        },
+        function(reason) {
+            //  There was a problem setting up the port.
+
+            //  Send a message back to the boot system that we had an error with
+            //  whatever result came from processing the receiving of the message.
+            bootSystemPort.postMessage({
+                error: reason,
+                msg: 'error',
+                ack: true
             });
         });
 });
@@ -218,6 +281,20 @@ self.receiveMessageFromPage = function(msgObjContent) {
     var propData,
         key;
 
+    //  If we got an error in the message content payload.
+    if (msgObjContent.error) {
+
+        //  If channel Promise callbacks were defined, call the second one (the
+        //  'rejector' callback) with the error in the message content.
+        if (channelPromiseCBs) {
+            channelPromiseCBs[1](msgObjContent.error);
+        }
+
+        TP.boot.$$channelPromiseCBs = null;
+
+        return Promise.reject(msgObjContent.error);
+    }
+
     switch (msgObjContent.command) {
         case 'setcfg':
             self.cfg = JSON.parse(msgObjContent.payload);
@@ -231,6 +308,13 @@ self.receiveMessageFromPage = function(msgObjContent) {
             break;
         default:
             break;
+    }
+
+    //  If channel Promise callbacks were defined, call the first one (the
+    //  'resolver' callback) with the message content.
+    if (channelPromiseCBs) {
+        channelPromiseCBs[0](msgObjContent);
+        channelPromiseCBs = null;
     }
 
     return Promise.resolve();
@@ -255,18 +339,14 @@ self.sendMessageToPage = function(client, msgObjContent) {
 
     listenerPromise = new Promise(
         function(resolver, rejector) {
-            var messageChannel;
+            //  Capture resolver & rejector Functions into a global. We'll call
+            //  these when receive the 'receipt' of this message in the
+            //  receiveMessageFromPage method.
+            channelPromiseCBs = [resolver, rejector];
 
-            messageChannel = new MessageChannel();
-            messageChannel.port1.onmessage = function(event) {
-                if (event.data.error) {
-                    rejector(event.data.error);
-                } else {
-                    resolver(event.data);
-                }
-            };
-
-            client.postMessage(msgObjContent, [messageChannel.port2]);
+            //  Send the message over the port that we were sent by the boot
+            //  system when we first started.
+            bootSystemPort.postMessage(msgObjContent);
         });
 
     return listenerPromise;
