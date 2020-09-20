@@ -910,6 +910,7 @@ TP.boot.$uriSchemes = {
     aaas: 'aaas',
     acap: 'acap',
     cap: 'cap',
+    'chrome-extension': 'chrome-extension',
     cid: 'cid',
     crid: 'crid',
     data: 'data',

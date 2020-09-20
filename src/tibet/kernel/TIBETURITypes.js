@@ -7280,7 +7280,7 @@ function(aURI, aRequest) {
     /**
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. For
-     *     non-mapped HTTP urls this is the TP.uri.HTTPURLHandler type.
+     *     Chrome-Extension urls this is the TP.uri.FileURLHandler type.
      * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
@@ -7296,10 +7296,12 @@ function(aURI, aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  the most recent 'communication' object
-//  (i.e. the native XHR or WebSocket object)
+//  the most recent 'communication' object (i.e. the native XHR or WebSocket
+//  object). Not used for this type, but here to avoid warnings around instance
+//  attributes.
 TP.uri.ChromeExtURL.Inst.defineAttribute('commObject');
 
+//  the 'component id' that Chrome assigns to the extension.
 TP.uri.ChromeExtURL.Inst.defineAttribute('componentID');
 
 //  ------------------------------------------------------------------------
