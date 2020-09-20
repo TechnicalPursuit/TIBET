@@ -837,7 +837,7 @@ TP.tibet.root.Type.defineMethod('computeAppTagTypeName',
 function(wantsLama) {
 
     /**
-     * @method computeAppTagName
+     * @method computeAppTagTypeName
      * @summary Computes the current tag type name by using system config
      *     information to try to find a type and, if that can't found, falling
      *     back to the 'tibet:lama' or 'tibet:app' tag.
