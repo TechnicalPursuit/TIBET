@@ -3989,6 +3989,44 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Worker.Type.defineMethod('fromFunction',
+function(aFunction) {
+
+    /**
+     * @method fromFunction
+     * @summary Returns an instance of TP.core.Worker that has a copy of the
+     *     supplied Function running in a worker thread.
+     * @param {Function} aFunction The Function to copy into the thread. Note
+     *     that this function will be turned into a String and will therefore
+     *     not be the original function object.
+     * @returns {TP.core.Worker} A new instance.
+     */
+
+    var funcSrc,
+
+        blob,
+        url,
+        newinst;
+
+    //  Stringify the Function object, wrapping it as an IIFE.
+    funcSrc = `(${aFunction})();`;
+
+    //  Create a Blob from that source, supplying the correct type for
+    //  JavaScript.
+    blob = new Blob(TP.ac(funcSrc), {type: 'application/javascript'});
+
+    //  Create an 'object URL' for that content. This stores it and returns us
+    //  the URL string.
+    url = URL.createObjectURL(blob);
+
+    //  Create a new instance of ourself with that URL.
+    newinst = this.construct(url);
+
+    return newinst;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Worker.Type.defineMethod('getWorker',
 function() {
 

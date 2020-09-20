@@ -7250,6 +7250,71 @@ function() {
 });
 
 //  ========================================================================
+//  TP.uri.BlobURL
+//  ========================================================================
+
+/**
+ * @type {TP.uri.BlobURL}
+ * @summary A subtype of TP.uri.URL specific to the Blob scheme.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.uri.URL.defineSubtype('BlobURL');
+
+//  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+TP.uri.BlobURL.Type.defineConstant('SCHEME', 'blob');
+
+TP.uri.BlobURL.registerForScheme('blob');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  the most recent 'communication' object (i.e. the native XHR or WebSocket
+//  object). Not used for this type, but here to avoid warnings around instance
+//  attributes.
+TP.uri.BlobURL.Inst.defineAttribute('commObject');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.uri.BlobURL.Inst.defineMethod('$parseSchemeSpecificPart',
+function(schemeSpecificString) {
+
+    /**
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
+     *     scheme(s) being managed by the receiver.
+     * @param {String} schemeSpecificString A String containing the
+     *     "scheme-specific-part" of a URI.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
+     */
+
+    var dict;
+
+    this.callNextMethod();
+
+    //  TODO TODO TODO TODO TODO
+    //  TODO: relying on TP.core.Hash for parsing is a poor design, we
+    //  should change that so the parsing is local to this type. Here, we
+    //  invoke the parser directly because of the ambiguities with the style
+    //  string parser.
+    /* eslint-disable new-cap */
+    dict = TP.core.Hash.URI_STRING_PARSER('blob:' +
+                                            schemeSpecificString);
+    /* eslint-enable new-cap */
+
+    this.set('path', dict.at('path'));
+
+    return dict;
+});
+
+//  ========================================================================
 //  TP.uri.ChromeExtURL
 //  ========================================================================
 
@@ -7280,7 +7345,7 @@ function(aURI, aRequest) {
     /**
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. For
-     *     non-mapped HTTP urls this is the TP.uri.HTTPURLHandler type.
+     *     Chrome-Extension urls this is the TP.uri.FileURLHandler type.
      * @param {TP.uri.URI|String} aURI The URI to obtain the default handler
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
@@ -7296,10 +7361,12 @@ function(aURI, aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  the most recent 'communication' object
-//  (i.e. the native XHR or WebSocket object)
+//  the most recent 'communication' object (i.e. the native XHR or WebSocket
+//  object). Not used for this type, but here to avoid warnings around instance
+//  attributes.
 TP.uri.ChromeExtURL.Inst.defineAttribute('commObject');
 
+//  the 'component id' that Chrome assigns to the extension.
 TP.uri.ChromeExtURL.Inst.defineAttribute('componentID');
 
 //  ------------------------------------------------------------------------
