@@ -13,11 +13,18 @@
 'use strict';
 
 var devtoolsPorts,
-    contentScriptPorts;
+    contentScriptPorts,
+
+    consoleHook;
 
 devtoolsPorts = [];
 contentScriptPorts = [];
 
+consoleHook = root.console;
+
+root.setConsoleHook = function(aHook) {
+    consoleHook = aHook;
+};
 
 /**
  *
@@ -28,7 +35,7 @@ chrome.runtime.onConnect.addListener(function(port) {
     //  instance from 'root' (which is updated in devtools.js) so that we can
     //  actually see console output from the background page.
     const log = function(...args) {
-        root.console.log('TIBET Lama (background.js) -', ...args);
+        consoleHook.log('TIBET Lama (background.js) -', ...args);
     };
 
     log('onConnect');

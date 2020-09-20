@@ -28,7 +28,7 @@ const log = function(...args) {
 const createCommChannel = function() {
 
     //  Hack into the background.js page and connect the console ;)
-    chrome.extension.getBackgroundPage().console = console;
+    chrome.extension.getBackgroundPage().setConsoleHook(console);
 
     port = chrome.runtime.connect({name: 'tibet_devtools'});
 
