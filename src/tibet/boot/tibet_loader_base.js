@@ -11861,9 +11861,7 @@ TP.boot.configureAndPopulateCaches = function() {
 
                     return promise.then(
                         function() {
-                            return TP.boot.sendMessageToServiceWorker(
-                                    navigator.serviceWorker.controller,
-                                    {
+                            return TP.boot.sendMessageToServiceWorker({
                                         command: 'setcfgprop',
                                         payload: '{"boot.use_sw_cache":true}'
                                     });
@@ -11875,9 +11873,7 @@ TP.boot.configureAndPopulateCaches = function() {
                 //  supposed to use the cache to vend files, since we're going
                 //  to populate it now.
                 return promise.then(function() {
-                        return TP.boot.sendMessageToServiceWorker(
-                                navigator.serviceWorker.controller,
-                                {
+                        return TP.boot.sendMessageToServiceWorker({
                                     command: 'setcfgprop',
                                     payload: '{"boot.use_sw_cache":false}'
                                 });
@@ -11890,9 +11886,7 @@ TP.boot.configureAndPopulateCaches = function() {
                         //  Now that the cache population is done, send a
                         //  message over to the ServiceWorker telling it to
                         //  turn caching back on.
-                        return TP.boot.sendMessageToServiceWorker(
-                                navigator.serviceWorker.controller,
-                                {
+                        return TP.boot.sendMessageToServiceWorker({
                                     command: 'setcfgprop',
                                     payload: '{"boot.use_sw_cache":true}'
                                 });
@@ -11909,12 +11903,30 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
      * @summary Receives a message (via postMessage) from the Service Worker.
      * @param {Object} msgObjContent The POJO object that contains data received
      *     from the service worker.
+     * @returns {Promise} A Promise that will resolve when the 'command' that is
+     *     specified has completed.
      */
 
     var moduleName,
 
         nsName,
-        namespace;
+        namespace,
+
+        retPromise;
+
+    //  If we got an error in the message content payload.
+    if (msgObjContent.error) {
+
+        //  If channel Promise callbacks were defined, call the second one (the
+        //  'rejector' callback) with the error in the message content.
+        if (TP.boot.$$channelPromiseCBs) {
+            TP.boot.$$channelPromiseCBs[1](msgObjContent.error);
+        }
+
+        TP.boot.$$channelPromiseCBs = null;
+
+        return Promise.reject(msgObjContent.error);
+    }
 
     //  If the ServiceWorker asked us to create a module, then we try to compute
     //  a TIBET namespace from the payload it handed us (which would be an
@@ -11936,20 +11948,37 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
             //  a return postMessage) to the ServiceWorker.
             namespace = TP.bySystemId(nsName);
             if (TP.isNamespace(namespace)) {
-                return namespace.definePseudoNativeModule();
+                retPromise = namespace.definePseudoNativeModule();
             }
         }
     }
+
+    //  Make sure we have a Promise that we can chain onto if we have channel
+    //  Promise resolver callback.
+    if (TP.boot.$notValid(retPromise)) {
+        retPromise = Promise.resolve();
+    }
+
+    //  If channel Promise callbacks were defined, call the first one (the
+    //  'resolver' callback) with the message content in a chained Function
+    //  after we resolve the prior Promise..
+    if (TP.boot.$$channelPromiseCBs) {
+        retPromise.then(function() {
+            TP.boot.$$channelPromiseCBs[0](msgObjContent);
+            TP.boot.$$channelPromiseCBs = null;
+        });
+    }
+
+    return retPromise;
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.sendMessageToServiceWorker = function(sender, msgObjContent) {
+TP.boot.sendMessageToServiceWorker = function(msgObjContent) {
 
     /**
      * @method sendMessageToServiceWorker
      * @summary Sends a message (via postMessage) to the Service Worker.
-     * @param {ServiceWorker} sender The service worker to post the message to.
      * @param {Object} msgObjContent The POJO object that contains data to send
      *     to the service worker.
      * @returns {Promise} A Promise that will resolve when the ServiceWorker has
@@ -11960,18 +11989,15 @@ TP.boot.sendMessageToServiceWorker = function(sender, msgObjContent) {
 
     listenerPromise = new Promise(
         function(resolver, rejector) {
-            var messageChannel;
 
-            messageChannel = new MessageChannel();
-            messageChannel.port1.onmessage = function(event) {
-                if (event.data.error) {
-                    rejector(event.data.error);
-                } else {
-                    resolver(event.data);
-                }
-            };
+            //  Capture resolver & rejector Functions into a global. We'll call
+            //  these when receive the 'receipt' of this message in the
+            //  receiveMessageFromServiceWorker method.
+            TP.boot.$$channelPromiseCBs = [resolver, rejector];
 
-            sender.postMessage(msgObjContent, [messageChannel.port2]);
+            //  Send the message over the port that is the companion port to the
+            //  one we sent the service worker when we first started.
+            TP.boot.serviceWorkerPort.postMessage(msgObjContent);
         });
 
     return listenerPromise;
@@ -12016,24 +12042,9 @@ TP.boot.setupServiceWorker = function() {
                                         });
                                 });
                         }).then(function() {
-
-                            //  Set up a 'message' handler that will listen for
-                            //  messages from the service worker, call our
-                            //  method and then post whatever result comes in on
-                            //  the Promise back to the service worker.
-                            navigator.serviceWorker.addEventListener(
-                                'message',
-                                function(event) {
-                                    TP.boot.receiveMessageFromServiceWorker(
-                                                    event.data).then(
-                                       function(result) {
-                                            event.ports[0].postMessage({
-                                                error: null,
-                                                msg: 'ok',
-                                                payload: result
-                                            });
-                                       });
-                                });
+                            //  Set up the service worker and our ports for
+                            //  communication with it, etc.
+                            return TP.boot.setupServiceWorkerChannel();
                         });
 
                 }, function(err) {
@@ -12048,13 +12059,87 @@ TP.boot.setupServiceWorker = function() {
 
                 //  Send a message over to the Service Worker giving it all of
                 //  the cfg data that we have.
-                return TP.boot.sendMessageToServiceWorker(
-                        navigator.serviceWorker.controller,
-                        {
+                return TP.boot.sendMessageToServiceWorker({
                             command: 'setcfg',
                             payload: cacheCfgBody
                         });
             });
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.setupServiceWorkerChannel = function() {
+
+    /**
+     * @method setupServiceWorkerChannel
+     * @summary Sets up the Service Worker used by TIBET to control caching and
+     *     provide other, more esoteric ;-), services.
+     * @returns {Promise} A Promise that will resolve when the ServiceWorker is
+     *     ready.
+     */
+
+    var listenerPromise;
+
+    listenerPromise = new Promise(
+        function(resolver, rejector) {
+            var messageChannel;
+
+            messageChannel = new MessageChannel();
+
+            //  Grab the port that we're supposed to use to communicate with the
+            //  service worker.
+            TP.boot.serviceWorkerPort = messageChannel.port1;
+
+            //  Capture resolver & rejector Functions into a global. We'll call
+            //  these when receive the 'receipt' of this message in the
+            //  receiveMessageFromServiceWorker method.
+            TP.boot.$$channelPromiseCBs = [resolver, rejector];
+
+            //  The port is set up - add an event listener to process messages
+            //  from our companion port.
+            TP.boot.serviceWorkerPort.addEventListener(
+                'message',
+                function(evt) {
+                    TP.boot.receiveMessageFromServiceWorker(
+                                    evt.data).then(
+                        function(result) {
+                            //  We only send this back if the received message
+                            //  is *not* an ack - otherwise, we'll endlessly
+                            //  loop back and forth with the service worker.
+                            if (!evt.data.ack) {
+                                TP.boot.serviceWorkerPort.postMessage({
+                                    error: null,
+                                    msg: 'ok',
+                                    payload: result,
+                                    ack: true
+                                });
+                            }
+                        },
+                        function(reason) {
+                            //  We only send this back if the received message
+                            //  is *not* an ack - otherwise, we'll endlessly
+                            //  loop back and forth with the service worker.
+                            if (!evt.data.ack) {
+                                TP.boot.serviceWorkerPort.postMessage({
+                                    error: reason,
+                                    msg: 'error',
+                                    ack: true
+                                });
+                            }
+                        });
+                });
+
+            //  Start the sending of messages on this port.
+            TP.boot.serviceWorkerPort.start();
+
+            //  Post a message of 'setup' to our service worker, handing it the
+            //  companion port on the message channel that it should use to
+            //  communicate back to us.
+            navigator.serviceWorker.controller.postMessage(
+                            {command: 'setup'}, [messageChannel.port2]);
+        });
+
+    return listenerPromise;
 };
 
 //  ----------------------------------------------------------------------------
