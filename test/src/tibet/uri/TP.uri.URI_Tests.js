@@ -5624,6 +5624,69 @@ function() {
 
 });
 
+//  ========================================================================
+//  BlobURL
+//  ========================================================================
+
+TP.uri.BlobURL.Inst.describe('get URI parts',
+function() {
+
+    this.it('BlobURL: get parts with no component ID and no path', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('blob:');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'blob',
+                TP.sc('Expected: ', '"blob"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEmpty(
+                val,
+                TP.sc('root should be empty'));
+
+        val = url.get('path');
+        test.assert.isEmpty(
+                val,
+                TP.sc('path should be empty'));
+    });
+
+    this.it('BlobURL: get parts with path', function(test, options) {
+
+        var url,
+            val;
+
+        url = TP.uc('blob:https://example.org/40a5fb5a-d56d-4a33-b4e2-0acf6a8e5f641');
+
+        val = url.get('scheme');
+        test.assert.isEqualTo(
+                val,
+                'blob',
+                TP.sc('Expected: ', '"blob"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('root');
+        test.assert.isEqualTo(
+                val,
+                'blob:https://example.org',
+                TP.sc('Expected: ', '"blob:https://example.org"',
+                        ' and got instead: ', val, '.'));
+
+        val = url.get('path');
+        test.assert.isEqualTo(
+                val,
+                'https://example.org/40a5fb5a-d56d-4a33-b4e2-0acf6a8e5f641',
+                TP.sc('Expected: ', 'https://example.org/40a5fb5a-d56d-4a33-b4e2-0acf6a8e5f641',
+                        ' and got instead: ', val, '.'));
+    });
+
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
