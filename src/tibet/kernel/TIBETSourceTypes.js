@@ -1806,10 +1806,11 @@ TP.core.ElectronMessageSource.Inst.defineHandler('MessageReceived',
 function(aSignal) {
 
     /**
-     * @method handleElectionFileChange
-     * @summary Handles when a TDS-managed resource has changed.
-     * @param {TP.sig.MessageReceived} aSignal The signal indicating that a
-     *     TDS-managed resource has changed.
+     * @method handleElectionMessageReceived
+     * @summary Handles when we receive a message from the Electron main
+     *     process.
+     * @param {TP.sig.MessageReceived} aSignal The signal indicating that the
+     *     main process wants to communicate with us.
      * @returns {TP.core.ElectronMessageSource} The receiver.
      */
 
@@ -1818,8 +1819,17 @@ function(aSignal) {
 
     evt = aSignal.getPayload();
 
-    //  If a signalName was placed onto the event by the caller, then use it.
-    signalName = evt.signalName || 'TP.sig.ElectronFileChange';
+    //  Map over the event. In the SSE code, this is done by using a REMOTE_NAME
+    //  along with special handlers. For Electron, our approach can be simpler.
+    switch (evt.event) {
+        case 'fileChange':
+            signalName = 'TP.sig.ElectronFileChange';
+            break;
+        default:
+            //  Not an event name we recognize, so we can't map it to a signal
+            //  name. Return here.
+            return;
+    }
 
     this.signal(signalName, evt);
 
