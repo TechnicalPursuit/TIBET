@@ -1,3 +1,5 @@
+{{{copyright}}}
+
 /**
  * @type { {{~nsroot~}}.{{nsname}}.{{~typename~}} }
  * @summary {{supertype}} subtype which...
@@ -12,6 +14,8 @@
 //  Note how this property is TYPE_LOCAL, by design.
 {{nsroot}}.{{nsname}}.{{typename}}.defineAttribute('themeURI', TP.NO_RESULT);
 
+//  ------------------------------------------------------------------------
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 {{nsroot}}.{{nsname}}.{{typename}}.Type.defineMethod('tagCompile',
@@ -28,6 +32,10 @@ function(aRequest) {
 
     return this.callNextMethod();
 });
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
 //  end

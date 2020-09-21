@@ -55,14 +55,14 @@ Cmd.NPM_FILE = '~lib/package.json';
  * The name of the target file to be updated with the templated output.
  * @type {String}
  */
-Cmd.TARGET_FILE = '~lib/src/tibet/kernel/TIBETVersion.js';
+Cmd.TARGET_FILE = '~lib/src/tibet/kernel/version.js';
 
 /**
  * The name of the template file to use for injecting values. This file is
  * expected to have handlebars template slots for the data needed for a tag.
  * @type {String}
  */
-Cmd.TEMPLATE_FILE = '~lib/src/tibet/kernel/TIBETVersionTemplate.js';
+Cmd.TEMPLATE_FILE = '~lib/src/tibet/kernel/version_template.js';
 
 //  ---
 //  Instance Attributes
@@ -134,7 +134,7 @@ Cmd.prototype.execute = function() {
 
 /**
  * Returns a semver-compliant version string from the source data provided. The
- * data provided here is the same data contained in TIBETVersion[Template].js
+ * data provided here is the same data contained in version and version template
  * file(s) in the kernel and comparable to the version from npm info output.
  * @param {Object} data The release data as built from git describe and npm
  *     version information.
@@ -472,7 +472,7 @@ Cmd.prototype.phaseTwo = function(source) {
     //  ---
 
     file = CLI.expandPath(
-            CLI.getcfg('path.release_version_template') || Cmd.TEMPLATE_FILE);
+            CLI.getcfg('path.lib_version_template') || Cmd.TEMPLATE_FILE);
     try {
         data = fs.readFileSync(file, {encoding: 'utf8'});
         if (!data) {
@@ -506,7 +506,7 @@ Cmd.prototype.phaseTwo = function(source) {
     }
 
     file = CLI.expandPath(
-            CLI.getcfg('path.release_version_target') || Cmd.TARGET_FILE);
+            CLI.getcfg('path.lib_version_file') || Cmd.TARGET_FILE);
     if (this.options['dry-run']) {
         this.warn('dry-run. bypassing writing: ' + file);
     } else {

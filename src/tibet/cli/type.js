@@ -147,6 +147,8 @@ Cmd.prototype.configure = function() {
 
     options.xmlns = options.xmlns || this.configureXMLNS();
 
+    options.year = new Date().getFullYear();
+
     this.trace('configure:\n' + CLI.beautify(JSON.stringify(options)));
 
     return options;
@@ -934,6 +936,8 @@ Cmd.prototype.getTemplateParameters = function() {
     obj[this.TEMPLATE_KEY] = name;
     obj.dna = dna;
     obj.xmlns = xmlns;
+
+    obj.copyright = this.configureCopyright();
 
     obj.nsroot = options.nsroot;
     obj.nsname = options.nsname;

@@ -1,4 +1,4 @@
-/* copyright added via build process. see copyright.js in TIBET kernel */
+/* copyright added via build process. see ~lib_copyright_file content. */
 
 /**
  * @overview A simple helper for the default TIBET login page which stores off

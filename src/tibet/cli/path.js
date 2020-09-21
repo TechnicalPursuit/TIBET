@@ -84,6 +84,11 @@ Cmd.prototype.execute = function() {
             vpath = item;
         }
 
+        if (CLI.inLibrary() && vpath.indexOf('~app') === 0) {
+            thisref.info(vpath + ' => ' + 'not valid in library context.');
+            return;
+        }
+
         //  NOTE true flag here to silence errors and just return undef for
         //  paths that aren't found.
         thisref.info(vpath + ' => ' + CLI.expandPath(vpath, true));

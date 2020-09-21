@@ -8,3 +8,4 @@ lib/src/**
 **/lib/src/**
 **/build/**
 **/*__*__*.*
+**/APP_test.js

@@ -1,3 +1,5 @@
+{{{copyright}}}
+
 /*
  * APP.{{appname}}:app top-level tests.
  */

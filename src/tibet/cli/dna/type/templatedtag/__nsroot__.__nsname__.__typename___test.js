@@ -1,3 +1,5 @@
+{{{copyright}}}
+
 /*
  * {{nsroot}}.{{nsname}}:{{typename}} top-level tests.
  */

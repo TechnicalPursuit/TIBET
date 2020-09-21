@@ -1,4 +1,4 @@
-/* copyright added via build process. see copyright.js in TIBET kernel */
+/* copyright added via build process. see ~lib_copyright_file content. */
 
 //  ============================================================================
 

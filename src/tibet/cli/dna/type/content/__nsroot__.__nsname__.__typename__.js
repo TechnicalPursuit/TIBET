@@ -1,3 +1,5 @@
+{{{copyright}}}
+
 /**
  * @type { {{~nsroot~}}.{{nsname}}.{{~typename~}} }
  * @summary {{supertype}} subtype which...

@@ -1,4 +1,4 @@
-# TIBET&#8482; -- The future is written in markup&#8482;
+# TIBET&#8482; -- Drag, Drop, Deploy&#8482;
 
 
                                      ,`
@@ -216,15 +216,15 @@ components are **fully-supported on Windows, MacOS and common Linux variants**.
 
 ###### TIBET Client / Sherpa
 
-| Platform | TIBET Client Runtime | TIBET Live Patching | TIBET Sherpa |
-|:---------|:----------------------|:--------------------|:-------------|
-| Google Chrome | Yes | Yes | Yes |
-| Microsoft Edge (Chromium) | Yes | Yes | Yes |
-| Mozilla Firefox | Yes | Yes | No |
-| Apple Safari | Yes | Yes | No |
-| Electron | Yes | Coming Soon | Coming Soon |
-| Microsoft Edge (EdgeHTML) | No | No | No |
-| Microsoft IE | No | No | No |
+| Platform | TIBET Client Runtime | TIBET Live Patching |
+|:---------|:----------------------|:-------------------|
+| Google Chrome | Yes | Yes |
+| Microsoft Edge (Chromium) | Yes | Yes |
+| Mozilla Firefox | Yes | Yes |
+| Apple Safari | Yes | Yes |
+| Electron | Yes | Yes |
+| Microsoft Edge (EdgeHTML) | No | No |
+| Microsoft IE | No | No |
 
 <br/>
 

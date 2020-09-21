@@ -127,6 +127,78 @@ Cmd.prototype.configure = function() {
 
 
 /**
+ * Returns a copyright string taken from the path.*_copyright_file content. This
+ * file may contain it's own template parameter(s), most notably 'year'.
+ */
+Cmd.prototype.configureCopyright = function() {
+    var params,
+        virtual,
+        fullpath,
+        silent,
+        template,
+        content,
+        data;
+
+    //  Tricky part is "where are we"?
+    if (CLI.inProject()) {
+        virtual = '~app_copyright_file';
+    } else if (CLI.inLibrary()) {
+        virtual = '~lib_copyright_file';
+    } else {
+        //  NOTE this is a special ref for when we're cloning.
+        virtual = '~dna_copyright_file';
+    }
+
+    fullpath = CLI.expandPath(virtual);
+    silent = CLI.sh.config.silent;
+    CLI.sh.config.silent = true;
+    data = CLI.sh.cat(fullpath);
+    CLI.sh.config.silent = silent;
+
+    if (CLI.isEmpty(data)) {
+        return CLI.getcfg('tibet.copyright_default', '');
+    }
+
+    //  Ensure it's "just a string" and not a ShellJS string object.
+    data = data.toString();
+
+    //  No templates? Return in string form.
+    if (/{{/.test(data) !== true) {
+        return data.toString().trim();
+    }
+
+    params = {
+        year: new Date().getFullYear()
+    };
+
+    //  Templated (usually with {{year}} etc.
+    try {
+        template = handlebars.compile(data);
+        if (!template) {
+            throw new Error('InvalidCopyrightTemplate');
+        }
+    } catch (e) {
+        CLI.error('Error compiling template ' + fullpath + ': ' +
+            e.message);
+        return CLI.getcfg('tibet.copyright_default', '');
+    }
+
+    try {
+        content = template(params);
+        if (!content) {
+            throw new Error('InvalidContent');
+        }
+    } catch (e) {
+        CLI.error('Error injecting template data in ' + fullpath +
+            ': ' + e.message);
+        return CLI.getcfg('tibet.copyright_default', '');
+    }
+
+    return content.toString().trim();
+};
+
+
+/**
  * Updates the receiver's configuration data based on any configuration data
  * pulled in from the DNA directory. This allows each dna template to provide
  * custom values for certain configuration parameters.
@@ -134,6 +206,30 @@ Cmd.prototype.configure = function() {
  */
 Cmd.prototype.configureForDNA = function(config) {
     return 0;
+};
+
+
+/**
+ * Return a valid XMLNS uri value based on command line input and default values
+ * which respect whether you are in a project or the library.
+ * @param {String} appname The application name to use (defaults to --name or the
+ *     current TIBET project name.
+ * @returns {String} The xmlns URI.
+ */
+Cmd.prototype.configureXMLNS = function(appname) {
+    var xmlns;
+
+    //  Define an XMLNS value. This is used for CSS url() sections as well as
+    //  any tag-related definitions. NOTE the value for lib is set to the value
+    //  we use for 'tibet:' prefixes elsewhere in the library.
+    xmlns = this.options.xmlns || CLI.getcfg('tibet.xmlns');
+    if (CLI.notEmpty(xmlns)) {
+        return xmlns;
+    }
+
+    return CLI.inLibrary() ?
+            'http://www.technicalpursuit.com/1999/tibet' :
+            'urn:app:' + (appname || this.options.appname || this.options.name);
 };
 
 
@@ -845,36 +941,16 @@ Cmd.prototype.getTemplateParameters = function() {
     obj.dna = dna.slice(dna.lastIndexOf('/') + 1);
     obj.xmlns = xmlns;
 
+    obj.year = new Date().getFullYear();
+
+    obj.copyright = this.configureCopyright();
+
     params = CLI.blend(obj, options);
     this.params = params;
 
     this.trace('template params:\n' + CLI.beautify(JSON.stringify(params)));
 
     return params;
-};
-
-
-/**
- * Return a valid XMLNS uri value based on command line input and default values
- * which respect whether you are in a project or the library.
- * @param {String} appname The application name to use (defaults to --name or the
- *     current TIBET project name.
- * @returns {String} The xmlns URI.
- */
-Cmd.prototype.configureXMLNS = function(appname) {
-    var xmlns;
-
-    //  Define an XMLNS value. This is used for CSS url() sections as well as
-    //  any tag-related definitions. NOTE the value for lib is set to the value
-    //  we use for 'tibet:' prefixes elsewhere in the library.
-    xmlns = this.options.xmlns || CLI.getcfg('tibet.xmlns');
-    if (CLI.notEmpty(xmlns)) {
-        return xmlns;
-    }
-
-    return CLI.inLibrary() ?
-            'http://www.technicalpursuit.com/1999/tibet' :
-            'urn:app:' + (appname || this.options.appname || this.options.name);
 };
 
 

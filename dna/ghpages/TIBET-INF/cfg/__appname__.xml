@@ -17,6 +17,12 @@
 </config>
 
 <config id="scripts">
+    <!-- APP copyright file used to preface main code bundle -->
+    <script src="~app_copyright_file" no-minify="no-minify"/>
+
+    <!-- APP version file containing last 'release' version -->
+    <script src="~app_version_file"/>
+
     <!-- put non-bundle source file references here -->
     <script src="APP.{{appname}}.js" />
     <script src="APP.{{appname}}.Object.js" />

@@ -2,7 +2,7 @@
 <package xmlns="http://www.technicalpursuit.com/1999/tibet" name="TIBET" default="base" basedir="~lib_cfg">
 
 <config id="loader">
-    <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
+    <script src="~lib_copyright_file" no-minify="no-minify"/>
     <script src="~lib_src/tibet/boot/tibet_loader_pre.js"/>
     <script src="~lib_src/tibet/boot/tibet_cfg.js"/>
     <script src="~lib_src/tibet/boot/tibet_loader_base.js"/>
@@ -10,22 +10,22 @@
 </config>
 
 <config id="login">
-    <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
+    <script src="~lib_copyright_file" no-minify="no-minify"/>
     <script src="~lib_src/tibet/boot/tibet_login.js"/>
 </config>
 
 <config id="service_worker">
-    <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
+    <script src="~lib_copyright_file" no-minify="no-minify"/>
     <script src="~lib_src/tibet/helpers/tibet_service_worker.js"/>
 </config>
 
 <config id="worker">
-    <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
+    <script src="~lib_copyright_file" no-minify="no-minify"/>
     <script src="~lib_src/tibet/helpers/tibet_worker.js"/>
 </config>
 
 <config id="hook">
-    <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
+    <script src="~lib_copyright_file" no-minify="no-minify"/>
     <script src="~lib_src/tibet/boot/tibet_hook.js"/>
 </config>
 

@@ -579,15 +579,21 @@ TP.registerLoadInfo(TP.sys.getGlobals);
 //  ------------------------------------------------------------------------
 
 /**
- * Processes inbound release data. This is provided by the TIBETVersion.js file.
+ * Processes inbound release data. This is provided by the release version file.
  * A similarly named function is used as a callback name for the checkVersion
- * call. This particular function is mapped to that name in TIBETVersion.js.
+ * call. This particular function is mapped to that name in the version file
+ * specified by the path.lib_version_target config variable.
  * @param {Object} data The release data structure.
  */
-TP.sys.release = function(data) {
-    //  Only set this once.
-    if (!TP.sys.$version) {
-        TP.sys.$version = data;
+TP.sys.release = function(data, context) {
+    var prefix;
+
+    prefix = '$' +
+        (context ? context.toLowerCase() : 'lib') +
+        'Version';
+
+    if (!TP.sys[prefix]) {
+        TP.sys[prefix] = data;
     }
 };
 

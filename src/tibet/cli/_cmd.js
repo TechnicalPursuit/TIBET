@@ -461,7 +461,7 @@ Cmd.prototype.run = function(argv) {
     //  Adjust any parameters after parsing.
     this.options = this.configure();
 
-    if (this.options.usage) {
+    if (this.options && this.options.usage) {
         return this.usage();
     }
 

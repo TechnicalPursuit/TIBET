@@ -118,6 +118,8 @@ Cmd.prototype.configure = function() {
 
     options.xmlns = options.xmlns || this.configureXMLNS();
 
+    options.year = new Date().getFullYear();
+
     this.trace('configure:\n' + CLI.beautify(JSON.stringify(options)));
 
     return options;
