@@ -235,10 +235,10 @@ TP.definePrimitive('RETURN_NEW', TP.RETURN_NEW);
 TP.definePrimitive('RETURN_TOSTRING', TP.RETURN_TOSTRING);
 
 //  ---
-//  TIBETVersion.js
+//  version.js
 //  ---
 
-TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETVersion.js';
+TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/version.js';
 
 //  ---
 //  TIBETPrimitivesPre.js

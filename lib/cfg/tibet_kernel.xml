@@ -12,10 +12,12 @@
     -->
 
     <!--    KERNEL STAGE 1, BASE PRIMITIVES -->
-    <script src="copyright.js" no-minify="no-minify"/>
+    <script src="~lib_copyright_file" no-minify="no-minify"/>
 
     <script src="TIBETGlobals.js"/>
-    <script src="TIBETVersion.js"/>
+
+    <!--    NOTE this must match 'path.lib_version_url' -->
+    <script src="~lib_version_file"/>
 
     <script>
         <![CDATA[

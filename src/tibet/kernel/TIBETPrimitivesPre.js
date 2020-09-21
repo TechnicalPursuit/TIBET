@@ -12985,27 +12985,25 @@ function(aFlag, shouldSignal) {
 //  VERSION INFO
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('getLibVersion',
-function(release, meta) {
+TP.sys.defineMethod('getVersionInfo',
+function(data, meta) {
 
     /**
      * @method getLibVersion
      * @summary Returns the value of the version identification data as a
-     *     string. If release data is provided the string for that data is
-     *     returned, otherwise the string for the current kernel is returned.
-     *     NOTE that the string returned is intended to conform to the semver
-     *     specification with optional pre-release and metadata content.
-     * @param {Object} release A release data structure. See
-     *     TIBETVersionTemplate.js for content.
+     *     string. NOTE that the string returned is intended to conform to the
+     *     semver specification with optional pre-release and metadata content.
+     * @param {Object} data A release data structure. See the version
+     *     template file (path.lib_version_template) for more information.
      * @returns {String} The version string identifier.
      */
 
     var str,
-        data,
         semver;
 
-    //  Default data to the current kernel's stored version info.
-    data = TP.hc(TP.ifInvalid(release, TP.sys.$version));
+    if (TP.notValid(data)) {
+        return;
+    }
 
     //  Build a semver-compliant string optionally including pre-release and
     //  meta information when that data is available. Not all releases have it.
@@ -13063,6 +13061,48 @@ function(release, meta) {
     }
 
     return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getAppVersion',
+function(meta) {
+
+    /**
+     * @method getAppVersion
+     * @summary Returns the application version string as defined by the
+     *     getVersionInfo routine.
+     * @param {Boolean} meta True to include additional version metadata if
+     *     found in the application version info block current registered.
+     * @returns {String} The version string identifier.
+     */
+
+    return TP.sys.getVersionInfo(TP.sys.$appVersion, meta);
+});
+
+/*
+ * Set up a getter for the appVersion used in certain templates.
+ */
+TP.sys.installSystemPropertyGetter(TP.env, 'appVersion',
+function() {
+    return TP.sys.getAppVersion();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getLibVersion',
+function(meta) {
+
+    /**
+     * @method getAppVersion
+     * @summary Returns the application version string as defined by the
+     *     getVersionInfo routine.
+     * @param {Boolean} meta True to include additional version metadata if
+     *     found in the application version info block current registered.
+     * @returns {String} The version string identifier.
+     */
+
+    return TP.sys.getVersionInfo(TP.sys.$libVersion, meta);
 });
 
 /*

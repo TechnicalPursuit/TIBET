@@ -1000,10 +1000,34 @@
     //  what is the currently active locale (in xml:lang format)
     TP.sys.setcfg('tibet.locale', null);
 
+    //  ---
+    //  copyright injection
+    //  ---
+
+    TP.sys.setcfg('path.app_copyright_file',
+        '~app_src/templates/copyright.js');
+
+    TP.sys.setcfg('path.lib_copyright_file',
+        '~lib/src/tibet/kernel/copyright.js');
+
+    //  NOTE this is the file used during 'tibet clone' since it can't resolve
+    //  inProject or inLibrary when cloning. We use the default dna version.
+    TP.sys.setcfg('path.dna_copyright_file',
+        '~lib_dna/default/public/src/templates/copyright.js');
+
+    //  If the copyright file/content can't be used for any reason use this.
+    TP.sys.setcfg('tibet.copyright_default',
+    '//  ========================================================================');
 
     //  ---
     //  version management
     //  ---
+
+    //  Paths for application versioning using app-specific release command.
+    TP.sys.setcfg('path.app_version_template',
+        '~app_src/templates/version_template.js');
+    TP.sys.setcfg('path.app_version_file',
+        '~app_src/templates/version.js');
 
     //  path to the json file (which avoids x-domain security issues) with the
     //  latest TIBET release data for version checking the root library.
@@ -1014,12 +1038,12 @@
 
     //  path to file used as handlebars template for semver data by the tibet
     //  release CLI command.
-    TP.sys.setcfg('path.release_version_template',
-        '~lib/src/tibet/kernel/TIBETVersionTemplate.js');
+    TP.sys.setcfg('path.lib_version_template',
+        '~lib/src/tibet/kernel/version_template.js');
 
     //  path to file used to store semver data from the tibet release command.
-    TP.sys.setcfg('path.release_version_target',
-        '~lib/src/tibet/kernel/TIBETVersion.js');
+    TP.sys.setcfg('path.lib_version_file',
+        '~lib/src/tibet/kernel/version.js');
 
     //  ---
     //  virtual paths
@@ -1126,6 +1150,7 @@
     TP.sys.setcfg('path.app_log', '~/logs');
     TP.sys.setcfg('path.app_tmp', '~app_inf/tmp');
     TP.sys.setcfg('path.app_xmlbase', '~app_xhtml');
+
 
     //  These namespaces are used often enough that a shortcut is nice
     TP.sys.setcfg('path.tibet_src', '~lib_src/tibet');

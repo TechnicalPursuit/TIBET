@@ -1,4 +1,4 @@
-/* copyright added via build process. see copyright.js in TIBET kernel */
+/* copyright added via build process. see ~lib_copyright_file content. */
 
 /**
  * @overview When you use TIBET you're using a shared library model with code
