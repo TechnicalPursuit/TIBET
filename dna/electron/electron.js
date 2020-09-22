@@ -427,7 +427,7 @@ activateWatcher = function() {
             len,
             result,
             entry,
-            sigName;
+            eventName;
 
         //  Files marked 'nowatch' from the "client side" are placed in an
         //  internal list we use as part of the overall ignore filtering.
@@ -478,13 +478,12 @@ activateWatcher = function() {
             return;
         }
 
-        sigName = pkg.getcfg('electron.watch.event',
-                                'TP.sig.ElectronFileChange');
+        eventName = pkg.getcfg('electron.watch.event');
+
         entry = {
             path: tibetpath,
-            event: 'fileChange',
-            details: {},
-            signalName: sigName
+            event: eventName,
+            details: {}
         };
 
         mainContents.send('TP.sig.MessageReceived', entry);

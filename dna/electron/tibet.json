@@ -15,6 +15,9 @@
         "updater": {
             "download": false,
             "onstart": false
+        },
+        "watch": {
+            "event": "fileChange"
         }
     }
 }
