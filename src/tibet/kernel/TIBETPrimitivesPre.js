@@ -13008,46 +13008,46 @@ function(data, meta) {
     //  Build a semver-compliant string optionally including pre-release and
     //  meta information when that data is available. Not all releases have it.
     str = '';
-    str += TP.ifEmpty(data.at('major'), '0');
+    str += TP.ifEmpty(data.major, '0');
     str += '.';
-    str += TP.ifEmpty(data.at('minor'), '0');
+    str += TP.ifEmpty(data.minor, '0');
     str += '.';
-    str += TP.ifEmpty(data.at('patch'), '0');
+    str += TP.ifEmpty(data.patch, '0');
 
-    if (TP.notEmpty(data.at('suffix'))) {
+    if (TP.notEmpty(data.suffix)) {
         str += '-';
-        str += data.at('suffix');
+        str += data.suffix;
 
         str += '.';
-        str += TP.ifEmpty(data.at('increment'), 0);
+        str += TP.ifEmpty(data.increment, 0);
     }
 
-    semver = data.at('semver');
+    semver = data.semver;
 
     if (TP.isTrue(meta)) {
 
-        if (TP.notEmpty(data.at('phash'))) {
+        if (TP.notEmpty(data.phash)) {
             str += '+g';
-            str += data.at('phash');
+            str += data.phash;
         }
 
-        if (TP.notEmpty(data.at('commits'))) {
-            if (TP.notEmpty(data.at('phash'))) {
+        if (TP.notEmpty(data.commits)) {
+            if (TP.notEmpty(data.phash)) {
                 str += '.';
             } else {
                 str += '+';
             }
-            str += data.at('commits');
+            str += data.commits;
         }
 
-        if (TP.notEmpty(data.at('time'))) {
-            if (TP.notEmpty(data.at('phash')) ||
-                    TP.notEmpty(data.at('commits'))) {
+        if (TP.notEmpty(data.time)) {
+            if (TP.notEmpty(data.phash) ||
+                    TP.notEmpty(data.commits)) {
                 str += '.';
             } else {
                 str += '+';
             }
-            str += data.at('time');
+            str += data.time;
         }
     } else {
         semver = semver.split('+')[0];
@@ -13056,7 +13056,7 @@ function(data, meta) {
     //  A sanity check...
     if (str !== semver) {
         //  Hmmm. Computation should be the same.
-        TP.error('Version string mismatch. source -> ' + data.at('semver') +
+        TP.error('Version string mismatch. source -> ' + data.semver +
             ' !== ' + str + ' <- computed.');
     }
 
