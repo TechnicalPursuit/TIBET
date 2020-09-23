@@ -1,3 +1,10 @@
+//  ========================================================================
+/**
+ * @copyright Copyright (C) 2020, Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved.
+ */
+//  ========================================================================
+
 /**
  * @overview Logic for the "devtools page" portion of the extension. This file
  *     primarily responsible for initial panel creation and rendering. The panel
@@ -361,3 +368,7 @@ function() {
 false);
 
 }());
+
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================

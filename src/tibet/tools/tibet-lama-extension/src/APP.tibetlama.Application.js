@@ -1,10 +1,22 @@
 //  ========================================================================
 /**
+ * @copyright Copyright (C) 2020, Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved.
+ */
+//  ========================================================================
+
+/**
  * @type APP.tibetlama.Application
  * @summary The default application controller.
  */
+
+//  ------------------------------------------------------------------------
+//  Type Methods
 //  ------------------------------------------------------------------------
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 TP.core.Application.defineSubtype('APP.tibetlama.Application');
 
@@ -12,6 +24,8 @@ APP.tibetlama.Application.Inst.defineHandler('UIActivate',
 function(aSignal) {
     console.log('Application instance UIActivate');
 });
+
+//  ------------------------------------------------------------------------
 
 APP.tibetlama.Application.Inst.defineHandler('DevtoolsInbound',
 function(aSignal) {
