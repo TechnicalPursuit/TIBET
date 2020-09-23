@@ -3294,11 +3294,11 @@ function() {
 
         val = {foo: 'bar', baz: 'goo'};
         entriesVal = TP.entries(val);
-        test.assert.isEqualTo(entriesVal, [['foo', 'bar'], ['baz', 'goo']]);
+        test.assert.isEqualTo(entriesVal, [['foo', 'bar'], ['baz', 'goo']], 'object');
 
         val = [1, 2, 3];
         entriesVal = TP.entries(val);
-        test.assert.isEqualTo(entriesVal, [['0', 1], ['1', 2], ['2', 3]]);
+        test.assert.isEqualTo(entriesVal, [['0', 1], ['1', 2], ['2', 3]], 'array');
     });
 
     this.it('mutable reference values - boxed', function(test, options) {
@@ -3322,11 +3322,11 @@ function() {
         val.foo = 'bar';
         val.baz = 'goo';
         entriesVal = TP.entries(val);
-        test.assert.isEqualTo(entriesVal, [['foo', 'bar'], ['baz', 'goo']]);
+        test.assert.isEqualTo(entriesVal, [['foo', 'bar'], ['baz', 'goo']], 'object');
 
         val = new Array(1, 2, 3);
         entriesVal = TP.entries(val);
-        test.assert.isEqualTo(entriesVal, [['0', 1], ['1', 2], ['2', 3]]);
+        test.assert.isEqualTo(entriesVal, [['0', 1], ['1', 2], ['2', 3]], 'array');
 
         val = TP.lang.Object.construct();
         entriesVal = TP.entries(val);
@@ -3334,7 +3334,7 @@ function() {
 
         val = TP.core.Hash.construct('foo', 'bar', 'baz', 'goo');
         entriesVal = TP.entries(val);
-        test.assert.isEqualTo(entriesVal, [['foo', 'bar'], ['baz', 'goo']]);
+        test.assert.isEqualTo(entriesVal, [['foo', 'bar'], ['baz', 'goo']], 'tp.object');
     });
 
 });

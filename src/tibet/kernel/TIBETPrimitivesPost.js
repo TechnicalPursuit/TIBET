@@ -3189,6 +3189,12 @@ function(anObject, includeNonenumerables, includePrototypeProps) {
     }
 
     if (!includeNonenumerables && !includePrototypeProps) {
+
+        //  native Map and Set instances can be processed by native Array.from.
+        if (TP.canInvoke(anObject, 'entries') && !TP.isArray(anObject)) {
+            return Array.ECMAfrom(anObject);
+        }
+
         //  Note that we only call 'getKVPairs' if the object has it *and*
         //  neither of the two flags are set.
         if (TP.canInvoke(anObject, 'getKVPairs')) {

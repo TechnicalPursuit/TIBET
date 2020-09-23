@@ -3114,6 +3114,22 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isNativeObject',
+function(anObj) {
+
+    /**
+     * @method isNativeObject
+     * @summary Returns true if the object is an instance of a native type.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean} Whether or not the object is a native instance.
+     */
+
+    return TP.isNativeType(TP.type(anObj));
+
+}, null, 'TP.isNativeObject');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isNativeType',
 function(anObj) {
 

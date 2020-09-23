@@ -56,6 +56,78 @@ function() {
 //  Array
 //  ========================================================================
 
+Array.Type.defineMethod('from',
+function(anObj, mapFunc, thisRef) {
+
+    /**
+     * @method from
+     * @summary Constructs a new instance from the incoming object.
+     * @description Array's implementation of 'from' has a native ES6 peer that
+     *     we try to be compatible with. While TIBET has had as/from for a
+     *     decade or more the semantics are slightly different. TIBET typically
+     *     looks for a 'from{Type}' method to process 'from' calls while Array's
+     *     native implementation works only for certain types and offers map
+     *     functions for special conversions. Our approach here is that if there
+     *     is a map function we defer entirely to the native invocation. When
+     *     there's only one parameter we try to use Array's native approach but
+     *     will redispatch to our callBestMethod approach if the result is [].
+     * @param {Object} anObj The source object to use.
+     * @param {Function} mapFunc An optional mapping function (which if present
+     *     will force use of the native routine).
+     * @param {Object} thisRef An optional binding reference for the mapFunc.
+     * @returns {Object} A new instance of the receiver.
+     */
+
+    var arr,
+        trimmed;
+
+    //  Native from call fails on invalid inputs so let's be consistent.
+    if (TP.notValid(anObj)) {
+        return Array.ECMAfrom();
+    }
+
+    //  If there's more than just the object parameter the caller assumes
+    //  it's talking to the native version so delegate there.
+    if (TP.isValid(mapFunc)) {
+        return Array.ECMAfrom(anObj, mapFunc, thisRef);
+    }
+
+    //  TIBET treats strings slightly differently. If it looks like JSON we try
+    //  to de-serialize it to create the array.
+    if (TP.isString(anObj)) {
+        trimmed = anObj.trim();
+        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+            try {
+                return JSON.parse(anObj);
+            } catch (err) {
+                //  If an error then it's just a string...
+                return Array.ECMAfrom(anObj);
+            }
+        }
+    }
+
+    //  Native Array, Map, Set collections are quickly convertible.
+    if (TP.isValid(anObj[Symbol.iterator])) {
+        return Array.ECMAfrom(anObj);
+    }
+
+    //  If it's a native data object we can also try the native routine first.
+    if (TP.isNativeObject(anObj)) {
+        arr = Array.ECMAfrom(anObj);
+
+        if (TP.isEmpty(arr)) {
+            return this.callBestMethod(arguments, anObj,
+                'from', null, 'fromObject');
+        }
+    } else {
+        return this.callBestMethod(arguments, anObj,
+            'from', null, 'fromObject');
+    }
+
+    return arr;
+
+});
+
 //  ========================================================================
 //  Boolean
 //  ========================================================================
