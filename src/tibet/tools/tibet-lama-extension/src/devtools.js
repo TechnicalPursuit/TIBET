@@ -78,7 +78,6 @@ const createCommChannel = function() {
         }
 
     }, false);
-
 };
 
 
@@ -92,7 +91,7 @@ const createCommChannel = function() {
  * @returns {Boolean} true if the window is instrumented.
  */
 const isInstrumented = function(aWindow) {
-    var instrumented;
+    let instrumented;
 
     if (!aWindow) {
         return false;
@@ -165,7 +164,7 @@ const instrumentWindow = function(aWindow) {
  * }
  */
 const panelDidCreate = function(extensionPanel, info) {
-    var panelWindow;
+    let panelWindow;
 
     log('created panel ' + info.title);
 
@@ -229,7 +228,7 @@ const panelDidCreate = function(extensionPanel, info) {
  * }
  */
 const sidebarDidCreate = function(sidebarPane, info) {
-    var panelWindow,
+    let panelWindow,
         blank;
 
     log('created sidebar ' + info.title);
@@ -306,7 +305,7 @@ const sidebarDidCreate = function(sidebarPane, info) {
  * NOTE that panels/sidebars with a '"disabled": true' value will be ignored.
  */
 const createExtensionUI = function() {
-    var blank,
+    let blank,
         panels,
         sidebars;
 
@@ -360,8 +359,12 @@ function() {
         function(evt) {
             log('TIBETAppDidStart');
 
+            //  Build the extension GUI panels according to the configuration in
+            //  the tibet.json file.
             createExtensionUI();
 
+            //  Establish communications with the inspected window via the
+            //  devtools page, background page and injected content script.
             createCommChannel();
         });
 },
