@@ -19,7 +19,7 @@
 
 <config id="gui" depends="">
     <script>
-    if (TP.sys.cfg('boot.context') !== 'headless') {
+    if (TP.sys.cfg('boot.context') !== 'headless' &amp;&amp; TP.sys.inExtension() !== true) {
     (function() {
     </script>
     <config ref="syn"/>

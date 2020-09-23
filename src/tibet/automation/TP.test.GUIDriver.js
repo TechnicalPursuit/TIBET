@@ -53,6 +53,11 @@ function() {
         keyCode,
         val;
 
+    //  We can't run Syn in a Chrome extension.
+    if (TP.sys.inExtension()) {
+        return;
+    }
+
     this.defineDependencies('TP.extern.syn', 'TP.extern.Promise');
 
     //  If Syn isn't loaded, then don't try to manipulate its keymap. Just
