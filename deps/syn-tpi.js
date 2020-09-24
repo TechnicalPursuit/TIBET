@@ -1,4 +1,4 @@
-if (TP.sys.cfg('boot.context') !== 'headless' && TP.sys.inExtension() !== true) {
+if (TP.sys.inExtension() !== true) {
 (function() {
 /*[global-shim-start]*/
 (function(exports, global, doEval) {

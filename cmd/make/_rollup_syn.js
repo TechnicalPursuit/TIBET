@@ -17,8 +17,7 @@
             destPath);
 
         content = make.sh.cat(destPath).toString();
-        content = 'if (TP.sys.cfg(\'boot.context\') !== \'headless\'' +
-                    ' && TP.sys.inExtension() !== true)' +
+        content = 'if (TP.sys.inExtension() !== true)' +
                     ' {\n(function() {\n' + content + '\n}());\n}';
         new make.sh.ShellString(content).to(destPath);
 
