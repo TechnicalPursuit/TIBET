@@ -1,3 +1,5 @@
+if (TP.sys.inExtension() !== true) {
+(function() {
 /*[global-shim-start]*/
 (function(exports, global, doEval) {
 	// jshint ignore:line
@@ -2822,3 +2824,5 @@ define('syn', [
 	global.define = global.define.orig;
 }
 )(typeof self == "object" && self.Object == Object ? self : window);
+}());
+}

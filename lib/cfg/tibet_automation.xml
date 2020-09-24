@@ -18,15 +18,7 @@
 </config>
 
 <config id="gui" depends="">
-    <script>
-    if (TP.sys.cfg('boot.context') !== 'headless' &amp;&amp; TP.sys.inExtension() !== true) {
-    (function() {
-    </script>
     <config ref="syn"/>
-    <script>
-    }());
-    }
-    </script>
     <script src="automation/TP.test.GUIDriver.js" />
 </config>
 
