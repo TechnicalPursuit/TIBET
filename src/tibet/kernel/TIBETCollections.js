@@ -3247,6 +3247,43 @@ function(aKeyArray) {
 });
 
 //  ========================================================================
+//  Map Extensions
+//  ========================================================================
+
+Map.Inst.defineMethod('asString',
+function() {
+    return this.getItems().asString();
+});
+
+//  ------------------------------------------------------------------------
+
+Map.Inst.defineMethod('at',
+function(aKey) {
+    return this.get(aKey)
+});
+
+//  ------------------------------------------------------------------------
+
+Map.Inst.defineMethod('getKeys',
+function() {
+    return Array.ECMAfrom(this.keys());
+});
+
+//  ------------------------------------------------------------------------
+
+Map.Inst.defineMethod('getItems',
+function() {
+    return Array.ECMAfrom(this.entries());
+});
+
+//  ------------------------------------------------------------------------
+
+Map.Inst.defineMethod('getValues',
+function() {
+    return Array.ECMAfrom(this.values());
+});
+
+//  ========================================================================
 //  Number Extensions
 //  ========================================================================
 
@@ -3389,6 +3426,36 @@ function(endIndex) {
     }
 
     return type.construct(this, endIndex);
+});
+
+//  ========================================================================
+//  Set Extensions
+//  ========================================================================
+
+Set.Inst.defineMethod('asString',
+function() {
+    return this.getValues().asString();
+});
+
+//  ------------------------------------------------------------------------
+
+Set.Inst.defineMethod('getKeys',
+function() {
+    return Array.ECMAfrom(this.keys());
+});
+
+//  ------------------------------------------------------------------------
+
+Set.Inst.defineMethod('getItems',
+function() {
+    return Array.ECMAfrom(this.entries());
+});
+
+//  ------------------------------------------------------------------------
+
+Set.Inst.defineMethod('getValues',
+function() {
+    return Array.ECMAfrom(this.values());
 });
 
 //  ========================================================================

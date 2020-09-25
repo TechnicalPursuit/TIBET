@@ -249,6 +249,29 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.lama.pp.Type.defineMethod('fromIterable',
+function(anObject, optFormat) {
+    var arr,
+        item;
+
+    arr = [];
+
+    for (item of anObject) {
+        if (TP.isPair(item)) {
+            arr.push('[' + TP.str(item) + ']');
+        } else {
+            arr.push(TP.str(item));
+        }
+    }
+
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="lama_pp Iterable">' +
+                '<![CDATA[' + arr.join(', ') + ']]>' +
+            '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lama.pp.Type.defineMethod('fromNamedNodeMap',
 function(anObject, optFormat) {
 
@@ -415,6 +438,7 @@ function(anObject, optFormat) {
         formatInLoop,
         format,
         keys,
+        keyErr,
         key,
         value,
         i,
@@ -435,8 +459,19 @@ function(anObject, optFormat) {
     format.atPut('cmdAsIs', true);
     format.atPut('cmdAwaken', false);
 
-    if (TP.isEmpty(TP.keys(anObject))) {
-        return this.fromString('{}', format);
+    try {
+        keys = TP.keys(anObject);
+        if (TP.isEmpty(keys)) {
+            //  Set, Map etc. keys/values/entries objects don't return keys (and
+            //  if they did it'd be relatively useless anyway).. .so for those
+            //  objects we have to use our own routine.
+            if (TP.isIterable(anObject)) {
+                return this.fromIterable(anObject, format);
+            }
+            return this.fromString('{}', format);
+        }
+    } catch (e) {
+        keyErr = e;
     }
 
     //  If an optional format was supplied, then, if it has a level, check the
@@ -461,9 +496,7 @@ function(anObject, optFormat) {
                 ' class="lama_pp Object">');
 
     formatInLoop = true;
-    try {
-        keys = TP.keys(anObject);
-    } catch (e) {
+    if (keyErr) {
         formatInLoop = false;
         try {
             //  Some objects don't even like Object.keys....sigh...
@@ -486,8 +519,19 @@ function(anObject, optFormat) {
         try {
             for (i = 0; i < len; i++) {
                 key = keys.at(i);
-                value = TP.format(anObject[key], TP.lama.pp.Type, format);
-                // value = value.asEscapedXML();
+                if (TP.canInvoke(anObject, 'at')) {
+                    value = TP.format(anObject.at(key),
+                        TP.lama.pp.Type, format);
+                } else {
+                    value = TP.format(anObject[key], TP.lama.pp.Type, format);
+
+                    //  Iterables like Set don't have key/value pairs per se, so
+                    //  in those cases just show the same thing they tend to in
+                    //  raw JS... the key and value are the same.
+                    if (TP.isIterable(anObject)) {
+                        value = value || key;
+                    }
+                }
 
                 output.push(
                     '<span data-name="' + TP.str(key).asEscapedXML() + '">',
@@ -524,6 +568,15 @@ function(anObject, optFormat) {
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp RegExp">' +
                 this.runJSModeOn(obj) +
+            '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lama.pp.Type.defineMethod('fromSet',
+function(anObject, optFormat) {
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp Set">' +
+            this.runJSModeOn(anObject.getKeys()) +
             '</span>';
 });
 

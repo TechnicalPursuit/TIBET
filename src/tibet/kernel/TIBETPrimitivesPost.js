@@ -3256,6 +3256,11 @@ function(anObject, includeNonenumerables, includePrototypeProps) {
             return anObject.getKeys();
         }
 
+        //  Native set, map, etc. can do this but return an iterator, not array.
+        if (TP.canInvoke(anObject, 'keys')) {
+            return Array.ECMAfrom(anObject.keys());
+        }
+
         //  Same for extracting keys from a POJO.
         if (TP.isPlainObject(anObject)) {
             keys = Object.keys(anObject);

@@ -4415,6 +4415,10 @@ function(aFlag, shouldSignal) {
     Function.Inst.$$target = TP.FunctionProto;
     Function.Inst[TP.OWNER] = Function;
 
+    Map.Inst = new NativeInstStub();
+    Map.Inst.$$target = TP.MapProto;
+    Map.Inst[TP.OWNER] = Map;
+
     Number.Inst = new NativeInstStub();
     Number.Inst.$$target = TP.NumberProto;
     Number.Inst[TP.OWNER] = Number;
@@ -4426,6 +4430,10 @@ function(aFlag, shouldSignal) {
     RegExp.Inst = new NativeInstStub();
     RegExp.Inst.$$target = TP.RegExpProto;
     RegExp.Inst[TP.OWNER] = RegExp;
+
+    Set.Inst = new NativeInstStub();
+    Set.Inst.$$target = TP.SetProto;
+    Set.Inst[TP.OWNER] = Set;
 
     String.Inst = new NativeInstStub();
     String.Inst.$$target = TP.StringProto;
@@ -9030,6 +9038,27 @@ function(anObj, includeScannedGlobals) {
         default:
             return false;
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('isIterable',
+function(anObj) {
+
+    /**
+     * @method isIterable
+     * @summary Returns true if the object has an iterator property and can be
+     *     used in an interating context. Common objects for which this is true
+     *     are Set, Map, etc.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean} True if the object can be iterated.
+     */
+
+    if (anObj === null || typeof anObj !== 'object') {
+        return false;
+    }
+
+    return typeof anObj[Symbol.iterator] === 'function';
 });
 
 //  ------------------------------------------------------------------------

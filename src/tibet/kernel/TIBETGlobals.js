@@ -49,8 +49,10 @@ TP.ObjectProto = Object.prototype;
 TP.ArrayProto = Array.prototype;
 TP.BooleanProto = Boolean.prototype;
 TP.DateProto = Date.prototype;
+TP.MapProto = Map.prototype;
 TP.NumberProto = Number.prototype;
 TP.RegExpProto = RegExp.prototype;
+TP.SetProto = Set.prototype;
 TP.StringProto = String.prototype;
 
 //  ------------------------------------------------------------------------
