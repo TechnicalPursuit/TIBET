@@ -5007,6 +5007,19 @@ TP.boot.Annotation.prototype.getSupertypes = function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.Annotation.prototype.getSupertypeNames = function() {
+
+    /**
+     * @method getSupertypeNames
+     * @summary Returns an Array of the receiver's supertype names.
+     * @returns {String[]} The Array of the receiver's supertype names.
+     */
+
+    return ['Object'];
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.Annotation.prototype.toString = function() {
 
     /**
@@ -5904,6 +5917,19 @@ TP.boot.Log.prototype.getSupertypes = function() {
      */
 
     return [Object];
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.Log.prototype.getSupertypeNames = function() {
+
+    /**
+     * @method getSupertypeNames
+     * @summary Returns an Array of the receiver's supertype names.
+     * @returns {String[]} The Array of the receiver's supertype names.
+     */
+
+    return ['Object'];
 };
 
 //  ----------------------------------------------------------------------------
