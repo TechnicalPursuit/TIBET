@@ -9737,9 +9737,8 @@ function(anObj) {
         return false;
     }
 
-    /* eslint-disable no-extra-parens */
-    return (anObj.length !== undefined && anObj.cssText !== undefined);
-    /* eslint-enable no-extra-parens */
+    return TP.ObjectProto.toString.call(anObj) ===
+                                        '[object CSSStyleDeclaration]';
 });
 
 //  ------------------------------------------------------------------------
@@ -9768,10 +9767,7 @@ function(anObj) {
         return false;
     }
 
-    /* eslint-disable no-extra-parens */
-    return (anObj.parentStyleSheet !== undefined &&
-            anObj.cssText !== undefined);
-    /* eslint-enable no-extra-parens */
+    return TP.ObjectProto.toString.call(anObj) === '[object CSSStyleRule]';
 });
 
 //  ------------------------------------------------------------------------
