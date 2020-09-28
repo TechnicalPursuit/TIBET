@@ -4810,7 +4810,8 @@ function(anObject) {
 
         //  If the object has a 'TP.ANCESTORS' property, that means it's been
         //  instrumented by us for consistency. Return the value of that.
-        if (TP.isValid(supers = anObject[TP.ANCESTORS])) {
+        if (TP.isValid(supers = anObject[TP.ANCESTORS]) &&
+            TP.owns(anObject, TP.ANCESTORS)) {
             return supers;
         }
 
@@ -4836,6 +4837,8 @@ function(anObject) {
             }
         }
 
+        anObject[TP.ANCESTORS] = supers;
+
         return supers;
     }
 
@@ -4860,7 +4863,8 @@ function(anObject) {
 
         //  If the type has a 'TP.ANCESTORS' property, that means it's been
         //  instrumented by us for consistency. Return the value of that.
-        if (TP.isValid(supers = type[TP.ANCESTORS])) {
+        if (TP.isValid(supers = type[TP.ANCESTORS]) &&
+            TP.owns(type, TP.ANCESTORS)) {
             return supers;
         }
 
@@ -4874,6 +4878,8 @@ function(anObject) {
         if (type !== Object) {
             supers.push(Object);
         }
+
+        type[TP.ANCESTORS] = supers;
 
         return supers;
     }
