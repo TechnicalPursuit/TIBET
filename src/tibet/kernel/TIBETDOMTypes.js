@@ -11237,7 +11237,7 @@ function(resource, mimeType, setupFunc) {
     str = resp.get('result');
 
     if (TP.isEmpty(mime = mimeType)) {
-        mime = TP.ietf.mime.guessMIMEType(str, uri);
+        mime = uri.getMIMEType();
     }
 
     //  Try to guess the default XML namespace from the MIME type computed from
