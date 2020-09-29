@@ -506,7 +506,7 @@ TP.hc(
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
-        if (TP.regex.HAS_ACP.test(str) &&
+        if (TP.regex.HAS_ACP_ATTR.test(str) &&
             !TP.isJSONString(str)) {
             str = TP.$documentCaptureACPAttrExpressions(str);
         }
@@ -704,7 +704,7 @@ TP.hc(
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
-        if (TP.regex.HAS_ACP.test(str) &&
+        if (TP.regex.HAS_ACP_ATTR.test(str) &&
             !TP.isJSONString(str)) {
             str = TP.$documentCaptureACPAttrExpressions(str);
         }

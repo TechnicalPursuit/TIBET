@@ -3253,6 +3253,7 @@ TP.regex.FORMAT_SUBSTITUTION = /[#%@]\{/;
 //  Templating delimiters
 TP.regex.STARTS_ACP = /^\{\{/;
 TP.regex.HAS_ACP = /\{\{.*\}\}/;
+TP.regex.HAS_ACP_ATTR = /\s*([\w:]+)=['"]\{\{.*\}\}['"]/;
 TP.regex.EXTRACT_ACP = /\{\{(.+?)\}\}/;
 
 TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
