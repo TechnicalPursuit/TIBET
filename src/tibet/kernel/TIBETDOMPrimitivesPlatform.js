@@ -475,6 +475,12 @@ TP.hc(
             return;
         }
 
+        if (TP.isValid(xmlDoc = TP.$parsed_doc_cache.at(aString))) {
+            //  We always return a clone so that we don't mess with what we have
+            //  in our cache.
+            return xmlDoc.cloneNode(true);
+        }
+
         //  If the caller has specified a default namespace, use it here. Even
         //  if this is the empty String, that's ok - it means they wanted an
         //  empty default namespace.
@@ -604,7 +610,11 @@ TP.hc(
                     xmlDoc.documentElement);
         }
 
-        return xmlDoc;
+        TP.$parsed_doc_cache.atPut(aString, xmlDoc);
+
+        //  We always return a clone so that we don't mess with what we have in
+        //  our cache.
+        return xmlDoc.cloneNode(true);
     },
     'webkit',
     function(aString, defaultNS, shouldReport) {
@@ -671,6 +681,12 @@ TP.hc(
             !/^[\s\w]*</.test(aString) ||
             aString.length < '<a/>'.length) {
             return;
+        }
+
+        if (TP.isValid(xmlDoc = TP.$parsed_doc_cache.at(aString))) {
+            //  We always return a clone so that we don't mess with what we have
+            //  in our cache.
+            return xmlDoc.cloneNode(true);
         }
 
         //  If the caller has specified a default namespace, use it here. Even
@@ -808,7 +824,11 @@ TP.hc(
                                 TP.XML_ENCODED);
         }
 
-        return xmlDoc;
+        //  We always return a clone so that we don't mess with what we have in
+        //  our cache.
+        TP.$parsed_doc_cache.atPut(aString, xmlDoc);
+
+        return xmlDoc.cloneNode(true);
     }
 ));
 

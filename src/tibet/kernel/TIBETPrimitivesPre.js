@@ -13713,6 +13713,10 @@ TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.LOCAL_TRACK);
 TP.defineAttribute('$signal_name_cache', TP.hc());  //  hash of computed signal
                                                     //  names.
 
+TP.defineAttribute('$parsed_doc_cache', TP.hc());   //  hash of XML documents
+                                                    //  keyed by the String that
+                                                    //  created them.
+
 //  ------------------------------------------------------------------------
 //  TIBET - PLUGIN INFORMATION
 //  ------------------------------------------------------------------------
