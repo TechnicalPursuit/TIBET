@@ -13707,6 +13707,13 @@ TP.sys.addMetadata(TP, TP.objectGetMetadataName, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.LOCAL_TRACK);
 
 //  ------------------------------------------------------------------------
+//  TIBET - PERFORMANCE CACHES
+//  ------------------------------------------------------------------------
+
+TP.defineAttribute('$signal_name_cache', TP.hc());  //  hash of computed signal
+                                                    //  names.
+
+//  ------------------------------------------------------------------------
 //  TIBET - PLUGIN INFORMATION
 //  ------------------------------------------------------------------------
 

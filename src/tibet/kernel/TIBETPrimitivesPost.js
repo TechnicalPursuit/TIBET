@@ -6212,7 +6212,9 @@ function(signame) {
      * @returns {String} The lengthened signal name.
      */
 
-    var parts,
+    var result,
+
+        parts,
         i,
         newparts,
 
@@ -6227,6 +6229,13 @@ function(signame) {
         return '';
     }
 
+    //  See if the signal name cache contains a 'fully expanded' entry for the
+    //  supplied signal name. If so, return it.
+    result = TP.$signal_name_cache.at(signame);
+    if (TP.notEmpty(result)) {
+        return result;
+    }
+
     //  Event sequences (i.e. typically keyboard sequences) will have a
     //  double underscore between each part of the sequence. We need to make
     //  sure to expand each part.
@@ -6239,17 +6248,24 @@ function(signame) {
             newparts.push(TP.expandSignalName(parts.at(i)));
         }
 
-        return newparts.join('__');
+        result = newparts.join('__');
+        TP.$signal_name_cache.atPut(signame, result);
+
+        return result;
     }
 
     if (/^(TP|APP)\.(.+)/.test(signame)) {
+        TP.$signal_name_cache.atPut(signame, signame);
         return signame;
     }
 
     //  See if the system has a type corresponding directly to signame.
     if (TP.isType(type = TP.sys.getTypeByName(signame))) {
         if (TP.canInvoke(type, 'getSignalName')) {
-            return type.getSignalName();
+            result = type.getSignalName();
+            TP.$signal_name_cache.atPut(signame, result);
+
+            return result;
         }
     }
 
@@ -6260,18 +6276,27 @@ function(signame) {
         if (TP.isType(type = TP.sys.getTypeByName(
                         namespaceNames.at(i) + '.' + signame))) {
             if (TP.canInvoke(type, 'getSignalName')) {
-                return type.getSignalName();
+                result = type.getSignalName();
+                TP.$signal_name_cache.atPut(signame, result);
+
+                return result;
             }
         }
     }
 
     //  We have at least one namespace - just prefix it with 'TP.' and exit
     if (/^(.+)\.(.+)/.test(signame)) {
-        return 'TP.' + signame;
+        result = 'TP.' + signame;
+        TP.$signal_name_cache.atPut(signame, result);
+
+        return result;
     }
 
     //  Couldn't find anything - just put 'TP.sig.' on the front of it.
-    return 'TP.sig.' + signame;
+    result = 'TP.sig.' + signame;
+    TP.$signal_name_cache.atPut(signame, result);
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
