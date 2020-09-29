@@ -435,9 +435,9 @@ TP.hc(
          *          <samp><foo><bar/></foo></samp>
          *     </code>
          * @returns {XMLDocument} The XML document parsed from the string.
-         * @exception TP.sig.DOMParseException Raised if the supplied String cannot
-         *     be parsed into a proper XML DOM construct and the shouldReport
-         *     flag is true.
+         * @exception TP.sig.DOMParseException Raised if the supplied String
+         *     cannot be parsed into a proper XML DOM construct and the
+         *     shouldReport flag is true.
          */
 
         var report,
@@ -643,9 +643,9 @@ TP.hc(
          *          <samp><foo><bar/></foo></samp>
          *     </code>
          * @returns {XMLDocument} The XML document parsed from the string.
-         * @exception TP.sig.DOMParseException Raised if the supplied String cannot
-         *     be parsed into a proper XML DOM construct and the shouldReport
-         *     flag is true.
+         * @exception TP.sig.DOMParseException Raised if the supplied String
+         *     cannot be parsed into a proper XML DOM construct and the
+         *     shouldReport flag is true.
          */
 
         var report,

@@ -1461,7 +1461,8 @@ function(anElement) {
      * @param {HTMLElement} anElement The element to use to compute the pixel
      *     value from.
      * @exception TP.sig.InvalidElement
-     * @returns {Object} The inline CSS style object of the supplied element.
+     * @returns {CSSStyleDeclaration} The inline CSS style object of the
+     *     supplied element.
      */
 
     var newSheet,
