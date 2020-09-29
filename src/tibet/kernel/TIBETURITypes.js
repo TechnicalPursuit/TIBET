@@ -2614,7 +2614,7 @@ function(newResource) {
                                 content, this, this.get('defaultMIMEType'));
 
     if (TP.isString(mimeType)) {
-        //  note that we don't cache the guess
+        this.$set('computedMIMEType', mimeType);
         return mimeType;
     }
 
