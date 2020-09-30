@@ -1603,21 +1603,11 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
     //  If the key didn't access a direct value it may be a prefix in the sense
     //  that it's intended to access a subset of values. Try to collect them.
     arr = [];
-    if (typeof aHash.getKeys === 'function') {
-        keys = aHash.getKeys();
-        len = keys.length;
-        for (i = 0; i < len; i++) {
-            if (keys[i].indexOf(keyPrefix) === 0) {
-                arr.push(keys[i]);
-            }
-        }
-    } else {
-        keys = Object.keys(aHash);
-        len = keys.length;
-        for (i = 0; i < len; i++) {
-            if (keys[i].indexOf(keyPrefix) === 0) {
-                arr.push(keys[i]);
-            }
+    keys = aHash.getKeys();
+    len = keys.length;
+    for (i = 0; i < len; i++) {
+        if (keys[i].indexOf(keyPrefix) === 0) {
+            arr.push(keys[i]);
         }
     }
 
@@ -1752,6 +1742,12 @@ if (Object.defineProperty) {
         },
         enumerable: false
     });
+    Object.defineProperty(TP.sys.configuration, 'getKeys', {
+        value: function(aKey) {
+                return Object.keys(this);
+            },
+        enumerable: false
+    });
 } else {
     TP.sys.configuration.at = function(aKey) {
         return this[aKey];
@@ -1874,6 +1870,12 @@ if (Object.defineProperty) {
         value: function(aKey, aValue) {
             this[aKey] = aValue;
         },
+        enumerable: false
+    });
+    Object.defineProperty(TP.sys.environment, 'getKeys', {
+        value: function(aKey) {
+                return Object.keys(this);
+            },
         enumerable: false
     });
 } else {

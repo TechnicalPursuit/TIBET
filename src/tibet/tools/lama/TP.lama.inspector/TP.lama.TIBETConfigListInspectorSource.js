@@ -52,17 +52,24 @@ function(options) {
      */
 
     var sourceEntries,
-        data;
+
+        data,
+        keys,
+
+        len,
+        i;
 
     sourceEntries = TP.sys.cfg();
 
     if (TP.isValid(sourceEntries)) {
-        data = sourceEntries.collect(
-                    function(kvPair) {
-                        return TP.ac(
-                                kvPair.first(),
-                                this.getEntryLabel(kvPair.first()));
-                    }.bind(this));
+        data = TP.ac();
+        keys = sourceEntries.getKeys();
+
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            data.push(TP.ac(keys.at(i), this.getEntryLabel(keys.at(i))));
+        }
+
         data.sort(TP.sort.FIRST_ITEM);
     } else {
         data = TP.ac();
