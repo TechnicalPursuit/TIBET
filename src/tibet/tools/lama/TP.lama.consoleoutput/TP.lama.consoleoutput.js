@@ -388,7 +388,7 @@ function(uniqueID, dataRecord) {
                     'inputclass', cssClass,
                     'hid', hidstr,
                     'cmdText', cmdText,
-                    'empty', '',
+                    'blank', '',
                     'returnType', '',
                     'stats', '&#8230;');
 

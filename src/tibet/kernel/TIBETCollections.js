@@ -5674,12 +5674,6 @@ function(attributeName) {
             }
         }
 
-        //  booleans can often be found via is* methods
-        funcName = 'is' + TP.makeStartUpper(attributeName);
-        if (TP.isMethod(this[funcName])) {
-            return this[funcName]();
-        }
-
         //  This part is specific to TP.core.Hash - we check with our internal
         //  hash.
         if (TP.isDefined(val = this.at(attributeName))) {
@@ -6225,15 +6219,6 @@ function(attributeName, attributeValue, shouldSignal) {
                 default:
                     args = TP.args(arguments, 1);
                     return this[funcName].apply(this, args);
-            }
-        }
-
-        //  booleans can often be set via is* methods, which take a parameter
-        //  in TIBET syntax
-        if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + TP.makeStartUpper(attributeName);
-            if (TP.isMethod(this[funcName])) {
-                return this[funcName](attributeValue);
             }
         }
     }

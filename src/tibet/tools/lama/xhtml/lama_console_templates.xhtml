@@ -7,8 +7,8 @@
             <div class="header select {{inputclass}}">
                 <span class="hid"><a href="#" onclick="TP.bySystemId('LamaConsoleService').sendConsoleRequest('{{hid}}'); return false;">{{hid}}</a></span>
                 <span class="content">{{cmdText}}</span>
-                <span class="typeinfo {{empty}}">{{returnType}}</span>
-                <span class="stats {{empty}}">{{stats}}</span>
+                <span class="typeinfo {{blank}}">{{returnType}}</span>
+                <span class="stats {{blank}}">{{stats}}</span>
                 <lama:dispenser id="{{id}}_dispenser" dnd:vend="tdc_output_node"/>
             </div>
             <!-- the output entry will be injected here after it is templated -->

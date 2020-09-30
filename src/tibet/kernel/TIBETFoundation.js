@@ -6950,12 +6950,6 @@ function(attributeName) {
                     return this[funcName].apply(this, args);
             }
         }
-
-        //  booleans can often be found via is* methods
-        funcName = 'is' + TP.makeStartUpper(attributeName);
-        if (TP.isMethod(this[funcName])) {
-            return this[funcName]();
-        }
     }
 
     //  If we got a valid path above or if we have a 'value' facet that has an
@@ -7162,12 +7156,6 @@ function(attributeName) {
             }
         }
 
-        //  booleans can often be found via is* methods
-        funcName = 'is' + TP.makeStartUpper(attrStr);
-        if (TP.isMethod(this[funcName])) {
-            return this[funcName]();
-        }
-
         //  This part is specific to Array - shortstop for numerical indices
 
         //  We do want to account for a String that only has a 'whole number'
@@ -7286,12 +7274,6 @@ function(attributeName) {
                     args = TP.args(arguments, 1);
                     return this[funcName].apply(this, args);
             }
-        }
-
-        //  booleans can often be found via is* methods
-        funcName = 'is' + TP.makeStartUpper(attributeName);
-        if (TP.isMethod(this[funcName])) {
-            return this[funcName]();
         }
 
         //  This part is specific to String - shortstop for numerical indices
@@ -7532,15 +7514,6 @@ function(attributeName, attributeValue, shouldSignal) {
                     return this[funcName].apply(this, args);
             }
         }
-
-        //  booleans can often be set via is* methods, which take a parameter
-        //  in TIBET syntax
-        if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + TP.makeStartUpper(attributeName);
-            if (TP.isMethod(this[funcName])) {
-                return this[funcName](attributeValue);
-            }
-        }
     }
 
     //  If we got a valid path above or if we have a 'value' facet that has an
@@ -7652,15 +7625,6 @@ function(attributeName, attributeValue, shouldSignal) {
                 default:
                     args = TP.args(arguments, 1);
                     return this[funcName].apply(this, args);
-            }
-        }
-
-        //  booleans can often be set via is* methods, which take a parameter
-        //  in TIBET syntax
-        if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + TP.makeStartUpper(attributeName);
-            if (TP.isMethod(this[funcName])) {
-                return this[funcName](attributeValue);
             }
         }
 
