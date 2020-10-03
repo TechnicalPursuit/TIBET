@@ -2,11 +2,6 @@
  * @overview Configure the various body parser components the application will
  *     have access to. NOTE that we don't apply them here, we simply create them
  *     and add them to the shared options for use on a route-by-route basis.
- * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
- *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
- *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
- *     for your rights and responsibilities. Contact TPI to purchase optional
- *     open source waivers to keep your derivative work source code private.
  */
 
 (function(root) {

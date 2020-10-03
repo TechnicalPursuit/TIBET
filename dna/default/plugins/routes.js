@@ -1,11 +1,6 @@
 /**
  * @overview Loads and/or generates routes based on the content of the project's
  *     routes or mocks directory (mocks if tds.use_mocks is true).
- * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
- *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
- *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
- *     for your rights and responsibilities. Contact TPI to purchase optional
- *     open source waivers to keep your derivative work source code private.
  */
 
 (function(root) {
