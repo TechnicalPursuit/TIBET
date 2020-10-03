@@ -3,11 +3,6 @@
  *     tibet.json file before it is sent to the client. This allows you to
  *     control the specific values which are vended to the client. The default
  *     implementation ensures that values specific to TDS operation are set.
- * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
- *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
- *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
- *     for your rights and responsibilities. Contact TPI to purchase optional
- *     open source waivers to keep your derivative work source code private.
  */
 
 (function(root) {
