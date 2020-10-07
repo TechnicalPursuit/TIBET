@@ -447,6 +447,8 @@ TP.hc(
 
             defs,
 
+            isJSONStr,
+
             xmlDoc,
 
             errorElement,
@@ -503,17 +505,17 @@ TP.hc(
                 str + '>$&</tibet_root>');
         }
 
+        isJSONStr = TP.isJSONString(str);
+
         //  Detect things like binding expressions here and massage the DOM to
         //  create (or add to an existing) bind:io attribute. Note here how we
         //  also check to make sure it's not a JSON String - we don't want long
         //  Strings of JSON data in our binding attributes.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
-            !TP.isJSONString(str)) {
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) && !isJSONStr) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
-        if (TP.regex.HAS_ACP_ATTR.test(str) &&
-            !TP.isJSONString(str)) {
+        if (TP.regex.HAS_ACP_ATTR.test(str) && !isJSONStr) {
             str = TP.$documentCaptureACPAttrExpressions(str);
         }
 
@@ -655,6 +657,8 @@ TP.hc(
 
             defs,
 
+            isJSONStr,
+
             xmlDoc,
 
             errorElement,
@@ -711,17 +715,17 @@ TP.hc(
                 str + '>$&</tibet_root>');
         }
 
+        isJSONStr = TP.isJSONString(str);
+
         //  Detect things like binding expressions here and massage the DOM to
         //  create (or add to an existing) bind:io attribute. Note here how we
         //  also check to make sure it's not a JSON String - we don't want long
         //  Strings of JSON data in our binding attributes.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
-            !TP.isJSONString(str)) {
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) && !isJSONStr) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
-        if (TP.regex.HAS_ACP_ATTR.test(str) &&
-            !TP.isJSONString(str)) {
+        if (TP.regex.HAS_ACP_ATTR.test(str) && !isJSONStr) {
             str = TP.$documentCaptureACPAttrExpressions(str);
         }
 
