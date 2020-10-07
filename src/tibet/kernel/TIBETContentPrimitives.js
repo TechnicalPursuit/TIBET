@@ -385,6 +385,12 @@ function(aString) {
      * @method isJSONString
      * @summary Returns whether or not the supplied String can be parsed into a
      *     JSON string.
+     * @description This method will only return true if the supplied String is
+     *     what is normally considered a 'JSON string' - that is, a String
+     *     containing 'JSON structure'. So, even though officially a standalone
+     *     Number or Boolean value is considered JSON by the JSON specification,
+     *     they will return false here, as will any String not containing a
+     *     fully formed 'JSON structure' (i.e. Object or Array).
      * @param {String} aString A JSON-formatted string.
      * @returns {Boolean} Whether or not the supplied String is a JSON-formatted
      *     String.
@@ -405,6 +411,18 @@ function(aString) {
     }
 
     if (TP.regex.BOOLEAN_ID.test(aString)) {
+        return false;
+    }
+
+    //  test to see if the supplied string starts with some sort of JSON
+    //  structure. Since we return false if the string contained only a number
+    //  or boolean, we check next for JSON structures.
+
+    //  This check is here purely for performance. This RegExp is only useful in
+    //  this context, where we're checking before moving on to a 'full JSON
+    //  parse'. Therefore, we don't make this RegExp a global 'TP.regex'
+    //  property to avoid misuse in other circumstances.
+    if (!/^\s*[[{]/.test(aString)) {
         return false;
     }
 
@@ -620,6 +638,12 @@ function(aString) {
 
     if (TP.isEmpty(aString)) {
         return false;
+    }
+
+    //  Check to see if the supplied String contains element markup before
+    //  sending it on the parser. This is a significant performance win.
+    if (TP.regex.IS_ELEM_MARKUP.test(aString)) {
+        return true;
     }
 
     //  Note here how we supply a null default namespace and pass false so that
