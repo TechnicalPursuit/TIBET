@@ -1,4 +1,4 @@
-.TH "TIBET\-PACKAGE" "1" "September 2020" "" ""
+.TH "TIBET\-PACKAGE" "1" "October 2020" "" ""
 .SH "NAME"
 \fBtibet-package\fR \- list package assets either as asset paths or nodes
 .SH SYNOPSIS
@@ -6,7 +6,7 @@
 \fBtibet package [[\-\-profile <pkgcfg>] | [\-\-package <package>]
     [\-\-config <cfg>]] [\-\-phase=['all'|'one'|'two'|'app'|'lib']]
     [\-\-add <file_list>] [\-\-remove <file_list>]
-    [\-\-all] [\-\-unresolved] [\-\-unlisted] [\-\-inlined]
+    [\-\-all] [\-\-unresolved] [\-\-unlisted] [\-\-inlined] [\-\-building]
     [\-\-include <asset names>] [\-\-exclude <asset names>]
     [\-\-scripts] [\-\-resources] [\-\-images]
     [\-\-silent] [\-\-fix] [\-\-verbose] [\-\-stack]\fP
@@ -54,6 +54,10 @@ List of resources to remove from the package\.
 .IP \(bu 2
 \fB\-\-all\fP:
 Process all the config tags in the package\.
+.IP \(bu 2
+\fB\-\-building\fP:
+Set by the make build targets so unresolved assets from the build
+directories are ignored if not found so the build can recreate them\.
 .IP \(bu 2
 \fB\-\-unresolved\fP:
 Output a list of unresolved (not found) assets of all types\.

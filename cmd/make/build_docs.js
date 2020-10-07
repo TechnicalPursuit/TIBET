@@ -64,9 +64,11 @@
 
         //  HTML generation uses common header/footer since output from the
         //  conversion process doesn't include html/body, just "content".
-        header = make.sh.cat(make.CLI.joinPaths(rootpath, 'template', 'header.html')).toString();
+        header = make.sh.cat(make.CLI.joinPaths(rootpath,
+            'template', 'header.html')).toString();
         header = make.template.compile(header);
-        footer = make.sh.cat(make.CLI.joinPaths(rootpath, 'template', 'footer.html')).toString();
+        footer = make.sh.cat(make.CLI.joinPaths(rootpath,
+            'template', 'footer.html')).toString();
         footer = make.template.compile(footer);
 
         //  ---

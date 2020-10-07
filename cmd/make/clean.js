@@ -2,17 +2,18 @@
     'use strict';
 
     module.exports = function(make, resolve, reject) {
+        var targets;
+
         make.log('removing build artifacts...');
 
-        make.task('clean_docs')().then(
-        function() {
-            var fullpath;
+        targets = [
+            'clean_cache',
+            'clean_docs',
+            'clean_lint',
+            'clean_build'
+        ];
 
-            fullpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'lib', 'src');
-            if (make.sh.test('-d', fullpath)) {
-                make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
-            }
-        }).then(resolve, reject);
+        make.chain(targets).then(resolve, reject);
     };
 
 }());

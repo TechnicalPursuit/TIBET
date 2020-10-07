@@ -71,7 +71,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet start [--env <name>] [--debug] [--level=[\'all\'|\'trace\'|\'debug\'|\'info\'|\'warn\'|\'error\'|\'fatal\'|\'system\'|\'off\']] [--debugger] [--port N] [--color[=true|false]] [--no-color] [--https] [--https_port N] [<options>]';
+Cmd.prototype.USAGE = 'tibet tds [--env <name>] [--debug] [--level=[\'all\'|\'trace\'|\'debug\'|\'info\'|\'warn\'|\'error\'|\'fatal\'|\'system\'|\'off\']] [--debugger] [--port N] [--color[=true|false]] [--no-color] [--https] [--https_port N] [<options>]';
 
 
 //  ---

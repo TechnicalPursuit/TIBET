@@ -4675,8 +4675,8 @@ function(methodName, methodBody, methodDescriptor) {
             existingMethod[TP.OWNER] !== TP.META_TYPE_OWNER) {
             if (TP.isNativeFunction(existingMethod)) {
                 target['ECMA' + methodName] = existingMethod;
-                TP.ifInfo() ?
-                    TP.info('Replacing native method definition \'' +
+                TP.ifDebug() ?
+                    TP.debug('Replacing native method definition \'' +
                             methodName + '\' on: ' + target + ' with TIBET' +
                             ' meta-type method. Aliased native method \'' +
                             methodName + '\' to \'ECMA' + methodName +

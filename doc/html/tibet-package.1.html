@@ -24,7 +24,7 @@
 <p><code>tibet package [[--profile &lt;pkgcfg&gt;] | [--package &lt;package&gt;]
     [--config &lt;cfg&gt;]] [--phase=[&#39;all&#39;|&#39;one&#39;|&#39;two&#39;|&#39;app&#39;|&#39;lib&#39;]]
     [--add &lt;file_list&gt;] [--remove &lt;file_list&gt;]
-    [--all] [--unresolved] [--unlisted] [--inlined]
+    [--all] [--unresolved] [--unlisted] [--inlined] [--building]
     [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]
     [--scripts] [--resources] [--images]
     [--silent] [--fix] [--verbose] [--stack]</code></p>
@@ -66,6 +66,10 @@ List of resources to remove from the package.</p>
 </li>
 <li><p><code>--all</code>:
 Process all the config tags in the package.</p>
+</li>
+<li><p><code>--building</code>:
+Set by the make build targets so unresolved assets from the build
+directories are ignored if not found so the build can recreate them.</p>
 </li>
 <li><p><code>--unresolved</code>:
 Output a list of unresolved (not found) assets of all types.</p>

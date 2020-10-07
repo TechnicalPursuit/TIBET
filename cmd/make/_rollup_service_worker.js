@@ -4,7 +4,10 @@
     module.exports = function(make, resolve, reject) {
 
         make.helpers.rollup_lib(make, {
-            config: 'service_worker'
+            config: 'service_worker',
+            minify: false,
+            zip: false,     //  can't load gzip for service workers
+            brotli: false   //  can't load brotli for service workers
         }).then(function() {
             return make.helpers.rollup_lib(make, {
                 config: 'service_worker',

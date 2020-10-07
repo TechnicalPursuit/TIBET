@@ -551,7 +551,7 @@ Cmd.prototype.processResources = function() {
     };
 
     if (!this.options.raw) {
-        this.info('Filtering ' + this.computed.length + ' computed' +
+        this.info('filtering ' + this.computed.length + ' computed' +
                     ' and ' + this.specified.length + ' specified' +
                     ' resources...');
     }
@@ -579,7 +579,7 @@ Cmd.prototype.processResources = function() {
 
         if (!this.options.raw) {
             this.info(
-                'Found ' + this.filtered.length + ' concrete resources...');
+                'found ' + this.filtered.length + ' concrete resources...');
         }
 
         this.filtered.forEach(function(resource) {
@@ -616,7 +616,7 @@ Cmd.prototype.processResources = function() {
     }
 
     if (!this.options.raw) {
-        this.info('Building ' + this.filtered.length + ' concrete resources...');
+        this.info('building ' + this.filtered.length + ' concrete resources...');
     }
 
     //  We have a filtered list, the challenge now is to produce promises
@@ -647,7 +647,7 @@ Cmd.prototype.processResources = function() {
             return Promise.resolve().reflect();
         }
 
-        cmd.debug('Building ' + fullpath);
+        cmd.debug('building ' + fullpath);
 
         return new Promise(function(resolve, reject) {
             var data,
@@ -664,6 +664,12 @@ Cmd.prototype.processResources = function() {
             file = CLI.joinPaths(buildpath, base);
             if (path.extname(file) !== '.js') {
                 file += '.js';
+            }
+
+            //  Don't force a build if the file source hasn't changed.
+            if (!CLI.isFileNewer(fullpath, file)) {
+                cmd.debug(CLI.getVirtualPath(file) + ' is current');
+                return resolve();
             }
 
             //  NOTE we wrap things in TIBET URI constructors and set their
@@ -717,7 +723,7 @@ Cmd.prototype.processResources = function() {
 
             product = cmd.products[index];
             if (inspection.isFulfilled()) {
-                if (product) {
+                if (product && cmd.options.verbose) {
                     cmd.info(product[0]);
                 }
             } else {
@@ -1159,7 +1165,7 @@ Cmd.prototype.updatePackage = function() {
 
     pkgNode = cmd.readPackageNode(pkgName);
 
-    this.log('Writing package resource entries...');
+    this.log('writing package resource entries...');
 
     //  ---
     //  SET UP INLINE CONFIG AND ASSETS

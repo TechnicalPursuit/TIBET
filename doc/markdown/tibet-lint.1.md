@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-`tibet lint [[--filter] <filter>] [--force] [--list] [--nodes]
+`tibet lint [[--filter] <filter>] [--clean] [--list] [--nodes]
     [[--js] [--json] [--no-js] [--no-json] [--no-style] [--no-xml]
     [--only] [--style] [--xml]] [--quiet] [--scan] [--stop]
     [package-opts] [eslint-opts] [stylelint-opts]`
@@ -16,7 +16,7 @@ The optional `filter` argument provides a string or regular expression used to
 filter file names. If the filter begins and ends with / it is treated as a
 regular expression for purposes of file filtering.
 
-`--force` overrides any information found in .tibetlint.json which would
+`--clean` overrides any information found in .tibetlint.json which would
 otherwise keep lint from looking at files it thinks haven't changed since the
 last run. This is a flag you should always include in your CI / build
 configurations.
@@ -62,9 +62,9 @@ the currently supported linters.
     An alternate way to provide the filter expression to filter for file names
 to lint.
 
-  * `--force`:
+  * `--clean`:
     Tell the linter to ignore any `tibetlint.json` file content which would
-limit the check to only changed files. With `--force` set all files will be
+limit the check to only changed files. With `--clean` set all files will be
 checked even if they haven't changed since the last lint pass.
 
   * `--list` :
@@ -114,7 +114,7 @@ No process environment variables are required by this command.
 
   * `tibetlint.json`:
     A file containing information on the last lint run. This file is used when
-the `--force` flag is not set to determine timestamp and/or list of files to be
+the `--clean` flag is not set to determine timestamp and/or list of files to be
 checked:
 
     {

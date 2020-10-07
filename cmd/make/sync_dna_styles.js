@@ -30,7 +30,7 @@
                 dest = make.CLI.joinPaths.apply(make.CLI, parts);
                 dest = dest + '/';
 
-                make.log(dest);
+                make.log(make.CLI.getVirtualPath(dest));
                 make.sh.cp('-r', make.CLI.joinPaths(srcpath, '*'), dest);
             });
         }

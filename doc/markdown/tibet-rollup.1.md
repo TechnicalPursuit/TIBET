@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-`tibet rollup [package-opts] [--headers] [--minify] [--debug]`
+`tibet rollup [package-opts] [--headers] [--minify] [--clean] [--debug]`
 
 ## DESCRIPTION
 
@@ -36,6 +36,10 @@ TIBET reflection operations at runtime.
     Signifies that the rollup output should pass through the minification
 process. Note that overly agressive obfuscation will cause TIBET code to fail.
 Future additions to TIBET will support more agressive minification.
+
+  * `--clean` :
+    Removes any pre-existing content in the "build cache" so that all files
+being rolled up are fully processed rather than relying on cached content.
 
   * `--debug` :
     Tells the rollup process to print the output that it is generating to

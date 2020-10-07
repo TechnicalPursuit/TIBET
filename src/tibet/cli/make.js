@@ -98,14 +98,14 @@ Cmd.initialize = function(cmdType) {
 
     //  Parse options for compression-related tasks in helpers.
     options = {
-        boolean: ['brotli', 'list', 'private', 'stack', 'zip'],
+        boolean: ['brotli', 'list', 'minify', 'private', 'zip'],
         number: ['timeout'],
         default: {
             brotli: false,
             list: true,
+            minify: false,
             private: false,
-            stack: false,
-            zip: true
+            zip: false
         }
     };
     Cmd.setcfg('make.compression.parse_options', options);
@@ -396,6 +396,13 @@ Cmd.loadTasks = function() {
             Cmd.defineTask(name, task, task.options || {});
         } catch (e) {
             CLI.error('Error loading task ' + name + ': ' + e);
+
+            //  Since this is a "type method" as it were we don't have the same
+            //  access to the command line as an instance. Instead we just check
+            //  for existence of the flag in the argument array.
+            if (CLI.getArgv().indexOf('--stack') !== -1) {
+                CLI.error(e.stack);
+            }
         }
     });
 };
@@ -493,11 +500,9 @@ Cmd.$prepTargets = function(cmd) {
                     task.reject = function(err) {
                         clearTimeout(timer);
                         cmd.debug('rejecting ' + name + '...');
-                        /*
                         if (err !== void 0) {
                             cmd.error('' + err);
                         }
-                        */
                         task.$$active = false;
                         rejector(err);
                     };
@@ -559,7 +564,7 @@ Cmd.setcfg = function(property, value) {
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet make <target> [--list] [--private] [--timeout <ms>] [--stack] [--brotli] [--zip]';
+Cmd.prototype.USAGE = 'tibet make <target> [--list] [--private] [--timeout <ms>] [--brotli] [--zip]';
 
 //  ---
 //  Module Mappings
@@ -780,6 +785,10 @@ Cmd.prototype.execute = function() {
                 /* eslint-enable no-extra-parens */
                 cmd.error(msg);
 
+                if (cmd.options.stack && err.stack) {
+                    cmd.error(err.stack);
+                }
+
                 process.exit(1);
 
             }).catch(function(err) {
@@ -790,6 +799,10 @@ Cmd.prototype.execute = function() {
                     ((new Date()).getTime() - start) + 'ms.';
                 /* eslint-enable no-extra-parens */
                 cmd.error(msg);
+
+                if (cmd.options.stack && err.stack) {
+                    cmd.error(err.stack);
+                }
 
                 process.exit(1);
             });
@@ -891,26 +904,33 @@ Cmd.prototype.reparse = function(options) {
  * @return {Object} The Child Process object from Node.js.
  */
 Cmd.prototype.spawn = function(cmd, arglist, options) {
-        var proc,
-            make,
-            args,
-            opts;
+    var proc,
+        make,
+        args,
+        opts;
 
-        make = this;
+    make = this;
 
-        args = arglist || [];
-        opts = CLI.blend(options, {
-            stdio: 'inherit',
-            shell: true
-        });
+    args = arglist || [];
 
-        proc = child.spawn(cmd, args, opts);
+    //  Blend in any additional data from commmand line (slicing off the 'make
+    //  foo' portion inherently there thanks to make invocation itself). The
+    //  result is that commands using spawn don't have to reparse default args.
+    args = CLI.blend(arglist, this.getArglist().slice(1));
+    this.debug(args);
 
-        proc.on('error', function(err) {
-            make.error(err);
-        });
+    opts = CLI.blend(options, {
+        stdio: 'inherit',
+        shell: true
+    });
 
-        return proc;
+    proc = child.spawn(cmd, args, opts);
+
+    proc.on('error', function(err) {
+        make.error('' + err);
+    });
+
+    return proc;
 };
 
 

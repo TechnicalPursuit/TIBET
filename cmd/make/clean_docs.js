@@ -5,7 +5,7 @@
         var CLI,
             fullpath;
 
-        make.log('removing generated documentation...');
+        make.log('removing generated docs...');
 
         CLI = make.CLI;
 

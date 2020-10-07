@@ -1,9 +1,9 @@
-.TH "TIBET\-ROLLUP" "1" "September 2020" "" ""
+.TH "TIBET\-ROLLUP" "1" "October 2020" "" ""
 .SH "NAME"
 \fBtibet-rollup\fR \- concatenates a package@config's resources
 .SH SYNOPSIS
 .P
-\fBtibet rollup [package\-opts] [\-\-headers] [\-\-minify] [\-\-debug]\fP
+\fBtibet rollup [package\-opts] [\-\-headers] [\-\-minify] [\-\-clean] [\-\-debug]\fP
 .SH DESCRIPTION
 .P
 Creates a concatenated and optionally minified version of a \fBpackage@config\fP\|\.
@@ -38,6 +38,10 @@ process\. Note that overly agressive obfuscation will cause TIBET code to fail\.
 Future additions to TIBET will support more agressive minification\.
 
 .RE
+.IP \(bu 2
+\fB\-\-clean\fP :
+Removes any pre\-existing content in the "build cache" so that all files
+being rolled up are fully processed rather than relying on cached content\.
 .IP \(bu 2
 \fB\-\-debug\fP :
 Tells the rollup process to print the output that it is generating to

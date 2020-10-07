@@ -8,7 +8,10 @@
         options = make.reparse(make.cfg('make.compression.parse_options'));
 
         make.helpers.rollup_lib(make, {
-            config: 'login'
+            config: 'login',
+            minify: false,
+            zip: options.zip,
+            brotli: options.brotli
         }).then(function() {
             return make.helpers.rollup_lib(make, {
                 config: 'login',

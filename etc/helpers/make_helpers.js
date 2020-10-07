@@ -77,7 +77,7 @@ helpers.linkup_app = function(make, options) {
 
     this.link_apps_and_tibet(make, source, target, options);
 
-    make.log('build assets linked successfully.');
+    make.info('build assets linked successfully.');
 
     deferred.resolve();
 
@@ -276,7 +276,9 @@ helpers.package_check = function(make, options) {
 
     deferred = Promise.pending();
 
-    make.log('verifying package@config');
+    if (pkg && config) {
+        make.info('verifying ' + pkg + '@' + config);
+    }
 
     //  The big path construction here is to locate the tibet command relative
     //  to the current module. This is necessary for the npm prepublish step
@@ -291,7 +293,7 @@ helpers.package_check = function(make, options) {
                     module.filename, '..', '..', '..', 'bin', 'tibet');
     }
 
-    args = ['package', '--missing'];
+    args = ['package', '--unresolved'];
 
     if (pkg) {
         args.push('--package', pkg);
@@ -303,14 +305,6 @@ helpers.package_check = function(make, options) {
 
     if (phase) {
         args.push('--phase', phase);
-    }
-
-    if (make.options.debug) {
-        args.push('--debug');
-    }
-
-    if (make.options.verbose) {
-        args.push('--verbose');
     }
 
     if (!make.options.color) {
@@ -325,7 +319,7 @@ helpers.package_check = function(make, options) {
         args.push('--no-silent');
     }
 
-    make.log('executing ' + cmd + ' ' + args.join(' '));
+    make.debug('executing ' + cmd + ' ' + args.join(' '));
 
     //  Use our wrapper function here, it'll log via the make object's logging
     //  hooks so we get properly processed stdout and stderr data.
@@ -410,7 +404,7 @@ helpers.resource_build = function(make, options) {
         }
     }
 
-    make.log('generating resources');
+    make.info('generating resources...');
 
     //  The big path construction here is to locate the tibet command relative
     //  to the current module. This is necessary for the npm prepublish step
@@ -463,7 +457,7 @@ helpers.resource_build = function(make, options) {
         args.push('--timeout', make.options.timeout);
     }
 
-    make.log('executing ' + cmd + ' ' + args.join(' '));
+    make.debug('executing ' + cmd + ' ' + args.join(' '));
 
     //  Use our wrapper function here, it'll log via the make object's logging
     //  hooks so we get properly processed stdout and stderr data.
@@ -516,7 +510,9 @@ helpers.rollup = function(make, options) {
         minify,
         promise,
         zipfile,
-        brotfile;
+        brotfile,
+        virtual,
+        timestamp;
 
     if (CLI.notValid(options)) {
         throw new Error('InvalidOptions');
@@ -551,8 +547,6 @@ helpers.rollup = function(make, options) {
 
     root = options.root || options.config;
 
-    make.log('rolling up ' + prefix + root);
-
     //  The big path construction here is to locate the tibet command relative
     //  to the current module. This is necessary for the npm prepublish step
     //  (used by TravisCI etc) so they can build tibet without having it
@@ -567,14 +561,6 @@ helpers.rollup = function(make, options) {
     }
 
     args = ['rollup', '--package', pkg, '--config', config, '--phase', phase];
-
-    if (make.options.debug) {
-        args.push('--debug');
-    }
-
-    if (make.options.verbose) {
-        args.push('--verbose');
-    }
 
     if (!make.options.color) {
         args.push('--no-color');
@@ -596,6 +582,10 @@ helpers.rollup = function(make, options) {
         args.push('--minify');
     }
 
+    if (make.options.clean) {
+        args.push('--clean');
+    }
+
     if (minify) {
         ext = '.min.js';
     } else {
@@ -603,11 +593,17 @@ helpers.rollup = function(make, options) {
     }
 
     file = CLI.joinPaths(dir, prefix + root + ext);
+    virtual = CLI.getVirtualPath(file);
+
+    if (CLI.sh.test('-e', file)) {
+        timestamp = fs.statSync(file).mtime.getTime();
+        args.push('--since=' + timestamp);
+    }
 
     promise = new Promise(function(resolver, rejector) {
         var proc;
 
-        make.log('executing ' + cmd + ' ' + args.join(' '));
+        make.debug('executing ' + cmd + ' ' + args.join(' '));
 
         proc = make.spawn(cmd, args, {stdio: 'pipe'});
 
@@ -645,14 +641,22 @@ helpers.rollup = function(make, options) {
                 return;
             }
 
+            //  Is the buffer real rollup content or a message that the content
+            //  was no fresher than the current rollup timestamp?
+            if (/^no source changes --since/.test(buffer)) {
+                make.info(virtual + ' is current');
+                resolver();
+                return;
+            }
+
             try {
-                make.log('writing ' + buffer.length + ' chars to: ' + file);
+                make.info('writing ' + buffer.length + ' chars to ' + virtual);
                 new sh.ShellString(buffer).to(file);
 
                 resolver();
                 return;
             } catch (e) {
-                make.error('Unable to write to: ' + file);
+                make.error('Unable to write to ' + virtual);
                 make.error('' + e.message);
                 rejector(e);
                 return;
@@ -667,14 +671,20 @@ helpers.rollup = function(make, options) {
             function() {
 
                 zipfile = file + '.gz';
-                make.log('creating zipped output in ' + zipfile);
+
+                if (!CLI.isFileNewer(file, zipfile)) {
+                    make.info(zipfile + ' is current');
+                    return Promise.resolve();
+                }
+
+                make.info('zipping rollup in ' + zipfile);
 
                 return new Promise(function(resolver, rejector) {
                     return Promise.promisify(zlib.gzip)(buffer).then(
                         function(zipresult) {
                             try {
                                 fs.writeFileSync(zipfile, zipresult);
-                                make.log('gzip compressed to: ' +
+                                make.info('gzip compressed to: ' +
                                             zipresult.length +
                                             ' bytes');
                                 resolver();
@@ -704,7 +714,13 @@ helpers.rollup = function(make, options) {
             function() {
 
                 brotfile = file + '.br';
-                make.log('creating brotlied output in ' + brotfile);
+
+                if (!CLI.isFileNewer(file, brotfile)) {
+                    make.info(brotfile + ' is current');
+                    return Promise.resolve();
+                }
+
+                make.info('brotli rollup in ' + brotfile);
 
                 return new Promise(function(resolver, rejector) {
                     var buff;
@@ -714,7 +730,7 @@ helpers.rollup = function(make, options) {
                         function(brresult) {
                             try {
                                 fs.writeFileSync(brotfile, brresult);
-                                make.log('brotli compressed to: ' +
+                                make.info('brotli compressed to: ' +
                                             brresult.length +
                                             ' bytes');
                                 resolver();
@@ -847,6 +863,12 @@ helpers.transform = function(make, options) {
 
     source = CLI.expandPath(options.source);
     target = CLI.expandPath(options.target);
+
+    if (!CLI.isFileNewer(source, target)) {
+        make.info(CLI.getVirtualPath(target) + ' is current');
+        return Promise.resolve();
+    }
+
     data = options.data;
 
     deferred = Promise.pending();

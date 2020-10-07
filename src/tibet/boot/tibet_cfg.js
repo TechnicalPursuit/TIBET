@@ -1151,7 +1151,6 @@
     TP.sys.setcfg('path.app_tmp', '~app_inf/tmp');
     TP.sys.setcfg('path.app_xmlbase', '~app_xhtml');
 
-
     //  These namespaces are used often enough that a shortcut is nice
     TP.sys.setcfg('path.tibet_src', '~lib_src/tibet');
     TP.sys.setcfg('path.xctrls_src', '~lib_src/xctrls');
@@ -1210,6 +1209,7 @@
     //  define any additional (beyond the default values) extensions for js
     //  source, style (css, less, sass), and xml files. See the lint command
     //  docs for more details.
+    TP.sys.setcfg('cli.lint.cachefile', '~lib/.tibetlint.json');
     TP.sys.setcfg('cli.lint.js_extensions', []);
     TP.sys.setcfg('cli.lint.style_extensions', []);
     TP.sys.setcfg('cli.lint.xml_extensions', []);
@@ -1928,6 +1928,10 @@
     //  causes configuration of any pre-configured plugin metadata. It doesn't
     //  load any plugins, that's entirely up to the UI of the application.
     TP.sys.setcfg('tibet.plugins', false);
+
+    //  NOTE this is not a true full path, just the name of a directory which
+    //  should be placed in a Shelljs 'tempdir' location to cache rollups.
+    TP.sys.setcfg('tibet.rollup_cache', 'tibet_rollup_cache');
 
     //  should TIBET render the 'source' representation of a Function/Method
     //  with a space between the word 'function' and the leading '(' (i.e.
