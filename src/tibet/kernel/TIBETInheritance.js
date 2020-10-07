@@ -9248,6 +9248,10 @@ function() {
     var aspects,
         thisType;
 
+    if (TP.owns(this, '$$faceted_aspects')) {
+        return this.$$faceted_aspects;
+    }
+
     aspects = this.getKeys();
 
     //  We want to filter out slots holding facet values
@@ -9263,6 +9267,12 @@ function() {
             function(aspectName) {
                 return TP.isValid(thisType.getInstDescriptorFor(aspectName));
             });
+
+    if (!TP.owns(this, '$$faceted_aspects')) {
+        this.$$faceted_aspects = [];
+    }
+
+    this.$$faceted_aspects = aspects;
 
     return aspects;
 });

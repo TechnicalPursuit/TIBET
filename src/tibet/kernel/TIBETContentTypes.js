@@ -911,6 +911,10 @@ function() {
 
     var aspects;
 
+    if (TP.owns(this, '$$faceted_aspects')) {
+        return this.$$faceted_aspects;
+    }
+
     //  Gather whatever our supertype thinks we should have as aspect names that
     //  have facets.
     aspects = this.callNextMethod();
@@ -932,6 +936,8 @@ function() {
 
                     return false;
                 });
+
+    this.$$faceted_aspects = aspects;
 
     return aspects;
 });
