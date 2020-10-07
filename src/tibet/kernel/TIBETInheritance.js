@@ -11009,20 +11009,13 @@ function() {
      * @returns {String}
      */
 
-    var type;
-
     //  hook the top-level prototype so we don't say it's a
     //  TP.lang.RootObject
     if (this === TP.lang.RootObject$$Inst.prototype) {
         return this.getID();
     }
 
-    type = this.getType();
-    if (TP.canInvoke(type, 'getName')) {
-        return type.getName();
-    }
-
-    return type;
+    return this.getType().getName();
 });
 
 //  ------------------------------------------------------------------------
