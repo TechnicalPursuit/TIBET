@@ -3259,7 +3259,7 @@ function() {
 
 Map.Inst.defineMethod('at',
 function(aKey) {
-    return this.get(aKey)
+    return this.get(aKey);
 });
 
 //  ------------------------------------------------------------------------

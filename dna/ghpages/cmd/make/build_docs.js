@@ -5,6 +5,8 @@
 
         var content,
             footer,
+            clean,
+            fullpath,
             genHtml,
             genMan,
             header,
@@ -29,6 +31,19 @@
 
         make.log('building project documentation...');
 
+        clean = make.getArgument('clean');
+        if (clean) {
+            fullpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc', 'html');
+            if (make.sh.test('-d', fullpath)) {
+                make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
+            }
+
+            fullpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc', 'man');
+            if (make.sh.test('-d', fullpath)) {
+                make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
+            }
+        }
+
         rootpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc');
         srcpath = make.CLI.joinPaths(rootpath, 'markdown');
 
@@ -49,9 +64,11 @@
 
         //  HTML generation uses common header/footer since output from the
         //  conversion process doesn't include html/body, just "content".
-        header = make.sh.cat(make.CLI.joinPaths(rootpath, 'template', 'header.html')).toString();
+        header = make.sh.cat(make.CLI.joinPaths(rootpath,
+            'template', 'header.html')).toString();
         header = make.template.compile(header);
-        footer = make.sh.cat(make.CLI.joinPaths(rootpath, 'template', 'footer.html')).toString();
+        footer = make.sh.cat(make.CLI.joinPaths(rootpath,
+            'template', 'footer.html')).toString();
         footer = make.template.compile(footer);
 
         //  ---
@@ -81,7 +98,8 @@
                 srcfile, {silent: true});
 
             if (result.code !== 0) {
-                //  TODO:   oops
+                make.error('Unable to generate HTML documentation: ' +
+                    result.output);
                 return;
             }
 

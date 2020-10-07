@@ -1,9 +1,9 @@
-.TH "TIBET\-LINT" "1" "September 2020" "" ""
+.TH "TIBET\-LINT" "1" "October 2020" "" ""
 .SH "NAME"
 \fBtibet-lint\fR \- runs various lint tools on package files
 .SH SYNOPSIS
 .P
-\fBtibet lint [[\-\-filter] <filter>] [\-\-force] [\-\-list] [\-\-nodes]
+\fBtibet lint [[\-\-filter] <filter>] [\-\-clean] [\-\-list] [\-\-nodes]
     [[\-\-js] [\-\-json] [\-\-no\-js] [\-\-no\-json] [\-\-no\-style] [\-\-no\-xml]
     [\-\-only] [\-\-style] [\-\-xml]] [\-\-quiet] [\-\-scan] [\-\-stop]
     [package\-opts] [eslint\-opts] [stylelint\-opts]\fP
@@ -15,7 +15,7 @@ The optional \fBfilter\fP argument provides a string or regular expression used 
 filter file names\. If the filter begins and ends with / it is treated as a
 regular expression for purposes of file filtering\.
 .P
-\fB\-\-force\fP overrides any information found in \.tibetlint\.json which would
+\fB\-\-clean\fP overrides any information found in \.tibetlint\.json which would
 otherwise keep lint from looking at files it thinks haven't changed since the
 last run\. This is a flag you should always include in your CI / build
 configurations\.
@@ -61,9 +61,9 @@ the currently supported linters\.
 An alternate way to provide the filter expression to filter for file names
 to lint\.
 .IP \(bu 2
-\fB\-\-force\fP:
+\fB\-\-clean\fP:
 Tell the linter to ignore any \fBtibetlint\.json\fP file content which would
-limit the check to only changed files\. With \fB\-\-force\fP set all files will be
+limit the check to only changed files\. With \fB\-\-clean\fP set all files will be
 checked even if they haven't changed since the last lint pass\.
 .IP \(bu 2
 \fB\-\-list\fP :
@@ -116,7 +116,7 @@ No process environment variables are required by this command\.
 .IP \(bu 2
 \fBtibetlint\.json\fP:
 A file containing information on the last lint run\. This file is used when
-the \fB\-\-force\fP flag is not set to determine timestamp and/or list of files to be
+the \fB\-\-clean\fP flag is not set to determine timestamp and/or list of files to be
 checked:
 {
 .P

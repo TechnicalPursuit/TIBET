@@ -21,7 +21,7 @@
 
 <h1 id="tibet-lint1----runs-various-lint-tools-on-package-files">tibet-lint(1) -- runs various lint tools on package files</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet lint [[--filter] &lt;filter&gt;] [--force] [--list] [--nodes]
+<p><code>tibet lint [[--filter] &lt;filter&gt;] [--clean] [--list] [--nodes]
     [[--js] [--json] [--no-js] [--no-json] [--no-style] [--no-xml]
     [--only] [--style] [--xml]] [--quiet] [--scan] [--stop]
     [package-opts] [eslint-opts] [stylelint-opts]</code></p>
@@ -30,7 +30,7 @@
 <p>The optional <code>filter</code> argument provides a string or regular expression used to
 filter file names. If the filter begins and ends with / it is treated as a
 regular expression for purposes of file filtering.</p>
-<p><code>--force</code> overrides any information found in .tibetlint.json which would
+<p><code>--clean</code> overrides any information found in .tibetlint.json which would
 otherwise keep lint from looking at files it thinks haven&#39;t changed since the
 last run. This is a flag you should always include in your CI / build
 configurations.</p>
@@ -67,9 +67,9 @@ the currently supported linters.</p>
 An alternate way to provide the filter expression to filter for file names
 to lint.</p>
 </li>
-<li><p><code>--force</code>:
+<li><p><code>--clean</code>:
 Tell the linter to ignore any <code>tibetlint.json</code> file content which would
-limit the check to only changed files. With <code>--force</code> set all files will be
+limit the check to only changed files. With <code>--clean</code> set all files will be
 checked even if they haven&#39;t changed since the last lint pass.</p>
 </li>
 <li><p><code>--list</code> :
@@ -119,7 +119,7 @@ The list of XML file extensions to scan when looking for XML files.</p>
 <ul>
 <li><p><code>tibetlint.json</code>:
 A file containing information on the last lint run. This file is used when
-the <code>--force</code> flag is not set to determine timestamp and/or list of files to be
+the <code>--clean</code> flag is not set to determine timestamp and/or list of files to be
 checked:</p>
 <p>{</p>
 <pre><code>&quot;linty&quot;: 1,

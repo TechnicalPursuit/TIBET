@@ -439,8 +439,8 @@ CLI.isFileNewer = function(fileOne, fileTwoOrDate) {
         pathTwo,
         statsOne,
         statsTwo,
-        dateOne,
-        dateTwo;
+        timeOne,
+        timeTwo;
 
     try {
         pathOne = CLI.expandPath(fileOne);
@@ -453,26 +453,36 @@ CLI.isFileNewer = function(fileOne, fileTwoOrDate) {
         //  any time we can't be sure.
         return true;
     }
-    dateOne = new Date(statsOne.mtime);
+    timeOne = statsOne.mtime.getTime();
 
     if (typeof fileTwoOrDate === 'string') {
         pathTwo = CLI.expandPath(fileTwoOrDate);
         try {
             statsTwo = fs.statSync(pathTwo);
+            timeTwo = statsTwo.mtime.getTime();
         } catch (e) {
-            //  NOTE we don't even report an error here...a lot of times the
-            //  target file may not exist (it's often a generated target).
-            return true;
+            //  Might be a timestamp but string'y...
+            try {
+                timeTwo = parseInt(fileTwoOrDate, 10);
+                if (isNaN(timeTwo) || !timeTwo) {
+                    return true;
+                }
+            } catch (e2) {
+                //  NOTE we don't even report an error here...a lot of times the
+                //  target file may not exist (it's often a generated target).
+                return true;
+            }
         }
-        dateTwo = new Date(statsTwo.mtime);
+    } else if (typeof fileTwoOrDate === 'number') {
+        timeTwo = fileTwoOrDate;
     } else if (typeof fileTwoOrDate.getTime === 'function') {
-        dateTwo = fileTwoOrDate;
+        timeTwo = fileTwoOrDate.getTime();
     } else {
         CLI.error('Invalid parameter for fileTwoOrDate: ' + fileTwoOrDate);
         return true;
     }
 
-    return dateOne.getTime() > dateTwo.getTime();
+    return timeOne > timeTwo;
 };
 
 /**
@@ -603,15 +613,28 @@ CLI.blend = function(target, source) {
     }
 
     if (Array.isArray(target)) {
+
         if (!Array.isArray(source)) {
             return target;
         }
 
         // Both arrays. Blend as best we can.
-        source.forEach(function(item, index) {
+        source.forEach(function(item) {
             //  Items that don't appear in the list get pushed.
             if (target.indexOf(item) === -1) {
-                target.push(item);
+                if (/^--no-/.test(item)) {
+                    //  don't push --no-foo when --foo is already in list
+                    if (target.indexOf('--' + item.slice('--no-'.length)) === -1) {
+                        target.push(item);
+                    }
+                } else if (/^--/.test(item)) {
+                    //  don't push --foo when --no-foo is already in list
+                    if (target.indexOf('--no-' + item.slice(2)) === -1) {
+                        target.push(item);
+                    }
+                } else {
+                    target.push(item);
+                }
             }
         });
 
@@ -657,7 +680,19 @@ CLI.blend = function(target, source) {
             // Deeply copy other non-primitive objects.
             target[key] = CLI.blend({}, source[key]);
         } else {
-            target[key] = source[key];
+            if (/^--no-/.test(key)) {
+                //  don't add --no-foo when --foo is already in list
+                if (CLI.notValid(target['--' + key.slice('--no-'.length)])) {
+                    target[key] = source[key];
+                }
+            } else if (/^--/.test(key)) {
+                //  don't add --foo when --no-foo is already in list
+                if (CLI.notValid(target['--no-' + key.slice(2)])) {
+                    target[key] = source[key];
+                }
+            } else {
+                target[key] = source[key];
+            }
         }
     });
 

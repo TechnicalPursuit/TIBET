@@ -2,21 +2,18 @@
     'use strict';
 
     module.exports = function(make, resolve, reject) {
-        var dir;
+        var targets;
 
         make.log('removing build artifacts...');
 
-        dir = make.CLI.expandPath('~app_build');
-        if (make.sh.test('-d', dir)) {
-            make.sh.rm('-rf', make.CLI.joinPaths(dir, '*'));
-        }
+        targets = [
+            'clean_docs',
+            'clean_logs',
+            'clean_lint',
+            'clean_build'
+        ];
 
-        dir = make.CLI.expandPath('~app_log');
-        if (make.sh.test('-d', dir)) {
-            make.sh.rm('-rf', make.CLI.joinPaths(dir, '*'));
-        }
-
-        resolve();
+        make.chain(targets).then(resolve, reject);
     };
 
 }());

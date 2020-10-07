@@ -9,15 +9,20 @@
 
         make.helpers.rollup_lib(make, {
             config: 'developer',
-            headers: true
+            headers: true,
+            minify: false,
+            zip: options.zip,
+            brotli: options.brotli
         }).then(function() {
-            return make.helpers.rollup_lib(make, {
-                config: 'developer',
-                headers: true,
-                minify: true,
-                zip: options.zip,
-                brotli: options.brotli
-            });
+            if (options.minify) {
+                return make.helpers.rollup_lib(make, {
+                    config: 'developer',
+                    headers: true,
+                    minify: true,
+                    zip: options.zip,
+                    brotli: options.brotli
+                });
+            }
         }).then(resolve, reject);
     };
 

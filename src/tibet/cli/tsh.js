@@ -71,7 +71,7 @@ Cmd.NO_VALUE = '__TSH__NO_VALUE__TSH__';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['break', 'silent', 'tap', 'verbose'],
+    boolean: ['break', 'debug', 'silent', 'tap', 'verbose'],
     string: ['package', 'profile', 'config', 'script'],
     number: ['timeout'],
     default: {
@@ -92,7 +92,7 @@ Cmd.prototype.TIMEOUT = 15000;
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet tsh [--script=]<command> [--break] [--silent] [--verbose] [--package <package>] [--config <cfg>] [--profile <pkgcfg>] [--timeout <ms>] [--tap[=true|false]] [--no-tap] [<headless_args>]';
+Cmd.prototype.USAGE = 'tibet tsh [--script=]<command> [--break] [--debug] [--silent] [--verbose] [--package <package>] [--config <cfg>] [--profile <pkgcfg>] [--timeout <ms>] [--tap[=true|false]] [--no-tap] [<headless_args>]';
 
 
 //  ---
@@ -244,8 +244,6 @@ Cmd.prototype.execute = function() {
     //  more than once into the argument list.
     profile = this.finalizeBootProfile(arglist);
 
-    //  TODO:   headless args?
-
     //  Need to be ok with more latency in command output...esp for things like
     //  resource processing.
     finalTimeout = this.finalizeTimeout(arglist);
@@ -256,7 +254,7 @@ Cmd.prototype.execute = function() {
     arglist.push('--app-root=\'' + CLI.expandPath('~app') + '\'');
     arglist.push('--lib-root=\'' + CLI.expandPath('~lib') + '\'');
 
-    this.debug('headless ' + arglist.join(' '));
+    this.debug('headless command line: ' + arglist.join(' '));
 
     this.announce();
 
@@ -364,6 +362,7 @@ Cmd.prototype.execute = function() {
         puppetPage.setDefaultTimeout(finalTimeout);
 
         puppetPage.on('close', function(evt) {
+            cmd.stdout(evt);
             process.exit(0);
         });
 
@@ -442,6 +441,21 @@ Cmd.prototype.execute = function() {
                 CLI.expandPath(CLI.getcfg('project.start_page')) +
                 '#?boot.profile=\'' + profile + '\'' +
                 '&path.app_root=\'' + CLI.expandPath('~app') + '\'';
+        }
+
+        //  Process any command-line boot.* arguments.
+        arglist.forEach(function(item) {
+            if (/--boot\./.test(item)) {
+                fullpath += '&' + item.slice(2);
+            }
+        });
+
+        //  If debug is true and we didn't already set it, set the boot.level to
+        //  debug to honor that flag.
+        if (cmd.options.debug) {
+            if (!/boot\.level/.test(fullpath)) {
+                fullpath += '&boot.level=debug';
+            }
         }
 
         //  NOTE: this value must match the value found in tibet_cfg.js for the

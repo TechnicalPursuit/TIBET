@@ -97,7 +97,7 @@ Cmd.NAME = 'package';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['all', 'scripts', 'resources', 'images', 'unresolved',
+    boolean: ['all', 'scripts', 'resources', 'images', 'unresolved', 'building',
                 'inlined', 'unlisted', 'silent', 'fix', 'verbose', 'stack'],
     string: ['package', 'config', 'include', 'exclude', 'phase', 'profile', 'add',
                 'remove'],
@@ -121,7 +121,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet package [[--profile <pkgcfg>] | [--package <package>] [--config <cfg>]] [--phase=[\'all\'|\'one\'|\'two\'|\'app\'|\'lib\']] [--all] [--unresolved] [--unlisted] [--inlined] [--add <file_list>] [--remove <file_list>] [--include <asset names>] [--exclude <asset names>] [--scripts] [--resources] [--images] [--silent] [--fix] [--verbose] [--stack]';
+    'tibet package [[--profile <pkgcfg>] | [--package <package>] [--config <cfg>]] [--phase=[\'all\'|\'one\'|\'two\'|\'app\'|\'lib\']] [--all] [--unresolved] [--unlisted] [--inlined] [--building] [--add <file_list>] [--remove <file_list>] [--include <asset names>] [--exclude <asset names>] [--scripts] [--resources] [--images] [--silent] [--fix] [--verbose] [--stack]';
 
 /**
  * List of any assets that need to be removed from the package during
@@ -327,6 +327,7 @@ Cmd.prototype.executeForEach = function(list) {
         finder,
         code,
         root,
+        buildDirs,
         excludeDirs,
         excludeFiles,
         pouch,
@@ -372,15 +373,36 @@ Cmd.prototype.executeForEach = function(list) {
         });
 
         if (unresolved.length > 0) {
-            unresolved.forEach(function(item) {
-                cmd.warn('Package entry not found: ' + item);
-            });
 
-            this.error('' + unresolved.length +
-                ' package referenced files unresolved.');
+            //  If we're running a build then some package entries (particularly
+            //  those which the build is responsible for creating) won't exist.
+            if (this.options.building) {
+
+                buildDirs = [
+                    CLI.expandPath('~app_build'),
+                    CLI.expandPath('~lib_build')
+                ];
+
+                unresolved = unresolved.filter(function(item) {
+                    return CLI.isEmpty(buildDirs.filter(function(dir) {
+                        return item.indexOf(dir) !== 0;
+                    }));
+                });
+            }
+
+            if (unresolved.length > 0) {
+
+                unresolved.forEach(function(item) {
+                    cmd.warn('Package entry not found: ' + item);
+                });
+
+                this.error('' + unresolved.length +
+                    ' package-referenced files not found.');
+            }
+
         } else {
             this.info(
-                'All package-referenced files found in project.');
+                'no unresolved files found in project.');
         }
 
         //  If we're being asked to fix things then unresolved files should be

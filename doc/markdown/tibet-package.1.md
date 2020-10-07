@@ -6,7 +6,7 @@
 `tibet package [[--profile <pkgcfg>] | [--package <package>]
     [--config <cfg>]] [--phase=['all'|'one'|'two'|'app'|'lib']]
     [--add <file_list>] [--remove <file_list>]
-    [--all] [--unresolved] [--unlisted] [--inlined]
+    [--all] [--unresolved] [--unlisted] [--inlined] [--building]
     [--include <asset names>] [--exclude <asset names>]
     [--scripts] [--resources] [--images]
     [--silent] [--fix] [--verbose] [--stack]`
@@ -55,6 +55,10 @@ supplied on the command line and this will set the appropriate boot property.
 
   * `--all`:
     Process all the config tags in the package.
+
+  * `--building`:
+    Set by the make build targets so unresolved assets from the build
+directories are ignored if not found so the build can recreate them.
 
   * `--unresolved`:
     Output a list of unresolved (not found) assets of all types.

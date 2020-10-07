@@ -20,7 +20,10 @@
             data: {version: ts}
         }).then(function() {
             return make.helpers.rollup_lib(make, {
-                config: 'loader'
+                config: 'loader',
+                minify: false,
+                zip: options.zip,
+                brotli: options.brotli
             });
         }).then(function() {
             return make.helpers.rollup_lib(make, {

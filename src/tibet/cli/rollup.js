@@ -19,14 +19,12 @@
 'use strict';
 
 var CLI,
-    sh,
     fs,
     minify,
     Cmd;
 
 
 CLI = require('./_cli');
-sh = require('shelljs');
 fs = require('fs');
 
 minify = require('babel-minify');
@@ -67,9 +65,10 @@ Cmd.NAME = 'rollup';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['debug', 'headers', 'minify'],
-    string: ['package', 'config', 'phase'],
+    boolean: ['debug', 'headers', 'minify', 'clean'],
+    string: ['package', 'config', 'phase', 'since'],
     default: {
+        clean: false,
         color: false,
         debug: false,
         headers: true,
@@ -94,7 +93,7 @@ Cmd.prototype.TIMEOUT = 1000 * 60 * 5;
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify] [--debug]';
+Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--since] [--headers] [--minify] [--clean] [--debug]';
 
 
 //  ---
@@ -125,11 +124,14 @@ Cmd.prototype.executeForEach = function(list) {
 
     //  Grab the temp directory path that we're going to use as the build cache
     //  (and create it if it's not there).
-    tmpdir = sh.tempdir() + '/tibet_build_cache';
-    if (!sh.test('-d', tmpdir)) {
-        sh.mkdir('-p', tmpdir);
+    tmpdir = CLI.joinPaths(CLI.sh.tempdir(),
+        CLI.getcfg('tibet.rollup_cache'));
+
+    if (!CLI.sh.test('-d', tmpdir)) {
+        CLI.sh.mkdir('-p', tmpdir);
     }
 
+    //  TODO:   provide a way to configure this from a config flag.
     minifyOpts = {
         //  Whitespace is automatic, mangling does 95% of the rest.
         mangle: true,
@@ -168,9 +170,7 @@ Cmd.prototype.executeForEach = function(list) {
             result,
             code,
             virtual,
-            cachename,
-            srcLMDTime,
-            cacheLMDTime;
+            cachename;
 
         //  If this doesn't work it's a problem for any 'script' output.
         src = item.getAttribute('src') || item.getAttribute('href');
@@ -178,9 +178,7 @@ Cmd.prototype.executeForEach = function(list) {
         if (src) {
             virtual = pkg.getVirtualPath(src);
 
-            cmd.debug('Rolling up: ' + virtual);
-
-            if (!sh.test('-e', src)) {
+            if (!CLI.sh.test('-e', src)) {
                 throw new Error('NotFound: ' + src);
             }
 
@@ -194,14 +192,13 @@ Cmd.prototype.executeForEach = function(list) {
             //  date/time against the source file's last modified date/time. If
             //  the cache file is newer than the source file, then the source
             //  file hasn't changed and we can just use the cache file.
-            if (sh.test('-e', cachename)) {
-                srcLMDTime = fs.statSync(src).mtime.getTime();
-                cacheLMDTime = fs.statSync(cachename).mtime.getTime();
-
-                if (srcLMDTime < cacheLMDTime) {
+            if (CLI.sh.test('-e', cachename)) {
+                if (CLI.isFileNewer(cachename, src)) {
                     usecache = true;
                 }
             }
+
+            cmd.debug('rolling up: ' + virtual);
 
             //  Don't minify .min.js files, assume they're done. Also respect
             //  either command-line option or element attribute to that effect.
@@ -227,7 +224,7 @@ Cmd.prototype.executeForEach = function(list) {
                             code += ';';
                         }
 
-                        new sh.ShellString(code).to(cachename);
+                        new CLI.sh.ShellString(code).to(cachename);
                     } catch (e) {
                         cmd.error('Error minifying ' + src + ': ' + e.message);
                         throw e;
@@ -264,6 +261,75 @@ Cmd.prototype.executeForEach = function(list) {
 
 
 /**
+ * Performs any prereq processing before the invocation of executeForEach.
+ * @param {Array.<Node>} list An array of package nodes.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executeListPrereqs = function(list) {
+    var tmpdir,
+        err,
+        cmd,
+        newer;
+
+    cmd = this;
+
+    //  Cleaning? Then remove any content in the cache.
+    if (cmd.options.clean) {
+        //  Grab the temp directory path that we're going to use as the build
+        //  cache (and create it if it's not there).
+        tmpdir = CLI.joinPaths(CLI.sh.tempdir(),
+            CLI.getcfg('tibet.rollup_cache'));
+
+        if (CLI.sh.test('-d', tmpdir)) {
+            //  Empty the cache directory before we start processing files.
+            err = CLI.sh.rm('-rf', tmpdir);
+            if (CLI.sh.error()) {
+                cmd.error('Error removing cache directory: ' + err.stderr);
+                return 1;
+            }
+        }
+    } else if (cmd.options.since) {
+
+        //  If there's a 'since' value it means we're being asked to do a
+        //  conditional rollup. If any of the files are newer than the timestamp
+        //  then we let it all continue, otherwise we essentially terminate the
+        //  rollup so the invoking routine (usually a build) can just use the
+        //  existing rollup target (which presumably provided the timestamp).
+        newer = list.filter(function(item) {
+            var src,
+                fullpath;
+
+            //  If this doesn't work it's a problem for any 'script' output.
+            src = item.getAttribute('src') || item.getAttribute('href');
+            if (!src) {
+                return false;
+            }
+
+            fullpath = CLI.expandPath(src);
+            if (!CLI.sh.test('-e', fullpath)) {
+                return false;
+            }
+
+            //  Make sure we treat --since as a number.
+            return CLI.isFileNewer(fullpath, Number(cmd.options.since));
+        });
+
+        if (CLI.isEmpty(newer)) {
+            //  String values will just be logged and processing will end.
+            return 'no source changes --since=' + cmd.options.since;
+        } else {
+            return newer.map(function(item) {
+                return item.getAttribute('src') || item.getAttribute('href') ||
+                    'inline';
+            });
+        }
+    }
+
+    return list;
+};
+
+
+/**
  * Perform any last-minute changes to the package options before creation of the
  * internal Package instance. Intended to be overridden by custom subcommands.
  */
@@ -296,6 +362,39 @@ Cmd.prototype.getCompletionOptions = function() {
         plist = Cmd.Parent.prototype.getCompletionOptions();
 
         return CLI.subtract(plist, list);
+};
+
+
+/**
+ * Top-level processing of the package to produce an asset list. For this type
+ * and subtypes of the package command you should look to the "executeForEach"
+ * method for the actual node-by-node processing logic.
+ * @returns {Number|Promise} The return code produced by running the command (a
+ *     non-zero indicates an Error) or a Promise that resolves when the command
+ *     finishes.
+ */
+Cmd.prototype.execute = function() {
+    var list,
+        result;
+
+    this.configurePackageOptions();
+
+    list = this.getPackageAssetList();
+
+    //  NOTE we have an early-exit option here in case any aspect of the
+    //  prereq processing tells us to stop. It's a bit of a hack but for
+    //  debugging purposes we return an array of the files that are triggering
+    //  the process to continue. If the result isn't an array then we treat it
+    //  as a termination message.
+    result = this.executeListPrereqs(list);
+    if (!Array.isArray(result)) {
+        console.log(result);
+        return 0;
+    }
+
+    this.executeForEach(list);
+
+    return 0;
 };
 
 

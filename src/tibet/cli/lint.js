@@ -59,12 +59,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  */
 Cmd.NAME = 'lint';
 
-/**
- * The file path used to track last run timestamp.
- * @type {String}
- */
-Cmd.LAST_RUN_DATA = '~/.tibetlint.json';
-
 //  ---
 //  Instance Attributes
 //  ---
@@ -76,7 +70,7 @@ Cmd.LAST_RUN_DATA = '~/.tibetlint.json';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['force', 'list', 'nodes', 'scan', 'stop', 'quiet',
+    boolean: ['clean', 'list', 'nodes', 'scan', 'stop', 'quiet',
                 //  package options
                 'all', 'images', 'inlined', 'resources', 'scripts', 'unlisted',
                     'unresolved',
@@ -127,7 +121,7 @@ Cmd.prototype.XML_EXTENSIONS = ['atom', 'gpx', 'kml', 'rdf', 'rss', 'svg',
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet lint [[--filter] <filter>] [--force] [--list] [--nodes] [[--js] [--json] [--no-js] [--no-json] [--no-style] [--no-xml] [--only] [--style] [--xml]] [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]';
+    'tibet lint [[--filter] <filter>] [--clean] [--list] [--nodes] [[--js] [--json] [--no-js] [--no-json] [--no-style] [--no-xml] [--only] [--style] [--xml]] [--quiet] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]';
 
 
 //  ---
@@ -159,6 +153,11 @@ Cmd.prototype.configureEslintOptions = function() {
         opts.ignorePath = this.options.esignore;
     } else {
         opts.ignorePath = CLI.expandPath('~/.eslintignore');
+    }
+
+    //  ESLint doesn't like missing ignorepath values...
+    if (!CLI.sh.test('-e', opts.ignorePath)) {
+        opts.ignorePath = undefined;
     }
 
     return opts;
@@ -248,7 +247,7 @@ Cmd.prototype.execute = function() {
     if (this.options.filter === '.') {
         this.options.filter = null;
         this.options.scan = true;
-        this.options.force = true;
+        this.options.clean = true;
     }
 
     //  If we have 'only' specified we should be setting all but one value for
@@ -563,7 +562,7 @@ Cmd.prototype.filterAssetList = function(list) {
         }
 
         //  Never lint the last run data file... it's always fresh.
-        if (src === CLI.expandPath(Cmd.LAST_RUN_DATA)) {
+        if (src === CLI.expandPath(CLI.getcfg('cli.lint.cachefile'))) {
             cmd.verbose(src + ' # filtered (internal)');
             return false;
         }
@@ -601,7 +600,7 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
         lastrun,
         cmd;
 
-    if (this.options.force) {
+    if (this.options.clean) {
         return list;
     }
 
@@ -615,7 +614,7 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
 
     //  If we're not forcing lint we can skip files not changed since the last
     //  run...if we know when the last run occurred.
-    lastpath = CLI.expandPath(Cmd.LAST_RUN_DATA);
+    lastpath = CLI.expandPath(CLI.getcfg('cli.lint.cachefile'));
     if (sh.test('-e', lastpath)) {
         data = sh.cat(lastpath);
         if (data) {
@@ -1025,7 +1024,7 @@ Cmd.prototype.summarize = function(results) {
     }
 
     results.lastrun = Date.now();
-    lastpath = CLI.expandPath(Cmd.LAST_RUN_DATA);
+    lastpath = CLI.expandPath(CLI.getcfg('cli.lint.cachefile'));
 
     str = CLI.beautify(JSON.stringify(results));
     new sh.ShellString(str).to(lastpath);
