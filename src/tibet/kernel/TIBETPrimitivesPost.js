@@ -3714,20 +3714,18 @@ function(anObject, verbose) {
 
     wantsVerbose = TP.ifInvalid(verbose, true);
 
-    if (TP.canInvoke(anObject, 'asString')) {
-        try {
-            str = anObject.asString(wantsVerbose);
+    try {
+        str = anObject.asString(wantsVerbose);
 
-            //  If it reports as '[native code]' and is also a native type, then
-            //  extract it's name.
-            if (TP.regex.NATIVE_CODE.test(str) && TP.isNativeType(anObject)) {
-                str = TP.tname(anObject);
-            }
-
-            return str;
-        } catch (e) {
-            void 0;
+        //  If it reports as '[native code]' and is also a native type, then
+        //  extract it's name.
+        if (TP.regex.NATIVE_CODE.test(str) && TP.isNativeType(anObject)) {
+            str = TP.tname(anObject);
         }
+
+        return str;
+    } catch (e) {
+        void 0;
     }
 
     //  XMLHttpRequest can have permission issues, so check early
