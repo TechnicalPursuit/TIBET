@@ -28,13 +28,13 @@ TP.uri.TDSURLHandler.addTraits(TP.uri.RemoteURLWatchHandler);
 
 TP.uri.TDSURLHandler.set('uriConfigName', 'tds.watch.uri');
 
-TP.uri.RemoteURLWatchHandler.Type.defineAttribute('uriConfigName',
+TP.uri.TDSURLHandler.Type.defineAttribute('uriConfigName',
     'tds.watch.uri');
 
 //  NOTE that these use the more generic 'uri.source.' config roots.
-TP.uri.RemoteURLWatchHandler.Type.defineAttribute('includeConfigName',
+TP.uri.TDSURLHandler.Type.defineAttribute('includeConfigName',
     'uri.watch.include');
-TP.uri.RemoteURLWatchHandler.Type.defineAttribute('excludeConfigName',
+TP.uri.TDSURLHandler.Type.defineAttribute('excludeConfigName',
     'uri.watch.exclude');
 
 //  ------------------------------------------------------------------------
