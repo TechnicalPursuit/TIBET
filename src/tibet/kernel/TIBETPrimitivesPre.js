@@ -260,9 +260,11 @@ TP.canInvoke = function(anObj, anInterface) {
     //  logic for those. Note that this is actually quite a bit faster than
     //  testing to see what kind of object we're dealing with.
     try {
+        /* eslint-disable no-extra-parens */
         return (anInterface in anObj) &&
                 (typeof (obj = anObj[anInterface]) === 'function') &&
                 !obj.$$dnu;
+        /* eslint-enable no-extra-parens */
     } catch (e) {
         //  Note that we *must* compare anObj to both null and undefined rather
         //  than '!' because it might get falsey things like a '0' and the empty
@@ -272,7 +274,9 @@ TP.canInvoke = function(anObj, anInterface) {
         }
 
         obj = anObj[anInterface];
+        /* eslint-disable no-extra-parens */
         return (typeof obj === 'function' && !obj.$$dnu);
+        /* eslint-enable no-extra-parens */
     }
 };
 
