@@ -13096,17 +13096,15 @@ function(targetURI) {
         this.set('excludeRE', excludeRE);
     }
 
-    TP.info('checking ' + targetLoc +
-            ' in ' + includes +
-            ' and not ' + excludes);
-
     if (TP.isValid(excludeRE)) {
+        TP.info('checking ' + targetLoc + ' not in: ' + excludes);
         if (excludeRE.test(targetVirtual)) {
             return false;
         }
     }
 
     if (TP.isValid(includeRE)) {
+        TP.info('checking ' + targetLoc + ' in: ' + includes);
         return includeRE.test(targetVirtual);
     }
 
