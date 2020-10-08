@@ -13719,12 +13719,15 @@ TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.LOCAL_TRACK);
 //  TIBET - PERFORMANCE CACHES
 //  ------------------------------------------------------------------------
 
-TP.defineAttribute('$signal_name_cache', TP.hc());  //  hash of computed signal
-                                                    //  names.
+//  TP.core.Hash of computed signal names.
+TP.defineAttribute('$signal_name_cache', TP.hc());
 
-TP.defineAttribute('$parsed_doc_cache', TP.hc());   //  hash of XML documents
-                                                    //  keyed by the String that
-                                                    //  created them.
+//  TP.core.Hash of XML documents keyed by the String that created them.
+TP.defineAttribute('$parsed_doc_cache', TP.hc());
+
+//  Array of Element nodes that are currently capturing their own mouse wheel
+//  events.
+TP.defineAttribute('$mousewheel_capturer_cache', TP.ac());
 
 //  ------------------------------------------------------------------------
 //  TIBET - PLUGIN INFORMATION

@@ -607,6 +607,12 @@ function() {
     //  Cache the virtual scroller object for use during render.
     this.set('$virtualScroller', virtualScroller);
 
+    //  Register ourself as a 'mousewheel' capturer. Since all we're doing is
+    //  scrolling when the mousewheel is spun, we don't want the regular
+    //  'invokeObservers' machinery to run in the event system. This helps with
+    //  scrolling performance and flicker.
+    TP.$mousewheel_capturer_cache.push(viewportElem);
+
     return this;
 });
 
@@ -621,6 +627,15 @@ function() {
      *     ignoring signals it's observing, etc.
      * @returns {TP.dom.D3VirtualList} The receiver.
      */
+
+    var viewportElem;
+
+    //  The element that forms the outer viewport
+    viewportElem = this.getNativeNode();
+
+    //  Remove ourself as a 'mousewheel capturer'.
+    TP.$mousewheel_capturer_cache.splice(
+        TP.$mousewheel_capturer_cache.indexOf(viewportElem), 1);
 
     return this;
 });
