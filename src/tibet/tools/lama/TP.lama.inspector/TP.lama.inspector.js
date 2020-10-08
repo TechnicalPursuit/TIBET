@@ -1356,35 +1356,35 @@ function(info) {
     //  replaced will have also rendered when their data changed.
     this.sizeBays();
 
-    //  Scroll them to the end
-    this.scrollBaysToEnd();
-
-    //  Update the toolbar (or clear it)
-
-    selectedItems = this.get('selectedItems');
-    params = TP.hc('targetAspect', aspect,
-                    'targetObject', target,
-                    'pathParts', selectedItems);
-
-    toolbar = TP.byId('LamaToolbar', this.getNativeDocument());
-    toolbarContent = TP.getContentForTool(
-                        target,
-                        'toolbar',
-                        params);
-
-    if (TP.isElement(toolbarContent)) {
-        toolbarContent = toolbar.setContent(toolbarContent);
-        toolbarContent.awaken();
-    } else {
-        toolbar.empty();
-    }
-
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
-    if (TP.notEmpty(inspectorBays)) {
         (function() {
-            inspectorBays.last().focus();
-        }).queueAfterNextRepaint(this.getNativeWindow());
-    }
+            //  Scroll them to the end
+            this.scrollBaysToEnd();
+
+            //  Update the toolbar (or clear it)
+
+            selectedItems = this.get('selectedItems');
+            params = TP.hc('targetAspect', aspect,
+                            'targetObject', target,
+                            'pathParts', selectedItems);
+
+            toolbar = TP.byId('LamaToolbar', this.getNativeDocument());
+            toolbarContent = TP.getContentForTool(
+                                target,
+                                'toolbar',
+                                params);
+
+            if (TP.isElement(toolbarContent)) {
+                toolbarContent = toolbar.setContent(toolbarContent);
+                toolbarContent.awaken();
+            } else {
+                toolbar.empty();
+            }
+
+            inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+            if (TP.notEmpty(inspectorBays)) {
+                inspectorBays.last().focus();
+            }
+        }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
 
     return this;
 });
