@@ -248,23 +248,32 @@ TP.canInvoke = function(anObj, anInterface) {
 
     var obj;
 
-    //  NB: This is a very heavily used routine, so we use very primitive
-    //  checking in it. Note that we *must* compare anObj to both null and
-    //  undefined rather than '!' because it might get falsey things like a '0'
-    //  and the empty String.
+    //  This is a very heavily used routine, so we use very primitive checking
+    //  in it.
 
-    if (anObj === undefined || anObj === null || !anInterface) {
-        return false;
+    //  On some platforms, if obj is a '[native code]' function, 'instanceof
+    //  Function' will return false. This is the only consistent test for
+    //  whether something can truly respond.
+
+    //  Unfortunately, the 'in' operator will throw an exception on primitive
+    //  strings, numbers and booleans. Therefore, we catch and try different
+    //  logic for those. Note that this is actually quite a bit faster than
+    //  testing to see what kind of object we're dealing with.
+    try {
+        return (anInterface in anObj) &&
+                (typeof (obj = anObj[anInterface]) === 'function') &&
+                !obj.$$dnu;
+    } catch (e) {
+        //  Note that we *must* compare anObj to both null and undefined rather
+        //  than '!' because it might get falsey things like a '0' and the empty
+        //  String.
+        if (anObj === undefined || anObj === null || !anInterface) {
+            return false;
+        }
+
+        obj = anObj[anInterface];
+        return (typeof obj === 'function' && !obj.$$dnu);
     }
-
-    obj = anObj[anInterface];
-
-    //  NOTE: On some platforms, if obj is a '[native code]' function,
-    //  'instanceof Function' will return false. This is the only consistent
-    //  test for whether something can truly respond.
-    /* eslint-disable no-extra-parens */
-    return (typeof obj === 'function' && !obj.$$dnu);
-    /* eslint-enable no-extra-parens */
 };
 
 //  Manual setup
