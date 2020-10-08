@@ -13008,22 +13008,24 @@ function(targetURI) {
      * @returns {Boolean} true if the URI passes include/exclude filters.
      */
 
-    var escaper,
+    var includeRE,
+        excludeRE,
+
         targetLoc,
         targetVirtual,
+
+        escaper,
         includes,
-        excludes,
-        includeRE,
-        excludeRE;
+        excludes;
 
     //  NOTE each type which mixes this in gets it own copy of the values here.
     includeRE = this.get('includeRE');
     excludeRE = this.get('excludeRE');
 
-    if (TP.notValid(includeRE)) {
+    targetLoc = targetURI.getLocation();
+    targetVirtual = TP.uriInTIBETFormat(targetLoc);
 
-        targetLoc = targetURI.getLocation();
-        targetVirtual = TP.uriInTIBETFormat(targetLoc);
+    if (TP.notValid(includeRE)) {
 
         escaper = TP.uri.RemoteURLWatchHandler.INCLUDE_EXCLUDE_ESCAPER;
 
