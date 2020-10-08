@@ -4543,22 +4543,150 @@ TP.core.Hash.addParser(TP.core.Hash.QUERY_STRING_PARSER);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('hc',
+TP.core.Hash.Type.defineMethod('construct',
 function() {
 
     /**
-     * @method hc
+     * @method construct
      * @summary Construct and return a new hash, populating it with initial
      *     data based on the argument list.
      * @description Input data can be provided in a variety of formats including
      *     an array of ordered pairs, an array of key, value sequences, an
      *     Object (not recommended for speed reasons), a hash of key/value
      *     pairs, or a simple argument list of key, value sequences.
-     * @returns {TP.core.Hash} The receiver.
+     * @returns {TP.core.Hash} A new instance.
      */
 
-    return TP.core.Hash.construct.apply(TP.core.Hash, arguments);
+    var newVal,
+        obj,
+        i,
+        pair,
+        attrs,
+        len,
+        val;
+
+    newVal = Object.create(TP.core.Hash.Inst);
+    newVal.$$type = TP.core.Hash;
+
+    //  NB: For performance reasons, there are multiple occurrences of setting
+    //  the internal hash to an orphan object here. This is due to the desire to
+    //  minimize checking and object creation.
+    switch (arguments.length) {
+        case 0:
+            newVal.$$hash = Object.create(null);
+            break;
+
+        case 1:
+            obj = arguments[0];
+
+            if (TP.notValid(obj)) {
+                newVal.$$hash = Object.create(null);
+            } else {
+
+                //  If the supplied object is a primitive Hash, just grab the
+                //  POJO that's its Hash and process that below.
+                if (obj.$$prototype &&
+                    obj.$$prototype.constructor === TP.boot.PHash) {
+                    obj = obj.$$hash;
+                }
+
+                if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
+                    newVal.$$hash = Object.create(null);
+                    TP.objectGetKeys(obj).forEach(
+                            function(key) {
+                                var value;
+
+                                value = obj[key];
+                                if (TP.isPlainObject(value) &&
+                                    !TP.isPrototype(value)) {
+                                    value = TP.core.Hash.construct(value);
+                                }
+
+                                newVal.atPut(
+                                    key,
+                                    TP.notDefined(value) ? null : value);
+                            });
+                } else if (TP.isArray(obj)) {
+                    //  allocate internal hash - note that it is a
+                    //  prototype-less object.
+                    newVal.$$hash = Object.create(null);
+
+                    if (TP.isPair(obj[0])) {
+                        //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
+                        for (i = 0; i < obj.length; i++) {
+                            pair = obj[i];
+                            val = pair[1];
+                            newVal.atPut(
+                                pair[0],
+                                TP.notDefined(val) ? null : val,
+                                false);
+                        }
+                    } else {
+                        //  array syntax ['a', 1, 'b', 2, 'c', 3]
+                        for (i = 0; i < obj.length; i += 2) {
+                            val = obj[i + 1];
+                            newVal.atPut(
+                                obj[i],
+                                TP.notDefined(val) ? null : val,
+                                false);
+                        }
+                    }
+                } else if (TP.isString(obj)) {
+                    return TP.core.Hash.fromString(obj);
+                } else if (TP.isElement(obj)) {
+                    //  allocate internal hash - note that it is a
+                    //  prototype-less object.
+                    newVal.$$hash = Object.create(null);
+
+                    attrs = obj.attributes;
+                    len = attrs.length;
+
+                    for (i = 0; i < len; i++) {
+                        newVal.atPut(attrs[i].name, attrs[i].value);
+                    }
+                } else if (TP.isHash(obj)) {
+                    return obj;
+                } else {
+
+                    //  JSON conversions can fail so protect against that.
+                    try {
+                        val = TP.js2json(obj);
+                        if (TP.isValid(val)) {
+                            val = TP.json2js(val);
+                            if (TP.isValid(val)) {
+                                //  Note how we grab the '$$hash' prototype-less
+                                //  object and make that *our* $$hash.
+                                newVal.$$hash = val.$$hash;
+                            } else {
+                                newVal.$$hash = Object.create(null);
+                            }
+                        }
+                    } catch (e) {
+                        return;
+                    }
+                }
+            }
+            break;
+
+        default:
+            //  allocate internal hash - note that it is a prototype-less
+            //  object.
+            newVal.$$hash = Object.create(null);
+
+            //  arguments syntax 'a', 1, 'b', 2, 'c', 3
+            for (i = 0; i < arguments.length; i += 2) {
+                val = arguments[i + 1];
+                newVal.$$hash[arguments[i]] = TP.notDefined(val) ? null : val;
+            }
+            break;
+    }
+
+    return newVal;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('hc', TP.core.Hash.construct);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
