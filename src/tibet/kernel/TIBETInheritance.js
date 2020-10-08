@@ -4571,12 +4571,6 @@ function(varargs) {
     mainTypeTarget = this.getPrototype();
     if (TP.notValid(resolutions = this.$get('$traitsTypeResolutions'))) {
         resolutions = TP.hc();
-        //  'Unwrap' the Proxy that we normally get back as a TP.core.Hash and
-        //  grab the original hash object. We do this because we will be using
-        //  Hash method names as propertie names here and (since we always use
-        //  'at' here and not destructuring) we need to get those values, not
-        //  the methods themselves from the hash object.
-        resolutions = resolutions[TP.PROXIED];
         this.$set('$traitsTypeResolutions', resolutions);
     }
 
@@ -4665,12 +4659,6 @@ function(varargs) {
     mainTypeTarget = this.getInstPrototype();
     if (TP.notValid(resolutions = this.$get('$traitsInstResolutions'))) {
         resolutions = TP.hc();
-        //  'Unwrap' the Proxy that we normally get back as a TP.core.Hash and
-        //  grab the original hash object. We do this because we will be using
-        //  Hash method names as propertie names here and (since we always use
-        //  'at' here and not destructuring) we need to get those values, not
-        //  the methods themselves from the hash object.
-        resolutions = resolutions[TP.PROXIED];
         this.$set('$traitsInstResolutions', resolutions);
     }
 
@@ -4960,12 +4948,6 @@ function(traitType, propName, track) {
 
         if (TP.notValid(resolutions = this.$get('$traitsTypeResolutions'))) {
             resolutions = TP.hc();
-            //  'Unwrap' the Proxy that we normally get back as a TP.core.Hash
-            //  and grab the original hash object. We do this because we will be
-            //  using Hash method names as propertie names here and (since we
-            //  always use 'at' here and not destructuring) we need to get those
-            //  values, not the methods themselves from the hash object.
-            resolutions = resolutions[TP.PROXIED];
             this.$set('$traitsTypeResolutions', resolutions);
         }
     } else if (track === TP.INST_TRACK) {
@@ -4974,12 +4956,6 @@ function(traitType, propName, track) {
 
         if (TP.notValid(resolutions = this.$get('$traitsInstResolutions'))) {
             resolutions = TP.hc();
-            //  'Unwrap' the Proxy that we normally get back as a TP.core.Hash
-            //  and grab the original hash object. We do this because we will be
-            //  using Hash method names as propertie names here and (since we
-            //  always use 'at' here and not destructuring) we need to get those
-            //  values, not the methods themselves from the hash object.
-            resolutions = resolutions[TP.PROXIED];
             this.$set('$traitsInstResolutions', resolutions);
         }
     } else {
@@ -5732,12 +5708,6 @@ function(propertyName, resolution, resolutionOption) {
     if (TP.notValid(
             resolutions = this[TP.OWNER].get('$traitsInstResolutions'))) {
         resolutions = TP.hc();
-        //  'Unwrap' the Proxy that we normally get back as a TP.core.Hash and
-        //  grab the original hash object. We do this because we will be using
-        //  Hash method names as propertie names here and (since we always use
-        //  'at' here and not destructuring) we need to get those values, not
-        //  the methods themselves from the hash object.
-        resolutions = resolutions[TP.PROXIED];
         this[TP.OWNER].set('$traitsInstResolutions', resolutions);
     }
 
@@ -5994,12 +5964,6 @@ function(propertyName, resolution, resolutionOption) {
     if (TP.notValid(
             resolutions = this[TP.OWNER].get('$traitsTypeResolutions'))) {
         resolutions = TP.hc();
-        //  'Unwrap' the Proxy that we normally get back as a TP.core.Hash and
-        //  grab the original hash object. We do this because we will be using
-        //  Hash method names as propertie names here and (since we always use
-        //  'at' here and not destructuring) we need to get those values, not
-        //  the methods themselves from the hash object.
-        resolutions = resolutions[TP.PROXIED];
         this[TP.OWNER].set('$traitsTypeResolutions', resolutions);
     }
 
