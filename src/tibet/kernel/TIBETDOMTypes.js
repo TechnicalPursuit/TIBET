@@ -9884,6 +9884,10 @@ TP.dom.ElementNode.Type.defineAttribute('reloadableUriAttrs', TP.ac());
 //  with a TP.core.Hash incoming value
 TP.dom.ElementNode.Type.defineAttribute('template');
 
+//  a cache of URI locations and the TP.dom.ElementNode objects created from
+//  that URI.
+TP.dom.ElementNode.Type.defineAttribute('$resourceElements', TP.hc());
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -11211,6 +11215,8 @@ function(resource, mimeType, setupFunc) {
 
     var uri,
         src,
+        result,
+
         resp,
         str,
 
@@ -11229,6 +11235,13 @@ function(resource, mimeType, setupFunc) {
     }
 
     src = uri.getLocation();
+
+    //  If a TP.dom.ElementNode with a URI that matches the src has been cached,
+    //  then return it.
+    result = this.get('$resourceElements').at(src);
+    if (TP.isValid(result)) {
+        return result;
+    }
 
     //  Grab the receiver's content for processing. We do this synchronously
     //  here and we also get it in string form so we can process the markup and
@@ -11270,7 +11283,12 @@ function(resource, mimeType, setupFunc) {
         setupFunc(elem);
     }
 
-    return TP.wrap(elem);
+    result = TP.wrap(elem);
+
+    //  Cache the TP.dom.ElementNode under the URI's source.
+    this.get('$resourceElements').atPut(src, result);
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
