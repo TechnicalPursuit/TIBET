@@ -665,8 +665,6 @@ TP.extern.d3.VirtualScroller = function() {
 
         lastScrollTop,
 
-        rowsAdjustment,
-
         scrollerFunc;
 
     enter = null;
@@ -707,12 +705,6 @@ TP.extern.d3.VirtualScroller = function() {
 
             computedRowCount = control.computeGeneratedRowCount();
 
-            //  We adjust the number of rows by whatever the 'real' computed row
-            //  count is times 10, which means this machinery will draw 10X the
-            //  number of rows it needs to, but makes it so there is much less
-            //  flickering when 'fast scrolling'.
-            rowsAdjustment = computedRowCount * 10;
-
             scrollTop = viewport.node().scrollTop;
 
             /* eslint-disable no-extra-parens */
@@ -724,12 +716,6 @@ TP.extern.d3.VirtualScroller = function() {
 
             lastPosition = position;
             position = Math.floor(scrollTop / rowHeight);
-
-            /* eslint-disable no-extra-parens */
-            if (position > (rowsAdjustment / 2)) {
-                position -= (rowsAdjustment / 2);
-            }
-            /* eslint-enable no-extra-parens */
 
             delta = position - lastPosition;
 
@@ -762,8 +748,6 @@ TP.extern.d3.VirtualScroller = function() {
 
             var hasBumpRow,
 
-                adjustedRowCount,
-
                 startOffset,
                 endOffset,
 
@@ -775,21 +759,19 @@ TP.extern.d3.VirtualScroller = function() {
 
             hasBumpRow = control.$get('$hasBumpRow');
 
-            adjustedRowCount = computedRowCount + rowsAdjustment;
-
             //  Calculate the start offset (if there was a 'bump row', add 1 to
             //  offset 0 position vs totalRow count diff)
             if (hasBumpRow) {
                 startOffset = Math.max(
                     0,
-                    Math.min(scrollPosition, totalRows - adjustedRowCount + 1));
+                    Math.min(scrollPosition, totalRows - computedRowCount + 1));
             } else {
                 startOffset = Math.max(
                     0,
-                    Math.min(scrollPosition, totalRows - adjustedRowCount));
+                    Math.min(scrollPosition, totalRows - computedRowCount));
             }
 
-            endOffset = startOffset + adjustedRowCount;
+            endOffset = startOffset + computedRowCount;
 
             oldStartOffset = control.$get('$startOffset');
             oldEndOffset = control.$get('$endOffset');
