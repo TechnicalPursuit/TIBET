@@ -13015,6 +13015,9 @@ function(targetURI) {
         targetVirtual,
 
         escaper,
+
+        cfgName,
+
         includes,
         excludes;
 
@@ -13029,55 +13032,63 @@ function(targetURI) {
 
         escaper = TP.uri.RemoteURLWatchHandler.INCLUDE_EXCLUDE_ESCAPER;
 
-        includes = TP.sys.cfg(this.get('includeConfigName'));
-        if (TP.notEmpty(includes)) {
+        cfgName = this.get('includeConfigName');
+        if (TP.notEmpty(cfgName)) {
+            includes = TP.sys.cfg(cfgName);
+            if (TP.notEmpty(includes)) {
 
-            //  First normalize any virtual path values.
-            includes = includes.map(
-                        function(item) {
-                            return TP.uriInTIBETFormat(TP.uriExpandPath(item));
-                        });
+                //  First normalize any virtual path values.
+                includes = includes.map(
+                            function(item) {
+                                    return TP.uriInTIBETFormat(
+                                                TP.uriExpandPath(item));
+                            });
 
-            //  Now produce a single source string for regex construct.
-            includes = includes.reduce(
-                        function(str, item) {
-                            return str ?
-                                str + '|' + escaper(item) :
-                                escaper(item);
-                        }, '');
+                //  Now produce a single source string for regex construct.
+                includes = includes.reduce(
+                            function(str, item) {
+                                return str ?
+                                    str + '|' + escaper(item) :
+                                    escaper(item);
+                            }, '');
 
-            try {
-                //  Use 'new' here to keep escaping simple.
-                includeRE = new RegExp(includes);
-            } catch (e) {
-                this.raise('InvalidWatchIncludes', includes);
+                try {
+                    //  Use 'new' here to keep escaping simple.
+                    includeRE = new RegExp(includes);
+                } catch (e) {
+                    this.raise('InvalidWatchIncludes', includes);
+                }
             }
         }
 
         includeRE = TP.ifInvalid(includeRE, /.*/);
 
-        excludes = TP.sys.cfg(this.get('excludeConfigName'));
-        if (TP.notEmpty(excludes)) {
+        cfgName = this.get('excludeConfigName');
+        if (TP.notEmpty(cfgName)) {
+            excludes = TP.sys.cfg(cfgName);
+            if (TP.notEmpty(excludes)) {
 
-            //  First normalize any virtual path values.
-            excludes = excludes.map(
-                        function(item) {
-                            return TP.uriInTIBETFormat(TP.uriExpandPath(item));
-                        });
+                //  First normalize any virtual path values.
+                excludes = excludes.map(
+                            function(item) {
+                                    return TP.uriInTIBETFormat(
+                                                TP.uriExpandPath(item));
+                            });
 
-            //  Now produce a single source string for regex construct.
-            excludes = excludes.reduce(
-                        function(str, item) {
-                            return str ?
-                                str + '|' + escaper(item) :
-                                escaper(item);
-                        }, '');
+                //  Now produce a single source string for regex construct.
+                excludes = excludes.reduce(
+                            function(str, item) {
+                                return str ?
+                                    str + '|' + escaper(item) :
+                                    escaper(item);
+                            }, '');
 
-            try {
-                //  Use 'new' here to keep escaping simple.
-                excludeRE = new RegExp(excludes);
-            } catch (e) {
-                this.raise('InvalidWatchExcludes', excludes);
+                try {
+                    //  Use 'new' here to keep escaping simple.
+                    excludeRE = new RegExp(excludes);
+                } catch (e) {
+                    this.raise('InvalidWatchExcludes', excludes);
+                }
             }
         }
 
