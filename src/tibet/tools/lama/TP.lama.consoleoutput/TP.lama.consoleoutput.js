@@ -252,23 +252,26 @@ function() {
     //  Note how we do this after layout so that our computations are correct.
     (function() {
 
-        var itemContentElems;
+        var itemContentElems,
+            commonAncestor;
 
         itemContentElems = TP.unwrap(this.get('outputItemsContents'));
 
-        itemContentElems.forEach(
-                function(aContentElem) {
-                    var itemElem;
+        if (TP.notEmpty(itemContentElems)) {
 
-                    itemElem = aContentElem.parentNode.parentNode;
+            commonAncestor = itemContentElems.first().parentNode.parentNode;
 
-                    if (aContentElem.scrollHeight > aContentElem.offsetHeight) {
-                        TP.elementAddClass(itemElem, 'overflowing');
-                        TP.wrap(itemElem).updateScrollButtons(aContentElem);
-                    } else {
-                        TP.elementRemoveClass(itemElem, 'overflowing');
-                    }
-                });
+            itemContentElems.forEach(
+                    function(aContentElem) {
+
+                        if (aContentElem.scrollHeight > aContentElem.offsetHeight) {
+                            TP.elementAddClass(commonAncestor, 'overflowing');
+                            TP.wrap(commonAncestor).updateScrollButtons(aContentElem);
+                        } else {
+                            TP.elementRemoveClass(commonAncestor, 'overflowing');
+                        }
+                    });
+        }
     }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
 
     return this;
@@ -388,7 +391,7 @@ function(uniqueID, dataRecord) {
                     'inputclass', cssClass,
                     'hid', hidstr,
                     'cmdText', cmdText,
-                    'empty', '',
+                    'blank', '',
                     'returnType', '',
                     'stats', '&#8230;');
 

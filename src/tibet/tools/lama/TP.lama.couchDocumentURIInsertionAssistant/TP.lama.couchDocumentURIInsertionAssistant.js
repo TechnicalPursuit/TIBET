@@ -68,8 +68,9 @@ function(assistantData) {
         function(aDialogTPElem) {
             var contentTPElem;
 
-            contentTPElem = aDialogTPElem.get('bodyGroup').
-                                        getFirstChildElement();
+            contentTPElem = aDialogTPElem.
+                            get('dialogcontent').
+                            getFirstChildElement();
 
             //  Pass along the insertion position and the peer element
             //  as the insertion point to the dialog info.

@@ -607,6 +607,12 @@ function() {
     //  Cache the virtual scroller object for use during render.
     this.set('$virtualScroller', virtualScroller);
 
+    //  Register ourself as a 'mousewheel' capturer. Since all we're doing is
+    //  scrolling when the mousewheel is spun, we don't want the regular
+    //  'invokeObservers' machinery to run in the event system. This helps with
+    //  scrolling performance and flicker.
+    TP.$mousewheel_capturer_cache.push(viewportElem);
+
     return this;
 });
 
@@ -621,6 +627,15 @@ function() {
      *     ignoring signals it's observing, etc.
      * @returns {TP.dom.D3VirtualList} The receiver.
      */
+
+    var viewportElem;
+
+    //  The element that forms the outer viewport
+    viewportElem = this.getNativeNode();
+
+    //  Remove ourself as a 'mousewheel capturer'.
+    TP.$mousewheel_capturer_cache.splice(
+        TP.$mousewheel_capturer_cache.indexOf(viewportElem), 1);
 
     return this;
 });
@@ -649,8 +664,6 @@ TP.extern.d3.VirtualScroller = function() {
         dispatch,
 
         lastScrollTop,
-
-        rowsAdjustment,
 
         scrollerFunc;
 
@@ -692,12 +705,6 @@ TP.extern.d3.VirtualScroller = function() {
 
             computedRowCount = control.computeGeneratedRowCount();
 
-            //  We adjust the number of rows by whatever the 'real' computed row
-            //  count is times 10, which means this machinery will draw 10X the
-            //  number of rows it needs to, but makes it so there is much less
-            //  flickering when 'fast scrolling'.
-            rowsAdjustment = computedRowCount * 10;
-
             scrollTop = viewport.node().scrollTop;
 
             /* eslint-disable no-extra-parens */
@@ -709,12 +716,6 @@ TP.extern.d3.VirtualScroller = function() {
 
             lastPosition = position;
             position = Math.floor(scrollTop / rowHeight);
-
-            /* eslint-disable no-extra-parens */
-            if (position > (rowsAdjustment / 2)) {
-                position -= (rowsAdjustment / 2);
-            }
-            /* eslint-enable no-extra-parens */
 
             delta = position - lastPosition;
 
@@ -747,8 +748,6 @@ TP.extern.d3.VirtualScroller = function() {
 
             var hasBumpRow,
 
-                adjustedRowCount,
-
                 startOffset,
                 endOffset,
 
@@ -760,21 +759,19 @@ TP.extern.d3.VirtualScroller = function() {
 
             hasBumpRow = control.$get('$hasBumpRow');
 
-            adjustedRowCount = computedRowCount + rowsAdjustment;
-
             //  Calculate the start offset (if there was a 'bump row', add 1 to
             //  offset 0 position vs totalRow count diff)
             if (hasBumpRow) {
                 startOffset = Math.max(
                     0,
-                    Math.min(scrollPosition, totalRows - adjustedRowCount + 1));
+                    Math.min(scrollPosition, totalRows - computedRowCount + 1));
             } else {
                 startOffset = Math.max(
                     0,
-                    Math.min(scrollPosition, totalRows - adjustedRowCount));
+                    Math.min(scrollPosition, totalRows - computedRowCount));
             }
 
-            endOffset = startOffset + adjustedRowCount;
+            endOffset = startOffset + computedRowCount;
 
             oldStartOffset = control.$get('$startOffset');
             oldEndOffset = control.$get('$endOffset');

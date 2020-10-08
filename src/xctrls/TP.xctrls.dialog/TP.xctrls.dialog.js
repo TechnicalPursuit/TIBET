@@ -420,7 +420,11 @@ function(info) {
             //  Grab any template data and transform the supplied template with
             //  it.
             templateData = info.at('templateData');
-            contentResource = template.transform(templateData);
+            if (TP.notEmpty(templateData)) {
+                contentResource = template.transform(templateData);
+            } else {
+                contentResource = template;
+            }
 
             if (!TP.isString(template) && TP.isURI(template)) {
                 //  Set that contentResource's result as the content of our

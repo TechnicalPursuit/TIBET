@@ -110,15 +110,17 @@ function(aFilter, undefNotNull) {
      *     based on a filtering function, or on unique object ID. One special
      *     consideration is whether invalid values (null and undefined) should
      *     be considered "equal" for purposes of this uniquing process.
-     * @param {Function} aFilter A function which accepts an object and returns
-     *     the value to compare for uniqueness.
-     * @param {Boolean} undefNotNull True to have undefined values compare
-     *     differently than nulls for uniquing purposes.
+     * @param {Function} [aFilter] A function which accepts an object and
+     *     returns the value to compare for uniqueness.
+     * @param {Boolean} [undefNotNull=false] True to have undefined values
+     *     compare differently than nulls for uniquing purposes.
      * @returns {Array} The receiver.
      * @fires Change
      */
 
-    var func,
+    var newArr,
+
+        func,
         undef,
         dict,
         len,
@@ -129,6 +131,27 @@ function(aFilter, undefNotNull) {
 
     //  can't be anything but unique if only one element
     if (this.length < 2) {
+        return this;
+    }
+
+    //  If there is no filter and we're not comparing nulls differently to
+    //  undefineds, then just use an ECMA6 Set and create an Array from that for
+    //  much faster performance.
+    if (TP.notValid(aFilter) && TP.notValid(undefNotNull)) {
+        //  Since this method is a mutator, we need to replace the values in
+        //  ourself.
+
+        //  Create a new Array from a new Set. This will automatically unique
+        //  the values in the new Array.
+        newArr = [...new Set(this)];
+
+        //  Remove all of the values in ourself.
+        this.length = 0;
+
+        //  Assign the properties of the new Array into ourself. This will
+        //  repopulate ourself.
+        Object.assign(this, newArr);
+
         return this;
     }
 

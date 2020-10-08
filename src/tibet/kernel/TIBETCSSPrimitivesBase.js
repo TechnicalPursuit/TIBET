@@ -1461,10 +1461,13 @@ function(anElement) {
      * @param {HTMLElement} anElement The element to use to compute the pixel
      *     value from.
      * @exception TP.sig.InvalidElement
-     * @returns {Object} The inline CSS style object of the supplied element.
+     * @returns {CSSStyleDeclaration} The inline CSS style object of the
+     *     supplied element.
      */
 
-    var newSheet,
+    var result,
+
+        newSheet,
 
         styleElem,
         styleSheet,
@@ -1480,6 +1483,13 @@ function(anElement) {
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  See if we have a cached style object corresponding to the 'pseudo inline
+    //  style element'. This is faster than computing one each time.
+    result = anElement[TP.PSEUDO_INLINE_STYLE];
+    if (TP.isValid(result)) {
+        return result;
     }
 
     //  Initially set the flag to say that we haven't created a new sheet.
@@ -1523,7 +1533,10 @@ function(anElement) {
         if (TP.isValid(rule = sheetRules[indexNum]) &&
                 rule.type === CSSRule.STYLE_RULE) {
             //  Return the style object associated with the rule.
-            return rule.style;
+            result = rule.style;
+            anElement[TP.PSEUDO_INLINE_STYLE] = result;
+
+            return result;
         }
     }
 
@@ -1551,7 +1564,10 @@ function(anElement) {
                 rule = sheetRules[i];
                 anElement._pseudoInlineRuleIndex = i;
 
-                return rule.style;
+                result = rule.style;
+                anElement[TP.PSEUDO_INLINE_STYLE] = result;
+
+                return result;
             }
         }
     }
@@ -1565,7 +1581,12 @@ function(anElement) {
     anElement._pseudoInlineRuleIndex = sheetRules.length - 1;
 
     //  Return the style object associated with the new rule.
-    return sheetRules[sheetRules.length - 1].style;
+    result = sheetRules[sheetRules.length - 1].style;
+
+    //  Cache the style object on the element for faster performance.
+    anElement[TP.PSEUDO_INLINE_STYLE] = result;
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------

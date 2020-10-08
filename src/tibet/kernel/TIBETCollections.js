@@ -4543,22 +4543,150 @@ TP.core.Hash.addParser(TP.core.Hash.QUERY_STRING_PARSER);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('hc',
+TP.core.Hash.Type.defineMethod('construct',
 function() {
 
     /**
-     * @method hc
+     * @method construct
      * @summary Construct and return a new hash, populating it with initial
      *     data based on the argument list.
      * @description Input data can be provided in a variety of formats including
      *     an array of ordered pairs, an array of key, value sequences, an
      *     Object (not recommended for speed reasons), a hash of key/value
      *     pairs, or a simple argument list of key, value sequences.
-     * @returns {TP.core.Hash} The receiver.
+     * @returns {TP.core.Hash} A new instance.
      */
 
-    return TP.core.Hash.construct.apply(TP.core.Hash, arguments);
+    var newVal,
+        obj,
+        i,
+        pair,
+        attrs,
+        len,
+        val;
+
+    newVal = Object.create(TP.core.Hash.Inst);
+    newVal.$$type = TP.core.Hash;
+
+    //  NB: For performance reasons, there are multiple occurrences of setting
+    //  the internal hash to an orphan object here. This is due to the desire to
+    //  minimize checking and object creation.
+    switch (arguments.length) {
+        case 0:
+            newVal.$$hash = Object.create(null);
+            break;
+
+        case 1:
+            obj = arguments[0];
+
+            if (TP.notValid(obj)) {
+                newVal.$$hash = Object.create(null);
+            } else {
+
+                //  If the supplied object is a primitive Hash, just grab the
+                //  POJO that's its Hash and process that below.
+                if (obj.$$prototype &&
+                    obj.$$prototype.constructor === TP.boot.PHash) {
+                    obj = obj.$$hash;
+                }
+
+                if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
+                    newVal.$$hash = Object.create(null);
+                    TP.objectGetKeys(obj).forEach(
+                            function(key) {
+                                var value;
+
+                                value = obj[key];
+                                if (TP.isPlainObject(value) &&
+                                    !TP.isPrototype(value)) {
+                                    value = TP.core.Hash.construct(value);
+                                }
+
+                                newVal.atPut(
+                                    key,
+                                    TP.notDefined(value) ? null : value);
+                            });
+                } else if (TP.isArray(obj)) {
+                    //  allocate internal hash - note that it is a
+                    //  prototype-less object.
+                    newVal.$$hash = Object.create(null);
+
+                    if (TP.isPair(obj[0])) {
+                        //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
+                        for (i = 0; i < obj.length; i++) {
+                            pair = obj[i];
+                            val = pair[1];
+                            newVal.atPut(
+                                pair[0],
+                                TP.notDefined(val) ? null : val,
+                                false);
+                        }
+                    } else {
+                        //  array syntax ['a', 1, 'b', 2, 'c', 3]
+                        for (i = 0; i < obj.length; i += 2) {
+                            val = obj[i + 1];
+                            newVal.atPut(
+                                obj[i],
+                                TP.notDefined(val) ? null : val,
+                                false);
+                        }
+                    }
+                } else if (TP.isString(obj)) {
+                    return TP.core.Hash.fromString(obj);
+                } else if (TP.isElement(obj)) {
+                    //  allocate internal hash - note that it is a
+                    //  prototype-less object.
+                    newVal.$$hash = Object.create(null);
+
+                    attrs = obj.attributes;
+                    len = attrs.length;
+
+                    for (i = 0; i < len; i++) {
+                        newVal.atPut(attrs[i].name, attrs[i].value);
+                    }
+                } else if (TP.isHash(obj)) {
+                    return obj;
+                } else {
+
+                    //  JSON conversions can fail so protect against that.
+                    try {
+                        val = TP.js2json(obj);
+                        if (TP.isValid(val)) {
+                            val = TP.json2js(val);
+                            if (TP.isValid(val)) {
+                                //  Note how we grab the '$$hash' prototype-less
+                                //  object and make that *our* $$hash.
+                                newVal.$$hash = val.$$hash;
+                            } else {
+                                newVal.$$hash = Object.create(null);
+                            }
+                        }
+                    } catch (e) {
+                        return;
+                    }
+                }
+            }
+            break;
+
+        default:
+            //  allocate internal hash - note that it is a prototype-less
+            //  object.
+            newVal.$$hash = Object.create(null);
+
+            //  arguments syntax 'a', 1, 'b', 2, 'c', 3
+            for (i = 0; i < arguments.length; i += 2) {
+                val = arguments[i + 1];
+                newVal.$$hash[arguments[i]] = TP.notDefined(val) ? null : val;
+            }
+            break;
+    }
+
+    return newVal;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('hc', TP.core.Hash.construct);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -4645,206 +4773,6 @@ function(anObject) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Hash.Inst.defineMethod('init',
-function() {
-
-    /**
-     * @method init
-     * @summary Initialize the instance.
-     * @returns {TP.core.Hash} A new instance.
-     */
-
-    var obj,
-        i,
-        pair,
-        attrs,
-        len,
-        val,
-        thisref,
-
-        proxyConfig,
-        hashProxy;
-
-    this.callNextMethod();
-
-    thisref = this;
-
-    //  NB: For performance reasons, there are multiple occurrences of setting
-    //  the internal hash to an orphan object here. This is due to the desire to
-    //  minimize checking and object creation.
-    switch (arguments.length) {
-        case 0:
-            this.$set('$$hash', TP.constructOrphanObject(), false);
-            break;
-
-        case 1:
-            obj = arguments[0];
-
-            if (TP.notValid(obj)) {
-                this.$set('$$hash', TP.constructOrphanObject(), false);
-            } else {
-
-                //  If the supplied object is a primitive Hash, just grab the
-                //  POJO that's its Hash and process that below.
-                if (obj.$$prototype &&
-                    obj.$$prototype.constructor === TP.boot.PHash) {
-                    obj = obj.$$hash;
-                }
-
-                if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
-                    this.$set('$$hash', TP.constructOrphanObject(), false);
-                    TP.objectGetKeys(obj).forEach(
-                            function(key) {
-                                var value;
-
-                                value = obj[key];
-                                if (TP.isPlainObject(value) &&
-                                    !TP.isPrototype(value)) {
-                                    value = TP.core.Hash.construct(value);
-                                }
-
-                                thisref.atPut(
-                                    key,
-                                    TP.notDefined(value) ? null : value);
-                            });
-                } else if (TP.isArray(obj)) {
-                    //  allocate internal hash - note that it is a
-                    //  prototype-less object.
-                    this.$set('$$hash', TP.constructOrphanObject(), false);
-
-                    if (TP.isPair(obj[0])) {
-                        //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
-                        for (i = 0; i < obj.length; i++) {
-                            pair = obj[i];
-                            val = pair[1];
-                            this.atPut(
-                                pair[0],
-                                TP.notDefined(val) ? null : val,
-                                false);
-                        }
-                    } else {
-                        //  array syntax ['a', 1, 'b', 2, 'c', 3]
-                        for (i = 0; i < obj.length; i += 2) {
-                            val = obj[i + 1];
-                            this.atPut(
-                                obj[i],
-                                TP.notDefined(val) ? null : val,
-                                false);
-                        }
-                    }
-                } else if (TP.isString(obj)) {
-                    return TP.core.Hash.fromString(obj);
-                } else if (TP.isElement(obj)) {
-                    //  allocate internal hash - note that it is a
-                    //  prototype-less object.
-                    this.$set('$$hash', TP.constructOrphanObject(), false);
-
-                    attrs = obj.attributes;
-                    len = attrs.length;
-
-                    for (i = 0; i < len; i++) {
-                        this.atPut(attrs[i].name, attrs[i].value);
-                    }
-                } else if (TP.isHash(obj)) {
-                    return obj;
-                } else {
-
-                    //  JSON conversions can fail so protect against that.
-                    try {
-                        val = TP.js2json(obj);
-                        if (TP.isValid(val)) {
-                            val = TP.json2js(val);
-                            if (TP.isValid(val)) {
-                                //  Note how we grab the '$$hash' prototype-less
-                                //  object and make that *our* $$hash.
-                                this.$set('$$hash', val.$$hash, false);
-                            } else {
-                                this.$set('$$hash', TP.constructOrphanObject(),
-                                        false);
-                            }
-                        }
-                    } catch (e) {
-                        return;
-                    }
-                }
-            }
-            break;
-
-        default:
-            //  allocate internal hash - note that it is a prototype-less
-            //  object.
-            this.$set('$$hash', TP.constructOrphanObject(), false);
-
-            //  arguments syntax 'a', 1, 'b', 2, 'c', 3
-            for (i = 0; i < arguments.length; i += 2) {
-                val = arguments[i + 1];
-                this.atPut(
-                    arguments[i],
-                    TP.notDefined(val) ? null : val,
-                    false);
-            }
-            break;
-    }
-
-    //  Now, construct an ECMA6 proxy that will 'stand in' for the hash. This
-    //  allows TP.core.Hash objects to participate in ECMA6-style destructuring.
-    proxyConfig = {
-        get: function(target, propName) {
-
-            //  If the named slot has a real value on the target, then we return
-            //  that.
-            if (target[propName]) {
-                return target[propName];
-            }
-
-            //  The slot had no real value on the target - return the value
-            //  that's in the embedded hash object.
-            return target.$$hash[propName];
-        },
-        set: function(target, propName, propValue) {
-
-            //  Any INTERNAL slots never get a proxified shadowed method created
-            //  for them.
-            if (TP.regex.INTERNAL_SLOT.test(propName)) {
-                target[propName] = propValue;
-                return;
-            }
-
-            //  Any one of these TP.core.Hash-specific slots never get a
-            //  proxified shadowed method created for them.
-            switch (propName) {
-                case 'sortFunction':
-                case TP.PROXIED:
-                case TP.REVISED:
-                    target[propName] = propValue;
-                    return;
-                default:
-                    break;
-            }
-
-            //  If we're setting a named slot that also happens to be an
-            //  (instance) method on our type, then we need to redefine the
-            //  definition of that on *ourself* (i.e. a local method) that will
-            //  be a Function Proxy, wrapping our 'inherited' method with traps
-            //  that can detect whether that slot is being accessed because it's
-            //  a property access or a function invocation.
-            if (TP.isValid(target[propName]) &&
-                !TP.regex.INTERNAL_SLOT.test(propName) &&
-                target[propName][TP.OWNER] === TP.core.Hash) {
-                target.$$proxifyShadowedMethod(propName);
-            }
-
-            target.$$hash[propName] = propValue;
-        }
-    };
-
-    hashProxy = TP.constructProxyObject(this, proxyConfig);
-
-    return hashProxy;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Hash.Inst.defineMethod(Symbol.iterator,
 function() {
 
@@ -4911,7 +4839,6 @@ function(aCollection) {
     var keys,
         hash,
         keyArr,
-        target,
         i,
         len,
         item;
@@ -4926,8 +4853,6 @@ function(aCollection) {
     hash = this.$get('$$hash');
     keyArr = this.getKeys();
 
-    target = this[TP.PROXIED];
-
     len = keys.getSize();
     for (i = 0; i < len; i++) {
         item = keys[i];
@@ -4936,23 +4861,6 @@ function(aCollection) {
         //  us.
         if (TP.notDefined(hash[item]) || !TP.owns(hash, item)) {
             hash[item] = i;
-
-            //  If we have a proxied object (i.e. we are a proxy)
-            //  AND the slot doesn't have one of TIBET's 'internal slot' names.
-            //  AND if the target of the proxy (i.e. the hash that we're
-            //  proxying for) has a slot named the same as the key of what is
-            //  being added to the internal hash
-            //  AND the slot on the target is a method
-            //  AND that slot is owned by the TP.core.Hash type
-            //  then we need to create a 'proxyfied' shadow method. See the
-            //  $$proxifyShadowedMethod method for more details.
-            if (TP.isValid(target) &&
-                !TP.regex.INTERNAL_SLOT.test(item) &&
-                TP.isValid(target[item]) &&
-                target[item][TP.OWNER] === TP.core.Hash) {
-
-                target.$$proxifyShadowedMethod(item);
-            }
         }
     }
 
@@ -5674,12 +5582,6 @@ function(attributeName) {
             }
         }
 
-        //  booleans can often be found via is* methods
-        funcName = 'is' + TP.makeStartUpper(attributeName);
-        if (TP.isMethod(this[funcName])) {
-            return this[funcName]();
-        }
-
         //  This part is specific to TP.core.Hash - we check with our internal
         //  hash.
         if (TP.isDefined(val = this.at(attributeName))) {
@@ -5920,64 +5822,6 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
 
         this.atPut(key, newval);
     }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Hash.Inst.defineMethod('$$proxifyShadowedMethod',
-function(aMethodName) {
-
-    /**
-     * @method $$proxifyShadowedMethod
-     * @summary This method creates a local version of the method named by the
-     *     parameter on the receiver. This is because sometimes we want to
-     *     access a property on our underlying hash via ECMAScript 6 object
-     *     destructuring and, if that property is the same name as one of our
-     *     methods, we have to know *how* this property is being accessed. Is it
-     *     a destructuring or is it a method call on ourself? The only way to
-     *     know is to install an ECMAScript 6 Function Proxy.
-     * description The installed method will actually be an ECMAScript 6 Proxy
-     *     around a Function (the function inherited from this object's
-     *     prototype). This proxy will allow us to detect whether the slot is
-     *     being accessed as a property (i.e. foo.bar) or as a call (i.e.
-     *     foo.bar()). This is important when this method is shadowing a
-     *     property that we've got in our underlying hash.
-     * @param {String} aMethodName The name of the method to create a proxified
-     *     shadow method for.
-     * @returns {TP.core.Hash} The receiver.
-     */
-
-    var thisref,
-        propName,
-
-        methodProxyConfig,
-        methodProxy;
-
-    thisref = this;
-    propName = aMethodName;
-
-    //  Create a Proxy configuration that contains two traps: one for 'get',
-    //  which will be called when a regular property access is made - like in
-    //  destructuring, and one for 'apply', which will be called when the
-    //  property is accessed because a function call (i.e. method dispatch) is
-    //  being made against us.
-    methodProxyConfig = {
-        get: function(targetFunc, funcPropName) {
-            return function() {
-                return thisref.$$hash[propName];
-            };
-        },
-        apply: function(targetFunc, thisArg, argList) {
-            return Reflect.apply(targetFunc, thisref, argList);
-        }
-    };
-
-    //  Construct a Proxy around the Function that we inherit from our prototype
-    //  and set that Proxy back onto ourself as a 'local method'.
-    methodProxy = TP.constructProxyObject(this[propName], methodProxyConfig);
-    this[propName] = methodProxy;
 
     return this;
 });
@@ -6225,15 +6069,6 @@ function(attributeName, attributeValue, shouldSignal) {
                 default:
                     args = TP.args(arguments, 1);
                     return this[funcName].apply(this, args);
-            }
-        }
-
-        //  booleans can often be set via is* methods, which take a parameter
-        //  in TIBET syntax
-        if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + TP.makeStartUpper(attributeName);
-            if (TP.isMethod(this[funcName])) {
-                return this[funcName](attributeValue);
             }
         }
     }
@@ -8386,7 +8221,6 @@ function(anIndex, aValue) {
         shouldSignal,
         op,
         val,
-        target,
         changeRecord,
         changeRecordHash;
 
@@ -8429,24 +8263,6 @@ function(anIndex, aValue) {
             } else {
                 hash[anIndex] = aValue;
             }
-        }
-
-        //  If we have a proxied object (i.e. we are a proxy)
-        //  AND the slot doesn't have one of TIBET's 'internal slot' names.
-        //  AND if the target of the proxy (i.e. the hash that we're proxying
-        //  for) has a slot named the same as the key of what is being added
-        //  to the internal hash
-        //  AND the slot on the target is a method
-        //  AND that slot is owned by the TP.core.Hash type
-        //  then we need to create a 'proxyfied' shadow method. See the
-        //  $$proxifyShadowedMethod method for more details.
-        target = this[TP.PROXIED];
-        if (TP.isValid(target) &&
-            !TP.regex.INTERNAL_SLOT.test(anIndex) &&
-            TP.isValid(target[anIndex]) &&
-            target[anIndex][TP.OWNER] === TP.core.Hash) {
-
-            target.$$proxifyShadowedMethod(anIndex);
         }
 
         //  Otherwise, we're not gonna signal Change so we just return.

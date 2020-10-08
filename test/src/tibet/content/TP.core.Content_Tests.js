@@ -59,7 +59,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -96,7 +96,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -176,7 +176,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -273,7 +273,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -365,7 +365,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -460,7 +460,7 @@ function() {
 
         //  Turn on transactional behavior. This will checkpoint the data to the
         //  baseline checkpoint.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -555,7 +555,7 @@ function() {
 
         //  Turn on transactional behavior. This will checkpoint the data to the
         //  baseline checkpoint.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -661,7 +661,7 @@ function() {
 
         //  Turn on transactional behavior. This will checkpoint the data to the
         //  baseline checkpoint.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -802,7 +802,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -839,7 +839,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -919,7 +919,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -1016,7 +1016,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -1108,7 +1108,7 @@ function() {
         //  ---
 
         //  Turn on transactional behavior. This will checkpoint the data.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -1203,7 +1203,7 @@ function() {
 
         //  Turn on transactional behavior. This will checkpoint the data to the
         //  baseline checkpoint.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -1298,7 +1298,7 @@ function() {
 
         //  Turn on transactional behavior. This will checkpoint the data to the
         //  baseline checkpoint.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);
@@ -1404,7 +1404,7 @@ function() {
 
         //  Turn on transactional behavior. This will checkpoint the data to the
         //  baseline checkpoint.
-        modelObj.isTransactional(true);
+        modelObj.setTransactional(true);
 
         numSnaps = modelObj.get('snaps').getSize();
         test.assert.isEqualTo(numSnaps, 1);

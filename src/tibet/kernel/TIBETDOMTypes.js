@@ -2022,6 +2022,10 @@ function() {
 
     var aspects;
 
+    if (TP.owns(this, '$$faceted_aspects')) {
+        return this.$$faceted_aspects;
+    }
+
     //  Gather whatever our supertype thinks we should have as aspect names that
     //  have facets.
     aspects = this.callNextMethod();
@@ -9880,6 +9884,10 @@ TP.dom.ElementNode.Type.defineAttribute('reloadableUriAttrs', TP.ac());
 //  with a TP.core.Hash incoming value
 TP.dom.ElementNode.Type.defineAttribute('template');
 
+//  a cache of URI locations and the TP.dom.ElementNode objects created from
+//  that URI.
+TP.dom.ElementNode.Type.defineAttribute('$resourceElements', TP.hc());
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -11207,6 +11215,8 @@ function(resource, mimeType, setupFunc) {
 
     var uri,
         src,
+        result,
+
         resp,
         str,
 
@@ -11226,6 +11236,13 @@ function(resource, mimeType, setupFunc) {
 
     src = uri.getLocation();
 
+    //  If a TP.dom.ElementNode with a URI that matches the src has been cached,
+    //  then return it.
+    result = this.get('$resourceElements').at(src);
+    if (TP.isValid(result)) {
+        return result;
+    }
+
     //  Grab the receiver's content for processing. We do this synchronously
     //  here and we also get it in string form so we can process the markup and
     //  add default namespace as needed to make authoring more convenient.
@@ -11237,7 +11254,7 @@ function(resource, mimeType, setupFunc) {
     str = resp.get('result');
 
     if (TP.isEmpty(mime = mimeType)) {
-        mime = TP.ietf.mime.guessMIMEType(str, uri);
+        mime = uri.getMIMEType();
     }
 
     //  Try to guess the default XML namespace from the MIME type computed from
@@ -11266,7 +11283,12 @@ function(resource, mimeType, setupFunc) {
         setupFunc(elem);
     }
 
-    return TP.wrap(elem);
+    result = TP.wrap(elem);
+
+    //  Cache the TP.dom.ElementNode under the URI's source.
+    this.get('$resourceElements').atPut(src, result);
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
@@ -13144,12 +13166,6 @@ function(attributeName) {
                     return this[funcName].apply(this, args);
             }
         }
-
-        //  booleans can often be found via is* methods
-        funcName = 'is' + TP.makeStartUpper(attributeName);
-        if (TP.isMethod(this[funcName])) {
-            return this[funcName]();
-        }
     }
 
     //  If we got a valid path above or if we have a 'value' facet that has an
@@ -14694,15 +14710,6 @@ function(attributeName, attributeValue, shouldSignal) {
                 default:
                     args = TP.args(arguments, 1);
                     return this[funcName].apply(this, args);
-            }
-        }
-
-        //  booleans can often be set via is* methods, which take a parameter
-        //  in TIBET syntax
-        if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + TP.makeStartUpper(attributeName);
-            if (TP.isMethod(this[funcName])) {
-                return this[funcName](attributeValue);
             }
         }
     }
@@ -16649,12 +16656,6 @@ function(attributeName) {
                     args = TP.args(arguments, 1);
                     return this[funcName].apply(this, args);
             }
-        }
-
-        //  booleans can often be found via is* methods
-        funcName = 'is' + TP.makeStartUpper(attributeName);
-        if (TP.isMethod(this[funcName])) {
-            return this[funcName]();
         }
     }
 

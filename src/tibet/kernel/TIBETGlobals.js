@@ -981,6 +981,7 @@ TP.BUSY_BKGD_ELEMENT = 'tp_busy_bkgd_element';
 TP.BUSY_RESIZE_FUNC = 'tp_busy_resize_function';
 TP.REPEAT_SOURCE = 'tp_repeat_source';
 TP.REPEAT_INDEX = 'tp_repeat_index';
+TP.PSEUDO_INLINE_STYLE = 'tp_pseudo_inline_style';
 
 TP.BOUND_ATTR_COUNT = 'tp_bound_attr_count';
 TP.BOUND_ATTR_PROCESSED_COUNT = 'tp_bound_attr_processed_count';
@@ -3253,6 +3254,7 @@ TP.regex.FORMAT_SUBSTITUTION = /[#%@]\{/;
 //  Templating delimiters
 TP.regex.STARTS_ACP = /^\{\{/;
 TP.regex.HAS_ACP = /\{\{.*\}\}/;
+TP.regex.HAS_ACP_ATTR = /\s*([\w:]+)=['"]\{\{.*\}\}['"]/;
 TP.regex.EXTRACT_ACP = /\{\{(.+?)\}\}/;
 
 TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset

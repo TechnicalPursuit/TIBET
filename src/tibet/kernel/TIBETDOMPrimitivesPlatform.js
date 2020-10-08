@@ -435,9 +435,9 @@ TP.hc(
          *          <samp><foo><bar/></foo></samp>
          *     </code>
          * @returns {XMLDocument} The XML document parsed from the string.
-         * @exception TP.sig.DOMParseException Raised if the supplied String cannot
-         *     be parsed into a proper XML DOM construct and the shouldReport
-         *     flag is true.
+         * @exception TP.sig.DOMParseException Raised if the supplied String
+         *     cannot be parsed into a proper XML DOM construct and the
+         *     shouldReport flag is true.
          */
 
         var report,
@@ -446,6 +446,8 @@ TP.hc(
             str,
 
             defs,
+
+            isJSONStr,
 
             xmlDoc,
 
@@ -475,6 +477,12 @@ TP.hc(
             return;
         }
 
+        if (TP.isValid(xmlDoc = TP.$parsed_doc_cache.at(aString))) {
+            //  We always return a clone so that we don't mess with what we have
+            //  in our cache.
+            return xmlDoc.cloneNode(true);
+        }
+
         //  If the caller has specified a default namespace, use it here. Even
         //  if this is the empty String, that's ok - it means they wanted an
         //  empty default namespace.
@@ -497,17 +505,17 @@ TP.hc(
                 str + '>$&</tibet_root>');
         }
 
+        isJSONStr = TP.isJSONString(str);
+
         //  Detect things like binding expressions here and massage the DOM to
         //  create (or add to an existing) bind:io attribute. Note here how we
         //  also check to make sure it's not a JSON String - we don't want long
         //  Strings of JSON data in our binding attributes.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
-            !TP.isJSONString(str)) {
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) && !isJSONStr) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
-        if (TP.regex.HAS_ACP.test(str) &&
-            !TP.isJSONString(str)) {
+        if (TP.regex.HAS_ACP_ATTR.test(str) && !isJSONStr) {
             str = TP.$documentCaptureACPAttrExpressions(str);
         }
 
@@ -604,7 +612,11 @@ TP.hc(
                     xmlDoc.documentElement);
         }
 
-        return xmlDoc;
+        TP.$parsed_doc_cache.atPut(aString, xmlDoc);
+
+        //  We always return a clone so that we don't mess with what we have in
+        //  our cache.
+        return xmlDoc.cloneNode(true);
     },
     'webkit',
     function(aString, defaultNS, shouldReport) {
@@ -633,9 +645,9 @@ TP.hc(
          *          <samp><foo><bar/></foo></samp>
          *     </code>
          * @returns {XMLDocument} The XML document parsed from the string.
-         * @exception TP.sig.DOMParseException Raised if the supplied String cannot
-         *     be parsed into a proper XML DOM construct and the shouldReport
-         *     flag is true.
+         * @exception TP.sig.DOMParseException Raised if the supplied String
+         *     cannot be parsed into a proper XML DOM construct and the
+         *     shouldReport flag is true.
          */
 
         var report,
@@ -644,6 +656,8 @@ TP.hc(
             str,
 
             defs,
+
+            isJSONStr,
 
             xmlDoc,
 
@@ -673,6 +687,12 @@ TP.hc(
             return;
         }
 
+        if (TP.isValid(xmlDoc = TP.$parsed_doc_cache.at(aString))) {
+            //  We always return a clone so that we don't mess with what we have
+            //  in our cache.
+            return xmlDoc.cloneNode(true);
+        }
+
         //  If the caller has specified a default namespace, use it here. Even
         //  if this is the empty String, that's ok - it means they wanted an
         //  empty default namespace.
@@ -695,17 +715,17 @@ TP.hc(
                 str + '>$&</tibet_root>');
         }
 
+        isJSONStr = TP.isJSONString(str);
+
         //  Detect things like binding expressions here and massage the DOM to
         //  create (or add to an existing) bind:io attribute. Note here how we
         //  also check to make sure it's not a JSON String - we don't want long
         //  Strings of JSON data in our binding attributes.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
-            !TP.isJSONString(str)) {
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) && !isJSONStr) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
-        if (TP.regex.HAS_ACP.test(str) &&
-            !TP.isJSONString(str)) {
+        if (TP.regex.HAS_ACP_ATTR.test(str) && !isJSONStr) {
             str = TP.$documentCaptureACPAttrExpressions(str);
         }
 
@@ -808,7 +828,11 @@ TP.hc(
                                 TP.XML_ENCODED);
         }
 
-        return xmlDoc;
+        //  We always return a clone so that we don't mess with what we have in
+        //  our cache.
+        TP.$parsed_doc_cache.atPut(aString, xmlDoc);
+
+        return xmlDoc.cloneNode(true);
     }
 ));
 

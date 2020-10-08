@@ -3714,20 +3714,18 @@ function(anObject, verbose) {
 
     wantsVerbose = TP.ifInvalid(verbose, true);
 
-    if (TP.canInvoke(anObject, 'asString')) {
-        try {
-            str = anObject.asString(wantsVerbose);
+    try {
+        str = anObject.asString(wantsVerbose);
 
-            //  If it reports as '[native code]' and is also a native type, then
-            //  extract it's name.
-            if (TP.regex.NATIVE_CODE.test(str) && TP.isNativeType(anObject)) {
-                str = TP.tname(anObject);
-            }
-
-            return str;
-        } catch (e) {
-            void 0;
+        //  If it reports as '[native code]' and is also a native type, then
+        //  extract it's name.
+        if (TP.regex.NATIVE_CODE.test(str) && TP.isNativeType(anObject)) {
+            str = TP.tname(anObject);
         }
+
+        return str;
+    } catch (e) {
+        void 0;
     }
 
     //  XMLHttpRequest can have permission issues, so check early
@@ -4810,7 +4808,8 @@ function(anObject) {
 
         //  If the object has a 'TP.ANCESTORS' property, that means it's been
         //  instrumented by us for consistency. Return the value of that.
-        if (TP.isValid(supers = anObject[TP.ANCESTORS])) {
+        if (TP.isValid(supers = anObject[TP.ANCESTORS]) &&
+            TP.owns(anObject, TP.ANCESTORS)) {
             return supers;
         }
 
@@ -4836,6 +4835,8 @@ function(anObject) {
             }
         }
 
+        anObject[TP.ANCESTORS] = supers;
+
         return supers;
     }
 
@@ -4860,7 +4861,8 @@ function(anObject) {
 
         //  If the type has a 'TP.ANCESTORS' property, that means it's been
         //  instrumented by us for consistency. Return the value of that.
-        if (TP.isValid(supers = type[TP.ANCESTORS])) {
+        if (TP.isValid(supers = type[TP.ANCESTORS]) &&
+            TP.owns(type, TP.ANCESTORS)) {
             return supers;
         }
 
@@ -4874,6 +4876,8 @@ function(anObject) {
         if (type !== Object) {
             supers.push(Object);
         }
+
+        type[TP.ANCESTORS] = supers;
 
         return supers;
     }
@@ -4912,16 +4916,111 @@ function(anObject) {
      * @returns {String[]} A list of the object's supertype names.
      */
 
-    var stypes;
+    var type,
+        obj,
+        supernames;
 
-    stypes = TP.stypes(anObject);
+    if (TP.notDefined(anObject) || TP.isNull(anObject)) {
+        return TP.ac();
+    }
 
-    //  Make sure to run a map() to create a new Array, since we might be
-    //  touching a cached Array of TP.ANCESTORS.
-    return stypes.map(
-            function(aType) {
-                return TP.name(aType);
-            });
+    //  Types
+
+    //  Non-Function host objects
+    if (TP.isNonFunctionConstructor(anObject)) {
+        //  These guys are shallow
+        return TP.ac('Object');
+    }
+
+    //  Function-based host objects
+    if (TP.isNativeType(anObject)) {
+        if (anObject === Function) {
+            return TP.ac('Object');
+        }
+
+        //  If the object has a 'TP.ANCESTOR_NAMES' property, that means it's
+        //  been instrumented by us for consistency. Return the value of that.
+        if (TP.isValid(supernames = anObject[TP.ANCESTOR_NAMES]) &&
+            TP.owns(anObject, TP.ANCESTOR_NAMES)) {
+            return supernames;
+        }
+
+        //  Walk the 'getPrototypeOf()' proto chain until it's null, gathering
+        //  names along the way. Since these are already constructors, we don't
+        //  need to get their constructor like we do below.
+        obj = anObject;
+        supernames = TP.ac();
+
+        while (TP.isValid(obj = Object.getPrototypeOf(obj))) {
+            if (obj === TP.FunctionProto) {
+                //  NB: If the object is TP.FunctionProto, we do not push
+                //  'Function' (or anything else) onto the results. We're not
+                //  interested in knowing that things end up on Function in the
+                //  prototype chain
+                continue;
+            }
+
+            if (obj === TP.ObjectProto) {
+                supernames.push('Object');
+            } else {
+                supernames.push(TP.name(obj));
+            }
+        }
+
+        anObject[TP.ANCESTOR_NAMES] = supernames;
+
+        return supernames;
+    }
+
+    //  Have to put this test *after* the isNativeType() test so that we know
+    //  we're talking to a TIBET type.
+    if (TP.isType(anObject)) {
+        return anObject.getSupertypeNames();
+    }
+
+    //  Instances
+
+    type = TP.type(anObject);
+
+    //  Non-Function host objects
+    if (TP.isNonFunctionConstructor(type)) {
+        //  These guys are shallow
+        return TP.ac('Object');
+    }
+
+    //  Function-based host objects
+    if (TP.isNativeType(type)) {
+
+        //  If the type has a 'TP.ANCESTOR_NAMES' property, that means it's been
+        //  instrumented by us for consistency. Return the value of that.
+        if (TP.isValid(supernames = type[TP.ANCESTOR_NAMES]) &&
+            TP.owns(type, TP.ANCESTOR_NAMES)) {
+            return supernames;
+        }
+
+        //  Grab the list of supertypes from the type and slice off the last
+        //  two (which slice off any 'Function' or 'Object' references).
+        supernames = TP.stnames(type);
+        supernames = supernames.slice(0, supernames.getSize() - 2);
+
+        //  If the type isn't 'Object' itself (in which case there will already
+        //  be an entry for 'Object'), then push Object onto the end.
+        if (type !== Object) {
+            supernames.push('Object');
+        }
+
+        type[TP.ANCESTOR_NAMES] = supernames;
+
+        return supernames;
+    }
+
+    //  Instances of TIBET types and instances should respond to
+    //  'getSupertypes()' - polymorphically, this is the best approach
+    if (TP.canInvoke(anObject, 'getSupertypes')) {
+        return anObject.getSupertypeNames();
+    }
+
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
@@ -6111,7 +6210,9 @@ function(signame) {
      * @returns {String} The lengthened signal name.
      */
 
-    var parts,
+    var result,
+
+        parts,
         i,
         newparts,
 
@@ -6126,6 +6227,13 @@ function(signame) {
         return '';
     }
 
+    //  See if the signal name cache contains a 'fully expanded' entry for the
+    //  supplied signal name. If so, return it.
+    result = TP.$signal_name_cache.at(signame);
+    if (TP.notEmpty(result)) {
+        return result;
+    }
+
     //  Event sequences (i.e. typically keyboard sequences) will have a
     //  double underscore between each part of the sequence. We need to make
     //  sure to expand each part.
@@ -6138,17 +6246,24 @@ function(signame) {
             newparts.push(TP.expandSignalName(parts.at(i)));
         }
 
-        return newparts.join('__');
+        result = newparts.join('__');
+        TP.$signal_name_cache.atPut(signame, result);
+
+        return result;
     }
 
     if (/^(TP|APP)\.(.+)/.test(signame)) {
+        TP.$signal_name_cache.atPut(signame, signame);
         return signame;
     }
 
     //  See if the system has a type corresponding directly to signame.
     if (TP.isType(type = TP.sys.getTypeByName(signame))) {
         if (TP.canInvoke(type, 'getSignalName')) {
-            return type.getSignalName();
+            result = type.getSignalName();
+            TP.$signal_name_cache.atPut(signame, result);
+
+            return result;
         }
     }
 
@@ -6159,18 +6274,27 @@ function(signame) {
         if (TP.isType(type = TP.sys.getTypeByName(
                         namespaceNames.at(i) + '.' + signame))) {
             if (TP.canInvoke(type, 'getSignalName')) {
-                return type.getSignalName();
+                result = type.getSignalName();
+                TP.$signal_name_cache.atPut(signame, result);
+
+                return result;
             }
         }
     }
 
     //  We have at least one namespace - just prefix it with 'TP.' and exit
     if (/^(.+)\.(.+)/.test(signame)) {
-        return 'TP.' + signame;
+        result = 'TP.' + signame;
+        TP.$signal_name_cache.atPut(signame, result);
+
+        return result;
     }
 
     //  Couldn't find anything - just put 'TP.sig.' on the front of it.
-    return 'TP.sig.' + signame;
+    result = 'TP.sig.' + signame;
+    TP.$signal_name_cache.atPut(signame, result);
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------

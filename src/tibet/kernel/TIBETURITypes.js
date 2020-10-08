@@ -990,7 +990,7 @@ function(aURI) {
      * @summary Processes a 'remote resource' change for the supplied URI.
      *     Invoked automatically by the TDS and Couch URL handlers to notify
      *     the system that a remote resource has changed value.
-     * @description Depending on whether the supplied URI 'isWatched' and
+     * @description Depending on whether the supplied URI 'getWatched' and
      *     therefore will process changes from its remote resource or not, this
      *     method will either refresh the URI (via refreshFromRemoteResource) or
      *     it will put an entry for the supplied URI into a hash that tracks
@@ -1012,7 +1012,7 @@ function(aURI) {
 
     //  Track system-wide process flag.
     shouldProcess = TP.sys.cfg('uri.source.process_changes');
-    watched = aURI.isWatched();
+    watched = aURI.getWatched();
 
     //  If we're supposed to process AND the uri is configured for processing
     //  then let it refresh from its remote data source.
@@ -2614,7 +2614,7 @@ function(newResource) {
                                 content, this, this.get('defaultMIMEType'));
 
     if (TP.isString(mimeType)) {
-        //  note that we don't cache the guess
+        this.$set('computedMIMEType', mimeType);
         return mimeType;
     }
 
@@ -5769,7 +5769,7 @@ TP.uri.URL.Inst.defineAttribute('path');
 TP.uri.URL.Inst.defineAttribute('lastRequest');
 
 //  whether or not the URI is being watched for change. NOTE: do NOT set this
-//  to false without changing the isWatched method logic. Null implies true.
+//  to false without changing the getWatched method logic. Null implies true.
 TP.uri.URL.Inst.defineAttribute('watched', null);
 
 //  whether or not we should try to PATCH this instance
@@ -6969,14 +6969,14 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.uri.URL.Inst.defineMethod('isWatched',
+TP.uri.URL.Inst.defineMethod('getWatched',
 function() {
 
     /**
-     * @method isWatched
-     * @summary Returns whether or not the URI should process remote changes
-     *     when it gets notified that its remote content has changed.
-     * @returns {Boolean} Whether or not the resource processes remote changes.
+     * @method getWatched
+     * @summary Returns whether or not the URI should watch changes to its
+     *     remote content.
+     * @returns {Boolean} Whether or not the resource watches remote changes.
      */
 
     return TP.notFalse(this.$get('watched'));
@@ -7041,6 +7041,23 @@ function(shouldBePatched) {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.URL.Inst.defineMethod('setWatched',
+function(shouldBeWatched) {
+
+    /**
+     * @method setWatched
+     * @summary Sets whether or not the URI should watch changes to its
+     *     remote content.
+     * @param {Boolean} shouldBeWatched Whether the URI should be watched or
+     *     not.
+     * @returns {TP.uri.URL} The receiver.
+     */
+
+    return this.$set('watched', shouldBeWatched);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.URL.Inst.defineMethod('refreshFromRemoteResource',
 async function() {
 
@@ -7060,7 +7077,7 @@ async function() {
 
         isLoadableScript;
 
-    if (this.isWatched()) {
+    if (this.getWatched()) {
         this.isLoaded(false);
     }
 
@@ -7068,7 +7085,7 @@ async function() {
     if (TP.notEmpty(secondaryURIs = this.getSecondaryURIs())) {
         secondaryURIs.forEach(
                 function(aURI) {
-                    if (aURI.isWatched()) {
+                    if (aURI.getWatched()) {
                         aURI.isLoaded(false);
                     }
                 });
@@ -7096,7 +7113,7 @@ async function() {
         //  Make sure to set isLoaded() to true here, since we set it to false
         //  above. This will ensure that the URL doesn't think it's still dirty
         //  after we've reloaded it per the semantics of this method.
-        if (url.isWatched()) {
+        if (url.getWatched()) {
             url.isLoaded(true);
         }
 
@@ -7195,7 +7212,7 @@ function() {
         handler;
 
     //  Early exit if we're already set so we avoid request/rewrite/remap work.
-    if (TP.isTrue(this.get('watched'))) {
+    if (TP.isTrue(this.getWatched())) {
         return this;
     }
 
@@ -7210,7 +7227,7 @@ function() {
 
     //  NOTE we don't assume true, we still check that the receiver is a
     //  watchable URI based on any remote URL filtering for the handler.
-    this.set('watched', handler.isWatchableURI(this));
+    this.setWatched(handler.isWatchableURI(this));
 
     return this;
 });
@@ -7233,7 +7250,7 @@ function() {
         url;
 
     //  Early exit if we're already set so we avoid request/rewrite/remap work.
-    if (TP.isFalse(this.get('watched'))) {
+    if (TP.isFalse(this.getWatched())) {
         return this;
     }
 
@@ -7244,7 +7261,7 @@ function() {
         url.unwatch();
     }
 
-    this.set('watched', false);
+    this.setWatched(false);
 
     return this;
 });
@@ -9774,7 +9791,7 @@ function() {
      * @returns {Boolean} Whether or not the URI is watched.
      */
 
-    return this.getConcreteURI().get('watched');
+    return this.getConcreteURI().getWatched();
 });
 
 //  ------------------------------------------------------------------------
@@ -10170,7 +10187,7 @@ function(shouldBeWatched) {
      * @returns {TP.uri.TIBETURL} The receiver.
      */
 
-    return this.getConcreteURI().set('watched', shouldBeWatched);
+    return this.getConcreteURI().setWatched(shouldBeWatched);
 });
 
 //  ------------------------------------------------------------------------
@@ -10327,6 +10344,24 @@ TP.lang.Object.defineSubtype('uri.URIHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.uri.URIHandler.Type.defineMethod('isWatchableURI',
+function(targetURI) {
+
+    /**
+     * @method isWatchableURI
+     * @summary Tests a URI against include/exclude filters to determine if
+     *     changes to the URI should be considered for processing.
+     * @description This is the supertype of all URI handlers and at this type
+     *     level, this method always returns false.
+     * @param {String|TP.uri.URI} targetURI The URI to test.
+     * @returns {Boolean} This method always returns false at this type leve.
+     */
+
+    return false;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.uri.URIHandler.Type.defineMethod('load',
@@ -12973,74 +13008,87 @@ function(targetURI) {
      * @returns {Boolean} true if the URI passes include/exclude filters.
      */
 
-    var escaper,
+    var includeRE,
+        excludeRE,
+
         targetLoc,
         targetVirtual,
+
+        escaper,
+
+        cfgName,
+
         includes,
-        excludes,
-        includeRE,
-        excludeRE;
+        excludes;
 
     //  NOTE each type which mixes this in gets it own copy of the values here.
     includeRE = this.get('includeRE');
     excludeRE = this.get('excludeRE');
 
-    if (TP.notValid(includeRE)) {
+    targetLoc = targetURI.getLocation();
+    targetVirtual = TP.uriInTIBETFormat(targetLoc);
 
-        targetLoc = targetURI.getLocation();
-        targetVirtual = TP.uriInTIBETFormat(targetLoc);
+    if (TP.notValid(includeRE)) {
 
         escaper = TP.uri.RemoteURLWatchHandler.INCLUDE_EXCLUDE_ESCAPER;
 
-        includes = TP.sys.cfg(this.get('includeConfigName'));
-        if (TP.notEmpty(includes)) {
+        cfgName = this.get('includeConfigName');
+        if (TP.notEmpty(cfgName)) {
+            includes = TP.sys.cfg(cfgName);
+            if (TP.notEmpty(includes)) {
 
-            //  First normalize any virtual path values.
-            includes = includes.map(
-                        function(item) {
-                            return TP.uriInTIBETFormat(TP.uriExpandPath(item));
-                        });
+                //  First normalize any virtual path values.
+                includes = includes.map(
+                            function(item) {
+                                    return TP.uriInTIBETFormat(
+                                                TP.uriExpandPath(item));
+                            });
 
-            //  Now produce a single source string for regex construct.
-            includes = includes.reduce(
-                        function(str, item) {
-                            return str ?
-                                str + '|' + escaper(item) :
-                                escaper(item);
-                        }, '');
+                //  Now produce a single source string for regex construct.
+                includes = includes.reduce(
+                            function(str, item) {
+                                return str ?
+                                    str + '|' + escaper(item) :
+                                    escaper(item);
+                            }, '');
 
-            try {
-                //  Use 'new' here to keep escaping simple.
-                includeRE = new RegExp(includes);
-            } catch (e) {
-                this.raise('InvalidWatchIncludes', includes);
+                try {
+                    //  Use 'new' here to keep escaping simple.
+                    includeRE = new RegExp(includes);
+                } catch (e) {
+                    this.raise('InvalidWatchIncludes', includes);
+                }
             }
         }
 
         includeRE = TP.ifInvalid(includeRE, /.*/);
 
-        excludes = TP.sys.cfg(this.get('excludeConfigName'));
-        if (TP.notEmpty(excludes)) {
+        cfgName = this.get('excludeConfigName');
+        if (TP.notEmpty(cfgName)) {
+            excludes = TP.sys.cfg(cfgName);
+            if (TP.notEmpty(excludes)) {
 
-            //  First normalize any virtual path values.
-            excludes = excludes.map(
-                        function(item) {
-                            return TP.uriInTIBETFormat(TP.uriExpandPath(item));
-                        });
+                //  First normalize any virtual path values.
+                excludes = excludes.map(
+                            function(item) {
+                                    return TP.uriInTIBETFormat(
+                                                TP.uriExpandPath(item));
+                            });
 
-            //  Now produce a single source string for regex construct.
-            excludes = excludes.reduce(
-                        function(str, item) {
-                            return str ?
-                                str + '|' + escaper(item) :
-                                escaper(item);
-                        }, '');
+                //  Now produce a single source string for regex construct.
+                excludes = excludes.reduce(
+                            function(str, item) {
+                                return str ?
+                                    str + '|' + escaper(item) :
+                                    escaper(item);
+                            }, '');
 
-            try {
-                //  Use 'new' here to keep escaping simple.
-                excludeRE = new RegExp(excludes);
-            } catch (e) {
-                this.raise('InvalidWatchExcludes', excludes);
+                try {
+                    //  Use 'new' here to keep escaping simple.
+                    excludeRE = new RegExp(excludes);
+                } catch (e) {
+                    this.raise('InvalidWatchExcludes', excludes);
+                }
             }
         }
 
@@ -13048,17 +13096,15 @@ function(targetURI) {
         this.set('excludeRE', excludeRE);
     }
 
-    TP.info('checking ' + targetLoc +
-            ' in ' + includes +
-            ' and not ' + excludes);
-
     if (TP.isValid(excludeRE)) {
+        TP.info('checking ' + targetLoc + ' not in: ' + excludes);
         if (excludeRE.test(targetVirtual)) {
             return false;
         }
     }
 
     if (TP.isValid(includeRE)) {
+        TP.info('checking ' + targetLoc + ' in: ' + includes);
         return includeRE.test(targetVirtual);
     }
 

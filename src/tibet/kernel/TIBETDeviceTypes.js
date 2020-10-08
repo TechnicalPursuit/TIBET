@@ -3688,6 +3688,11 @@ function(normalizedEvent) {
      * @returns {TP.meta.core.Mouse} The receiver.
      */
 
+    if (TP.$mousewheel_capturer_cache.indexOf(normalizedEvent.target) !==
+        TP.NOT_FOUND) {
+        return this;
+    }
+
     this.invokeObservers('mousewheel', normalizedEvent);
 
     return this;

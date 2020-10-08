@@ -911,6 +911,10 @@ function() {
 
     var aspects;
 
+    if (TP.owns(this, '$$faceted_aspects')) {
+        return this.$$faceted_aspects;
+    }
+
     //  Gather whatever our supertype thinks we should have as aspect names that
     //  have facets.
     aspects = this.callNextMethod();
@@ -932,6 +936,8 @@ function() {
 
                     return false;
                 });
+
+    this.$$faceted_aspects = aspects;
 
     return aspects;
 });
@@ -1279,7 +1285,7 @@ function(aName) {
         points,
         ndx;
 
-    if (!this.isTransactional()) {
+    if (!this.getTransactional()) {
         return this;
     }
 
@@ -1354,7 +1360,7 @@ function(aName) {
         ndx,
         points;
 
-    if (!this.isTransactional()) {
+    if (!this.getTransactional()) {
         return this;
     }
 
@@ -1420,7 +1426,7 @@ function() {
         snaps,
         points;
 
-    if (!this.isTransactional()) {
+    if (!this.getTransactional()) {
         return this;
     }
 
@@ -1470,7 +1476,7 @@ function() {
     var ndx,
         snaps;
 
-    if (!this.isTransactional()) {
+    if (!this.getTransactional()) {
         return this;
     }
 
@@ -1512,7 +1518,7 @@ function() {
     var snaps,
         points;
 
-    if (!this.isTransactional()) {
+    if (!this.getTransactional()) {
         return this;
     }
 
@@ -1558,7 +1564,7 @@ function(aName) {
         ndx,
         points;
 
-    if (!this.isTransactional()) {
+    if (!this.getTransactional()) {
         return this;
     }
 
@@ -1607,52 +1613,16 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Inst.defineMethod('isTransactional',
-function(aFlag) {
+TP.core.Content.Inst.defineMethod('getTransactional',
+function() {
 
     /**
-     * @method isTransactional
-     * @summary Combined setter/getter for whether the receiver has been told
-     *     to support transactional behavior via checkpoint, commit, and
-     *     rollback.
-     * @param {Boolean} aFlag The state of the content's transaction flag, which
-     *     will be set when provided.
+     * @method getTransactional
+     * @summary Returns whether the receiver has been told to support
+     *     transactional behavior via checkpoint, commit, and rollback.
      * @returns {Boolean} The current transaction state, after any optional
      *     set() operation has occurred.
      */
-
-    if (TP.isBoolean(aFlag)) {
-
-        if (TP.isTrue(this.$get('transactional'))) {
-
-            if (!aFlag) {
-                //  was transactional, clearing it now...
-
-                //  TODO: check for unsaved changes etc...
-
-                this.$set('snaps', null, false);
-                this.$set('points', null, false);
-                this.$set('currentIndex', null, false);
-            }
-
-        } else {
-
-            if (aFlag) {
-                //  wasn't transactional, turning it on...
-
-                this.$set('transactional', aFlag, false);
-                this.checkpoint();
-            }
-        }
-
-        this.$set('transactional', aFlag, false);
-
-        if (aFlag && !TP.sys.shouldUseContentCheckpoints()) {
-            TP.ifWarn() ?
-                TP.warn('Content transactions have been activated but ' +
-                            'content is not being checkpointed.') : 0;
-        }
-    }
 
     return this.$get('transactional');
 });
@@ -1703,7 +1673,7 @@ function(aName) {
         points,
         ndx;
 
-    if (!this.isTransactional()) {
+    if (!this.getTransactional()) {
         return this;
     }
 
@@ -1761,6 +1731,53 @@ function(aName) {
 
     //  if the value changes here a change notice will fire...
     this.set('currentIndex', ndx);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('setTransactional',
+function(aFlag) {
+
+    /**
+     * @method setTransactional
+     * @summary Set whether the receiver has been told to support transactional
+     *     behavior via checkpoint, commit, and rollback.
+     * @param {Boolean} aFlag The state of the content's transaction flag, which
+     *     will be set when provided.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    if (TP.isTrue(this.$get('transactional'))) {
+
+        if (!aFlag) {
+            //  was transactional, clearing it now...
+
+            //  TODO: check for unsaved changes etc...
+
+            this.$set('snaps', null, false);
+            this.$set('points', null, false);
+            this.$set('currentIndex', null, false);
+        }
+
+    } else {
+
+        if (aFlag) {
+            //  wasn't transactional, turning it on...
+
+            this.$set('transactional', aFlag, false);
+            this.checkpoint();
+        }
+    }
+
+    this.$set('transactional', aFlag, false);
+
+    if (aFlag && !TP.sys.shouldUseContentCheckpoints()) {
+        TP.ifWarn() ?
+            TP.warn('Content transactions have been activated but ' +
+                        'content is not being checkpointed.') : 0;
+    }
 
     return this;
 });

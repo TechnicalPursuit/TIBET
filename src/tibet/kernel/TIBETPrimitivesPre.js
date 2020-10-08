@@ -248,23 +248,32 @@ TP.canInvoke = function(anObj, anInterface) {
 
     var obj;
 
-    //  NB: This is a very heavily used routine, so we use very primitive
-    //  checking in it. Note that we *must* compare anObj to both null and
-    //  undefined rather than '!' because it might get falsey things like a '0'
-    //  and the empty String.
+    //  This is a very heavily used routine, so we use very primitive checking
+    //  in it.
 
-    if (anObj === undefined || anObj === null || !anInterface) {
-        return false;
+    //  On some platforms, if obj is a '[native code]' function, 'instanceof
+    //  Function' will return false. This is the only consistent test for
+    //  whether something can truly respond.
+
+    //  Unfortunately, the 'in' operator will throw an exception on primitive
+    //  strings, numbers and booleans. Therefore, we catch and try different
+    //  logic for those. Note that this is actually quite a bit faster than
+    //  testing to see what kind of object we're dealing with.
+    try {
+        return (anInterface in anObj) &&
+                (typeof (obj = anObj[anInterface]) === 'function') &&
+                !obj.$$dnu;
+    } catch (e) {
+        //  Note that we *must* compare anObj to both null and undefined rather
+        //  than '!' because it might get falsey things like a '0' and the empty
+        //  String.
+        if (anObj === undefined || anObj === null || !anInterface) {
+            return false;
+        }
+
+        obj = anObj[anInterface];
+        return (typeof obj === 'function' && !obj.$$dnu);
     }
-
-    obj = anObj[anInterface];
-
-    //  NOTE: On some platforms, if obj is a '[native code]' function,
-    //  'instanceof Function' will return false. This is the only consistent
-    //  test for whether something can truly respond.
-    /* eslint-disable no-extra-parens */
-    return (typeof obj === 'function' && !obj.$$dnu);
-    /* eslint-enable no-extra-parens */
 };
 
 //  Manual setup
@@ -9737,9 +9746,8 @@ function(anObj) {
         return false;
     }
 
-    /* eslint-disable no-extra-parens */
-    return (anObj.length !== undefined && anObj.cssText !== undefined);
-    /* eslint-enable no-extra-parens */
+    return TP.ObjectProto.toString.call(anObj) ===
+                                        '[object CSSStyleDeclaration]';
 });
 
 //  ------------------------------------------------------------------------
@@ -9768,10 +9776,7 @@ function(anObj) {
         return false;
     }
 
-    /* eslint-disable no-extra-parens */
-    return (anObj.parentStyleSheet !== undefined &&
-            anObj.cssText !== undefined);
-    /* eslint-enable no-extra-parens */
+    return TP.ObjectProto.toString.call(anObj) === '[object CSSStyleRule]';
 });
 
 //  ------------------------------------------------------------------------
@@ -13709,6 +13714,20 @@ TP.sys.addMetadata(Function, TP.FunctionProto.$getName,
                     TP.METHOD, TP.INST_TRACK);
 TP.sys.addMetadata(TP, TP.objectGetMetadataName, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.LOCAL_TRACK);
+
+//  ------------------------------------------------------------------------
+//  TIBET - PERFORMANCE CACHES
+//  ------------------------------------------------------------------------
+
+//  TP.core.Hash of computed signal names.
+TP.defineAttribute('$signal_name_cache', TP.hc());
+
+//  TP.core.Hash of XML documents keyed by the String that created them.
+TP.defineAttribute('$parsed_doc_cache', TP.hc());
+
+//  Array of Element nodes that are currently capturing their own mouse wheel
+//  events.
+TP.defineAttribute('$mousewheel_capturer_cache', TP.ac());
 
 //  ------------------------------------------------------------------------
 //  TIBET - PLUGIN INFORMATION

@@ -182,10 +182,6 @@ function() {
 
     TP.boot.$setStage('initializing');
 
-    //  "up-convert" configuration and environment data
-    TP.sys.configuration = TP.hc(TP.sys.configuration);
-    TP.sys.environment = TP.hc(TP.sys.environment);
-
     //  Load the environment with any information we have about plugins.
     if (TP.sys.cfg('tibet.plugins')) {
         TP.boot.$configurePluginEnvironment();

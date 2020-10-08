@@ -7075,7 +7075,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
                         function(sig) {
                             var sigTypeName;
 
-                            sigTypeName = TP.expandSignalName(sig);
+                            sigTypeName = TP.expandSignalName(sig.getSignalName());
                             if (TP.notEmpty(sigTypeName) &&
                                 TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
@@ -7083,7 +7083,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
 
                             return sig;
                         });
-    } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
+    } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal.getSignalName())) &&
                 TP.isType(TP.sys.getTypeByName(typename))) {
         //  It's a real type.
         signal = typename;
@@ -7332,7 +7332,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
                         function(sig) {
                             var sigTypeName;
 
-                            sigTypeName = TP.expandSignalName(sig);
+                            sigTypeName = TP.expandSignalName(sig.getSignalName());
                             if (TP.notEmpty(sigTypeName) &&
                                 TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
@@ -7340,7 +7340,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
 
                             return sig;
                         });
-    } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
+    } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal.getSignalName())) &&
                 TP.isType(TP.sys.getTypeByName(typename))) {
         //  It's a real type.
         signal = typename;
@@ -7499,7 +7499,7 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
                         function(sig) {
                             var sigTypeName;
 
-                            sigTypeName = TP.expandSignalName(sig);
+                            sigTypeName = TP.expandSignalName(sig.getSignalName());
                             if (TP.notEmpty(sigTypeName) &&
                                 TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
@@ -7507,7 +7507,7 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
 
                             return sig;
                         });
-    } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
+    } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal.getSignalName())) &&
                 TP.isType(TP.sys.getTypeByName(typename))) {
         //  It's a real type.
         signal = typename;
@@ -7655,7 +7655,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
                         function(sig) {
                             var sigTypeName;
 
-                            sigTypeName = TP.expandSignalName(sig);
+                            sigTypeName = TP.expandSignalName(sig.getSignalName());
                             if (TP.notEmpty(sigTypeName) &&
                                 TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
@@ -7663,7 +7663,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
 
                             return sig;
                         });
-    } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
+    } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal.getSignalName())) &&
                 TP.isType(TP.sys.getTypeByName(typename))) {
         //  It's a real type.
         signal = typename;
