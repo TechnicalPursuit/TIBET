@@ -4678,6 +4678,7 @@ function() {
                 val = arguments[i + 1];
                 newVal.$$hash[arguments[i]] = TP.notDefined(val) ? null : val;
             }
+
             break;
     }
 

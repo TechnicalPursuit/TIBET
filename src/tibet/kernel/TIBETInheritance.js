@@ -12446,8 +12446,8 @@ function(typeNamesToExport) {
             type = TP.sys.getTypeByName(aTypeName);
             typeLocalName = type.getLocalName();
 
-            //  Generate the type name for the proxy class. This will take for
-            //  the form of 'TP.proxy.ECMA_<prefix>_<typename>_Class'.
+            //  Generate the type name for the proxy class. This will take the
+            //  form of 'TP.proxy.ECMA_<prefix>_<typename>_Class'.
             typeNameForECMAClass =
                 'TP.proxy.ECMA_' +
                 modulePrefix + '_' + typeLocalName + '_Class';

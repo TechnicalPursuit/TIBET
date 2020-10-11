@@ -261,7 +261,7 @@ function() {
         });
 
     promise.then(
-        function(resolver, rejector) {
+        function() {
 
             var tibetToken;
 

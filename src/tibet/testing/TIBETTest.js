@@ -317,7 +317,7 @@ function(suites, targetIDs) {
 
         suite = suites.at(i);
 
-        //  NOTE: ownerID will almost always be a namspace id, a type id, a
+        //  NOTE: ownerID will almost always be a namespace id, a type id, a
         //  type.Type id, or a type.Inst id.
         ownerID = TP.id(suite.suiteOwner);
         suiteName = suite.suiteName;
