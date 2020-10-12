@@ -88,10 +88,17 @@ function(aRequest) {
     inherit = shell.getArgument(aRequest, 'tsh:inherit', false);
     subtypes = shell.getArgument(aRequest, 'tsh:subtypes', false);
 
+    //  Grab the argument for 'target', either from a named flag parameter or
+    //  from the 'first argument' (ARG0) of the command. Note that in both cases
+    //  we want the 'original' value (not the 'expanded'/'resolve' one) - this
+    //  will give us what the user originally typed and what we can resolve into
+    //  a symbol below.
     target = shell.getArgument(
                         aRequest,
                         'tsh:target',
-                        shell.getArgument(aRequest, 'ARG0'));
+                        shell.getArgument(aRequest, 'ARG0', null, false, true),
+                        false,
+                        true);
 
     if (TP.isString(target)) {
         target = target.unquoted();
@@ -211,7 +218,18 @@ function(aRequest) {
         //  If we defaulted the context and we've got an object to ask then ask
         //  it to help correct any mistake in the defaulting.
         if (contextDefaulted && TP.canInvoke(obj, 'get')) {
-            nsRoot = obj.get('nsRoot');
+
+            //  Try to grab a 'namespace root'. If obj is a TIBET type, it can
+            //  tell you what its root namespace is.
+            if (TP.isType(obj)) {
+                nsRoot = obj.get('nsRoot');
+            } else {
+                //  If not, it may be a 'primitive' Function, in which case (if
+                //  it was defined using a TIBET method) it has an owner with a
+                //  name.
+                nsRoot = obj[TP.OWNER][TP.NAME];
+            }
+
             if (TP.isValid(nsRoot) && nsRoot !== 'APP') {
                 context = 'lib';
                 options.atPut('context', context);
