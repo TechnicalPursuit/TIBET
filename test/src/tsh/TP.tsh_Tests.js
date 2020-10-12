@@ -4534,6 +4534,24 @@ function() {
             });
     });
 
+    this.it('urn:tibet:TP.sig', function(test, options) {
+
+        inputVal = 'urn:tibet:TP.sig';
+        correctResult = TP.sig;
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isIdenticalTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
+            });
+    });
+
     this.it('urn:tibet:TP.sig.Signal', function(test, options) {
 
         inputVal = 'urn:tibet:TP.sig.Signal';

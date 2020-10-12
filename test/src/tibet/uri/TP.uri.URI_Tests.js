@@ -129,6 +129,17 @@ function() {
 
     //  ---
 
+    this.it('TIBETURL: Retrieve namespace object', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.uc('tibet:///urn:tibet:TP.sig').getResource(params).get('result'),
+            TP.sig,
+            TP.sc('tibet:///urn:tibet:TP.sig should find the namespace' +
+                                                    ' TP.sig.'));
+    });
+
+    //  ---
+
     this.it('TIBETURL: Retrieve type object', function(test, options) {
 
         test.assert.isIdenticalTo(
