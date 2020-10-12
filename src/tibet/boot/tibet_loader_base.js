@@ -1356,12 +1356,12 @@ TP.sys.inDeveloperMode = function() {
      *     'developer mode'.
      */
 
-    var package;
+    var bootPkg;
 
     //  Compute whether we're booting the developer target or not.
-    package = TP.sys.cfg('boot.package') || '';
+    bootPkg = TP.sys.cfg('boot.package') || '';
 
-    return /development/.test(package);
+    return /development/.test(bootPkg);
 };
 
 //  ----------------------------------------------------------------------------
@@ -8259,7 +8259,7 @@ TP.boot.$configurePackage = async function() {
      */
 
     var profile,
-        package,
+        pkg,
         pkgName,
         config,
         parts,
@@ -8273,18 +8273,18 @@ TP.boot.$configurePackage = async function() {
         TP.boot.$stdout('Empty boot.profile. Checking for boot.package.',
             TP.DEBUG);
 
-        package = TP.sys.cfg('boot.package');
-        if (TP.boot.$isEmpty(package)) {
-            package = '~app_cfg/main.xml';
+        pkg = TP.sys.cfg('boot.package');
+        if (TP.boot.$isEmpty(pkg)) {
+            pkg = '~app_cfg/main.xml';
 
             TP.boot.$stdout('Empty boot.package. Defaulting to ' +
-                package + '.', TP.DEBUG);
+                pkg + '.', TP.DEBUG);
         } else {
-            TP.boot.$stdout('Found boot.package. Using: ' + package,
+            TP.boot.$stdout('Found boot.package. Using: ' + pkg,
                 TP.DEBUG);
         }
 
-        pkgName = package;
+        pkgName = pkg;
         if (pkgName.indexOf('/') !== -1) {
             pkgName = pkgName.slice(pkgName.lastIndexOf('/') + 1);
         }
@@ -8302,7 +8302,7 @@ TP.boot.$configurePackage = async function() {
         //  proper elements as needed.
         if (/@/.test(profile)) {
             parts = profile.split('@');
-            package = parts[0];
+            pkg = parts[0];
 
             config = TP.sys.cfg('boot.config');
             if (config !== parts[1]) {
@@ -8321,36 +8321,36 @@ TP.boot.$configurePackage = async function() {
                 TP.sys.setcfg('boot.config', parts[1]);
             }
         } else {
-            package = profile;
+            pkg = profile;
         }
 
-        pkgName = package;
+        pkgName = pkg;
     }
 
     //  Packages should always be .xml files. If we're defaulting from user
     //  input though we don't assume they added that to either profile or
     //  package name.
-    if (/\.xml$/.test(package) !== true) {
-        package += '.xml';
+    if (/\.xml$/.test(pkg) !== true) {
+        pkg += '.xml';
     }
 
     //  If the package spec isn't absolute we need to join it with a
     //  directory or other prefix so we can find the actual resource.
-    if (!TP.boot.$uriIsAbsolute(package)) {
-        package = TP.boot.$uriJoinPaths('~app_cfg', package);
+    if (!TP.boot.$uriIsAbsolute(pkg)) {
+        pkg = TP.boot.$uriJoinPaths('~app_cfg', pkg);
     }
 
     //  Warn if we're overriding package info
-    if (package !== TP.sys.cfg('boot.package') &&
+    if (pkg !== TP.sys.cfg('boot.package') &&
         TP.boot.$notEmpty(TP.sys.cfg('boot.package'))) {
         TP.boot.$stdout(
             'Overriding boot.package (' + TP.sys.cfg('boot.package') +
-            ') with: ' + package, TP.WARN);
+            ') with: ' + pkg, TP.WARN);
     }
 
     TP.sys.setcfg('boot.package', pkgName);
 
-    file = TP.boot.$uriExpandPath(package);
+    file = TP.boot.$uriExpandPath(pkg);
     TP.boot.$stdout('Loading package: ' +
         TP.boot.$uriInTIBETFormat(file), TP.DEBUG);
 
@@ -8360,7 +8360,7 @@ TP.boot.$configurePackage = async function() {
         TP.boot.$$bootfile = file;
     } else {
 
-        err = 'Boot package \'' + package + '\' not found in: ' + file;
+        err = 'Boot package \'' + pkg + '\' not found in: ' + file;
         TP.boot.$stderr(err, TP.FATAL);
 
         throw new Error(err);
@@ -8655,12 +8655,12 @@ TP.boot.$configureProject = function() {
      */
 
     var doc,
-        package;
+        pkgElem;
 
     doc = TP.boot.$$bootxml;
-    package = doc.getElementsByTagName('package')[0];
+    pkgElem = doc.getElementsByTagName('package')[0];
 
-    if (TP.boot.$isEmpty(package)) {
+    if (TP.boot.$isEmpty(pkgElem)) {
         //  Going to have problems. Without package data we have no home page
         //  name etc. so we'll have to default to something.
         TP.sys.setcfg('project.name', 'default');
@@ -8669,11 +8669,11 @@ TP.boot.$configureProject = function() {
         //  project.* values track the name, controller type and version for the
         //  current project
         TP.sys.setcfg('project.name',
-            package.getAttribute('name'));
+            pkgElem.getAttribute('name'));
         TP.sys.setcfg('project.controller',
-            package.getAttribute('controller'));
+            pkgElem.getAttribute('controller'));
         TP.sys.setcfg('project.version',
-            package.getAttribute('version') || '0.0.1');
+            pkgElem.getAttribute('version') || '0.0.1');
     }
 
     if (TP.boot.$notValid(TP.sys.cfg('project.root_page'))) {
@@ -9978,7 +9978,7 @@ TP.boot.$$importPhase = async function() {
      *     be considered private.
      */
 
-    var package,
+    var pkgFile,
         config,
         phase,
         nodelist;
@@ -9986,11 +9986,11 @@ TP.boot.$$importPhase = async function() {
     //  Get the list of filtered nodes by listing the assets. This action causes
     //  whatever config is in place to be used to filter the expanded package.
 
-    package = TP.boot.$$bootfile;
+    pkgFile = TP.boot.$$bootfile;
     config = TP.sys.cfg('boot.config');
     phase = TP.sys.cfg('boot.phase_one') ? 'Phase One' : 'Phase Two';
 
-    nodelist = await TP.boot.$listPackageAssets(package, config);
+    nodelist = await TP.boot.$listPackageAssets(pkgFile, config);
 
     //  remaining list is our workload for actual importing
     TP.boot.$stdout('Importing ' + nodelist.length + ' ' +
@@ -10484,7 +10484,7 @@ TP.boot.$expandPackage = async function(aPath, aConfig) {
         doc,        //  The xml DOM document object after parse.
         config,     //  The ultimate config ID being used.
         node,       //  Result of searching for our config by ID.
-        package,    //  The package node from the XML doc.
+        pkgElem,    //  The package node from the XML doc.
         txt,        //  Raw text value for unparsed XML file.
         msg;        //  Error message construction variable.
 
@@ -10523,15 +10523,15 @@ TP.boot.$expandPackage = async function(aPath, aConfig) {
         }
 
         //  If the package isn't valid stop right here.
-        package = doc.getElementsByTagName('package')[0];
-        if (TP.boot.$notValid(package)) {
+        pkgElem = doc.getElementsByTagName('package')[0];
+        if (TP.boot.$notValid(pkgElem)) {
             return;
         }
 
         //  Verify package has a name and version, otherwise it's not valid.
-        if (TP.boot.$isEmpty(package.getAttribute('name'))) {
+        if (TP.boot.$isEmpty(pkgElem.getAttribute('name'))) {
             throw new Error('Missing name on package: ' +
-                TP.boot.$nodeAsString(package));
+                TP.boot.$nodeAsString(pkgElem));
         }
 
         if (TP.boot.$isEmpty(aConfig) || aConfig === 'default') {
@@ -10693,15 +10693,15 @@ TP.boot.$getDefaultConfig = function(aPackageDoc) {
      * @returns {String} The configuration ID which is the default.
      */
 
-    var package;
+    var pkgElem;
 
-    package = aPackageDoc.getElementsByTagName('package')[0];
-    if (TP.boot.$notValid(package)) {
-        throw new Error('package tag missing.');
+    pkgElem = aPackageDoc.getElementsByTagName('package')[0];
+    if (TP.boot.$notValid(pkgElem)) {
+        throw new Error('package element missing.');
     }
 
     //  TODO: make this default of 'base' a constant?
-    return package.getAttribute('default') || 'base';
+    return pkgElem.getAttribute('default') || 'base';
 };
 
 //  ----------------------------------------------------------------------------
@@ -11439,7 +11439,7 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         phaseOne,
         phaseTwo,
 
-        package,
+        pkg,
         config,
 
         nonTeamTIBETEnv,
@@ -11492,12 +11492,12 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
     TP.sys.setcfg('boot.phase_two', true);
 
     //  Grab the package and config that the user booted with.
-    package = TP.sys.cfg('boot.package');
+    pkg = TP.sys.cfg('boot.package');
     config = TP.sys.cfg('boot.config');
 
     //  Grab the list of resources using that package and config.
     packageAssets = await TP.boot.$listPackageAssets(
-                                package, config, null, true, false, false);
+                                pkg, config, null, true, false, false);
 
     //  If we're running in a non-Team TIBET environment, that means that we're
     //  running with at least the lib (and possibly the app) in a form where
@@ -11521,7 +11521,7 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
 
         //  Grab the list of resources using that package and config.
         teamTIBETAssets = await TP.boot.$listPackageAssets(
-                                package, config, null, true, false, false);
+                                pkg, config, null, true, false, false);
 
         //  Reset config in case we want to use it later.
         config = TP.sys.cfg('boot.config');
