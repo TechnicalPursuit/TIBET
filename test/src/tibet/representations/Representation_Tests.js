@@ -61,7 +61,7 @@ function() {
         'InvalidDate',                          /^Date\$(\w+)$/,
         'Array',                                /^Array\$(\w+)$/,
         'Object',                               /^Object\$(\w+)$/,
-        'Function',                             /^Function\$(\w+)$/,
+        'Function',                             'functionVal',
         'NaN',                                  'NaN',
         'NativeType',                           'Array',
         'NativeFunction',                       'slice',
