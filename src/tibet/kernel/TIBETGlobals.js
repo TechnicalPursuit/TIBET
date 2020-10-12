@@ -3083,7 +3083,8 @@ TP.regex.NATIVE_TYPENAME_EXTRACT = / (.*)\]/;
 //  might be minified.
 TP.regex.ECMA_CLASS = /^class\s*\{/;
 
-TP.regex.VALID_ROOTNAME = /^(TP|APP)\.[a-zA-Z]([a-zA-Z0-9_])+/;
+TP.regex.VALID_NAMESPACEROOTNAME = /^(TP|APP)$/;
+TP.regex.VALID_NAMESPACENAME = /^(TP|APP)[.:]{1}([a-zA-Z0-9_]+)/;
 TP.regex.VALID_TYPENAME = /^[a-zA-Z]([-a-zA-Z0-9_.:]){2,}$/;
 TP.regex.VALID_WINDOWNAME = /^[a-zA-Z]([-a-zA-Z0-9_](\.)*){1,}$/;
 
@@ -3108,8 +3109,6 @@ TP.regex.JS_SYMBOL = /Symbol\(.+\)/;
 
 TP.regex.JS_ASSIGNMENT =
     /(^|;|\s+)([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)(\s*=[^=])/g; // needs reset
-
-TP.regex.NS_ID = /^[a-zA-Z]{2,}:$/;
 
 //  matching facet slot names
 TP.regex.FACET_SLOT_NAME_MATCH = new RegExp('\\$(\\w+)_(' +

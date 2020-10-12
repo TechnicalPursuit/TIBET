@@ -188,8 +188,9 @@ function(anID, regOnly, nodeContext) {
 
     //  Maybe a namespace name, e.g. something like 'css:' or any other prefix
     //  we'd normally associate with a namespace object
-    if (TP.regex.NS_ID.test(id)) {
-        obj = TP[id.slice(0, -1)] || APP[id.slice(0, -1)];
+    if (TP.regex.VALID_NAMESPACENAME.test(id)) {
+        parts = TP.regex.VALID_NAMESPACENAME.match(id);
+        obj = TP.global[parts.at(1)][parts.at(2)];
         if (TP.isValid(obj) && TP.isNamespace(obj)) {
             return obj;
         } else {
