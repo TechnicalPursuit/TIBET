@@ -209,8 +209,8 @@ function() {
         return this;
     }
 
-    promise = TP.extern.Promise.construct(
-        function(resolver, rejector) {
+    promise = TP.extern.Promise.resolve().then(
+        function() {
             var uri,
                 req;
 
@@ -241,8 +241,6 @@ function() {
                                                                 ' vcard.') : 0;
                                 TP.core.User.getRealUser();
                             }
-
-                            resolver();
                         });
                     req.defineHandler('IOFailed',
                         function(aSignal) {
@@ -256,7 +254,6 @@ function() {
                 //  Not a login-restricted application. Force construction of
                 //  default user.
                 TP.core.User.getRealUser();
-                resolver();
             }
         });
 
