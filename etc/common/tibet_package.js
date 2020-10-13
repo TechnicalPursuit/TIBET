@@ -572,7 +572,7 @@
         var expanded,   //  The expanded path equivalent.
             doc,        //  The xml DOM document object after parse.
             xml,        //  The xml string read from the top-level manifest.
-            package,    //  The package node from the XML doc.
+            pkgElem,    //  The package node from the XML doc.
             configs,    //  The ultimate config ID being used.
             pkg,
             msg;
@@ -625,17 +625,17 @@
             }
 
             //  If the package isn't valid stop right here.
-            package = doc.getElementsByTagName('package')[0];
-            if (!package) {
+            pkgElem = doc.getElementsByTagName('package')[0];
+            if (!pkgElem) {
                 return;
             }
 
             //  Verify package has a name and version, otherwise it's not valid.
             if (this.getcfg('strict') &&
-                (isEmpty(package.getAttribute('name')) ||
-                    isEmpty(package.getAttribute('version')))) {
+                (isEmpty(pkgElem.getAttribute('name')) ||
+                    isEmpty(pkgElem.getAttribute('version')))) {
                 msg = 'Missing name or version on package: ' +
-                    serializer.serializeToString(package);
+                    serializer.serializeToString(pkgElem);
                 throw new Error(msg);
             }
 
@@ -1002,7 +1002,7 @@
             doc,        //  The xml DOM document object after parse.
             config,     //  The ultimate config ID being used.
             node,       //  Result of searching for our config by ID.
-            package,    //  The package node from the XML doc.
+            pkgElem,    //  The package node from the XML doc.
             msg;        //  Error message construction variable.
 
         /* eslint-disable no-extra-parens */
@@ -1053,17 +1053,17 @@
             }
 
             //  If the package isn't valid stop right here.
-            package = doc.getElementsByTagName('package')[0];
-            if (!package) {
+            pkgElem = doc.getElementsByTagName('package')[0];
+            if (!pkgElem) {
                 return;
             }
 
             //  Verify package has a name and version, otherwise it's not valid.
             if (this.getcfg('strict') &&
-                (isEmpty(package.getAttribute('name')) ||
-                    isEmpty(package.getAttribute('version')))) {
+                (isEmpty(pkgElem.getAttribute('name')) ||
+                    isEmpty(pkgElem.getAttribute('version')))) {
                 msg = 'Missing name or version on package: ' +
-                    serializer.serializeToString(package);
+                    serializer.serializeToString(pkgElem);
                 throw new Error(msg);
             }
 
@@ -1706,16 +1706,16 @@
      */
     Package.prototype.getDefaultConfig = function(aPackageDoc) {
 
-        var package,
+        var pkgElem,
             msg;
 
-        package = aPackageDoc.getElementsByTagName('package')[0];
-        if (notValid(package)) {
+        pkgElem = aPackageDoc.getElementsByTagName('package')[0];
+        if (notValid(pkgElem)) {
             msg = 'package tag missing: ' + path;
             throw new Error(msg);
         }
         //  TODO: rename to 'all' in config files etc?
-        return package.getAttribute('default') || Package.CONFIG;
+        return pkgElem.getAttribute('default') || Package.CONFIG;
     };
 
 
@@ -2104,7 +2104,7 @@
         var cwd,            //  Where are we being run?
             list,           //  List of potential public directories
             approot,        //  Where did we find the actual file?
-            package,        //  What package file are we looking for?
+            pkgFile,        //  What package file are we looking for?
             tibet,          //  What tibet file are we looking for?
             fullpath;       //  What full path are we checking?
 
@@ -2117,12 +2117,12 @@
         cwd = this.getCurrentDirectory();
 
         tibet = Package.PROJECT_FILE;
-        package = Package.NPM_FILE;
+        pkgFile = Package.NPM_FILE;
 
         //  Walk the directory path from cwd "up" checking for the signifying
         //  file which tells us we're in a TIBET project.
         while (cwd.length > 0) {
-            fullpath = this.joinPaths(cwd, package);
+            fullpath = this.joinPaths(cwd, pkgFile);
             if (sh.test('-f', fullpath)) {
 
                 //  Relocate cwd to the new root so our paths for things like
@@ -2132,7 +2132,7 @@
                 //  Load the package.json file so we can access current project
                 //  configuration info specific to npm.
                 try {
-                    this.npm = require(this.joinPaths(cwd, package));
+                    this.npm = require(this.joinPaths(cwd, pkgFile));
                 } catch (e) {
                     //  Make sure we default to some value.
                     this.npm = this.npm || {};
