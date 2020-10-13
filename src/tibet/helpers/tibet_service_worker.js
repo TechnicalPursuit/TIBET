@@ -114,6 +114,8 @@ self.addEventListener('fetch', function(event) {
     var url,
         filename,
 
+        tibetURNMatcher,
+
         promise,
 
         isTIBETLibFile,
@@ -135,12 +137,14 @@ self.addEventListener('fetch', function(event) {
         return;
     }
 
-    //  If the filename starts with 'TP_' and ends with '.js', then it's very
-    //  likely that the caller is requesting an 'ECMA Module'ized version of a
-    //  piece of TIBET code (usually pseudo-class definitions). In this case,
-    //  look in a special cache set aside just for that that TIBET kernel code
-    //  will have placed these specialized module definitions into.
-    if (filename.startsWith('TP_')) {
+    tibetURNMatcher = /urn:tibet:|urn::/;
+
+    //  If the filename looks like a TIBET URN, then it's very likely that the
+    //  caller is requesting an 'ECMA Module'ized version of a piece of TIBET
+    //  code (usually pseudo-class definitions). In this case, look in a special
+    //  cache set aside just for that that TIBET boot code will have placed
+    //  these specialized module definitions into.
+    if (tibetURNMatcher.test(filename)) {
         promise = caches.open('TIBET_PSEUDO_MODULE_CACHE').then(
             function(cache) {
                 //  See if we find a match of the 'filename' in the cache.

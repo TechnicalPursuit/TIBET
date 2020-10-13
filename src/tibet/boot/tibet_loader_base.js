@@ -11935,7 +11935,7 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
 
     var moduleName,
 
-        nsName,
+        namespaceURN,
         namespace,
 
         moduleText,
@@ -11964,17 +11964,15 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
 
         moduleName = msgObjContent.payload;
         if (TP.notEmpty(moduleName)) {
-
-            //  Compute a namespace name. So 'TP_gui.js' becomes 'TP.gui'
-            moduleName = TP.unescapeTypeName(moduleName);
-            nsName = moduleName.slice(0, moduleName.lastIndexOf('.'));
+            //  Create a URI representing the namespace from the module name.
+            namespaceURN = TP.uc(moduleName);
 
             //  Try to grab the corresponding namespace object and, if it's
             //  real, cause it to build an ECMA6 module of its content. Note
             //  that it returns the text it builds in addition to adding it to a
             //  well-known cache. We return that text here for sending back (via
             //  a return postMessage) to the ServiceWorker.
-            namespace = TP.bySystemId(nsName);
+            namespace = namespaceURN.getContent();
             if (TP.isNamespace(namespace)) {
                 moduleText = namespace.definePseudoNativeModule();
                 //  Store the module in the pseudo module cache under a name
