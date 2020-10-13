@@ -9288,13 +9288,6 @@ isECMAModule) {
         i,
         tn;
 
-    //  Don't load what we're already processing.
-    /* eslint-disable no-extra-parens */
-    if (srcUrl && (TP.boot.$$srcPath == TP.boot.$uriInTIBETFormat(srcUrl))) {
-    /* eslint-enable no-extra-parens */
-        return;
-    }
-
     if (jsSrc == null) {
         if (srcUrl) {
             TP.boot.$stderr('Invalid script source. No content for ' +
