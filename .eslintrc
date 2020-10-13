@@ -12,10 +12,10 @@
     "globals": {
         "TP": true,
         "APP": true,
+        "React": true,
         "Window": false,
         "self": false,
         "Proxy": false,
-        "React": true,
         "Reflect": false
     },
     "rules": {
