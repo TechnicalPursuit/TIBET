@@ -11938,6 +11938,8 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
         nsName,
         namespace,
 
+        moduleText,
+
         retPromise;
 
     //  If we got an error in the message content payload.
@@ -11974,7 +11976,14 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
             //  a return postMessage) to the ServiceWorker.
             namespace = TP.bySystemId(nsName);
             if (TP.isNamespace(namespace)) {
-                retPromise = namespace.definePseudoNativeModule();
+                moduleText = namespace.definePseudoNativeModule();
+                //  Store the module in the pseudo module cache under a name
+                //  that can be imported into native ECMAScript modules.
+                retPromise = caches.open('TIBET_PSEUDO_MODULE_CACHE').then(
+                    function(cache) {
+                        cache.put(moduleName, new Response(moduleText));
+                        return moduleText;
+                    });
             }
         }
     }

@@ -12368,11 +12368,11 @@ function(typeNamesToExport) {
      *     *local* type name for the type, not the global one (i.e. 'Point' not
      *     'TP.gui.Point'. Also, these types should belong to the receiver
      *     namespace.
-     * @returns {Promise} A promise which resolves based on success.
+     * @returns {String} The text of the module defining types in the namespace
+     *     as 'TIBET ECMA class proxies'.
      */
 
-    var moduleName,
-        moduleRoot,
+    var moduleRoot,
         modulePrefix,
 
         moduleExportNames,
@@ -12388,7 +12388,6 @@ function(typeNamesToExport) {
 
         defaultDefinition;
 
-    moduleName = TP.escapeTypeName(this.getName());
     moduleRoot = this.getNamespaceRoot();
     modulePrefix = this.getNamespacePrefix();
 
@@ -12490,13 +12489,7 @@ function(typeNamesToExport) {
     //  names.
     moduleBody += 'export {' + moduleExportNames.join(', ') + '};';
 
-    //  Store the module in the pseudo module cache under a name that can be
-    //  imported into native ECMAScript modules.
-    return caches.open('TIBET_PSEUDO_MODULE_CACHE').then(
-        function(cache) {
-            cache.put(moduleName + '.js', new Response(moduleBody));
-            return moduleBody;
-        });
+    return moduleBody;
 });
 
 //  ------------------------------------------------------------------------
