@@ -12057,9 +12057,9 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
 
             //  Try to grab the corresponding namespace object and, if it's
             //  real, cause it to build an ECMA6 module of its content. Note
-            //  that it returns the text it builds in addition to adding it to a
-            //  well-known cache. We return that text here for sending back (via
-            //  a return postMessage) to the ServiceWorker.
+            //  that we add that text to the pseudo-module cache and then return
+            //  that text here for sending back (via a return postMessage) to
+            //  the ServiceWorker.
             namespace = namespaceURN.getContent();
             if (TP.isNamespace(namespace)) {
                 moduleText = namespace.definePseudoNativeModule();
