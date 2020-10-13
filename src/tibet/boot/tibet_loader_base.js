@@ -9645,6 +9645,7 @@ TP.boot.$importComponents = async function(loadSync) {
         tn,
         ch,
         isECMAModule,
+        loadUsingSrcAttr,
         msg,
         level,
         nd,
@@ -9829,6 +9830,8 @@ TP.boot.$importComponents = async function(loadSync) {
 
         isECMAModule = nd.getAttribute('type') === 'module';
 
+        loadUsingSrcAttr = TP.sys.cfg('import.use_src_attr') && !isECMAModule;
+
         if ((srcpath = nd.getAttribute('src')) != null) {
             //  debuggers like Firebuggy have issues with script nodes that
             //  have inline source instead of file references (or they did
@@ -9836,7 +9839,7 @@ TP.boot.$importComponents = async function(loadSync) {
             //  do dom-based import here to support source-level debugging
             //  to occur. we'll keep our comments about buggy debuggers to
             //  ourselves...mostly.
-            if (TP.sys.cfg('import.use_dom')) {
+            if (loadUsingSrcAttr) {
                 elem = TP.boot.$$scriptTemplate.cloneNode(true);
 
                 elem.setAttribute('loadpkg', TP.boot.$$loadPackage);

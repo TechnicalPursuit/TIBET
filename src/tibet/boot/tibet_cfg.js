@@ -965,9 +965,10 @@
     //  values include modified, remote, and marked.
     TP.sys.setcfg('import.source', 'local');
 
-    //  should source import use the DOM or source text? DOM has to be used in
-    //  certain cases to allow debuggers (like Firebuggy) to work properly.
-    TP.sys.setcfg('import.use_dom', true);
+    //  should source import use the 'src' attribute or source text? The 'src'
+    //  attribute has to be used in certain cases to allow debuggers (like
+    //  Firebuggy) to work properly.
+    TP.sys.setcfg('import.use_src_attr', true);
 
     // TODO: remove this and all related kernel logic
     //  should autoloader metadata be imported (usually yes for production)
