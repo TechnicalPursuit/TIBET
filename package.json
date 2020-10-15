@@ -109,6 +109,9 @@
         "xpath.js": "github:TechnicalPursuit/xpath.js"
     },
     "devDependencies": {
+        "@babel/core": "^7.11.6",
+        "@babel/plugin-transform-modules-systemjs": "^7.10.5",
+        "@babel/preset-env": "^7.11.5",
         "babel-minify": "^0.5.1",
         "chai": "^4.2.0",
         "chrome-launcher": "^0.13.4",
