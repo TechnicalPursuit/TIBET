@@ -15,10 +15,12 @@
         }
     ],
     "mac": {
-        "hardenedRuntime": true,
-        "gatekeeperAssess": false,
         "entitlements": "./etc/mac_build_files/entitlements.mac.plist",
         "entitlementsInherit": "./etc/mac_build_files/entitlements.mac.plist",
+        "gatekeeperAssess": false,
+        "hardenedRuntime": true,
+        "signIgnore": ".*\\.app$",
+        "strictVerify": false,
         "target": ["dmg", "zip"]
     },
     "afterSign": "./etc/mac_build_files/notarize.js"

@@ -13,11 +13,13 @@
         }
     ],
     "mac": {
-        "identity": "null",
-        "hardenedRuntime": true,
-        "gatekeeperAssess": false,
         "entitlements": "./etc/mac_build_files/entitlements.mac.plist",
         "entitlementsInherit": "./etc/mac_build_files/entitlements.mac.plist",
+        "gatekeeperAssess": false,
+        "hardenedRuntime": true,
+        "identity": "null",
+        "signIgnore": ".*\\.app$",
+        "strictVerify": false,
         "target": ["dmg", "zip"]
     }
 }
