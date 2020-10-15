@@ -959,9 +959,7 @@ TP.hc(
         //  it if the paramsHash is empty (or not defined) or if there is no
         //  entry for permissions in the paramsHash. We default it to the
         //  standard Unix file permissions of 0644.
-        /* eslint-disable no-octal */
-        permissions = TP.ifKeyInvalid(request, 'permissions', 0644);
-        /* eslint-enable no-octal */
+        permissions = TP.ifKeyInvalid(request, 'permissions', '0644');
 
         retVal = false;
 

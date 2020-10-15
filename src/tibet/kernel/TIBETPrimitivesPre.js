@@ -868,6 +868,11 @@ TP.FunctionProto.$getName = function() {
         return this[TP.NAME];
     }
 
+    //  If the receiver has a 'name' slot, return the value of that.
+    if (TP.owns(this, 'name')) {
+        return this.name;
+    }
+
     try {
         str = this.toString();
         results = TP.getFunctionName(str);

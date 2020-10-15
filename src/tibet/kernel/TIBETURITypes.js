@@ -5489,7 +5489,10 @@ function(aName) {
      */
 
     var str,
-        result;
+        result,
+
+        parts,
+        obj;
 
     str = aName || this.getName();
 
@@ -5504,9 +5507,19 @@ function(aName) {
         //  And we want types to take precedence over global objects.
         result = TP.sys.getTypeByName(str);
 
+        //  And we want namespace objects to take precedence over global
+        //  objects.
+        if (TP.notValid(result) && TP.regex.VALID_NAMESPACENAME.test(str)) {
+            parts = TP.regex.VALID_NAMESPACENAME.match(str);
+            obj = TP.global[parts.at(1)][parts.at(2)];
+            if (TP.isValid(obj) && TP.isNamespace(obj)) {
+                result = obj;
+            }
+        }
+
         //  Note that we only return a global here *if the name is in the
         //  globals dictionary*
-        if (!TP.isType(result) && TP.sys.$globals.hasKey(str)) {
+        if (TP.notValid(result) && TP.sys.$globals.hasKey(str)) {
             try {
                 result = TP.global[str];
             } catch (e) {

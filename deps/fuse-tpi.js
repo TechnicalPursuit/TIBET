@@ -1,5 +1,5 @@
 /**
- * Fuse.js v6.3.1 - Lightweight fuzzy-search (http://fusejs.io)
+ * Fuse.js v6.4.1 - Lightweight fuzzy-search (http://fusejs.io)
  *
  * Copyright (c) 2020 Kiro Risk (http://kiro.me)
  * All Rights Reserved. Apache Software License 2.0
@@ -213,9 +213,8 @@
   }
 
   function isArray(value) {
-    return !Array.isArray ? Object.prototype.toString.call(value) === '[object Array]' : Array.isArray(value);
-  } // Adapted from:
-  // https://github.com/lodash/lodash/blob/f4ca396a796435422bd4fd41fadbd225edddf175/.internal/baseToString.js
+    return !Array.isArray ? getTag(value) === '[object Array]' : Array.isArray(value);
+  } // Adapted from: https://github.com/lodash/lodash/blob/master/.internal/baseToString.js
 
   var INFINITY = 1 / 0;
   function baseToString(value) {
@@ -235,15 +234,28 @@
   }
   function isNumber(value) {
     return typeof value === 'number';
+  } // Adapted from: https://github.com/lodash/lodash/blob/master/isBoolean.js
+
+  function isBoolean(value) {
+    return value === true || value === false || isObjectLike(value) && getTag(value) == '[object Boolean]';
   }
   function isObject(value) {
     return _typeof(value) === 'object';
+  } // Checks if `value` is object-like.
+
+  function isObjectLike(value) {
+    return isObject(value) && value !== null;
   }
   function isDefined(value) {
     return value !== undefined && value !== null;
   }
   function isBlank(value) {
     return !value.trim().length;
+  } // Gets the `toStringTag` of `value`.
+  // Adapted from: https://github.com/lodash/lodash/blob/master/.internal/getTag.js
+
+  function getTag(value) {
+    return value == null ? value === undefined ? '[object Undefined]' : '[object Null]' : Object.prototype.toString.call(value);
   }
 
   var EXTENDED_SEARCH_UNAVAILABLE = 'Extended search is not available';
@@ -364,9 +376,11 @@
 
         if (!isDefined(value)) {
           return;
-        }
+        } // If we're at the last value in the path, and if it's a string/number/bool,
+        // add it to the list
 
-        if (index === path.length - 1 && (isString(value) || isNumber(value))) {
+
+        if (index === path.length - 1 && (isString(value) || isNumber(value) || isBoolean(value))) {
           list.push(toString(value));
         } else if (isArray(value)) {
           arr = true; // Search each item in the array.
@@ -1158,21 +1172,11 @@
     _createClass(ExactMatch, [{
       key: "search",
       value: function search(text) {
-        var location = 0;
-        var index;
-        var indices = [];
-        var patternLen = this.pattern.length; // Get all exact matches
-
-        while ((index = text.indexOf(this.pattern, location)) > -1) {
-          location = index + patternLen;
-          indices.push([index, location - 1]);
-        }
-
-        var isMatch = !!indices.length;
+        var isMatch = text === this.pattern;
         return {
           isMatch: isMatch,
-          score: isMatch ? 1 : 0,
-          indices: indices
+          score: isMatch ? 0 : 1,
+          indices: [0, this.pattern.length - 1]
         };
       }
     }], [{
@@ -1183,12 +1187,12 @@
     }, {
       key: "multiRegex",
       get: function get() {
-        return /^'"(.*)"$/;
+        return /^="(.*)"$/;
       }
     }, {
       key: "singleRegex",
       get: function get() {
-        return /^'(.*)$/;
+        return /^=(.*)$/;
       }
     }]);
 
@@ -1465,7 +1469,58 @@
     return FuzzyMatch;
   }(BaseMatch);
 
-  var searchers = [ExactMatch, PrefixExactMatch, InversePrefixExactMatch, InverseSuffixExactMatch, SuffixExactMatch, InverseExactMatch, FuzzyMatch];
+  var IncludeMatch = /*#__PURE__*/function (_BaseMatch) {
+    _inherits(IncludeMatch, _BaseMatch);
+
+    var _super = _createSuper(IncludeMatch);
+
+    function IncludeMatch(pattern) {
+      _classCallCheck(this, IncludeMatch);
+
+      return _super.call(this, pattern);
+    }
+
+    _createClass(IncludeMatch, [{
+      key: "search",
+      value: function search(text) {
+        var location = 0;
+        var index;
+        var indices = [];
+        var patternLen = this.pattern.length; // Get all exact matches
+
+        while ((index = text.indexOf(this.pattern, location)) > -1) {
+          location = index + patternLen;
+          indices.push([index, location - 1]);
+        }
+
+        var isMatch = !!indices.length;
+        return {
+          isMatch: isMatch,
+          score: isMatch ? 1 : 0,
+          indices: indices
+        };
+      }
+    }], [{
+      key: "type",
+      get: function get() {
+        return 'include';
+      }
+    }, {
+      key: "multiRegex",
+      get: function get() {
+        return /^'"(.*)"$/;
+      }
+    }, {
+      key: "singleRegex",
+      get: function get() {
+        return /^'(.*)$/;
+      }
+    }]);
+
+    return IncludeMatch;
+  }(BaseMatch);
+
+  var searchers = [ExactMatch, IncludeMatch, PrefixExactMatch, InversePrefixExactMatch, InverseSuffixExactMatch, SuffixExactMatch, InverseExactMatch, FuzzyMatch];
   var searchersLen = searchers.length; // Regex to split by spaces, but keep anything in quotes together
 
   var SPACE_RE = / +(?=([^\"]*\"[^\"]*\")*[^\"]*$)/;
@@ -1522,7 +1577,7 @@
 
   // to a singl match
 
-  var MultiMatchSet = new Set([FuzzyMatch.type, ExactMatch.type]);
+  var MultiMatchSet = new Set([FuzzyMatch.type, IncludeMatch.type]);
   /**
    * Command-like searching
    * ======================
@@ -1534,8 +1589,9 @@
    *
    * | Token       | Match type                 | Description                            |
    * | ----------- | -------------------------- | -------------------------------------- |
-   * | `jscript`   | fuzzy-match                | Items that match `jscript`             |
-   * | `'python`   | exact-match                | Items that include `python`            |
+   * | `jscript`   | fuzzy-match                | Items that fuzzy match `jscript`       |
+   * | `=scheme`   | exact-match                | Items that are `scheme`                |
+   * | `'python`   | include-match              | Items that include `python`            |
    * | `!ruby`     | inverse-exact-match        | Items that do not include `ruby`       |
    * | `^java`     | prefix-exact-match         | Items that start with `java`           |
    * | `!^earlang` | inverse-prefix-exact-match | Items that do not start with `earlang` |
@@ -1862,7 +1918,7 @@
             sortFn = _this$options.sortFn,
             ignoreFieldNorm = _this$options.ignoreFieldNorm;
         var results = isString(query) ? isString(this._docs[0]) ? this._searchStringList(query) : this._searchObjectList(query) : this._searchLogical(query);
-        computeScore$1(results, this._keyStore, {
+        computeScore$1(results, {
           ignoreFieldNorm: ignoreFieldNorm
         });
 
@@ -2124,7 +2180,7 @@
     return Fuse;
   }(); // Practical scoring function
 
-  function computeScore$1(results, keyStore, _ref8) {
+  function computeScore$1(results, _ref8) {
     var _ref8$ignoreFieldNorm = _ref8.ignoreFieldNorm,
         ignoreFieldNorm = _ref8$ignoreFieldNorm === void 0 ? Config.ignoreFieldNorm : _ref8$ignoreFieldNorm;
     results.forEach(function (result) {
@@ -2167,7 +2223,7 @@
     });
   }
 
-  Fuse.version = '6.3.1';
+  Fuse.version = '6.4.1';
   Fuse.createIndex = createIndex;
   Fuse.parseIndex = parseIndex;
   Fuse.config = Config;

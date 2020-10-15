@@ -1356,12 +1356,12 @@ TP.sys.inDeveloperMode = function() {
      *     'developer mode'.
      */
 
-    var package;
+    var bootPkg;
 
     //  Compute whether we're booting the developer target or not.
-    package = TP.sys.cfg('boot.package') || '';
+    bootPkg = TP.sys.cfg('boot.package') || '';
 
-    return /development/.test(package);
+    return /development/.test(bootPkg);
 };
 
 //  ----------------------------------------------------------------------------
@@ -2360,6 +2360,11 @@ TP.boot.$$tibetURIS = {};
 //  that this is set to null because of the logic in the
 //  TP.boot.$uriInTIBETFormat method.
 TP.boot.$$pathKeys = null;
+
+//  Cache for ECMA 6 module import URLs. We sometimes rewrite these into a Blob
+//  URL so that we can support 'file://'-based booting and/or concatenated
+//  files.
+TP.boot.$moduleURLs = {};
 
 //  ----------------------------------------------------------------------------
 
@@ -8259,7 +8264,7 @@ TP.boot.$configurePackage = async function() {
      */
 
     var profile,
-        package,
+        pkg,
         pkgName,
         config,
         parts,
@@ -8273,18 +8278,18 @@ TP.boot.$configurePackage = async function() {
         TP.boot.$stdout('Empty boot.profile. Checking for boot.package.',
             TP.DEBUG);
 
-        package = TP.sys.cfg('boot.package');
-        if (TP.boot.$isEmpty(package)) {
-            package = '~app_cfg/main.xml';
+        pkg = TP.sys.cfg('boot.package');
+        if (TP.boot.$isEmpty(pkg)) {
+            pkg = '~app_cfg/main.xml';
 
             TP.boot.$stdout('Empty boot.package. Defaulting to ' +
-                package + '.', TP.DEBUG);
+                pkg + '.', TP.DEBUG);
         } else {
-            TP.boot.$stdout('Found boot.package. Using: ' + package,
+            TP.boot.$stdout('Found boot.package. Using: ' + pkg,
                 TP.DEBUG);
         }
 
-        pkgName = package;
+        pkgName = pkg;
         if (pkgName.indexOf('/') !== -1) {
             pkgName = pkgName.slice(pkgName.lastIndexOf('/') + 1);
         }
@@ -8302,7 +8307,7 @@ TP.boot.$configurePackage = async function() {
         //  proper elements as needed.
         if (/@/.test(profile)) {
             parts = profile.split('@');
-            package = parts[0];
+            pkg = parts[0];
 
             config = TP.sys.cfg('boot.config');
             if (config !== parts[1]) {
@@ -8321,36 +8326,36 @@ TP.boot.$configurePackage = async function() {
                 TP.sys.setcfg('boot.config', parts[1]);
             }
         } else {
-            package = profile;
+            pkg = profile;
         }
 
-        pkgName = package;
+        pkgName = pkg;
     }
 
     //  Packages should always be .xml files. If we're defaulting from user
     //  input though we don't assume they added that to either profile or
     //  package name.
-    if (/\.xml$/.test(package) !== true) {
-        package += '.xml';
+    if (/\.xml$/.test(pkg) !== true) {
+        pkg += '.xml';
     }
 
     //  If the package spec isn't absolute we need to join it with a
     //  directory or other prefix so we can find the actual resource.
-    if (!TP.boot.$uriIsAbsolute(package)) {
-        package = TP.boot.$uriJoinPaths('~app_cfg', package);
+    if (!TP.boot.$uriIsAbsolute(pkg)) {
+        pkg = TP.boot.$uriJoinPaths('~app_cfg', pkg);
     }
 
     //  Warn if we're overriding package info
-    if (package !== TP.sys.cfg('boot.package') &&
+    if (pkg !== TP.sys.cfg('boot.package') &&
         TP.boot.$notEmpty(TP.sys.cfg('boot.package'))) {
         TP.boot.$stdout(
             'Overriding boot.package (' + TP.sys.cfg('boot.package') +
-            ') with: ' + package, TP.WARN);
+            ') with: ' + pkg, TP.WARN);
     }
 
     TP.sys.setcfg('boot.package', pkgName);
 
-    file = TP.boot.$uriExpandPath(package);
+    file = TP.boot.$uriExpandPath(pkg);
     TP.boot.$stdout('Loading package: ' +
         TP.boot.$uriInTIBETFormat(file), TP.DEBUG);
 
@@ -8360,7 +8365,7 @@ TP.boot.$configurePackage = async function() {
         TP.boot.$$bootfile = file;
     } else {
 
-        err = 'Boot package \'' + package + '\' not found in: ' + file;
+        err = 'Boot package \'' + pkg + '\' not found in: ' + file;
         TP.boot.$stderr(err, TP.FATAL);
 
         throw new Error(err);
@@ -8655,12 +8660,12 @@ TP.boot.$configureProject = function() {
      */
 
     var doc,
-        package;
+        pkgElem;
 
     doc = TP.boot.$$bootxml;
-    package = doc.getElementsByTagName('package')[0];
+    pkgElem = doc.getElementsByTagName('package')[0];
 
-    if (TP.boot.$isEmpty(package)) {
+    if (TP.boot.$isEmpty(pkgElem)) {
         //  Going to have problems. Without package data we have no home page
         //  name etc. so we'll have to default to something.
         TP.sys.setcfg('project.name', 'default');
@@ -8669,11 +8674,11 @@ TP.boot.$configureProject = function() {
         //  project.* values track the name, controller type and version for the
         //  current project
         TP.sys.setcfg('project.name',
-            package.getAttribute('name'));
+            pkgElem.getAttribute('name'));
         TP.sys.setcfg('project.controller',
-            package.getAttribute('controller'));
+            pkgElem.getAttribute('controller'));
         TP.sys.setcfg('project.version',
-            package.getAttribute('version') || '0.0.1');
+            pkgElem.getAttribute('version') || '0.0.1');
     }
 
     if (TP.boot.$notValid(TP.sys.cfg('project.root_page'))) {
@@ -9274,7 +9279,12 @@ isECMAModule) {
      *     import the code.
      */
 
-    var elem,
+    var src,
+        elem,
+        isHTTPBased,
+        transformedSource,
+        blob,
+        url,
         result,
         scriptDoc,
         scriptHead,
@@ -9288,13 +9298,6 @@ isECMAModule) {
         i,
         tn;
 
-    //  Don't load what we're already processing.
-    /* eslint-disable no-extra-parens */
-    if (srcUrl && (TP.boot.$$srcPath == TP.boot.$uriInTIBETFormat(srcUrl))) {
-    /* eslint-enable no-extra-parens */
-        return;
-    }
-
     if (jsSrc == null) {
         if (srcUrl) {
             TP.boot.$stderr('Invalid script source. No content for ' +
@@ -9306,6 +9309,8 @@ isECMAModule) {
         return null;
     }
 
+    src = jsSrc;
+
     //  load the source the 'DOM way' so we get commented source
     elem = TP.boot.$$scriptTemplate.cloneNode(true);
     TP.boot.$$loadNode = elem;
@@ -9313,7 +9318,87 @@ isECMAModule) {
     //  if this is an ECMA Module, set a 'type' of 'module' on the new script
     //  element.
     if (isECMAModule) {
+        isHTTPBased = TP.sys.isHTTPBased();
+
         elem.setAttribute('type', 'module');
+
+        //  Scan each module and, if we're not HTTP based (i.e. booting from a
+        //  file:// URL) or the import is a 'TIBET module specifier' (i.e. a
+        //  fake import URL that points to generated TIBET code representing
+        //  TIBET types proxied into ECMA classes), then process the content of
+        //  that import into a Blob URL and replace the URL in the module text.
+        transformedSource = src.replace(
+            // Find anything that looks like an import.
+            /(from\s+|import\s+)['"](.+?)['"]/g,
+            function(unmodified, action, importUrl) {
+                var hasTIBETModuleSpecifier,
+
+                    fullUrl,
+                    blobUrl,
+
+                    namespaceURN,
+                    namespace,
+                    moduleText,
+                    moduleBlob;
+
+                //  Test to see if the module specifier is a TIBET URN
+                //  representing a namespace (i.e. urn:tibet:TP.core).
+                hasTIBETModuleSpecifier = TP.regex.TIBET_URN.test(importUrl);
+
+                //  Compute the full URL of the import URL relative to the
+                //  file that is importing it.
+                fullUrl = TP.uriJoinPaths(
+                            srcUrl.slice(0, srcUrl.lastIndexOf('/') + 1),
+                            importUrl);
+
+                if (hasTIBETModuleSpecifier || !isHTTPBased) {
+
+                    //  See if we've already cached a Blob URL for that URL.
+                    blobUrl = TP.boot.$moduleURLs[fullUrl];
+
+                    if (blobUrl) {
+                        //  Found a Blob URL - replace it.
+                        return `${action}/* ${importUrl} */ '${blobUrl}'`;
+                    } else if (hasTIBETModuleSpecifier) {
+                        //  Create a URI representing the namespace from the
+                        //  import URI.
+                        namespaceURN = TP.uc(importUrl);
+
+                        //  Try to grab the corresponding namespace object and,
+                        //  if it's real, cause it to build an ECMA6 module of
+                        //  its content and store that in the Blob URL.
+                        namespace = namespaceURN.getContent();
+                        if (TP.isNamespace(namespace)) {
+                            moduleText = namespace.generatePseudoNativeModule();
+
+                            moduleBlob = new Blob([moduleText],
+                                            {type: 'application/javascript'});
+                            blobUrl = URL.createObjectURL(moduleBlob);
+
+                            TP.boot.$moduleURLs[importUrl] = blobUrl;
+
+                            //  Generated a Blob URL - replace it.
+                            return `${action}/* ${importUrl} */ '${blobUrl}'`;
+                        }
+                    } else {
+                        //  Didn't find a Blob URL - just update with the fully
+                        //  expanded URL so that the system can find it.
+                        return `${action} '${fullUrl}'`;
+                    }
+                } else {
+                    //  We're booting over HTTP(S) and it's not a special TIBET
+                    //  module specifier - just update with the fully expanded
+                    //  URL so that the system can find it.
+                    return `${action} '${fullUrl}'`;
+                }
+            });
+
+        src = transformedSource;
+
+        blob = new Blob([src], {type: 'application/javascript'});
+        url = URL.createObjectURL(blob);
+
+        TP.boot.$moduleURLs[srcUrl] = url;
     }
 
     //  ensure we keep track of the proper package/config information
@@ -9342,9 +9427,9 @@ isECMAModule) {
     //  Patch for stack traces on text-injected code. See:
     //  https://bugs.webkit.org/show_bug.cgi?id=25475
     if (scriptUrl !== 'inline') {
-        jsSrcUrl = '/' + '/' + '#' + ' sourceURL=' + scriptUrl + '\n\n' + jsSrc;
+        jsSrcUrl = '/' + '/' + '#' + ' sourceURL=' + scriptUrl + '\n\n' + src;
     } else {
-        jsSrcUrl = jsSrc;
+        jsSrcUrl = src;
     }
 
     //  set a reference so when/if this errors out we'll get the right
@@ -9380,7 +9465,7 @@ isECMAModule) {
         if (TP.sys.inExtension() === true) {
             elem.setAttribute('type', 'tibetscript');
             /* eslint-disable no-eval */
-            eval(jsSrc);
+            eval(src);
             /* eslint-enable no-eval */
         }
 
@@ -9652,6 +9737,7 @@ TP.boot.$importComponents = async function(loadSync) {
         tn,
         ch,
         isECMAModule,
+        loadUsingSrcAttr,
         msg,
         level,
         nd,
@@ -9836,6 +9922,8 @@ TP.boot.$importComponents = async function(loadSync) {
 
         isECMAModule = nd.getAttribute('type') === 'module';
 
+        loadUsingSrcAttr = TP.sys.cfg('import.use_src_attr') && !isECMAModule;
+
         if ((srcpath = nd.getAttribute('src')) != null) {
             //  debuggers like Firebuggy have issues with script nodes that
             //  have inline source instead of file references (or they did
@@ -9843,7 +9931,7 @@ TP.boot.$importComponents = async function(loadSync) {
             //  do dom-based import here to support source-level debugging
             //  to occur. we'll keep our comments about buggy debuggers to
             //  ourselves...mostly.
-            if (TP.sys.cfg('import.use_dom')) {
+            if (loadUsingSrcAttr) {
                 elem = TP.boot.$$scriptTemplate.cloneNode(true);
 
                 elem.setAttribute('loadpkg', TP.boot.$$loadPackage);
@@ -9978,7 +10066,7 @@ TP.boot.$$importPhase = async function() {
      *     be considered private.
      */
 
-    var package,
+    var pkgFile,
         config,
         phase,
         nodelist;
@@ -9986,11 +10074,11 @@ TP.boot.$$importPhase = async function() {
     //  Get the list of filtered nodes by listing the assets. This action causes
     //  whatever config is in place to be used to filter the expanded package.
 
-    package = TP.boot.$$bootfile;
+    pkgFile = TP.boot.$$bootfile;
     config = TP.sys.cfg('boot.config');
     phase = TP.sys.cfg('boot.phase_one') ? 'Phase One' : 'Phase Two';
 
-    nodelist = await TP.boot.$listPackageAssets(package, config);
+    nodelist = await TP.boot.$listPackageAssets(pkgFile, config);
 
     //  remaining list is our workload for actual importing
     TP.boot.$stdout('Importing ' + nodelist.length + ' ' +
@@ -10484,7 +10572,7 @@ TP.boot.$expandPackage = async function(aPath, aConfig) {
         doc,        //  The xml DOM document object after parse.
         config,     //  The ultimate config ID being used.
         node,       //  Result of searching for our config by ID.
-        package,    //  The package node from the XML doc.
+        pkgElem,    //  The package node from the XML doc.
         txt,        //  Raw text value for unparsed XML file.
         msg;        //  Error message construction variable.
 
@@ -10523,15 +10611,15 @@ TP.boot.$expandPackage = async function(aPath, aConfig) {
         }
 
         //  If the package isn't valid stop right here.
-        package = doc.getElementsByTagName('package')[0];
-        if (TP.boot.$notValid(package)) {
+        pkgElem = doc.getElementsByTagName('package')[0];
+        if (TP.boot.$notValid(pkgElem)) {
             return;
         }
 
         //  Verify package has a name and version, otherwise it's not valid.
-        if (TP.boot.$isEmpty(package.getAttribute('name'))) {
+        if (TP.boot.$isEmpty(pkgElem.getAttribute('name'))) {
             throw new Error('Missing name on package: ' +
-                TP.boot.$nodeAsString(package));
+                TP.boot.$nodeAsString(pkgElem));
         }
 
         if (TP.boot.$isEmpty(aConfig) || aConfig === 'default') {
@@ -10693,15 +10781,15 @@ TP.boot.$getDefaultConfig = function(aPackageDoc) {
      * @returns {String} The configuration ID which is the default.
      */
 
-    var package;
+    var pkgElem;
 
-    package = aPackageDoc.getElementsByTagName('package')[0];
-    if (TP.boot.$notValid(package)) {
-        throw new Error('package tag missing.');
+    pkgElem = aPackageDoc.getElementsByTagName('package')[0];
+    if (TP.boot.$notValid(pkgElem)) {
+        throw new Error('package element missing.');
     }
 
     //  TODO: make this default of 'base' a constant?
-    return package.getAttribute('default') || 'base';
+    return pkgElem.getAttribute('default') || 'base';
 };
 
 //  ----------------------------------------------------------------------------
@@ -11439,7 +11527,7 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         phaseOne,
         phaseTwo,
 
-        package,
+        pkg,
         config,
 
         nonTeamTIBETEnv,
@@ -11492,12 +11580,12 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
     TP.sys.setcfg('boot.phase_two', true);
 
     //  Grab the package and config that the user booted with.
-    package = TP.sys.cfg('boot.package');
+    pkg = TP.sys.cfg('boot.package');
     config = TP.sys.cfg('boot.config');
 
     //  Grab the list of resources using that package and config.
     packageAssets = await TP.boot.$listPackageAssets(
-                                package, config, null, true, false, false);
+                                pkg, config, null, true, false, false);
 
     //  If we're running in a non-Team TIBET environment, that means that we're
     //  running with at least the lib (and possibly the app) in a form where
@@ -11521,7 +11609,7 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
 
         //  Grab the list of resources using that package and config.
         teamTIBETAssets = await TP.boot.$listPackageAssets(
-                                package, config, null, true, false, false);
+                                pkg, config, null, true, false, false);
 
         //  Reset config in case we want to use it later.
         config = TP.sys.cfg('boot.config');
@@ -11935,8 +12023,10 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
 
     var moduleName,
 
-        nsName,
+        namespaceURN,
         namespace,
+
+        moduleText,
 
         retPromise;
 
@@ -11962,19 +12052,24 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
 
         moduleName = msgObjContent.payload;
         if (TP.notEmpty(moduleName)) {
-
-            //  Compute a namespace name. So 'TP_gui.js' becomes 'TP.gui'
-            moduleName = TP.unescapeTypeName(moduleName);
-            nsName = moduleName.slice(0, moduleName.lastIndexOf('.'));
+            //  Create a URI representing the namespace from the module name.
+            namespaceURN = TP.uc(moduleName);
 
             //  Try to grab the corresponding namespace object and, if it's
             //  real, cause it to build an ECMA6 module of its content. Note
-            //  that it returns the text it builds in addition to adding it to a
-            //  well-known cache. We return that text here for sending back (via
-            //  a return postMessage) to the ServiceWorker.
-            namespace = TP.bySystemId(nsName);
+            //  that we add that text to the pseudo-module cache and then return
+            //  that text here for sending back (via a return postMessage) to
+            //  the ServiceWorker.
+            namespace = namespaceURN.getContent();
             if (TP.isNamespace(namespace)) {
-                retPromise = namespace.definePseudoNativeModule();
+                moduleText = namespace.generatePseudoNativeModule();
+                //  Store the module in the pseudo module cache under a name
+                //  that can be imported into native ECMAScript modules.
+                retPromise = caches.open('TIBET_PSEUDO_MODULE_CACHE').then(
+                    function(cache) {
+                        cache.put(moduleName, new Response(moduleText));
+                        return moduleText;
+                    });
             }
         }
     }

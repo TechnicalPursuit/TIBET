@@ -3488,9 +3488,9 @@ function(anObject) {
      */
 
     if (anObject === null) {
-        return 'null';
+        return null;
     } else if (anObject === undefined) {
-        return 'undefined';
+        return undefined;
     }
 
     if (TP.canInvoke(anObject, 'asObject')) {

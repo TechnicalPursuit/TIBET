@@ -20,6 +20,7 @@
 
 var CLI,
     fs,
+    babel,
     minify,
     Cmd;
 
@@ -27,6 +28,7 @@ var CLI,
 CLI = require('./_cli');
 fs = require('fs');
 
+babel = require('@babel/core');
 minify = require('babel-minify');
 
 //  ---
@@ -113,7 +115,8 @@ Cmd.prototype.executeForEach = function(list) {
     var pkg,
         cmd,
         tmpdir,
-        minifyOpts; // Options for minify
+        minifyOpts, // Options for minify
+        babelOpts;  // Options for babel
 
     cmd = this;
     pkg = this.package;
@@ -162,6 +165,27 @@ Cmd.prototype.executeForEach = function(list) {
         undefinedToVoid: false
     };
 
+    babelOpts = {
+        babelrc: false,
+        plugins: [
+            '@babel/plugin-transform-modules-systemjs'
+        ],
+        presets: [
+            [
+                '@babel/preset-env',
+                {
+                    targets: {
+                        esmodules: true
+                    }
+                }
+            ]
+        ],
+        moduleIds: true,
+        sourceMap: false,
+        sourceType: 'module',
+        wrapPluginVisitorMethod: undefined
+    };
+
     this.debug('minifyOpts: ' + CLI.beautify(JSON.stringify(minifyOpts)));
 
     list.forEach(function(item) {
@@ -169,6 +193,8 @@ Cmd.prototype.executeForEach = function(list) {
             usecache,
             result,
             code,
+            id,
+            index,
             virtual,
             cachename;
 
@@ -206,12 +232,42 @@ Cmd.prototype.executeForEach = function(list) {
                 CLI.notEmpty(item.getAttribute('no-minify')) ||
                 !cmd.options.minify) {
                 code = fs.readFileSync(src, {encoding: 'utf8'});
+                if (item.getAttribute('type') === 'module') {
+                    id = src;
+                    index = id.lastIndexOf('.');
+                    if (index !== -1) {
+                        id = id.slice(0, index);
+                    }
+
+                    index = id.lastIndexOf('/');
+                    if (index !== -1) {
+                        id = id.slice(index + 1);
+                    }
+
+                    babelOpts.moduleId = id;
+                    code = babel.transform(code, babelOpts).code;
+                }
             } else {
                 if (usecache) {
                     code = fs.readFileSync(cachename, {encoding: 'utf8'});
                 } else {
                     try {
                         code = fs.readFileSync(src, {encoding: 'utf8'});
+                        if (item.getAttribute('type') === 'module') {
+                            id = src;
+                            index = id.lastIndexOf('.');
+                            if (index !== -1) {
+                                id = id.slice(0, index);
+                            }
+
+                            index = id.lastIndexOf('/');
+                            if (index !== -1) {
+                                id = id.slice(index + 1);
+                            }
+
+                            babelOpts.moduleId = id;
+                            code = babel.transform(code, babelOpts).code;
+                        }
 
                         result = minify(code, minifyOpts);
                         if (!result || !result.code) {

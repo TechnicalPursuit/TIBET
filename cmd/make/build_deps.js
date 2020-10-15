@@ -41,6 +41,7 @@
             '_rollup_pouchdb_all_dbs',
             '_rollup_sinon',
             '_rollup_sprintf',
+            '_rollup_systemjs',
             '_rollup_syn',
             '_rollup_wgxpath',
             '_rollup_xpath'

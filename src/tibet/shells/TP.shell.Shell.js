@@ -2627,6 +2627,7 @@ function(anObjectSpec, aRequest, forArguments) {
         url,
         resp,
         $$inst,
+        parts,
 
         instType,
 
@@ -2716,8 +2717,9 @@ function(anObjectSpec, aRequest, forArguments) {
         }
     }
 
-    if (TP.regex.NS_ID.test(spec)) {
-        $$inst = TP[spec.slice(0, -1)] || APP[spec.slice(0, -1)];
+    if (TP.regex.VALID_NAMESPACENAME.test(spec)) {
+        parts = TP.regex.VALID_NAMESPACENAME.match(spec);
+        $$inst = TP.global[parts.at(1)][parts.at(2)];
         if (TP.isValid($$inst) && TP.isNamespace($$inst)) {
             return $$inst;
         }

@@ -3280,7 +3280,7 @@ function(aFilter) {
         methods,
         hidden,
         scope,
-        public,
+        isPublic,
         unique,
         keys,
         key,
@@ -3344,7 +3344,7 @@ function(aFilter) {
 
     //  Only necessary if 'hidden' is 'true' - then, if you want both, you have
     //  to specify this one too.
-    public = TP.ifInvalid(params.public, false);
+    isPublic = TP.ifInvalid(params.public, false);
 
     //  if the filter is bogus we can just bail out
     if (!attrs && !methods) {
@@ -3376,7 +3376,7 @@ function(aFilter) {
         } else {
             //  forcing to show hidden but it isn't and we're not being asked to
             //  include both hidden and public, then move on.
-            if (hidden && !public) {
+            if (hidden && !isPublic) {
                 continue;
             }
         }
