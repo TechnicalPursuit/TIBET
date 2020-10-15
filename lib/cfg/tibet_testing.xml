@@ -57,6 +57,7 @@
     <config ref="data"/>
     <config ref="databinding"/>
     <config ref="dom"/>
+    <config ref="ecma"/>
     <config ref="ev"/>
     <config ref="focusing"/>
     <config ref="formatting"/>
@@ -211,6 +212,14 @@
 
 <config id="grouping">
     <script src="~lib_test/src/tibet/grouping/TP.tibet.group_Tests.js"/>
+</config>
+
+<config id="ecma">
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleNoImport.js"/>
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleStandardImport.js"/>
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleWholeNSImport.js"/>
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleMixedNSAndTypeImport.js"/>
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleMixedNSAndTypeImportWithAlias.js"/>
 </config>
 
 <config id="ev">
