@@ -31,6 +31,93 @@
         ]]>
     </script>
 
+    <script src="~lib_deps/systemjs-tpi.min.js"
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/systemjs-tpi.js"
+        unless="boot.minified" no-lint="no-lint"/>
+    <script src="~lib_deps/systemjs-named-register-tpi.min.js"
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/systemjs-named-register-tpi.js"
+        unless="boot.minified" no-lint="no-lint"/>
+
+    <script>
+        <![CDATA[
+            TP.registerExternalObject('System', System);
+            TP.extern.System.shouldFetch = function() {
+                return false;
+            };
+
+            var systemJSPrototype;
+            systemJSPrototype = TP.extern.System.constructor.prototype;
+
+            systemJSPrototype.oldInstantiate = systemJSPrototype.instantiate;
+            systemJSPrototype.instantiate = function(url, firstParentUrl) {
+
+                if (!TP.regex.TIBET_URN.test(url)) {
+                    return TP.extern.System.constructor.prototype.oldInstantiate.call(
+                            TP.extern.System,
+                            url, firstParentUrl);
+                }
+
+                return new Promise(function(resolver, rejector) {
+                    var namespaceURN,
+                        namespace,
+                        moduleText;
+
+                    //  Create a URI representing the namespace from the import URI.
+                    namespaceURN = TP.uc(url);
+
+                    //  Try to grab the corresponding namespace object and,
+                    //  if it's real, cause it to build an ECMA6 module of
+                    //  its content and store that in the Blob URL.
+                    namespace = namespaceURN.getContent();
+                    if (TP.isNamespace(namespace)) {
+                        TP.extern.System.register(url, [], function(_export, _context) {
+                            return {
+                                execute: function() {
+                                    var moduleObj;
+
+                                    moduleText =
+                                        namespace.generatePseudoNativeModule(
+                                                null, false);
+                                    moduleObj = eval(moduleText);
+
+                                    _export(moduleObj);
+                                    _export('default', moduleObj);
+                                }
+                            }
+                        });
+                    }
+
+                    resolver(TP.extern.System.getRegister());
+                });
+            };
+
+            systemJSPrototype.resolve = function(id) {
+                var newID,
+                    index;
+
+                if (TP.regex.TIBET_URN.test(id)) {
+                    return id;
+                }
+
+                newID = id;
+
+                index = newID.lastIndexOf('.');
+                if (index !== -1) {
+                    newID = newID.slice(0, index);
+                }
+
+                index = newID.lastIndexOf('/');
+                if (index !== -1) {
+                    newID = newID.slice(index + 1);
+                }
+
+                return newID;
+            };
+        ]]>
+    </script>
+
     <script src="~lib_deps/bluebird-tpi.min.js"
         if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/bluebird-tpi.js"
