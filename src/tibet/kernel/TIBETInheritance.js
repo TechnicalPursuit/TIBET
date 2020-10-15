@@ -12353,21 +12353,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Namespace.Inst.defineMethod('definePseudoNativeModule',
-function(typeNamesToExport) {
+TP.lang.Namespace.Inst.defineMethod('generatePseudoNativeModule',
+function(typeNamesToExport, wantsExportStatements) {
 
     /**
-     * @method definePseudoNativeModule
-     * @summary Defines types belonging to this namespace as TIBET ECMA classes
-     *     and exports them, putting the definition into the TIBET cache so that
-     *     it can be found by code that wants to use these types as ECMA
-     *     classes.
+     * @method generatePseudoNativeModule
+     * @summary Generates ECMA module text of types belonging to this namespace
+     *     as TIBET ECMA classes. If the flag is not false, then ECMA module
+     *     export statements are generated.
      * @param {String[]} [typeNamesToExport] An optional Array of type names to
      *     export. If this is not supplied, then all types belonging to this
      *     namespace will be exported. Note that these type names should be the
      *     *local* type name for the type, not the global one (i.e. 'Point' not
      *     'TP.gui.Point'. Also, these types should belong to the receiver
      *     namespace.
+     * @param {Boolean} [wantsExportStatements=true] Whether or not to return
+     *     ECMA module compliant 'export' statements. If this parameter is
+     *     false, then text with an IIFE returning a simple 'Object' syntax
+     *     containing the exports (suitable for eval) is returned.
      * @returns {String} The text of the module defining types in the namespace
      *     as 'TIBET ECMA class proxies'.
      */
@@ -12482,12 +12485,17 @@ function(typeNamesToExport) {
         });
     defaultDefinition = defaultDefinition.slice(0, -2) + '}';
 
-    //  Add the default 'export' statement.
-    moduleBody += 'export default ' + defaultDefinition + ';\n\n';
+    if (TP.notFalse(wantsExportStatements)) {
+        //  Add the default 'export' statement.
+        moduleBody += 'export default ' + defaultDefinition + ';\n\n';
 
-    //  Add the 'export' statement that exports all of the individual 'class'
-    //  names.
-    moduleBody += 'export {' + moduleExportNames.join(', ') + '};';
+        //  Add the 'export' statement that exports all of the individual
+        //  'class' names.
+        moduleBody += 'export {' + moduleExportNames.join(', ') + '};';
+    } else {
+        moduleBody = '(function() {\n\n' + moduleBody +
+                        'return ' + defaultDefinition + ';\n\n}())\n\n';
+    }
 
     return moduleBody;
 });

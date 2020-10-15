@@ -9369,7 +9369,7 @@ isECMAModule) {
                         //  its content and store that in the Blob URL.
                         namespace = namespaceURN.getContent();
                         if (TP.isNamespace(namespace)) {
-                            moduleText = namespace.definePseudoNativeModule();
+                            moduleText = namespace.generatePseudoNativeModule();
 
                             moduleBlob = new Blob([moduleText],
                                             {type: 'application/javascript'});
@@ -12062,7 +12062,7 @@ TP.boot.receiveMessageFromServiceWorker = function(msgObjContent) {
             //  the ServiceWorker.
             namespace = namespaceURN.getContent();
             if (TP.isNamespace(namespace)) {
-                moduleText = namespace.definePseudoNativeModule();
+                moduleText = namespace.generatePseudoNativeModule();
                 //  Store the module in the pseudo module cache under a name
                 //  that can be imported into native ECMAScript modules.
                 retPromise = caches.open('TIBET_PSEUDO_MODULE_CACHE').then(
