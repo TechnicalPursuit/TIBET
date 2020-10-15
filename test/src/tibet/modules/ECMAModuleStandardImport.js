@@ -21,8 +21,6 @@ class AnotherObject extends MyObject {
     }
 }
 
-TP.lang.Object.defineSubtypeFromECMAClass('TP.lang.AnotherObject', AnotherObject);
-
 export {AnotherObject};
 
 //  ------------------------------------------------------------------------
