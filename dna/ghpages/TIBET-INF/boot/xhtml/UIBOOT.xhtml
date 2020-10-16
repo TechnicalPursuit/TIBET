@@ -19,7 +19,7 @@
 
 <div class="yesscript">
     <div class="detail-intro">
-        <a class="image-link" href="#" onclick="stageAction()">
+        <a class="image-link" href="#">
             <img id="BOOT-IMAGE" alt="Current Stage Icon"
                 src="../media/app_logo.png"/>
         </a>
@@ -74,31 +74,6 @@
 </noscript>
 
 </div>
-<script>
-<![CDATA[
-try {
-  var check = top.document;
-} catch (e) {
-  if (window.location.protocol.indexOf('file') === 0) {
-    document.getElementById('BOOT-SUBHEAD').innerHTML =
-      'File launch failed. Check console for more information.';
-  }
-}
-
-function stageAction() {
-    /**
-     * Respond to user clicks on the stage image, which can serve as an action
-     * trigger. The most common action is to continue after a pause.
-     */
-
-    // For now TIBET always uses 'top' as the code frame.
-    try {
-        top.TP.boot.$stageAction();
-    } catch (e) {
-        // TODO: continue to ignore this?
-    }
-}
-]]>
-</script>
+<script src="../scripts/UIBOOT.js"></script>
 </body>
 </html>
