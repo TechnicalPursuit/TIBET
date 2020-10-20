@@ -283,8 +283,12 @@ function(anItem) {
         return 'undefined';
     }
 
-    if (TP.canInvoke(anItem, 'getLamaInspectorLabel')) {
+    //  Try to get the inspector label - it's faster here to just let this throw
+    //  than test to see if the item responds to the method.
+    try {
         return anItem.getLamaInspectorLabel();
+    } catch (e) {
+        void 0;
     }
 
     if (TP.isMethod(anItem)) {
