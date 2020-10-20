@@ -256,7 +256,7 @@ function(options) {
      *     toolbar.
      */
 
-    return TP.elem('<lama:urisToolbarContent tibet:ctrl="urn:tibet:lama_inspector_target"/>');
+    return TP.elem('<lama:urisToolbarContent id="urisToolbarContent" tibet:ctrl="urn:tibet:lama_inspector_target"/>');
 });
 
 //  ------------------------------------------------------------------------

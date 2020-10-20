@@ -425,7 +425,7 @@ function(options) {
 
     return TP.xhtmlnode(
             '<div class="cm-s-elegant scrollable wrapped noselect readonly"' +
-                ' bind:in="{value: ' +
+                ' id="SingleEntrySource" bind:in="{value: ' +
                 dataURI.asString() +
             '}"/>');
 });

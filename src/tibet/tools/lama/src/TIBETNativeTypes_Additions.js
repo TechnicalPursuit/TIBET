@@ -434,7 +434,7 @@ function(options) {
     //  If not, then return the uri toolbar content for placement into the
     //  proper place in the inspector.
     if (!tabHasValue) {
-        return TP.elem('<lama:methodEditorToolbarContent' +
+        return TP.elem('<lama:methodEditorToolbarContent id="methodEditorToolbarContent"' +
                         ' tibet:ctrl="inspectorEditor"/>');
     }
 });

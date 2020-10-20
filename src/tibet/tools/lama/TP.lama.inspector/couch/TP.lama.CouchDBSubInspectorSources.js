@@ -1049,7 +1049,7 @@ TP.lama.CouchDBSubInspectorSources.Inst.defineMethod('getContentForToolbarForDoc
 function(options) {
 
     return TP.elem(
-        '<lama:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
+        '<lama:uriEditorToolbarContent id="uriEditorToolbarContent" tibet:ctrl="inspectorEditor"/>');
 });
 
 //  ------------------------------------------------------------------------
