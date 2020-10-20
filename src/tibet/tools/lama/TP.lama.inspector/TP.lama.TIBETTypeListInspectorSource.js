@@ -81,8 +81,8 @@ function(options) {
                     function(entry) {
                         return TP.ac(
                                 entry,
-                                this.getEntryLabel(entry));
-                    }.bind(this));
+                                entry);
+                    });
         data.sort(TP.sort.FIRST_ITEM);
     } else {
         data = TP.ac();
