@@ -269,12 +269,6 @@ function(aSignal) {
     var targetElem,
         triggerTPElem;
 
-    //  If the component has a 'hide on' signal name, then we don't hide it via
-    //  DOM click.
-    if (TP.isValid(this.get('$hideOnSignalName'))) {
-        return this;
-    }
-
     targetElem = aSignal.getTarget();
 
     triggerTPElem = this.get('$triggerTPElement');
@@ -328,12 +322,6 @@ function(aSignal) {
 
     var targetElem,
         triggerTPElem;
-
-    //  If the component has a 'hide on' signal name, then we don't hide it via
-    //  DOM keyup.
-    if (TP.isValid(this.get('$hideOnSignalName'))) {
-        return this;
-    }
 
     targetElem = aSignal.getTarget();
 
