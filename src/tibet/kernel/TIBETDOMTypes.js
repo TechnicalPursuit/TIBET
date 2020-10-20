@@ -9256,6 +9256,9 @@ function(aRequest, replaceNode, alternateNode) {
 
         shouldProcess,
 
+        foundCached,
+        nodeLID,
+
         request,
 
         processor,
@@ -9309,17 +9312,38 @@ function(aRequest, replaceNode, alternateNode) {
     //  Initially we're set to process this markup.
     shouldProcess = true;
 
-    //  But if the node is an Element and it has an attribute of
-    //  'tibet:no-compile', then skip processing it.
-    if (TP.isElement(node) &&
-        TP.elementHasAttribute(node, 'tibet:no-compile', true)) {
-        shouldProcess = false;
+    //  Initially we've not found anything in the compiled markup cache.
+    foundCached = false;
+
+    if (TP.isElement(node)) {
+        //  If the node has an attribute of 'tibet:no-compile', then skip
+        //  processing it.
+        if (TP.elementHasAttribute(node, 'tibet:no-compile', true)) {
+            shouldProcess = false;
+        } else {
+            //  Otherwise, retrieve or compute a local ID for the node and check
+            //  with our compiled document cache.
+            nodeLID = TP.lid(node);
+            newNode = TP.$compiled_doc_cache.at(nodeLID);
+
+            //  If we successfully found an entry in the cache, then set the
+            //  flags to not process and indicate that we found an entry in the
+            //  cache.
+            if (TP.isNode(newNode)) {
+                shouldProcess = false;
+                foundCached = true;
+
+                //  Clone the node we found in the cache.
+                newNode = TP.nodeCloneNode(newNode);
+            }
+        }
     }
 
     //  If the node is a Document and it's documentElement has an attribute of
     //  'tibet:no-compile', then skip processing it.
     if (TP.isDocument(node) &&
-        TP.elementHasAttribute(node.documentElement, 'tibet:no-compile', true)) {
+        TP.elementHasAttribute(
+                        node.documentElement, 'tibet:no-compile', true)) {
         shouldProcess = false;
     }
 
@@ -9377,7 +9401,14 @@ function(aRequest, replaceNode, alternateNode) {
                             request.getFaultInfo());
             return this;
         }
-    } else {
+
+        //  If we successfully retrieved or computed a local ID above, that must
+        //  mean that the source node was an Element. Cache it here under that
+        //  local ID.
+        if (TP.notEmpty(nodeLID)) {
+            TP.$compiled_doc_cache.atPut(nodeLID, newNode);
+        }
+    } else if (!foundCached) {
 
         //  We're not processing - exit here.
         return this;

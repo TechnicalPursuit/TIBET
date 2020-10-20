@@ -502,7 +502,7 @@ function(options) {
      *     toolbar.
      */
 
-    return TP.elem('<lama:typeToolbarContent' +
+    return TP.elem('<lama:typeToolbarContent id="typeToolbarContent"' +
                     ' tibet:ctrl="urn:tibet:lama_inspector_target"/>');
 });
 
@@ -849,7 +849,7 @@ function(options) {
      *     toolbar.
      */
 
-    return TP.elem('<lama:methodsToolbarContent' +
+    return TP.elem('<lama:methodsToolbarContent id="methodsToolbarContent"' +
                     ' tibet:ctrl="urn:tibet:lama_inspector_target"/>');
 });
 
@@ -1341,7 +1341,7 @@ function(options) {
      *     toolbar.
      */
 
-    return TP.elem('<lama:methodsToolbarContent' +
+    return TP.elem('<lama:methodsToolbarContent id="methodsToolbarContent"' +
                     ' tibet:ctrl="urn:tibet:lama_inspector_target"/>');
 });
 
@@ -1607,7 +1607,7 @@ function(options) {
      *     toolbar.
      */
 
-    return TP.elem('<lama:methodsToolbarContent' +
+    return TP.elem('<lama:methodsToolbarContent id="methodsToolbarContent"' +
                     ' tibet:ctrl="urn:tibet:lama_inspector_target"/>');
 });
 

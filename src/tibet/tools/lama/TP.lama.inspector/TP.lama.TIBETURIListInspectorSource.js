@@ -90,6 +90,8 @@ function(options) {
      */
 
     options.atPut(TP.ATTR + '_class', 'doublewide');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
+
 
     return options;
 });
@@ -256,7 +258,7 @@ function(options) {
      *     toolbar.
      */
 
-    return TP.elem('<lama:urisToolbarContent tibet:ctrl="urn:tibet:lama_inspector_target"/>');
+    return TP.elem('<lama:urisToolbarContent id="urisToolbarContent" tibet:ctrl="urn:tibet:lama_inspector_target"/>');
 });
 
 //  ------------------------------------------------------------------------

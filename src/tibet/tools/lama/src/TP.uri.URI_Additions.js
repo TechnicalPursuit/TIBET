@@ -367,7 +367,7 @@ function(options) {
     //  proper place in the inspector.
     if (!tabHasValue) {
         return TP.elem(
-            '<lama:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
+            '<lama:uriEditorToolbarContent id="uriEditorToolbarContent" tibet:ctrl="inspectorEditor"/>');
     }
 });
 

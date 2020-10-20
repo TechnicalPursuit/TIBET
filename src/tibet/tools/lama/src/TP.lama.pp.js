@@ -74,7 +74,7 @@ function(anObject, optFormat) {
 
     output = TP.ac();
     output.push('<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                    ' class="lama_pp Array">');
+                    ' class="lama_pp Array" tibet:no-compile="true">');
     len = anObject.getSize();
 
     try {
@@ -105,7 +105,7 @@ TP.lama.pp.Type.defineMethod('fromBoolean',
 function(anObject, optFormat) {
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp Boolean">' +
+                ' class="lama_pp Boolean" tibet:no-compile="true">' +
             this.runJSModeOn(TP.str(anObject)) +
             '</span>';
 });
@@ -130,7 +130,7 @@ function(anObject, optFormat) {
     }
 
     obj = anObject.toISOString().asEscapedXML();
-    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp Date">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp Date" tibet:no-compile="true">' +
             this.runJSModeOn(obj) +
             '</span>';
 });
@@ -186,7 +186,7 @@ function(anObject, optFormat) {
     }
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-            ' class="lama_pp Error">' + str + '</span>';
+            ' class="lama_pp Error" tibet:no-compile="true">' + str + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -231,7 +231,7 @@ function(anObject, optFormat) {
         str = str.replace(/\n/g, '<br/>');
 
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                    ' class="lama_pp Function">' +
+                    ' class="lama_pp Function" tibet:no-compile="true">' +
                 str +
                 '</span>';
     } else {
@@ -241,7 +241,7 @@ function(anObject, optFormat) {
         //  'white-space: pre' to hold on to remaining whitespace while
         //  ensuring we ignore any embedded < or > symbols etc.
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                    ' class="lama_pp Function">' +
+                    ' class="lama_pp Function" tibet:no-compile="true">' +
                     '<![CDATA[' + str + ']]>' +
                 '</span>';
     }
@@ -265,7 +265,7 @@ function(anObject, optFormat) {
     }
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp Iterable">' +
+                ' class="lama_pp Iterable" tibet:no-compile="true">' +
                 '<![CDATA[' + arr.join(', ') + ']]>' +
             '</span>';
 });
@@ -301,7 +301,7 @@ function(anObject, optFormat) {
     }
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp NamedNodeMap">' +
+                ' class="lama_pp NamedNodeMap" tibet:no-compile="true">' +
             content.join('') +
             '</span>';
 });
@@ -336,7 +336,7 @@ function(anObject, optFormat) {
         }
 
         str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                    ' class="lama_pp Node">' +
+                    ' class="lama_pp Node" tibet:no-compile="true">' +
                     str +
                 '</span>';
     } finally {
@@ -393,7 +393,7 @@ function(anObject, optFormat) {
     format.atPut('currentLevel', format.at('currentLevel') - 1);
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp NodeList">' +
+                ' class="lama_pp NodeList" tibet:no-compile="true">' +
                 content.join('') +
             '</span>';
 });
@@ -423,7 +423,7 @@ function(anObject, optFormat) {
     }
 
     obj = anObject.asEscapedXML();
-    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp Number">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp Number" tibet:no-compile="true">' +
             this.runJSModeOn(obj) +
             '</span>';
 });
@@ -493,7 +493,7 @@ function(anObject, optFormat) {
 
     output = TP.ac();
     output.push('<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp Object">');
+                ' class="lama_pp Object" tibet:no-compile="true">');
 
     formatInLoop = true;
     if (keyErr) {
@@ -566,7 +566,7 @@ function(anObject, optFormat) {
 
     obj = anObject.asEscapedXML();
 
-    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp RegExp">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp RegExp" tibet:no-compile="true">' +
                 this.runJSModeOn(obj) +
             '</span>';
 });
@@ -575,7 +575,7 @@ function(anObject, optFormat) {
 
 TP.lama.pp.Type.defineMethod('fromSet',
 function(anObject, optFormat) {
-    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp Set">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp Set" tibet:no-compile="true">' +
             this.runJSModeOn(anObject.getKeys()) +
             '</span>';
 });
@@ -595,7 +595,7 @@ function(anObject, optFormat) {
         obj = TP.str(anObject);
 
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                    ' class="lama_pp String">' +
+                    ' class="lama_pp String" tibet:no-compile="true">' +
                     this.runXMLModeOn(obj) +
                 '</span>';
     } else {
@@ -604,12 +604,12 @@ function(anObject, optFormat) {
 
         if (TP.isJSONString(obj)) {
             return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                        ' class="lama_pp String">' +
+                        ' class="lama_pp String" tibet:no-compile="true">' +
                         this.runFormattedJSONModeOn(obj) +
                     '</span>';
         } else {
             return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                        ' class="lama_pp String">' +
+                        ' class="lama_pp String" tibet:no-compile="true">' +
                         this.runJSModeOn(obj) +
                     '</span>';
         }
@@ -625,7 +625,7 @@ function(anObject, optFormat) {
     //  wrapper. The object in TP.boot.Annotation instances is almost always
     //  an Error object of some kind.
 
-    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" tibet:no-compile="true"' +
                 ' class="lama_pp TP_boot_Annotation">' +
                 '<span data-name="object">' +
                     TP.xhtmlstr(anObject.object) +
@@ -708,7 +708,7 @@ function(anObject, optFormat) {
     }
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp TP_boot_Log">' +
+                ' class="lama_pp TP_boot_Log" tibet:no-compile="true">' +
                 str +
             '</span>';
 });
@@ -748,12 +748,12 @@ function(anObject, optFormat) {
 
     if (TP.isValid(TP.extern.CodeMirror)) {
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                    ' class="lama_pp TP_core_JSONContent">' +
+                    ' class="lama_pp TP_core_JSONContent" tibet:no-compile="true">' +
                     this.runFormattedJSONModeOn(anObject) +
                 '</span>';
     } else {
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                    ' class="lama_pp TP_core_JSONContent">' +
+                    ' class="lama_pp TP_core_JSONContent" tibet:no-compile="true">' +
                     anObject.asString().asEscapedXML() +
                 '</span>';
     }
@@ -810,7 +810,7 @@ function(anObject, optFormat) {
 
     output = TP.ac();
     output.push('<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp TP_core_Hash">');
+                ' class="lama_pp TP_core_Hash" tibet:no-compile="true">');
 
     keys = TP.keys(anObject);
     keys.compact();
@@ -868,7 +868,7 @@ function(anObject, optFormat) {
     }
 
     str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp TP_dom_Node">' +
+                ' class="lama_pp TP_dom_Node" tibet:no-compile="true">' +
                 str +
             '</span>';
 
@@ -910,7 +910,7 @@ function(anObject, optFormat) {
     }
 
     str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp">' +
+                ' class="lama_pp" tibet:no-compile="true">' +
                 data +
             '</span>';
 
@@ -968,7 +968,7 @@ function(anObject, optFormat) {
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
                     ' class="lama_pp TP_core_Window" gid="' +
-                    TP.gid(anObject) + '">' +
+                    TP.gid(anObject) + '" tibet:no-compile="true">' +
                 content.join('') +
             '</span>';
 });
@@ -1011,7 +1011,7 @@ function(anObject, optFormat) {
     }
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                    ' class="lama_pp Window" gid="' +
+                    ' class="lama_pp Window" tibet:no-compile="true" gid="' +
                     TP.gid(anObject) + '">' +
                 content.join('') +
             '</span>';
@@ -1355,7 +1355,7 @@ function(anObject, optFormat) {
 TP.lama.pp.Type.defineMethod('transformNull',
 function(anObject, optFormat) {
 
-    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp Null">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="lama_pp Null" tibet:no-compile="true">' +
             this.runJSModeOn(anObject) +
             '</span>';
 });
@@ -1390,7 +1390,7 @@ function(anObject, optFormat) {
         }
 
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                    ' class="lama_pp Object">' +
+                    ' class="lama_pp Object" tibet:no-compile="true">' +
                     anObject +
                 '</span>';
     }
@@ -1411,7 +1411,7 @@ TP.lama.pp.Type.defineMethod('transformUndefined',
 function(anObject, optFormat) {
 
     return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
-                ' class="lama_pp Undefined">' +
+                ' class="lama_pp Undefined" tibet:no-compile="true">' +
                 this.runJSModeOn(anObject) +
             '</span>';
 });

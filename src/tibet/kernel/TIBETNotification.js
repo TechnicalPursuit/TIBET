@@ -2301,7 +2301,7 @@ function(aSignalName, clearNotifications) {
      * @returns {TP.sig.Signal} The receiver.
      */
 
-    this.$set('signalName', aSignalName);
+    this.$set('signalName', aSignalName, false);
 
     if (TP.isFalse(clearNotifications)) {
         //  reset processing controls so execution can happen under new name

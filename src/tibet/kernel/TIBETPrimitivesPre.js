@@ -13734,6 +13734,9 @@ TP.defineAttribute('$signal_name_cache', TP.hc());
 //  TP.core.Hash of XML documents keyed by the String that created them.
 TP.defineAttribute('$parsed_doc_cache', TP.hc());
 
+//  TP.core.Hash of compiled XML documents keyed by their ID.
+TP.defineAttribute('$compiled_doc_cache', TP.hc());
+
 //  Array of Element nodes that are currently capturing their own mouse wheel
 //  events.
 TP.defineAttribute('$mousewheel_capturer_cache', TP.ac());

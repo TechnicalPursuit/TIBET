@@ -283,8 +283,12 @@ function(anItem) {
         return 'undefined';
     }
 
-    if (TP.canInvoke(anItem, 'getLamaInspectorLabel')) {
+    //  Try to get the inspector label - it's faster here to just let this throw
+    //  than test to see if the item responds to the method.
+    try {
         return anItem.getLamaInspectorLabel();
+    } catch (e) {
+        void 0;
     }
 
     if (TP.isMethod(anItem)) {
@@ -425,7 +429,7 @@ function(options) {
 
     return TP.xhtmlnode(
             '<div class="cm-s-elegant scrollable wrapped noselect readonly"' +
-                ' bind:in="{value: ' +
+                ' id="SingleEntrySource" bind:in="{value: ' +
                 dataURI.asString() +
             '}"/>');
 });
@@ -1115,9 +1119,36 @@ function(bayContent, bayConfig) {
      * @returns {TP.lama.inspector} The receiver.
      */
 
-    var bay;
+    var id,
+        childType,
+        pathParts,
+        bay;
 
-    bay = TP.tpelem('<lama:inspectoritem/>');
+    id = '';
+
+    //  Start computing the unique ID by using the 'childType' (i.e. the type of
+    //  control) if available.
+    childType = bayConfig.at('attr_childtype');
+    if (TP.notEmpty(childType)) {
+        id += childType;
+    }
+
+    //  Then, if there are path parts, join them using '_' and append them to
+    //  the id.
+    pathParts = bayConfig.at('pathParts');
+    if (TP.notEmpty(pathParts)) {
+        id += '_' + pathParts.join('_');
+    } else {
+        //  Otherwise, this must be the ROOT list.
+        id += '_' + 'ROOT';
+    }
+
+    //  Replace any invalid characters in the ID with '_'.
+    TP.regex.INVALID_ID_CHARS.lastIndex = 0;
+    id = id.replace(TP.regex.INVALID_ID_CHARS, '_');
+
+    //  Create an inspectoritem element with that ID.
+    bay = TP.tpelem('<lama:inspectoritem id="' + id + '"/>');
 
     //  NOTE: We use setRawContent() here to avoid compiling twice. The content
     //  will be processed when it, along with it's item, is added to the
@@ -3436,9 +3467,38 @@ function(aBay, bayContent, bayConfig) {
      * @returns {TP.lama.inspector} The receiver.
      */
 
-    var content;
+    var content,
+        id,
+        childType,
+        pathParts;
 
     this.removeBaysAfter(aBay);
+
+    id = '';
+
+    //  Start computing the unique ID by using the 'childType' (i.e. the type of
+    //  control) if available.
+    childType = bayConfig.at('attr_childtype');
+    if (TP.notEmpty(childType)) {
+        id += childType;
+    }
+
+    //  Then, if there are path parts, join them using '_' and append them to
+    //  the id.
+    pathParts = bayConfig.at('pathParts');
+    if (TP.notEmpty(pathParts)) {
+        id += '_' + pathParts.join('_');
+    } else {
+        //  Otherwise, this must be the ROOT list.
+        id += '_' + 'ROOT';
+    }
+
+    //  Replace any invalid characters in the ID with '_'.
+    TP.regex.INVALID_ID_CHARS.lastIndex = 0;
+    id = id.replace(TP.regex.INVALID_ID_CHARS, '_');
+
+    //  Set the current bay content with that ID.
+    TP.elementSetAttribute(bayContent, 'id', id, true);
 
     content = aBay.setContent(bayContent);
     content.awaken();

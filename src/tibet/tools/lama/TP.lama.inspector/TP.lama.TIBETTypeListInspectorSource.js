@@ -81,8 +81,8 @@ function(options) {
                     function(entry) {
                         return TP.ac(
                                 entry,
-                                this.getEntryLabel(entry));
-                    }.bind(this));
+                                entry);
+                    });
         data.sort(TP.sort.FIRST_ITEM);
     } else {
         data = TP.ac();
@@ -138,7 +138,7 @@ function(options) {
      *     toolbar.
      */
 
-    return TP.elem('<lama:typesToolbarContent tibet:ctrl="urn:tibet:lama_inspector_target"/>');
+    return TP.elem('<lama:typesToolbarContent id="typesToolbarContent" tibet:ctrl="urn:tibet:lama_inspector_target"/>');
 });
 
 //  ------------------------------------------------------------------------
