@@ -90,6 +90,8 @@ function(options) {
      */
 
     options.atPut(TP.ATTR + '_class', 'doublewide');
+    options.atPut(TP.ATTR + '_childtype', 'xctrls:list');
+
 
     return options;
 });
