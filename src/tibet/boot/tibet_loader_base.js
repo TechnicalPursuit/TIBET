@@ -12146,6 +12146,16 @@ TP.boot.setupServiceWorker = function() {
 
                 TP.boot.$$serviceWorkerRegistration = registration;
 
+                //  If the registration is showing an active worker that has
+                //  been 'activated', then just return, setting up the message
+                //  channel.
+                if (registration.active &&
+                    registration.active.state === 'activated') {
+                    //  Set up the service worker and our ports for
+                    //  communication with it, etc.
+                    return TP.boot.setupServiceWorkerChannel();
+                }
+
                 //  We have to wait until the ServiceWorker is ready... and then
                 //  we have to wait until it has a real controller via it's
                 //  'controllerchange' event before we can continue.
@@ -12153,9 +12163,16 @@ TP.boot.setupServiceWorker = function() {
                         function() {
                             return new Promise(
                                 function(resolver, rejector) {
+                                    //  If the service worker already has a good
+                                    //  controller, then just resolve the
+                                    //  Promise and return.
                                     if (navigator.serviceWorker.controller) {
                                         resolver();
+                                        return;
                                     }
+
+                                    //  Otherwise, wait until the service worker
+                                    //  gets a good controller.
                                     navigator.serviceWorker.addEventListener(
                                         'controllerchange',
                                         function() {
