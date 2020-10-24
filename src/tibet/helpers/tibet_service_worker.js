@@ -8,8 +8,7 @@
  */
 //  ------------------------------------------------------------------------
 
-var msgHandler,
-    bootSystemPort,
+var bootSystemPort,
     channelPromiseCBs;
 
 //  ----------------------------------------------------------------------------
@@ -34,76 +33,83 @@ self.addEventListener('activate', function(event) {
 
 //  ----------------------------------------------------------------------------
 
-//  Add a listener to *the service worker* to intercept 'message' events. This is
-//  used only once - to receive the port that the TIBET boot system wants to
-//  send us to communicate.
-self.addEventListener('message', msgHandler = function(event) {
+//  Add a listener to *the service worker* to intercept 'message' events. This
+//  is used only once - to set up the message port (which will be sent in the
+//  message), that the TIBET boot system wants to send us to communicate. Note
+//  that we do *not* remove the listener since, if the user clicks reload, this
+//  worker will be active but the MessagePort reference will be invalid (since
+//  TIBET is reloading in the main thread) and this global code will *not*
+//  rerun.
+self.addEventListener('message', function(event) {
 
-    //  Remove the handler (this method) on *the service worker* in preparation
-    //  for installing a handler on the port that we've been handed.
-    self.removeEventListener('message', msgHandler);
+    //  Only set up the MessagePort and handlers if this is a 'setup' action.
+    if (event.data.command === 'setup') {
 
-    //  Grab the port that we're supposed to use to communicate back to the
-    //  TIBET boot system.
-    bootSystemPort = event.ports[0];
+        //  Grab the port that we're supposed to use to communicate back to the
+        //  TIBET boot system.
+        bootSystemPort = event.ports[0];
 
-    //  Process any data that this 'port setup' message sent us.
-    self.receiveMessageFromPage(event.data).then(
-        function(result) {
-            //  The port is set up - add an event listener to process messages
-            //  from our companion port.
-            bootSystemPort.addEventListener(
-                'message',
-                function(event2) {
-                    self.receiveMessageFromPage(event2.data).then(
-                        function(result2) {
-                            //  We only send this back if the received message
-                            //  is *not* an ack - otherwise, we'll endlessly
-                            //  loop back and forth with the boot system.
-                            if (!event2.data.ack) {
-                                bootSystemPort.postMessage({
-                                    error: null,
-                                    msg: 'ok',
-                                    payload: result2,
-                                    ack: true
-                                });
-                            }
-                        },
-                        function(reason2) {
-                            //  We only send this back if the received message
-                            //  is *not* an ack - otherwise, we'll endlessly
-                            //  loop back and forth with the boot system.
-                            if (!event2.data.ack) {
-                                bootSystemPort.postMessage({
-                                    error: reason2,
-                                    msg: 'error',
-                                    ack: true
-                                });
-                            }
-                        });
+        //  Process any data that this 'port setup' message sent us.
+        self.receiveMessageFromPage(event.data).then(
+            function(result) {
+                //  The port is set up - add an event listener to process
+                //  messages from our companion port.
+                bootSystemPort.addEventListener(
+                    'message',
+                    function(event2) {
+                        self.receiveMessageFromPage(event2.data).then(
+                            function(result2) {
+                                //  We only send this back if the received
+                                //  message is *not* an ack - otherwise, we'll
+                                //  endlessly loop back and forth with the boot
+                                //  system.
+                                if (!event2.data.ack) {
+                                    bootSystemPort.postMessage({
+                                        error: null,
+                                        msg: 'ok',
+                                        payload: result2,
+                                        ack: true
+                                    });
+                                }
+                            },
+                            function(reason2) {
+                                //  We only send this back if the received
+                                //  message is *not* an ack - otherwise, we'll
+                                //  endlessly loop back and forth with the boot
+                                //  system.
+                                if (!event2.data.ack) {
+                                    bootSystemPort.postMessage({
+                                        error: reason2,
+                                        msg: 'error',
+                                        ack: true
+                                    });
+                                }
+                            });
+                    });
+
+                //  Start the sending of messages on this port.
+                bootSystemPort.start();
+
+                bootSystemPort.postMessage({
+                    error: null,
+                    msg: 'ok',
+                    payload: result,
+                    ack: true
                 });
+            },
+            function(reason) {
+                //  There was a problem setting up the port.
 
-            //  Start the sending of messages on this port.
-            bootSystemPort.start();
-
-            bootSystemPort.postMessage({
-                error: null,
-                msg: 'ok',
-                payload: result,
-                ack: true
+                //  Send a message back to the boot system that we had an error
+                //  with whatever result came from processing the receiving of
+                //  the message.
+                bootSystemPort.postMessage({
+                    error: reason,
+                    msg: 'error',
+                    ack: true
+                });
             });
-        },
-        function(reason) {
-            //  There was a problem setting up the port.
-
-            //  Send a message back to the boot system that we had an error with
-            //  whatever result came from processing the receiving of the message.
-            bootSystemPort.postMessage({
-                error: reason,
-                msg: 'error',
-                ack: true
-            });
-        });
+    }
 });
 
 //  ----------------------------------------------------------------------------
