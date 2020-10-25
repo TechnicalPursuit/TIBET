@@ -323,12 +323,6 @@ TP.shell.TSH.register();
 //  the current execution context, a window or frame whose eval will be used
 TP.shell.TSH.Inst.defineAttribute('context');
 
-//  index-accessible list of currently watched variables
-TP.shell.TSH.Inst.defineAttribute('watchArray', TP.ac());
-
-//  key-accessible collection of variable/attribute observations
-TP.shell.TSH.Inst.defineAttribute('watchHash', TP.hc());
-
 TP.shell.TSH.Inst.defineAttribute('commandXMLNS', 'tsh:');
 
 //  the XPath visualization controller object
