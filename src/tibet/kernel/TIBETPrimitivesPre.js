@@ -5042,6 +5042,20 @@ function(target, name, value, track, descriptor, owner) {
         val = desc.value;
     }
 
+    //  If the track is TP.INST_TRACK or TP.META_INST_TRACK and an initial value
+    //  was supplied and that value was a Collection, then we should warn. In
+    //  this case, the value will be *shared* amongst instances which is very
+    //  likely what the author did *not* want.
+    if (trk === TP.INST_TRACK || trk === TP.META_INST_TRACK) {
+        if (TP.isCollection(val)) {
+            TP.ifWarn() ?
+                TP.warn(TP.sc('Setting initial value on an instance-level',
+                                ' attribute: ',
+                                TP.name(owner), '.', trk, '.', name,
+                                ' to a collection value: ', TP.tname(val))) : 0;
+        }
+    }
+
     attribute = TP.defineSlot(target, name, val, TP.ATTRIBUTE, trk, desc);
 
     desc[TP.NAME] = name;
