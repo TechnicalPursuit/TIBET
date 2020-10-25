@@ -201,15 +201,19 @@ interface. Examples include web sockets and server-sent events.
 TP.core.SignalSource.defineSubtype('MessageSource');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  The list of standard handler names that instances of this type will
+//  automatically add listeners for.
+TP.core.MessageSource.Type.defineAttribute(
+    '$standardEventHandlerNames', TP.ac('open', 'close', 'error', 'message'));
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 TP.core.MessageSource.Inst.defineAttribute('active', false);
-
-//  The list of standard handler names that instances of this type will
-//  automatically add listeners for.
-TP.core.MessageSource.Inst.defineAttribute(
-    '$standardEventHandlerNames', TP.ac('open', 'close', 'error', 'message'));
 
 //  The private TP.core.Hash containing a map of custom event names to the
 //  handlers that were installed for each one so that we can unregister them.
@@ -512,7 +516,7 @@ function() {
     thisref = this;
 
     //  Connect our local 'on*' methods to their related native listeners.
-    this.get('$standardEventHandlerNames').forEach(
+    this.getType().get('$standardEventHandlerNames').forEach(
         function(op) {
             if (TP.canInvoke(thisref, 'on' + op)) {
                 //  Replace method with bound version to support removal.
@@ -566,7 +570,7 @@ function(signalTypes) {
     thisref = this;
 
     //  Disconnect our local 'on*' methods from their related native listeners.
-    this.get('$standardEventHandlerNames').forEach(
+    this.getType().get('$standardEventHandlerNames').forEach(
         function(op) {
             if (TP.canInvoke(thisref, 'on' + op)) {
                 source.removeEventListener(op, thisref['on' + op]);
@@ -869,6 +873,17 @@ function(evt) {
 TP.core.RemoteMessageSource.defineSubtype('SSEMessageSource');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  The list of standard handler names that instances of this type will
+//  automatically add listeners for. We override this from our supertype to
+//  remove 'message' from the list. We handle 'onmessage' events differently at
+//  this type level.
+TP.core.SSEMessageSource.Type.defineAttribute(
+    '$standardEventHandlerNames', TP.ac('open', 'close', 'error'));
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -883,17 +898,6 @@ function() {
 
     return TP.isValid(TP.global.EventSource);
 });
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  The list of standard handler names that instances of this type will
-//  automatically add listeners for. We override this from our supertype to
-//  remove 'message' from the list. We handle 'onmessage' events differently at
-//  this type level.
-TP.core.SSEMessageSource.Inst.defineAttribute(
-    '$standardEventHandlerNames', TP.ac('open', 'close', 'error'));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1731,6 +1735,16 @@ function(aSignal, varargs) {
 TP.core.MessageSource.defineSubtype('ElectronMessageSource');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  The list of standard handler names that instances of this type will
+//  automatically add listeners for. For Electron message sources, there are
+//  none.
+TP.core.ElectronMessageSource.Type.defineAttribute(
+    '$standardEventHandlerNames', TP.ac());
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -1745,16 +1759,6 @@ function() {
 
     return TP.sys.cfg('boot.context') === 'electron';
 });
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  The list of standard handler names that instances of this type will
-//  automatically add listeners for. For Electron message sources, there are
-//  none.
-TP.core.ElectronMessageSource.Inst.defineAttribute(
-    '$standardEventHandlerNames', TP.ac());
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
