@@ -3497,8 +3497,8 @@ function(aBay, bayContent, bayConfig) {
     TP.regex.INVALID_ID_CHARS.lastIndex = 0;
     id = id.replace(TP.regex.INVALID_ID_CHARS, '_');
 
-    //  Set the current bay content with that ID.
-    TP.elementSetAttribute(bayContent, 'id', id, true);
+    //  Set the current bay inspectoritem element with that ID.
+    TP.elementSetAttribute(aBay.getNativeNode(), 'id', id, true);
 
     content = aBay.setContent(bayContent);
     content.awaken();
