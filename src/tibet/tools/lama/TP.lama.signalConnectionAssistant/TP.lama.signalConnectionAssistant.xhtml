@@ -11,7 +11,7 @@
 
         <div class="destinationSignalFieldGroup">
             <label for="signalConnectionAssistant_DestinationHandlerNameField">Handlers:</label>
-            <input type="text" id="signalConnectionAssistant_DestinationHandlerNameField" autofocus="autofocus" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredDestinationHandlerName)}" ui:incremental="model" autocomplete="off"/>
+            <input type="text" id="signalConnectionAssistant_DestinationHandlerNameField" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.enteredDestinationHandlerName)}" ui:incremental="model" autocomplete="off"/>
         </div>
         <xctrls:list id="signalConnectionAssistant_DestinationSignalList" bind:in="{data: urn:tibet:handlernamelist}" bind:io="{value: urn:tibet:signalConnectionAssistant_source#jpath($.info.chosenDestinationHandlerName)}"/>
 

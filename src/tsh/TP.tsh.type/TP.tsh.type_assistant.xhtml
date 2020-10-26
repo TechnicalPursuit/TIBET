@@ -11,7 +11,7 @@
 
         <div class="supertypeFieldGroup">
             <label for="type_assistant_SupertypeFilterField">Supertype:</label>
-            <input type="text" id="type_assistant_SupertypeFilterField" autofocus="autofocus" bind:io="{value: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" ui:incremental="model" autocomplete="off"/>
+            <input type="text" id="type_assistant_SupertypeFilterField" bind:io="{value: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" ui:incremental="model" autocomplete="off"/>
         </div>
 
         <xctrls:list id="type_assistant_SupertypeList" bind:in="{data: urn:tibet:typelist, filterValue: urn:tibet:type_cmd_supertypeFilterName#jpath($.value)}" bind:io="{value: urn:tibet:type_cmd_source#jpath($.info.supertype)}" filter="true"/>
@@ -46,13 +46,13 @@
             <input type="text" id="type_assistant_TypeNameField" bind:io="{value: typeNSAndName}" autofocus="autofocus"/>
 
             <label for="type_assistant_PackageNameField">Package:</label>
-            <input type="text" id="type_assistant_PackageNameField" bind:io="{value: package}" autofocus="autofocus"/>
+            <input type="text" id="type_assistant_PackageNameField" bind:io="{value: package}"/>
 
             <label for="type_assistant_ConfigNameField">Config:</label>
-            <input type="text" id="type_assistant_ConfigNameField" bind:io="{value: config}" autofocus="autofocus"/>
+            <input type="text" id="type_assistant_ConfigNameField" bind:io="{value: config}"/>
 
             <label for="type_assistant_DirectoryField">Directory:</label>
-            <input type="text" id="type_assistant_DirectoryField" bind:io="{value: dir}" autofocus="autofocus"/>
+            <input type="text" id="type_assistant_DirectoryField" bind:io="{value: dir}"/>
         </div>
 
     </div>
