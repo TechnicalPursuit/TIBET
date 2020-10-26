@@ -1387,35 +1387,35 @@ function(info) {
     //  replaced will have also rendered when their data changed.
     this.sizeBays();
 
-        (function() {
-            //  Scroll them to the end
-            this.scrollBaysToEnd();
+    (function() {
+        //  Scroll them to the end
+        this.scrollBaysToEnd();
 
-            //  Update the toolbar (or clear it)
+        //  Update the toolbar (or clear it)
 
-            selectedItems = this.get('selectedItems');
-            params = TP.hc('targetAspect', aspect,
-                            'targetObject', target,
-                            'pathParts', selectedItems);
+        selectedItems = this.get('selectedItems');
+        params = TP.hc('targetAspect', aspect,
+                        'targetObject', target,
+                        'pathParts', selectedItems);
 
-            toolbar = TP.byId('LamaToolbar', this.getNativeDocument());
-            toolbarContent = TP.getContentForTool(
-                                target,
-                                'toolbar',
-                                params);
+        toolbar = TP.byId('LamaToolbar', this.getNativeDocument());
+        toolbarContent = TP.getContentForTool(
+                            target,
+                            'toolbar',
+                            params);
 
-            if (TP.isElement(toolbarContent)) {
-                toolbarContent = toolbar.setContent(toolbarContent);
-                toolbarContent.awaken();
-            } else {
-                toolbar.empty();
-            }
+        if (TP.isElement(toolbarContent)) {
+            toolbarContent = toolbar.setContent(toolbarContent);
+            toolbarContent.awaken();
+        } else {
+            toolbar.empty();
+        }
 
-            inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
-            if (TP.notEmpty(inspectorBays)) {
-                inspectorBays.last().focus();
-            }
-        }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
+        inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+        if (TP.notEmpty(inspectorBays)) {
+            inspectorBays.last().focus();
+        }
+    }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -3888,7 +3888,7 @@ function(shouldRenderBayContent) {
                 //  If the multiplier value was real, then convert it to a
                 //  Number and add it to the total slot count (after subtracting
                 //  1, since our calculations later already assume a '1' width
-                //  per slot
+                //  per slot).
                 if (TP.notEmpty(multiplier)) {
                     multiplier = multiplier.asNumber();
                     totalSlotCount += multiplier - 1;
