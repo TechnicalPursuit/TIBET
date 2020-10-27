@@ -42,6 +42,36 @@ zlib = require('zlib');
  */
 helpers = {};
 
+/**
+ *
+ */
+helpers.augment_args = function(make, args) {
+
+    if (make.options.debug) {
+        args.push('--debug');
+    }
+
+    if (make.options.verbose) {
+        args.push('--verbose');
+    }
+
+    if (make.options.timeout) {
+        args.push('--timeout', make.options.timeout);
+    }
+
+    if (!make.options.color) {
+        args.push('--no-color');
+    }
+
+    if (make.options['tds-cli']) {
+        args.push('--tds-cli');
+    }
+
+    if (!make.options.silent) {
+        args.push('--no-silent');
+    }
+};
+
 
 /**
  *
@@ -307,17 +337,13 @@ helpers.package_check = function(make, options) {
         args.push('--phase', phase);
     }
 
-    if (!make.options.color) {
-        args.push('--no-color');
+    //  The building flag is specific to the package command and typically only
+    //  set by make scripts but isn't one of the standard augmentation flags.
+    if (make.options.building) {
+        args.push('--building');
     }
 
-    if (make.options['tds-cli']) {
-        args.push('--tds-cli');
-    }
-
-    if (!make.options.silent) {
-        args.push('--no-silent');
-    }
+    this.augment_args(make, args);
 
     make.debug('executing ' + cmd + ' ' + args.join(' '));
 
@@ -433,29 +459,7 @@ helpers.resource_build = function(make, options) {
         args.push('--phase', phase);
     }
 
-    if (make.options.debug) {
-        args.push('--debug');
-    }
-
-    if (make.options.verbose) {
-        args.push('--verbose');
-    }
-
-    if (!make.options.color) {
-        args.push('--no-color');
-    }
-
-    if (make.options['tds-cli']) {
-        args.push('--tds-cli');
-    }
-
-    if (!make.options.silent) {
-        args.push('--no-silent');
-    }
-
-    if (make.options.timeout) {
-        args.push('--timeout', make.options.timeout);
-    }
+    this.augment_args(make, args);
 
     make.debug('executing ' + cmd + ' ' + args.join(' '));
 
@@ -562,28 +566,17 @@ helpers.rollup = function(make, options) {
 
     args = ['rollup', '--package', pkg, '--config', config, '--phase', phase];
 
-    if (!make.options.color) {
-        args.push('--no-color');
-    }
-
-    if (make.options['tds-cli']) {
-        args.push('--tds-cli');
-    }
-
-    if (!make.options.silent) {
-        args.push('--no-silent');
-    }
-
+    //  Headers defaults to true so force --no- prefix when explicitly false.
     if (!headers) {
         args.push('--no-headers');
     }
 
-    if (minify) {
-        args.push('--minify');
-    }
-
     if (make.options.clean) {
         args.push('--clean');
+    }
+
+    if (minify) {
+        args.push('--minify');
     }
 
     if (minify) {
@@ -599,6 +592,9 @@ helpers.rollup = function(make, options) {
         timestamp = fs.statSync(file).mtime.getTime();
         args.push('--since=' + timestamp);
     }
+
+    //  Add any final "common arguments" such as debug/verbose/etc
+    this.augment_args(make, args);
 
     promise = new Promise(function(resolver, rejector) {
         var proc;

@@ -81,7 +81,7 @@ Cmd.NAME = 'make';
  * the command line.
  * @type {Number}
  */
-Cmd.TIMEOUT = 1000 * 30;
+Cmd.TIMEOUT = 1000 * 60;
 
 //  ---
 //  Type Methods
@@ -785,7 +785,7 @@ Cmd.prototype.execute = function() {
                 /* eslint-enable no-extra-parens */
                 cmd.error(msg);
 
-                if (cmd.options.stack && err.stack) {
+                if (err && cmd.options.stack && err.stack) {
                     cmd.error(err.stack);
                 }
 
@@ -913,10 +913,6 @@ Cmd.prototype.spawn = function(cmd, arglist, options) {
 
     args = arglist || [];
 
-    //  Blend in any additional data from commmand line (slicing off the 'make
-    //  foo' portion inherently there thanks to make invocation itself). The
-    //  result is that commands using spawn don't have to reparse default args.
-    args = CLI.blend(arglist, this.getArglist().slice(1));
     this.debug(args);
 
     opts = CLI.blend(options, {

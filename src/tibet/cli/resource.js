@@ -542,7 +542,9 @@ Cmd.prototype.processResources = function() {
             return true;
         } else {
             if (packagePhase) {
-                cmd.error(uri + ' (404) ');
+                cmd.error('Package-referenced file ' + uri +
+                    ' not found.');
+                throw new Error(uri + ' (404) ');
             }
 
             cmd.debug('filtered ' + uri + '. Non-existent ' + fullpath);
@@ -558,7 +560,11 @@ Cmd.prototype.processResources = function() {
 
     //  Produce a filtered list by expanding the resource path and checking for
     //  its existence, adherence to filtering criteria, context, etc.
-    this.filtered = this.computed.filter(helper);
+    try {
+        this.filtered = this.computed.filter(helper);
+    } catch (e) {
+        return Promise.reject(e);
+    }
 
     //  Filter the specified resource list and combine the two lists (if not
     //  being asked for raw resource listings..which only use computed data)

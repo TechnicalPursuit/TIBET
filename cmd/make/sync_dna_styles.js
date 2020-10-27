@@ -11,7 +11,6 @@
         targets = [
             ['dna', 'default', 'public'],
             ['dna', 'couch', 'public'],
-            ['dna', 'ghpages'],
             ['dna', 'electron']
         ];
 

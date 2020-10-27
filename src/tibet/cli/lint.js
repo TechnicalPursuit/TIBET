@@ -416,7 +416,7 @@ Cmd.prototype.executeForEach = function(list) {
                     return;
                 }
 
-                // Skip minified files regardless of their type.
+                // Skip template files from dna directories etc.
                 if (src.match(/__(.+)__/)) {
                     cmd.verbose(src + ' # template');
                     return;
@@ -1121,6 +1121,15 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
             cmd.verbose('');
             cmd.verbose(file, 'lintpass');
 
+            if (!CLI.exists(file)) {
+                cmd.warn('File not found: ' + file);
+                res.recheck.push(file);
+                if (cmd.options.stop) {
+                    return true;
+                }
+                return false;
+            }
+
             text = sh.cat(file);
             if (!text) {
                 res.linty += 1;
@@ -1190,6 +1199,15 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
                     summary;
 
                 if (engine.isPathIgnored(file)) {
+                    return false;
+                }
+
+                if (!CLI.exists(file)) {
+                    cmd.warn('File not found: ' + file);
+                    res.recheck.push(file);
+                    if (cmd.options.stop) {
+                        return true;
+                    }
                     return false;
                 }
 
@@ -1279,6 +1297,17 @@ Cmd.prototype.validateStyleFiles = function(files, results) {
             return;
         }
 
+        if (!CLI.exists(file)) {
+            cmd.warn('File not found: ' + file);
+            res.recheck.push(file);
+            if (cmd.options.stop) {
+                return deferred.reject();
+            }
+
+            checkfile();
+            return;
+        }
+
         config.code = sh.cat(file).toString();
         config.codeFilename = file;
 
@@ -1343,6 +1372,15 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
 
             cmd.verbose('');
             cmd.verbose(file, 'lintpass');
+
+            if (!CLI.exists(file)) {
+                cmd.warn('File not found: ' + file);
+                res.recheck.push(file);
+                if (cmd.options.stop) {
+                    return true;
+                }
+                return false;
+            }
 
             text = sh.cat(file);
             if (!text) {

@@ -84,7 +84,6 @@ No process environment variables are required by this command.
     couch
     default
     electron
-    ghpages
 
 ### Create a new project with `default` dna
 

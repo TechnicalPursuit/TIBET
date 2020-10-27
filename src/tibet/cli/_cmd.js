@@ -481,7 +481,7 @@ Cmd.prototype.run = function(argv) {
  * @returns {Object} A shelljs return value containing a 'code', 'stdout' and
  * 'stderr'.
  */
-Cmd.prototype.shexec = function(cmd) {
+Cmd.prototype.shexec = function(cmd, silent) {
 
     var result,
         sh;
@@ -489,10 +489,10 @@ Cmd.prototype.shexec = function(cmd) {
     sh = require('shelljs');
 
     result = sh.exec(cmd, {
-        silent: CLI.options.silent !== true
+        silent: CLI.options.silent !== true || silent
     });
 
-    if (result.code !== 0) {
+    if (result.code !== 0 && !silent) {
         throw new Error(result.stderr.trim());
     }
 

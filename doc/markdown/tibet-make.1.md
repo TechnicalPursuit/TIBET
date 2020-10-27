@@ -73,7 +73,7 @@ No process environment variables are required by this command.
 
             make.log('checking for lint...');
 
-            proc = make.spawn('tibet lint --stop');
+            proc = make.spawn('tibet', ['lint', '--stop']);
             proc.on('exit', function(code) {
                 code === 0 ? resolve() : reject();
             });
