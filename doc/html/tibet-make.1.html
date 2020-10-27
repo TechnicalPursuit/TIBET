@@ -84,7 +84,7 @@ operations.</p>
 
         make.log(&#39;checking for lint...&#39;);
 
-        proc = make.spawn(&#39;tibet lint --stop&#39;);
+        proc = make.spawn(&#39;tibet&#39;, [&#39;lint&#39;, &#39;--stop&#39;]);
         proc.on(&#39;exit&#39;, function(code) {
             code === 0 ? resolve() : reject();
         });

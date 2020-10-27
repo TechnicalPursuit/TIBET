@@ -1,5 +1,8 @@
 {
     "//": "TIBET project file. Set configuration parameters here.",
+    "project": {
+        "name": "TIBET"
+    },
     "boot": {
         "package": "~lib_cfg/TIBET.xml"
     },

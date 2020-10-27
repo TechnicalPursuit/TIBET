@@ -204,7 +204,7 @@ Cmd.prototype.executeForEach = function(list) {
         if (src) {
             virtual = pkg.getVirtualPath(src);
 
-            if (!CLI.sh.test('-e', src)) {
+            if (!CLI.exists(src)) {
                 throw new Error('NotFound: ' + src);
             }
 
@@ -218,7 +218,7 @@ Cmd.prototype.executeForEach = function(list) {
             //  date/time against the source file's last modified date/time. If
             //  the cache file is newer than the source file, then the source
             //  file hasn't changed and we can just use the cache file.
-            if (CLI.sh.test('-e', cachename)) {
+            if (CLI.exists(cachename)) {
                 if (CLI.isFileNewer(cachename, src)) {
                     usecache = true;
                 }

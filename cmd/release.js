@@ -321,13 +321,14 @@ Cmd.prototype.phaseOne = function() {
     // Undocumented flag here...unless you count this comment :) Here only for
     // development of the initial release command. TODO: delete this flag.
     if (/dirty/.test(result.stdout.trim()) && !this.options.dirty) {
-        throw new Error('Cannot release a dirty branch. Stash or commit.');
+        throw new Error(
+            'Cannot release dirty branch. Stash, commit or use --dirty.');
     }
 
     source = {};
     source.time = new Date().getTime();
 
-    source.describe = result.stdout.trim().slice(0, -1);
+    source.describe = result.stdout.trim(); // .slice(0, -1);
     // Describe stdout should always be of the form:
     //      {last_tag}-{commits_since}-g{parent_commit}
     match = source.describe.match(/^(.*)-(\d+)-g([a-zA-Z0-9]+)(-dirty)*$/);

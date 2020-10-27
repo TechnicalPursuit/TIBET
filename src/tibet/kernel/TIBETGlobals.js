@@ -597,6 +597,8 @@ TP.sys.release = function(data, context) {
     if (!TP.sys[prefix]) {
         TP.sys[prefix] = data;
     }
+
+    return data;
 };
 
 TP.sys.release[TP.NAME] = 'release';

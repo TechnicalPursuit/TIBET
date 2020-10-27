@@ -31,6 +31,7 @@
  */
 
 /* eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0, indent:0, consistent-this:0 */
+
 (function() {
 
 'use strict';
@@ -38,6 +39,7 @@
 var path,
     fs,
     sh,
+    semver,
     beautify,
     minimist,
     prompt,
@@ -50,6 +52,7 @@ var path,
 fs = require('fs');
 path = require('path');
 sh = require('shelljs');
+semver = require('semver');
 minimist = require('minimist');
 prompt = require('readline-sync');
 beautify = require('js-beautify').js_beautify;
@@ -442,16 +445,21 @@ CLI.isFileNewer = function(fileOne, fileTwoOrDate) {
         timeOne,
         timeTwo;
 
+    if (CLI.isEmpty(fileOne)) {
+        //  Invalid fileOne? Can't be 'newer'.
+        return false;
+    }
+
     try {
         pathOne = CLI.expandPath(fileOne);
         statsOne = fs.statSync(pathOne);
     } catch (e) {
-        CLI.error('Unable to stat file: ' + e.message);
+        if (/no such file/i.test(e)) {
+            return false;
+        }
 
-        //  NOTE that we default to true here. Most callers care about
-        //  regenerating a target file so we assume the work needs to be done
-        //  any time we can't be sure.
-        return true;
+        //  Usually a 'file does not exist' error.
+        return false;
     }
     timeOne = statsOne.mtime.getTime();
 
@@ -462,14 +470,9 @@ CLI.isFileNewer = function(fileOne, fileTwoOrDate) {
             timeTwo = statsTwo.mtime.getTime();
         } catch (e) {
             //  Might be a timestamp but string'y...
-            try {
-                timeTwo = parseInt(fileTwoOrDate, 10);
-                if (isNaN(timeTwo) || !timeTwo) {
-                    return true;
-                }
-            } catch (e2) {
-                //  NOTE we don't even report an error here...a lot of times the
-                //  target file may not exist (it's often a generated target).
+            timeTwo = parseInt(fileTwoOrDate, 10);
+            if (isNaN(timeTwo) || CLI.notValid(timeTwo)) {
+                //  Uncertain about time? Assume newer.
                 return true;
             }
         }
@@ -701,42 +704,6 @@ CLI.blend = function(target, source) {
 
 
 /**
- * Returns true if the current context is appropriate for the command to run.
- * The primary response here is based on "context" in that some commands are
- * only useful within a project, some must be outside a project, and some can be
- * run from any location.
- * @param {Object} CmdType The command type to check.
- * @returns {Boolean} True if the command is runnable.
- */
-CLI.canRun = function(CmdType) {
-
-    var context;
-
-    context = CmdType.CONTEXT;
-
-    // Simple case if the context is "anywhere".
-    if (context === CLI.CONTEXTS.ANY) {
-        return true;
-    }
-
-    switch (context) {
-        case CLI.CONTEXTS.PROJECT:
-            return this.inProject(CmdType);
-        case CLI.CONTEXTS.LIBRARY:
-            return this.inLibrary(CmdType);
-        case CLI.CONTEXTS.NONLIB:
-            return this.inProject(CmdType) || !this.inLibrary(CmdType);
-        case CLI.CONTEXTS.INSIDE:
-            return this.inProject(CmdType) || this.inLibrary(CmdType);
-        case CLI.CONTEXTS.OUTSIDE:
-            return !this.inProject(CmdType) && !this.inLibrary(CmdType);
-        default:
-            return false;
-    }
-};
-
-
-/**
  * Cleanses a string, removing control and non-printable characters, essentially
  * restricting it to just printable ASCII and Extended ASCII characters. Escape
  * codes are also trimmed by default to assist with working with potentially
@@ -822,19 +789,6 @@ CLI.curry = function(method) {
 
 
 /**
- * Returns a list of entries in sources list not found in removals list.
- * @param {Array} removals The list of items to remove.
- * @param {Array} sources The list of items to filter.
- * @returns {Array} The items in sources not in removals.
- */
-CLI.subtract = function(removals, sources) {
-    return sources.filter(function(option) {
-        return removals.indexOf(option) === -1;
-    });
-};
-
-
-/**
  * Returns a string whose whitespace constructs (in JavaScript terms) have been
  * escaped so the string can be processed properly when quoted.
  * @param {String} aString The string to be escaped.
@@ -859,6 +813,16 @@ CLI.escapeWhitespace = function(aString) {
 
 
 /**
+ * Verifies whether a particular file path exists.
+ * @param {String} aPath A file path to be tested. May be virtual.
+ * @returns {Boolean} True if the file exists.
+ */
+CLI.exists = function(aPath) {
+    return CLI.sh.test('-e', CLI.expandPath(aPath));
+};
+
+
+/**
  * Expands a TIBET virtual path to its equivalent non-virtual path.
  * @param {String} aPath The path to be expanded.
  * @param {Boolean} silent True to turn off errors for non-existent paths.
@@ -866,6 +830,179 @@ CLI.escapeWhitespace = function(aString) {
  */
 CLI.expandPath = function(aPath, silent) {
     return this._package.expandPath(aPath, silent);
+};
+
+
+/**
+ * Returns a list of entries in sources list not found in removals list.
+ * @param {Array} removals The list of items to remove.
+ * @param {Array} sources The list of items to filter.
+ * @returns {Array} The items in sources not in removals.
+ */
+CLI.subtract = function(removals, sources) {
+    return sources.filter(function(option) {
+        return removals.indexOf(option) === -1;
+    });
+};
+
+
+//  ---
+//  Project Info
+//  ---
+
+/**
+ * Returns the current application version string.
+ * @param {Boolean} full True to return the full semver-compliant string.
+ * @returns {String} The project version.
+ */
+CLI.getAppVersion = function(full) {
+    var fullpath;
+
+    if (!CLI.inProject()) {
+        return '';
+    }
+
+    fullpath = CLI.expandPath(CLI.getcfg('path.app_version_file'));
+    if (!sh.test('-f', fullpath)) {
+        return CLI.getNPMProjectVersion(full);
+    }
+
+    return CLI.getVersionFileInfo(fullpath, full);
+};
+
+
+/**
+ * Returns the current TIBET version string.
+ * @param {Boolean} full True to return the full semver-compliant string.
+ * @returns {String} The library version.
+ */
+CLI.getLibVersion = function(full) {
+    var fullpath;
+
+    fullpath = CLI.expandPath(CLI.getcfg('path.lib_version_file'));
+    if (!sh.test('-f', fullpath)) {
+        return CLI.getTIBETProjectVersion(full);
+    }
+
+    return CLI.getVersionFileInfo(fullpath, full);
+};
+
+
+/**
+ * Returns the name of the current project as defined in the Package.NPM_FILE.
+ * @returns {String} The project name.
+ */
+CLI.getNPMProjectName = function() {
+    return this.config.npm.name;
+};
+
+
+/**
+ * Returns the current TIBET version string.
+ * @returns {String} The library version.
+ */
+CLI.getNPMProjectVersion = function() {
+    return this.config.npm.version;
+};
+
+
+/**
+ * Returns the name of the current project as defined in the tibet.json file.
+ * @returns {String} The project name.
+ */
+CLI.getProjectName = function() {
+    return this.getTIBETProjectName();
+};
+
+
+/**
+ * Returns the name of the current project as defined in the tibet.json file.
+ * @returns {String} The project name.
+ */
+CLI.getTIBETProjectName = function() {
+    return this.config.tibet.project.name;
+};
+
+
+/**
+ * Returns the current TIBET version string.
+ * @returns {String} The library version.
+ */
+CLI.getTIBETProjectVersion = function() {
+    return this.getNPMProjectVersion();
+};
+
+
+/**
+ */
+CLI.getVersionFileInfo = function(fullpath, full) {
+    var data,
+        msg;
+
+    try {
+        data = require(fullpath);
+    } catch (e) {
+        msg = 'Error loading version file: ' + e.message;
+        if (CLI.options.stack === true) {
+            msg += ' ' + e.stack;
+        }
+        throw new Error(msg);
+    }
+
+    if (CLI.options.verbose) {
+        CLI.info(CLI.beautify(data));
+    }
+
+    if (!semver.valid(data.semver)) {
+        CLI.warn('Unable to read semver field.');
+        return '0.0.0';
+    }
+
+    if (full) {
+        return data.semver;
+    }
+
+    return data.semver.split('+')[0];
+};
+
+
+//  ---
+//
+//  ---
+
+/**
+ * Returns true if the current context is appropriate for the command to run.
+ * The primary response here is based on "context" in that some commands are
+ * only useful within a project, some must be outside a project, and some can be
+ * run from any location.
+ * @param {Object} CmdType The command type to check.
+ * @returns {Boolean} True if the command is runnable.
+ */
+CLI.canRun = function(CmdType) {
+
+    var context;
+
+    context = CmdType.CONTEXT;
+
+    // Simple case if the context is "anywhere".
+    if (context === CLI.CONTEXTS.ANY) {
+        return true;
+    }
+
+    switch (context) {
+        case CLI.CONTEXTS.PROJECT:
+            return this.inProject(CmdType);
+        case CLI.CONTEXTS.LIBRARY:
+            return this.inLibrary(CmdType);
+        case CLI.CONTEXTS.NONLIB:
+            return this.inProject(CmdType) || !this.inLibrary(CmdType);
+        case CLI.CONTEXTS.INSIDE:
+            return this.inProject(CmdType) || this.inLibrary(CmdType);
+        case CLI.CONTEXTS.OUTSIDE:
+            return !this.inProject(CmdType) && !this.inLibrary(CmdType);
+        default:
+            return false;
+    }
 };
 
 
@@ -1157,34 +1294,6 @@ CLI.getMakeTargets = function() {
 CLI.getPackage = function() {
     return this._package;
 };
-
-
-/**
- * Returns the name of the current project as defined in the Package.NPM_FILE.
- * @returns {String} The project name.
- */
-CLI.getNPMProjectName = function() {
-    return this.config.npm.name;
-};
-
-
-/**
- * Returns the name of the current project as defined in the tibet.json file.
- * @returns {String} The project name.
- */
-CLI.getTIBETProjectName = function() {
-    return this.config.tibet.project.name;
-};
-
-
-/**
- * Returns the name of the current project as defined in the tibet.json file.
- * @returns {String} The project name.
- */
-CLI.getProjectName = function() {
-    return this.getTIBETProjectName();
-};
-
 
 /**
  * Returns a virtual path version of a particular path.
