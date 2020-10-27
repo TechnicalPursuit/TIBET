@@ -4,7 +4,9 @@
 
 lama|inspector {
 
-    display: block;
+    display: flex;
+    align-content: stretch;
+
     position: absolute;
 
     background-color: white;

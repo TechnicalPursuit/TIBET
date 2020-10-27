@@ -1008,11 +1008,6 @@ TP.lama.inspector.Inst.defineAttribute('dynamicContentEntries');
 
 TP.lama.inspector.Inst.defineAttribute('selectedItems');
 
-TP.lama.inspector.Inst.defineAttribute('totalSlotCount');
-TP.lama.inspector.Inst.defineAttribute('visibleSlotCount');
-
-TP.lama.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
-
 TP.lama.inspector.Inst.defineAttribute('pathStack');
 TP.lama.inspector.Inst.defineAttribute('pathStackIndex');
 
@@ -1381,11 +1376,6 @@ function(info) {
     if (targetURI !== TP.NO_RESULT) {
         targetURI.setResource(target, TP.request('signalChange', false));
     }
-
-    //  Size the inspector bays. Note that this will not re-render the bays. The
-    //  other bays will have already rendered properly and any bays we added or
-    //  replaced will have also rendered when their data changed.
-    this.sizeBays();
 
     (function() {
         //  Scroll them to the end
@@ -2080,7 +2070,7 @@ function(pathParts) {
         currentPathParts.pop();
     }
 
-    return -1;
+    return TP.NOT_FOUND;
 });
 
 //  ------------------------------------------------------------------------
@@ -2309,87 +2299,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lama.inspector.Inst.defineMethod('getSlotPositionFromBay',
-function(aBay) {
-
-    /**
-     * @method getSlotPositionFromBay
-     * @summary Returns the starting 'slot' position from the supplied bay.
-     * @description Because bays can take more than 1 'slot' in the inspector
-     *     (i.e. they can be 'double wide' and take up 2 slots), there needs to
-     *     be a way to translate between bays and slot numbers.
-     * @param {TP.lama.inspectoritem} aBay The bay element to return the slot
-     *     position for.
-     * @returns {Number} The starting slot position for the supplied bay.
-     */
-
-    var inspectorBays,
-
-        bay0Multiplier,
-        currentSlotCount,
-
-        len,
-        i;
-
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
-    if (TP.isEmpty(inspectorBays)) {
-        return TP.NOT_FOUND;
-    }
-
-    if (aBay === inspectorBays.first()) {
-        return 0;
-    }
-
-    bay0Multiplier = inspectorBays.first().getBayMultiplier();
-
-    currentSlotCount = bay0Multiplier;
-
-    //  Get the total number of slots in the inspector
-    len = this.getTotalSlotCount();
-
-    //  Iterate over the remaining number of slots (starting at the first bay
-    //  multiplier), adding each bay multiplier to the slot count. When we reach
-    //  the bay we're looking for, we subtract the first bay multiplier
-    for (i = bay0Multiplier; i < len; i++) {
-        currentSlotCount += inspectorBays.at(i).getBayMultiplier();
-
-        if (inspectorBays.at(i) === aBay) {
-            return currentSlotCount - bay0Multiplier;
-        }
-    }
-
-    return TP.NOT_FOUND;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lama.inspector.Inst.defineMethod('getTotalSlotCount',
-function() {
-
-    /**
-     * @method getTotalSlotCount
-     * @summary Returns the total number of 'slots' in the receiver.
-     * @description Because bays can take more than 1 'slot' in the inspector
-     *     (i.e. they can be 'double wide' and take up 2 slots), there is a
-     *     difference between 'bays' and 'slots'. This returns the total number
-     *     of slots.
-     * @returns {Number} The total number of slots.
-     */
-
-    var totalSlotCount;
-
-    totalSlotCount = 0;
-
-    TP.byCSSPath(' lama|inspectoritem', this).forEach(
-            function(inspectorBay, index) {
-                totalSlotCount += inspectorBay.getBayMultiplier();
-            });
-
-    return totalSlotCount;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.lama.inspector.Inst.defineHandler('BreadcrumbSelected',
 function(aSignal) {
 
@@ -2458,34 +2367,8 @@ function(aSignal) {
      * @returns {TP.lama.inspector} The receiver.
      */
 
-    var doc,
-        targetElem,
-
-        currentFirstVisiblePosition;
-
-    doc = this.getNativeDocument();
-
-    //  We only resize if the actual *document* resizes (which TIBET sends as a
-    //  resize happening on the document element).
-
-    //  The target will be the element that caused the resize.
-    targetElem = TP.byId(aSignal.at('elementLocalID'), doc, false);
-
-    //  In this case, we're only interested in resize events that originated on
-    //  the document element.
-    if (targetElem !== doc.documentElement) {
-        return this;
-    }
-
-    //  Size the bays, but note here that this call will *not* re-render the
-    //  bays themselves. They have their own resize handlers that will cause
-    //  them to re-render if necessary.
-    this.sizeBays();
-
-    //  Grab the first visible slot position and scroll to it.
-    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
-    this.scrollBayToFirstVisiblePosition(
-            this.getBayFromSlotPosition(currentFirstVisiblePosition));
+    //  Make sure to update the scroll buttons :-).
+    this.updateScrollButtons();
 
     return this;
 });
@@ -2535,9 +2418,9 @@ function(aSignal) {
 
         this.displayBusy();
 
-        //  NB: We put this in a call to refresh after the next repaint so that the
-        //  busy panel has a chance to show before proceeding with the focusing
-        //  process.
+        //  NB: We put this in a call to refresh after the next repaint so that
+        //  the busy panel has a chance to show before proceeding with the
+        //  focusing process.
         (function() {
             this.focusUsingInfo(payload);
 
@@ -3261,7 +3144,6 @@ function(scrollToLastBay) {
      */
 
     this.repopulateBay();
-    this.sizeBays();
 
     if (TP.notFalse(scrollToLastBay)) {
         this.scrollBaysToEnd();
@@ -3523,37 +3405,54 @@ function(direction) {
      * @returns {TP.lama.inspector} The receiver.
      */
 
-    var currentFirstVisiblePosition,
-
-        currentBay,
+    var inspectorElem,
 
         inspectorBays,
-        desiredBay;
 
-    //  Get the first 'slot' that is visible and compute the 'leftmost' bay from
-    //  that.
-    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
-    currentBay = this.getBayFromSlotPosition(currentFirstVisiblePosition);
+        len,
+        i;
+
+    inspectorElem = this.getNativeNode();
 
     inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
     if (TP.isEmpty(inspectorBays)) {
         return this;
     }
 
+    len = inspectorBays.getSize();
+
     //  Depending on the direction, grab the bay before or after the leftmost
     //  bay.
     if (direction === TP.LEFT) {
-        desiredBay = inspectorBays.before(currentBay, TP.IDENTITY);
+
+        //  Find first bay from the lefthand side that is wholly visible. Note
+        //  that we start at 1, since if the leftmost bay is wholly visible,
+        //  then we don't need to do any scrolling from the left at all.
+        for (i = 1; i < len; i++) {
+            if (inspectorBays.at(i).isVisible()) {
+                inspectorElem.scrollLeft =
+                    inspectorBays.at(i - 1).getNativeNode().offsetLeft;
+                break;
+            }
+        }
     } else if (direction === TP.RIGHT) {
-        desiredBay = inspectorBays.after(currentBay, TP.IDENTITY);
+
+        //  Find first bay from the righthand side that is wholly visible. Note
+        //  that we're iterating backwards, which would normally mean that we
+        //  start at len -1, but because if the rightmost bay is wholly visible,
+        //  then we don't need to do any scrolling from the right at all, we
+        //  start at len - 2.
+        for (i = len - 2; i >= 0; i--) {
+            if (inspectorBays.at(i).isVisible()) {
+                inspectorElem.scrollLeft =
+                    inspectorBays.at(i + 1).getNativeNode().offsetLeft;
+                break;
+            }
+        }
     }
 
-    if (TP.notValid(desiredBay)) {
-        desiredBay = currentBay;
-    }
-
-    //  Scroll the computed bay into the first visible position.
-    this.scrollBayToFirstVisiblePosition(desiredBay);
+    //  Make sure to update the scroll buttons :-).
+    this.updateScrollButtons();
 
     return this;
 });
@@ -3569,76 +3468,7 @@ function() {
      * @returns {TP.lama.inspector} The receiver.
      */
 
-    var totalSlotCount,
-        visibleSlotCount,
-
-        firstVisibleSlotPosition;
-
-    totalSlotCount = this.get('totalSlotCount');
-    visibleSlotCount = this.get('visibleSlotCount');
-
-    //  Compute the slot position of what will be the last bay.
-    if (totalSlotCount <= visibleSlotCount) {
-        firstVisibleSlotPosition = 0;
-    } else {
-        firstVisibleSlotPosition = totalSlotCount - visibleSlotCount;
-    }
-
-    this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
-
     this.scrollTo(TP.RIGHT);
-
-    //  Make sure to update the scroll buttons :-).
-    this.updateScrollButtons();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lama.inspector.Inst.defineMethod('scrollBayToFirstVisiblePosition',
-function(aBay) {
-
-    /**
-     * @method scrollBayToFirstVisiblePosition
-     * @summary Scrolls the supplied bay to the first visible position. Note
-     *     that this is *not* the 'leftmost bay' itself, but the leftmost bay
-     *     currently showing based on far the receiver is horizontally scrolled
-     *     over.
-     * @param {TP.lama.inspectorItem} aBay The bay element to scroll to the
-     *     first position.
-     * @returns {TP.lama.inspector} The receiver.
-     */
-
-    var totalSlotCount,
-        visibleSlotCount,
-
-        desiredFirstVisiblePosition,
-        inspectorElem;
-
-    //  Grab the number of total and visible slots
-    totalSlotCount = this.get('totalSlotCount');
-    visibleSlotCount = this.get('visibleSlotCount');
-
-    //  If they're the same, we can exit here - there's no scrolling to be done.
-    if (totalSlotCount <= visibleSlotCount) {
-
-        //  We still may have to update the scroll buttons as this call might
-        //  have happened because the user resized the window.
-        this.updateScrollButtons();
-
-        return this;
-    }
-
-    //  Grab both the current and desired 'first visible position'.
-    desiredFirstVisiblePosition = this.getSlotPositionFromBay(aBay);
-
-    inspectorElem = this.getNativeNode();
-
-    inspectorElem.scrollLeft = aBay.getNativeNode().offsetLeft;
-
-    //  Set the current first visible position to what we just scrolled to.
-    this.set('currentFirstVisiblePosition', desiredFirstVisiblePosition);
 
     //  Make sure to update the scroll buttons :-).
     this.updateScrollButtons();
@@ -3796,250 +3626,6 @@ function() {
                     'PclassClosedChange');
 
     this.toggleObservations(true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lama.inspector.Inst.defineMethod('sizeBays',
-function(shouldRenderBayContent) {
-
-    /**
-     * @method sizeBays
-     * @summary Resizes the inspector items to fit within an even number of
-     *     visible slots.
-     * @param {Boolean} [shouldRenderBayContent=false] Whether or not this
-     *     method should try to re-render the content in the bays that we're
-     *     sizing. The default is false.
-     * @returns {TP.lama.inspector} The receiver.
-     */
-
-    var renderBayContent,
-
-        inspectorBays,
-
-        totalSlotCount,
-
-        multipliers,
-
-        minBayCount,
-
-        inspectorStyleVals,
-        visibleInspectorWidth,
-
-        initialSlotWidth,
-        definiteSlotMinWidth,
-
-        scannedBayMinWidth,
-
-        visibleSlotCount,
-
-        finalSlotWidth,
-        finalVisibleInspectorWidth,
-
-        widthDifference,
-        perSlotShimWidth,
-
-        firstVisibleSlotPosition,
-
-        accumWidth,
-
-        toolbarElem,
-        toolbarStyleObj;
-
-    renderBayContent = TP.ifInvalid(shouldRenderBayContent, false);
-
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
-    if (TP.isEmpty(inspectorBays)) {
-        return this;
-    }
-
-    //  We initialize the slot count with the number of inspector items. This
-    //  makes the assumption that each one is only 1 'slot' wide. We'll loop
-    //  over them below to adjust that assumption.
-    totalSlotCount = inspectorBays.getSize();
-
-    multipliers = TP.ac();
-
-    scannedBayMinWidth = 0;
-
-    //  Iterate over all of the inspector items, detecting both their 'slot'
-    //  width and if they have any minimum CSS width that they need.
-    inspectorBays.forEach(
-            function(aBayTPElem) {
-
-                var bayElem,
-                    computedStyleObj,
-
-                    multiplier,
-
-                    minWidth;
-
-                //  Grab the item's computed style object.
-                bayElem = TP.unwrap(aBayTPElem);
-                computedStyleObj = TP.elementGetComputedStyleObj(bayElem);
-
-                //  The 'slot width' multiplier is contained in a custom CSS
-                //  property.
-                multiplier = computedStyleObj.getPropertyValue(
-                                            '--lama-inspector-width');
-
-                //  If the multiplier value was real, then convert it to a
-                //  Number and add it to the total slot count (after subtracting
-                //  1, since our calculations later already assume a '1' width
-                //  per slot).
-                if (TP.notEmpty(multiplier)) {
-                    multiplier = multiplier.asNumber();
-                    totalSlotCount += multiplier - 1;
-                    multipliers.push(multiplier);
-                } else {
-                    //  Otherwise, no value was found, so we represent this item
-                    //  with a slot width of '1'
-                    multipliers.push(1);
-                }
-
-                //  Obtain the pixel value of any minimum width for this item.
-                minWidth = TP.elementGetPixelValue(
-                                bayElem,
-                                computedStyleObj.minWidth);
-
-                if (!TP.isNaN(minWidth)) {
-                    scannedBayMinWidth = scannedBayMinWidth.max(minWidth);
-                }
-            });
-
-    //  If no minimum value width could be computed from scanning the items,
-    //  grab the default one from a cfg() variable.
-    if (scannedBayMinWidth === 0) {
-        scannedBayMinWidth = TP.sys.cfg(
-                                'lama.inspector.min_item_width', 2000);
-    }
-
-    //  The minimum number of inspector items 'across' when computing bay
-    //  widths, etc. So even if there's one 1 bay populated, this will cause the
-    //  overall width to be divided by this value (3rds by default).
-    minBayCount = TP.sys.cfg('lama.inspector.min_item_count', 3);
-
-    //  The number of *total* slots (including those hidden by scrolling) is the
-    //  actual number of slots as computed above or the minimum item count,
-    //  whichever is greater.
-    totalSlotCount = totalSlotCount.max(minBayCount);
-    this.set('totalSlotCount', totalSlotCount);
-
-    //  Compute the *visible* width of the inspector.
-
-    //  We need to subtract off the left and right border.
-    inspectorStyleVals = TP.elementGetComputedStyleValuesInPixels(
-                            this.getNativeNode(),
-                            TP.ac('borderLeftWidth', 'borderRightWidth'));
-
-    //  Now take the overall (offset) width of the inspector and subtract those
-    //  borders.
-    visibleInspectorWidth = this.getWidth() -
-                            (inspectorStyleVals.at('borderLeftWidth') +
-                            inspectorStyleVals.at('borderRightWidth'));
-
-    //  The *initial* slot width is computed by dividing the overall visible
-    //  inspector width by the total number of 'slots' and rounding down.
-    initialSlotWidth = (visibleInspectorWidth / totalSlotCount).floor();
-
-    //  Now we compute a *definite* slot minimum width by using the initial slot
-    //  width we computed or the scanned item minimum width, whichever is
-    //  greater.
-    definiteSlotMinWidth = initialSlotWidth.max(scannedBayMinWidth);
-
-    //  The number of visible slots is computed by divided the *visible* width
-    //  of the inspector and dividing by the definite slot minimum width (and
-    //  rounding down).
-    visibleSlotCount = (visibleInspectorWidth / definiteSlotMinWidth).floor();
-    this.set('visibleSlotCount', visibleSlotCount);
-
-    //  The final slot width is computed by dividing the visible width of the
-    //  inspector by the number of visible slots (and rounding down). This gives
-    //  us the width of each slot as if an exact number of slots could fit into
-    //  the inspector with no scrolling.
-    finalSlotWidth = (visibleInspectorWidth / visibleSlotCount).floor();
-
-    //  Now we compute the 'final' visible inspector width by taking the number
-    //  of visible slots and multiplying it by the final computed slot width.
-    //  This will give us the width of the inspector if the slots fit exactly on
-    //  the boundaries.
-    finalVisibleInspectorWidth = visibleSlotCount * finalSlotWidth;
-
-    //  Since it's highly unlikely that an exact number of slots could fit into
-    //  the visible width of the inspector (unless it's *exactly* wide enough to
-    //  fit them), there will be an overlap difference.
-    widthDifference = visibleInspectorWidth - finalVisibleInspectorWidth;
-
-    //  There will a 'per slot' shim width that we need to add to each slot.
-    //  Compute that here.
-    perSlotShimWidth = widthDifference / visibleSlotCount;
-    finalSlotWidth += perSlotShimWidth;
-
-    //  Grab the position of the currently 'first visible' slot.
-    firstVisibleSlotPosition = this.get('currentFirstVisiblePosition');
-
-    //  If it doesn't exist, initialize it to the total number of slots minus
-    //  the number of visible slots
-    if (!TP.isNumber(firstVisibleSlotPosition)) {
-        firstVisibleSlotPosition = totalSlotCount - visibleSlotCount;
-        this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
-    }
-
-    //  Now we have to adjust the item bay widths based on their multipliers
-    //  (which we captured in an Array above). Note that we also keep an
-    //  'accumulated width' here so that we can do 'first visible slot'
-    //  adjustments afterwards.
-    accumWidth = 0;
-
-    inspectorBays.forEach(
-            function(aBay, index) {
-
-                var width,
-                    bayContent;
-
-                width = finalSlotWidth * multipliers.at(index);
-                aBay.setWidth(width);
-
-                bayContent = aBay.getFirstChildElement();
-
-                if (renderBayContent && TP.canInvoke(bayContent, 'render')) {
-                    bayContent.render();
-                }
-
-                //  If the item's index is greater than or equal to the position
-                //  of the first visible slot, then it exists within the set of
-                //  visible slots and we need to add it's width to the
-                //  accumulated width.
-                if (index >= firstVisibleSlotPosition) {
-                    accumWidth += width;
-                }
-            });
-
-    toolbarElem = TP.byId('LamaToolbar', this.getNativeDocument(), false);
-    toolbarStyleObj = TP.elementGetStyleObj(toolbarElem);
-
-    /* eslint-disable no-extra-parens */
-    if (visibleSlotCount === multipliers.last()) {
-
-        //  Cheesy. Should sum the widths of the items to the left of the toolbar
-        //  and use that number here.
-        toolbarStyleObj.left = '282px';
-        toolbarStyleObj.width = '';
-    } else {
-        toolbarStyleObj.left = '';
-        toolbarStyleObj.width = (finalSlotWidth * multipliers.last()) + 'px';
-    }
-    /* eslint-enable no-extra-parens */
-
-    //  If the accumulated width is greater than or equal to the visible
-    //  inspector width (and there is more than 1 slot), then increment the
-    //  first visible slot's position.
-    if (accumWidth >= visibleInspectorWidth && visibleSlotCount > 1) {
-        firstVisibleSlotPosition += 1;
-        this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
-    }
 
     return this;
 });

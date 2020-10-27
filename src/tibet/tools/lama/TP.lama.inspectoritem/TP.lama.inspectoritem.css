@@ -9,10 +9,20 @@ lama|inspectoritem {
 
     overflow: hidden;
 
-    min-width: 250px;
-
-    /* CSS custom property */
+    /* CSS custom properties that determine inspector width/height and
+     * flexing */
     --lama-inspector-width: 1;
+
+    --lama-inspector-item-minwidth: 250px;
+    --lama-inspector-item-maxwidth: 250px;
+    --lama-inspector-item-height: 141px;
+
+    --lama-inspector-item-flex-basis: calc(var(--lama-inspector-item-minwidth) * 2);
+
+    flex: var(--lama-inspector-width);
+    min-width: calc(var(--lama-inspector-item-minwidth) * var(--lama-inspector-width));
+    max-width: calc(var(--lama-inspector-item-maxwidth) * var(--lama-inspector-width));
+    flex-basis: calc(var(--lama-inspector-item-flex-basis) * var(--lama-inspector-width));
 }
 
 lama|inspectoritem > div {
