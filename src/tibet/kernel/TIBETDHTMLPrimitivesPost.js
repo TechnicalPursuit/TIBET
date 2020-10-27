@@ -4891,8 +4891,25 @@ function(anElement, partial, direction, wantsTransformed) {
 
         offsetParent,
 
+        doc,
+
         viewportBox,
         elementBox,
+
+        topLeftCornerVisible,
+        bottomLeftCornerVisible,
+        topRightCornerVisible,
+        bottomRightCornerVisible,
+
+        elemTop,
+        elemRight,
+        elemBottom,
+        elemLeft,
+
+        offsetTop,
+        offsetRight,
+        offsetBottom,
+        offsetLeft,
 
         topVisible,
         leftVisible,
@@ -4931,6 +4948,25 @@ function(anElement, partial, direction, wantsTransformed) {
         return false;
     }
 
+    doc = TP.nodeGetDocument(anElement);
+
+    //  Get our own border box
+    elementBox = TP.elementGetBorderBox(
+                    anElement,
+                    wantsTransformed);
+
+    ({top: elemTop, right: elemRight,
+        bottom: elemBottom, left: elemLeft} = TP.obj(elementBox));
+
+    topLeftCornerVisible = anElement.contains(
+                        doc.elementFromPoint(elemLeft + 1, elemTop + 1));
+    bottomLeftCornerVisible = anElement.contains(
+                        doc.elementFromPoint(elemLeft + 1, elemBottom - 1));
+    topRightCornerVisible = anElement.contains(
+                        doc.elementFromPoint(elemRight - 1, elemTop + 1));
+    bottomRightCornerVisible = anElement.contains(
+                        doc.elementFromPoint(elemRight - 1, elemBottom - 1));
+
     //  Get the viewport width and height, as defined by our offsetParent
     offsetParent = TP.elementGetOffsetParent(anElement);
     if (TP.isElement(offsetParent)) {
@@ -4942,18 +4978,24 @@ function(anElement, partial, direction, wantsTransformed) {
                             'left', 0);
     }
 
-    //  Get our own border box
-    elementBox = TP.elementGetBorderBox(
-                    anElement,
-                    wantsTransformed);
+    ({top: offsetTop, right: offsetRight,
+        bottom: offsetBottom, left: offsetLeft} = TP.obj(viewportBox));
 
     //  Based on the comparison of our top, bottom, left and right to our
     //  viewport's width and height, we can determine whether a side is visible
     //  or not.
-    topVisible = elementBox.at('top') >= viewportBox.at('top');
-    bottomVisible = elementBox.at('bottom') <= viewportBox.at('bottom');
-    leftVisible = elementBox.at('left') >= viewportBox.at('left');
-    rightVisible = elementBox.at('right') <= viewportBox.at('right');
+    topVisible = elemTop >= offsetTop &&
+                    topLeftCornerVisible &&
+                    topRightCornerVisible;
+    bottomVisible = elemBottom <= offsetBottom &&
+                    bottomLeftCornerVisible &&
+                    bottomRightCornerVisible;
+    leftVisible = elemLeft >= offsetLeft &&
+                    topLeftCornerVisible &&
+                    bottomLeftCornerVisible;
+    rightVisible = elemRight <= offsetRight &&
+                    topRightCornerVisible &&
+                    bottomRightCornerVisible;
 
     //  If we allow the call to return a 'partially visible' element, we use OR
     //  on the comparisons here - otherwise, we use AND.
