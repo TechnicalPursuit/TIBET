@@ -198,8 +198,6 @@ function(aURI, username, password) {
     authRequest = TP.sig.HTTPRequest.construct(
                     TP.hc(
                         'uri', href,
-                        'headers',
-                            TP.hc('Content-Type', TP.JSON_ENCODED),
                         'auth', TP.HTTP_BASIC,
                         'username', username,
                         'password', password));
