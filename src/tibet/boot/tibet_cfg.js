@@ -2135,11 +2135,14 @@
             // ['Another CouchDB Server', 'http://foo.com:5984']
         ]);
 
+    //  The authentication scheme - either 'basic' (the default) or 'cookie'
+    TP.sys.setcfg('couch.auth_scheme', 'basic');
 
-    //  The number of *seconds* that a connection will be authenticated in
-    //  couchdb before it needs to be re-authenticated. This value should match
-    //  the '[couch_httpd_auth]' value in the CouchDB configuration.
-    TP.sys.setcfg('couch.auth_timeout', 600);
+    //  The number of *seconds* that a 'cookie'-authenticated connection will
+    //  remain valid in couchdb before it needs to be re-authenticated. This
+    //  value should match the '[couch_httpd_auth]' value in the CouchDB
+    //  configuration.
+    TP.sys.setcfg('couch.auth_cookie_timeout', 600);
 
     //  should we watch changes from couchdb?
     TP.sys.setcfg('couch.watch.changes', false);

@@ -49,6 +49,12 @@ TP.uri.CouchDBURLHandler.set('excludeConfigName',
 //  Server roots that have been authenticated.
 TP.uri.CouchDBURLHandler.Type.defineAttribute('authenticatedRoots');
 
+//  The username used when our authentication scheme is set to 'basic'.
+TP.uri.CouchDBURLHandler.Type.defineAttribute('$basicUsername');
+
+//  The password used when our authentication scheme is set to 'basic'.
+TP.uri.CouchDBURLHandler.Type.defineAttribute('$basicPassword');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -99,8 +105,8 @@ function(aRootLocation, authenticationData) {
      * @method addAuthenticatedRoot
      * @summary Adds the supplied root location to the list of authenticated
      *     roots. This method will also cause that authentication to time out
-     *     according to the setting of 'couch.auth_timeout' (defaulted to
-     *     600000ms).
+     *     according to the setting of 'couch.auth_cookie_timeout' (defaulted
+     *     to 600000ms).
      * @param {String} aRootLocation The root location that has been
      *     authenticated and needs to be tracked.
      * @param {TP.core.Hash} [authenticationData] Data about the authenticated
@@ -121,7 +127,7 @@ function(aRootLocation, authenticationData) {
     setTimeout(
         function() {
             authenticatedRoots.removeKey(aRootLocation);
-        }, (TP.sys.cfg('couch.auth_timeout', 600) * 1000));
+        }, (TP.sys.cfg('couch.auth_cookie_timeout', 600) * 1000));
     /* eslint-enable no-extra-parens */
 
     return this;
@@ -144,6 +150,94 @@ function(aURI, username, password) {
      * @returns {TP.sig.HTTPRequest} The authentication request.
      */
 
+    var authScheme;
+
+    authScheme = TP.sys.cfg('couch.auth_scheme', 'basic');
+    if (authScheme === 'basic') {
+        return this.authenticateBasic(aURI, username, password);
+    }
+
+    return this.authenticateCookie(aURI, username, password);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.CouchDBURLHandler.Type.defineMethod('authenticateBasic',
+function(aURI, username, password) {
+
+    /**
+     * @method authenticateBasic
+     * @summary Authenticate the supplied URI using the 'basic' authentication
+     *     scheme. This will actually authenticate the root of the supplied URI.
+     * @param {TP.uri.URI} aURI The URI to authenticate.
+     * @param {String} [username] The username to use to authenticate. If this
+     *     is not supplied, the user will be prompted to supply it.
+     * @param {String} [password] The password to use to authenticate. If this
+     *     is not supplied, the user will be prompted to supply it.
+     * @returns {TP.sig.HTTPRequest} The authentication request.
+     */
+
+    var rootLoc,
+        href,
+        authRequest,
+
+        thisref;
+
+    //  Build an request that we can post below. For 'basic' authentication, all
+    //  we're trying to do is to determine whether the username and password are
+    //  correct, since we'll be sending it each time.
+
+    //  Construct the proper href to the authentication endpoint.
+    rootLoc = aURI.getRoot();
+    href = rootLoc + '/';
+
+    //  Now, since we know we're talking to CouchDB over HTTP, we construct an
+    //  HTTPRequest. This will allow enhanced error handling of this request,
+    //  such as signaling signals like 401, for instance, if there is an invalid
+    //  login.
+    authRequest = TP.sig.HTTPRequest.construct(
+                    TP.hc(
+                        'uri', href,
+                        'auth', TP.HTTP_BASIC,
+                        'username', username,
+                        'password', password));
+
+    //  If the IO succeeds, that means that we have a good username and
+    //  password, so we store them away.
+    thisref = this;
+    authRequest.defineHandler('IOSucceeded',
+        function(aResponse) {
+
+            thisref.set('$basicUsername', username);
+            thisref.set('$basicPassword', password);
+
+            this.callNextMethod();
+        });
+
+    //  Get some information from the auth endpoint.
+    TP.httpGet(href, authRequest);
+
+    return authRequest;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.CouchDBURLHandler.Type.defineMethod('authenticateCookie',
+function(aURI, username, password) {
+
+    /**
+     * @method authenticateCookie
+     * @summary Authenticate the supplied URI using the 'cookie token'
+     *     authentication scheme. This will actually authenticate the root of
+     *     the supplied URI.
+     * @param {TP.uri.URI} aURI The URI to authenticate.
+     * @param {String} [username] The username to use to authenticate. If this
+     *     is not supplied, the user will be prompted to supply it.
+     * @param {String} [password] The password to use to authenticate. If this
+     *     is not supplied, the user will be prompted to supply it.
+     * @returns {TP.sig.HTTPRequest} The authentication request.
+     */
+
     var rootLoc,
         href,
         authRequest,
@@ -151,8 +245,6 @@ function(aURI, username, password) {
         thisref,
 
         loginFunc;
-
-    //  ---
 
     //  Build an authentication request that we can post below.
 
@@ -165,10 +257,11 @@ function(aURI, username, password) {
     //  such as signaling signals like 401, for instance, if there is an invalid
     //  login.
     authRequest = TP.sig.HTTPRequest.construct(
-                    'uri', href,
-                    'headers',
-                        TP.hc('Content-Type', TP.JSON_ENCODED),
-                    'simple_cors_only', true);
+                    TP.hc(
+                        'uri', href,
+                        'headers',
+                            TP.hc('Content-Type', TP.JSON_ENCODED),
+                        'simple_cors_only', true));
 
     //  If the low-level IO request succeeds, then we add the root location as
     //  an authenticated root and tell the HTTPService to handle the new request
@@ -377,7 +470,7 @@ function(aSignal) {
 
     /**
      * @method handleAppDidStart
-     * @summary Handles when a TDS-managed resource has changed.
+     * @summary
      * @param {TP.sig.AppDidStart} aSignal The signal indicating that the
      *     application has completed all of its startup tasks.
      * @returns {TP.meta.uri.CouchDBURLHandler} The receiver.
@@ -385,6 +478,8 @@ function(aSignal) {
 
     var watcherURIs,
         watchSource,
+
+        authScheme,
 
         authenticatedRoots,
         authenticatingRoots;
@@ -418,6 +513,14 @@ function(aSignal) {
 
         this.observe(signalSource, signalType);
     }.bind(this);
+
+    //  If the authentication scheme is 'basic', then we just return. Since,
+    //  with basic auth, we authenticate each time, there is no concept of
+    //  'authenticated roots'.
+    authScheme = TP.sys.cfg('couch.auth_scheme', 'basic');
+    if (authScheme === 'basic') {
+        return this;
+    }
 
     authenticatedRoots = this.get('authenticatedRoots');
 
@@ -771,10 +874,19 @@ function(targetURI, roleName) {
      * @returns {Boolean} true if the URI is authenticated.
      */
 
-    var rootURI,
+    var authScheme,
+
+        rootURI,
         authenticationData,
 
         roles;
+
+    //  If the authentication scheme is 'basic', then we return true if we have
+    //  a password that was deemed valid when we first authenticated.
+    authScheme = TP.sys.cfg('couch.auth_scheme', 'basic');
+    if (authScheme === 'basic') {
+        return TP.notEmpty(this.get('$basicPassword'));
+    }
 
     rootURI = targetURI.getRoot();
 
@@ -858,6 +970,8 @@ function(targetURI, aRequest) {
 
     var request,
 
+        authScheme,
+
         reqParams,
         newReq,
 
@@ -872,54 +986,69 @@ function(targetURI, aRequest) {
         return this.callNextMethod();
     }
 
-    //  Make sure that the connection has been authenticated.
-    if (!this.isAuthenticated(targetURI)) {
+    //  If the authentication scheme is 'basic', then we set up the request to
+    //  use HTTP basic authentication, supplying the username and password that
+    //  were supplied when the connection was first authenticated.
+    authScheme = TP.sys.cfg('couch.auth_scheme', 'basic');
+    if (authScheme === 'basic') {
+        request.atPut('auth', TP.HTTP_BASIC);
+        request.atPut('username', this.get('$basicUsername'));
+        request.atPut('password', this.get('$basicPassword'));
+    } else {
 
-        reqParams = TP.copy(request.getParameters());
-        reqParams.atPut('uri', targetURI);
+        //  Otherwise, we're using 'cookie token' authenication.
 
-        newReq = TP.sig.HTTPLoadRequest.construct(reqParams);
-        request.andJoinChild(newReq);
+        //  Make sure that the connection has been authenticated.
+        if (!this.isAuthenticated(targetURI)) {
 
-        authRequest = this.authenticate(targetURI);
-        authRequest.defineHandler('RequestSucceeded',
-            function(aResponse) {
-                TP.uri.HTTPService.handle(newReq);
-            });
+            reqParams = TP.copy(request.getParameters());
+            reqParams.atPut('uri', targetURI);
 
-        authRequest.defineHandler('RequestFailed',
-            function(aResponse) {
+            newReq = TP.sig.HTTPLoadRequest.construct(reqParams);
+            request.andJoinChild(newReq);
 
-                //  If it doesn't authenticate, notify the user and simulate a
-                //  HTTP 401 error and report it / fail it like the TIBET
-                //  low-level HTTP code will.
+            authRequest = this.authenticate(targetURI);
+            authRequest.defineHandler('RequestSucceeded',
+                function(aResponse) {
+                    TP.uri.HTTPService.handle(newReq);
+                });
 
-                TP.alert('Authentication Failed').then(
-                    function() {
-                        request.set('faultCode', 401);
-                        request.set('faultText', 'Unauthorized');
+            authRequest.defineHandler('RequestFailed',
+                function(aResponse) {
 
-                        TP.httpError(targetURI.getLocation(),
-                                        'HTTPException',
-                                        request,
-                                        false);
+                    //  If it doesn't authenticate, notify the user and simulate
+                    //  a HTTP 401 error and report it / fail it like the TIBET
+                    //  low-level HTTP code will.
 
-                        request.fail(
-                                request.at('message'),
-                                request.getFaultCode(),
-                                TP.hc('error', request.at('error'),
-                                        'message', request.at('message')));
-                    });
-            });
+                    TP.alert('Authentication Failed').then(
+                        function() {
+                            request.set('faultCode', 401);
+                            request.set('faultText', 'Unauthorized');
 
-        return authRequest.getResponse();
+                            TP.httpError(targetURI.getLocation(),
+                                            'HTTPException',
+                                            request,
+                                            false);
+
+                            request.fail(
+                                    request.at('message'),
+                                    request.getFaultCode(),
+                                    TP.hc('error', request.at('error'),
+                                            'message', request.at('message')));
+                        });
+                });
+
+            return authRequest.getResponse();
+        }
+
+        //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no
+        //  preflight requests, etc.) if possible. Configure that here so that
+        //  TIBET's low-level HTTP machinery doesn't try to add headers, etc.
+        //  that would automatically cause preflight requests for even simple
+        //  CORS cases.
+        request.atPut('simple_cors_only', true);
+        request.atPut('withCredentials', true);
     }
-
-    //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
-    //  requests, etc.) if possible. Configure that here so that TIBET's
-    //  low-level HTTP machinery doesn't try to add headers, etc. that would
-    //  automatically cause preflight requests for even simple CORS cases.
-    request.atPut('simple_cors_only', true);
 
     return this.callNextMethod(targetURI, request);
 });
@@ -943,6 +1072,8 @@ function(targetURI, aRequest) {
 
     var request,
 
+        authScheme,
+
         reqParams,
         newReq,
 
@@ -957,54 +1088,69 @@ function(targetURI, aRequest) {
         return this.callNextMethod();
     }
 
-    //  Make sure that the connection has been authenticated.
-    if (!this.isAuthenticated(targetURI)) {
+    //  If the authentication scheme is 'basic', then we set up the request to
+    //  use HTTP basic authentication, supplying the username and password that
+    //  were supplied when the connection was first authenticated.
+    authScheme = TP.sys.cfg('couch.auth_scheme', 'basic');
+    if (authScheme === 'basic') {
+        request.atPut('auth', TP.HTTP_BASIC);
+        request.atPut('username', this.get('$basicUsername'));
+        request.atPut('password', this.get('$basicPassword'));
+    } else {
 
-        reqParams = TP.copy(request.getParameters());
-        reqParams.atPut('uri', targetURI);
+        //  Otherwise, we're using 'cookie token' authenication.
 
-        newReq = TP.sig.HTTPDeleteRequest.construct(reqParams);
-        request.andJoinChild(newReq);
+        //  Make sure that the connection has been authenticated.
+        if (!this.isAuthenticated(targetURI)) {
 
-        authRequest = this.authenticate(targetURI);
-        authRequest.defineHandler('RequestSucceeded',
-            function(aResponse) {
-                TP.uri.HTTPService.handle(newReq);
-            });
+            reqParams = TP.copy(request.getParameters());
+            reqParams.atPut('uri', targetURI);
 
-        authRequest.defineHandler('RequestFailed',
-            function(aResponse) {
+            newReq = TP.sig.HTTPDeleteRequest.construct(reqParams);
+            request.andJoinChild(newReq);
 
-                //  If it doesn't authenticate, notify the user and simulate a
-                //  HTTP 401 error and report it / fail it like the TIBET
-                //  low-level HTTP code will.
+            authRequest = this.authenticate(targetURI);
+            authRequest.defineHandler('RequestSucceeded',
+                function(aResponse) {
+                    TP.uri.HTTPService.handle(newReq);
+                });
 
-                TP.alert('Authentication Failed').then(
-                    function() {
-                        request.set('faultCode', 401);
-                        request.set('faultText', 'Unauthorized');
+            authRequest.defineHandler('RequestFailed',
+                function(aResponse) {
 
-                        TP.httpError(targetURI.getLocation(),
-                                        'HTTPException',
-                                        request,
-                                        false);
+                    //  If it doesn't authenticate, notify the user and simulate
+                    //  a HTTP 401 error and report it / fail it like the TIBET
+                    //  low-level HTTP code will.
 
-                        request.fail(
-                                request.at('message'),
-                                request.getFaultCode(),
-                                TP.hc('error', request.at('error'),
-                                        'message', request.at('message')));
-                    });
-            });
+                    TP.alert('Authentication Failed').then(
+                        function() {
+                            request.set('faultCode', 401);
+                            request.set('faultText', 'Unauthorized');
 
-        return authRequest.getResponse();
+                            TP.httpError(targetURI.getLocation(),
+                                            'HTTPException',
+                                            request,
+                                            false);
+
+                            request.fail(
+                                    request.at('message'),
+                                    request.getFaultCode(),
+                                    TP.hc('error', request.at('error'),
+                                            'message', request.at('message')));
+                        });
+                });
+
+            return authRequest.getResponse();
+        }
+
+        //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no
+        //  preflight requests, etc.) if possible. Configure that here so that
+        //  TIBET's low-level HTTP machinery doesn't try to add headers, etc.
+        //  that would automatically cause preflight requests for even simple
+        //  CORS cases.
+        request.atPut('simple_cors_only', true);
+        request.atPut('withCredentials', true);
     }
-
-    //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
-    //  requests, etc.) if possible. Configure that here so that TIBET's
-    //  low-level HTTP machinery doesn't try to add headers, etc. that would
-    //  automatically cause preflight requests for even simple CORS cases.
-    request.atPut('simple_cors_only', true);
 
     return this.callNextMethod(targetURI, request);
 });
@@ -1035,6 +1181,8 @@ function(targetURI, aRequest) {
 
     var request,
 
+        authScheme,
+
         reqParams,
         newReq,
 
@@ -1053,56 +1201,69 @@ function(targetURI, aRequest) {
         return this.callNextMethod();
     }
 
-    //  Make sure that the connection has been authenticated.
-    if (!this.isAuthenticated(targetURI)) {
+    //  If the authentication scheme is 'basic', then we set up the request to
+    //  use HTTP basic authentication, supplying the username and password that
+    //  were supplied when the connection was first authenticated.
+    authScheme = TP.sys.cfg('couch.auth_scheme', 'basic');
+    if (authScheme === 'basic') {
+        request.atPut('auth', TP.HTTP_BASIC);
+        request.atPut('username', this.get('$basicUsername'));
+        request.atPut('password', this.get('$basicPassword'));
+    } else {
 
-        reqParams = TP.copy(request.getParameters());
-        reqParams.atPut('uri', targetURI);
+        //  Make sure that the connection has been authenticated.
+        if (!this.isAuthenticated(targetURI)) {
 
-        newReq = TP.sig.HTTPSaveRequest.construct(reqParams);
-        request.andJoinChild(newReq);
+            reqParams = TP.copy(request.getParameters());
+            reqParams.atPut('uri', targetURI);
 
-        authRequest = this.authenticate(targetURI);
-        authRequest.defineHandler('RequestSucceeded',
-            function(aResponse) {
-                TP.uri.HTTPService.handle(newReq);
-            });
+            newReq = TP.sig.HTTPSaveRequest.construct(reqParams);
+            request.andJoinChild(newReq);
 
-        authRequest.defineHandler('RequestFailed',
-            function(aResponse) {
+            authRequest = this.authenticate(targetURI);
+            authRequest.defineHandler('RequestSucceeded',
+                function(aResponse) {
+                    TP.uri.HTTPService.handle(newReq);
+                });
 
-                //  If it doesn't authenticate, notify the user and simulate a
-                //  HTTP 401 error and report it / fail it like the TIBET
-                //  low-level HTTP code will.
+            authRequest.defineHandler('RequestFailed',
+                function(aResponse) {
 
-                TP.alert('Authentication Failed').then(
-                    function() {
-                        request.set('faultCode', 401);
-                        request.set('faultText', 'Unauthorized');
+                    //  If it doesn't authenticate, notify the user and simulate
+                    //  a HTTP 401 error and report it / fail it like the TIBET
+                    //  low-level HTTP code will.
 
-                        TP.httpError(targetURI.getLocation(),
-                                        'HTTPException',
-                                        request,
-                                        false);
+                    TP.alert('Authentication Failed').then(
+                        function() {
+                            request.set('faultCode', 401);
+                            request.set('faultText', 'Unauthorized');
 
-                        request.fail(
-                                request.at('message'),
-                                request.getFaultCode(),
-                                TP.hc('error', request.at('error'),
-                                        'message', request.at('message')));
-                    });
-            });
+                            TP.httpError(targetURI.getLocation(),
+                                            'HTTPException',
+                                            request,
+                                            false);
 
-        return authRequest.getResponse();
+                            request.fail(
+                                    request.at('message'),
+                                    request.getFaultCode(),
+                                    TP.hc('error', request.at('error'),
+                                            'message', request.at('message')));
+                        });
+                });
+
+            return authRequest.getResponse();
+        }
+
+        saveURI = targetURI;
+
+        //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no
+        //  preflight requests, etc.) if possible. Configure that here so that
+        //  TIBET's low-level HTTP machinery doesn't try to add headers, etc.
+        //  that would automatically cause preflight requests for even simple
+        //  CORS cases.
+        request.atPut('simple_cors_only', true);
+        request.atPut('withCredentials', true);
     }
-
-    saveURI = targetURI;
-
-    //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no preflight
-    //  requests, etc.) if possible. Configure that here so that TIBET's
-    //  low-level HTTP machinery doesn't try to add headers, etc. that would
-    //  automatically cause preflight requests for even simple CORS cases.
-    request.atPut('simple_cors_only', true);
 
     //  Add a local handler for when the request succeeds that will update the
     //  '_rev' in the locally cached data to the new 'rev' sent back by the
