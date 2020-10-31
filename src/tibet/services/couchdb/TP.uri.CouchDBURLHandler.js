@@ -218,6 +218,8 @@ function(aURI, username, password) {
     TP.httpGet(href, authRequest);
 
     return authRequest;
+}, {
+    patchCallee: false
 });
 
 //  ------------------------------------------------------------------------
