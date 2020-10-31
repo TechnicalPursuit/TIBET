@@ -27,7 +27,8 @@ var CLI,
     zlib,
     crypto,
     readFile,
-    Promise;
+    Promise,
+    nameValidator;
 
 CLI = require('./_cli');
 
@@ -55,6 +56,7 @@ mime.types.opts = 'text/plain';
 mime.types.pegjs = 'text/plain';
 mime.types.tmx = 'application/xml';
 
+nameValidator = /^[a-z][a-z0-9_$()+/-]{238}$/;
 
 //  ---
 //  Type Attributes
@@ -289,6 +291,13 @@ Cmd.prototype.executeCreatedb = function() {
         return;
     }
 
+    if (!nameValidator.test(arg1)) {
+        this.error('Invalid database name: ' + arg1 +
+                    '\nName must match the following pattern: ' +
+                    nameValidator.toString());
+        return;
+    }
+
     this.log('creating database: ' +
         couch.maskCouchAuth(db_url) + '/' + arg1);
 
@@ -503,6 +512,13 @@ Cmd.prototype.executePushapp = function() {
     arg1 = this.getArgument(1);
     if (!arg1) {
         this.usage('tibet couch pushapp [<[dbname.]appname>]');
+        return;
+    }
+
+    if (!nameValidator.test(arg1)) {
+        this.error('Invalid app/database name: ' + arg1 +
+                    '\nName must match the following pattern: ' +
+                    nameValidator.toString());
         return;
     }
 
