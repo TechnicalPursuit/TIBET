@@ -28,6 +28,7 @@ var CLI,
     crypto,
     readFile,
     Promise,
+    privateNameMatcher,
     nameValidator;
 
 CLI = require('./_cli');
@@ -56,6 +57,7 @@ mime.types.opts = 'text/plain';
 mime.types.pegjs = 'text/plain';
 mime.types.tmx = 'application/xml';
 
+privateNameMatcher = /^_/;
 nameValidator = /^[a-z][a-z0-9_$()+/-]{238}$/;
 
 //  ---
@@ -229,6 +231,11 @@ Cmd.prototype.executeCompactdb = function() {
     arg1 = this.getArgument(1);
     if (!arg1) {
         this.usage('tibet couch compact <[dbname.][appname.]>');
+        return;
+    }
+
+    if (privateNameMatcher.test(arg1)) {
+        this.error('You cannot modify internal database named: ' + arg1);
         return;
     }
 
@@ -454,6 +461,11 @@ Cmd.prototype.executePush = function() {
     arg1 = this.getArgument(1);
     if (!arg1) {
         this.usage('tibet couch push <fileordirectory>');
+        return;
+    }
+
+    if (privateNameMatcher.test(arg1)) {
+        this.error('You cannot modify internal database named: ' + arg1);
         return;
     }
 
@@ -1117,6 +1129,11 @@ Cmd.prototype.executeRemovedb = function() {
     arg1 = this.getArgument(1);
     if (!arg1) {
         this.usage('tibet couch removedb <dbname>');
+        return;
+    }
+
+    if (privateNameMatcher.test(arg1)) {
+        this.error('You cannot remove internal database named: ' + arg1);
         return;
     }
 
