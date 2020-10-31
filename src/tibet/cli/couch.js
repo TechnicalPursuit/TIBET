@@ -924,37 +924,54 @@ Cmd.prototype.executePushapp = function() {
                 });
         },
         function(error) {
-            if (error.reason === 'Database does not exist.') {
-                //  Create database if it doesn't exist.
-                new Promise(function(resolve, reject) {
-                    nano = require('nano')(db_url);
-                    nano.db.create(db_name,
-                        function(err2) {
-                            if (err2) {
-                                CLI.handleCouchError(err2, 'couch', 'createdb');
-                                reject();
-                                return;
-                            }
+            var answer;
 
-                            cmd.log('database created at ' +
-                                couch.maskCouchAuth(db_url) + '/' + arg1);
-                            resolve();
-                        });
-                }).then(function() {
-                    //  No document? Clean start then.
-                    insertAll(list).then(
-                        function() {
-                            return;
-                        },
-                        function(err2) {
-                            CLI.handleCouchError(err2, 'couch', 'pushapp');
-                            return;
-                        });
-                });
+            if (error.reason === 'Database does not exist.') {
+
+                //  Ask the user whether or not to create the database for the
+                //  app since it doesn't exist.
+                answer = CLI.prompt.question(
+                    'No database found for ' + db_name + '. Create it ? [y] ');
+
+                if (answer.toLowerCase().charAt(0) !== 'n') {
+                    //  Create database if it doesn't exist.
+                    return new Promise(function(resolve, reject) {
+                        nano = require('nano')(db_url);
+                        nano.db.create(db_name,
+                            function(err2) {
+                                if (err2) {
+                                    CLI.handleCouchError(
+                                                err2, 'couch', 'createdb');
+                                    reject();
+                                    return;
+                                }
+
+                                cmd.log('database created at ' +
+                                    couch.maskCouchAuth(db_url) + '/' + arg1);
+                                resolve();
+                            });
+                    }).then(function() {
+                        //  No document? Clean start then.
+                        insertAll(list).then(
+                            function() {
+                                return;
+                            },
+                            function(err2) {
+                                CLI.handleCouchError(err2, 'couch', 'pushapp');
+                                return;
+                            });
+                    });
+                } else {
+                    cmd.log('database not created... exiting. ');
+
+                    //  The user didn't want us to create the database. Return a
+                    //  fulfilled Promise.
+                    return Promise.resolve();
+                }
 
             } else if (error.reason === 'missing') {
                 //  No document? Clean start then.
-                insertAll(list).then(
+                return insertAll(list).then(
                     function() {
                         return;
                     },
