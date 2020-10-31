@@ -27,7 +27,9 @@ var CLI,
     zlib,
     crypto,
     readFile,
-    Promise;
+    Promise,
+    privateNameMatcher,
+    nameValidator;
 
 CLI = require('./_cli');
 
@@ -55,6 +57,8 @@ mime.types.opts = 'text/plain';
 mime.types.pegjs = 'text/plain';
 mime.types.tmx = 'application/xml';
 
+privateNameMatcher = /^_/;
+nameValidator = /^[a-z][a-z0-9_$()+/-]{238}$/;
 
 //  ---
 //  Type Attributes
@@ -230,6 +234,11 @@ Cmd.prototype.executeCompactdb = function() {
         return;
     }
 
+    if (privateNameMatcher.test(arg1)) {
+        this.error('You cannot modify internal database named: ' + arg1);
+        return;
+    }
+
     arginfo = couch.getDBReferenceInfo(arg1);
 
     db_name = arginfo.db_name || params.db_name;
@@ -286,6 +295,13 @@ Cmd.prototype.executeCreatedb = function() {
     arg1 = this.getArgument(1);
     if (!arg1) {
         this.usage('tibet couch createdb <dbname>');
+        return;
+    }
+
+    if (!nameValidator.test(arg1)) {
+        this.error('Invalid database name: ' + arg1 +
+                    '\nName must match the following pattern: ' +
+                    nameValidator.toString());
         return;
     }
 
@@ -448,6 +464,11 @@ Cmd.prototype.executePush = function() {
         return;
     }
 
+    if (privateNameMatcher.test(arg1)) {
+        this.error('You cannot modify internal database named: ' + arg1);
+        return;
+    }
+
     if (CLI.notEmpty(arg1)) {
         fullpath = CLI.expandPath(arg1);
 
@@ -503,6 +524,13 @@ Cmd.prototype.executePushapp = function() {
     arg1 = this.getArgument(1);
     if (!arg1) {
         this.usage('tibet couch pushapp [<[dbname.]appname>]');
+        return;
+    }
+
+    if (!nameValidator.test(arg1)) {
+        this.error('Invalid app/database name: ' + arg1 +
+                    '\nName must match the following pattern: ' +
+                    nameValidator.toString());
         return;
     }
 
@@ -1101,6 +1129,11 @@ Cmd.prototype.executeRemovedb = function() {
     arg1 = this.getArgument(1);
     if (!arg1) {
         this.usage('tibet couch removedb <dbname>');
+        return;
+    }
+
+    if (privateNameMatcher.test(arg1)) {
+        this.error('You cannot remove internal database named: ' + arg1);
         return;
     }
 
