@@ -24,7 +24,7 @@
             TDS,
             logger,
             meta,
-            safeEval,
+            VM,
             TWS,
             Job,
             Evaluator;
@@ -39,7 +39,7 @@
         };
         logger = options.logger.getContextualLogger(meta);
 
-        safeEval = require('safe-eval');
+        VM = require('vm2').VM;
 
         TWS = {};
 
@@ -293,9 +293,10 @@
          *
          */
         Evaluator.evaluate = function(expression, params) {
-            var template,
-                data,
+            var data,
+                template,
                 expr,
+                vm,
                 result;
 
             data = params || {};
@@ -316,7 +317,8 @@
                 logger.trace('w/params:\n' + TDS.beautify(data), meta);
 
                 try {
-                    result = safeEval(expr);
+                    vm = new VM({timeout: 1000, sandbox: {}});
+                    result = vm.run(expr);
                     result = Boolean(result);  //  always convert to a boolean
                 } catch (e2) {
                     logger.error(e2);
