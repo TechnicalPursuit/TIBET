@@ -1,4 +1,4 @@
-/* Sinon.JS 9.2.0, 2020-10-06, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/* Sinon.JS 9.2.1, 2020-10-28, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
 var behavior = require("./sinon/behavior");
@@ -63,206 +63,213 @@ var forEach = arrayProto.forEach;
 var join = arrayProto.join;
 var splice = arrayProto.splice;
 
-var assert;
+function createAssertObject() {
+    var assert;
 
-function verifyIsStub() {
-    var args = arraySlice(arguments);
+    function verifyIsStub() {
+        var args = arraySlice(arguments);
 
-    forEach(args, function(method) {
-        if (!method) {
-            assert.fail("fake is not a spy");
-        }
-
-        if (method.proxy && method.proxy.isSinonProxy) {
-            verifyIsStub(method.proxy);
-        } else {
-            if (typeof method !== "function") {
-                assert.fail(method + " is not a function");
+        forEach(args, function(method) {
+            if (!method) {
+                assert.fail("fake is not a spy");
             }
 
-            if (typeof method.getCall !== "function") {
-                assert.fail(method + " is not stubbed");
-            }
-        }
-    });
-}
-
-function verifyIsValidAssertion(assertionMethod, assertionArgs) {
-    switch (assertionMethod) {
-        case "notCalled":
-        case "called":
-        case "calledOnce":
-        case "calledTwice":
-        case "calledThrice":
-            if (assertionArgs.length !== 0) {
-                assert.fail(
-                    assertionMethod +
-                        " takes 1 argument but was called with " +
-                        (assertionArgs.length + 1) +
-                        " arguments"
-                );
-            }
-            break;
-        default:
-            break;
-    }
-}
-
-function failAssertion(object, msg) {
-    var obj = object || globalObject;
-    var failMethod = obj.fail || assert.fail;
-    failMethod.call(obj, msg);
-}
-
-function mirrorPropAsAssertion(name, method, message) {
-    var msg = message;
-    var meth = method;
-    if (arguments.length === 2) {
-        msg = method;
-        meth = name;
-    }
-
-    assert[name] = function(fake) {
-        verifyIsStub(fake);
-
-        var args = arraySlice(arguments, 1);
-        var failed = false;
-
-        verifyIsValidAssertion(name, args);
-
-        if (typeof meth === "function") {
-            failed = !meth(fake);
-        } else {
-            failed = typeof fake[meth] === "function" ? !fake[meth].apply(fake, args) : !fake[meth];
-        }
-
-        if (failed) {
-            failAssertion(this, (fake.printf || fake.proxy.printf).apply(fake, concat([msg], args)));
-        } else {
-            assert.pass(name);
-        }
-    };
-}
-
-function exposedName(prefix, prop) {
-    return !prefix || /^fail/.test(prop) ? prop : prefix + stringSlice(prop, 0, 1).toUpperCase() + stringSlice(prop, 1);
-}
-
-assert = {
-    failException: "AssertError",
-
-    fail: function fail(message) {
-        var error = new Error(message);
-        error.name = this.failException || assert.failException;
-
-        throw error;
-    },
-
-    pass: function pass() {
-        return;
-    },
-
-    callOrder: function assertCallOrder() {
-        verifyIsStub.apply(null, arguments);
-        var expected = "";
-        var actual = "";
-
-        if (!calledInOrder(arguments)) {
-            try {
-                expected = join(arguments, ", ");
-                var calls = arraySlice(arguments);
-                var i = calls.length;
-                while (i) {
-                    if (!calls[--i].called) {
-                        splice(calls, i, 1);
-                    }
+            if (method.proxy && method.proxy.isSinonProxy) {
+                verifyIsStub(method.proxy);
+            } else {
+                if (typeof method !== "function") {
+                    assert.fail(method + " is not a function");
                 }
-                actual = join(orderByFirstCall(calls), ", ");
-            } catch (e) {
-                // If this fails, we'll just fall back to the blank string
-            }
 
-            failAssertion(this, "expected " + expected + " to be called in order but were called as " + actual);
-        } else {
-            assert.pass("callOrder");
-        }
-    },
-
-    callCount: function assertCallCount(method, count) {
-        verifyIsStub(method);
-
-        if (method.callCount !== count) {
-            var msg = "expected %n to be called " + timesInWords(count) + " but was called %c%C";
-            failAssertion(this, method.printf(msg));
-        } else {
-            assert.pass("callCount");
-        }
-    },
-
-    expose: function expose(target, options) {
-        if (!target) {
-            throw new TypeError("target is null or undefined");
-        }
-
-        var o = options || {};
-        var prefix = (typeof o.prefix === "undefined" && "assert") || o.prefix;
-        var includeFail = typeof o.includeFail === "undefined" || Boolean(o.includeFail);
-        var instance = this;
-
-        forEach(Object.keys(instance), function(method) {
-            if (method !== "expose" && (includeFail || !/^(fail)/.test(method))) {
-                target[exposedName(prefix, method)] = instance[method];
+                if (typeof method.getCall !== "function") {
+                    assert.fail(method + " is not stubbed");
+                }
             }
         });
+    }
 
-        return target;
-    },
-
-    match: function match(actual, expectation) {
-        var matcher = createMatcher(expectation);
-        if (matcher.test(actual)) {
-            assert.pass("match");
-        } else {
-            var formatted = [
-                "expected value to match",
-                "    expected = " + format(expectation),
-                "    actual = " + format(actual)
-            ];
-
-            failAssertion(this, join(formatted, "\n"));
+    function verifyIsValidAssertion(assertionMethod, assertionArgs) {
+        switch (assertionMethod) {
+            case "notCalled":
+            case "called":
+            case "calledOnce":
+            case "calledTwice":
+            case "calledThrice":
+                if (assertionArgs.length !== 0) {
+                    assert.fail(
+                        assertionMethod +
+                            " takes 1 argument but was called with " +
+                            (assertionArgs.length + 1) +
+                            " arguments"
+                    );
+                }
+                break;
+            default:
+                break;
         }
     }
-};
 
-mirrorPropAsAssertion("called", "expected %n to have been called at least once but was never called");
-mirrorPropAsAssertion(
-    "notCalled",
-    function(spy) {
-        return !spy.called;
-    },
-    "expected %n to not have been called but was called %c%C"
-);
-mirrorPropAsAssertion("calledOnce", "expected %n to be called once but was called %c%C");
-mirrorPropAsAssertion("calledTwice", "expected %n to be called twice but was called %c%C");
-mirrorPropAsAssertion("calledThrice", "expected %n to be called thrice but was called %c%C");
-mirrorPropAsAssertion("calledOn", "expected %n to be called with %1 as this but was called with %t");
-mirrorPropAsAssertion("alwaysCalledOn", "expected %n to always be called with %1 as this but was called with %t");
-mirrorPropAsAssertion("calledWithNew", "expected %n to be called with new");
-mirrorPropAsAssertion("alwaysCalledWithNew", "expected %n to always be called with new");
-mirrorPropAsAssertion("calledWith", "expected %n to be called with arguments %D");
-mirrorPropAsAssertion("calledWithMatch", "expected %n to be called with match %D");
-mirrorPropAsAssertion("alwaysCalledWith", "expected %n to always be called with arguments %D");
-mirrorPropAsAssertion("alwaysCalledWithMatch", "expected %n to always be called with match %D");
-mirrorPropAsAssertion("calledWithExactly", "expected %n to be called with exact arguments %D");
-mirrorPropAsAssertion("calledOnceWithExactly", "expected %n to be called once and with exact arguments %D");
-mirrorPropAsAssertion("calledOnceWithMatch", "expected %n to be called once and with match %D");
-mirrorPropAsAssertion("alwaysCalledWithExactly", "expected %n to always be called with exact arguments %D");
-mirrorPropAsAssertion("neverCalledWith", "expected %n to never be called with arguments %*%C");
-mirrorPropAsAssertion("neverCalledWithMatch", "expected %n to never be called with match %*%C");
-mirrorPropAsAssertion("threw", "%n did not throw exception%C");
-mirrorPropAsAssertion("alwaysThrew", "%n did not always throw exception%C");
+    function failAssertion(object, msg) {
+        var obj = object || globalObject;
+        var failMethod = obj.fail || assert.fail;
+        failMethod.call(obj, msg);
+    }
 
-module.exports = assert;
+    function mirrorPropAsAssertion(name, method, message) {
+        var msg = message;
+        var meth = method;
+        if (arguments.length === 2) {
+            msg = method;
+            meth = name;
+        }
+
+        assert[name] = function(fake) {
+            verifyIsStub(fake);
+
+            var args = arraySlice(arguments, 1);
+            var failed = false;
+
+            verifyIsValidAssertion(name, args);
+
+            if (typeof meth === "function") {
+                failed = !meth(fake);
+            } else {
+                failed = typeof fake[meth] === "function" ? !fake[meth].apply(fake, args) : !fake[meth];
+            }
+
+            if (failed) {
+                failAssertion(this, (fake.printf || fake.proxy.printf).apply(fake, concat([msg], args)));
+            } else {
+                assert.pass(name);
+            }
+        };
+    }
+
+    function exposedName(prefix, prop) {
+        return !prefix || /^fail/.test(prop)
+            ? prop
+            : prefix + stringSlice(prop, 0, 1).toUpperCase() + stringSlice(prop, 1);
+    }
+
+    assert = {
+        failException: "AssertError",
+
+        fail: function fail(message) {
+            var error = new Error(message);
+            error.name = this.failException || assert.failException;
+
+            throw error;
+        },
+
+        pass: function pass() {
+            return;
+        },
+
+        callOrder: function assertCallOrder() {
+            verifyIsStub.apply(null, arguments);
+            var expected = "";
+            var actual = "";
+
+            if (!calledInOrder(arguments)) {
+                try {
+                    expected = join(arguments, ", ");
+                    var calls = arraySlice(arguments);
+                    var i = calls.length;
+                    while (i) {
+                        if (!calls[--i].called) {
+                            splice(calls, i, 1);
+                        }
+                    }
+                    actual = join(orderByFirstCall(calls), ", ");
+                } catch (e) {
+                    // If this fails, we'll just fall back to the blank string
+                }
+
+                failAssertion(this, "expected " + expected + " to be called in order but were called as " + actual);
+            } else {
+                assert.pass("callOrder");
+            }
+        },
+
+        callCount: function assertCallCount(method, count) {
+            verifyIsStub(method);
+
+            if (method.callCount !== count) {
+                var msg = "expected %n to be called " + timesInWords(count) + " but was called %c%C";
+                failAssertion(this, method.printf(msg));
+            } else {
+                assert.pass("callCount");
+            }
+        },
+
+        expose: function expose(target, options) {
+            if (!target) {
+                throw new TypeError("target is null or undefined");
+            }
+
+            var o = options || {};
+            var prefix = (typeof o.prefix === "undefined" && "assert") || o.prefix;
+            var includeFail = typeof o.includeFail === "undefined" || Boolean(o.includeFail);
+            var instance = this;
+
+            forEach(Object.keys(instance), function(method) {
+                if (method !== "expose" && (includeFail || !/^(fail)/.test(method))) {
+                    target[exposedName(prefix, method)] = instance[method];
+                }
+            });
+
+            return target;
+        },
+
+        match: function match(actual, expectation) {
+            var matcher = createMatcher(expectation);
+            if (matcher.test(actual)) {
+                assert.pass("match");
+            } else {
+                var formatted = [
+                    "expected value to match",
+                    "    expected = " + format(expectation),
+                    "    actual = " + format(actual)
+                ];
+
+                failAssertion(this, join(formatted, "\n"));
+            }
+        }
+    };
+
+    mirrorPropAsAssertion("called", "expected %n to have been called at least once but was never called");
+    mirrorPropAsAssertion(
+        "notCalled",
+        function(spy) {
+            return !spy.called;
+        },
+        "expected %n to not have been called but was called %c%C"
+    );
+    mirrorPropAsAssertion("calledOnce", "expected %n to be called once but was called %c%C");
+    mirrorPropAsAssertion("calledTwice", "expected %n to be called twice but was called %c%C");
+    mirrorPropAsAssertion("calledThrice", "expected %n to be called thrice but was called %c%C");
+    mirrorPropAsAssertion("calledOn", "expected %n to be called with %1 as this but was called with %t");
+    mirrorPropAsAssertion("alwaysCalledOn", "expected %n to always be called with %1 as this but was called with %t");
+    mirrorPropAsAssertion("calledWithNew", "expected %n to be called with new");
+    mirrorPropAsAssertion("alwaysCalledWithNew", "expected %n to always be called with new");
+    mirrorPropAsAssertion("calledWith", "expected %n to be called with arguments %D");
+    mirrorPropAsAssertion("calledWithMatch", "expected %n to be called with match %D");
+    mirrorPropAsAssertion("alwaysCalledWith", "expected %n to always be called with arguments %D");
+    mirrorPropAsAssertion("alwaysCalledWithMatch", "expected %n to always be called with match %D");
+    mirrorPropAsAssertion("calledWithExactly", "expected %n to be called with exact arguments %D");
+    mirrorPropAsAssertion("calledOnceWithExactly", "expected %n to be called once and with exact arguments %D");
+    mirrorPropAsAssertion("calledOnceWithMatch", "expected %n to be called once and with match %D");
+    mirrorPropAsAssertion("alwaysCalledWithExactly", "expected %n to always be called with exact arguments %D");
+    mirrorPropAsAssertion("neverCalledWith", "expected %n to never be called with arguments %*%C");
+    mirrorPropAsAssertion("neverCalledWithMatch", "expected %n to never be called with match %*%C");
+    mirrorPropAsAssertion("threw", "%n did not throw exception%C");
+    mirrorPropAsAssertion("alwaysThrew", "%n did not always throw exception%C");
+
+    return assert;
+}
+
+module.exports = createAssertObject();
+module.exports.createAssertObject = createAssertObject;
 
 },{"./util/core/format":24,"./util/core/times-in-words":32,"@sinonjs/commons":44,"@sinonjs/samsam":83}],3:[function(require,module,exports){
 "use strict";
@@ -955,73 +962,84 @@ function wrapFunc(f) {
     return proxy;
 }
 
-function fake(f) {
-    if (arguments.length > 0 && typeof f !== "function") {
-        throw new TypeError("Expected f argument to be a Function");
-    }
+function fakeClass() {
+    var promiseLib = Promise;
 
-    return wrapFunc(f);
-}
-
-fake.returns = function returns(value) {
-    function f() {
-        return value;
-    }
-
-    return wrapFunc(f);
-};
-
-fake.throws = function throws(value) {
-    function f() {
-        throw getError(value);
-    }
-
-    return wrapFunc(f);
-};
-
-fake.resolves = function resolves(value) {
-    function f() {
-        return Promise.resolve(value);
-    }
-
-    return wrapFunc(f);
-};
-
-fake.rejects = function rejects(value) {
-    function f() {
-        return Promise.reject(getError(value));
-    }
-
-    return wrapFunc(f);
-};
-
-function yieldInternal(async, values) {
-    function f() {
-        var callback = arguments[arguments.length - 1];
-        if (typeof callback !== "function") {
-            throw new TypeError("Expected last argument to be a function");
+    function fake(f) {
+        if (arguments.length > 0 && typeof f !== "function") {
+            throw new TypeError("Expected f argument to be a Function");
         }
-        if (async) {
-            nextTick(function() {
+
+        return wrapFunc(f);
+    }
+
+    fake.returns = function returns(value) {
+        function f() {
+            return value;
+        }
+
+        return wrapFunc(f);
+    };
+
+    fake.throws = function throws(value) {
+        function f() {
+            throw getError(value);
+        }
+
+        return wrapFunc(f);
+    };
+
+    fake.resolves = function resolves(value) {
+        function f() {
+            return promiseLib.resolve(value);
+        }
+
+        return wrapFunc(f);
+    };
+
+    fake.rejects = function rejects(value) {
+        function f() {
+            return promiseLib.reject(getError(value));
+        }
+
+        return wrapFunc(f);
+    };
+
+    fake.usingPromise = function usingPromise(promiseLibrary) {
+        promiseLib = promiseLibrary;
+        return fake;
+    };
+
+    function yieldInternal(async, values) {
+        function f() {
+            var callback = arguments[arguments.length - 1];
+            if (typeof callback !== "function") {
+                throw new TypeError("Expected last argument to be a function");
+            }
+            if (async) {
+                nextTick(function() {
+                    callback.apply(null, values);
+                });
+            } else {
                 callback.apply(null, values);
-            });
-        } else {
-            callback.apply(null, values);
+            }
         }
+
+        return wrapFunc(f);
     }
 
-    return wrapFunc(f);
+    fake.yields = function yields() {
+        return yieldInternal(false, slice(arguments));
+    };
+
+    fake.yieldsAsync = function yieldsAsync() {
+        return yieldInternal(true, slice(arguments));
+    };
+
+    return fake;
 }
 
-fake.yields = function yields() {
-    return yieldInternal(false, slice(arguments));
-};
-
-fake.yieldsAsync = function yieldsAsync() {
-    return yieldInternal(true, slice(arguments));
-};
-
-module.exports = fake;
+module.exports = fakeClass();
 
 },{"./proxy":14,"./util/core/next-tick":31,"@sinonjs/commons":44}],9:[function(require,module,exports){
 "use strict";
@@ -2317,7 +2335,7 @@ var fakeXhr = require("nise").fakeXhr;
 var usePromiseLibrary = require("./util/core/use-promise-library");
 
 var filter = arrayProto.filter;
-var forEach = arrayProto.filter;
+var forEach = arrayProto.forEach;
 var push = arrayProto.push;
 var reverse = arrayProto.reverse;
 
@@ -2336,6 +2354,8 @@ function Sandbox() {
     var collection = [];
     var fakeRestorers = [];
     var promiseLib;
+
+    sandbox.assert = sinonAssert.createAssertObject();
 
     sandbox.serverPrototype = fakeServer;
 
@@ -2710,7 +2730,6 @@ function Sandbox() {
     };
 }
 
-Sandbox.prototype.assert = sinonAssert;
 Sandbox.prototype.match = match;
 
 module.exports = Sandbox;
@@ -2728,6 +2747,7 @@ var jsDiff = require("diff");
 var join = arrayProto.join;
 var map = arrayProto.map;
 var push = arrayProto.push;
+var slice = arrayProto.slice;
 
 function colorSinonMatchText(matcher, calledArg, calledArgMessage) {
     var calledArgumentMessage = calledArgMessage;
@@ -2756,13 +2776,20 @@ function colorDiffText(diff) {
     return join(objects, "");
 }
 
+function quoteStringValue(value) {
+    if (typeof value === "string") {
+        return JSON.stringify(value);
+    }
+    return value;
+}
+
 module.exports = {
     c: function(spyInstance) {
         return timesInWords(spyInstance.callCount);
     },
 
     n: function(spyInstance) {
-        // eslint-disable-next-line local-rules/no-prototype-methods
+        // eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods
         return spyInstance.toString();
     },
 
@@ -2775,13 +2802,24 @@ module.exports = {
                 message += "\nCall " + (i + 1) + ":";
             }
             var calledArgs = spyInstance.getCall(i).args;
-            for (var j = 0; j < calledArgs.length || j < args.length; ++j) {
+            var expectedArgs = slice(args);
+
+            for (var j = 0; j < calledArgs.length || j < expectedArgs.length; ++j) {
+                if (calledArgs[j]) {
+                    calledArgs[j] = quoteStringValue(calledArgs[j]);
+                }
+
+                if (expectedArgs[j]) {
+                    expectedArgs[j] = quoteStringValue(expectedArgs[j]);
+                }
+
                 message += "\n";
+
                 var calledArgMessage = j < calledArgs.length ? sinonFormat(calledArgs[j]) : "";
-                if (match.isMatcher(args[j])) {
-                    message += colorSinonMatchText(args[j], calledArgs[j], calledArgMessage);
+                if (match.isMatcher(expectedArgs[j])) {
+                    message += colorSinonMatchText(expectedArgs[j], calledArgs[j], calledArgMessage);
                 } else {
-                    var expectedArgMessage = j < args.length ? sinonFormat(args[j]) : "";
+                    var expectedArgMessage = j < expectedArgs.length ? sinonFormat(expectedArgs[j]) : "";
                     var diff = jsDiff.diffJson(calledArgMessage, expectedArgMessage);
                     message += colorDiffText(diff);
                 }
@@ -2795,7 +2833,7 @@ module.exports = {
         var calls = [];
 
         for (var i = 0, l = spyInstance.callCount; i < l; ++i) {
-            // eslint-disable-next-line local-rules/no-prototype-methods
+            // eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods
             var stringifiedCall = "    " + spyInstance.getCall(i).toString();
             if (/\n/.test(calls[i - 1])) {
                 stringifiedCall = "\n" + stringifiedCall;
@@ -2903,7 +2941,7 @@ var spyApi = {
     }
 };
 
-/* eslint-disable local-rules/no-prototype-methods */
+/* eslint-disable @sinonjs/no-prototype-methods/no-prototype-methods */
 var delegateToCalls = proxyCallUtil.delegateToCalls;
 delegateToCalls(spyApi, "callArg", false, "callArgWith", true, function() {
     throw new Error(this.toString() + " cannot call arg since it was not yet invoked.");
@@ -2934,7 +2972,6 @@ delegateToCalls(spyApi, "yieldToOn", false, "yieldToOn", true, function(property
         this.toString() + " cannot yield to '" + valueToString(property) + "' since it was not yet invoked."
     );
 });
-/* eslint-enable local-rules/no-prototype-methods */
 
 function createSpy(func) {
     var name;
@@ -3357,8 +3394,8 @@ function extendCommon(target, sources, doCopy) {
     return target;
 }
 
-/** Public: Extend target in place with all (own) properties from sources in-order. Thus, last source will
- *         override properties in previous sources.
+/** Public: Extend target in place with all (own) properties, except 'name' when [[writable]] is false,
+ *         from sources in-order. Thus, last source will override properties in previous sources.
  *
  * @arg {Object} target - The Object to extend
  * @arg {Object[]} sources - Objects to copy properties from.
@@ -3369,7 +3406,19 @@ module.exports = function extend(target /*, sources */) {
     var sources = slice(arguments, 1);
 
     return extendCommon(target, sources, function copyValue(dest, source, prop) {
-        dest[prop] = source[prop];
+        var destOwnPropertyDescriptor = Object.getOwnPropertyDescriptor(dest, prop);
+        var sourceOwnPropertyDescriptor = Object.getOwnPropertyDescriptor(source, prop);
+
+        if (prop === "name" && !destOwnPropertyDescriptor.writable) {
+            return;
+        }
+
+        Object.defineProperty(dest, prop, {
+            configurable: sourceOwnPropertyDescriptor.configurable,
+            enumerable: sourceOwnPropertyDescriptor.enumerable,
+            writable: sourceOwnPropertyDescriptor.writable,
+            value: sourceOwnPropertyDescriptor.value
+        });
     });
 };
 
@@ -3733,7 +3782,7 @@ module.exports = function wrapMethod(object, property, method) {
     }
 
     // Firefox has a problem when using hasOwn.call on objects from other frames.
-    /* eslint-disable-next-line local-rules/no-prototype-methods */
+    /* eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods */
     var owned = object.hasOwnProperty ? object.hasOwnProperty(property) : hasOwnProperty(object, property);
 
     if (hasES5Support) {

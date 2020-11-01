@@ -88,7 +88,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 18);
+/******/ 	return __webpack_require__(__webpack_require__.s = 19);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -2651,7 +2651,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
 /* 2 */
@@ -2663,13 +2663,14 @@ function isnan (val) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__BigInteger__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_WordArray__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__BigInteger__ = __webpack_require__(7);
 /*!
  * Copyright 2016 Amazon.com,
  * Inc. or its affiliates. All Rights Reserved.
@@ -2693,8 +2694,9 @@ function isnan (val) {
 
 
 
+
 var randomBytes = function randomBytes(nBytes) {
-  return __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default.a.lib.WordArray.random(nBytes).toString(), 'hex');
+  return __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(new __WEBPACK_IMPORTED_MODULE_5__utils_WordArray__["a" /* default */]().random(nBytes).toString(), 'hex');
 };
 
 
@@ -2708,9 +2710,9 @@ var AuthenticationHelper = /*#__PURE__*/function () {
    * @param {string} PoolName Cognito user pool name.
    */
   function AuthenticationHelper(PoolName) {
-    this.N = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](initN, 16);
-    this.g = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */]('2', 16);
-    this.k = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash("00" + this.N.toString(16) + "0" + this.g.toString(16)), 16);
+    this.N = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](initN, 16);
+    this.g = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */]('2', 16);
+    this.k = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](this.hexHash("00" + this.N.toString(16) + "0" + this.g.toString(16)), 16);
     this.smallAValue = this.generateRandomSmallA();
     this.getLargeAValue(function () {});
     this.infoBits = __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from('Caldera Derived Key', 'utf8');
@@ -2757,7 +2759,7 @@ var AuthenticationHelper = /*#__PURE__*/function () {
 
   _proto.generateRandomSmallA = function generateRandomSmallA() {
     var hexRandom = randomBytes(128).toString('hex');
-    var randomBigInt = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](hexRandom, 16);
+    var randomBigInt = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](hexRandom, 16);
     var smallABigInt = randomBigInt.mod(this.N);
     return smallABigInt;
   }
@@ -2811,8 +2813,8 @@ var AuthenticationHelper = /*#__PURE__*/function () {
     var combinedString = "" + deviceGroupKey + username + ":" + this.randomPassword;
     var hashedString = this.hash(combinedString);
     var hexRandom = randomBytes(16).toString('hex');
-    this.SaltToHashDevices = this.padHex(new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](hexRandom, 16));
-    this.g.modPow(new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash(this.SaltToHashDevices + hashedString), 16), this.N, function (err, verifierDevicesNotPadded) {
+    this.SaltToHashDevices = this.padHex(new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](hexRandom, 16));
+    this.g.modPow(new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](this.hexHash(this.SaltToHashDevices + hashedString), 16), this.N, function (err, verifierDevicesNotPadded) {
       if (err) {
         callback(err, null);
       }
@@ -2839,7 +2841,7 @@ var AuthenticationHelper = /*#__PURE__*/function () {
         callback(err, null);
       }
 
-      if (A.mod(_this3.N).equals(__WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */].ZERO)) {
+      if (A.mod(_this3.N).equals(__WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */].ZERO)) {
         callback(new Error('Illegal paramater. A mod N cannot be 0.'), null);
       }
 
@@ -2857,7 +2859,7 @@ var AuthenticationHelper = /*#__PURE__*/function () {
 
   _proto.calculateU = function calculateU(A, B) {
     this.UHexHash = this.hexHash(this.padHex(A) + this.padHex(B));
-    var finalU = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.UHexHash, 16);
+    var finalU = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](this.UHexHash, 16);
     return finalU;
   }
   /**
@@ -2915,19 +2917,19 @@ var AuthenticationHelper = /*#__PURE__*/function () {
   _proto.getPasswordAuthenticationKey = function getPasswordAuthenticationKey(username, password, serverBValue, salt, callback) {
     var _this4 = this;
 
-    if (serverBValue.mod(this.N).equals(__WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */].ZERO)) {
+    if (serverBValue.mod(this.N).equals(__WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */].ZERO)) {
       throw new Error('B cannot be zero.');
     }
 
     this.UValue = this.calculateU(this.largeAValue, serverBValue);
 
-    if (this.UValue.equals(__WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */].ZERO)) {
+    if (this.UValue.equals(__WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */].ZERO)) {
       throw new Error('U cannot be zero.');
     }
 
     var usernamePassword = "" + this.poolName + username + ":" + password;
     var usernamePasswordHash = this.hash(usernamePassword);
-    var xValue = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](this.hexHash(this.padHex(salt) + usernamePasswordHash), 16);
+    var xValue = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](this.hexHash(this.padHex(salt) + usernamePasswordHash), 16);
     this.calculateS(xValue, serverBValue, function (err, sValue) {
       if (err) {
         callback(err, null);
@@ -3000,6 +3002,33 @@ var AuthenticationHelper = /*#__PURE__*/function () {
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -3080,7 +3109,7 @@ var AuthenticationHelper = /*#__PURE__*/function () {
 }));
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -3284,13 +3313,13 @@ var AuthenticationHelper = /*#__PURE__*/function () {
 }));
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(0), __webpack_require__(4), __webpack_require__(24));
+		module.exports = exports = factory(__webpack_require__(0), __webpack_require__(5), __webpack_require__(24));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -3307,7 +3336,7 @@ var AuthenticationHelper = /*#__PURE__*/function () {
 }));
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4185,12 +4214,12 @@ BigInteger.ZERO = nbv(0);
 BigInteger.ONE = nbv(1);
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoAccessToken; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(9);
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 /*
@@ -4232,7 +4261,7 @@ var CognitoAccessToken = /*#__PURE__*/function (_CognitoJwtToken) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4315,12 +4344,12 @@ var CognitoJwtToken = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoIdToken; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(9);
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 /*!
@@ -4362,7 +4391,7 @@ var CognitoIdToken = /*#__PURE__*/function (_CognitoJwtToken) {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4414,7 +4443,7 @@ var CognitoRefreshToken = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4423,21 +4452,21 @@ var CognitoRefreshToken = /*#__PURE__*/function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__BigInteger__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__BigInteger__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoAccessToken__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoIdToken__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CognitoRefreshToken__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__CognitoUserSession__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__DateHelper__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__CognitoUserAttribute__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__StorageHelper__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoAccessToken__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoIdToken__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CognitoRefreshToken__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__CognitoUserSession__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__DateHelper__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__CognitoUserAttribute__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__StorageHelper__ = __webpack_require__(16);
 /*!
  * Copyright 2016 Amazon.com,
  * Inc. or its affiliates. All Rights Reserved.
@@ -6426,7 +6455,7 @@ var CognitoUser = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6536,7 +6565,7 @@ var CognitoUserSession = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6604,7 +6633,7 @@ var DateHelper = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6707,7 +6736,7 @@ var CognitoUserAttribute = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6813,17 +6842,17 @@ var StorageHelper = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony default export */ __webpack_exports__["default"] = (function(e,n){return n=n||{},new Promise(function(t,r){var s=new XMLHttpRequest,o=[],u=[],i={},a=function(){return{ok:2==(s.status/100|0),statusText:s.statusText,status:s.status,url:s.responseURL,text:function(){return Promise.resolve(s.responseText)},json:function(){return Promise.resolve(JSON.parse(s.responseText))},blob:function(){return Promise.resolve(new Blob([s.response]))},clone:a,headers:{keys:function(){return o},entries:function(){return u},get:function(e){return i[e.toLowerCase()]},has:function(e){return e.toLowerCase()in i}}}};for(var l in s.open(n.method||"get",e,!0),s.onload=function(){s.getAllResponseHeaders().replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm,function(e,n,t){o.push(n=n.toLowerCase()),u.push([n,t]),i[n]=i[n]?i[n]+","+t:t}),t(a())},s.onerror=r,s.withCredentials="include"==n.credentials,n.headers)s.setRequestHeader(l,n.headers[l]);s.send(n.body||null)})});
-//# sourceMappingURL=unfetch.mjs.map
+/* harmony default export */ __webpack_exports__["default"] = (function(e,n){return n=n||{},new Promise(function(t,r){var s=new XMLHttpRequest,o=[],u=[],i={},a=function(){return{ok:2==(s.status/100|0),statusText:s.statusText,status:s.status,url:s.responseURL,text:function(){return Promise.resolve(s.responseText)},json:function(){return Promise.resolve(s.responseText).then(JSON.parse)},blob:function(){return Promise.resolve(new Blob([s.response]))},clone:a,headers:{keys:function(){return o},entries:function(){return u},get:function(e){return i[e.toLowerCase()]},has:function(e){return e.toLowerCase()in i}}}};for(var l in s.open(n.method||"get",e,!0),s.onload=function(){s.getAllResponseHeaders().replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm,function(e,n,t){o.push(n=n.toLowerCase()),u.push([n,t]),i[n]=i[n]?i[n]+","+t:t}),t(a())},s.onerror=r,s.withCredentials="include"==n.credentials,n.headers)s.setRequestHeader(l,n.headers[l]);s.send(n.body||null)})});
+//# sourceMappingURL=unfetch.module.js.map
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6850,34 +6879,34 @@ var appendToCognitoUserAgent = function appendToCognitoUserAgent(content) {
 /* harmony default export */ __webpack_exports__["b"] = (UserAgent);
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AuthenticationDetails__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AuthenticationDetails__ = __webpack_require__(20);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "AuthenticationDetails", function() { return __WEBPACK_IMPORTED_MODULE_0__AuthenticationDetails__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AuthenticationHelper__ = __webpack_require__(2);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "AuthenticationHelper", function() { return __WEBPACK_IMPORTED_MODULE_1__AuthenticationHelper__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CognitoAccessToken__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CognitoAccessToken__ = __webpack_require__(8);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoAccessToken", function() { return __WEBPACK_IMPORTED_MODULE_2__CognitoAccessToken__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__CognitoIdToken__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__CognitoIdToken__ = __webpack_require__(10);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoIdToken", function() { return __WEBPACK_IMPORTED_MODULE_3__CognitoIdToken__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__CognitoRefreshToken__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__CognitoRefreshToken__ = __webpack_require__(11);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoRefreshToken", function() { return __WEBPACK_IMPORTED_MODULE_4__CognitoRefreshToken__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__CognitoUser__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__CognitoUser__ = __webpack_require__(12);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUser", function() { return __WEBPACK_IMPORTED_MODULE_5__CognitoUser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__ = __webpack_require__(15);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserAttribute", function() { return __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__ = __webpack_require__(28);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserPool", function() { return __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__ = __webpack_require__(13);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserSession", function() { return __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CookieStorage__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CookieStorage__ = __webpack_require__(31);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CookieStorage", function() { return __WEBPACK_IMPORTED_MODULE_9__CookieStorage__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__DateHelper__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__DateHelper__ = __webpack_require__(14);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "DateHelper", function() { return __WEBPACK_IMPORTED_MODULE_10__DateHelper__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__UserAgent__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__UserAgent__ = __webpack_require__(18);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "appendToCognitoUserAgent", function() { return __WEBPACK_IMPORTED_MODULE_11__UserAgent__["a"]; });
 /*!
  * Copyright 2016 Amazon.com,
@@ -6909,7 +6938,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7001,33 +7030,6 @@ var AuthenticationDetails = /*#__PURE__*/function () {
   return AuthenticationDetails;
 }();
 
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
 
 
 /***/ }),
@@ -7193,6 +7195,7 @@ function fromByteArray (uint8) {
 /* 22 */
 /***/ (function(module, exports) {
 
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -7440,6 +7443,108 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 /* 25 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WordArray; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cryptoSecureRandomInt__ = __webpack_require__(26);
+
+/**
+ * Hex encoding strategy.
+ * Converts a word array to a hex string.
+ * @param {WordArray} wordArray The word array.
+ * @return {string} The hex string.
+ * @static
+ */
+
+function hexStringify(wordArray) {
+  // Shortcuts
+  var words = wordArray.words;
+  var sigBytes = wordArray.sigBytes; // Convert
+
+  var hexChars = [];
+
+  for (var i = 0; i < sigBytes; i++) {
+    var bite = words[i >>> 2] >>> 24 - i % 4 * 8 & 0xff;
+    hexChars.push((bite >>> 4).toString(16));
+    hexChars.push((bite & 0x0f).toString(16));
+  }
+
+  return hexChars.join('');
+}
+
+var WordArray = /*#__PURE__*/function () {
+  function WordArray(words, sigBytes) {
+    words = this.words = words || [];
+
+    if (sigBytes != undefined) {
+      this.sigBytes = sigBytes;
+    } else {
+      this.sigBytes = words.length * 4;
+    }
+  }
+
+  var _proto = WordArray.prototype;
+
+  _proto.random = function random(nBytes) {
+    var words = [];
+
+    for (var i = 0; i < nBytes; i += 4) {
+      words.push(Object(__WEBPACK_IMPORTED_MODULE_0__cryptoSecureRandomInt__["a" /* default */])());
+    }
+
+    return new WordArray(words, nBytes);
+  };
+
+  _proto.toString = function toString() {
+    return hexStringify(this);
+  };
+
+  return WordArray;
+}();
+
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/* harmony export (immutable) */ __webpack_exports__["a"] = cryptoSecureRandomInt;
+var crypto; // Native crypto from window (Browser)
+
+if (typeof window !== 'undefined' && window.crypto) {
+  crypto = window.crypto;
+} // Native (experimental IE 11) crypto from window (Browser)
+
+
+if (!crypto && typeof window !== 'undefined' && window.msCrypto) {
+  crypto = window.msCrypto;
+} // Native crypto from global (NodeJS)
+
+
+if (!crypto && typeof global !== 'undefined' && global.crypto) {
+  crypto = global.crypto;
+}
+/*
+ * Cryptographically secure pseudorandom number generator
+ * As Math.random() is cryptographically not safe to use
+ */
+
+
+function cryptoSecureRandomInt() {
+  if (crypto && typeof crypto.getRandomValues === 'function') {
+    try {
+      return crypto.getRandomValues(new Uint32Array(1))[0];
+    } catch (err) {}
+  }
+
+  throw new Error('Native crypto module could not be used to get secure random number.');
+}
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
+
+/***/ }),
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -7579,14 +7684,14 @@ module.exports = Array.isArray || function (arr) {
 }));
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoUserPool; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Client__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CognitoUser__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__StorageHelper__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Client__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CognitoUser__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__StorageHelper__ = __webpack_require__(16);
 /*!
  * Copyright 2016 Amazon.com,
  * Inc. or its affiliates. All Rights Reserved.
@@ -7785,14 +7890,14 @@ var CognitoUserPool = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Client; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserAgent__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserAgent__ = __webpack_require__(18);
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
@@ -7957,19 +8062,19 @@ var Client = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = window.fetch || (window.fetch = __webpack_require__(16).default || __webpack_require__(16));
+module.exports = self.fetch || (self.fetch = __webpack_require__(17).default || __webpack_require__(17));
 
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CookieStorage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_js_cookie__);
 
 /** @class */
@@ -8103,7 +8208,7 @@ var CookieStorage = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!

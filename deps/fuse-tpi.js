@@ -1,5 +1,5 @@
 /**
- * Fuse.js v6.4.1 - Lightweight fuzzy-search (http://fusejs.io)
+ * Fuse.js v6.4.3 - Lightweight fuzzy-search (http://fusejs.io)
  *
  * Copyright (c) 2020 Kiro Risk (http://kiro.me)
  * All Rights Reserved. Apache Software License 2.0
@@ -367,6 +367,10 @@
     var arr = false;
 
     var deepGet = function deepGet(obj, path, index) {
+      if (!isDefined(obj)) {
+        return;
+      }
+
       if (!path[index]) {
         // If there's no path left, we've arrived at the object we care about.
         list.push(obj);
@@ -1427,7 +1431,9 @@
           _ref$minMatchCharLeng = _ref.minMatchCharLength,
           minMatchCharLength = _ref$minMatchCharLeng === void 0 ? Config.minMatchCharLength : _ref$minMatchCharLeng,
           _ref$isCaseSensitive = _ref.isCaseSensitive,
-          isCaseSensitive = _ref$isCaseSensitive === void 0 ? Config.isCaseSensitive : _ref$isCaseSensitive;
+          isCaseSensitive = _ref$isCaseSensitive === void 0 ? Config.isCaseSensitive : _ref$isCaseSensitive,
+          _ref$ignoreLocation = _ref.ignoreLocation,
+          ignoreLocation = _ref$ignoreLocation === void 0 ? Config.ignoreLocation : _ref$ignoreLocation;
 
       _classCallCheck(this, FuzzyMatch);
 
@@ -1439,7 +1445,8 @@
         includeMatches: includeMatches,
         findAllMatches: findAllMatches,
         minMatchCharLength: minMatchCharLength,
-        isCaseSensitive: isCaseSensitive
+        isCaseSensitive: isCaseSensitive,
+        ignoreLocation: ignoreLocation
       });
       return _this;
     }
@@ -1616,6 +1623,8 @@
           includeMatches = _ref$includeMatches === void 0 ? Config.includeMatches : _ref$includeMatches,
           _ref$minMatchCharLeng = _ref.minMatchCharLength,
           minMatchCharLength = _ref$minMatchCharLeng === void 0 ? Config.minMatchCharLength : _ref$minMatchCharLeng,
+          _ref$ignoreLocation = _ref.ignoreLocation,
+          ignoreLocation = _ref$ignoreLocation === void 0 ? Config.ignoreLocation : _ref$ignoreLocation,
           _ref$findAllMatches = _ref.findAllMatches,
           findAllMatches = _ref$findAllMatches === void 0 ? Config.findAllMatches : _ref$findAllMatches,
           _ref$location = _ref.location,
@@ -1633,6 +1642,7 @@
         includeMatches: includeMatches,
         minMatchCharLength: minMatchCharLength,
         findAllMatches: findAllMatches,
+        ignoreLocation: ignoreLocation,
         location: location,
         threshold: threshold,
         distance: distance
@@ -1886,6 +1896,7 @@
           if (predicate(doc, i)) {
             this.removeAt(i);
             i -= 1;
+            len -= 1;
             results.push(doc);
           }
         }
@@ -2223,7 +2234,7 @@
     });
   }
 
-  Fuse.version = '6.4.1';
+  Fuse.version = '6.4.3';
   Fuse.createIndex = createIndex;
   Fuse.parseIndex = parseIndex;
   Fuse.config = Config;
