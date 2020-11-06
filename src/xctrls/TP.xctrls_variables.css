@@ -12,8 +12,11 @@
     --grid-1of2-width: 50%;
     --grid-1of3-width: 33.3333%;
     --grid-1of4-width: 25%;
+}
 
-    /** NON-THEMED WIDGETS **/
+/** NON-THEMED WIDGETS **/
+
+xctrls|curtain {
 
     /* xctrls|curtain variables */
 
