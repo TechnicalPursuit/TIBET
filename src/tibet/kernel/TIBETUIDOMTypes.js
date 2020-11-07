@@ -630,13 +630,14 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('getKeybinding',
-function(keyname) {
+function(keyname, anEvent) {
 
     /**
      * @method getKeybinding
      * @summary Returns a unique binding for a TIBET keyname by seaching the
      *     receiver's type inheritance chain for a matching binding.
      * @param {String} keyname The name of the key such as DOM_Ctrl_Z_Down.
+     * @param {Event} anEvent The native event that was triggered.
      * @returns {String|undefined} A signal name if a matching binding is found.
      */
 
@@ -654,7 +655,7 @@ function(keyname) {
 
     ancestor = this.getSupertype();
     if (TP.canInvoke(ancestor, 'getKeybinding')) {
-        return ancestor.getKeybinding(keyname);
+        return ancestor.getKeybinding(keyname, anEvent);
     }
 
     return;
@@ -1245,7 +1246,7 @@ function(aTargetElem, anEvent) {
 
             //  Query for a signal name via the getKeybinding method. This call
             //  will look up through the supertype chain for the first match.
-            sigName = bindingsType.getKeybinding(keyname);
+            sigName = bindingsType.getKeybinding(keyname, anEvent);
             if (TP.isEmpty(sigName)) {
                 return this;
             }
@@ -1369,7 +1370,7 @@ function(aTargetElem, anEvent) {
 
             //  Query for a signal name via the getKeybinding method. This call
             //  will look up through the supertype chain for the first match.
-            sigName = bindingsType.getKeybinding(keyname);
+            sigName = bindingsType.getKeybinding(keyname, anEvent);
             if (TP.isEmpty(sigName)) {
                 return this;
             }
@@ -4008,7 +4009,7 @@ function() {
 
         //  Query for a signal name via the getKeybinding method. This call will
         //  look up through the supertype chain for the first match.
-        sigName = this.getType().getKeybinding(keyname);
+        sigName = this.getType().getKeybinding(keyname, evt);
         if (TP.isEmpty(sigName)) {
             return this;
         }
