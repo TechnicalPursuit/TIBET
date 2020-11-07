@@ -532,7 +532,7 @@ function(aDocument) {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('canHandleKey',
-function(aSignal) {
+function(aSignal, anEvent) {
 
     /**
      * @method canHandleKey
@@ -540,6 +540,7 @@ function(aSignal) {
      *     generated the supplied event.
      * @param {aSignal} aSignal A signal containing key information or an actual
      *     key name.
+     * @param {Event} anEvent The native event that was triggered.
      * @returns {Boolean} Whether or not the receiver can handle the key.
      */
 
@@ -571,7 +572,7 @@ function(aSignal) {
             default:
                 //  Look in the keybindings map. If there's an entry there,
                 //  then we handle the key.
-                if (TP.notEmpty(this.getKeybinding(keyname))) {
+                if (TP.notEmpty(this.getKeybinding(keyname, anEvent))) {
                     return true;
                 }
         }
@@ -711,7 +712,7 @@ function(anElement, aSignal, signalNames) {
     //  so, then this type can be considered an 'opaque capturer' for the
     //  supplied key signal.
     if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
-        if (this.canHandleKey(aSignal)) {
+        if (this.canHandleKey(aSignal, aSignal.getPayload())) {
             return true;
         }
     }
@@ -1199,7 +1200,7 @@ function(aTargetElem, anEvent) {
     signal = TP.wrap(anEvent);
 
     //  If the event target element can handle the key indicated by the signal
-    if (evtTargetTPElem.getType().canHandleKey(signal)) {
+    if (evtTargetTPElem.getType().canHandleKey(signal, anEvent)) {
         //  Grab the TIBET 'key name' from the event.
         keyname = TP.eventGetDOMSignalName(anEvent);
 
@@ -1342,7 +1343,7 @@ function(aTargetElem, anEvent) {
     signal = TP.wrap(anEvent);
 
     //  If the event target element can handle the key indicated by the signal
-    if (evtTargetTPElem.getType().canHandleKey(signal)) {
+    if (evtTargetTPElem.getType().canHandleKey(signal, anEvent)) {
         //  Grab the TIBET 'key name' from the event.
         keyname = TP.eventGetDOMSignalName(anEvent);
 
