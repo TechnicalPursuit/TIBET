@@ -95,6 +95,9 @@ function(aRequest) {
     type = TP.elementGetAttribute(elem, 'type', true);
     if (type === TP.ietf.mime.TIBET_CSS) {
         elem = TP.elementBecome(elem, 'tibet:style', TP.hc('tibet:tag', null));
+    } else {
+        elem = TP.nodeCloneNode(elem);
+        TP.elementSetGenerator(elem);
     }
 
     return elem;

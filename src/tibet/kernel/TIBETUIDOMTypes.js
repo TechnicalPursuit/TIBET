@@ -1729,6 +1729,8 @@ function(aRequest) {
     if (TP.notEmpty(ns = elem.namespaceURI) &&
         TP.w3.Xmlns.isNativeNS(ns) &&
         !TP.elementHasAttribute(elem, 'tibet:tag', true)) {
+        elem = TP.nodeCloneNode(elem);
+        TP.elementSetGenerator(elem);
         return elem;
     }
 
@@ -1738,6 +1740,8 @@ function(aRequest) {
     //  alone.
     if (TP.isValid(targetDoc = aRequest.at('doc'))) {
         if (!TP.isHTMLDocument(targetDoc)) {
+            elem = TP.nodeCloneNode(elem);
+            TP.elementSetGenerator(elem);
             return elem;
         }
     }

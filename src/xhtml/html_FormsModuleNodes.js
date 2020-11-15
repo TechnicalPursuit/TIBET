@@ -3820,12 +3820,16 @@ function(aRequest) {
                     'Replacing \'type\' attribute value with \'button\'.')) : 0;
     }
 
+    elem = TP.nodeCloneNode(elem);
+
     //  HTML5 changed the nature of a button - now, if a button is embedded
     //  within a form element, it will act to submit the form unless we set the
     //  new (for HTML5) 'type' attribute to 'button'. In TIBET, since we never
     //  do 'form submits' as a way to communicate with the server, we force
     //  'type' to be 'button'.
     TP.elementSetAttribute(elem, 'type', 'button', true);
+
+    TP.elementSetGenerator(elem);
 
     return elem;
 });

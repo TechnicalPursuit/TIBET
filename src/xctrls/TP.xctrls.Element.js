@@ -128,6 +128,10 @@ function(aRequest) {
     //  that we're producing (since we don't call up to our supertype here).
     this.populateCompilationAttrs(aRequest);
 
+    elem = TP.nodeCloneNode(elem);
+
+    TP.elementSetGenerator(elem);
+
     return elem;
 });
 
@@ -242,6 +246,7 @@ TP.xctrls.ComputedTag.Type.resolveTrait(
 //  ------------------------------------------------------------------------
 
 TP.tag.TemplatedTag.defineSubtype('xctrls.TemplatedTag');
+
 TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
 
 //  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead

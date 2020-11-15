@@ -1321,6 +1321,8 @@ function(aRequest) {
 
     TP.elementSetContent(elem, newFrag, null, false);
 
+    TP.elementSetGenerator(elem);
+
     return elem;
 });
 
@@ -1486,6 +1488,8 @@ function(aRequest) {
     newFrag = TP.xhtmlnode(str);
 
     TP.elementSetContent(elem, newFrag, null, false);
+
+    TP.elementSetGenerator(elem);
 
     return elem;
 });
@@ -1811,6 +1815,8 @@ function(aRequest) {
 
     TP.elementSetContent(elem, newFrag, null, false);
 
+    TP.elementSetGenerator(elem);
+
     return elem;
 });
 
@@ -1950,6 +1956,8 @@ function(aRequest) {
     newFrag = TP.xhtmlnode(str);
 
     TP.elementSetContent(elem, newFrag, null, false);
+
+    TP.elementSetGenerator(elem);
 
     return elem;
 });
@@ -2215,6 +2223,8 @@ function(aRequest) {
     newFrag = TP.xhtmlnode(str);
 
     TP.elementSetContent(elem, newFrag, null, false);
+
+    TP.elementSetGenerator(elem);
 
     return elem;
 });
