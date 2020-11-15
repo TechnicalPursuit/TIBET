@@ -11324,6 +11324,24 @@ function(resource, mimeType, setupFunc) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Type.defineMethod('getResourceType',
+function() {
+
+    /**
+     * @method getResourceType
+     * @summary Returns the resource type that will be queried to find resources
+     *     for this type.
+     * @description By default, this method returns the receiver itself.
+     *     Subtypes can override to provide a type that will queried instead for
+     *     this type's resources.
+     * @returns {TP.meta.dom.ElementNode} The resource type for the receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Type.defineMethod('getResourceTypeName',
 function() {
 
@@ -11363,7 +11381,8 @@ function(resource, mimeType, fallback) {
     var loc,
         uri;
 
-    loc = this.computeResourceURI(resource, mimeType, fallback);
+    loc = this.getResourceType().computeResourceURI(
+                                    resource, mimeType, fallback);
 
     if (TP.notEmpty(loc) && loc !== TP.NO_RESULT) {
         uri = TP.uc(loc);
