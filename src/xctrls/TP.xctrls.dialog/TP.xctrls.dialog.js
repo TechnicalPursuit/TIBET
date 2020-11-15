@@ -1164,6 +1164,67 @@ function(aQuestion, choices, aDefaultAnswer, info) {
 });
 
 //  ============================================================================
+//  TP.xctrls.okcanceldialog
+//  ============================================================================
+
+TP.xctrls.dialog.defineSubtype('xctrls:okcanceldialog');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.okcanceldialog.Type.defineMethod('getKeybinding',
+function(keyname, anEvent) {
+
+    /**
+     * @method getKeybinding
+     * @summary Returns a unique binding for a TIBET keyname by seaching the
+     *     receiver's type inheritance chain for a matching binding.
+     * @param {String} keyname The name of the key such as DOM_Ctrl_Z_Down.
+     * @param {Event} anEvent The native event that was triggered.
+     * @returns {String|undefined} A signal name if a matching binding is found.
+     */
+
+    var sigName,
+
+        eventSignal,
+        targetAction;
+
+    sigName = this.callNextMethod();
+    if (TP.notEmpty(sigName) && sigName === 'TP.sig.DialogOk') {
+        eventSignal = TP.wrap(anEvent);
+
+        //  If the signal had a trigger signal with a target and that target had
+        //  an 'action' attribute that was 'cancel', then we don't really want
+        //  to send a 'TP.sig.DialogOk' signal - we want to send a
+        //  'TP.sig.DialogCancel' signal.
+        targetAction = eventSignal.getTarget().getAttribute('action');
+
+        if (targetAction === 'cancel') {
+            return 'TP.sig.DialogCancel';
+        }
+    }
+
+    return sigName;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.okcanceldialog.Type.defineMethod('getResourceType',
+function() {
+
+    /**
+     * @method getResourceType
+     * @summary Returns the resource type that will be queried to find resources
+     *     for this type.
+     * @returns {TP.meta.dom.ElementNode} The resource type for the receiver.
+     */
+
+    //  Our TP.xctrls.dialog type provides our resources.
+    return this.getSupertype();
+});
+
+//  ============================================================================
 //  dialog-specific TP.sig.Signal subtypes
 //  ============================================================================
 
