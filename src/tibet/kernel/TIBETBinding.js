@@ -8035,7 +8035,7 @@ function(aSignal) {
                 //  just keep processing keys or move the editor or dismiss the
                 //  editor.
                 keyName = TP.eventGetDOMSignalName(evt);
-                sigName = editorTargetType.getKeybinding(keyName);
+                sigName = editorTargetType.getKeybinding(keyName, evt);
 
                 //  If we didn't have a mapping signal, and the key name wasn't
                 //  an 'Enter' then we will just keep processing keys

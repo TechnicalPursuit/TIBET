@@ -314,6 +314,9 @@ function(info) {
      *          that method for more information.
      *          {Function} [beforeShow] A function to execute before showing the
      *          dialog.
+     *          {String} [dialogTypeName] A String that should be a typename
+     *          matching a particular subtype of TP.xctrls.dialog that the
+     *          caller wants to use on the created dialog.
      * @returns {Promise} A Promise to be used as necessary. Since this is an
      *     alert(), this Promise's resolver Function will be called with no
      *     return value.
@@ -344,6 +347,9 @@ function(info) {
                 title,
 
                 dialogElem,
+
+                typeName,
+
                 docBody,
 
                 templateData,
@@ -396,6 +402,12 @@ function(info) {
                                 ' curtainID="systemCurtain"/>');
                 if (isModal) {
                     TP.elementSetAttribute(dialogElem, 'modal', 'true', true);
+                }
+
+                typeName = info.at('dialogTypeName');
+                if (TP.notEmpty(typeName)) {
+                    TP.elementSetAttribute(
+                            dialogElem, 'tibet:tag', typeName, true);
                 }
 
                 //  Grab the TP.html.body of the window's document and insert
@@ -525,7 +537,7 @@ function(aMessage, info) {
      *          templateURI:    A URI to use for the dialog template instead of
      *                          the standard template.
      *          dialogID:       The ID to use for the dialog. This defaults to
-     *                          'systemDialog'.
+     *                          'sharedCommonDialog'.
      * @example Notify the user of some event:
      *     <code>
      *          TP.alert('TIBET Rocks!');
@@ -546,10 +558,10 @@ function(aMessage, info) {
         templateURI = info.atIfInvalid(
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_alert.xhtml'));
-        dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+        dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_alert.xhtml');
-        dialogID = 'systemDialog';
+        dialogID = 'sharedCommonDialog';
     }
 
     //  Call the TP.dialog() method with that data and specifying that the panel
@@ -558,6 +570,7 @@ function(aMessage, info) {
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
                             'isModal', true,
+                            'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', aMessage)));
 
     //  After displaying, focus the button and return the chained Promise.
@@ -620,7 +633,7 @@ function(anAction, info) {
      *          templateURI:    A URI to use for the dialog template instead of
      *                          the standard template.
      *          dialogID:       The ID to use for the dialog. This defaults to
-     *                          'systemDialog'.
+     *                          'sharedCommonDialog'.
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.confirm('Perform Action?');
@@ -641,10 +654,10 @@ function(anAction, info) {
         templateURI = info.atIfInvalid(
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_confirm.xhtml'));
-        dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+        dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_confirm.xhtml');
-        dialogID = 'systemDialog';
+        dialogID = 'sharedCommonDialog';
     }
 
     //  Call the TP.dialog() method with that data and specifying that the panel
@@ -653,6 +666,7 @@ function(anAction, info) {
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
                             'isModal', true,
+                            'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', anAction)));
 
     //  After displaying, focus the button and build another promise that will
@@ -717,7 +731,7 @@ function(aQuestion, aDefaultAnswer, info) {
      *          templateURI:    A URI to use for the dialog template instead of
      *                          the standard template.
      *          dialogID:       The ID to use for the dialog. This defaults to
-     *                          'systemDialog'.
+     *                          'sharedCommonDialog'.
      *          secure:         Whether or not the field should be secure (i.e.
      *                          the content should not be visible to the user).
      * @example Obtain an answer from the user:
@@ -742,11 +756,11 @@ function(aQuestion, aDefaultAnswer, info) {
         templateURI = info.atIfInvalid(
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_prompt.xhtml'));
-        dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+        dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
         isSecure = info.atIfInvalid('secure', false);
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_prompt.xhtml');
-        dialogID = 'systemDialog';
+        dialogID = 'sharedCommonDialog';
         isSecure = false;
     }
 
@@ -756,6 +770,7 @@ function(aQuestion, aDefaultAnswer, info) {
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
                             'isModal', true,
+                            'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', aQuestion)));
 
     //  After displaying, if a default answer was provided, set the value of the
@@ -827,7 +842,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
      *          templateURI:        A URI to use for the dialog template instead
      *                              of the standard template.
      *          dialogID:           The ID to use for the dialog. This defaults
-     *                              to 'systemDialog'.
+     *                              to 'sharedCommonDialog'.
      *          multiple:           Whether or not the set of choices should be
      *                              presented such that the user can choose
      *                              multiple values.
@@ -878,7 +893,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
         templateURI = info.atIfInvalid(
                 'templateURI',
                 TP.uc('~TP.xctrls.dialog/system_prompt_with_choices.xhtml'));
-        dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+        dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
 
         isMultiple = info.atIfInvalid('multiple', false);
         isOpen = info.atIfInvalid('open', false);
@@ -896,7 +911,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
     } else {
         templateURI =
             TP.uc('~TP.xctrls.dialog/system_prompt_with_choices.xhtml');
-        dialogID = 'systemDialog';
+        dialogID = 'sharedCommonDialog';
         isMultiple = false;
         isOpen = false;
         selectThreshold = 5;
@@ -978,6 +993,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
                             'isModal', true,
+                            'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', aQuestion)));
 
     //  After displaying, if a default answer was provided, set the value of the
@@ -1145,6 +1161,67 @@ function(aQuestion, choices, aDefaultAnswer, info) {
 
             return answerPromise;
         });
+});
+
+//  ============================================================================
+//  TP.xctrls.okcanceldialog
+//  ============================================================================
+
+TP.xctrls.dialog.defineSubtype('xctrls:okcanceldialog');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.okcanceldialog.Type.defineMethod('getKeybinding',
+function(keyname, anEvent) {
+
+    /**
+     * @method getKeybinding
+     * @summary Returns a unique binding for a TIBET keyname by seaching the
+     *     receiver's type inheritance chain for a matching binding.
+     * @param {String} keyname The name of the key such as DOM_Ctrl_Z_Down.
+     * @param {Event} anEvent The native event that was triggered.
+     * @returns {String|undefined} A signal name if a matching binding is found.
+     */
+
+    var sigName,
+
+        eventSignal,
+        targetAction;
+
+    sigName = this.callNextMethod();
+    if (TP.notEmpty(sigName) && sigName === 'TP.sig.DialogOk') {
+        eventSignal = TP.wrap(anEvent);
+
+        //  If the signal had a trigger signal with a target and that target had
+        //  an 'action' attribute that was 'cancel', then we don't really want
+        //  to send a 'TP.sig.DialogOk' signal - we want to send a
+        //  'TP.sig.DialogCancel' signal.
+        targetAction = eventSignal.getTarget().getAttribute('action');
+
+        if (targetAction === 'cancel') {
+            return 'TP.sig.DialogCancel';
+        }
+    }
+
+    return sigName;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.okcanceldialog.Type.defineMethod('getResourceType',
+function() {
+
+    /**
+     * @method getResourceType
+     * @summary Returns the resource type that will be queried to find resources
+     *     for this type.
+     * @returns {TP.meta.dom.ElementNode} The resource type for the receiver.
+     */
+
+    //  Our TP.xctrls.dialog type provides our resources.
+    return this.getSupertype();
 });
 
 //  ============================================================================

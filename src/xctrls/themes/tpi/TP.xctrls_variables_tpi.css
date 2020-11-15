@@ -13,6 +13,9 @@
     --xctrls-border-color-focus: #aaa;
     --xctrls-border-color-active: #aaa;
     --xctrls-border-color-disabled: #eee;
+}
+
+xctrls|button {
 
     /* xctrls|button variables */
 
@@ -33,6 +36,9 @@
     --xctrls-button-background-color-focus: gold;
     --xctrls-button-background-color-active: gold;
     --xctrls-button-background-color-disabled: #eee;
+}
+
+xctrls|buttonitem {
 
     /* xctrls|buttonitem variables */
 
@@ -55,6 +61,9 @@
     --xctrls-buttonitem-background-color-disabled: #eee;
 
     --xctrls-buttonitem-background-color-selected: gold;
+}
+
+xctrls|checkitem {
 
     /* xctrls|checkitem variables */
 
@@ -82,6 +91,9 @@
     --xctrls-checkitem-check-color-focus: gold;
     --xctrls-checkitem-check-color-active: gold;
     --xctrls-checkitem-check-color-disabled: #eee;
+}
+
+xctrls|radioitem {
 
     /* xctrls|radioitem variables */
 
@@ -103,6 +115,9 @@
     --xctrls-radioitem-check-color-focus: gold;
     --xctrls-radioitem-check-color-active: gold;
     --xctrls-radioitem-check-color-disabled: #eee;
+}
+
+xctrls|textitem {
 
     /* xctrls|textitem variables */
 
@@ -120,6 +135,9 @@
     --xctrls-textitem-background-color-disabled: #eee;
 
     --xctrls-textitem-background-color-selected: gray;
+}
+
+xctrls|combo {
 
     /* xctrls|combo variables */
 
@@ -140,6 +158,9 @@
     --xctrls-combo-background-color-focus: gold;
     --xctrls-combo-background-color-active: gold;
     --xctrls-combo-background-color-disabled: #eee;
+}
+
+xctrls|dialog {
 
     /* xctrls|dialog variables */
 
@@ -168,6 +189,9 @@
     --xctrls-dialog-body-background-color: white;
 
     --xctrls-dialog-footer-background-color: #eee;
+}
+
+xctrls|list {
 
     /* xctrls|list variables */
 
@@ -219,6 +243,9 @@
 
     --xctrls-listitem-grouping-background-color-normal: cornsilk;
     --xctrls-listitem-grouping-background-color-hover: cornsilk;
+}
+
+xctrls|notifier {
 
     /* xctrls|notifier variables */
 
@@ -236,6 +263,9 @@
     --xctrls-notifier-background-color: white;
     --xctrls-notifier-background-color-hover: cornsilk;
     --xctrls-notifier-background-color-active: gold;
+}
+
+xctrls|select {
 
     /* xctrls|select variables */
 
@@ -256,6 +286,9 @@
     --xctrls-select-background-color-focus: gold;
     --xctrls-select-background-color-active: gold;
     --xctrls-select-background-color-disabled: #eee;
+}
+
+xctrls|table {
 
     /* xctrls|table variables */
 
@@ -270,6 +303,9 @@
     --xctrls-table-border-color-focus: initial;
     --xctrls-table-border-color-active: initial;
     --xctrls-table-border-color-disabled: initial;
+}
+
+xctrls|tableitem {
 
     --xctrls-tableitem-font-family: arial, helvetica, clean, sans-serif;
     --xctrls-tableitem-font-color-normal: black;
@@ -306,6 +342,9 @@
 
     --xctrls-tableitem-grouping-background-color-normal: #eee;
     --xctrls-tableitem-grouping-background-color-hover: #eee;
+}
+
+xctrls|tabitem {
 
     /* xctrls|tabitem variables */
 
@@ -330,6 +369,9 @@
 
     --xctrls-tabitem-close_mark-color-normal: black;
     --xctrls-tabitem-close_mark-color-hover: red;
+}
+
+xctrls|tooltip {
 
     /* xctrls|tooltip variables */
 
@@ -344,6 +386,9 @@
     --xctrls-tooltip-background-color: white;
     --xctrls-tooltip-background-color-hover: gold;
     --xctrls-tooltip-background-color-active: cornsilk;
+}
+
+xctrls|propertysheet {
 
     /* xctrls|propertysheet variables */
 
@@ -360,6 +405,9 @@
     --xctrls-propertysheet-border-radius: 2px;
 
     --xctrls-propertysheet-border-color-normal: #666;
+}
+
+xctrls|sticky {
 
     /* xctrls|sticky variables */
 
@@ -372,6 +420,9 @@
 
     --xctrls-sticky-background-color: white;
     --xctrls-sticky-background-color-active: cornsilk;
+}
+
+xctrls|pageritem {
 
     /* xctrls|pageritem variables */
 

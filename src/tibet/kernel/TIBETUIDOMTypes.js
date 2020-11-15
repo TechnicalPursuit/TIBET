@@ -532,7 +532,7 @@ function(aDocument) {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('canHandleKey',
-function(aSignal) {
+function(aSignal, anEvent) {
 
     /**
      * @method canHandleKey
@@ -540,6 +540,7 @@ function(aSignal) {
      *     generated the supplied event.
      * @param {aSignal} aSignal A signal containing key information or an actual
      *     key name.
+     * @param {Event} anEvent The native event that was triggered.
      * @returns {Boolean} Whether or not the receiver can handle the key.
      */
 
@@ -571,7 +572,7 @@ function(aSignal) {
             default:
                 //  Look in the keybindings map. If there's an entry there,
                 //  then we handle the key.
-                if (TP.notEmpty(this.getKeybinding(keyname))) {
+                if (TP.notEmpty(this.getKeybinding(keyname, anEvent))) {
                     return true;
                 }
         }
@@ -630,13 +631,14 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('getKeybinding',
-function(keyname) {
+function(keyname, anEvent) {
 
     /**
      * @method getKeybinding
      * @summary Returns a unique binding for a TIBET keyname by seaching the
      *     receiver's type inheritance chain for a matching binding.
      * @param {String} keyname The name of the key such as DOM_Ctrl_Z_Down.
+     * @param {Event} anEvent The native event that was triggered.
      * @returns {String|undefined} A signal name if a matching binding is found.
      */
 
@@ -654,7 +656,7 @@ function(keyname) {
 
     ancestor = this.getSupertype();
     if (TP.canInvoke(ancestor, 'getKeybinding')) {
-        return ancestor.getKeybinding(keyname);
+        return ancestor.getKeybinding(keyname, anEvent);
     }
 
     return;
@@ -710,7 +712,7 @@ function(anElement, aSignal, signalNames) {
     //  so, then this type can be considered an 'opaque capturer' for the
     //  supplied key signal.
     if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
-        if (this.canHandleKey(aSignal)) {
+        if (this.canHandleKey(aSignal, aSignal.getPayload())) {
             return true;
         }
     }
@@ -1198,7 +1200,7 @@ function(aTargetElem, anEvent) {
     signal = TP.wrap(anEvent);
 
     //  If the event target element can handle the key indicated by the signal
-    if (evtTargetTPElem.getType().canHandleKey(signal)) {
+    if (evtTargetTPElem.getType().canHandleKey(signal, anEvent)) {
         //  Grab the TIBET 'key name' from the event.
         keyname = TP.eventGetDOMSignalName(anEvent);
 
@@ -1245,7 +1247,7 @@ function(aTargetElem, anEvent) {
 
             //  Query for a signal name via the getKeybinding method. This call
             //  will look up through the supertype chain for the first match.
-            sigName = bindingsType.getKeybinding(keyname);
+            sigName = bindingsType.getKeybinding(keyname, anEvent);
             if (TP.isEmpty(sigName)) {
                 return this;
             }
@@ -1341,7 +1343,7 @@ function(aTargetElem, anEvent) {
     signal = TP.wrap(anEvent);
 
     //  If the event target element can handle the key indicated by the signal
-    if (evtTargetTPElem.getType().canHandleKey(signal)) {
+    if (evtTargetTPElem.getType().canHandleKey(signal, anEvent)) {
         //  Grab the TIBET 'key name' from the event.
         keyname = TP.eventGetDOMSignalName(anEvent);
 
@@ -1369,7 +1371,7 @@ function(aTargetElem, anEvent) {
 
             //  Query for a signal name via the getKeybinding method. This call
             //  will look up through the supertype chain for the first match.
-            sigName = bindingsType.getKeybinding(keyname);
+            sigName = bindingsType.getKeybinding(keyname, anEvent);
             if (TP.isEmpty(sigName)) {
                 return this;
             }
@@ -1727,6 +1729,8 @@ function(aRequest) {
     if (TP.notEmpty(ns = elem.namespaceURI) &&
         TP.w3.Xmlns.isNativeNS(ns) &&
         !TP.elementHasAttribute(elem, 'tibet:tag', true)) {
+        elem = TP.nodeCloneNode(elem);
+        TP.elementSetGenerator(elem);
         return elem;
     }
 
@@ -1736,6 +1740,8 @@ function(aRequest) {
     //  alone.
     if (TP.isValid(targetDoc = aRequest.at('doc'))) {
         if (!TP.isHTMLDocument(targetDoc)) {
+            elem = TP.nodeCloneNode(elem);
+            TP.elementSetGenerator(elem);
             return elem;
         }
     }
@@ -4008,7 +4014,7 @@ function() {
 
         //  Query for a signal name via the getKeybinding method. This call will
         //  look up through the supertype chain for the first match.
-        sigName = this.getType().getKeybinding(keyname);
+        sigName = this.getType().getKeybinding(keyname, evt);
         if (TP.isEmpty(sigName)) {
             return this;
         }
@@ -9131,6 +9137,34 @@ function(aRequest) {
     this.addStylesheetTo(doc);
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.NonNativeUIElementNode.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The new element.
+     */
+
+    var elem;
+
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    elem = TP.nodeCloneNode(elem);
+
+    TP.elementSetGenerator(elem);
+
+    return elem;
 });
 
 //  ========================================================================

@@ -28,6 +28,10 @@ TP.xctrls.Element.isAbstract(true);
 
 TP.xctrls.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
+TP.xctrls.Element.Type.resolveTrait(
+        'tagCompile',
+        TP.dom.UIElementNode);
+
 TP.xctrls.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.dom.UIElementNode);
@@ -127,6 +131,10 @@ function(aRequest) {
     //  Populate any 'compilation attributes' from the request onto the element
     //  that we're producing (since we don't call up to our supertype here).
     this.populateCompilationAttrs(aRequest);
+
+    elem = TP.nodeCloneNode(elem);
+
+    TP.elementSetGenerator(elem);
 
     return elem;
 });
@@ -242,6 +250,7 @@ TP.xctrls.ComputedTag.Type.resolveTrait(
 //  ------------------------------------------------------------------------
 
 TP.tag.TemplatedTag.defineSubtype('xctrls.TemplatedTag');
+
 TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
 
 //  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead

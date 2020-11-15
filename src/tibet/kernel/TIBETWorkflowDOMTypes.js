@@ -1698,13 +1698,15 @@ function(aNode, aProcessor, aRequest, allowDetached) {
             continue;
         }
 
-        processingRequest.atPut('node', node);
-
         //  If the considered node is an element, see if there are entries for
         //  it in the tag type hash under its full name. This means this type of
         //  element has already been found once. Otherwise, just go ahead and
         //  query it for it's TIBET wrapper type.
         if (TP.isElement(node)) {
+            if (TP.elementGetLocalName(node) === 'processingroot') {
+                continue;
+            }
+
             if (!TP.isType(type = tagTypeDict.at(
                                     TP.elementComputeTIBETTypeKey(node)))) {
                 type = TP.dom.Node.getConcreteType(node);
@@ -1712,6 +1714,8 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         } else {
             type = TP.dom.Node.getConcreteType(node);
         }
+
+        processingRequest.atPut('node', node);
 
         try {
             //  Do the deed, invoking the target method against the wrapper type
@@ -1744,6 +1748,12 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                     //  first time through.
                     continue;
                 }
+            } else if (TP.isValid(node[TP.GENERATOR]) &&
+                node[TP.GENERATOR] === result[TP.GENERATOR]) {
+                //  Otherwise, if the node had a generator and it *is* the same
+                //  as the one for our result node, we have no more outstanding
+                //  work to do. Continue on to the next node.
+                continue;
             }
 
             producedEntries.push(TP.ac(result, node));

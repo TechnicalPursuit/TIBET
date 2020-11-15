@@ -184,6 +184,8 @@ function(aRequest) {
     //  create the instance.
     TP.elementSetAttribute(newElem, 'tibet:tag', tagName, true);
 
+    TP.elementSetGenerator(newElem);
+
     return newElem;
 });
 

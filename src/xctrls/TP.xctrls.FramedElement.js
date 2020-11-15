@@ -72,7 +72,9 @@ function(aRequest) {
                             ' style="position: relative; border: none;',
                             ' width: 100%; height: 100%"></iframe>'));
 
-    TP.nodeAppendChild(elem, frameElem, false);
+    elem = TP.nodeAppendChild(elem, frameElem, false);
+
+    TP.elementSetGenerator(elem);
 
     return elem;
 });

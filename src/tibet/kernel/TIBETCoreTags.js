@@ -41,6 +41,10 @@ TP.dom.UIElementNode.defineSubtype('TP.tag.CustomTag');
 
 TP.tag.CustomTag.addTraits(TP.dom.NonNativeUIElementNode);
 
+TP.tag.CustomTag.Type.resolveTrait(
+        'tagCompile',
+        TP.dom.UIElementNode);
+
 TP.tag.CustomTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.dom.UIElementNode);
@@ -584,7 +588,11 @@ function(aRequest) {
 
     //  Note here how we return the *result* of this method due to node
     //  importing, etc.
-    return TP.elementReplaceWith(elem, newElem);
+    newElem = TP.elementReplaceWith(elem, newElem);
+
+    TP.elementSetGenerator(newElem);
+
+    return newElem;
 });
 
 //  ========================================================================
@@ -801,7 +809,11 @@ function(aRequest) {
 
     //  Note here how we return the *result* of this method due to node
     //  importing, etc.
-    return TP.elementReplaceWith(elem, newElem);
+    newElem = TP.elementReplaceWith(elem, newElem);
+
+    TP.elementSetGenerator(newElem);
+
+    return newElem;
 });
 
 //  ========================================================================
@@ -990,8 +1002,14 @@ function(aRequest) {
         //  tibet:tag reference.
         TP.elementRemoveAttribute(newElem, 'tibet:tag', true);
 
+        TP.elementSetGenerator(newElem);
+
         return newElem;
     }
+
+    elem = TP.nodeCloneNode(elem);
+
+    TP.elementSetGenerator(elem);
 
     return elem;
 });
@@ -1167,6 +1185,10 @@ function(aRequest) {
 
     elem = aRequest.at('node');
     TP.elementAddClass(elem, 'tibet-info');
+
+    elem = TP.nodeCloneNode(elem);
+
+    TP.elementSetGenerator(elem);
 
     return elem;
 });
@@ -1557,6 +1579,10 @@ function(aRequest) {
 
     elem = aRequest.at('node');
     TP.elementAddClass(elem, 'tibet-action');
+
+    elem = TP.nodeCloneNode(elem);
+
+    TP.elementSetGenerator(elem);
 
     return elem;
 });
