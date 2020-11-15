@@ -6232,11 +6232,11 @@ function(propName, track) {
                         //  Push the 'resolvesToType' source that we already
                         //  found
                         unresolution.push(entry.at('resolvesToType'));
-
-                        //  Remove the 'resolvesToType' key - we no longer can
-                        //  resolve this - we're conflicted.
-                        entry.removeKey('resolvesToType');
                     }
+
+                    //  Remove the 'resolvesToType' key - we no longer can
+                    //  resolve this - we're conflicted.
+                    entry.removeKey('resolvesToType');
 
                     //  Push the new source value
                     unresolution.push(source);
