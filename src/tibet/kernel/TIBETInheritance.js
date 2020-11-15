@@ -5070,19 +5070,6 @@ function(traitType, propName, track) {
             if (checkProp1 === checkProp2) {
                 return this;
             }
-
-            if (checkProp1 && checkProp2) {
-                checkProp1 = checkProp1.$resolutionMethod ?
-                                checkProp1.$resolutionMethod :
-                                checkProp1;
-                checkProp2 = checkProp2.$resolutionMethod ?
-                                checkProp2.$resolutionMethod :
-                                checkProp2;
-
-                if (checkProp1 === checkProp2) {
-                    return this;
-                }
-            }
         }
 
         //  Otherwise, there was an entry for this property, but this trait is
