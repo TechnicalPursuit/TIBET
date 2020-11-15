@@ -314,6 +314,9 @@ function(info) {
      *          that method for more information.
      *          {Function} [beforeShow] A function to execute before showing the
      *          dialog.
+     *          {String} [dialogTypeName] A String that should be a typename
+     *          matching a particular subtype of TP.xctrls.dialog that the
+     *          caller wants to use on the created dialog.
      * @returns {Promise} A Promise to be used as necessary. Since this is an
      *     alert(), this Promise's resolver Function will be called with no
      *     return value.
@@ -344,6 +347,9 @@ function(info) {
                 title,
 
                 dialogElem,
+
+                typeName,
+
                 docBody,
 
                 templateData,
@@ -396,6 +402,12 @@ function(info) {
                                 ' curtainID="systemCurtain"/>');
                 if (isModal) {
                     TP.elementSetAttribute(dialogElem, 'modal', 'true', true);
+                }
+
+                typeName = info.at('dialogTypeName');
+                if (TP.notEmpty(typeName)) {
+                    TP.elementSetAttribute(
+                            dialogElem, 'tibet:tag', typeName, true);
                 }
 
                 //  Grab the TP.html.body of the window's document and insert
@@ -558,6 +570,7 @@ function(aMessage, info) {
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
                             'isModal', true,
+                            'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', aMessage)));
 
     //  After displaying, focus the button and return the chained Promise.
@@ -653,6 +666,7 @@ function(anAction, info) {
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
                             'isModal', true,
+                            'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', anAction)));
 
     //  After displaying, focus the button and build another promise that will
@@ -756,6 +770,7 @@ function(aQuestion, aDefaultAnswer, info) {
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
                             'isModal', true,
+                            'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', aQuestion)));
 
     //  After displaying, if a default answer was provided, set the value of the
@@ -978,6 +993,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
                             'isModal', true,
+                            'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', aQuestion)));
 
     //  After displaying, if a default answer was provided, set the value of the
