@@ -4374,8 +4374,12 @@ function(target, targetPropName, track, initialValue, wantsImmediate) {
         propName = traitTrapGetter.targetPropName;
         propTrack = traitTrapGetter.targetTrack;
 
-        //  Grab all of the type's traits.
-        traitTypes = mainType.getAllTraits();
+        //  Grab all of the type's traits, make a copy and reverse them. We
+        //  reverse them so that we have an Array of the *least specific* ones
+        //  first and will resolve to the *most specific* one if it has the
+        //  slot.
+        traitTypes = TP.copy(mainType.getAllTraits());
+        traitTypes.reverse();
 
         //  Set the flag so that during composition and resolution we won't
         //  recurse, but we'll stop short above and just return the original
