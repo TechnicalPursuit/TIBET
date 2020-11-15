@@ -4480,6 +4480,7 @@ function(varargs) {
      */
 
     var inImmediateMode,
+        argsLen,
         lastArg,
 
         traitList,
@@ -4508,11 +4509,14 @@ function(varargs) {
 
     inImmediateMode = false;
 
+    argsLen = arguments.length;
+
     //  The last parameter to this method can be an optional Boolean that will
     //  immediately resolve all slots rather than setting up a getter.
     lastArg = arguments[arguments.length - 1];
     if (TP.isBoolean(lastArg)) {
         inImmediateMode = lastArg;
+        argsLen--;
     }
 
     //  ---
@@ -4527,7 +4531,7 @@ function(varargs) {
     }
 
     //  Add any new trait types
-    len = arguments.length;
+    len = argsLen;
     for (i = 0; i < len; i++) {
 
         traitType = arguments[i];
