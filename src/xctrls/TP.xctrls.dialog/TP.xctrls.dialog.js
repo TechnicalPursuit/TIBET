@@ -525,7 +525,7 @@ function(aMessage, info) {
      *          templateURI:    A URI to use for the dialog template instead of
      *                          the standard template.
      *          dialogID:       The ID to use for the dialog. This defaults to
-     *                          'systemDialog'.
+     *                          'sharedCommonDialog'.
      * @example Notify the user of some event:
      *     <code>
      *          TP.alert('TIBET Rocks!');
@@ -546,10 +546,10 @@ function(aMessage, info) {
         templateURI = info.atIfInvalid(
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_alert.xhtml'));
-        dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+        dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_alert.xhtml');
-        dialogID = 'systemDialog';
+        dialogID = 'sharedCommonDialog';
     }
 
     //  Call the TP.dialog() method with that data and specifying that the panel
@@ -620,7 +620,7 @@ function(anAction, info) {
      *          templateURI:    A URI to use for the dialog template instead of
      *                          the standard template.
      *          dialogID:       The ID to use for the dialog. This defaults to
-     *                          'systemDialog'.
+     *                          'sharedCommonDialog'.
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.confirm('Perform Action?');
@@ -641,10 +641,10 @@ function(anAction, info) {
         templateURI = info.atIfInvalid(
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_confirm.xhtml'));
-        dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+        dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_confirm.xhtml');
-        dialogID = 'systemDialog';
+        dialogID = 'sharedCommonDialog';
     }
 
     //  Call the TP.dialog() method with that data and specifying that the panel
@@ -717,7 +717,7 @@ function(aQuestion, aDefaultAnswer, info) {
      *          templateURI:    A URI to use for the dialog template instead of
      *                          the standard template.
      *          dialogID:       The ID to use for the dialog. This defaults to
-     *                          'systemDialog'.
+     *                          'sharedCommonDialog'.
      *          secure:         Whether or not the field should be secure (i.e.
      *                          the content should not be visible to the user).
      * @example Obtain an answer from the user:
@@ -742,11 +742,11 @@ function(aQuestion, aDefaultAnswer, info) {
         templateURI = info.atIfInvalid(
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_prompt.xhtml'));
-        dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+        dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
         isSecure = info.atIfInvalid('secure', false);
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_prompt.xhtml');
-        dialogID = 'systemDialog';
+        dialogID = 'sharedCommonDialog';
         isSecure = false;
     }
 
@@ -827,7 +827,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
      *          templateURI:        A URI to use for the dialog template instead
      *                              of the standard template.
      *          dialogID:           The ID to use for the dialog. This defaults
-     *                              to 'systemDialog'.
+     *                              to 'sharedCommonDialog'.
      *          multiple:           Whether or not the set of choices should be
      *                              presented such that the user can choose
      *                              multiple values.
@@ -878,7 +878,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
         templateURI = info.atIfInvalid(
                 'templateURI',
                 TP.uc('~TP.xctrls.dialog/system_prompt_with_choices.xhtml'));
-        dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+        dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
 
         isMultiple = info.atIfInvalid('multiple', false);
         isOpen = info.atIfInvalid('open', false);
@@ -896,7 +896,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
     } else {
         templateURI =
             TP.uc('~TP.xctrls.dialog/system_prompt_with_choices.xhtml');
-        dialogID = 'systemDialog';
+        dialogID = 'sharedCommonDialog';
         isMultiple = false;
         isOpen = false;
         selectThreshold = 5;
