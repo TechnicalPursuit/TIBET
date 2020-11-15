@@ -10763,9 +10763,9 @@ function() {
     /**
      * @method getCanonicalName
      * @summary Returns the receiver's canonical tag name. For elements types,
-     * this is the tag prefix (usually corresponding to the tag type's
-     * namespace) followed by a colon (':') followed by the tag's 'local name'
-     * (usually corresponding to the tag type's name).
+     *     this is the tag prefix (usually corresponding to the tag type's
+     *     namespace) followed by a colon (':') followed by the tag's 'local
+     *     name' (usually corresponding to the tag type's name).
      * @returns {String} The receiver's canonical name.
      */
 
