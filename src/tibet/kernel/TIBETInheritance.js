@@ -4374,8 +4374,12 @@ function(target, targetPropName, track, initialValue, wantsImmediate) {
         propName = traitTrapGetter.targetPropName;
         propTrack = traitTrapGetter.targetTrack;
 
-        //  Grab all of the type's traits.
-        traitTypes = mainType.getAllTraits();
+        //  Grab all of the type's traits, make a copy and reverse them. We
+        //  reverse them so that we have an Array of the *least specific* ones
+        //  first and will resolve to the *most specific* one if it has the
+        //  slot.
+        traitTypes = TP.copy(mainType.getAllTraits());
+        traitTypes.reverse();
 
         //  Set the flag so that during composition and resolution we won't
         //  recurse, but we'll stop short above and just return the original
@@ -4480,6 +4484,7 @@ function(varargs) {
      */
 
     var inImmediateMode,
+        argsLen,
         lastArg,
 
         traitList,
@@ -4508,11 +4513,14 @@ function(varargs) {
 
     inImmediateMode = false;
 
+    argsLen = arguments.length;
+
     //  The last parameter to this method can be an optional Boolean that will
     //  immediately resolve all slots rather than setting up a getter.
     lastArg = arguments[arguments.length - 1];
     if (TP.isBoolean(lastArg)) {
         inImmediateMode = lastArg;
+        argsLen--;
     }
 
     //  ---
@@ -4527,7 +4535,7 @@ function(varargs) {
     }
 
     //  Add any new trait types
-    len = arguments.length;
+    len = argsLen;
     for (i = 0; i < len; i++) {
 
         traitType = arguments[i];
@@ -5061,19 +5069,6 @@ function(traitType, propName, track) {
 
             if (checkProp1 === checkProp2) {
                 return this;
-            }
-
-            if (checkProp1 && checkProp2) {
-                checkProp1 = checkProp1.$resolutionMethod ?
-                                checkProp1.$resolutionMethod :
-                                checkProp1;
-                checkProp2 = checkProp2.$resolutionMethod ?
-                                checkProp2.$resolutionMethod :
-                                checkProp2;
-
-                if (checkProp1 === checkProp2) {
-                    return this;
-                }
             }
         }
 
@@ -6228,11 +6223,11 @@ function(propName, track) {
                         //  Push the 'resolvesToType' source that we already
                         //  found
                         unresolution.push(entry.at('resolvesToType'));
-
-                        //  Remove the 'resolvesToType' key - we no longer can
-                        //  resolve this - we're conflicted.
-                        entry.removeKey('resolvesToType');
                     }
+
+                    //  Remove the 'resolvesToType' key - we no longer can
+                    //  resolve this - we're conflicted.
+                    entry.removeKey('resolvesToType');
 
                     //  Push the new source value
                     unresolution.push(source);
