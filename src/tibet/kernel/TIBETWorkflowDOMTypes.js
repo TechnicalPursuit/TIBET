@@ -1748,6 +1748,12 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                     //  first time through.
                     continue;
                 }
+            } else if (TP.isValid(node[TP.GENERATOR]) &&
+                node[TP.GENERATOR] === result[TP.GENERATOR]) {
+                //  Otherwise, if the node had a generator and it *is* the same
+                //  as the one for our result node, we have no more outstanding
+                //  work to do. Continue on to the next node.
+                continue;
             }
 
             producedEntries.push(TP.ac(result, node));
