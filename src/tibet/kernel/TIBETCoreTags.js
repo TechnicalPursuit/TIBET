@@ -41,6 +41,10 @@ TP.dom.UIElementNode.defineSubtype('TP.tag.CustomTag');
 
 TP.tag.CustomTag.addTraits(TP.dom.NonNativeUIElementNode);
 
+TP.tag.CustomTag.Type.resolveTrait(
+        'tagCompile',
+        TP.dom.UIElementNode);
+
 TP.tag.CustomTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.dom.UIElementNode);

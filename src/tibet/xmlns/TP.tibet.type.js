@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.defineSubtype('tibet:type');
+TP.dom.NonNativeUIElementNode.defineSubtype('tibet:type');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -368,7 +368,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.defineSubtype('tibet:aspect');
+TP.dom.NonNativeUIElementNode.defineSubtype('tibet:aspect');
 
 //  ------------------------------------------------------------------------
 //  end

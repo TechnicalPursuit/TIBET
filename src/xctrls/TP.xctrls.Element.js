@@ -28,6 +28,10 @@ TP.xctrls.Element.isAbstract(true);
 
 TP.xctrls.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
+TP.xctrls.Element.Type.resolveTrait(
+        'tagCompile',
+        TP.dom.UIElementNode);
+
 TP.xctrls.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.dom.UIElementNode);

@@ -9139,6 +9139,34 @@ function(aRequest) {
     return;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.dom.NonNativeUIElementNode.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The new element.
+     */
+
+    var elem;
+
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    elem = TP.nodeCloneNode(elem);
+
+    TP.elementSetGenerator(elem);
+
+    return elem;
+});
+
 //  ========================================================================
 //  TP.dom.UIDataElement
 //  ========================================================================
