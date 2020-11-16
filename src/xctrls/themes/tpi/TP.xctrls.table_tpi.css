@@ -11,9 +11,9 @@
 /* The table */
 *[data-theme~="tpi"] xctrls|table {
 
-    border-width: var(--xctrls-list-border-width);
-    border-style: var(--xctrls-list-border-style);
-    border-radius: var(--xctrls-list-border-radius);
+    border-width: var(--xctrls-table-border-width);
+    border-style: var(--xctrls-table-border-style);
+    border-radius: var(--xctrls-table-border-radius);
 
     width: 20em;
 
@@ -65,7 +65,7 @@
     background-color: var(--xctrls-tableitem-background-color-hover);
 }
 
-/* Selected list item, label must highlight */
+/* Selected table item, label must highlight */
 *[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|selected] {
 
     border-right: none;

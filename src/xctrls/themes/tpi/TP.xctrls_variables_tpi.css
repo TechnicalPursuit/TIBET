@@ -303,9 +303,6 @@ xctrls|table {
     --xctrls-table-border-color-focus: initial;
     --xctrls-table-border-color-active: initial;
     --xctrls-table-border-color-disabled: initial;
-}
-
-xctrls|tableitem {
 
     --xctrls-tableitem-font-family: arial, helvetica, clean, sans-serif;
     --xctrls-tableitem-font-color-normal: black;
