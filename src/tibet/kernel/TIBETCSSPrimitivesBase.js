@@ -69,7 +69,7 @@ function(targetDoc, cssHref, inlineRuleText, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentAddCSSLinkElement',
-function(targetDoc, linkHref, beforeNode, shouldSignal) {
+function(targetDoc, linkHref, beforeNode, shouldSignal, loadedHandler) {
 
     /**
      * @method documentAddCSSLinkElement
@@ -81,6 +81,9 @@ function(targetDoc, linkHref, beforeNode, shouldSignal) {
      *     element.
      * @param {Node} beforeNode Optional 'insertion point'.
      * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
+     * @param {Function} [loadedHandler] A handler Function that will be called
+     *     when the stylesheet that is the resource pointed to by the link is
+     *     loaded.
      * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The new link element that was added.
      */
@@ -88,7 +91,9 @@ function(targetDoc, linkHref, beforeNode, shouldSignal) {
     var targetHead,
         newLinkElement,
 
-        before;
+        before,
+
+        handler;
 
     if (!TP.isDocument(targetDoc)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -107,6 +112,17 @@ function(targetDoc, linkHref, beforeNode, shouldSignal) {
     TP.elementSetAttribute(newLinkElement, 'rel', 'stylesheet');
 
     before = TP.ifInvalid(beforeNode, null);
+
+    //  If we were supplied a handler, then install a listener that will call it
+    //  when the stylesheet resource is loaded.
+    if (TP.isCallable(loadedHandler)) {
+        handler = function(evt) {
+            newLinkElement.removeEventListener('load', handler, false);
+            loadedHandler();
+        };
+
+        newLinkElement.addEventListener('load', handler, false);
+    }
 
     //  We don't have to worry about reassignment of newLinkElement to the
     //  return value of this method since we know we created it in
