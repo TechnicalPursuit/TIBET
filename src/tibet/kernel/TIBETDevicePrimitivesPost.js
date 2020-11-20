@@ -1269,19 +1269,7 @@ function(nativeEvt) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.definePrimitive('$$handleFocus',
-function(anEvent) {
-
-    /**
-     * @method $$handleFocus
-     * @summary Document-level focus handler, installed by tibet_hook.
-     * @param {Event} anEvent The native event object.
-     */
-
-    return TP.$$handleNonKeyOrMouseEvent(anEvent);
-});
-
+//  Low-level handlers
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$$handleAnimationEnd',
@@ -1326,20 +1314,6 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('$$handleCut',
-function(anEvent) {
-
-    /**
-     * @method $$handleCut
-     * @summary Document-level cut handler, installed by tibet_hook.
-     * @param {Event} anEvent The native event object.
-     */
-
-    return TP.$$handleNonKeyOrMouseEvent(anEvent);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('$$handleCopy',
 function(anEvent) {
 
@@ -1354,12 +1328,26 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('$$handlePaste',
+TP.definePrimitive('$$handleCut',
 function(anEvent) {
 
     /**
-     * @method $$handlePaste
-     * @summary Document-level paste handler, installed by tibet_hook.
+     * @method $$handleCut
+     * @summary Document-level cut handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$handleFocus',
+function(anEvent) {
+
+    /**
+     * @method $$handleFocus
+     * @summary Document-level focus handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
@@ -1455,6 +1443,20 @@ function(anEvent) {
     /**
      * @method $$handleLoad
      * @summary Document-level load handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$handlePaste',
+function(anEvent) {
+
+    /**
+     * @method $$handlePaste
+     * @summary Document-level paste handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
