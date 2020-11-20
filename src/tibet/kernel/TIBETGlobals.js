@@ -3415,6 +3415,10 @@ TP.regex.ALL_ELEM_MARKUP = new RegExp(
 TP.regex.XHTML_10_EMPTY_ELEMENTS = /^(area|base|basefont|bgsound|br|col|embed|hr|img|input|isindex|link|meta|param|wbr)$/;
 /* eslint-enable max-len */
 
+/* eslint-disable max-len */
+TP.regex.XHTML_10_EMPTY_ELEMENTS_REPLACE = /<(area|base|basefont|bgsound|br|col|embed|hr|img|input|isindex|link|meta|param|wbr)>/g;
+/* eslint-enable max-len */
+
 //  Same as above, except it contains markup brackets for stripping purposes.
 /* eslint-disable max-len */
 TP.regex.XHTML_10_EMPTY_ELEMENTS_STRIP = /<\/(area|base|basefont|bgsound|br|col|embed|hr|img|input|isindex|link|meta|param|wbr)>/g; //  needs reset
