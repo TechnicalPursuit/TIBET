@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+</head>
+
+<body>
+    <br/>
+    jsonview #1
+    <br/>
+    A XControls JSON viewer with value bound to a model:
+    <xctrls:jsonview id="jsonview1"/>
+
+    <br/>
+    <br/>
+
+    <div class="controlBox">
+        <button onclick="TP.byId('table1').signal('UIDisabled');">Disable table #1</button>
+        <button onclick="TP.byId('table1').signal('UIEnabled');">Enable table #1</button>
+
+        <br/>
+
+        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
+        <button onclick="setTimeout(function() {TP.byId('table1').signal('UIFocused');}, 100)">Focus table #1</button>
+    </div>
+
+</body>
+</html>

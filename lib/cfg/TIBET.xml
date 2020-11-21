@@ -160,6 +160,8 @@
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.dialog_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.hint-TP.xctrls.hint.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.hint-TP.xctrls.hint.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.jsonview-TP.xctrls.jsonview.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.jsonview-TP.xctrls.jsonview.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.list-TP.xctrls.list.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.list-TP.xctrls.list.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.list_tpi.css.js"/>
