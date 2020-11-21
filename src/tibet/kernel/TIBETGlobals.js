@@ -957,6 +957,7 @@ TP.REQUIRED = function() {
 //  NOTE: If this list is changed, the TP.nodeCopyTIBETExpandos() routine needs
 //  to be changed.
 TP.EVENT_IDS = 'tp_eventIds';
+TP.EVENT_BLOCKS = 'tp_eventBlocks';
 TP.GLOBAL_ID = 'tp_globalID';
 TP.SHOULD_SIGNAL_CHANGE = 'tp_shouldSignalChange';
 TP.SHOULD_SUSPEND_SIGNALING = 'tp_shouldSuspendSignaling';

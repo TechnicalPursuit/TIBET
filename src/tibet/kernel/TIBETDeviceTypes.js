@@ -1354,6 +1354,12 @@ function(nativeEvent) {
     //  normalize the event
     ev = TP.event(nativeEvent);
 
+    //  If TIBET shouldn't handle the event, then we return here. Note that this
+    //  will still allow other third-party libraries to trap and process events.
+    if (TP.isFalse(TP.targetShouldHandleEvent(ev))) {
+        return this;
+    }
+
     switch (TP.eventGetType(ev)) {
         case 'keydown':
 
@@ -3473,6 +3479,12 @@ function(nativeEvent) {
 
     //  normalize the event
     ev = TP.event(nativeEvent);
+
+    //  If TIBET shouldn't handle the event, then we return here. Note that this
+    //  will still allow other third-party libraries to trap and process events.
+    if (TP.isFalse(TP.targetShouldHandleEvent(ev))) {
+        return this;
+    }
 
     //  we'll switch on type here so we can fine-tune each event type's
     //  logic as needed

@@ -1381,7 +1381,9 @@ function(anEvent) {
      * @param {Event} anEvent The native event object.
      */
 
-    var targetNode,
+    var ev,
+
+        targetNode,
 
         fname,
         elemType,
@@ -1392,6 +1394,15 @@ function(anEvent) {
         return;
     }
     anEvent.$captured = true;
+
+    //  normalize the event
+    ev = TP.event(anEvent);
+
+    //  If TIBET shouldn't handle the event, then we return here. Note that this
+    //  will still allow other third-party libraries to trap and process events.
+    if (TP.isFalse(TP.targetShouldHandleEvent(ev))) {
+        return this;
+    }
 
     //  Get a resolved event target, given the event. This takes into
     //  account disabled elements and will look for a target element
@@ -1760,6 +1771,118 @@ function(anElement, anEvent) {
     originArray.isOriginSet(true);
 
     return originArray;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('targetShouldHandleEvent',
+function(anEvent) {
+
+    /**
+     * @method targetShouldHandleEvent
+     * @summary Returns a true or false value depending on whether the target
+     *     element of the supplied event should handle the supplied event.
+     * @param {Event} anEvent The native event object.
+     * @exception TP.sig.InvalidEvent
+     * @returns {Boolean} Whether or not the target element of the supplied
+     *     element should handle the event.
+     */
+
+    var eventType,
+        eventTarget,
+
+        eventBlocks,
+
+        val,
+        ans;
+
+    if (!TP.isEvent(anEvent)) {
+        return TP.raise(this, 'TP.sig.InvalidEvent');
+    }
+
+    //  Grab the event type and target - we'll use these frequently below.
+    eventType = TP.eventGetType(anEvent);
+    eventTarget = TP.eventGetTarget(anEvent);
+
+    //  If the event target isn't an Element, then there's no way to configure
+    //  for blocking this type of event.
+    if (!TP.isElement(eventTarget)) {
+        return true;
+    }
+
+    //  See if the target element has a POJO registered under it's 'event
+    //  blockers'.
+    eventBlocks = eventTarget[TP.EVENT_BLOCKS];
+
+    //  If not, create a POJO and assign it.
+    if (!TP.isValid(eventBlocks)) {
+        eventBlocks = {};
+        eventTarget[TP.EVENT_BLOCKS] = eventBlocks;
+    } else {
+        //  Otherwise, if it has an entry in the event blocks under the specific
+        //  event type, then we return the *inverse* value. In other words, if
+        //  this element 'blocks' keydown events (and the value would be true),
+        //  then we return false, meaning the target should *not* handle this
+        //  type of event.
+        if (TP.isValid(eventBlocks[eventType])) {
+            return !eventBlocks[eventType];
+        }
+    }
+
+    //  If we have no value, true or false, for blocking the event, then we try
+    //  to determine one.
+    if (!TP.isValid(eventBlocks[eventType])) {
+
+        //  If the event target itself has a 'tibet:no-eventtrap' attribute,
+        //  then use the value to check either for TP.ALL, which would mean that
+        //  this element is blocking all events, or a space-separated list of
+        //  event types that the element is blocking.
+        val = TP.elementGetAttribute(
+                        eventTarget, 'tibet:no-eventtrap', true);
+
+        if (TP.notEmpty(val)) {
+            if (val === TP.ALL) {
+                eventBlocks[eventType] = true;
+                return false;
+            }
+            val = val.split(' ');
+            if (val.contains(eventType)) {
+                eventBlocks[eventType] = true;
+                return false;
+            }
+        }
+
+        //  If the element itself didn't have a 'tibet:no-eventtrap' attribute,
+        //  then check up its ancestor chain for the same values. Note here that
+        //  we still cache the resolved value on the target element itself.
+        if (TP.isElement(
+            ans = TP.nodeDetectAncestorMatchingCSS(
+                        eventTarget,
+                        '*[tibet|no-eventtrap]'))) {
+
+            val = TP.elementGetAttribute(
+                        ans, 'tibet:no-eventtrap', true);
+
+            if (TP.notEmpty(val)) {
+                if (val === TP.ALL) {
+                    eventBlocks[eventType] = true;
+                    return false;
+                }
+                val = val.split(' ');
+                if (val.contains(eventType)) {
+                    eventBlocks[eventType] = true;
+                    return false;
+                }
+            }
+        }
+    }
+
+    //  Cache a value of false, which means that the event target *will* handle
+    //  the event. This is a performance optimization so that, once we have
+    //  determined that the element does *not* block that type.
+    eventBlocks[eventType] = false;
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
