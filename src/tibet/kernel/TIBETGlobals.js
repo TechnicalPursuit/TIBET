@@ -957,6 +957,7 @@ TP.REQUIRED = function() {
 //  NOTE: If this list is changed, the TP.nodeCopyTIBETExpandos() routine needs
 //  to be changed.
 TP.EVENT_IDS = 'tp_eventIds';
+TP.EVENT_BLOCKS = 'tp_eventBlocks';
 TP.GLOBAL_ID = 'tp_globalID';
 TP.SHOULD_SIGNAL_CHANGE = 'tp_shouldSignalChange';
 TP.SHOULD_SUSPEND_SIGNALING = 'tp_shouldSuspendSignaling';
@@ -3413,6 +3414,10 @@ TP.regex.ALL_ELEM_MARKUP = new RegExp(
 //  additions - bgsound, embed, wbr).
 /* eslint-disable max-len */
 TP.regex.XHTML_10_EMPTY_ELEMENTS = /^(area|base|basefont|bgsound|br|col|embed|hr|img|input|isindex|link|meta|param|wbr)$/;
+/* eslint-enable max-len */
+
+/* eslint-disable max-len */
+TP.regex.XHTML_10_EMPTY_ELEMENTS_REPLACE = /<(area|base|basefont|bgsound|br|col|embed|hr|img|input|isindex|link|meta|param|wbr)>/g;
 /* eslint-enable max-len */
 
 //  Same as above, except it contains markup brackets for stripping purposes.

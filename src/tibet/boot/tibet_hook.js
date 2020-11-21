@@ -179,6 +179,42 @@ if (!self.Window) {
     /* eslint-enable no-undef,no-global-assign */
 }
 
+//  ------------------------------------------------------------------------
+
+//  Make the '.innerHTML' setter convert the value to XHTML if the document
+//  'surface' isn't just pure HTML.
+(function() {
+
+    var elemProto,
+        originalSet;
+
+    elemProto = self.Element.prototype;
+    originalSet = Object.getOwnPropertyDescriptor(elemProto, 'innerHTML').set;
+
+    Object.defineProperty(elemProto, 'innerHTML', {
+        set: function(value) {
+
+            var val,
+                finalVal;
+
+            val = value.toString();
+
+            if (!TP.isHTMLDocument(this.ownerDocument)) {
+                finalVal = TP.htmlEntitiesToXMLEntities(val);
+
+                TP.regex.XHTML_10_EMPTY_ELEMENTS_REPLACE.lastIndex = 0;
+                finalVal = finalVal.replace(
+                            TP.regex.XHTML_10_EMPTY_ELEMENTS_REPLACE, '<$1/>');
+            } else {
+                finalVal = val;
+            }
+
+            //  Call the original setter
+            originalSet.call(this, finalVal);
+        }
+    });
+}());
+
 //  ========================================================================
 //  NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
 //  NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE

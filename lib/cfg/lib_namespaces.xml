@@ -389,6 +389,10 @@
 
     <!-- END xctrls:codeeditor -->
 
+    <resource href="~lib_deps/discovery/discovery-umd-tpi.js" no-inline="true"/>
+    <resource href="~lib_deps/discovery/discovery.css" no-inline="true"/>
+
+    <package src="xctrls/TP.xctrls.jsonview/TP.xctrls.jsonview.xml" config="base"/>
 </config>
 
 <config id="xml">
