@@ -121,6 +121,8 @@ function() {
                 itemSelectionInfo.last(),
                 true);
 
+    TP.elementSetAttribute(newRowDiv, 'tibet:tag', 'TP.xctrls.item', true);
+
     //  Iterate over the child elements, create individual 'cell' divs and move
     //  each child element into that spot.
     len = childElems.getSize();
