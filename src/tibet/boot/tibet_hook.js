@@ -194,16 +194,19 @@ if (!self.Window) {
     Object.defineProperty(elemProto, 'innerHTML', {
         set: function(value) {
 
-            var finalVal;
+            var val,
+                finalVal;
+
+            val = value.toString();
 
             if (!TP.isHTMLDocument(this.ownerDocument)) {
-                finalVal = TP.htmlEntitiesToXMLEntities(value);
+                finalVal = TP.htmlEntitiesToXMLEntities(val);
 
                 TP.regex.XHTML_10_EMPTY_ELEMENTS_REPLACE.lastIndex = 0;
                 finalVal = finalVal.replace(
                             TP.regex.XHTML_10_EMPTY_ELEMENTS_REPLACE, '<$1/>');
             } else {
-                finalVal = value;
+                finalVal = val;
             }
 
             //  Call the original setter
