@@ -1383,18 +1383,19 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var defaultTagName,
+    var itemTagName,
 
         itemSelectionInfo,
         newContent,
 
         shouldConstructTooltips;
 
-    defaultTagName = this.getType().get('defaultItemTagName');
+    itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
+                                this.getType().get('defaultItemTagName'));
 
     itemSelectionInfo = this.getItemSelectionInfo();
 
-    newContent = enterSelection.append(defaultTagName).attr(
+    newContent = enterSelection.append(itemTagName).attr(
                     itemSelectionInfo.first(), itemSelectionInfo.last());
 
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
@@ -1497,11 +1498,11 @@ function(enterSelection) {
             }
         });
 
-    //  Make sure that the stylesheet for the default tag is loaded. This is
+    //  Make sure that the stylesheet for the item tag is loaded. This is
     //  necessary because the author won't have actually used this tag name in
     //  the authored markup. Note that, if the stylesheet is already loaded,
     //  this method will just return.
-    TP.sys.getTypeByName(defaultTagName).addStylesheetTo(
+    TP.sys.getTypeByName(itemTagName).addStylesheetTo(
                                             this.getNativeDocument());
 
     return newContent;
