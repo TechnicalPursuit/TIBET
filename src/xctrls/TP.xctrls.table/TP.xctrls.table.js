@@ -121,6 +121,8 @@ function() {
                 itemSelectionInfo.last(),
                 true);
 
+    TP.elementSetAttribute(newRowDiv, 'tibet:tag', 'TP.xctrls.item', true);
+
     //  Iterate over the child elements, create individual 'cell' divs and move
     //  each child element into that spot.
     len = childElems.getSize();
@@ -1005,7 +1007,7 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var defaultTagName,
+    var itemTagName,
 
         itemSelectionInfo,
 
@@ -1020,7 +1022,8 @@ function(enterSelection) {
 
         rowNum;
 
-    defaultTagName = this.getType().get('defaultItemTagName');
+    itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
+                                this.getType().get('defaultItemTagName'));
 
     itemSelectionInfo = this.getItemSelectionInfo();
 
@@ -1039,7 +1042,7 @@ function(enterSelection) {
                     append('xhtml:div').
                     classed('cell', true);
 
-    newContent = newCells.append(defaultTagName);
+    newContent = newCells.append(itemTagName);
 
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
 
@@ -1151,11 +1154,11 @@ function(enterSelection) {
             }
         });
 
-    //  Make sure that the stylesheet for the default tag is loaded. This is
+    //  Make sure that the stylesheet for the item tag is loaded. This is
     //  necessary because the author won't have actually used this tag name in
     //  the authored markup. Note that, if the stylesheet is already loaded,
     //  this method will just return.
-    TP.sys.getTypeByName(defaultTagName).addStylesheetTo(
+    TP.sys.getTypeByName(itemTagName).addStylesheetTo(
                                             this.getNativeDocument());
 
     return newRows;
@@ -1347,39 +1350,6 @@ function() {
     }
 
     return TP.unwrap(content);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineMethod('getTemplate',
-function() {
-
-    /**
-     * @method getTemplate
-     * @summary Returns the TP.dom.ElementNode that will be used as the
-     *     'template' to generate content under the receiver. This template can
-     *     include data binding expressions that will be used, along with the
-     *     receiver's data, to generate that content.
-     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode to use as the
-     *     template for the receiver.
-     */
-
-    var templateTPElem;
-
-    templateTPElem = this.get(
-                        TP.cpc('tibet|template',
-                            TP.hc('shouldCollapse', true)));
-
-    //  If the user didn't specify template content, then see if they provided a
-    //  custom itemtag attribute.
-    if (!TP.isKindOf(templateTPElem, TP.tibet.template)) {
-
-        //  Make sure to null out the return value in case we got an empty
-        //  Array.
-        templateTPElem = null;
-    }
-
-    return templateTPElem;
 });
 
 //  ------------------------------------------------------------------------
