@@ -180,6 +180,39 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Lattice.Inst.defineMethod('getTemplate',
+function() {
+
+    /**
+     * @method getTemplate
+     * @summary Returns the TP.dom.ElementNode that will be used as the
+     *     'template' to generate content under the receiver. This template can
+     *     include data binding expressions that will be used, along with the
+     *     receiver's data, to generate that content.
+     * @returns {TP.dom.ElementNode} The TP.dom.ElementNode to use as the
+     *     template for the receiver.
+     */
+
+    var templateTPElem;
+
+    templateTPElem = this.get(
+                        TP.cpc('tibet|template',
+                            TP.hc('shouldCollapse', true)));
+
+    //  If the user didn't specify template content, then see if they provided a
+    //  custom itemtag attribute.
+    if (!TP.isKindOf(templateTPElem, TP.tibet.template)) {
+
+        //  Make sure to null out the return value in case we got an empty
+        //  Array.
+        templateTPElem = null;
+    }
+
+    return templateTPElem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.Lattice.Inst.defineMethod('getValue',
 function() {
 
