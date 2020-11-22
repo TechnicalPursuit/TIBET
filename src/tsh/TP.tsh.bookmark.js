@@ -217,7 +217,10 @@ TP.shell.TSH.addHelpTopic('bookmark',
     TP.tsh.bookmark.Type.getMethod('tshExecute'),
     'Allows addition and removal of commonly used bookmarks of the Lama' +
         ' Inspector.',
-    ':bookmark [<path> [<description>]] [--remove=N] [--removeall]',
+    ':bookmark --removeall\n' +
+    ':bookmark [--remove=N]\n' +
+    ':bookmark <path>\n' +
+    ':bookmark <path> <description>',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------

@@ -311,11 +311,8 @@ function(aRequest) {
 TP.shell.TSH.addHelpTopic('package',
     TP.tsh.package.Type.getMethod('tshExecute'),
     'List package assets either as asset paths or nodes.',
-    //  TODO: This line should be uncommented when '--fix' capability is
-    //  available in the TDS version of the 'package' command.
-    //  ':package [--profile profilename] [--unlisted] [--fix]',
-    ':package [--profile profilename] [--unlisted]',
-    'Coming Soon');
+    ':package [[--profile <pkgcfg>] | [--package <package>]] [--config <cfg>]] [--phase=[\'all\'|\'one\'|\'two\'|\'app\'|\'lib\']] [--add <file_list>] [--remove <file_list>] [--all] [--unresolved] [--unlisted] [--inlined] [--building] [--include <asset names>] [--exclude <asset names>][--scripts] [--resources] [--images] [--silent] [--fix] [--verbose] [--stack]',
+    'See CLI documentation');
 
 //  ------------------------------------------------------------------------
 //  end

@@ -717,8 +717,7 @@ function(anObj, anInputStr) {
 TP.shell.TSH.addHelpTopic('reflect',
     TP.tsh.reflect.Type.getMethod('tshExecute'),
     'Output targeted reflection data/metadata.',
-    ':reflect [target] [--interface <interface>]' +
-    ' [-filter <filter>] [--types] [--methods] [--owners] [--slots]',
+    ':reflect [[--target] <target>] [--filter <filter>]] [--owners] [--types] [--methods] [--attributes] [--known] [--hidden] [--unique] [--inherited] [--introduced] [--local] [--overridden] [--context=[\'app\'|\'lib\'|\'all\']] [--interface <interface>] [--verbose]' +
     'Coming Soon');
 
 //  ------------------------------------------------------------------------

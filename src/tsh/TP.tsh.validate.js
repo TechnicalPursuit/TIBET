@@ -68,7 +68,7 @@ function(aRequest) {
 TP.shell.TSH.addHelpTopic('validate',
     TP.tsh.validate.Type.getMethod('tshExecute'),
     'Runs the W3C validation service on a URL.',
-    ':validate',
+    ':validate <url>',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------

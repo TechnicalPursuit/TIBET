@@ -93,7 +93,8 @@ TP.shell.TSH.addHelpTopic('pull',
     TP.tsh.pull.Type.getMethod('tshExecute'),
     'Pulls pending remote file system changes into the running system.' +
         ' Requires TDS.',
-    ':pull [<target>] [--all]',
+    ':pull --all\n' +
+    ':pull <target>',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------

@@ -354,8 +354,7 @@ function(aRequest) {
 TP.shell.TSH.addHelpTopic('test',
     TP.tsh.test.Type.getMethod('cmdRunContent'),
     'Executes an object\'s tests or test suite.',
-    ':test [<target>] [--suite <suite>] [--cases <filter>] [--karma]' +
-    ' [--context <app|lib|all>]' +
+    ':test test [[--target] <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--inherit] [--subtypes] [--tap[=true|false]] [--no-tap] [--profile <pkgcfg>] [--config <cfg>] [--debug] [--verbose] [--selftest] [--context=[\'app\'|\'lib\'|\'all\']] [--karma[=true|false]] [--no-karma]',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------

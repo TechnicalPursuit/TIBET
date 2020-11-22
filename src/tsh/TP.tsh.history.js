@@ -538,7 +538,13 @@ function(aRequest) {
 TP.shell.TSH.addHelpTopic('history',
     TP.tsh.history.Type.getMethod('cmdRunContent'),
     'Displays a list of recent commands.',
-    ':history [--hid] [--edit]',
+    ':history' +
+    ':history --hid=\'?\' [--edit]\n' +
+    ':history --hid=\'!\' [--edit]\n' +
+    ':history --hid=\'/regexp/\' [--edit]\n' +
+    ':history --hid=7 [--edit]\n' +
+    ':history --hid=-1 [--edit]\n' +
+    ':history --hid=\'cmdmatch\' [--edit]\n',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------

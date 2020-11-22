@@ -68,7 +68,7 @@ function(aRequest) {
 TP.shell.TSH.addHelpTopic('xslt',
     TP.tsh.xslt.Type.getMethod('tshExecute'),
     'Transforms a node using an XSLT node/file.',
-    ':xslt',
+    ':xslt <target>',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------

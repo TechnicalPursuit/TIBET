@@ -75,6 +75,7 @@ function(aRequest) {
 TP.shell.TSH.addHelpTopic('entity',
     TP.tsh.entity.Type.getMethod('tshExecute'),
     'Generates a table of XML entity codes.',
+    ':entity\n' +
     ':entity [<entity_name_or_number>]',
     'Coming Soon');
 

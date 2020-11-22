@@ -158,7 +158,7 @@ function(aRequest) {
 TP.shell.TSH.addHelpTopic('dispatch',
     TP.tsh.dispatch.Type.getMethod('tshExecute'),
     'Dispatches a signal.',
-    ':dispatch [--origin <origin>] [--signal <signal>] [--payload <payload>]');
+    ':dispatch [--origin <origin>] [--payload <payload>] [--policy <policy>] --signal <signal>');
 
 //  ------------------------------------------------------------------------
 //  end

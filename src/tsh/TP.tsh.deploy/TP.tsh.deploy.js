@@ -103,7 +103,7 @@ function() {
 TP.shell.TSH.addHelpTopic('deploy',
     TP.tsh.deploy.Type.getMethod('tshExecute'),
     'Deploys a release of a TIBET application.',
-    ':deploy',
+    ':deploy <helper> [<options>]',
     'See CLI documentation');
 
 //  ------------------------------------------------------------------------

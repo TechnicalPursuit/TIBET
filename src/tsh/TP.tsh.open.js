@@ -73,7 +73,7 @@ function(aRequest) {
 TP.shell.TSH.addHelpTopic('open',
     TP.tsh.open.Type.getMethod('tshExecute'),
     'Opens a URI in a window/canvas.',
-    ':open',
+    ':open <url>',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------

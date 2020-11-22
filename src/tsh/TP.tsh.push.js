@@ -117,7 +117,8 @@ TP.shell.TSH.addHelpTopic('push',
     TP.tsh.push.Type.getMethod('tshExecute'),
     'Pushes pending changes in the running system to the remote file system.' +
         ' Requires TDS.',
-    ':push [<target>] [--all]',
+    ':push <target>\n' +
+    ':push --all',
     'Coming Soon');
 
 //  ------------------------------------------------------------------------
