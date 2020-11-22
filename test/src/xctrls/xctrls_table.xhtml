@@ -132,18 +132,20 @@
     <br/>
     A standard XControls table showing dynamic content of a two dimensional Array (with supplied column names):
     <xctrls:table id="table6" bind:in="{data: urn:tibet:two_dim_array#tibet(test_data), columns: urn:tibet:column_names}">
-        <xctrls:checkitem>
-            <xctrls:label>[[value.0]]</xctrls:label>
-            <xctrls:value>[[value.0]]</xctrls:value>
-        </xctrls:checkitem>
-        <xctrls:textitem>
-            <xctrls:label>[[value.1]]</xctrls:label>
-            <xctrls:value>[[value.1]]</xctrls:value>
-        </xctrls:textitem>
-        <xctrls:textitem>
-            <xctrls:label>[[value.2]]</xctrls:label>
-            <xctrls:value>[[value.2]]</xctrls:value>
-        </xctrls:textitem>
+        <tibet:template>
+            <xctrls:checkitem>
+                <xctrls:label>[[value.0]]</xctrls:label>
+                <xctrls:value>[[value.0]]</xctrls:value>
+            </xctrls:checkitem>
+            <xctrls:textitem>
+                <xctrls:label>[[value.1]]</xctrls:label>
+                <xctrls:value>[[value.1]]</xctrls:value>
+            </xctrls:textitem>
+            <xctrls:textitem>
+                <xctrls:label>[[value.2]]</xctrls:label>
+                <xctrls:value>[[value.2]]</xctrls:value>
+            </xctrls:textitem>
+        </tibet:template>
     </xctrls:table>
 
     <br/>
