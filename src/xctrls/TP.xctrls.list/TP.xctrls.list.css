@@ -31,8 +31,6 @@ xctrls|list *[tibet|pelem="choices"] > xctrls|* {
 
     display: flex;
     position: absolute;
-
-    box-sizing: border-box;
 }
 
 /* The item label */

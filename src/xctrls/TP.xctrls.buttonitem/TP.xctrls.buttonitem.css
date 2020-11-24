@@ -16,8 +16,6 @@ xctrls|buttonitem {
     justify-content: center;
     align-items: center;
 
-    box-sizing: border-box;
-
     user-select: none;
 }
 

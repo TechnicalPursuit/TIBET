@@ -10,8 +10,6 @@ xctrls|combo {
 
     display: inline-flex;
 
-    box-sizing: border-box;
-
     justify-content: center;
     align-items: center;
 
@@ -42,8 +40,6 @@ xctrls|combo[pclass|disabled] {
 xctrls|combo > xctrls|button {
 
     display: inline-flex;
-
-    box-sizing: border-box;
 
     justify-content: center;
     align-items: center;

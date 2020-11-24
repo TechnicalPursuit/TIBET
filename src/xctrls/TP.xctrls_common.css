@@ -12,6 +12,8 @@
 xctrls|* {
 
     appearance: none !important;
+
+    box-sizing: border-box;
 }
 
 /* xctrls|label */

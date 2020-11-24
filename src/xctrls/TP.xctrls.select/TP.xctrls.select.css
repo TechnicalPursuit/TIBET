@@ -10,8 +10,6 @@ xctrls|select {
 
     display: inline-flex;
 
-    box-sizing: border-box;
-
     justify-content: center;
     align-items: center;
 
@@ -42,8 +40,6 @@ xctrls|select[pclass|disabled] {
 xctrls|select > xctrls|button {
 
     display: inline-flex;
-
-    box-sizing: border-box;
 
     justify-content: center;
     align-items: center;
