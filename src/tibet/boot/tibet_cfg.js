@@ -1215,9 +1215,21 @@
     TP.sys.setcfg('cli.lint.style_extensions', []);
     TP.sys.setcfg('cli.lint.xml_extensions', []);
 
-    //  CLI flag defaulting
+    //  couch command defaults
     TP.sys.setcfg('cli.couch.confirm', true);       //  should couch command
                                                     //  confirm db target?
+
+    //  deploy command defaults
+    TP.sys.setcfg('cli.deploy.npm.source', 'master');
+    TP.sys.setcfg('cli.deploy.npm.repository', null);
+
+    //  release command defaults
+    TP.sys.setcfg('cli.release.source', 'develop');
+    TP.sys.setcfg('cli.release.target', 'master');
+    TP.sys.setcfg('cli.release.suffixes',
+        ['beta', 'dev', 'final', 'hotfix', 'pre', 'rc']);
+
+    //  tws command defaults
     TP.sys.setcfg('cli.tws.confirm', true);         //  should tws confirm db?
 
     //  ---

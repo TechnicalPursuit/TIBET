@@ -6,8 +6,8 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet resource' command. Lists resources that are needed
- *     by components of a particular package/config and optionally builds files
- *     describing TP.uri.URI instances which can be rolled up for loading.
+ *     by components of a particular package/config and optionally update
+ *     config with TP.uri.URI instances which can be rolled up for loading.
  */
 //  ========================================================================
 
@@ -231,7 +231,7 @@ Cmd.prototype.finalizeArglist = function(arglist) {
 
     params = args.filter(function(arg) {
         //  Don't let boot.inlined pass...we have to set to false or the
-        //  resource command can't boot during build operations.
+        //  resource command can't boot during clean/(re)build operations.
         return arg.indexOf('--boot.') === 0 &&
             arg.indexOf('--boot.inlined=') === -1;
     });
@@ -1141,11 +1141,7 @@ Cmd.prototype.updatePackage = function() {
         pkgNode,
 
         condAttr,
-        cond,
-        mainName,
-        mainNode,
-        version,
-        newVersion;
+        cond;
 
     cmd = this;
 
@@ -1187,26 +1183,6 @@ Cmd.prototype.updatePackage = function() {
     //  Ensure we have the right phase (in case we built the node)
     if (CLI.inProject()) {
         cond = 'boot.phase_two';
-
-        if (this.options.build) {
-            mainName = CLI.joinPaths('~app_cfg', 'main.xml');
-            mainNode = cmd.readPackageNode(mainName);
-
-            version = mainNode.getAttribute('version');
-            newVersion = this.package.getcfg('project.version') ||
-                this.package.getcfg('npm.version');
-
-            if (version !== newVersion) {
-                //  update the "app package" version.
-                pkgNode.setAttribute('version', newVersion);
-                dirty = true;
-
-                //  update the root (main) package as well.
-                mainNode.setAttribute('version', newVersion);
-                cmd.writePackageNode(mainName, mainNode);
-            }
-        }
-
     } else if (CLI.inLibrary()) {
         cond = 'boot.phase_one';
     }

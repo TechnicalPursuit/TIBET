@@ -19,23 +19,66 @@
 </div>
 <div id="content">
 
-<h1 id="tibet-version1----displays-the-current-project-and-tibet-version">tibet-version(1) -- displays the current project and TIBET version</h1>
+<h1 id="tibet-version1----display-and-update-version-information">tibet-version(1) -- display and update version information</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p><code>tibet version [--check] [--stack]</code></p>
+<p><code>tibet version [&lt;version&gt;] [--context] [--check] [--full] [version_options]</code></p>
 <h2 id="description">DESCRIPTION</h2>
-<p>Displays the current version of TIBET. Also available as the
---version flag on the &#39;tibet&#39; command (tibet --version).</p>
-<p>Use --check to request this command to check whether a newer
-version of TIBET has been published.</p>
+<p>Displays and optionally updates the current version string for a project (or the
+TIBET library itself). Also available as the --version flag on the &#39;tibet&#39;
+command (tibet --version).</p>
+<p>The --context flag can be set to &#39;app&#39;, &#39;lib&#39;, or &#39;all&#39; so you can use this
+command to see both your project version and the current version of TIBET.</p>
+<p>Use --check to request this command to check with the npm repository to see
+whether a newer version of the project project been published.</p>
+<p>Use the --full flag to output the fully-qualified version string which includes
+git information such as the parent commit, commit count, and timestamp.</p>
+<p>Several flags (version_options) can be used to define the new version string
+value. The --major, --minor, and --patch flags are booleans which will update
+those portions of the version string respectively (and 0 out any descendant
+values). The --suffix and --increment flags can be used to define a version
+suffix such as &#39;dev&#39; or &#39;rc&#39; and an accompanying increment value (like a build
+counter). The --version flag can be used to set an explicit value string.
+Finally --sync will cause this command to update the git metadata portion of the
+version string. This latter option is very useful to ensure TIBET&#39;s boot caches
+are updated properly.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><p><code>--check</code> :
-Tell TIBET to check the current project TIBET version against the latest
-released version. This operation relies on <code>npm info tibet --json</code> to return
-data about publicly available TIBET releases.</p>
+<li><p><code>--context</code> :
+Set the context (app, lib, or all) the command should run on. NOTE that
+&#39;all&#39; is invalid except for the display aspect of this command. Version updates
+are always done based on whether you are running in a project or inside the lib.</p>
 </li>
-<li><p><code>--stack</code> :
-Tells the version checking machinery to print an output of the stack if it errors.</p>
+<li><p><code>--check</code> :
+Check the current project (or TIBET version) against the latest released
+version. This operation relies on <code>npm info {name} --json</code> to return data about
+publicly available project or library releases.</p>
+</li>
+<li><p><code>--full</code> :
+Display the fully-qualified version string (including git metadata).</p>
+</li>
+<li><p><code>--major</code> :
+Update the major version number and zero out the minor and patch values.</p>
+</li>
+<li><p><code>--minor</code> :
+Update the minor version number, leave major, and zero out patch value.</p>
+</li>
+<li><p><code>--patch</code> :
+Update the patch version number, leaving major and minor untouched.</p>
+</li>
+<li><p><code>--suffix</code> :
+Add a version suffix (beta, dev, rc, final, hotfix, pre) to the version.</p>
+</li>
+<li><p><code>--increment</code> :
+Set a suffix increment, essentially a form of &quot;build count&quot; value to the
+version string.</p>
+</li>
+<li><p><code>--version</code> :
+Set an explicit version string value. Must include a major.minor.patch
+value.</p>
+</li>
+<li><p><code>--sync</code> :
+Preserve current major.minor.patch-suffix.increment values but update the
+git metadata based on running git describe.</p>
 </li>
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
@@ -50,19 +93,21 @@ The project version.</p>
 <h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
 <p>No process environment variables are required by this command.</p>
 <h2 id="examples">EXAMPLES</h2>
-<h3 id="display-the-current-application-and-tibet-version-data">Display the current application and TIBET version data</h3>
+<h3 id="display-the-current-application-version-data">Display the current application version data</h3>
 <pre><code>$ tibet version
-
-hello 0.1.0 running on TIBET v5.0.0-dev.7</code></pre><h3 id="check-on-whether-theres-a-newer-release-of-tibet-available">Check on whether there&#39;s a newer release of TIBET available</h3>
-<pre><code>$ tibet version --check
-
-Your current version 5.0.0-pre.51 is the latest.</code></pre><p>If a new version is available you&#39;ll see something similar to:</p>
-<pre><code>Version v5.0.0-dev.11 is available. You have v5.0.0-dev.7</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+hello@0.1.0</code></pre><h3 id="display-the-current-full-application-version-string">Display the current full application version string</h3>
+<pre><code>$ tibet version --full
+hello@0.1.0+g04e020369c.0.1606254066371</code></pre><h3 id="check-on-whether-theres-a-newer-release-of-tibet-available">Check on whether there&#39;s a newer release of TIBET available</h3>
+<pre><code>$ tibet version --check --context=lib
+tibet@5.1.0 (latest)</code></pre><h3 id="update-the-version-metadata-using-latest-git-information">Update the version metadata using latest git information</h3>
+<pre><code>$ tibet version --sync
+Set version 0.1.0+g04e020369c.0.1606257260601? Type &#39;yes&#39; to continue:</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
 <p>This command has no client-side TSH peer command.</p>
 <h2 id="troubleshooting">TROUBLESHOOTING</h2>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
-<li><a class="crossref" href="./tibet-config.1.html">tibet-config(1)</a></li>
+<li><a class="crossref" href="./tibet-context.1.html">tibet-context(1)</a></li>
+<li><a class="crossref" href="./tibet-release.1.html">tibet-release(1)</a></li>
 </ul>
 
 </div>

@@ -2108,10 +2108,10 @@
             tibet,          //  What tibet file are we looking for?
             fullpath;       //  What full path are we checking?
 
-        //  We can essentially act in a "cached result" form by looking at any
-        //  npm package info and checking the name.
-        if (this.npm && this.npm.name) {
-            return this.npm.name !== 'tibet';
+        //  We can essentially act in a "cached result" form by looking a
+        //  our tibet config data and checking the project name (!TIBET :)).
+        if (this.tibet && this.tibet.name) {
+            return this.tibet.name.toLowerCase() !== 'tibet';
         }
 
         cwd = this.getCurrentDirectory();

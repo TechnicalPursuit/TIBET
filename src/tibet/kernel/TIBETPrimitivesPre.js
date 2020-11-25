@@ -13062,7 +13062,7 @@ TP.sys.defineMethod('getVersionInfo',
 function(data, meta) {
 
     /**
-     * @method getLibVersion
+     * @method getVersionInfo
      * @summary Returns the value of the version identification data as a
      *     string. NOTE that the string returned is intended to conform to the
      *     semver specification with optional pre-release and metadata content.
