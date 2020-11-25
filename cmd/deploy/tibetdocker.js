@@ -10,23 +10,44 @@
  */
 //  ========================================================================
 
-/* eslint indent:0, consistent-this: 0, no-console:0 */
-
-/* eslint-disable no-console */
+/* eslint indent:0, consistent-this: 0, no-console:0, one-var: 0 */
 
 (function() {
 'use strict';
 
+const CLI = require('../../src/tibet/cli/_cli');
+const versioning = require('../../etc/helpers/version_helpers');
+
 const executeTIBETDocker = function() {
-    var commands,
+    var branch,
+        commands,
         meta,
-        release,
         result,
-        mastertag;
+        version,
+        cmd;
 
     console.log('deploying TIBET docker image...');
 
+    cmd = this;
+
+    //  'target' here because that's where release put the release'd code.
+    branch = this.getcfg('cli.release.target');
+
+    if (CLI.inProject()) {
+        version = CLI.getAppVersion(true);
+    } else {
+        version = CLI.getLibVersion(true);
+    }
+
+    meta = {
+        source: null
+    };
+
+    //  Pull apart the version string so we have the component parts.
+    meta.source = versioning.getVersionObject(version);
+
     commands = [
+        'git checkout ' + branch,
         'docker build --no-cache -f Dockerfile_DEPLOY -t technicalpursuit/tibet:latest .',
         'docker push technicalpursuit/tibet:latest',
         'docker tag technicalpursuit/tibet:latest technicalpursuit/tibet:' +
@@ -44,12 +65,12 @@ const executeTIBETDocker = function() {
     ];
 
     this.info('Preparing to: ');
-    commands.forEach(function(cmd) {
-        release.log(cmd);
+    commands.forEach(function(command) {
+        cmd.log(command);
     });
 
     result = this.prompt.question(
-        'Build Docker image release ' + mastertag + ' and upload to the' +
+        'Build Docker image release ' + version.split('+')[0] + ' and upload to the' +
         ' DockerHub docker repository using those labels? ' +
         '? Enter \'yes\' after inspection: ');
     if (!/^y/i.test(result)) {
@@ -57,18 +78,15 @@ const executeTIBETDocker = function() {
         return;
     }
 
-    commands.forEach(function(cmd) {
+    commands.forEach(function(command) {
         var res;
 
-        if (release.options['dry-run']) {
-            release.warn('dry-run. bypassing ' + cmd);
-        } else {
-            release.log('executing ' + cmd);
-            res = release.shexec(cmd);
-        }
+        cmd.log('executing ' + command);
+        return;
+        res = cmd.shexec(command);
 
         if (res && res.stdout.trim().slice(0, -1)) {
-            release.info(res.stdout.trim());
+            cmd.info(res.stdout.trim());
         }
     });
 };
