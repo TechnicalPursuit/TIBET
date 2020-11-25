@@ -142,7 +142,9 @@ helpers.getVersionObject = function(options) {
     source.minor = minor;
     source.patch = patch;
 
-    source.suffix = helpers.getVersionSuffix(options.suffix);
+    if (CLI.notEmpty(options.suffix)) {
+        source.suffix = helpers.getVersionSuffix(options.suffix);
+    }
 
     source.increment = increment;
 
@@ -227,7 +229,6 @@ helpers.getVersionSuffix = function(suffix) {
         re,
         match,
         suffixes;
-
 
     suffixes = CLI.getcfg('cli.release.suffixes', SUFFIXES);
 

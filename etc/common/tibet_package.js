@@ -2108,7 +2108,7 @@
             tibet,          //  What tibet file are we looking for?
             fullpath;       //  What full path are we checking?
 
-        //  We can essentially act in a "cached result" form by looking a
+        //  We can essentially act in a "cached result" form by looking at
         //  our tibet config data and checking the project name (!TIBET :)).
         if (this.tibet && this.tibet.name) {
             return this.tibet.name.toLowerCase() !== 'tibet';
