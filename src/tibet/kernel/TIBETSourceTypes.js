@@ -4074,8 +4074,8 @@ function() {
         worker = pool.shift();
     } else if (this.get('$currentWorkerCount') < this.get('$maxWorkerCount')) {
         //  Otherwise, if the current worker count is less than the max worker
-        //  count for this type, then go ahead and construct one and bump the
-        //  current count.
+        //  count for this type, then go ahead and construct one and increment
+        //  the current count.
         worker = this.construct();
         this.set('$currentWorkerCount', this.get('$currentWorkerCount') + 1);
     } else {

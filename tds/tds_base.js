@@ -757,6 +757,22 @@
     };
 
     /**
+     * Escapes any RegExp metacharacters contained in the supplied String.
+     * @param {String} str The string that contains the regexp.
+     * @returns {String} The regexp string with all RegExp metacharacters
+     *     escaped such that this string can be used to build a RegExp.
+     */
+    TDS.escapeRegExp = function(str) {
+        var REGEX_DETECT_META_CHARS;
+
+        REGEX_DETECT_META_CHARS = /([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;
+
+        //  Replace any *unescaped* RegExp meta characters with an escaping
+        //  backslash and that character.
+        return str.replace(REGEX_DETECT_META_CHARS, '\\$1');
+    };
+
+    /**
      * Expands virtual paths using configuration data loaded from TIBET.
      * @param {String} aPath The virtual path to expand.
      * @returns {String} The expanded path.

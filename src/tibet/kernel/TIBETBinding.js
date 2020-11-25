@@ -6408,7 +6408,7 @@ function(aCollection, elems) {
         newElement = TP.nodeCloneNode(repeatContent);
         newTPElem = TP.wrap(newElement);
 
-        //  If this is an XML resource, then we need to bump the number by 1
+        //  If this is an XML resource, then we need to increment by 1
         //  because XPath is 1-based.
         if (isXMLResource) {
             scopeIndex = i + 1;
@@ -6509,7 +6509,7 @@ function(aCollection, elems) {
                         }
                     });
 
-                //  If this is an XML resource, then we need to bump the number
+                //  If this is an XML resource, then we need to increment
                 //  by 1 because XPath is 1-based.
                 if (isXMLResource) {
                     scopeIndex = endIndex + i + 1;

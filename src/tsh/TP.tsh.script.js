@@ -696,7 +696,7 @@ function(source, shell, sibling, request) {
                                 break;
                         }
 
-                        //  bump token and break so we close this iteration
+                        //  increment token and break so we close this iteration
                         i += 1;
                         token = arr[i];
 

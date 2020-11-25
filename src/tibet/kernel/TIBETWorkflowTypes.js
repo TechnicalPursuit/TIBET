@@ -8970,7 +8970,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
     entry = TP.ac(state, title, url);
     history.push(entry);
 
-    //  Make sure to bump both of these.
+    //  Make sure to increment both of these.
     this.set('index', index + 1);
     this.set('lastValidIndex', index + 1);
 

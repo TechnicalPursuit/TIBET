@@ -116,7 +116,7 @@ function(anOrigin, aSignal, aCount, aPolicy) {
 
     spoilers = this.get('spoilers');
 
-    //  if we've already done an observe don't do another, just bump our
+    //  if we've already done an observe don't do another, increment our
     //  expected count for the spoiler
     item = spoilers.at(this.computeSignalID(anOrigin, aSignal));
     if (TP.isValid(item)) {
@@ -168,7 +168,7 @@ function(anOrigin, aSignal, aCount, aPolicy) {
 
     triggers = this.get('triggers');
 
-    //  if we've already done an observe don't do another, just bump our
+    //  if we've already done an observe don't do another, increment our
     //  expected count for the trigger
     item = triggers.at(this.computeSignalID(anOrigin, aSignal));
     if (TP.isValid(item)) {
@@ -242,7 +242,7 @@ function(aSignal) {
 
     item = this.get('triggers').at(id);
     if (TP.isValid(item)) {
-        //  bump the observed count for this trigger
+        //  increment the observed count for this trigger
         item.atPut(TP.sig.SignalCoalescer.SEEN_INDEX,
                     item.at(TP.sig.SignalCoalescer.SEEN_INDEX) + 1);
 
@@ -258,7 +258,7 @@ function(aSignal) {
 
         item = this.get('triggers').at(id);
         if (TP.isValid(item)) {
-            //  bump the observed count for this trigger
+            //  increment the observed count for this trigger
             item.atPut(TP.sig.SignalCoalescer.SEEN_INDEX,
                     item.at(TP.sig.SignalCoalescer.SEEN_INDEX) + 1);
         }

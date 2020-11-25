@@ -1,12 +1,12 @@
 .TH "TIBET\-RELEASE" "1" "November 2020" "" ""
 .SH "NAME"
-\fBtibet-release\fR \- prep and tag a release of TIBET
+\fBtibet-release\fR \- prep and tag a release
 .SH SYNOPSIS
 .P
-\fBtibet release\fP
+\fBtibet release [\-\-dirty] [\-\-dry\-run] [\-\-force] [\-\-local]\fP
 .SH DESCRIPTION
 .P
-Performs the steps necessary to tag a release of the TIBET library\.
+Performs the steps necessary to tag a release\-ready git codebase\.
 .P
 The release process consists of several steps to sanity check the
 current repository followed by a number of steps which work to build
@@ -14,45 +14,114 @@ a releasable version, tag it, commit it, and merge/push it to master\.
 .P
 Before proceeding this command will:
 .P
-Verify the current branch is develop\.
-Verify the branch is not dirty\. [\-\-dirty (dev\-only)]
-Verify the branch is up\-to\-date\. [\-\-local]
+Verify the current branch is the configured 'source' branch\.
+Verify the source branch is not dirty\. [override with \-\-dirty]
+Verify the source branch is up\-to\-date\. [override with \-\-local]
 .P
 IFF all the prior checks pass:
 .P
-Run \fBtibet build_all\fP to build distro\. [\-\-no\-build]
-Run the version update template\.
-Update TIBET's package\.json file\.
-Run \fBtibet checkup\fP to lint/test\. [\-\-no\-check]
+Run \fBtibet lint \-\-clean\fP to lint the codebase\.
+Run \fBtibet test\fP to run the full test harness\.
 .P
 IFF all that runs and passes testing it:
 .P
-Commits the changes which resulted\.
-Tags the develop branch with {tag}\-develop\.
-Pushes those changes to origin/develop\.
+Tags the source branch with {tag}\-{branchname}\.
+Pushes the new tag name to origin/{branchname}\.
 .P
 IFF that all worked successfully it:
 .P
-Checks out the master branch\.
-Merges in the develop branch\.
-Commits the changes to master\.
+Checks out the target branch\.
+Verifies the target branch is current\.
+Merges in the source branch\.
+Commits the changes to the target\.
 Tags the commit with the release tag\.
 Pushes the commit and related tag\.
-.P
-Once that is complete it:
-.P
-Writes out latest\.js content to be used in the technicalpursuit\.com repo\.
-Writes out instructions on the final manual steps to do to publish TIBET\.
+Checks out the source branch\.
 .SH OPTIONS
-.P
-No command options or flags are checked by this command\.
+.RS 0
+.IP \(bu 2
+\fB\-\-dirty\fP :
+Allow the command to work even if the current source branch is dirty\.
+.IP \(bu 2
+\fB\-\-local\fP :
+Allow the command to work even if the local branch isn't fully synced with
+its remote counterpart\.
+.IP \(bu 2
+\fB\-\-dry\-run\fP :
+Output the checks that would be done, but don't actually commit or push any
+changes\.
+.IP \(bu 2
+\fB\-\-force\fP :
+Force operation even when dirty or out of sync etc\.
+
+.RE
 .SH CONFIGURATION SETTINGS
-.P
-No TIBET configuration variables are utilized by this command\.
+.RS 0
+.IP \(bu 2
+\fBcli\.release\.source\fP :
+The source branch name to use\. Default is 'develop'\.
+.IP \(bu 2
+\fBcli\.release\.target\fP :
+The target branch name to use\. Default is 'master'\.
+.IP \(bu 2
+\fBcli\.release\.suffixes\fP :
+The list of default suffixes: [beta, dev, final, hotfix, pre, rc]\.
+
+.RE
 .SH ENVIRONMENT VARIABLES
 .P
 No process environment variables are required by this command\.
 .SH EXAMPLES
+.SS Run a typical release
+.P
+.RS 2
+.nf
+$ tibet release
+Ready to check 0\.1\.0+g04e020369c\.0\.1606261039549? Enter 'yes' to continue: yes
+
+checked 13 of 28 total files
+(11 filtered, 0 unchanged)
+0 errors, 0 warnings\. Clean!
+Preparing to:
+git fetch \-\-tags
+git commit \-am 'release 0\.1\.0\-develop'
+git tag \-a '0\.1\.0\-develop' \-m 'release 0\.1\.0\-develop'
+git push origin develop \-\-tags
+Process changes to develop as 0\.1\.0\-develop? Enter 'yes' after inspection: yes
+executing git fetch \-\-tags
+executing git commit \-am 'release 0\.1\.0\-develop'
+executing git tag \-a '0\.1\.0\-develop' \-m 'release 0\.1\.0\-develop'
+executing git push origin develop \-\-tags
+Preparing to:
+git fetch \-\-tags
+git checkout master
+git pull \-\-ff
+git merge develop
+git tag \-a '0\.1\.0' \-m 'Release 0\.1\.0'
+git push origin master \-\-tags
+git checkout develop
+Process changes to master as 0\.1\.0? Enter 'yes' after inspection: yes
+executing git fetch \-\-tags
+executing git checkout master
+Your branch is up to date with 'origin/master'\.
+executing git pull \-\-ff
+Already up to date\.
+executing git merge develop
+Updating 3d39c02\.\.76a0cc6
+Fast\-forward
+ package\.json                             |  2 +\-
+ public/TIBET\-INF/cfg/getsherpa\.xml       |  2 +\-
+ public/TIBET\-INF/cfg/main\.xml            |  2 +\-
+ public/src/templates/version\.js          | 33 ++++++++++++++++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+ public/src/templates/version_template\.js | 33 ++++++++++++++++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+ 5 files changed, 37 insertions(+), 35 deletions(\-)
+executing git tag \-a '0\.1\.0' \-m 'Release 0\.1\.0'
+executing git push origin master \-\-tags
+executing git checkout develop
+Your branch is up to date with 'origin/develop'\.
+Release complete\.
+.fi
+.RE
 .SH TIBET SHELL
 .P
 This command has no client\-side TSH peer command\.
