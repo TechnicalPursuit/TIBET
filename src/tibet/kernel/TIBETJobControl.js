@@ -3368,9 +3368,9 @@ function() {
             return this;
         }
 
-        //  bump iteration count once we've run the function. this means
-        //  iteration count remains zero-indexed to allow it to be used
-        //  during collection iteration
+        //  increment iteration count once we've run the function. this means
+        //  iteration count remains zero-indexed to allow it to be used during
+        //  collection iteration
         this.iteration++;
 
         //  can we run based on limits? if not then complete this run cycle

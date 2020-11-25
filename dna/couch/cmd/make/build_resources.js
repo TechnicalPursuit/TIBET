@@ -22,16 +22,6 @@
             config: config
         };
 
-        //  If we're building for a release and the 'bumpversion' option is
-        //  *not* false, then we add a flag to the info to bump the patch part
-        //  of the app's version.
-        if (options.release) {
-            if (options.bumpversion === undefined ||
-                options.bumpversion === true) {
-                info.bumppatch = true;
-            }
-        }
-
         make.helpers.resource_build(make, info).then(function() {
             make.helpers.update_packaging_profile(make, info);
             resolve();

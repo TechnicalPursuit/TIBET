@@ -338,7 +338,7 @@ helpers.package_check = function(make, options) {
     }
 
     //  The building flag is specific to the package command and typically only
-    //  set by make scripts but isn't one of the standard augmentation flags.
+    //  set by 'tibet make' scripts. it isn't a standard augmentation flag.
     if (make.options.building) {
         args.push('--building');
     }
@@ -406,29 +406,6 @@ helpers.resource_build = function(make, options) {
     phase = options.phase;
 
     deferred = Promise.pending();
-
-    //  version bump if requested
-    if (options.bumppatch) {
-
-        versionNums = CLI.config.npm.version.split('.');
-        lastIndex = versionNums.length - 1;
-        versionNums[lastIndex] = parseInt(versionNums[lastIndex], 10) + 1;
-        CLI.config.npm.version = versionNums.join('.');
-
-        file = CLI.expandPath('package.json');
-        make.info('Updating npm version in package.json to: ' +
-                    CLI.config.npm.version);
-
-        content = CLI.beautify(JSON.stringify(CLI.config.npm));
-        content = CLI.normalizeLineEndings(content);
-
-        try {
-            fs.writeFileSync(file, content);
-        } catch (e) {
-            make.error('Error writing package.json file: ' + e.message);
-            return;
-        }
-    }
 
     make.info('generating resources...');
 
