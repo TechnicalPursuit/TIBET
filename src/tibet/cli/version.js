@@ -299,6 +299,7 @@ Cmd.prototype.reportLibVersion = function() {
 Cmd.prototype.updateVersion = function() {
     var source,
         version,
+        parts,
         result;
 
     //  Get the version object computed from command line arguments.
@@ -306,6 +307,9 @@ Cmd.prototype.updateVersion = function() {
 
     //  Get computed version object in string format for prompt.
     version = versioning.getVersionString(source);
+
+    parts = version.split('+');
+    version = parts[0] + ' (+' + parts[1] + ') ';
 
     result = this.prompt.question(
         'Set version ' + version + '? Type \'yes\' to continue: ');
