@@ -175,12 +175,16 @@ function(rawData, searchTerm, keys) {
      * @returns {Object[]} An Array of match result POJOS.
      */
 
-    var matches,
+    var searchKeys,
+
         options,
 
-        fuse;
+        fuse,
+        matches;
 
     /* eslint-disable no-undef */
+
+    searchKeys = TP.ifInvalid(keys, TP.ac());
 
     options = {
         caseSensitive: this.get('caseSensitive'),
@@ -193,7 +197,7 @@ function(rawData, searchTerm, keys) {
         minMatchCharLength: this.get('useSearchTermLengthForMatches') ?
                             searchTerm.getSize() :
                             this.get('minMatchCharLength'),
-        keys: keys
+        keys: searchKeys
     };
 
     fuse = new TP.extern.Fuse(rawData, options);
