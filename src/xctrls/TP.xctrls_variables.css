@@ -20,5 +20,5 @@ xctrls|curtain {
 
     /* xctrls|curtain variables */
 
-    --xctrls-curtain-background-color: hsla(0, 0%, 0%, .6);
+    --xctrls-curtain-background-color: hsla(0, 0%, 0%, 0.6);
 }
