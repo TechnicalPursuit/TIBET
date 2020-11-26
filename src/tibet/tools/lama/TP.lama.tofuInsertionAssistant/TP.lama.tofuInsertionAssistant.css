@@ -1,17 +1,8 @@
 @namespace lama url("http://www.technicalpursuit.com/2020/lama");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
-@namespace pclass url("urn:tibet:pseudoclass");
 
 lama|tofuInsertionAssistant {
 
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-
-    overflow: hidden;
 }
 
 lama|tofuInsertionAssistant > .head {
@@ -19,7 +10,6 @@ lama|tofuInsertionAssistant > .head {
 
 lama|tofuInsertionAssistant > .body {
 
-    position: absolute;
     display: grid;
 
     grid-template-columns: 50% 50%;
@@ -30,10 +20,14 @@ lama|tofuInsertionAssistant > .body {
         "type_chooser_field_group attributes_control_group"
         "type_chooser_list attributes_group";
 
+    align-items: center;
+
     top: 0;
-    left: 0;
     right: 0;
     bottom: 7em;
+    left: 0;
+
+    margin-bottom: 0.5em;
 
     text-align: left;
 }
@@ -42,7 +36,6 @@ lama|tofuInsertionAssistant > .body .insertionPointGroup {
 
     grid-area: insertion_point_group;
 
-    position: absolute;
     display: flex;
 
     left: 5px;
@@ -77,7 +70,6 @@ lama|tofuInsertionAssistant > .body .insertionPositionGroup {
 
     grid-area: insertion_position_group;
 
-    position: absolute;
     display: flex;
 
     left: 5px;
@@ -124,7 +116,6 @@ lama|tofuInsertionAssistant > .body .typeChooserFieldGroup {
 
     grid-area: type_chooser_field_group;
 
-    position: absolute;
     display: flex;
 
     left: 5px;
@@ -150,14 +141,8 @@ lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_TagTypes {
 
     grid-area: type_chooser_list;
 
-    position: absolute;
-
-    top: 0;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
-
     width: auto;
+    height: 15em;
 
     line-height: 1.5;
 }
@@ -166,7 +151,6 @@ lama|tofuInsertionAssistant > .body .attributesControlGroup {
 
     grid-area: attributes_control_group;
 
-    position: absolute;
     display: flex;
 
     top: 8px;
@@ -203,8 +187,6 @@ lama|tofuInsertionAssistant > .body .attributesGroup {
 
     grid-area: attributes_group;
 
-    position: absolute;
-
     top: 0;
     right: 5px;
     bottom: 5px;
@@ -212,8 +194,6 @@ lama|tofuInsertionAssistant > .body .attributesGroup {
 }
 
 lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries {
-
-    position: absolute;
 
     top: 0;
     right: 0;
@@ -258,25 +238,18 @@ lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries .de
 
 lama|tofuInsertionAssistant > .foot {
 
-    position: absolute;
-
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-
-    height: 7em;
 }
 
 lama|tofuInsertionAssistant > .foot #generatedTag {
 
-    display: inline-block;
+    display: block;
 
-    width: 90%;
     height: 4em;
 
-    padding: 0 12px;
-    margin: 0 20px;
+    max-width: 50vw;
+
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 
     font-size: 100%;
     line-height: 1.2em;
@@ -292,4 +265,11 @@ lama|tofuInsertionAssistant > .foot #generatedTag {
     word-break: break-word;
 
     user-select: text;
+}
+
+lama|tofuInsertionAssistant > .foot button {
+
+    cursor: pointer;
+
+    margin: 0.5em;
 }
