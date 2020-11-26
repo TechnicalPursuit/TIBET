@@ -382,12 +382,7 @@ helpers.resource_build = function(make, options) {
         deferred,
 
         cmd,
-        args,
-
-        file,
-        content,
-        versionNums,
-        lastIndex;
+        args;
 
     if (CLI.notValid(options)) {
         throw new Error('InvalidOptions');

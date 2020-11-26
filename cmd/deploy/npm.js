@@ -57,15 +57,17 @@ const executeNpm = function() {
     }
 
     commands.forEach(function(command) {
+        /*
         var res;
 
         cmd.log('executing ' + command);
-        return;
+
         res = cmd.shexec(command);
 
         if (res && res.stdout.trim().slice(0, -1)) {
             cmd.info(res.stdout.trim());
         }
+        */
     });
 };
 

@@ -334,15 +334,12 @@ Cmd.prototype.updateVersionFiles = function(source) {
         mainName,
         mainNode,
         fullVersion,
-        version,
-        newVersion;
+        version;
 
     // Don't include metadata in the version string.
     fullVersion = versioning.getVersionString(source);
     CLI.config.npm.version = fullVersion.split('+')[0];
     CLI.config.tibet.version = CLI.config.npm.version;
-
-    newVersion = CLI.config.npm.version;
 
     //  ---
     //  Update the embedded version file for the project (or lib).
