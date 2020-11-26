@@ -542,6 +542,7 @@ TP.boot.installPatches = function(aWindow) {
                         styleVals,
                         elem,
 
+                        offsetParent,
                         offsetParentTop,
 
                         retVal;
@@ -574,8 +575,14 @@ TP.boot.installPatches = function(aWindow) {
                     myTop = this.getBoundingClientRect().top;
 
                     //  Fetch the BCR top for the offset parent.
-                    offsetParentTop =
-                        this.offsetParent.getBoundingClientRect().top;
+                    offsetParent = this.offsetParent;
+                    if (offsetParent) {
+                        //  Fetch the BCR left for the offset parent.
+                        offsetParentTop =
+                            offsetParent.getBoundingClientRect().top;
+                    } else {
+                        offsetParentTop = 0;
+                    }
 
                     //  Turn all of the CSS transforms back on.
                     /* eslint-disable consistent-this */
@@ -609,6 +616,7 @@ TP.boot.installPatches = function(aWindow) {
                         styleVals,
                         elem,
 
+                        offsetParent,
                         offsetParentLeft,
 
                         retVal;
@@ -641,8 +649,13 @@ TP.boot.installPatches = function(aWindow) {
                     myLeft = this.getBoundingClientRect().left;
 
                     //  Fetch the BCR left for the offset parent.
-                    offsetParentLeft =
-                        this.offsetParent.getBoundingClientRect().left;
+                    offsetParent = this.offsetParent;
+                    if (offsetParent) {
+                        offsetParentLeft =
+                            offsetParent.getBoundingClientRect().left;
+                    } else {
+                        offsetParentLeft = 0;
+                    }
 
                     //  Turn all of the CSS transforms back on.
                     /* eslint-disable consistent-this */
