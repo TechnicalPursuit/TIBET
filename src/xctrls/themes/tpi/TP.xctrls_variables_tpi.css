@@ -164,10 +164,10 @@ xctrls|dialog {
 
     /* xctrls|dialog variables */
 
-    --xctrls-dialog-max-width: 600px;
-    --xctrls-dialog-max-height: 370px;
-    --xctrls-dialog-min-width: 300px;
-    --xctrls-dialog-min-height: 235px;
+    --xctrls-dialog-max-width: none;
+    --xctrls-dialog-max-height: none;
+    --xctrls-dialog-min-width: none;
+    --xctrls-dialog-min-height: none;
 
     --xctrls-dialog-border-width: 1px;
     --xctrls-dialog-border-style: solid;

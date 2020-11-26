@@ -6,60 +6,63 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
-/* The dialog */
+/* The dialog (outer edge-to-edge container) */
 xctrls|dialog {
 
+    --xctrls-dialog-valign: center; /* flexbox justify-content values */
+
+    display: flex;
+    position: fixed;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    align-items: center;
+    justify-content: var(--xctrls-dialog-valign);
+}
+
+/* The dialog content (visible dialog content) */
+xctrls|dialog > xctrls|content {
+
+    display: grid;
     position: absolute;
 
-    max-width: 600px;
-    max-height: 370px;
-
-    user-select: none;
-
-    overflow: hidden;
+    grid-template-rows: auto 1fr auto;
 }
 
 /* Hovering over the dialog */
-xctrls|dialog:hover {
+xctrls|dialog > xctrls|content:hover {
 
 }
 
 /* Focusing on the dialog */
-xctrls|dialog[pclass|focus] {
+xctrls|dialog > xctrls|content[pclass|focus] {
 
 }
 
 /* The dialog header */
-xctrls|dialog > *[tibet|pelem="header"] {
+xctrls|dialog > xctrls|content > *[tibet|pelem="header"] {
 
-    position: absolute;
 }
 
 /* The dialog body */
-xctrls|dialog > *[tibet|pelem="body"] {
-
-    position: absolute;
+xctrls|dialog > xctrls|content > *[tibet|pelem="body"] {
 
     overflow: hidden;
 }
 
 /* The dialog footer */
-xctrls|dialog > *[tibet|pelem="footer"] {
+xctrls|dialog > xctrls|content > *[tibet|pelem="footer"] {
 
-    position: absolute;
 }
 
-xctrls|dialog .dialogContent {
+xctrls|dialog > xctrls|content .dialogContent {
 
-    display: flex;
-    justify-content: center;
-
-    height: 100%;
-
-    flex-wrap: wrap;
 }
 
-xctrls|dialog .dialogMessage {
+xctrls|dialog > xctrls|content .dialogMessage {
 
     display: flex;
     justify-content: center;
@@ -69,7 +72,7 @@ xctrls|dialog .dialogMessage {
     width: 100%;
 }
 
-xctrls|dialog .dialogMessage > * {
+xctrls|dialog > xctrls|content .dialogMessage > * {
 
     width: 100%;
 
@@ -77,12 +80,12 @@ xctrls|dialog .dialogMessage > * {
     overflow-wrap: break-word;
 }
 
-xctrls|dialog .choiceContent {
+xctrls|dialog > xctrls|content .choiceContent {
 
     text-align: left;
 }
 
-xctrls|dialog .choiceContent > label {
+xctrls|dialog > xctrls|content .choiceContent > label {
 
     display: inline-block;
     height: 1.35em;
@@ -92,18 +95,18 @@ xctrls|dialog .choiceContent > label {
     vertical-align: text-bottom;
 }
 
-xctrls|dialog .choiceContent > label[for="overrideField"] {
+xctrls|dialog > xctrls|content .choiceContent > label[for="overrideField"] {
 
     height: 1.15em;
 }
 
-xctrls|dialog .choiceContent > input[type="checkbox"],
-xctrls|dialog .choiceContent > input[type="radio"] {
+xctrls|dialog > xctrls|content .choiceContent > input[type="checkbox"],
+xctrls|dialog > xctrls|content .choiceContent > input[type="radio"] {
 
     margin-left: 1.7em;
 }
 
-xctrls|dialog .choiceContent > select[multiple] {
+xctrls|dialog > xctrls|content .choiceContent > select[multiple] {
 
     height: 6.25em;
     line-height: 1.5em;
@@ -111,7 +114,7 @@ xctrls|dialog .choiceContent > select[multiple] {
     padding: 0;
 }
 
-xctrls|dialog .dialogControls {
+xctrls|dialog > xctrls|content .dialogControls {
 
     display: flex;
     justify-content: center;
@@ -122,7 +125,7 @@ xctrls|dialog .dialogControls {
     width: 100%;
 }
 
-xctrls|dialog .dialogControls > button {
+xctrls|dialog > xctrls|content .dialogControls > button {
 
     min-width: 5em;
 }
