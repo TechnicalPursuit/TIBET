@@ -16,6 +16,8 @@ xctrls|curtain {
     background-color: var(--xctrls-curtain-background-color);
 
     display: none;
+
+    z-index: var(--tibet-CURTAIN-TIER);
 }
 
 /* When the curtain is not hidden */

@@ -19,6 +19,8 @@
     transition: opacity 3000ms ease 1000ms;
 
     text-align: center;
+
+    z-index: var(--tibet-NOTIFIER-TIER);
 }
 
 *[data-theme] xctrls|notifier[pclass|active] {

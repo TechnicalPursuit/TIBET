@@ -10,6 +10,8 @@
 *[data-theme] xctrls|dialog > xctrls|content {
 
     text-align: center;
+
+    z-index: var(--tibet-ALERT-TIER);
 }
 
 /* The dialog header */
