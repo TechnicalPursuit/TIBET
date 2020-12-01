@@ -73,13 +73,60 @@
     <!-- The test data for value bound selection tests -->
     <tibet:data name="urn:tibet:bound_selection_test_data" content="TP.core.Hash">
         <![CDATA[
-        {"selection_set_1": ["bar", "bar", 2], "selection_set_2": [["foo", "foo", 1], ["baz", "baz", 3]]}
+        {"selection_set_1": ["bar", "bar", 2], "selection_set_2": [["foo", "foo", 1], ["baz", "baz", 3]], "selection_set_3": ["Williams", "Monica", 51]}
         ]]>
     </tibet:data>
 
 </head>
 
 <body data-theme="tpi">
+    <table>
+        <thead class="states">
+            <tr>
+                <th>Name</th>
+                <th>Unselected</th>
+                <th>Selected</th>
+            </tr>
+        </thead>
+        <tbody class="states" bind:scope="urn:tibet:two_dim_array">
+            <tr>
+                <td>normal</td>
+                <td>
+                    <xctrls:table bind:in="{data: #tibet(test_data)}"/>
+                </td>
+                <td>
+                    <xctrls:table id="table0" bind:in="{data: #tibet(test_data), value: urn:tibet:bound_selection_test_data#tibet(selection_set_3)}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>:active</td>
+                <td>
+                    <xctrls:table pclass:active="true" bind:in="{data: #tibet(test_data)}"/>
+                </td>
+                <td>
+                    <xctrls:table pclass:active="true" pclass:selected="true" bind:in="{data: #tibet(test_data), value: urn:tibet:bound_selection_test_data#tibet(selection_set_3)}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>:focus</td>
+                <td>
+                    <xctrls:table pclass:focus="true" bind:in="{data: #tibet(test_data)}"/>
+                </td>
+                <td>
+                    <xctrls:table pclass:focus="true" pclass:selected="true" bind:in="{data: #tibet(test_data), value: urn:tibet:bound_selection_test_data#tibet(selection_set_3)}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>:disabled</td>
+                <td>
+                    <xctrls:table pclass:disabled="true" disabled="true" bind:in="{data: #tibet(test_data)}"/>
+                </td>
+                <td>
+                    <xctrls:table pclass:disabled="true" disabled="true" pclass:selected="true" bind:in="{data: #tibet(test_data), value: urn:tibet:bound_selection_test_data#tibet(selection_set_3)}"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
     <br/>
 
     <br/>
