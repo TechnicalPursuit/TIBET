@@ -24,7 +24,7 @@
 }
 
 /* All themed, non-disabled 'xctrls:select' control labels */
-*[data-theme] xctrls|select:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|select:not([pclass|disabled]) > xctrls|label {
 
 }
 

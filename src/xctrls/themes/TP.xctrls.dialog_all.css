@@ -62,6 +62,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:dialog' control labels */
-*[data-theme] xctrls|dialog > xctrls|content:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|dialog > xctrls|content:not([pclass|disabled]) > xctrls|label {
 
 }

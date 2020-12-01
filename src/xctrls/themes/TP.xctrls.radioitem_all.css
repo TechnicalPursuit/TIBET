@@ -22,6 +22,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:radioitem' control labels */
-*[data-theme] xctrls|radioitem:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|radioitem:not([pclass|disabled]) > xctrls|label {
 
 }

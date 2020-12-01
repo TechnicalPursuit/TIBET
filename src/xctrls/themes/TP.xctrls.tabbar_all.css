@@ -59,6 +59,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:tabbar' control labels */
-*[data-theme] xctrls|tabbar:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|tabbar:not([pclass|disabled]) > xctrls|label {
 
 }

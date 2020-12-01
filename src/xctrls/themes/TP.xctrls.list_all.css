@@ -68,6 +68,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:list' control labels */
-*[data-theme] xctrls|list:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|list:not([pclass|disabled]) > xctrls|label {
 
 }

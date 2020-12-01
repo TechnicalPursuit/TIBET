@@ -24,7 +24,7 @@
 }
 
 /* All themed, non-disabled 'xctrls:combo' control labels */
-*[data-theme] xctrls|combo:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|combo:not([pclass|disabled]) > xctrls|label {
 
 }
 

@@ -34,6 +34,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:buttonitem' control labels */
-*[data-theme] xctrls|buttonitem:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|buttonitem:not([pclass|disabled]) > xctrls|label {
 
 }
