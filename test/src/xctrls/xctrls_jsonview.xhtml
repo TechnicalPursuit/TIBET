@@ -23,15 +23,5 @@
     <br/>
     <br/>
 
-    <div class="controlBox">
-        <button onclick="TP.byId('table1').signal('UIDisabled');">Disable table #1</button>
-        <button onclick="TP.byId('table1').signal('UIEnabled');">Enable table #1</button>
-
-        <br/>
-
-        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
-        <button onclick="setTimeout(function() {TP.byId('table1').signal('UIFocused');}, 100)">Focus table #1</button>
-    </div>
-
 </body>
 </html>
