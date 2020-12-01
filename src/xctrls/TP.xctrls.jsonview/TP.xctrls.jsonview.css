@@ -9,11 +9,6 @@
 xctrls|jsonview {
 
     display: block;
-
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
 }
 
 xctrls|jsonview > div {
@@ -35,39 +30,14 @@ xctrls|jsonview > div .user-select {
     user-select: text;
 }
 
-xctrls|jsonview > div .view-fieldset {
-
-    width: 400px;
-    display: flex;
-    margin: 8px 0;
-    align-items: center;
-}
-
-xctrls|jsonview > div .view-fieldset > * + * {
-
-    margin-left: 6px;
-}
-
-xctrls|jsonview > div .view-fieldset .view-input {
-
-    flex: 1;
-}
-
-xctrls|jsonview > div .view-label {
-
-    line-height: 34px;
-}
-
-xctrls|jsonview > div .view-flash-message {
-
-    position: fixed;
-    top: 20px;
-    right: 20px;
-}
-
 xctrls|jsonview > div .view-raw {
 
-    font-size: 10pt;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 11px;
+
     white-space: pre-wrap;
+
     word-break: break-all;
+
+    color: lightgray;
 }
