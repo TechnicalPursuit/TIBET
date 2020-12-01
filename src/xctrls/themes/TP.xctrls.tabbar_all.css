@@ -32,7 +32,7 @@
 
 *[data-theme] xctrls|tabbar xctrls|tabitem > .close_mark {
 
-    margin-left: .25em;
+    margin-left: 0.25em;
 }
 
 *[data-theme] xctrls|tabbar xctrls|tabitem > .close_mark::after {

@@ -32,7 +32,7 @@ xctrls|jsonview > div .user-select {
 
 xctrls|jsonview > div .view-raw {
 
-    font-family: Consolas, Monaco, monospace;
+    font-family: "Consolas", "Monaco", monospace;
     font-size: 11px;
 
     white-space: pre-wrap;

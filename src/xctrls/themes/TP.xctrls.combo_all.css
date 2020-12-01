@@ -20,7 +20,7 @@
 /* All themed, 'xctrls:combo' control labels */
 *[data-theme] xctrls|combo > xctrls|label {
 
-    margin-right: .25em;
+    margin-right: 0.25em;
 }
 
 /* All themed, non-disabled 'xctrls:combo' controls */

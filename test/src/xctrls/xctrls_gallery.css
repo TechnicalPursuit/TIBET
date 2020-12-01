@@ -16,12 +16,14 @@ body {
     height: 100%;
 
     font-family: "Inconsolata", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-    background: repeating-linear-gradient(45deg,
-                    rgb(69 63 175) 0px,
-                    rgb(69 63 175) 10px,
-                    rgb(191 40 173) 10px,
-                    rgb(191 40 173) 20px
-                );
+    background:
+        repeating-linear-gradient(
+            45deg,
+            rgb(69 63 175) 0,
+            rgb(69 63 175) 10px,
+            rgb(191 40 173) 10px,
+            rgb(191 40 173) 20px
+        );
 
     color: white;
 }
@@ -233,7 +235,7 @@ div.boxAlignGrid > *|*:nth-child(4) {
 
 div.boxAlignGrid1 {
 
-    background-image: url(./smashing-grid-alignment-bg.png);
+    background-image: url("./smashing-grid-alignment-bg.png");
 
     background-color: transparent;
     border: none;
@@ -241,7 +243,7 @@ div.boxAlignGrid1 {
 
 div.boxAlignGrid2 {
 
-    background-image: url(./smashing-grid-alignment-bg.png);
+    background-image: url("./smashing-grid-alignment-bg.png");
 
     background-color: transparent;
     border: none;
@@ -256,7 +258,7 @@ div.boxAlignGrid2 > *|*:nth-child(2) {
 
 div.boxAlignGrid3 {
 
-    background-image: url(./smashing-grid-alignment-bg.png);
+    background-image: url("./smashing-grid-alignment-bg.png");
 
     background-color: transparent;
     border: none;
@@ -270,8 +272,6 @@ div.boxAlignGrid3 > *|*:nth-child(2) {
 }
 
 div.boxAlignGrid4 {
-
-    background-image: url(./smashing-grid-alignment-bg.png);
 
     height: 800px;
     grid-template-columns: 150px 150px 150px 150px;
