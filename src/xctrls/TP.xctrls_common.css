@@ -36,3 +36,13 @@ xctrls|content {
     display: block;
 }
 
+/* xctrls|itemgroup */
+
+xctrls|itemgroup {
+
+    display: inline-flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
