@@ -32,7 +32,7 @@
         //  the test harness and make sure we update config with release
         //  compression rules.
         if (options.release) {
-            targets.unshift('test');
+            targets.unshift('_test');
 
             config = make.cfg('make.compression.parse_options');
             config.default.minify = true;
