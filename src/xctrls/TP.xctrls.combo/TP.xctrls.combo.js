@@ -29,7 +29,7 @@ TP.xctrls.combo.Type.set('bidiAttrs', TP.ac('value'));
 
 TP.xctrls.combo.Inst.defineAttribute('dataURI');
 
-TP.xctrls.combo.Inst.defineAttribute('input',
+TP.xctrls.combo.Inst.defineAttribute('comboInput',
     TP.cpc('> html|input',
             TP.hc('shouldCollapse', true)));
 
@@ -140,7 +140,7 @@ function() {
     //  Our display value is whatever the label is displaying. That might be a
     //  blank if the value was set to something that's not in our list.
 
-    val = this.get('input').getValue();
+    val = this.get('comboInput').getValue();
     if (TP.isEmpty(val)) {
         val = null;
     }
@@ -176,7 +176,7 @@ function(aSignal) {
     triggerTargetTPElem = TP.wrap(aSignal.at('trigger').getTarget());
 
     popupList = this.get('popupContentFirstElement');
-    input = this.get('input');
+    input = this.get('comboInput');
 
     if (popupList.contains(origin) &&
         triggerTargetTPElem.identicalTo(input)) {
@@ -238,7 +238,7 @@ function(aValue) {
         input = aValue;
     }
 
-    this.get('input').setValue(input);
+    this.get('comboInput').setValue(input);
 
     return this;
 });
