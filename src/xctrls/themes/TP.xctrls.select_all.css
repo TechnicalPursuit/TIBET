@@ -17,6 +17,12 @@
     overflow: hidden;
 }
 
+/* All themed, 'xctrls:select' control labels */
+*[data-theme] xctrls|select > xctrls|label {
+
+    margin-right: .25em;
+}
+
 /* All themed, non-disabled 'xctrls:select' controls */
 *[data-theme] xctrls|select:not([pclass|disabled]) {
 

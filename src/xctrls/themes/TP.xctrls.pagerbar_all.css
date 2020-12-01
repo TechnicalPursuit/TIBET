@@ -12,6 +12,8 @@
 
 *[data-theme] xctrls|pagerbar xctrls|pageritem {
 
+    display: flex;
+
     text-align: center;
 
     padding: 0.1em 0.1em;

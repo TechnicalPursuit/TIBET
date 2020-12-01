@@ -14,10 +14,6 @@
     border-width: var(--xctrls-list-border-width);
     border-style: var(--xctrls-list-border-style);
     border-radius: var(--xctrls-list-border-radius);
-
-    width: 10em;
-
-    line-height: 1.2;
 }
 
 /* Hovering over the list */

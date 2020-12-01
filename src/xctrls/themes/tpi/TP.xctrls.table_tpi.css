@@ -14,10 +14,6 @@
     border-width: var(--xctrls-table-border-width);
     border-style: var(--xctrls-table-border-style);
     border-radius: var(--xctrls-table-border-radius);
-
-    width: 20em;
-
-    line-height: 1.2;
 }
 
 /* Hovering over the table */
@@ -120,7 +116,6 @@
 
 *[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row xctrls|textitem {
 
-    position: absolute;
     display: block;
 
     width: 100%;

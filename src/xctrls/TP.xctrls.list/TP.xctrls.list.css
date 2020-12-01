@@ -9,7 +9,6 @@
 /* The list */
 xctrls|list {
 
-    position: relative;
     display: inline-block;
 
     overflow-y: auto;
@@ -24,7 +23,6 @@ xctrls|list > .scroller > tibet|group {
 
 xctrls|list *[tibet|pelem="choices"] {
 
-    position: relative;
 }
 
 xctrls|list *[tibet|pelem="choices"] > xctrls|* {
@@ -36,7 +34,6 @@ xctrls|list *[tibet|pelem="choices"] > xctrls|* {
 /* The item label */
 xctrls|list *[tibet|pelem="choices"] > xctrls|* > xctrls|label {
 
-    position: relative;
     display: block;
 }
 

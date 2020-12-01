@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+</head>
+
+<body data-theme="tpi">
+    <h1>Layouts</h1>
+
+    <h2>Contents</h2>
+
+    <div class="container contentsContainer">
+        <xctrls:button>
+            <xctrls:label>button #1</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #2</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #3</xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Block Flow</h2>
+
+    <div class="container blockFlowContainer">
+        <xctrls:button>
+            <xctrls:label>button #1</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #2</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #3</xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Inline Flow</h2>
+
+    <div class="container inlineFlowContainer">
+        <xctrls:button>
+            <xctrls:label>button #1</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #2</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #3</xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Block Table</h2>
+
+    <div class="container blockTableContainer">
+        <xctrls:button>
+            <xctrls:label>button #1</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #2</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #3</xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Inline Table</h2>
+
+    <div class="container inlineTableContainer">
+        <xctrls:button>
+            <xctrls:label>button #1</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #2</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #3</xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Block Flex</h2>
+
+    <div class="container blockFlexRowContainer">
+        <xctrls:button>
+            <xctrls:label>button #1</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #2</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #3</xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Inline Flex</h2>
+
+    <div class="container inlineFlexContainer">
+        <xctrls:button>
+            <xctrls:label>button #1</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #2</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #3</xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Block Grid</h2>
+
+    <div class="container blockGridContainer">
+        <xctrls:button>
+            <xctrls:label>button #1</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #2</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #3</xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Inline Grid</h2>
+
+    <div class="container inlineGridContainer">
+        <xctrls:button>
+            <xctrls:label>button #1</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #2</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label>button #3</xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <h1>Box Alignment</h1>
+
+    <h2>Flex - Row Direction</h2>
+
+    <h3>Flex - align-items: stretch, justify-content: flex-start</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox1">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - Specific container height (15em)</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox2">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: flex-start, justify-content: flex-start</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox3">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: flex-end, justify-content: flex-start</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox4">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: center, justify-content: flex-start</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox5">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: baseline, justify-content: flex-start</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox6">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: stretch, justify-content: space-between</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox7">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: stretch, justify-content: space-around</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox8">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: stretch, justify-content: flex-end</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox9">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: stretch, justify-content: center</h3>
+    <div class="container blockFlexRowContainer boxAlignFlex boxAlignFlexBox10">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Flex - Column Direction</h2>
+
+    <h3>Flex - align-items: stretch, justify-content: flex-start</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox1">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - Specific container height (20em)</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox2">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: flex-start, justify-content: flex-start</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox3">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: flex-end, justify-content: flex-start</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox4">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: center, justify-content: flex-start</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox5">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: baseline, justify-content: flex-start</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox6">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: stretch, justify-content: space-between</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox7">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: stretch, justify-content: space-around</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox8">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: stretch, justify-content: flex-end</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox9">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Flex - align-items: stretch, justify-content: center</h3>
+    <div class="container blockFlexColContainer boxAlignFlex boxAlignFlexBox10">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+
+    <h2>Grid - Align Content</h2>
+
+    <h3>Grid - align-items: stretch, justify-items: stretch</h3>
+    <div class="container blockGridContainer boxAlignGrid boxAlignGrid1">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Grid - align-items: center (2nd item stretch), justify-items: stretch</h3>
+    <div class="container blockGridContainer boxAlignGrid boxAlignGrid2">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Grid - align-items: stretch, justify-items: center (2nd item stretch)</h3>
+    <div class="container blockGridContainer boxAlignGrid boxAlignGrid3">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h2>Grid - Align Entire Grid</h2>
+
+    <h3>Grid - align-content: start, justify-content: start</h3>
+    <div class="container blockGridContainer boxAlignGrid boxAlignGrid4">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Grid - align-content: end, justify-content: end</h3>
+    <div class="container blockGridContainer boxAlignGrid boxAlignGrid5">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Grid - align-content: space-around, justify-content: space-between</h3>
+    <div class="container blockGridContainer boxAlignGrid boxAlignGrid6">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+    <h3>Grid - align-content: center, justify-content: center</h3>
+    <div class="container blockGridContainer boxAlignGrid boxAlignGrid7">
+        <xctrls:button>
+            <xctrls:label>button</xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="large">Big button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+        <xctrls:button>
+            <xctrls:label><span class="small">Small button<br/> Wrap</span></xctrls:label>
+        </xctrls:button>
+    </div>
+
+</body>
+</html>
