@@ -189,7 +189,7 @@ function(aDiscoveryObj) {
 
         raw = thisref.get('value');
         if (TP.isValid(raw)) {
-            raw = TP.json(raw);
+            raw = TP.json(raw, undefined, 4);
         } else {
             raw = '';
         }
