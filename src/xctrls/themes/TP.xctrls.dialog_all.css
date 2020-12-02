@@ -7,11 +7,16 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* All themed 'xctrls:dialog' controls */
-*[data-theme] xctrls|dialog > xctrls|content {
+*[data-theme] xctrls|dialog {
 
     text-align: center;
 
     z-index: var(--tibet-ALERT-TIER);
+}
+
+*[data-theme] xctrls|dialog > xctrls|content {
+
+    text-align: center;
 }
 
 /* The dialog header */
