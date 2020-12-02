@@ -213,6 +213,11 @@ lama|workbench > .footer .systemToolbar lama|dispenseritem {
     width: 24px;
 }
 
+lama|workbench > .footer .systemToolbar xctrls|itemgroup {
+
+    align-items: start;
+}
+
 lama|workbench > .footer xctrls|buttonitem {
 
     width: 24px;
@@ -225,8 +230,10 @@ lama|workbench > .footer xctrls|buttonitem {
 lama|workbench > .footer xctrls|buttonitem > xctrls|label {
 
     background-size: 18px 18px;
-    background-position: 2px 2px;
+    background-position: 2px 7px;
     background-repeat: no-repeat;
+
+    flex: 0 0 24px;
 }
 
 lama|workbench > .footer xctrls|buttonitem > xctrls|label:hover {
