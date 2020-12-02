@@ -69,7 +69,7 @@ function(assistantData) {
             var contentTPElem;
 
             contentTPElem = aDialogTPElem.
-                            get('dialogcontent').
+                            get('contentElement').
                             getFirstChildElement();
 
             //  Pass along the insertion position and the peer element

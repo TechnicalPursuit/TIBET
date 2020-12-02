@@ -558,7 +558,7 @@ function(aString, smartConversion, shouldReport) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('js2json',
-function(anObject) {
+function(anObject, aReplacer, aPadding) {
 
     /**
      * @method js2json
@@ -570,6 +570,22 @@ function(anObject) {
      *     serializer found at: http://www.json.org, Function objects will not
      *     be serialized).
      * @param {Object} anObject The object to transform.
+     * @param {Function} [aReplacer] A function that alters
+     *     the behavior of the stringification process. Note that, unlike the
+     *     JSON.stringify call, this parameter *CANNOT* be an array of String
+     *     and Number that serve as an allowlist for selecting/filtering the
+     *     properties of the value object to be included in the JSON string. If
+     *     this value is null or not provided, all properties of the object are
+     *     included in the resulting JSON string.
+     * @param {String|Number} [aPadding] A String or Number object that's used
+     *     to insert white space into the output JSON string for readability
+     *     purposes. If this is a Number, it indicates the number of space
+     *     characters to use as white space; this number is capped at 10 (if it
+     *     is greater, the value is just 10). Values less than 1 indicate that
+     *     no space should be used. If this is a String, the string (or the
+     *     first 10 characters of the string, if it's longer than that) is used
+     *     as white space. If this parameter is not provided (or is null), no
+     *     white space is used.
      * @returns {String} A JavaScript String containing the JSON data.
      * @exception TP.sig.JSONSerializationException
      */
@@ -577,13 +593,17 @@ function(anObject) {
     var str,
 
         debugKey,
-        debugVal;
+        debugVal,
+
+        hasReplacer;
 
     //  NOTE: No checks for invalid values here - JSON.stringify knows what to
     //  do with 'null' and 'undefined'.
 
     debugKey = null;
     debugVal = null;
+
+    hasReplacer = TP.isCallable(aReplacer);
 
     try {
         str = JSON.stringify(
@@ -599,8 +619,13 @@ function(anObject) {
                             return;
                         }
 
+                        if (hasReplacer) {
+                            return aReplacer(value);
+                        }
+
                         return value;
-                    });
+                    },
+                    aPadding);
     } catch (e) {
         return TP.raise(this,
                         'TP.sig.JSONSerializationException',

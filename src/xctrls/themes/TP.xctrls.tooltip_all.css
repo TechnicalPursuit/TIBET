@@ -3,11 +3,13 @@
 */
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
-@namespace pclass url("urn:tibet:pseudoclass");
 
 /* All themed 'xctrls:tooltip' controls */
 *[data-theme] xctrls|tooltip {
 
     text-align: center;
+
     padding: 0.25em;
+
+    z-index: var(--tibet-NOTIFIER-TIER);
 }

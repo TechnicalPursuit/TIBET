@@ -3,11 +3,9 @@
 */
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
-@namespace pclass url("urn:tibet:pseudoclass");
 
 xctrls|tabbar {
 
-    position: relative;
     user-select: none;
 }
 
@@ -16,12 +14,18 @@ xctrls|tabbar xctrls|content {
     display: flex;
 }
 
-xctrls|tabbar xctrls|content > *|* {
+xctrls|tabbar xctrls|tabitem {
+
+    order: 1;
+    flex: 0 1 auto;
+}
+
+xctrls|tabbar xctrls|content > .templated {
 
     display: flex;
 }
 
-xctrls|tabbar xctrls|tabitem {
+xctrls|tabbar xctrls|content > .templated:empty {
 
-    order: 1;
+    display: none;
 }

@@ -23,6 +23,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:textitem' control labels */
-*[data-theme] xctrls|textitem:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|textitem:not([pclass|disabled]) > xctrls|label {
 
 }

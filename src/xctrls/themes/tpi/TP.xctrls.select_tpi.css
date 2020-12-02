@@ -53,7 +53,6 @@
 /* The select button's label */
 *[data-theme~="tpi"] xctrls|select > xctrls|button > xctrls|label {
 
-    background-color: transparent;
 }
 
 /* Hovering over the select's button, label must highlight */

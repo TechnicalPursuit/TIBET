@@ -9,7 +9,6 @@
 /* The table */
 xctrls|table {
 
-    position: relative;
     display: inline-block;
 
     overflow-y: auto;
@@ -24,7 +23,6 @@ xctrls|table > .scroller > tibet|group {
 
 xctrls|table *[tibet|pelem="choices"] {
 
-    position: relative;
 }
 
 /* Grouping element for column groupings */

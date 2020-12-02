@@ -1237,7 +1237,7 @@ function(aSignal) {
                 var contentTPElem;
 
                 contentTPElem = aDialogTPElem.
-                                get('dialogcontent').
+                                get('contentElement').
                                 getFirstChildElement();
 
                 contentTPElem.set('assistantParams',

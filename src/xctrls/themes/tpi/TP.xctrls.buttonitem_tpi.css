@@ -5,8 +5,6 @@
 @import url("../TP.xctrls.buttonitem_all.css");
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
-@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
-@namespace svg url("http://www.w3.org/2000/svg");
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* The buttonitem */
@@ -16,29 +14,33 @@
     border-style: var(--xctrls-buttonitem-border-style);
     border-radius: var(--xctrls-buttonitem-border-radius);
 
-    font-size: var(--xctrls-buttonitem-font-size);
-
     background-color: var(--xctrls-buttonitem-background-color-normal);
+
+    box-shadow: inset 0 0 0.5em #ddd;
 }
 
 /* Hovering over the buttonitem */
 *[data-theme~="tpi"] xctrls|buttonitem:hover {
 
+    background-color: var(--xctrls-buttonitem-background-color-hover);
 }
 
 /* Focusing on the buttonitem */
 *[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] {
 
+    background-color: var(--xctrls-buttonitem-background-color-focus);
 }
 
 /* Clicking down on the buttonitem */
 *[data-theme~="tpi"] xctrls|buttonitem[pclass|active] {
 
+    background-color: var(--xctrls-buttonitem-background-color-active);
 }
 
 /* The buttonitem is disabled */
 *[data-theme~="tpi"] xctrls|buttonitem[pclass|disabled] {
 
+    background-color: var(--xctrls-buttonitem-background-color-disabled);
 }
 
 /* The buttonitem is selected */
@@ -47,11 +49,19 @@
     background-color: var(--xctrls-buttonitem-background-color-selected);
 }
 
+/* Hovering over a selected buttonitem */
+*[data-theme~="tpi"] xctrls|buttonitem[pclass|selected]:hover {
+
+    color: var(--xctrls-buttonitem-font-color-normal);
+    background-color: var(--xctrls-buttonitem-background-color-selected);
+}
+
 /* The buttonitem label */
 *[data-theme~="tpi"] xctrls|buttonitem > xctrls|label {
 
-    box-shadow: inset 0 0 0.5em #ddd;
+    font-size: var(--xctrls-buttonitem-font-size);
     font-family: var(--xctrls-buttonitem-font-family);
+
     color: var(--xctrls-buttonitem-font-color-normal);
 }
 
@@ -59,13 +69,10 @@
 *[data-theme~="tpi"] xctrls|buttonitem:hover > xctrls|label {
 
     color: var(--xctrls-buttonitem-font-color-hover);
-    background-color: var(--xctrls-buttonitem-background-color-hover);
 }
 
 *[data-theme~="tpi"] xctrls|buttonitem[pclass|selected]:hover > xctrls|label {
 
-    color: var(--xctrls-buttonitem-font-color-normal);
-    background-color: var(--xctrls-buttonitem-background-color-selected);
 }
 
 /* Focusing on the buttonitem, label must highlight */
@@ -76,7 +83,6 @@
 *[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] > xctrls|label {
 
     color: var(--xctrls-buttonitem-font-color-focus);
-    background-color: var(--xctrls-buttonitem-background-color-focus);
 }
 
 *[data-theme~="tpi"] xctrls|buttonitem[pclass|focus][pclass|selected] > xctrls|label {
@@ -91,7 +97,6 @@
 *[data-theme~="tpi"] xctrls|buttonitem[pclass|active] > xctrls|label {
 
     color: var(--xctrls-buttonitem-font-color-active);
-    background-color: var(--xctrls-buttonitem-background-color-active);
 }
 
 *[data-theme~="tpi"] xctrls|buttonitem[pclass|active][pclass|selected] > xctrls|label {
@@ -102,5 +107,4 @@
 *[data-theme~="tpi"] xctrls|buttonitem[pclass|disabled] > xctrls|label {
 
     color: var(--xctrls-buttonitem-font-color-disabled);
-    background-color: var(--xctrls-buttonitem-background-color-disabled);
 }

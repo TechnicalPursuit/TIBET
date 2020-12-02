@@ -4,6 +4,7 @@
         id="{{$SOURCE.(@id)}}"
         tibet:assembly="xctrls:combo"
         on:UIActivate="OpenPicker">
+    {{$SOURCE.(./xctrls:label)}}
     <input type="text"/>
     {{$SOURCE.(./xctrls:hint)}}
     <span xmlns="http://www.w3.org/1999/xhtml" class="icon">

@@ -29,6 +29,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:button' control labels */
-*[data-theme] xctrls|button:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|button:not([pclass|disabled]) > xctrls|label {
 
 }

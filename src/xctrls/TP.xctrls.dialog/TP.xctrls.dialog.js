@@ -79,13 +79,13 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.dialog.Inst.defineAttribute('body',
-    TP.cpc('> *[tibet|pelem="body"]', TP.hc('shouldCollapse', true)));
+    TP.cpc('> xctrls|content > *[tibet|pelem="body"]', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.dialog.Inst.defineAttribute('header',
-    TP.cpc('> *[tibet|pelem="header"]', TP.hc('shouldCollapse', true)));
+    TP.cpc('> xctrls|content > *[tibet|pelem="header"]', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.dialog.Inst.defineAttribute('dialogcontent',
-    TP.cpc('> *[tibet|pelem="body"] > tibet|group > xctrls|content',
+TP.xctrls.dialog.Inst.defineAttribute('contentElement',
+    TP.cpc('> xctrls|content > *[tibet|pelem="body"] > tibet|group > xctrls|content',
         TP.hc('shouldCollapse', true)));
 
 TP.xctrls.dialog.Inst.defineAttribute('curtainWasShowing');
@@ -234,7 +234,7 @@ function(shouldRender, shouldRefreshBindings) {
 
     //  Grab the content element under the existing panel that we
     //  found with that content key.
-    contentTPElem = this.get('dialogcontent');
+    contentTPElem = this.get('contentElement');
 
     return contentTPElem.refresh(shouldRender, shouldRefreshBindings);
 });
@@ -256,7 +256,7 @@ function(aContentObject, aRequest) {
 
     var contentTPElem;
 
-    contentTPElem = this.get('dialogcontent');
+    contentTPElem = this.get('contentElement');
 
     return contentTPElem.setContent(aContentObject);
 });

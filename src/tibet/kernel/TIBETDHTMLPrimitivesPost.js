@@ -4048,7 +4048,7 @@ function(anElement) {
      * @param {HTMLElement} anElement The element to get the offset parent of.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidStyleDeclaration
-     * @returns {Element} The element's offset parent.
+     * @returns {Element|null} The element's offset parent.
      */
 
     var computedStyle,

@@ -1,17 +1,8 @@
 @namespace lama url("http://www.technicalpursuit.com/2020/lama");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
-@namespace pclass url("urn:tibet:pseudoclass");
 
 lama|couchDocumentURIInsertionAssistant {
 
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-
-    overflow: hidden;
 }
 
 lama|couchDocumentURIInsertionAssistant > .head {
@@ -19,7 +10,6 @@ lama|couchDocumentURIInsertionAssistant > .head {
 
 lama|couchDocumentURIInsertionAssistant > .body {
 
-    position: absolute;
     display: grid;
 
     grid-template-rows: 2em 2em 2em 1fr;
@@ -29,10 +19,12 @@ lama|couchDocumentURIInsertionAssistant > .body {
         "editor_field_label"
         "editor_field_wrapper";
 
+    align-items: center;
+
     top: 0;
-    left: 0;
     right: 0;
     bottom: 3em;
+    left: 0;
 
     text-align: left;
 }
@@ -41,13 +33,12 @@ lama|couchDocumentURIInsertionAssistant > .body .insertionPointGroup {
 
     grid-area: insertion_point_group;
 
-    position: absolute;
     display: flex;
 
-    left: 5px;
-    right: 5px;
-
     align-items: center;
+
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 lama|couchDocumentURIInsertionAssistant > .body .insertionPointGroup label {
@@ -76,13 +67,11 @@ lama|couchDocumentURIInsertionAssistant > .body .insertionPositionGroup {
 
     grid-area: insertion_position_group;
 
-    position: absolute;
     display: flex;
-
-    left: 5px;
-    right: 5px;
-
     align-items: center;
+
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 lama|couchDocumentURIInsertionAssistant > .body .insertionPositionGroup label {
@@ -123,10 +112,8 @@ lama|couchDocumentURIInsertionAssistant > .body .editorFieldLabel {
 
     grid-area: editor_field_label;
 
-    position: absolute;
-
-    top: 5px;
-    left: 5px;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 
     font-weight: bold;
 }
@@ -135,12 +122,9 @@ lama|couchDocumentURIInsertionAssistant > .body .editorFieldWrapper {
 
     grid-area: editor_field_wrapper;
 
-    position: absolute;
-
-    top: 0;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 lama|couchDocumentURIInsertionAssistant > .body .editorFieldWrapper > textarea {
@@ -155,12 +139,9 @@ lama|couchDocumentURIInsertionAssistant > .body .editorFieldWrapper > textarea {
 
 lama|couchDocumentURIInsertionAssistant > .foot {
 
-    position: absolute;
+}
 
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
+lama|couchDocumentURIInsertionAssistant > .foot button {
 
-    height: 3em;
+    cursor: pointer;
 }

@@ -12,6 +12,8 @@
 
 *[data-theme] xctrls|pagerbar xctrls|pageritem {
 
+    display: flex;
+
     text-align: center;
 
     padding: 0.1em 0.1em;
@@ -34,6 +36,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:pagerbar' control labels */
-*[data-theme] xctrls|pagerbar:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|pagerbar:not([pclass|disabled]) > xctrls|label {
 
 }

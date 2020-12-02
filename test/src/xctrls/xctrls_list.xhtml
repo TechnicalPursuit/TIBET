@@ -121,6 +121,15 @@
                 </td>
             </tr>
             <tr>
+                <td>:focus</td>
+                <td>
+                    <xctrls:list pclass:focus="true" bind:in="{data: #tibet(names)}"/>
+                </td>
+                <td>
+                    <xctrls:list pclass:focus="true" pclass:selected="true" bind:in="{data: #tibet(names), value: 'Jones'}"/>
+                </td>
+            </tr>
+            <tr>
                 <td>:disabled</td>
                 <td>
                     <xctrls:list pclass:disabled="true" disabled="true" bind:in="{data: #tibet(names)}"/>

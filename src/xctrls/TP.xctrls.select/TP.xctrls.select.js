@@ -29,7 +29,7 @@ TP.xctrls.select.Type.set('bidiAttrs', TP.ac('value'));
 
 TP.xctrls.select.Inst.defineAttribute('dataURI');
 
-TP.xctrls.select.Inst.defineAttribute('label',
+TP.xctrls.select.Inst.defineAttribute('selectLabel',
     TP.cpc('> xctrls|button > xctrls|label',
             TP.hc('shouldCollapse', true)));
 
@@ -140,7 +140,7 @@ function() {
     //  Our display value is whatever the label is displaying. That might be a
     //  blank if the value was set to something that's not in our list.
 
-    val = this.get('label').getContent();
+    val = this.get('selectLabel').getContent();
     if (TP.isEmpty(val)) {
         val = null;
     }
@@ -189,7 +189,7 @@ function(aValue) {
         label = aValue;
     }
 
-    this.get('label').setContent(label);
+    this.get('selectLabel').setContent(label);
 
     return this;
 });

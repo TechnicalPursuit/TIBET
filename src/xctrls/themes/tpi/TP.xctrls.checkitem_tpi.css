@@ -12,6 +12,7 @@
 /* The checkitem */
 *[data-theme~="tpi"] xctrls|checkitem {
 
+    background-color: var(--xctrls-checkitem-background-color-normal);
 }
 
 /* The checkitem's value (the checkmark) */
@@ -22,6 +23,7 @@
 /* Hovering over the checkitem */
 *[data-theme~="tpi"] xctrls|checkitem:hover {
 
+    background-color: var(--xctrls-checkitem-background-color-hover);
 }
 
 *[data-theme~="tpi"] xctrls|checkitem:hover > *[tibet|pelem="value"] {
@@ -46,6 +48,7 @@
 /* Focusing on the checkitem */
 *[data-theme~="tpi"] xctrls|checkitem[pclass|focus] {
 
+    background-color: var(--xctrls-checkitem-background-color-focus);
 }
 
 *[data-theme~="tpi"] xctrls|checkitem[pclass|focus] > *[tibet|pelem="value"] {
@@ -81,6 +84,7 @@
 /* Clicking down on the checkitem */
 *[data-theme~="tpi"] xctrls|checkitem[pclass|active] {
 
+    background-color: var(--xctrls-checkitem-background-color-active);
 }
 
 *[data-theme~="tpi"] xctrls|checkitem[pclass|active] > *[tibet|pelem="value"] {
@@ -116,6 +120,7 @@
 /* The checkitem is disabled */
 *[data-theme~="tpi"] xctrls|checkitem[pclass|disabled] {
 
+    background-color: var(--xctrls-checkitem-background-color-disabled);
 }
 
 *[data-theme~="tpi"] xctrls|checkitem[pclass|disabled] > *[tibet|pelem="value"] {
@@ -162,14 +167,12 @@
 
     font-family: var(--xctrls-checkitem-font-family);
     color: var(--xctrls-checkitem-font-color-normal);
-    background-color: var(--xctrls-checkitem-background-color-normal);
 }
 
 /* Hovering over the checkitem, label must highlight */
 *[data-theme~="tpi"] xctrls|checkitem:hover > xctrls|label {
 
     color: var(--xctrls-checkitem-font-color-hover);
-    background-color: var(--xctrls-checkitem-background-color-hover);
 }
 
 *[data-theme~="tpi"] xctrls|checkitem[pclass|focus] {
@@ -180,14 +183,9 @@
 *[data-theme~="tpi"] xctrls|checkitem[pclass|focus] > xctrls|label {
 
     color: var(--xctrls-checkitem-font-color-focus);
-    background-color: var(--xctrls-checkitem-background-color-focus);
 }
 
 *[data-theme~="tpi"] xctrls|checkitem[pclass|focus][pclass|checked] > xctrls|label {
-
-}
-
-*[data-theme~="tpi"] xctrls|checkitem[pclass|active] {
 
 }
 
@@ -195,7 +193,6 @@
 *[data-theme~="tpi"] xctrls|checkitem[pclass|active] > xctrls|label {
 
     color: var(--xctrls-checkitem-font-color-active);
-    background-color: var(--xctrls-checkitem-background-color-active);
 }
 
 *[data-theme~="tpi"] xctrls|checkitem[pclass|active][pclass|checked] > xctrls|label {
@@ -206,5 +203,4 @@
 *[data-theme~="tpi"] xctrls|checkitem[pclass|disabled] > xctrls|label {
 
     color: var(--xctrls-checkitem-font-color-disabled);
-    background-color: var(--xctrls-checkitem-background-color-disabled);
 }

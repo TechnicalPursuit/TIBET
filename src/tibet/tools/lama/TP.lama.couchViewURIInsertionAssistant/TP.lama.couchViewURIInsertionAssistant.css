@@ -1,15 +1,8 @@
 @namespace lama url("http://www.technicalpursuit.com/2020/lama");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
-@namespace pclass url("urn:tibet:pseudoclass");
 
 lama|couchViewURIInsertionAssistant {
 
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
 }
 
 lama|couchViewURIInsertionAssistant > .head {
@@ -17,7 +10,6 @@ lama|couchViewURIInsertionAssistant > .head {
 
 lama|couchViewURIInsertionAssistant > .body {
 
-    position: absolute;
     display: grid;
 
     grid-template-rows: 2em 2em 2em 2em 2em 2em;
@@ -30,10 +22,12 @@ lama|couchViewURIInsertionAssistant > .body {
         "local_url_field_wrapper"
         "generate_detail_group";
 
+    align-items: center;
+
     top: 0;
-    left: 0;
     right: 0;
     bottom: 3em;
+    left: 0;
 
     text-align: left;
 }
@@ -42,13 +36,12 @@ lama|couchViewURIInsertionAssistant > .body .insertionPointGroup {
 
     grid-area: insertion_point_group;
 
-    position: absolute;
     display: flex;
 
-    left: 5px;
-    right: 5px;
-
     align-items: center;
+
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 lama|couchViewURIInsertionAssistant > .body .insertionPointGroup label {
@@ -77,13 +70,11 @@ lama|couchViewURIInsertionAssistant > .body .insertionPositionGroup {
 
     grid-area: insertion_position_group;
 
-    position: absolute;
     display: flex;
-
-    left: 5px;
-    right: 5px;
-
     align-items: center;
+
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 lama|couchViewURIInsertionAssistant > .body .insertionPositionGroup label {
@@ -124,10 +115,8 @@ lama|couchViewURIInsertionAssistant > .body .remoteURLFieldLabel {
 
     grid-area: remote_url_field_label;
 
-    position: absolute;
-
-    top: 5px;
-    left: 5px;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 
     font-weight: bold;
 }
@@ -136,12 +125,8 @@ lama|couchViewURIInsertionAssistant > .body .remoteURLFieldWrapper {
 
     grid-area: remote_url_field_wrapper;
 
-    position: absolute;
-
-    top: 0;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 lama|couchViewURIInsertionAssistant > .body .remoteURLFieldWrapper > input {
@@ -158,10 +143,8 @@ lama|couchViewURIInsertionAssistant > .body .localURLFieldLabel {
 
     grid-area: local_url_field_label;
 
-    position: absolute;
-
-    top: 5px;
-    left: 5px;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 
     font-weight: bold;
 }
@@ -170,12 +153,8 @@ lama|couchViewURIInsertionAssistant > .body .localURLFieldWrapper {
 
     grid-area: local_url_field_wrapper;
 
-    position: absolute;
-
-    top: 0;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 lama|couchViewURIInsertionAssistant > .body .localURLFieldWrapper > input {
@@ -192,13 +171,11 @@ lama|couchViewURIInsertionAssistant > .body .generateDetailGroup {
 
     grid-area: generate_detail_group;
 
-    position: absolute;
     display: flex;
-
-    left: 5px;
-    right: 5px;
-
     align-items: center;
+
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 lama|couchViewURIInsertionAssistant > .body .generateDetailGroup label {
@@ -208,12 +185,9 @@ lama|couchViewURIInsertionAssistant > .body .generateDetailGroup label {
 
 lama|couchViewURIInsertionAssistant > .foot {
 
-    position: absolute;
+}
 
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
+lama|couchViewURIInsertionAssistant > .foot button {
 
-    height: 3em;
+    cursor: pointer;
 }

@@ -19,8 +19,11 @@
     /* The border height (top and bottom added together) */
     --xctrls-item-border-height: 2px;
 
-    /* Minimum of 3 rows of height */
+    /* Minimum of 20 characters of width and 3 rows of height */
+    min-width: 20em;
     min-height: 60px;
+
+    line-height: 1.2;
 }
 
 *[data-theme] xctrls|table *[tibet|pelem="choices"] {
@@ -69,6 +72,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:table' control labels */
-*[data-theme] xctrls|table:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|table:not([pclass|disabled]) > xctrls|label {
 
 }

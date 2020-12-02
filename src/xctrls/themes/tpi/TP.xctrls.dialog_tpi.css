@@ -9,7 +9,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* The dialog */
-*[data-theme~="tpi"] xctrls|dialog {
+*[data-theme~="tpi"] xctrls|dialog > xctrls|content {
 
     background-color: var(--xctrls-dialog-background-color);
 
@@ -25,31 +25,31 @@
 }
 
 /* Hovering over the dialog */
-*[data-theme~="tpi"] xctrls|dialog:hover {
+*[data-theme~="tpi"] xctrls|dialog > xctrls|content:hover {
 
     border-color: var(--xctrls-dialog-border-color-hover);
 }
 
 /* Focusing on the dialog */
-*[data-theme~="tpi"] xctrls|dialog[pclass|focus] {
+*[data-theme~="tpi"] xctrls|dialog > xctrls|content[pclass|focus] {
 
     border-color: var(--xctrls-dialog-border-color-focus);
 }
 
 /* Clicking down on the dialog */
-*[data-theme~="tpi"] xctrls|dialog[pclass|active] {
+*[data-theme~="tpi"] xctrls|dialog > xctrls|content[pclass|active] {
 
     border-color: var(--xctrls-dialog-border-color-active);
 }
 
 /* The dialog is disabled */
-*[data-theme~="tpi"] xctrls|dialog[pclass|disabled] {
+*[data-theme~="tpi"] xctrls|dialog > xctrls|content[pclass|disabled] {
 
     border-color: var(--xctrls-dialog-border-color-disabled);
 }
 
 /* The dialog header */
-*[data-theme~="tpi"] xctrls|dialog > *[tibet|pelem="header"] {
+*[data-theme~="tpi"] xctrls|dialog > xctrls|content > *[tibet|pelem="header"] {
 
     background-color: var(--xctrls-dialog-header-background-color);
     color: var(--xctrls-dialog-header-color);
@@ -62,13 +62,13 @@
 }
 
 /* The dialog body */
-*[data-theme~="tpi"] xctrls|dialog > *[tibet|pelem="body"] {
+*[data-theme~="tpi"] xctrls|dialog > xctrls|content > *[tibet|pelem="body"] {
 
     background-color: var(--xctrls-dialog-body-background-color);
 }
 
 /* The dialog footer */
-*[data-theme~="tpi"] xctrls|dialog > *[tibet|pelem="footer"] {
+*[data-theme~="tpi"] xctrls|dialog > xctrls|content > *[tibet|pelem="footer"] {
 
     background-color: var(--xctrls-dialog-footer-background-color);
 

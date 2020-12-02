@@ -12,6 +12,8 @@ xctrls|popup {
 
     top: 0;
     left: 0;
+
+    z-index: var(--tibet-POPUP-TIER);
 }
 
 xctrls|popup[pclass|hidden] {

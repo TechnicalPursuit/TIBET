@@ -28,6 +28,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:checkitem' control labels */
-*[data-theme] xctrls|checkitem:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|checkitem:not([pclass|disabled]) > xctrls|label {
 
 }

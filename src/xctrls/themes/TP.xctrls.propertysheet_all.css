@@ -23,7 +23,7 @@
 }
 
 /* All themed, non-disabled 'xctrls:propertysheet' control labels */
-*[data-theme] xctrls|propertysheet:not([pclass|disabled]) xctrls|label {
+*[data-theme] xctrls|propertysheet:not([pclass|disabled]) > xctrls|label {
 }
 
 *[data-theme] xctrls|propertysheet > span.propertyfields {

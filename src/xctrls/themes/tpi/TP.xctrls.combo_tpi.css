@@ -20,15 +20,11 @@
 /* Hovering over the combo */
 *[data-theme~="tpi"] xctrls|combo:hover * {
 
-    color: var(--xctrls-combo-font-color-hover);
-
     background-color: var(--xctrls-combo-background-color-hover);
 }
 
 /* Focusing on the combo */
 *[data-theme~="tpi"] xctrls|combo[pclass|focus] {
-
-    color: var(--xctrls-combo-font-color-focus);
 
     background-color: var(--xctrls-combo-background-color-focus);
 }
@@ -36,15 +32,11 @@
 /* Clicking down on the combo */
 *[data-theme~="tpi"] xctrls|combo[pclass|active] * {
 
-    color: var(--xctrls-combo-font-color-active);
-
     background-color: var(--xctrls-combo-background-color-active);
 }
 
 /* The combo is disabled */
 *[data-theme~="tpi"] xctrls|combo[pclass|disabled] * {
-
-    color: var(--xctrls-combo-font-color-disabled);
 
     background-color: var(--xctrls-combo-background-color-disabled);
 }
@@ -57,27 +49,30 @@
 /* The combo button's label */
 *[data-theme~="tpi"] xctrls|combo > xctrls|button > xctrls|label {
 
-    background-color: transparent;
 }
 
 /* Hovering over the combo's button, label must highlight */
 *[data-theme~="tpi"] xctrls|combo > xctrls|button:hover > xctrls|label {
 
+    color: var(--xctrls-combo-font-color-hover);
 }
 
 /* Focusing on the combo's button, label must highlight */
 *[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|focus] > xctrls|label {
 
+    color: var(--xctrls-combo-font-color-focus);
 }
 
 /* Clicking down on the combo's button, label must highlight */
 *[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|active] > xctrls|label {
 
+    color: var(--xctrls-combo-font-color-active);
 }
 
 /* The combo's button is disabled, so is the label */
 *[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|disabled] > xctrls|label {
 
+    color: var(--xctrls-combo-font-color-disabled);
 }
 
 /* The down arrow */

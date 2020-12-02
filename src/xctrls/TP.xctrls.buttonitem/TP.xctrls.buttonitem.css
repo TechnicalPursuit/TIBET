@@ -3,20 +3,15 @@
 */
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
-@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
-@namespace svg url("http://www.w3.org/2000/svg");
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* The buttonitem */
 xctrls|buttonitem {
 
-    position: relative;
-
     display: inline-flex;
+
     justify-content: center;
     align-items: center;
-
-    box-sizing: border-box;
 
     user-select: none;
 }
@@ -44,10 +39,7 @@ xctrls|buttonitem[pclass|disabled] {
 /* The buttonitem label */
 xctrls|buttonitem > xctrls|label {
 
-    position: absolute;
     flex: 1;
-    width: 100%;
-    height: 100%;
 }
 
 /* Clicking down on the buttonitem, label must highlight */

@@ -4,8 +4,9 @@
         id="{{$SOURCE.(@id)}}"
         tibet:assembly="xctrls:select"
         on:UIActivate="OpenPicker">
+    {{$SOURCE.(./xctrls:label)}}
     <xctrls:button>
-    <xctrls:label>Foo</xctrls:label>
+        <xctrls:label>Foo</xctrls:label>
     </xctrls:button>
     {{$SOURCE.(./xctrls:hint)}}
     <span xmlns="http://www.w3.org/1999/xhtml" class="icon">
