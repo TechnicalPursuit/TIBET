@@ -4515,6 +4515,13 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
 
         ownerElem,
 
+        bindStr,
+        bindEntries,
+        bindKeys,
+        k,
+        bailCount,
+        bailEntry,
+
         isScopingElement,
 
         valueAndPath,
@@ -4588,7 +4595,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
     subscopes = subscopes.filter(
             function(aSubscope) {
 
-                var k;
+                var l;
 
                 //  We don't want ourself in the list
                 if (aSubscope === elem) {
@@ -4599,7 +4606,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     return false;
                 }
 
-                for (k = 0; k < subscopes.length; k++) {
+                for (l = 0; l < subscopes.length; l++) {
                     //  If:
                     //  -   We're not checking ourself as a subscope
                     //  -   The subscope we're checking is actually contained in
@@ -4607,10 +4614,10 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     //  -   The iterating subscope contains the target subscope
                     //  -   We're at the end of checking all of the subscopes
                     //  then return false to filter out the target subscope.
-                    if (subscopes[k] !== aSubscope &&
-                        elem.contains(subscopes[k]) &&
-                        subscopes[k].contains(aSubscope)) {
-                            if (k === subscopes.length - 1) {
+                    if (subscopes[l] !== aSubscope &&
+                        elem.contains(subscopes[l]) &&
+                        subscopes[l].contains(aSubscope)) {
+                            if (l === subscopes.length - 1) {
                                 return false;
                             }
                     }
@@ -4632,7 +4639,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     bindInValue,
                     bindOutValue,
 
-                    k;
+                    l;
 
                 bindIOValue = anElem.getAttributeNS(TP.w3.Xmlns.BIND, 'io');
                 bindInValue = anElem.getAttributeNS(TP.w3.Xmlns.BIND, 'in');
@@ -4651,7 +4658,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                 }
 
                 if (elem.contains(anElem)) {
-                    for (k = 0; k < subscopes.length; k++) {
+                    for (l = 0; l < subscopes.length; l++) {
 
                         //  If the subscope contains the element, then we will
                         //  normally return false to exclude it from the
@@ -4659,7 +4666,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                         //  exception to this is if the binding value contains
                         //  'urn:' or '//:' which would indicate some sort of
                         //  absolute path.
-                        if (subscopes[k].contains(anElem)) {
+                        if (subscopes[l].contains(anElem)) {
 
                             if (TP.notEmpty(bindIOValue) &&
                                 (bindIOValue.contains('urn:') ||
@@ -4858,11 +4865,44 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
             //  If the attribute value contains a URI scheme, but it's primary
             //  location doesn't match the primary location that changed and
             //  that we're refreshing from (which may happen because we're
-            //  querying from the *document* down), then just continue and move
-            //  on,
+            //  querying from the *document* down), then we need to check the
+            //  binding expression further - we may just bail out.
+            //  NB: The reason this can't be a simple check is that it will
+            //  match 'data:', for instance, because 'data:' is a legal URN
+            //  scheme... but sometimes binding aspects are also in a binding
+            //  expression as 'data:'.
             if (TP.regex.ALL_SCHEMES.test(attrVal) &&
                 !primaryLocMatcher.test(attrVal)) {
-                continue;
+
+                //  Make a JSON-y string from the attribute value. If it can't
+                //  be converted, then it's a shorthand. Assign it to 'value'
+                //  and try again.
+                bindStr = TP.reformatJSToJSON(attrVal);
+                if (!TP.isJSONString(bindStr)) {
+                    bindStr = '{"value":"' + attrVal + '"}';
+                }
+
+                //  Try to parse the entry string into a TP.core.Hash.
+                bindEntries = TP.json2js(bindStr);
+                bindKeys = bindEntries.getKeys();
+
+                //  Iterate over each binding entry. We track each 'bail out'
+                //  entry via this counter. If *all* of the entries are bail out
+                //  entries, then we bail out.
+                bailCount = 0;
+                for (k = 0; k < bindKeys.getSize(); k++) {
+                    bailEntry = bindEntries.at(bindKeys.at(k));
+                    if (TP.regex.ALL_SCHEMES.test(bailEntry) &&
+                        !primaryLocMatcher.test(bailEntry)) {
+                        bailCount++;
+                    }
+                }
+
+                //  The 'bail out' counter is the same as the number of keys -
+                //  bail out.
+                if (bailCount === bindKeys.getSize()) {
+                    continue;
+                }
             }
 
             ownerTPElem = TP.wrap(ownerElem);
