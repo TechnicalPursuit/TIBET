@@ -134,7 +134,7 @@ xctrls|textitem {
     --xctrls-textitem-background-color-active: gold;
     --xctrls-textitem-background-color-disabled: #eee;
 
-    --xctrls-textitem-background-color-selected: gray;
+    --xctrls-textitem-background-color-selected: gold;
 }
 
 xctrls|combo {

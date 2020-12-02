@@ -12,6 +12,7 @@
 /* The radioitem */
 *[data-theme~="tpi"] xctrls|radioitem {
 
+    background-color: var(--xctrls-radioitem-background-color-normal);
 }
 
 /* The radioitem's value (the checkmark) */
@@ -22,6 +23,7 @@
 /* Hovering over the radioitem */
 *[data-theme~="tpi"] xctrls|radioitem:hover {
 
+    background-color: var(--xctrls-radioitem-background-color-hover);
 }
 
 *[data-theme~="tpi"] xctrls|radioitem:hover > *[tibet|pelem="value"] {
@@ -46,6 +48,7 @@
 /* Focusing on the radioitem */
 *[data-theme~="tpi"] xctrls|radioitem[pclass|focus] {
 
+    background-color: var(--xctrls-radioitem-background-color-focus);
 }
 
 *[data-theme~="tpi"] xctrls|radioitem[pclass|focus] > *[tibet|pelem="value"] {
@@ -81,6 +84,7 @@
 /* Clicking down on the radioitem */
 *[data-theme~="tpi"] xctrls|radioitem[pclass|active] {
 
+    background-color: var(--xctrls-radioitem-background-color-active);
 }
 
 *[data-theme~="tpi"] xctrls|radioitem[pclass|active] > *[tibet|pelem="value"] {
@@ -116,6 +120,7 @@
 /* The radioitem is disabled */
 *[data-theme~="tpi"] xctrls|radioitem[pclass|disabled] {
 
+    background-color: var(--xctrls-radioitem-background-color-disabled);
 }
 
 *[data-theme~="tpi"] xctrls|radioitem[pclass|disabled] > *[tibet|pelem="value"] {
@@ -162,14 +167,12 @@
 
     font-family: var(--xctrls-radioitem-font-family);
     color: var(--xctrls-radioitem-font-color-normal);
-    background-color: var(--xctrls-radioitem-background-color-normal);
 }
 
 /* Hovering over the radioitem, label must highlight */
 *[data-theme~="tpi"] xctrls|radioitem:hover > xctrls|label {
 
     color: var(--xctrls-radioitem-font-color-hover);
-    background-color: var(--xctrls-radioitem-background-color-hover);
 }
 
 *[data-theme~="tpi"] xctrls|radioitem[pclass|focus] {
@@ -180,23 +183,16 @@
 *[data-theme~="tpi"] xctrls|radioitem[pclass|focus] > xctrls|label {
 
     color: var(--xctrls-radioitem-font-color-focus);
-    background-color: var(--xctrls-radioitem-background-color-focus);
-}
-
-*[data-theme~="tpi"] xctrls|radioitem[pclass|active] {
-
 }
 
 /* Clicking down on the radioitem, label must highlight */
 *[data-theme~="tpi"] xctrls|radioitem[pclass|active] > xctrls|label {
 
     color: var(--xctrls-radioitem-font-color-active);
-    background-color: var(--xctrls-radioitem-background-color-active);
 }
 
 /* The radioitem is disabled, so is the label */
 *[data-theme~="tpi"] xctrls|radioitem[pclass|disabled] > xctrls|label {
 
     color: var(--xctrls-radioitem-font-color-disabled);
-    background-color: var(--xctrls-radioitem-background-color-disabled);
 }
