@@ -22,6 +22,51 @@ TP.dom.UIElementNode.defineSubtype('tibet:group');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.tibet.group.Type.defineMethod('getQueryPath',
+function(wantsDeep, wantsCompiled, wantsDisabled) {
+
+    /**
+     * @method getQueryPath
+     * @summary Returns the 'query path' that can be used in calls such as
+     *     'nodeEvaluatePath' to obtain all of the occurrences of the receiver
+     *     in a document.
+     * @param {Boolean} wantsDeep Whether or not the query should represent a
+     *     'deep query' - that is, all of the occurrences of this element even
+     *     under elements of the same type. This defaults to false.
+     * @param {Boolean} [wantsCompiled=false] Whether or not the query should
+     *     also find compiled representations of the receiver. This defaults to
+     *     false.
+     * @param {Boolean} [wantsDisabled=true] Whether or not the query should
+     *     also find disabled versions of the receiver. This defaults to true.
+     * @returns {String} The path that can be used to query for Nodes of this
+     *     type.
+     */
+
+    var str,
+
+        queryTypes,
+
+        len,
+        i;
+
+    //  Grab the standard query for this type.
+    str = this.callNextMethod();
+
+    //  Note here how we do *not* ask for the subtypes deeply. This call will
+    //  recurse endlessly if we do. We'll traverse each level as appropriate.
+    queryTypes = this.getSubtypes();
+
+    //  Grab the query for each subtype and append it (after separating with the
+    //  standard CSS selector separator ',').
+    len = queryTypes.getSize();
+    for (i = 0; i < len; i++) {
+        str += ', ' + queryTypes.at(i).getQueryPath(
+                            wantsDeep, wantsCompiled, wantsDisabled);
+    }
+
+    return str;
+});
+
 //  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
