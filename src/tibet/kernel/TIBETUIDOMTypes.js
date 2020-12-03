@@ -2563,7 +2563,7 @@ function(focusedTPElem, moveAction) {
                     //  group computation which occurred above).
 
                     //  First, we query with wanting groups, to see if there are
-                    //  any focusable items after our current group.
+                    //  any focusable items before our current group.
                     computedGroupResults =
                                 computedGroup.findFocusableElements(true);
 
@@ -2574,8 +2574,8 @@ function(focusedTPElem, moveAction) {
                     resultTPElem = computedGroupResults.before(
                                     currentGroup, TP.EQUALITY, true);
 
-                    //  If there are no focusable items after our current group,
-                    //  then we re-query, but this time with no groups.
+                    //  If there are no focusable items before our current
+                    //  group, then we re-query, but this time with no groups.
                     if (TP.notValid(resultTPElem)) {
                         noGroupResults =
                             computedGroup.findFocusableElements(false);
