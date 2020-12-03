@@ -191,5 +191,15 @@
     A standard XControls pagerbar enabled showing dynamic content, value bound to a selection model and a page size greater than 1.
     <xctrls:pagerbar id="pagerbar8" bind:in="{data: urn:tibet:object_hash#tibet(names)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_4)}" pagesize="5"/>
 
+    <div class="controlBox">
+        <button onclick="TP.byId('pagerbar1').signal('UIDisabled');">Disable pagerbar #1</button>
+        <button onclick="TP.byId('pagerbar1').signal('UIEnabled');">Enable pagerbar #1</button>
+
+        <br/>
+
+        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
+        <button onclick="setTimeout(function() {TP.byId('pagerbar1').signal('UIFocused');}, 100)">Focus pagerbar #1</button>
+    </div>
+
 </body>
 </html>
