@@ -2504,8 +2504,17 @@ function(focusedTPElem, moveAction) {
                         noGroupResults =
                             computedGroup.findFocusableElements(false);
 
+                        //  If we got 'no group' results, then we try to
+                        //  determine if there is an element after the
+                        //  currently focused element. If so, we use that as our
+                        //  result element.
+                        //  Otherwise, we just use the first 'no group' element.
                         if (TP.notEmpty(noGroupResults)) {
-                            resultTPElem = noGroupResults.first();
+                            resultTPElem = noGroupResults.after(
+                                    focusedTPElem, TP.EQUALITY, true);
+                            if (TP.notValid(resultTPElem)) {
+                                resultTPElem = noGroupResults.first();
+                            }
                         } else {
                             resultTPElem = computedGroupResults.first();
                         }
@@ -2571,8 +2580,17 @@ function(focusedTPElem, moveAction) {
                         noGroupResults =
                             computedGroup.findFocusableElements(false);
 
+                        //  If we got 'no group' results, then we try to
+                        //  determine if there is an element before the
+                        //  currently focused element. If so, we use that as our
+                        //  result element.
+                        //  Otherwise, we just use the last 'no group' element.
                         if (TP.notEmpty(noGroupResults)) {
-                            resultTPElem = noGroupResults.last();
+                            resultTPElem = noGroupResults.before(
+                                    focusedTPElem, TP.EQUALITY, true);
+                            if (TP.notValid(resultTPElem)) {
+                                resultTPElem = noGroupResults.last();
+                            }
                         } else {
                             resultTPElem = computedGroupResults.last();
                         }
