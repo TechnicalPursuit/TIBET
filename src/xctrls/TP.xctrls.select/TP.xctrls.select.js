@@ -150,6 +150,27 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.select.Inst.defineHandler('UIDidClose',
+function(aSignal) {
+
+    /**
+     * @method handleUIDidClose
+     * @param {TP.sig.UIDidClose} aSignal The signal that caused this handler to
+     *     trip.
+     * @returns {TP.xctrls.select} The receiver.
+     */
+
+    //  The popupList has just closed. After the next repaint focus our input
+    //  field.
+    (function() {
+        return this.focus();
+    }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.select.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
@@ -164,9 +185,7 @@ function(aValue) {
     var content,
 
         contentValue,
-        contentItem,
-
-        label;
+        contentLabel;
 
     content = this.get('popupContentFirstElement');
 
@@ -176,20 +195,18 @@ function(aValue) {
         //  Grab the display value and trying to find a matching item in our
         //  list.
         contentValue = content.getDisplayValue();
-        contentItem = content.get('itemWithValue', contentValue);
 
-        //  If we found a matching item, we'll use it's label text as our label.
-        //  Otherwise, we'll set our label to the empty String.
-        if (TP.isValid(contentItem)) {
-            label = contentItem.getLabelText();
-        } else {
-            label = '';
-        }
+        //  If we found a matching item, we'll use it's label text as our
+        //  input's value. Otherwise, we'll set our input's value to the empty
+        //  String.
+        contentLabel = content.getLabelForValue(contentValue);
     } else {
-        label = aValue;
+        contentLabel = aValue;
     }
 
-    this.get('selectLabel').setContent(label);
+    contentLabel = TP.ifEmpty(contentLabel, '');
+
+    this.get('selectLabel').setContent(contentLabel);
 
     return this;
 });
