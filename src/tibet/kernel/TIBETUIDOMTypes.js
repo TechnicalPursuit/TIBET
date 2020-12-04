@@ -1990,6 +1990,8 @@ function(focusedTPElem, moveAction) {
         currentGroupName,
         currentGroup,
 
+        finalFocusedTPElem,
+
         bodyElem,
         focusedElem,
 
@@ -2037,8 +2039,15 @@ function(focusedTPElem, moveAction) {
         currentGroup = bodyTPElem;
     }
 
+    //  Grab the 'focus boundary' from the currently focused element. If the
+    //  focused element is an 'atomic' element (that is, an element that doesn't
+    //  contain other, focusable elements) then this will just return the
+    //  element itself. Otherwise, it will return a common parent with the
+    //  'tibet:focusboundary' attribute on it.
+    finalFocusedTPElem = focusedTPElem.getFocusBoundaryElement();
+
     bodyElem = TP.unwrap(bodyTPElem);
-    focusedElem = TP.unwrap(focusedTPElem);
+    focusedElem = TP.unwrap(finalFocusedTPElem);
 
     theMoveAction = moveAction;
 
@@ -2371,9 +2380,9 @@ function(focusedTPElem, moveAction) {
                 return null;
             }
 
-            if (TP.notValid(focusedTPElem) ||
+            if (TP.notValid(finalFocusedTPElem) ||
                 TP.notValid(resultTPElem = currentGroupResults.after(
-                                            focusedTPElem.getNativeNode(),
+                                            finalFocusedTPElem.getNativeNode(),
                                             TP.EQUALITY,
                                             true))) {
 
@@ -2394,9 +2403,9 @@ function(focusedTPElem, moveAction) {
                 return null;
             }
 
-            if (TP.notValid(focusedTPElem) ||
+            if (TP.notValid(finalFocusedTPElem) ||
                 TP.notValid(resultTPElem = currentGroupResults.before(
-                                            focusedTPElem.getNativeNode(),
+                                            finalFocusedTPElem.getNativeNode(),
                                             TP.EQUALITY,
                                             true))) {
 
@@ -2470,12 +2479,13 @@ function(focusedTPElem, moveAction) {
                 //  We try to see if the current group has a focusable field
                 //  following the current one.
                 resultTPElem = currentGroupResults.after(
-                                            focusedTPElem, TP.EQUALITY, true);
+                                    finalFocusedTPElem, TP.EQUALITY, true);
 
-                if (TP.notValid(focusedTPElem) || TP.notValid(resultTPElem)) {
+                if (TP.notValid(finalFocusedTPElem) ||
+                    TP.notValid(resultTPElem)) {
 
                     if (!TP.isValid(computedGroup)) {
-                        if (currentGroupResults.last() === focusedTPElem) {
+                        if (currentGroupResults.last() === finalFocusedTPElem) {
                             return currentGroupResults.first();
                         }
 
@@ -2511,7 +2521,7 @@ function(focusedTPElem, moveAction) {
                         //  Otherwise, we just use the first 'no group' element.
                         if (TP.notEmpty(noGroupResults)) {
                             resultTPElem = noGroupResults.after(
-                                    focusedTPElem, TP.EQUALITY, true);
+                                    finalFocusedTPElem, TP.EQUALITY, true);
                             if (TP.notValid(resultTPElem)) {
                                 resultTPElem = noGroupResults.first();
                             }
@@ -2546,12 +2556,13 @@ function(focusedTPElem, moveAction) {
                 //  We try to see if the current group has a focusable field
                 //  preceding the current one.
                 resultTPElem = currentGroupResults.before(
-                                            focusedTPElem, TP.EQUALITY, true);
+                                    finalFocusedTPElem, TP.EQUALITY, true);
 
-                if (TP.notValid(focusedTPElem) || TP.notValid(resultTPElem)) {
+                if (TP.notValid(finalFocusedTPElem) ||
+                    TP.notValid(resultTPElem)) {
 
                     if (!TP.isValid(computedGroup)) {
-                        if (currentGroupResults.first() === focusedTPElem) {
+                        if (currentGroupResults.first() === finalFocusedTPElem) {
                             return currentGroupResults.last();
                         }
 
@@ -2587,7 +2598,7 @@ function(focusedTPElem, moveAction) {
                         //  Otherwise, we just use the last 'no group' element.
                         if (TP.notEmpty(noGroupResults)) {
                             resultTPElem = noGroupResults.before(
-                                    focusedTPElem, TP.EQUALITY, true);
+                                    finalFocusedTPElem, TP.EQUALITY, true);
                             if (TP.notValid(resultTPElem)) {
                                 resultTPElem = noGroupResults.last();
                             }
@@ -2689,7 +2700,9 @@ function(includesGroups) {
 
         queryStr,
 
-        noIntermediateGroups;
+        noIntermediateGroups,
+
+        finalResult;
 
     //  Query for any elements under the context element that are focusable.
 
@@ -2726,9 +2739,10 @@ function(includesGroups) {
                                         elem,
                                         false,
                                         false);
+
     //  Now, filter that result set to make sure that there are no 'tibet:group'
     //  elements between each result node and our own element.
-    noIntermediateGroups = noIntermediateGroups.filter(
+    finalResult = noIntermediateGroups.filter(
                             function(focusableElem) {
                                 return !TP.isElement(
                                             TP.nodeDetectAncestorMatchingCSS(
@@ -2737,7 +2751,19 @@ function(includesGroups) {
                                                 elem));
                             });
 
-    results.push(noIntermediateGroups);
+    //  Now, filter that result set to make sure that there are no elements with
+    //  'tibet:focusboundary' attributes between each result node and our own
+    //  element.
+    finalResult = finalResult.filter(
+                            function(focusableElem) {
+                                return !TP.isElement(
+                                            TP.nodeDetectAncestorMatchingCSS(
+                                                focusableElem,
+                                                '[tibet|focusboundary]',
+                                                elem));
+                            });
+
+    results.push(finalResult);
 
     if (includesGroups) {
         results.push(
@@ -2812,6 +2838,30 @@ function(anAttribute) {
      */
 
     return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('getFocusBoundaryElement',
+function() {
+
+    /**
+     * @method getFocusBoundaryElement
+     * @summary Returns the TP.dom.UIElementNode that forms the receiver's
+     *     'focus bound'. This is normally the receiver itself, but it can be
+     *     any ancestor element with the 'tibet:focusboundary' attribute.
+     * @returns {TP.dom.UIElementNode} The TP.dom.UIElementNode acting as the
+     *      'focus context' element of the receiver.
+     */
+
+    var focusBoundaryTPElem;
+
+    if (TP.isValid(focusBoundaryTPElem =
+            this.getFirstAncestorByAttribute('tibet:focusboundary'))) {
+        return focusBoundaryTPElem;
+    } else {
+        return this;
+    }
 });
 
 //  ------------------------------------------------------------------------
