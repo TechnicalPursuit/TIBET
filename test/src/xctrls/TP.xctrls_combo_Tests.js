@@ -1140,5 +1140,154 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.combo.Type.describe('TP.xctrls.combo: data binding',
+function() {
+
+    var windowContext,
+
+        unloadURI,
+        loadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            var loc;
+
+            windowContext = this.getDriver().get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_combo.xhtml';
+            loadURI = TP.uc(loc);
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:combo - initial setup', function(test, options) {
+
+        var combo,
+
+            modelObj,
+            firstComboItem;
+
+        combo = TP.byId('combo5', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        //  ---
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(combo).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                var comboList;
+
+                comboList = combo.get('popupContentFirstElement');
+
+                test.andIfNotValidWaitFor(
+                        function() {
+                            firstComboItem = comboList.get('listitems').first();
+                            return firstComboItem;
+                        },
+                        TP.gid(comboList),
+                        'TP.sig.DidRenderData');
+            });
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    combo.get('value'),
+                    'bar');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('selection_set_1')),
+                    'bar');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:combo - change value via user interaction', function(test, options) {
+
+        var combo,
+
+            modelObj,
+            firstComboItem;
+
+        combo = TP.byId('combo5', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(combo).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                var comboList;
+
+                comboList = combo.get('popupContentFirstElement');
+
+                test.andIfNotValidWaitFor(
+                        function() {
+                            firstComboItem = comboList.get('listitems').first();
+                            return firstComboItem;
+                        },
+                        TP.gid(comboList),
+                        'TP.sig.DidRenderData');
+            });
+
+        test.chain(
+            function() {
+
+                test.chain(
+                    function() {
+                        test.getDriver().constructSequence().
+                            click(firstComboItem).
+                            run();
+                    });
+
+                test.chain(
+                    function() {
+                        test.assert.isEqualTo(
+                            combo.get('value'),
+                            'foo');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('selection_set_1')),
+                            'foo');
+                    });
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
