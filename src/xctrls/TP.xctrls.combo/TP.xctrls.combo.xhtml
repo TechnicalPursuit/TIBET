@@ -3,7 +3,8 @@
 <xctrls:combo
         id="{{$SOURCE.(@id)}}"
         tibet:assembly="xctrls:combo"
-        on:UIActivate="OpenPicker">
+        on:UIActivate="OpenPicker"
+        tibet:focusboundary="true">
     {{$SOURCE.(./xctrls:label)}}
     <input type="text"/>
     {{$SOURCE.(./xctrls:hint)}}
