@@ -272,10 +272,13 @@ function(aValue) {
         //  input's value. Otherwise, we'll set our input's value to the empty
         //  String.
         contentLabel = content.getLabelForValue(contentValue);
-        contentLabel = TP.ifEmpty(contentLabel, '');
-
-        this.get('comboInput').setValue(contentLabel);
+    } else {
+        contentLabel = aValue;
     }
+
+    contentLabel = TP.ifEmpty(contentLabel, '');
+
+    this.get('comboInput').setValue(contentLabel);
 
     return this;
 });
