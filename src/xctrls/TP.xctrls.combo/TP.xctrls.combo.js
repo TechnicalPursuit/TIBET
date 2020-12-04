@@ -181,6 +181,27 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.combo.Inst.defineHandler('UIDidClose',
+function(aSignal) {
+
+    /**
+     * @method handleUIDidClose
+     * @param {TP.sig.UIDidClose} aSignal The signal that caused this handler to
+     *     trip.
+     * @returns {TP.xctrls.combo} The receiver.
+     */
+
+    //  The popupList has just closed. After the next repaint focus our input
+    //  field.
+    (function() {
+        return this.focus();
+    }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.combo.Inst.defineHandler('UIFocusComputation',
 function(aSignal) {
 
