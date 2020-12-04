@@ -89,10 +89,14 @@ function() {
         test.chain(
             function() {
 
-                test.assert.hasAttribute(combo, 'pclass:focus');
+                var comboInput;
 
-                test.assert.didSignal(combo, 'TP.sig.UIFocus');
-                test.assert.didSignal(combo, 'TP.sig.UIDidFocus');
+                comboInput = combo.get('comboInput');
+
+                test.assert.hasAttribute(comboInput, 'pclass:focus');
+
+                test.assert.didSignal(comboInput, 'TP.sig.UIFocus');
+                test.assert.didSignal(comboInput, 'TP.sig.UIDidFocus');
             });
     });
 
