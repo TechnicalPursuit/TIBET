@@ -990,6 +990,46 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('getLabelForValue',
+function(value) {
+
+    /**
+     * @method getLabelForValue
+     * @summary Returns the label for the item in the receiver that has a value
+     *     matching the supplied value.
+     * @param {Object} value The value to use to look up the desired label.
+     * @returns {Object} The label for our supplied value.
+     */
+
+    var data,
+        val;
+
+    data = this.get('data');
+
+    if (TP.isHash(data)) {
+        val = data.at(value);
+    }
+
+    if (TP.isArray(data)) {
+        if (TP.isPair(data.first())) {
+            //  val will be a single item Array with the pair as its vaue.
+            val = data.select(
+                    function(aPair) {
+                        return aPair.first() === value;
+                    });
+            if (TP.notEmpty(val)) {
+                val = val.first().last();
+            }
+        } else if (TP.isNumber(parseInt(value, 10))) {
+            val = data.at(parseInt(value, 10));
+        }
+    }
+
+    return val;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineMethod('setData',
 function(aDataObject, shouldSignal, isFiltered) {
 
