@@ -269,7 +269,7 @@ function(aSignal) {
     var targetElem,
         triggerTPElem;
 
-    targetElem = aSignal.getTarget();
+    targetElem = aSignal.getResolvedTarget();
 
     triggerTPElem = this.get('$triggerTPElement');
 
@@ -323,7 +323,7 @@ function(aSignal) {
     var targetElem,
         triggerTPElem;
 
-    targetElem = aSignal.getTarget();
+    targetElem = aSignal.getResolvedTarget();
 
     triggerTPElem = this.get('$triggerTPElement');
 
