@@ -257,9 +257,7 @@ function(aValue) {
     var content,
 
         contentValue,
-        contentItem,
-
-        input;
+        contentLabel;
 
     content = this.get('popupContentFirstElement');
 
@@ -269,21 +267,15 @@ function(aValue) {
         //  Grab the display value and trying to find a matching item in our
         //  list.
         contentValue = content.getDisplayValue();
-        contentItem = content.get('itemWithValue', contentValue);
 
         //  If we found a matching item, we'll use it's label text as our
         //  input's value. Otherwise, we'll set our input's value to the empty
         //  String.
-        if (TP.isValid(contentItem)) {
-            input = contentItem.getLabelText();
-        } else {
-            input = '';
-        }
-    } else {
-        input = aValue;
-    }
+        contentLabel = content.getLabelForValue(contentValue);
+        contentLabel = TP.ifEmpty(contentLabel, '');
 
-    this.get('comboInput').setValue(input);
+        this.get('comboInput').setValue(contentLabel);
+    }
 
     return this;
 });
