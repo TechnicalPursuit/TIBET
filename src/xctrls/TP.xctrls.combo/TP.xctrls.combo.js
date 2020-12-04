@@ -150,6 +150,58 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.combo.Inst.defineMethod('focus',
+function(moveAction) {
+
+    /**
+     * @method focus
+     * @summary Focuses the receiver for keyboard input.
+     * @description Whenever we are focused, we focus our input field.
+     * @param {String} moveAction The type of 'move' that the user requested.
+     *     This can be one of the following:
+     *          TP.FIRST
+     *          TP.LAST
+     *          TP.NEXT
+     *          TP.PREVIOUS
+     *          TP.FIRST_IN_GROUP
+     *          TP.LAST_IN_GROUP
+     *          TP.FIRST_IN_NEXT_GROUP
+     *          TP.FIRST_IN_PREVIOUS_GROUP
+     *          TP.FOLLOWING
+     *          TP.PRECEDING.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var input;
+
+    input = this.get('comboInput');
+
+    return input.focus(moveAction);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.combo.Inst.defineHandler('UIDidClose',
+function(aSignal) {
+
+    /**
+     * @method handleUIDidClose
+     * @param {TP.sig.UIDidClose} aSignal The signal that caused this handler to
+     *     trip.
+     * @returns {TP.xctrls.combo} The receiver.
+     */
+
+    //  The popupList has just closed. After the next repaint focus our input
+    //  field.
+    (function() {
+        return this.focus();
+    }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.combo.Inst.defineHandler('UIFocusComputation',
 function(aSignal) {
 
@@ -161,36 +213,29 @@ function(aSignal) {
      */
 
     var origin,
+        signame,
 
-        triggerTargetTPElem,
-
-        popupList,
-        input,
-
-        moveAction;
+        popupList;
 
     //  Get the signal origin - this might be an item in the popupList
     origin = aSignal.getOrigin();
-
-    //  The trigger target is the actual element that generated the signal.
-    triggerTargetTPElem = TP.wrap(aSignal.at('trigger').getTarget());
+    signame = aSignal.getSignalName();
 
     popupList = this.get('popupContentFirstElement');
-    input = this.get('comboInput');
 
-    if (popupList.contains(origin) &&
-        triggerTargetTPElem.identicalTo(input)) {
-
+    //  If the popupList is valid (which means it's open) and it contains signal
+    //  origin, then that means it was a 'focus shifting' signal happening
+    //  *inside* of the popupList content. Stop propagation up this responder
+    //  chain and send it over to the popupList to handle.
+    if (TP.isValid(popupList) && popupList.contains(origin)) {
         aSignal.stopPropagation();
 
-        moveAction = aSignal.getType().get('moveAction');
-
-        this.signal('ClosePopup');
-
-        input.moveFocus(moveAction, false);
+        return popupList[TP.composeHandlerName(signame)](aSignal);
     }
 
-    return this;
+    //  Otherwise, it happened inside of ourself - just call up to our
+    //  supertype.
+    return this.callNextMethod();
 },
 {
     phase: TP.CAPTURING
@@ -212,9 +257,7 @@ function(aValue) {
     var content,
 
         contentValue,
-        contentItem,
-
-        input;
+        contentLabel;
 
     content = this.get('popupContentFirstElement');
 
@@ -224,21 +267,15 @@ function(aValue) {
         //  Grab the display value and trying to find a matching item in our
         //  list.
         contentValue = content.getDisplayValue();
-        contentItem = content.get('itemWithValue', contentValue);
 
         //  If we found a matching item, we'll use it's label text as our
         //  input's value. Otherwise, we'll set our input's value to the empty
         //  String.
-        if (TP.isValid(contentItem)) {
-            input = contentItem.getLabelText();
-        } else {
-            input = '';
-        }
-    } else {
-        input = aValue;
-    }
+        contentLabel = content.getLabelForValue(contentValue);
+        contentLabel = TP.ifEmpty(contentLabel, '');
 
-    this.get('comboInput').setValue(input);
+        this.get('comboInput').setValue(contentLabel);
+    }
 
     return this;
 });

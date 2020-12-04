@@ -1762,13 +1762,13 @@ TP.NEVER_SERIALIZED_TIBET_ATTRS = [
 //  A list of queries for elements that can be focused without a 'tabindex'
 //  attribute, plus the query for any element that has a tabindex.
 TP.FOCUSABLE_QUERIES = [
-    'body',
-    'a[href]:not([disabled])',
-    'input:not([disabled])',
-    'select:not([disabled])',
-    'textarea:not([disabled])',
-    'button:not([disabled])',
-    'iframe:not([disabled])',
+    'html|body',
+    'html|a[href]:not([disabled])',
+    'html|input:not([disabled])',
+    'html|select:not([disabled])',
+    'html|textarea:not([disabled])',
+    'html|button:not([disabled])',
+    'html|iframe:not([disabled])',
     '*[tabindex]:not([tabindex="-1"]):not([disabled])'
 ];
 
