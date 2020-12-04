@@ -2709,7 +2709,7 @@ function(includesGroups) {
     results = TP.ac();
 
     //  Query for any immediate children that have a 'tibet:group' attribute
-    //  that matches our group ID.
+    //  that are focusable.
     queryStr = TP.computeFocusableQuery('> ');
 
     results.push(
@@ -2720,8 +2720,8 @@ function(includesGroups) {
 
     queryStr = TP.computeFocusableQuery('*:not(tibet|group) ');
 
-    //  Query for any descendants that have a 'tibet:group' attribute that
-    //  matches our group ID.
+    //  Query for any descendants that do not have a parent that is a
+    //  'tibet:group' element.
     noIntermediateGroups = TP.byCSSPath(queryStr,
                                         elem,
                                         false,
