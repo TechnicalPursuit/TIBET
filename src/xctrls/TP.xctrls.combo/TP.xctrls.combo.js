@@ -213,36 +213,29 @@ function(aSignal) {
      */
 
     var origin,
+        signame,
 
-        triggerTargetTPElem,
-
-        popupList,
-        input,
-
-        moveAction;
+        popupList;
 
     //  Get the signal origin - this might be an item in the popupList
     origin = aSignal.getOrigin();
-
-    //  The trigger target is the actual element that generated the signal.
-    triggerTargetTPElem = TP.wrap(aSignal.at('trigger').getTarget());
+    signame = aSignal.getSignalName();
 
     popupList = this.get('popupContentFirstElement');
-    input = this.get('comboInput');
 
-    if (popupList.contains(origin) &&
-        triggerTargetTPElem.identicalTo(input)) {
-
+    //  If the popupList is valid (which means it's open) and it contains signal
+    //  origin, then that means it was a 'focus shifting' signal happening
+    //  *inside* of the popupList content. Stop propagation up this responder
+    //  chain and send it over to the popupList to handle.
+    if (TP.isValid(popupList) && popupList.contains(origin)) {
         aSignal.stopPropagation();
 
-        moveAction = aSignal.getType().get('moveAction');
-
-        this.signal('ClosePopup');
-
-        input.moveFocus(moveAction, false);
+        return popupList[TP.composeHandlerName(signame)](aSignal);
     }
 
-    return this;
+    //  Otherwise, it happened inside of ourself - just call up to our
+    //  supertype.
+    return this.callNextMethod();
 },
 {
     phase: TP.CAPTURING
