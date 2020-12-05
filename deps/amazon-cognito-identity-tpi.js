@@ -18,14 +18,14 @@
 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
+		module.exports = factory((function webpackLoadOptionalExternalModule() { try { return require("crypto"); } catch(e) {} }()));
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
+		define(["crypto"], factory);
 	else if(typeof exports === 'object')
-		exports["AmazonCognitoIdentity"] = factory();
+		exports["AmazonCognitoIdentity"] = factory((function webpackLoadOptionalExternalModule() { try { return require("crypto"); } catch(e) {} }()));
 	else
-		root["AmazonCognitoIdentity"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
+		root["AmazonCognitoIdentity"] = factory(root["crypto"]);
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_27__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -4454,7 +4454,7 @@ var CognitoRefreshToken = /*#__PURE__*/function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__);
@@ -4551,7 +4551,7 @@ var CognitoUser = /*#__PURE__*/function () {
    */
   function CognitoUser(data) {
     if (data == null || data.Username == null || data.Pool == null) {
-      throw new Error('Username and pool information are required.');
+      throw new Error('Username and Pool information are required.');
     }
 
     this.username = data.Username || '';
@@ -5787,6 +5787,7 @@ var CognitoUser = /*#__PURE__*/function () {
   _proto.refreshSession = function refreshSession(refreshToken, callback, clientMetadata) {
     var _this14 = this;
 
+    var wrappedCallback = this.pool.wrapRefreshSessionCallback ? this.pool.wrapRefreshSessionCallback(callback) : callback;
     var authParameters = {};
     authParameters.REFRESH_TOKEN = refreshToken.getToken();
     var keyPrefix = "CognitoIdentityServiceProvider." + this.pool.getClientId();
@@ -5816,7 +5817,7 @@ var CognitoUser = /*#__PURE__*/function () {
           _this14.clearCachedUser();
         }
 
-        return callback(err, null);
+        return wrappedCallback(err, null);
       }
 
       if (authResult) {
@@ -5830,7 +5831,7 @@ var CognitoUser = /*#__PURE__*/function () {
 
         _this14.cacheTokens();
 
-        return callback(null, _this14.signInUserSession);
+        return wrappedCallback(null, _this14.signInUserSession);
       }
 
       return undefined;
@@ -6898,11 +6899,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUser", function() { return __WEBPACK_IMPORTED_MODULE_5__CognitoUser__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__ = __webpack_require__(15);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserAttribute", function() { return __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__ = __webpack_require__(29);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserPool", function() { return __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__ = __webpack_require__(13);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserSession", function() { return __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CookieStorage__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CookieStorage__ = __webpack_require__(32);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CookieStorage", function() { return __WEBPACK_IMPORTED_MODULE_9__CookieStorage__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__DateHelper__ = __webpack_require__(14);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "DateHelper", function() { return __WEBPACK_IMPORTED_MODULE_10__DateHelper__["a"]; });
@@ -7164,9 +7165,7 @@ function fromByteArray (uint8) {
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(
-      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
-    ))
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
@@ -7525,6 +7524,13 @@ if (!crypto && typeof window !== 'undefined' && window.msCrypto) {
 
 if (!crypto && typeof global !== 'undefined' && global.crypto) {
   crypto = global.crypto;
+} // Native crypto import via require (NodeJS)
+
+
+if (!crypto && "function" === 'function') {
+  try {
+    crypto = __webpack_require__(27);
+  } catch (err) {}
 }
 /*
  * Cryptographically secure pseudorandom number generator
@@ -7533,10 +7539,20 @@ if (!crypto && typeof global !== 'undefined' && global.crypto) {
 
 
 function cryptoSecureRandomInt() {
-  if (crypto && typeof crypto.getRandomValues === 'function') {
-    try {
-      return crypto.getRandomValues(new Uint32Array(1))[0];
-    } catch (err) {}
+  if (crypto) {
+    // Use getRandomValues method (Browser)
+    if (typeof crypto.getRandomValues === 'function') {
+      try {
+        return crypto.getRandomValues(new Uint32Array(1))[0];
+      } catch (err) {}
+    } // Use randomBytes method (NodeJS)
+
+
+    if (typeof crypto.randomBytes === 'function') {
+      try {
+        return crypto.randomBytes(4).readInt32LE();
+      } catch (err) {}
+    }
   }
 
   throw new Error('Native crypto module could not be used to get secure random number.');
@@ -7545,6 +7561,13 @@ function cryptoSecureRandomInt() {
 
 /***/ }),
 /* 27 */
+/***/ (function(module, exports) {
+
+if(typeof __WEBPACK_EXTERNAL_MODULE_27__ === 'undefined') {var e = new Error("Cannot find module \"crypto\""); e.code = 'MODULE_NOT_FOUND'; throw e;}
+module.exports = __WEBPACK_EXTERNAL_MODULE_27__;
+
+/***/ }),
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -7684,12 +7707,12 @@ function cryptoSecureRandomInt() {
 }));
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoUserPool; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Client__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Client__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CognitoUser__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__StorageHelper__ = __webpack_require__(16);
 /*!
@@ -7728,7 +7751,7 @@ var CognitoUserPool = /*#__PURE__*/function () {
    *        to support cognito advanced security features. By default, this
    *        flag is set to true.
    */
-  function CognitoUserPool(data) {
+  function CognitoUserPool(data, wrapRefreshSessionCallback) {
     var _ref = data || {},
         UserPoolId = _ref.UserPoolId,
         ClientId = _ref.ClientId,
@@ -7755,6 +7778,10 @@ var CognitoUserPool = /*#__PURE__*/function () {
 
     this.advancedSecurityDataCollectionFlag = AdvancedSecurityDataCollectionFlag !== false;
     this.storage = data.Storage || new __WEBPACK_IMPORTED_MODULE_2__StorageHelper__["a" /* default */]().getStorage();
+
+    if (wrapRefreshSessionCallback) {
+      this.wrapRefreshSessionCallback = wrapRefreshSessionCallback;
+    }
   }
   /**
    * @returns {string} the user pool id
@@ -7890,12 +7917,12 @@ var CognitoUserPool = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Client; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserAgent__ = __webpack_require__(18);
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
@@ -8062,19 +8089,19 @@ var Client = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = self.fetch || (self.fetch = __webpack_require__(17).default || __webpack_require__(17));
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CookieStorage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_js_cookie__);
 
 /** @class */
@@ -8208,7 +8235,7 @@ var CookieStorage = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
