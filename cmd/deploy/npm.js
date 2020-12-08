@@ -1,80 +1,233 @@
-//  ========================================================================
 /**
- * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
- *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
- *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
- *     for your rights and responsibilities. Contact TPI to purchase optional
- *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The 'tibet deploy' subcommand specific to deploying a project to
- *     an npm repository.
+ * A 'tibet deploy' subcommand that encapsulates functionality to deploy a
+ * package of the application to the npm repository via the 'npm publish'
+ * command.
+ * This one is built to handle invocations of the TIBET CLI with a command line
+ * of:
+ * 'tibet deploy npm <environment>'.
+ *
+ * This subcommand expects the following fields, shown here as a set of
+ * configuration parameters in the project's 'tds.json' file:
+ *
+ *      "deploy": {
+ *          "npm": {
+ *              "folder": "folderformyapp" (defaults to './'),
+ *              "tarball": "tarballtopush" (defaults to null),
+                "tag": "mytag" (defaults to null),
+                "otp": "fde45de" (defaults to null)
+ *          }
+ *      }
+ *
+ * and/or as an inline parameter to the command, which here shows a parameter
+ * that is not placed in the 'tds.json' file for obvious reasons:
+ *
+ *      tibet deploy npm '{"password":"passwordMyPassword"}'
+ *
+ * These parameter sets are combined to form the full parameter set.
  */
-//  ========================================================================
-
-/* eslint indent:0, consistent-this: 0, no-console:0, one-var: 0 */
 
 (function() {
+    'use strict';
 
-'use strict';
+    var CLI,
+        sh,
 
-const CLI = require('../../src/tibet/cli/_cli');
+        GIT_COMMAND,
+        NPM_COMMAND;
 
-const executeNpm = function() {
-    var branch,
-        commands,
-        result,
-        cmd,
-        version;
+    CLI = require('../../src/tibet/cli/_cli');
+    sh = require('shelljs');
 
-    console.log('deploying to npm...');
+    //  ---
+    //  Instance Attributes
+    //  ---
 
-    cmd = this;
+    /**
+     * The name of the npm executable we look for to confirm installation.
+     * @type {string}
+     */
+    GIT_COMMAND = 'git';
+    NPM_COMMAND = 'npm';
 
-    //  'target' here because that's where release put the release'd code.
-    branch = this.getcfg('cli.release.target');
+    module.exports = function(cmdType) {
 
-    if (CLI.inProject()) {
-        version = CLI.getAppVersion();
-    } else {
-        version = CLI.getLibVersion();
-    }
+        /**
+         * Runs the npm subcommand, checking for npm-related support.
+         * @returns {Number} A return code.
+         */
+        cmdType.prototype.executeNpm = function() {
+            var gitpath,
+                npmpath;
 
-    commands = [
-        'git checkout ' + branch,
-        'npm publish ./'
-    ];
+            gitpath = this.findGit();
+            if (!gitpath) {
+                return 0;
+            }
 
-    this.info('Preparing to: ');
-    commands.forEach(function(command) {
-        cmd.log(command);
-    });
+            npmpath = this.findNpm();
+            if (!npmpath) {
+                return 0;
+            }
 
-    result = this.prompt.question(
-        'Upload release ' + version + ' to the npm repository? ' +
-        '? Enter \'yes\' after inspection: ');
-    if (!/^y/i.test(result)) {
-        this.log('npm publish cancelled.');
-        return;
-    }
+            return this.runViaNpm(gitpath, npmpath);
+        };
 
-    commands.forEach(function(command) {
-        /*
-        var res;
+        /**
+         * Locates a workable git binary if possible. This is checked by
+         * looking for any globally accessible version (via 'which').
+         * @returns {string} The path to the located git executable.
+         */
+        cmdType.prototype.findGit = function() {
+            var gitpath;
 
-        cmd.log('executing ' + command);
+            this.info('checking for git support...');
 
-        res = cmd.shexec(command);
+            gitpath = sh.which(GIT_COMMAND);
+            if (gitpath) {
+                this.info('found git...');
+                return gitpath.toString();
+            }
 
-        if (res && res.stdout.trim().slice(0, -1)) {
-            cmd.info(res.stdout.trim());
-        }
-        */
-    });
-};
+            this.info('git not installed');
+            return;
+        };
 
+        /**
+         * Locates a workable npm binary if possible. This is checked by
+         * looking for any globally accessible version (via 'which').
+         * @returns {string} The path to the located npm executable.
+         */
+        cmdType.prototype.findNpm = function() {
+            var npmpath;
 
-module.exports = function(cmdType) {
-    //  NOTE: we patch the prototype since invocation is instance-level.
-    cmdType.prototype.executeNpm = executeNpm;
-};
+            this.info('checking for npm support...');
+
+            npmpath = sh.which(NPM_COMMAND);
+            if (npmpath) {
+                this.info('found npm...');
+                return npmpath.toString();
+            }
+
+            this.info('npm not installed');
+            return;
+        };
+
+        /**
+         * Runs the deploy by activating the npm executable, deploying to the
+         *     npm public package registry.
+         * @param {string} gitpath The full path to the git executable.
+         * @param {string} npmpath The full path to the npm executable.
+         * @returns {Number} A return code.
+         */
+        cmdType.prototype.runViaNpm = async function(gitpath, npmpath) {
+            var cmd,
+
+                inlineparams,
+                cfgparams,
+                params,
+
+                branch,
+
+                execArgs;
+
+            /* eslint-disable consistent-this */
+            cmd = this;
+            /* eslint-disable consistent-this */
+
+            //  Reparse to parse out the non-qualified and option parameters.
+            cmd.reparse({
+                boolean: ['dry-run'],
+                default: {
+                    'dry-run': false
+                }
+            });
+
+            //  The cmd.options._ object holds non-qualified parameters.
+            //  [0] is the main command name ('deploy')
+            //  [1] is the subcommand name ('npm')
+            //  [2] is an optional inline parameter JSON string with values
+
+            inlineparams = cmd.options._[2];
+
+            //  ---
+            //  Compute parameters from mixing inline params and cfg-based
+            //  params
+            //  ---
+
+            if (CLI.notValid(inlineparams)) {
+                inlineparams = {};
+            } else {
+                try {
+                    inlineparams = JSON.parse(inlineparams);
+                } catch (e) {
+                    cmd.error('Invalid inline param JSON: ' + e.message);
+                    return 1;
+                }
+            }
+
+            cfgparams = CLI.cfg('tds.deploy.npm', null, true);
+            if (!cfgparams) {
+                cfgparams = {};
+            } else {
+                cfgparams = cfgparams.tds.deploy.npm;
+            }
+
+            params = CLI.blend({}, inlineparams);
+            params = CLI.blend(params, cfgparams);
+
+            //  ---
+            //  Run 'git checkout' with the checkout branch to publish
+            //  ---
+
+            //  'target' here because that's where 'tibet release' put the
+            //  release'd code.
+            branch = this.getcfg('cli.release.target');
+
+            execArgs = [
+                            'checkout',
+                            branch
+                        ];
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, gitpath, execArgs);
+            }
+
+            //  ---
+            //  Run 'npm publish' to publish
+            //  ---
+
+            params.folder = params.folder || './';
+
+            execArgs = [
+                            'publish',
+                            params.folder
+                        ];
+
+            if (params.tarball) {
+                //  The caller wanted the tarball, not the folder, so pop that
+                //  argument.
+                execArgs.pop();
+                execArgs.push(params.tarball);
+            }
+
+            if (params.tag) {
+                execArgs.push('--tag', params.tag);
+            }
+
+            if (params.opt) {
+                execArgs.push('--opt', params.opt);
+            }
+
+            cmd.log('Publishing to npm');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + npmpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, npmpath, execArgs);
+            }
+        };
+    };
 
 }(this));

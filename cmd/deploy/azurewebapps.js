@@ -11,6 +11,8 @@
  *
  *      "deploy": {
  *          "azurewebapps": {
+ *              "projectname": "myproject" (defaults to project.name),
+ *              "projectversion": "0.1.0" (defaults to project.version),
  *              "username": "bedney@technicalpursuit.com",
  *              "resourcegroupname": "TIBETAzureTestResourceGroup",
  *              "resourcegrouplocation": "Central US",
@@ -18,7 +20,9 @@
  *              "containerregistrysku": "Basic",
  *              "appserviceplanname": "TIBETAzureTestPlan",
  *              "appservicesku": "B1",
- *              "appname": "TIBETAzureTest"
+ *              "appname": "TIBETAzureTest",
+ *              "nodockercache": "true" (defaults to false),
+ *              "dockerfile": "Dockerfile_SPECIAL" (defaults to 'Dockerfile')
  *          }
  *      }
  *
@@ -136,13 +140,12 @@
         cmdType.prototype.runViaAzurewebapps = async function(
                                                 dockerpath, azuretoolspath) {
             var cmd,
-                argv,
 
                 inlineparams,
                 cfgparams,
                 params,
 
-                spawnArgs,
+                execArgs,
 
                 credentialsCapturer,
                 credentialsStr,
@@ -157,24 +160,27 @@
             cmd = this;
             /* eslint-disable consistent-this */
 
-            argv = this.getArglist();
+            //  Reparse to parse out the non-qualified and option parameters.
+            cmd.reparse({
+                boolean: ['dry-run'],
+                default: {
+                    'dry-run': false
+                }
+            });
 
-            //  argv[0] is the main command name ('deploy')
-            //  argv[1] is the subcommand name ('azurewebapps')
-            //  argv[2] is an optional inline parameter JSON string with values
-            //  specific to the command
+            //  The cmd.options._ object holds non-qualified parameters.
+            //  [0] is the main command name ('deploy')
+            //  [1] is the subcommand name ('azurewebapps')
+            //  [2] is an optional inline parameter JSON string with values
+
+            inlineparams = cmd.options._[2];
 
             //  ---
             //  Compute parameters from mixing inline params and cfg-based
             //  params
             //  ---
 
-            inlineparams = argv[2];
-
-            //  NB: The getArglist call above will also hand us '--flag'-type
-            //  arguments (they will be last). If the inline JSON wasn't
-            //  specified, we don't want to process any of those.
-            if (CLI.notValid(inlineparams) || inlineparams.startsWith('--')) {
+            if (CLI.notValid(inlineparams)) {
                 inlineparams = {};
             } else {
                 try {
@@ -249,7 +255,7 @@
             //  Log into Azure
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'login',
                             '-u',
                             params.username,
@@ -259,13 +265,17 @@
 
             cmd.log('Logging into Azure');
 
-            await CLI.spawnAsync(this, azuretoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, azuretoolspath, execArgs);
+            }
 
             //  ---
             //  Create a resource group on Azure
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'group',
                             'create',
                             '--name',
@@ -276,13 +286,17 @@
 
             cmd.log('Creating a resource group on Azure');
 
-            await CLI.spawnAsync(this, azuretoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, azuretoolspath, execArgs);
+            }
 
             //  ---
             //  Create a container registry on Azure
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'acr',
                             'create',
                             '--name',
@@ -297,7 +311,11 @@
 
             cmd.log('Creating a container registry on Azure');
 
-            await CLI.spawnAsync(this, azuretoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, azuretoolspath, execArgs);
+            }
 
             //  ---
             //  Compute a container registry location
@@ -310,7 +328,7 @@
             //  Obtain the credentials for the container registry
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'acr',
                             'credential',
                             'show',
@@ -321,12 +339,17 @@
             cmd.log('Obtaining the credentials for the container registry' +
                     ' on Azure');
 
-            credentialsCapturer = function(output) {
-                credentialsStr = output;
-            };
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+                credentialsStr = '{"passwords": [{"name": "password","value": "J0h3TsVwIXuNv3TMvNE=UI+7P1h7qd=i"},{"name": "password2","value": "ofiFwlkn4P9bjaKKy8dfRJttU=nMmA/f"}], "username": "TIBETAzureTestContainerRegistry"}';
+            } else {
+                credentialsCapturer = function(output) {
+                    credentialsStr = output;
+                };
 
-            await CLI.spawnAsync(this, azuretoolspath, spawnArgs,
+                await CLI.execAsync(this, azuretoolspath, execArgs, false,
                                     credentialsCapturer);
+            }
 
             try {
                 credentials = JSON.parse(credentialsStr);
@@ -346,7 +369,7 @@
             //  Log into Azure Container Registry.
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'login',
                             '--username',
                             params.containerregistryname,
@@ -357,7 +380,11 @@
 
             cmd.log('Logging into Azure Container Registry');
 
-            await CLI.spawnAsync(this, dockerpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, dockerpath, execArgs);
+            }
 
             //  ---
             //  Build and tag a Docker image
@@ -367,35 +394,50 @@
                     '/' + params.projectname +
                     ':' + params.projectversion;
 
-            spawnArgs = [
-                            'build',
-                            '-t',
-                            tag,
-                            '.'
+            execArgs = [
+                            'build'
                         ];
+
+            if (CLI.isTrue(params.nodockercache)) {
+                execArgs.push('--no-cache');
+            }
+
+            if (CLI.notEmpty(params.dockerfile)) {
+                execArgs.push('-f', params.dockerfile);
+            }
+
+            execArgs.push('-t', tag, '.');
 
             cmd.log('Using Docker to build image & tag: ' + tag);
 
-            await CLI.spawnAsync(this, dockerpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, dockerpath, execArgs);
+            }
 
             //  ---
             //  Push the Docker image to the Azure Container Registry
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'push',
                             tag
                         ];
 
             cmd.log('Pushing Docker image tagged: ' + tag);
 
-            await CLI.spawnAsync(this, dockerpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, dockerpath, execArgs);
+            }
 
             //  ---
             //  Create an app service plan
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'appservice',
                             'plan',
                             'create',
@@ -410,13 +452,17 @@
 
             cmd.log('Creating an app service plan on Azure');
 
-            await CLI.spawnAsync(this, azuretoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, azuretoolspath, execArgs);
+            }
 
             //  ---
             //  Create a webapp
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'webapp',
                             'create',
                             '--resource-group',
@@ -431,13 +477,17 @@
 
             cmd.log('Creating a webapp on Azure');
 
-            await CLI.spawnAsync(this, azuretoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, azuretoolspath, execArgs);
+            }
 
             //  ---
             //  Configure registry credentials in web app
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'webapp',
                             'config',
                             'container',
@@ -459,13 +509,17 @@
             cmd.log('Configuring the webapp with registry credentials on' +
                     ' Azure');
 
-            await CLI.spawnAsync(this, azuretoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, azuretoolspath, execArgs);
+            }
 
             //  ---
             //  Configure environment variables in web app
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'webapp',
                             'config',
                             'appsettings',
@@ -481,7 +535,12 @@
             cmd.log('Configuring the webapp with environment variables on' +
                     ' Azure');
 
-            await CLI.spawnAsync(this, azuretoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, azuretoolspath, execArgs);
+            }
+
         };
     };
 

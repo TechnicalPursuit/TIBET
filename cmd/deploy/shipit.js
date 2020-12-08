@@ -9,8 +9,8 @@
  *
  *      "deploy": {
  *          "shipit": {
- *              "environment": "development",
- *              "rollback": false
+ *              "environment": "development", (defaults to CLI.getEnv())
+ *              "rollback": true (defaults to false)
  *          }
  *      }
  *
@@ -110,7 +110,7 @@
             }
 
             shipitfilepath = CLI.joinPaths(CLI.getAppHead(),
-                                        SHIPIT_FILE);
+                                            SHIPIT_FILE);
 
             if (!fs.existsSync(shipitfilepath)) {
                 this.info('no shipitfile.js found in project...');
@@ -134,36 +134,38 @@
          */
         cmdType.prototype.runViaShipit = async function(shipitpath) {
             var cmd,
-                argv,
 
                 inlineparams,
                 cfgparams,
                 params,
 
-                spawnArgs;
+                execArgs;
 
             /* eslint-disable consistent-this */
             cmd = this;
             /* eslint-disable consistent-this */
 
-            argv = this.getArglist();
+            //  Reparse to parse out the non-qualified and option parameters.
+            cmd.reparse({
+                boolean: ['dry-run'],
+                default: {
+                    'dry-run': false
+                }
+            });
 
-            //  argv[0] is the main command name ('deploy')
-            //  argv[1] is the subcommand name ('shipit')
-            //  argv[2] is an optional inline parameter JSON string with values
-            //  specific to the command
+            //  The cmd.options._ object holds non-qualified parameters.
+            //  [0] is the main command name ('deploy')
+            //  [1] is the subcommand name ('shipit')
+            //  [2] is an optional inline parameter JSON string with values
+
+            inlineparams = cmd.options._[2];
 
             //  ---
             //  Compute parameters from mixing inline params and cfg-based
             //  params
             //  ---
 
-            inlineparams = argv[2];
-
-            //  NB: The getArglist call above will also hand us '--flag'-type
-            //  arguments (they will be last). If the inline JSON wasn't
-            //  specified, we don't want to process any of those.
-            if (CLI.notValid(inlineparams) || inlineparams.startsWith('--')) {
+            if (CLI.notValid(inlineparams)) {
                 inlineparams = {};
             } else {
                 try {
@@ -187,14 +189,14 @@
             params.environment = params.environment || CLI.getEnv();
             params.rollback = params.rollback || false;
 
-            spawnArgs = [];
+            execArgs = [];
 
-            spawnArgs[0] = params.environment;
-            spawnArgs[1] = CLI.isTrue(params.rollback) ? 'rollback' : 'deploy';
+            execArgs[0] = params.environment;
+            execArgs[1] = CLI.isTrue(params.rollback) ? 'rollback' : 'deploy';
 
-            if (spawnArgs[0]) {
-                cmd.warn('Delegating to \'shipit ' + spawnArgs[0] + ' ' +
-                            spawnArgs[1] + '\'');
+            if (execArgs[0]) {
+                cmd.warn('Delegating to \'shipit ' + execArgs[0] + ' ' +
+                            execArgs[1] + '\'');
             } else {
                 cmd.error('No shipit environment specified.');
                 return 1;
@@ -204,7 +206,11 @@
             //  Run ShipIt command
             //  ---
 
-            await CLI.spawnAsync(this, shipitpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + shipitpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, shipitpath, execArgs);
+            }
         };
     };
 

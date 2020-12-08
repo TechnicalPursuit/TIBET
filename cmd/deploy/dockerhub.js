@@ -11,7 +11,13 @@
  *      "deploy": {
  *          "dockerhub": {
  *              "username": "bedney",
- *              "account": "technicalpursuit"
+ *              "account": "technicalpursuit",
+ *              "projectname": "myproject" (defaults to project.name),
+ *              "projectversion": "0.1.0" (defaults to project.version),
+ *              "nodockercache": "true" (defaults to false),
+ *              "dockerfile": "Dockerfile_SPECIAL" (defaults to 'Dockerfile'),
+ *              "extra_tag_entries": ["technicalpursuit/myproject:latest technicalpursuit/myproject:footag"] (defaults to []),
+ *              "extra_push_entries": [] (defaults to [])
  *          }
  *      }
  *
@@ -52,14 +58,20 @@
          * @returns {Number} A return code.
          */
         cmdType.prototype.executeDockerhub = function() {
-            var dockerpath;
+            var gitpath,
+                dockerpath;
+
+            gitpath = this.findGit();
+            if (!gitpath) {
+                return 0;
+            }
 
             dockerpath = this.findDocker();
             if (!dockerpath) {
                 return 0;
             }
 
-            return this.runViaDocker(dockerpath);
+            return this.runViaDocker(gitpath, dockerpath);
         };
 
         /**
@@ -88,39 +100,46 @@
          * @param {string} dockerpath The full path to the Docker executable.
          * @returns {Number} A return code.
          */
-        cmdType.prototype.runViaDocker = async function(dockerpath) {
+        cmdType.prototype.runViaDocker = async function(gitpath, dockerpath) {
             var cmd,
-                argv,
 
                 inlineparams,
                 cfgparams,
                 params,
 
-                spawnArgs,
-                tag;
+                branch,
+
+                execArgs,
+                tag,
+
+                i,
+                entry;
 
             /* eslint-disable consistent-this */
             cmd = this;
             /* eslint-disable consistent-this */
 
-            argv = this.getArglist();
+            //  Reparse to parse out the non-qualified and option parameters.
+            cmd.reparse({
+                boolean: ['dry-run'],
+                default: {
+                    'dry-run': false
+                }
+            });
 
-            //  argv[0] is the main command name ('deploy')
-            //  argv[1] is the subcommand name ('dockerhub')
-            //  argv[2] is an optional inline parameter JSON string with values
-            //  specific to the command
+            //  The cmd.options._ object holds non-qualified parameters.
+            //  [0] is the main command name ('deploy')
+            //  [1] is the subcommand name ('dockerhub')
+            //  [2] is an optional inline parameter JSON string with values
+
+            inlineparams = cmd.options._[2];
 
             //  ---
             //  Compute parameters from mixing inline params and cfg-based
             //  params
             //  ---
 
-            inlineparams = argv[2];
-
-            //  NB: The getArglist call above will also hand us '--flag'-type
-            //  arguments (they will be last). If the inline JSON wasn't
-            //  specified, we don't want to process any of those.
-            if (CLI.notValid(inlineparams) || inlineparams.startsWith('--')) {
+            if (CLI.notValid(inlineparams)) {
                 inlineparams = {};
             } else {
                 try {
@@ -162,10 +181,29 @@
             }
 
             //  ---
+            //  Run 'git checkout' with the checkout branch to publish
+            //  ---
+
+            //  'target' here because that's where 'tibet release' put the
+            //  release'd code.
+            branch = this.getcfg('cli.release.target');
+
+            execArgs = [
+                            'checkout',
+                            branch
+                        ];
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, gitpath, execArgs);
+            }
+
+            //  ---
             //  Log into DockerHub
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'login',
                             '--username',
                             params.username,
@@ -176,7 +214,11 @@
 
             cmd.log('Logging into DockerHub');
 
-            await CLI.spawnAsync(this, dockerpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, dockerpath, execArgs);
+            }
 
             //  ---
             //  Build and tag a Docker image
@@ -186,29 +228,84 @@
                     '/' + params.projectname +
                     ':' + params.projectversion;
 
-            spawnArgs = [
-                            'build',
-                            '-t',
-                            tag,
-                            '.'
+            execArgs = [
+                            'build'
                         ];
+
+            if (CLI.isTrue(params.nodockercache)) {
+                execArgs.push('--no-cache');
+            }
+
+            if (CLI.notEmpty(params.dockerfile)) {
+                execArgs.push('-f', params.dockerfile);
+            }
+
+            execArgs.push('-t', tag, '.');
 
             cmd.log('Using Docker to build image & tag: ' + tag);
 
-            await CLI.spawnAsync(this, dockerpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, dockerpath, execArgs);
+            }
 
             //  ---
             //  Push the Docker image to DockerHub
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'push',
                             tag
                         ];
 
             cmd.log('Pushing Docker image tagged: ' + tag);
 
-            await CLI.spawnAsync(this, dockerpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, dockerpath, execArgs);
+            }
+
+            //  ---
+            //  Tag any 'extra tag entries'
+            //  ---
+
+            if (CLI.notEmpty(params.extra_tag_entries)) {
+                for (i = 0; i < params.extra_tag_entries.length; i++) {
+                    entry = params.extra_tag_entries[i];
+                    cmd.log('Tagging Docker image: ' + entry);
+
+                    execArgs = [
+                                    'tag',
+                                    entry
+                                ];
+
+                    if (cmd.options['dry-run']) {
+                        cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+                    } else {
+                        await CLI.execAsync(this, dockerpath, execArgs);
+                    }
+                }
+            }
+
+            if (CLI.notEmpty(params.extra_push_entries)) {
+                for (i = 0; i < params.extra_push_entries.length; i++) {
+                    entry = params.extra_push_entries[i];
+                    cmd.log('Pushing Docker image: ' + entry);
+
+                    execArgs = [
+                                    'push',
+                                    entry
+                                ];
+
+                    if (cmd.options['dry-run']) {
+                        cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+                    } else {
+                        await CLI.execAsync(this, dockerpath, execArgs);
+                    }
+                }
+            }
         };
     };
 
