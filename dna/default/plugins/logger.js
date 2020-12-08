@@ -18,25 +18,27 @@
      */
     module.exports = function(options) {
         var app,
-            logcolor,           // Should console log be colorized.
-            logcount,           // The app log file count.
-            logfile,            // The app log file.
-            logdir,             // The app log directory.
-            logtheme,           // The log colorizing theme.
-            logger,             // The app logger instance.
-            meta,               // Reusable logger metadata.
-            path,               // Path module for dirname.
-            sh,                 // ShellJS for file utilities.
-            logsize,            // The app log file size per file.
-            TDS,                // The TIBET Data Server instance.
-            fileTransport,      // Logger-to-file transport.
-            consoleTransport,   // Logger-to-console transport.
-            tmpobj,             // Temporary result for JSON parse.
-            transports,         // List of transports to configure.
-            transportNames,     // Config data for transport names.
-            watchurl,           // Ignore logging calls to watch url.
-            winston,            // Appender-supported logging.
-            expressWinston;     // Request logging support.
+            logcolor,
+            logcount,
+            logfile,
+            logdir,
+            level,
+            logger,
+            meta,
+            path,
+            sh,
+            logsize,
+            TDS,
+            fileTransport,
+            consoleTransport,
+            tmpobj,
+            transports,
+            transportNames,
+            watchurl,
+            winston,
+            winstonFormat,
+            winstonLogger,
+            expressWinston;
 
         app = options.app;
         TDS = app.TDS;
@@ -55,31 +57,22 @@
 
         path = require('path');
         sh = require('shelljs');
+
         winston = require('winston');
+        winstonLogger = winston.createLogger;
+        winstonFormat = winston.format;
         expressWinston = require('express-winston');
 
         //  ---
         //  Variables
         //  ---
 
-        winston.emitErrs = true;
+        level = (TDS.cfg('tds.log.level') || 'info').toLowerCase();
 
-        winston.level = (TDS.cfg('tds.log.level') || 'info').toLowerCase();
-
-        logcolor = TDS.cfg('tds.log.color');
-        if (logcolor === undefined || logcolor === null) {
-            logcolor = true;
-        }
-
-        if (!logcolor) {
-            TDS.colorize = function(aString) {
-                return aString;
-            };
-        }
+        logcolor = TDS.cfg('color') && TDS.cfg('tds.log.color', true);
 
         logcount = TDS.cfg('tds.log.count') || 5;
         logsize = TDS.cfg('tds.log.size') || 5242880;
-        logtheme = TDS.cfg('tds.color.theme') || 'default';
 
         //  Log file names can include the environment if desired.
 
@@ -140,17 +133,14 @@
 
         if (transportNames.indexOf('console') !== -1 &&
                 options.argv.console !== false) {
+
             //  NOTE we use a TDS-specific transport for the console output
             //  to help avoid issues with poor handling of newlines etc.
             consoleTransport = new TDS.log_transport({
-                level: winston.level,
-                stderrLevels: ['error'],
-                debugStdout: false,
+                level: level,
                 meta: true,
-                colorize: logcolor, //  Don't use built-in...we format this.
-                json: false,    //  json is harder to read in terminal view.
                 eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
-                formatter: TDS.log_formatter
+                format: TDS.log_formatter()
             });
 
             transports.push(consoleTransport);
@@ -161,43 +151,46 @@
         //  If file is listed, or there are no transports defined, then log to
         //  the standard file transport.
         if (transportNames.indexOf('file') !== -1 || transports.length === 0) {
+
             //  NOTE that unlike the console transport this isn't a call to
             //  'new'...invoking this just creates a new instance it patches.
             fileTransport = TDS.file_transport({
-                level: winston.level,
+                level: level,
                 filename: logfile,
                 maxsize: logsize,
                 maxFiles: logcount,
                 meta: true,
-                json: true,         //  json is easier to parse with tools
-                colorize: false     //  always false in the log file.
+                format: winstonFormat.combine(
+                    TDS.log_decolorizer(),
+                    winstonFormat.json()
+                )
             });
 
             transports.push(fileTransport);
         }
 
-        logger = new winston.Logger({
-            //  NOTE winston's level #'s are inverted from TIBET's.
-            levels: {
-                trace: 6,
-                debug: 5,
-                info: 4,
-                warn: 3,
-                error: 2,
-                fatal: 1,
-                system: 0
-            },
-            colors: {
-                trace: TDS.getcfg('theme.' + logtheme + '.trace'),
-                debug: TDS.getcfg('theme.' + logtheme + '.debug'),
-                info: TDS.getcfg('theme.' + logtheme + '.info'),
-                warn: TDS.getcfg('theme.' + logtheme + '.warn'),
-                error: TDS.getcfg('theme.' + logtheme + '.error'),
-                fatal: TDS.getcfg('theme.' + logtheme + '.fatal'),
-                system: TDS.getcfg('theme.' + logtheme + '.system')
-            },
+        logger = winstonLogger({
+            level: level,
+            levels: TDS.log_levels,
             transports: transports,
-            exitOnError: false
+            format: winstonFormat.simple(),
+            exitOnError: false,
+            silent: false
+        });
+
+        //  Create a simple handler for errors so we don't get unhandled
+        //  variations and we can log them out without crashing.
+        logger.on('error', function(err) {
+            process.stderr.write(
+                TDS.colorize(Date.now(), 'stamp') +
+                TDS.colorize(' [' +
+                    TDS.levels.error +
+                    '] ', 'error') +
+                TDS.colorize('TDS ', 'tds') +
+                TDS.colorize(err.message) +
+                TDS.colorize(' (', 'dim') +
+                TDS.colorize('server', 'tds') +
+                TDS.colorize(')', 'dim'));
         });
 
         //  Hold a reference to the root logger since we'll need it from inside
@@ -207,9 +200,9 @@
         //  ---
 
         if (consoleTransport) {
-            //  NOTE we assign a flush option to the logger to give us a way to
-            //  force flushing the console as needed.
-            logger.flush = consoleTransport.flush.bind(consoleTransport);
+            TDS.logger.flush = function(immediate, callback) {
+                consoleTransport.flush(immediate, callback);
+            };
         } else {
             process.stdout.write(
                 TDS.colorize(Date.now(), 'stamp') +
@@ -239,13 +232,13 @@
             ].forEach(function(key) {
 
                 obj[key] = function(msg, metadata) {
-                    var level;
+                    var lvl;
 
                     //  Have these methods filter by log level if test is a
                     //  valid function (e.g. ifDebug, ifTrace, etc)
-                    level = key.charAt(0).toUpperCase() + key.slice(1);
-                    if (typeof TDS['if' + level] === 'function') {
-                        if (!TDS['if' + level]()) {
+                    lvl = key.charAt(0).toUpperCase() + key.slice(1);
+                    if (typeof TDS['if' + lvl] === 'function') {
+                        if (!TDS['if' + lvl]()) {
                             return;
                         }
                     }
@@ -273,10 +266,9 @@
 
         app.use(expressWinston.logger({
             winstonInstance: logger,
-            level: winston.level,
+            level: level,
             expressFormat: false,
             colorize: logcolor,
-            json: false,
             skip: TDS.log_filter
         }));
 
@@ -284,7 +276,8 @@
         //  Flush
         //  ---
 
-        TDS.log_flush(logger);
+        //  Write out any pending (queued) log entries.
+        TDS.flush_log(logger);
 
         //  ---
         //  Share

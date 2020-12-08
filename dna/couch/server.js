@@ -144,9 +144,7 @@
     logger = options.logger;
     if (!logger) {
         console.error('Missing logger middleware or export.');
-        /* eslint-disable no-process-exit */
         process.exit(1);
-        /* eslint-enable no-process-exit */
     }
 
     //  ---
@@ -192,9 +190,7 @@
         }
 
         if (TDS.cfg('tds.stop_onerror')) {
-            /* eslint-disable no-process-exit */
             process.exit(1);
-            /* eslint-enable no-process-exit */
         }
     });
 
@@ -213,10 +209,10 @@
 
         msg = 'processing shutdown request';
 
-        TDS.logger.system();    //  blank to get past ctrl char etc.
+        TDS.logger.system(' ');    //  blank to get past ctrl char etc.
         TDS.logger.system(msg, meta);
         if (!TDS.hasConsole()) {
-            process.stdout.write(TDS.colorize(msg, 'error'));
+            process.stdout.write(TDS.colorize(msg, 'error') + '\n');
         }
 
         if (TDS.httpsServer) {
@@ -224,7 +220,7 @@
             msg = 'shutting down HTTPS server';
             TDS.logger.system(msg, meta);
             if (!TDS.hasConsole()) {
-                process.stdout.write(TDS.colorize(msg, 'error'));
+                process.stdout.write(TDS.colorize(msg, 'error') + '\n');
             }
 
             TDS.httpsServer.close(function(err) {
@@ -232,7 +228,7 @@
                     msg = 'HTTPS server: ' + err.message;
                     TDS.logger.error(msg, meta);
                     if (!TDS.hasConsole()) {
-                        process.stderr.write(TDS.colorize(msg, 'error'));
+                        process.stderr.write(TDS.colorize(msg, 'error') + '\n');
                     }
                 }
                 //  NOTE we don't exit process from here...we rely on the
@@ -247,7 +243,7 @@
             msg = 'shutting down HTTP server';
             TDS.logger.system(msg, meta);
             if (!TDS.hasConsole()) {
-                process.stdout.write(TDS.colorize(msg, 'error'));
+                process.stdout.write(TDS.colorize(msg, 'error') + '\n');
             }
 
             TDS.httpServer.close(function(err) {
@@ -257,26 +253,26 @@
                     msg = 'HTTP server: ' + err.message;
                     TDS.logger.error(msg, meta);
                     if (!TDS.hasConsole()) {
-                        process.stderr.write(TDS.colorize(msg, 'error'));
+                        process.stderr.write(TDS.colorize(msg, 'error') + '\n');
                     }
                 }
 
-                //  This will call process.exit();
+                //  This will get us a viable return code.
                 code = TDS.shutdown(err, meta);
 
                 msg = 'shutdown complete';
                 TDS.logger.system(msg, meta);
                 if (!TDS.hasConsole()) {
-                    process.stdout.write(TDS.colorize(msg, 'error'));
+                    process.stdout.write(TDS.colorize(msg, 'error') + '\n');
                 }
 
                 if (TDS.logger.flush) {
-                    TDS.logger.flush(true);
+                    TDS.logger.flush(true, function() {
+                        process.exit(code);
+                    });
+                } else {
+                    process.exit(code);
                 }
-
-                /* eslint-disable no-process-exit */
-                process.exit(code);
-                /* eslint-enable no-process-exit */
             });
         }
 
@@ -350,9 +346,7 @@
                 TDS.logger.flush(true);
             }
 
-            /* eslint-disable no-process-exit */
             process.exit(1);
-            /* eslint-enable no-process-exit */
         }
 
         httpsOpts = {
