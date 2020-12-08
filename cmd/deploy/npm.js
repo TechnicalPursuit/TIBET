@@ -32,7 +32,6 @@
     var CLI,
         sh,
 
-        GIT_COMMAND,
         NPM_COMMAND;
 
     CLI = require('../../src/tibet/cli/_cli');
@@ -46,7 +45,6 @@
      * The name of the npm executable we look for to confirm installation.
      * @type {string}
      */
-    GIT_COMMAND = 'git';
     NPM_COMMAND = 'npm';
 
     module.exports = function(cmdType) {
@@ -56,40 +54,14 @@
          * @returns {Number} A return code.
          */
         cmdType.prototype.executeNpm = function() {
-            var gitpath,
-                npmpath;
-
-            gitpath = this.findGit();
-            if (!gitpath) {
-                return 0;
-            }
+            var npmpath;
 
             npmpath = this.findNpm();
             if (!npmpath) {
                 return 0;
             }
 
-            return this.runViaNpm(gitpath, npmpath);
-        };
-
-        /**
-         * Locates a workable git binary if possible. This is checked by
-         * looking for any globally accessible version (via 'which').
-         * @returns {string} The path to the located git executable.
-         */
-        cmdType.prototype.findGit = function() {
-            var gitpath;
-
-            this.info('checking for git support...');
-
-            gitpath = sh.which(GIT_COMMAND);
-            if (gitpath) {
-                this.info('found git...');
-                return gitpath.toString();
-            }
-
-            this.info('git not installed');
-            return;
+            return this.runViaNpm(npmpath);
         };
 
         /**
@@ -115,18 +87,15 @@
         /**
          * Runs the deploy by activating the npm executable, deploying to the
          *     npm public package registry.
-         * @param {string} gitpath The full path to the git executable.
          * @param {string} npmpath The full path to the npm executable.
          * @returns {Number} A return code.
          */
-        cmdType.prototype.runViaNpm = async function(gitpath, npmpath) {
+        cmdType.prototype.runViaNpm = async function(npmpath) {
             var cmd,
 
                 inlineparams,
                 cfgparams,
                 params,
-
-                branch,
 
                 execArgs;
 
@@ -174,25 +143,6 @@
 
             params = CLI.blend({}, inlineparams);
             params = CLI.blend(params, cfgparams);
-
-            //  ---
-            //  Run 'git checkout' with the checkout branch to publish
-            //  ---
-
-            //  'target' here because that's where 'tibet release' put the
-            //  release'd code.
-            branch = this.getcfg('cli.release.target');
-
-            execArgs = [
-                            'checkout',
-                            branch
-                        ];
-
-            if (cmd.options['dry-run']) {
-                cmd.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
-            } else {
-                await CLI.execAsync(this, gitpath, execArgs);
-            }
 
             //  ---
             //  Run 'npm publish' to publish

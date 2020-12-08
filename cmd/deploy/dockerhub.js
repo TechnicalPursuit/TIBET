@@ -58,20 +58,14 @@
          * @returns {Number} A return code.
          */
         cmdType.prototype.executeDockerhub = function() {
-            var gitpath,
-                dockerpath;
-
-            gitpath = this.findGit();
-            if (!gitpath) {
-                return 0;
-            }
+            var dockerpath;
 
             dockerpath = this.findDocker();
             if (!dockerpath) {
                 return 0;
             }
 
-            return this.runViaDocker(gitpath, dockerpath);
+            return this.runViaDocker(dockerpath);
         };
 
         /**
@@ -100,14 +94,12 @@
          * @param {string} dockerpath The full path to the Docker executable.
          * @returns {Number} A return code.
          */
-        cmdType.prototype.runViaDocker = async function(gitpath, dockerpath) {
+        cmdType.prototype.runViaDocker = async function(dockerpath) {
             var cmd,
 
                 inlineparams,
                 cfgparams,
                 params,
-
-                branch,
 
                 execArgs,
                 tag,
@@ -178,25 +170,6 @@
             if (CLI.notValid(params.account)) {
                 cmd.warn('Missing parameter: account');
                 return 1;
-            }
-
-            //  ---
-            //  Run 'git checkout' with the checkout branch to publish
-            //  ---
-
-            //  'target' here because that's where 'tibet release' put the
-            //  release'd code.
-            branch = this.getcfg('cli.release.target');
-
-            execArgs = [
-                            'checkout',
-                            branch
-                        ];
-
-            if (cmd.options['dry-run']) {
-                cmd.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
-            } else {
-                await CLI.execAsync(this, gitpath, execArgs);
             }
 
             //  ---
