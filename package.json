@@ -98,7 +98,6 @@
         "semver": "^7.3.4",
         "shelljs": "^0.8.4",
         "shelljs-nodecli": "*",
-        "socket.io": "^2.3.0",
         "sprintf-js": "^1.1.2",
         "systemjs": "^6.8.1",
         "vm2": "^3.9.2",
