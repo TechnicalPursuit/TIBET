@@ -11,9 +11,14 @@
  *
  *      "deploy": {
  *          "awselasticbeanstalk": {
- *              "profile": "development",
+ *              "projectname": "myproject" (defaults to project.name),
+ *              "projectversion": "0.1.0" (defaults to project.version),
+ *              "profile": "development" (defaults to 'default'),
  *              "region": "us-east-1",
- *              "appname": "TIBETAWSEBSTest"
+ *              "appname": "TIBETAWSEBSTest",
+ *              "solutionstack": "64bit Amazon Linux 2 v5.2.3 running Node.js 12",
+ *              "nodockercache": "true" (defaults to false),
+ *              "dockerfile": "Dockerfile_SPECIAL" (defaults to 'Dockerfile')
  *          }
  *      }
  *
@@ -202,11 +207,9 @@
             homedir = os.homedir();
 
             configpath = CLI.joinPaths(homedir, AWS_CONFIG_PATH, AWS_CONFIG_FILE);
-            configpath = sh.which(configpath);
-
-            if (configpath) {
+            if (CLI.sh.test('-e', configpath)) {
                 this.info('found AWS configuration file...');
-                return configpath.toString();
+                return configpath;
             }
 
             this.info('Cannot find AWS configuration file. See: ' +
@@ -284,13 +287,12 @@
         cmdType.prototype.runViaAwselasticbeanstalk = async function(
                                             dockerpath, awstoolspath, zippath) {
             var cmd,
-                argv,
 
                 inlineparams,
                 cfgparams,
                 params,
 
-                spawnArgs,
+                execArgs,
 
                 credentialsCapturer,
                 credentialsStr,
@@ -319,24 +321,27 @@
             cmd = this;
             /* eslint-disable consistent-this */
 
-            argv = this.getArglist();
+            //  Reparse to parse out the non-qualified and option parameters.
+            cmd.reparse({
+                boolean: ['dry-run'],
+                default: {
+                    'dry-run': false
+                }
+            });
 
-            //  argv[0] is the main command name ('deploy')
-            //  argv[1] is the subcommand name ('awselasticbeanstalk')
-            //  argv[2] is an optional inline parameter JSON string with values
-            //  specific to the command
+            //  The cmd.options._ object holds non-qualified parameters.
+            //  [0] is the main command name ('deploy')
+            //  [1] is the subcommand name ('awselasticbeanstalk')
+            //  [2] is an optional inline parameter JSON string with values
+
+            inlineparams = cmd.options._[2];
 
             //  ---
             //  Compute parameters from mixing inline params and cfg-based
             //  params
             //  ---
 
-            inlineparams = argv[2];
-
-            //  NB: The getArglist call above will also hand us '--flag'-type
-            //  arguments (they will be last). If the inline JSON wasn't
-            //  specified, we don't want to process any of those.
-            if (CLI.notValid(inlineparams) || inlineparams.startsWith('--')) {
+            if (CLI.notValid(inlineparams)) {
                 inlineparams = {};
             } else {
                 try {
@@ -383,7 +388,7 @@
             //  Set the deployment region in the current AWS profile
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'configure',
                             'set',
                             'default.region',
@@ -392,14 +397,18 @@
 
             cmd.log('Setting region for profile: ' + params.profile);
 
-            await CLI.spawnAsync(this, awstoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs);
+            }
 
             //  ---
             //  Grab the AWS Elastic Container Registry location, username and
             //  password
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'ecr',
                             'get-authorization-token'
                         ];
@@ -407,12 +416,17 @@
             cmd.log('Getting AWS ECR credentials for profile: ' +
                     params.profile);
 
-            credentialsCapturer = function(output) {
-                credentialsStr = output;
-            };
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                credentialsStr = '{"authorizationData": [{"authorizationToken":"QVdTOmV5SndZWGxzYjJGa0lqb2lkVXcxU1ZSSk5VWTNRMk5IVjBWM2IwbGtaVEpYY1cxWlZGcDVkR0psYzJkbFFWZ3hlR05JYmpkQlNIQlZUV3h3TXpaWVVHMWlSbk5DVUdNeV","expiresAt":"2020-12-08T06:58:29.343000-06:00","proxyEndpoint":"https://164964774525.dkr.ecr.us-east-1.amazonaws.com"}]}';
+            } else {
+                credentialsCapturer = function(output) {
+                    credentialsStr = output;
+                };
 
-            await CLI.spawnAsync(this, awstoolspath, spawnArgs,
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
                                     credentialsCapturer);
+            }
 
             try {
                 credentials = JSON.parse(credentialsStr);
@@ -442,7 +456,7 @@
             //  Container Registry
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'ecr',
                             'create-repository',
                             '--repository-name',
@@ -451,7 +465,11 @@
 
             cmd.log('Creating ECR repository: ' + params.projectname);
 
-            await CLI.spawnAsync(this, awstoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs);
+            }
 
             //  ---
             //  Compute Docker image tag
@@ -473,22 +491,33 @@
             //  Build and tag a Docker image
             //  ---
 
-            spawnArgs = [
-                            'build',
-                            '-t',
-                            tag,
-                            '.'
+            execArgs = [
+                            'build'
                         ];
+
+            if (CLI.isTrue(params.nodockercache)) {
+                execArgs.push('--no-cache');
+            }
+
+            if (CLI.notEmpty(params.dockerfile)) {
+                execArgs.push('-f', params.dockerfile);
+            }
+
+            execArgs.push('-t', tag, '.');
 
             cmd.log('Using Docker to build image & tag: ' + tag);
 
-            await CLI.spawnAsync(this, dockerpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, dockerpath, execArgs);
+            }
 
             //  ---
             //  Log into AWS Elastic Container Registry
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'login',
                             '-u',
                             containerRegistryUsername,
@@ -499,20 +528,28 @@
 
             cmd.log('Logging into AWS Container Registry');
 
-            await CLI.spawnAsync(this, dockerpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, dockerpath, execArgs);
+            }
 
             //  ---
             //  Push the Docker image to the AWS Elastic Container Registry
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'push',
                             tag
                         ];
 
             cmd.log('Pushing Docker image tagged: ' + tag);
 
-            await CLI.spawnAsync(this, dockerpath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, dockerpath, execArgs);
+            }
 
             //  ---
             //  Construct a 'Dockerrun.aws.json' file with the proper
@@ -537,7 +574,7 @@
 
             zippedInfoFile = 'info.zip';
 
-            spawnArgs = [
+            execArgs = [
                             zippedInfoFile,
                             infoFilePath,
                             '-jq'           //  NB: For some reason, for the
@@ -547,7 +584,11 @@
 
             cmd.log('Zipping Elastic Beanstalk deployment files.');
 
-            await CLI.spawnAsync(this, zippath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + zippath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, zippath, execArgs);
+            }
 
             //  ---
             //  Compute bucket name
@@ -560,7 +601,7 @@
             //  Create that bucket
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             's3api',
                             'create-bucket',
                             '--bucket',
@@ -571,13 +612,17 @@
 
             cmd.log('Creating S3 bucket: ' + infoBucketName);
 
-            await CLI.spawnAsync(this, awstoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs);
+            }
 
             //  ---
             //  Upload that file to a specially named S3 bucket
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             's3',
                             'cp',
                             zippedInfoFile,
@@ -588,13 +633,17 @@
             cmd.log('Uploading Dockerrun.aws.json.zip file to S3 bucket: ' +
                     infoBucketName);
 
-            await CLI.spawnAsync(this, awstoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs);
+            }
 
             //  ---
             //  Create a new Elastic Beanstalk application
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'elasticbeanstalk',
                             'create-application',
                             '--application-name',
@@ -603,13 +652,17 @@
 
             cmd.log('Creating a new application: ' + params.appname);
 
-            await CLI.spawnAsync(this, awstoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs);
+            }
 
             //  ---
             //  Create a new Elastic Beanstalk application version
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'elasticbeanstalk',
                             'create-application-version',
                             '--application-name',
@@ -623,13 +676,17 @@
 
             cmd.log('Creating a new application version');
 
-            await CLI.spawnAsync(this, awstoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs);
+            }
 
             //  ---
             //  Create a new Elastic Beanstalk environment
             //  ---
 
-            spawnArgs = [
+            execArgs = [
                             'elasticbeanstalk',
                             'create-environment',
                             '--environment-name',
@@ -651,7 +708,11 @@
             cmd.log('Creating a new application environment: ' +
                     params.projectname);
 
-            await CLI.spawnAsync(this, awstoolspath, spawnArgs);
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs);
+            }
 
             return;
         };

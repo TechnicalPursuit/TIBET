@@ -36,27 +36,27 @@
 
 'use strict';
 
-var path,
-    fs,
+var fs,
+    child_process,
+    path,
     sh,
     semver,
     beautify,
     minimist,
     prompt,
-    procp,
     Color,
     Logger,
     Package,
     CLI;
 
 fs = require('fs');
+child_process = require('child_process');
 path = require('path');
 sh = require('shelljs');
 semver = require('semver');
 minimist = require('minimist');
 prompt = require('readline-sync');
 beautify = require('js-beautify').js_beautify;
-procp = require('promisify-child-process');
 
 //  ---
 //  Object Construction
@@ -1652,109 +1652,129 @@ CLI.quoted = function(aString, aQuoteChar) {
 
 
 /**
- * Spawns a child process and returns a 'then'able representing that process.
- * This can be used in a Promise chain or 'await'ed upon.
+ * Execute a child shell process and returns a 'then'able representing that
+ * shell process. This can be used in a Promise chain or 'await'ed upon.
  * @param {Object} cmd The object representing the TIBET command that provided
  *     logging functionality, etc.
  * @param {String} commandpath The command to execute.
  * @param {String[]} params The Array of arguments that will be joined by spaces
  *     which, along with the commandpath, will form the command that will spawn
  *     the child process.
+ * @param {Boolean} [interactive=false] Whether or not the child shell should
+ *     allow interactive input/output. Note that this will not allow the
+ *     stdout and stderr objects to be available for logging and any stdoutcb or
+ *     stderrcb Functions will be inactive if this is true.
  * @param {Function} [stdoutcb] The Function to execute when there is standard
  *     out output.
  * @param {Function} [stderrcb] The Function to execute when there is standard
  *     error output.
- * @returns {Object} A thenable representing the spawned child process.
+ * @returns {Promise} A thenable representing the spawned child shell process.
  */
-CLI.spawnAsync = function(cmd, commandpath, params, stdoutcb, stderrcb) {
+CLI.execAsync = function(cmd, commandpath, params, interactive, stdoutcb,
+                            stderrcb) {
 
-    var child,
-        spawnParams;
+    var spawnParams,
+        options,
+        promise;
 
-    //  The Promises-based child-process library needs all parameters or it
-    //  won't run properly.
     if (CLI.notValid(params)) {
         spawnParams = [];
     } else {
         spawnParams = params;
     }
 
-    //  NB: The 'encoding' and 'maxBuffer' config parameters are required here
-    //  otherwise the Promises-based child-process library will not execute this
-    //  'spawn' properly.
-    child = procp.spawn(
-                    commandpath,
-                    spawnParams,
-                    {encoding: 'utf8', maxBuffer: 200 * 1024});
+    if (CLI.isTrue(interactive)) {
+        options = {stdio: 'inherit'};
+    } else {
+        options = {};
+    }
 
-    child.stdout.on('data', function(data) {
-        var msg;
+    promise = new Promise(
+        function(resolver, rejector) {
+            var child;
 
-        if (CLI.isValid(data)) {
-            // Copy and remove newline.
-            msg = data.slice(0, -1).toString('utf-8');
-
-            if (CLI.isFunction(stdoutcb)) {
-                stdoutcb(msg);
+            try {
+                child = child_process.spawn(commandpath, spawnParams, options);
+            } catch (e) {
+                console.log('error: ' + e.message);
             }
 
-            cmd.log(msg);
-        }
-    });
+            if (!CLI.isTrue(interactive)) {
 
-    child.stderr.on('data', function(data) {
-        var msg;
+                child.stdout.on('data', function(data) {
+                    var msg;
 
-        if (CLI.notValid(data)) {
-            msg = 'Unspecified error occurred.';
-        } else {
-            // Copy and remove newline.
-            msg = data.slice(0, -1).toString('utf-8');
-        }
+                    if (CLI.isValid(data)) {
+                        // Copy and remove newline.
+                        msg = data.slice(0, -1).toString('utf-8');
 
-        //  Some leveraged module likes to write error output with empty
-        //  lines. Remove those so we can control the output form
-        //  better.
-        if (msg &&
-            typeof msg.trim === 'function' &&
-            msg.trim().length === 0) {
-            return;
-        }
+                        if (CLI.isFunction(stdoutcb)) {
+                            stdoutcb(msg);
+                        }
 
-        //  A lot of errors will include what appears to be a common
-        //  'header' output message from events.js:72 etc. which
-        //  provides no useful data but clogs up the output. Filter
-        //  those messages.
-        if (/throw er;/.test(msg)) {
-            return;
-        }
+                        cmd.log(msg);
+                    }
+                });
 
-        if (CLI.isFunction(stderrcb)) {
-            stderrcb(msg);
-        }
+                child.stderr.on('data', function(data) {
+                    var msg;
 
-        cmd.error(msg);
-    });
+                    if (CLI.notValid(data)) {
+                        msg = 'Unspecified error occurred.';
+                    } else {
+                        // Copy and remove newline.
+                        msg = data.slice(0, -1).toString('utf-8');
+                    }
 
-    child.on('exit', function(code) {
-        var msg;
+                    //  Some leveraged module likes to write error output with
+                    //  empty lines. Remove those so we can control the output
+                    //  form better.
+                    if (msg &&
+                        CLI.isFunction(msg.trim) &&
+                        msg.trim().length === 0) {
+                        return;
+                    }
 
-        if (code !== 0) {
-            msg = 'Execution stopped with status: ' + code;
-            if (!cmd.options.debug || !cmd.options.verbose) {
-                msg += ' Retry with --debug --verbose for more' +
-                        ' information.';
+                    //  A lot of errors will include what appears to be a common
+                    //  'header' output message from events.js:72 etc. which
+                    //  provides no useful data but clogs up the output. Filter
+                    //  those messages.
+                    if (/throw er;/.test(msg)) {
+                        return;
+                    }
+
+                    if (CLI.isFunction(stderrcb)) {
+                        stderrcb(msg);
+                    }
+
+                    cmd.error(msg);
+                });
             }
-            cmd.error(msg);
 
-            //  The subprocess exited with a non-0 code. Kill ourself too.
-            process.exit(code);
-        }
+            child.on('exit', function(code) {
+                var msg;
+
+                if (code !== 0) {
+                    msg = 'Execution stopped with status: ' + code;
+                    if (!cmd.options.debug || !cmd.options.verbose) {
+                        msg += ' Retry with --debug --verbose for more' +
+                                ' information.';
+                    }
+                    cmd.error(msg);
+
+                    rejector(code);
+
+                    //  The subprocess exited with a non-0 code. Kill ourself
+                    //  too.
+                    process.exit(code);
+                } else {
+                    resolver(code);
+                }
+            });
     });
 
-    return child;
+    return promise;
 };
-
 
 /**
  * Returns a new String representing the obj with a trailing number of padChar

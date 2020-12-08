@@ -32,7 +32,12 @@
         //  the test harness and make sure we update config with release
         //  compression rules.
         if (options.release) {
-            targets.unshift('_test');
+            //  We want '_test' to come *just before* 'build_tibet' - it's
+            //  pretty time consuming. '_test' does require the boot system to
+            //  be built though, so we do that here as well (even though
+            //  build_tibet will do it again - but that's ok, it's cached :-)).
+            targets.splice(targets.indexOf('build_tibet'), 0,
+                            'build_boot', '_test');
 
             config = make.cfg('make.compression.parse_options');
             config.default.minify = true;
