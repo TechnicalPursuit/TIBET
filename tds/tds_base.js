@@ -17,9 +17,11 @@
         crypto,
         cors,
         handlebars,
-        util,
         couch,
         winston,
+        triplebeam,
+        logFormats,
+        logTransports,
         ip,
         Package,
         Color,
@@ -29,12 +31,14 @@
         TDS;
 
     beautify = require('js-beautify');
+    triplebeam = require('triple-beam');
     cors = require('cors');
     handlebars = require('handlebars');
     Promise = require('bluebird');
-    util = require('util');
     sh = require('shelljs');
     winston = require('winston');
+    logFormats = winston.format;
+    logTransports = winston.transports;
     ip = require('ip');
 
     // Load the package support to help with option/configuration data.
@@ -689,20 +693,6 @@
     };
 
     /**
-     * Colorizes a string based on the current color.scheme and theme settings.
-     * @param {String} aString The string to colorize.
-     * @param {String} aSpec The theme element name (such as 'url' or
-     *     'timestamp') whose style spec should be used.
-     * @returns {String} The colorized string.
-     */
-    TDS.colorize = function(aString, aSpec) {
-        if (!this._options.color) {
-            return aString;
-        }
-        return this.color.colorize(aString, aSpec);
-    };
-
-    /**
      * Provides a common handle to the 'cors' module for use in defining CORS
      * access for one or more routes.
      * @param {Object} [options] An object providing options to the 'cors'
@@ -781,6 +771,25 @@
         this.initPackage();
 
         return TDS._package.expandPath(aPath);
+    };
+
+    /**
+     * Flushes any log entries in the TDS 'prelog' buffer. The buffer is cleared
+     * as a result of this call.
+     * @param {Logger} logger The logger instance to flush via.
+     */
+    TDS.flush_log = function(logger) {
+        if (!this._buffer) {
+            return;
+        }
+
+        this._buffer.forEach(function(triple) {
+            try {
+                logger[triple[0]](triple[1], triple[2]);
+            } catch (e) {
+                console.error(e.message);
+            }
+        });
     };
 
     /**
@@ -969,8 +978,17 @@
             this._package.getcfg('tds.color.theme') || 'default';
 
         this.color = new Color(opts);
-    };
 
+        if (!this._package.getcfg('color')) {
+            this.colorize = function(aString, aSpec) {
+                return aString;
+            };
+        } else {
+            this.colorize = function(aString, aSpec) {
+                return this.color.colorize(aString, aSpec);
+            };
+        }
+    };
 
     /**
      * Returns the joined path in an *OS independent* manner (i.e. with '/' as the
@@ -1067,84 +1085,216 @@
     };
 
     /**
+     * The theme to use for any log formatting.
+     * @type {String}
+     */
+    TDS.log_theme = TDS.cfg('tds.color.theme') || 'default';
+
+    /**
+     * The logging levels to use for winston.
+     * NOTE winston's level #'s are inverted from TIBET's.
+     * @type {Object}
+     */
+    TDS.log_levels = {
+        trace: 6,
+        debug: 5,
+        info: 4,
+        warn: 3,
+        error: 2,
+        fatal: 1,
+        system: 0
+    };
+
+    /**
+     * The color assignments to use for any log colorizing of TDS.log_levels.
+     * @type {Object}
+     */
+    TDS.log_colors = {
+        trace: TDS.getcfg('theme.' + TDS.log_theme + '.trace'),
+        debug: TDS.getcfg('theme.' + TDS.log_theme + '.debug'),
+        info: TDS.getcfg('theme.' + TDS.log_theme + '.info'),
+        warn: TDS.getcfg('theme.' + TDS.log_theme + '.warn'),
+        error: TDS.getcfg('theme.' + TDS.log_theme + '.error'),
+        fatal: TDS.getcfg('theme.' + TDS.log_theme + '.fatal'),
+        system: TDS.getcfg('theme.' + TDS.log_theme + '.system')
+    };
+
+    /**
+     * A custom winston log formatter to remove any color-codes from log
+     * messages. This is used to ensure the file-based logs for production etc.
+     * don't include console color codes (in case the logger is colorizing).
+     */
+    TDS.log_decolorizer = logFormats(function(info, opts) {
+
+        if (TDS.notValid(info)) {
+            return false;
+        }
+
+        if (TDS.notEmpty(info.message)) {
+            info.message = TDS.decolorize(info.message);
+        }
+
+        return info;
+    });
+
+    /**
      * NOTE the reason for the assignment approach here is that a different
      * logger can be provided during preload if necessary.
      */
-    TDS.log_formatter = TDS.log_formatter || function(obj) {
+    TDS.log_formatter = TDS.log_formatter || logFormats(function(info, opts) {
         var msg,
             comp,
             style,
-            level;
+            level,
+            result;
 
         msg = '';
 
-        if (TDS.notValid(obj)) {
-            return '' + obj;
+        //  Empty object? Ignore it.
+        if (TDS.notValid(info)) {
+            result = {};
+            result[triplebeam.LEVEL] = 'system';
+            result[triplebeam.MESSAGE] = '';
+            return result;
         }
 
-        if (obj._id && obj.flow && obj.owner) {
-            msg = obj.flow + '::' + obj.owner +
-                TDS.colorize(' (' + obj._id + ')', 'dim');
-        } else if (obj.type && obj.name &&
-            (obj.comp || Object.keys(obj).length === 2)) {
-            //  metadata...we can ignore this.
-            return '';
-        } else if (obj.meta &&
-                obj.meta.req !== undefined &&
-                obj.meta.res !== undefined &&
-                obj.meta.responseTime !== undefined) {
+        info.time = info.time || Date.now();
+
+        if (info._id && info.flow && info.owner) {
+            msg = info.flow + '::' + info.owner +
+                TDS.colorize(' (' + info._id + ')', 'dim');
+        } else if (info.meta &&
+                info.meta.req !== undefined &&
+                info.meta.res !== undefined &&
+                info.meta.responseTime !== undefined) {
 
             //  HTTP request logging
-            style = ('' + obj.meta.res.statusCode).charAt(0) + 'xx';
-            level = obj.meta.res.statusCode >= 400 ? 'error' : obj.level;
+            style = ('' + info.meta.res.statusCode).charAt(0) + 'xx';
+            level = info.meta.res.statusCode >= 400 ? 'error' : info.level;
 
             //  Similar to output for other messages but the 'level' can be
             //  adjusted if the status code is an error code.
-            msg += TDS.colorize(obj.time, 'stamp');
+            msg += TDS.colorize(info.time, 'stamp');
             msg += TDS.colorize(' [', level);
             msg += TDS.colorize(
                 TDS.levels[level.toLowerCase()], level);
             msg += TDS.colorize('] ', level);
 
-            msg += TDS.colorize(obj.meta.req.method, style) + ' ' +
-                TDS.colorize(obj.meta.req.url, 'url') + ' ' +
-                TDS.colorize(obj.meta.res.statusCode, style) + ' ' +
-                TDS.colorize(obj.meta.responseTime + 'ms', 'ms');
+            msg += TDS.colorize(info.meta.req.method, style) + ' ' +
+                TDS.colorize(info.meta.req.url, 'url') + ' ' +
+                TDS.colorize(info.meta.res.statusCode, style) + ' ' +
+                TDS.colorize(info.meta.responseTime + 'ms', 'ms');
 
-        } else if (obj.meta && obj.meta.type) {
-            comp = obj.meta.comp || 'TDS';
+        } else if (info.type) {
+            comp = info.comp || 'TDS';
 
-            style = obj.level.toLowerCase();
+            style = info.level.toLowerCase();
 
-            msg += TDS.colorize(obj.time, 'stamp');
+            msg += TDS.colorize(info.time, 'stamp');
             msg += TDS.colorize(' [', style);
             msg += TDS.colorize(
-                TDS.levels[obj.level.toLowerCase()], style);
+                TDS.levels[info.level.toLowerCase()], style);
             msg += TDS.colorize('] ', style);
 
             //  For less-than-warning levels we stick with a dim message body.
-            if (TDS.levels[obj.level] < TDS.levels.warn) {
+            if (TDS.levels[info.level] < TDS.levels.warn) {
                 style = 'dim';
-            } else if (TDS.levels[obj.level] >= TDS.levels.system) {
+            } else if (TDS.levels[info.level] >= TDS.levels.system) {
                 //  But don't force 'system' to be used for message text.
                 style = 'dim';
             }
 
             //  TIBET plugin, route, task, etc.
             msg += TDS.colorize(comp, comp.toLowerCase() || 'tds') + ' ' +
-                (hasAnsi(obj.message) ? obj.message + ' ' :
-                    TDS.colorize(obj.message, obj.meta.style || style) + ' ') +
+                (hasAnsi(info.message) ? info.message + ' ' :
+                    TDS.colorize(info.message, info.style || style) + ' ') +
                 TDS.colorize('(', 'dim') +
-                TDS.colorize(obj.meta.name, obj.meta.type || 'dim') +
+                TDS.colorize(info.name, info.type || 'dim') +
                 TDS.colorize(')', 'dim');
 
         } else {
             //  Standard message string with no metadata.
-            msg += ' ' + hasAnsi(obj.message) ? obj.message :
-                TDS.colorize(obj.message, 'data');
+            msg += ' ' + hasAnsi(info.message) ? info.message :
+                TDS.colorize(info.message, 'data');
         }
 
-        return msg;
+        //  NOTE: it's important to use the symbols here.
+        result = {};
+        result[triplebeam.LEVEL] = info.level;
+        result[triplebeam.MESSAGE] = msg;
+
+        return result;
+    });
+
+    /**
+     */
+    TDS.log_transport = function(options) {
+        var transport;
+
+        transport = new logTransports.Console(options);
+
+        transport.$$buffer = [];
+
+        transport.$$write = function(callback) {
+            var log,
+                ok,
+                my;
+
+            my = this;
+
+            if (my.$$buffer.length > 0) {
+                log = my.$$buffer.splice(0, 25);
+                log = log.map(function(item) {
+                    let dat;
+                    try {
+                        dat = item[triplebeam.MESSAGE];
+                    } catch (e) {
+                        console.error(e.message);
+                    }
+                    return dat;
+                });
+
+                ok = process.stdout.write(log.join('\n'));
+                if (!ok) {
+                    process.nextTick(function() {
+                        process.stdout.write('\n' + log.join('\n'));
+                        if (callback) {
+                            callback();
+                        }
+                    });
+                } else if (callback) {
+                    callback();
+                }
+            } else if (callback) {
+                callback();
+            }
+        };
+
+        //  Build a flush routine we can use to essentially "buffer" output so
+        //  it doesn't consistently skip newline output. (process.stdout.write
+        //  can return a 'not-ok' result).
+        transport.flush = function(immediate, callback) {
+            var my;
+
+            if (immediate) {
+                //  NOTE: don't pass callback here... leave it for the "cleanup"
+                //  portion invoked by setTimeout below.
+                this.$$write();
+            }
+
+            my = this;
+
+            setTimeout(function() {
+                my.$$write(callback);
+            }, 100);
+        };
+
+        transport.log = function(info, callback) {
+            this.$$buffer.push(info);
+            this.flush(false, callback);
+        };
+
+        return transport;
     };
 
     /**
@@ -1152,88 +1302,9 @@
     TDS.file_transport = function(options) {
         var transport;
 
-        transport = new winston.transports.File(options);
-        transport.$$log$$ = transport.log;
-        transport.log = function(level, msg, meta, callback) {
-            return transport.$$log$$(
-                level, TDS.decolorize(msg), meta, callback);
-        };
+        transport = new logTransports.File(options);
 
         return transport;
-    };
-
-    /**
-     * Flushes any log entries in the TDS 'prelog' buffer. The buffer is cleared
-     * as a result of this call.
-     * @param {Logger} logger The logger instance to flush via.
-     */
-    TDS.log_flush = function(logger) {
-        if (!this._buffer) {
-            return;
-        }
-
-        this._buffer.forEach(function(triple) {
-            logger[triple[0]](triple[1], triple[2]);
-        });
-    };
-
-    /**
-     */
-    TDS.log_transport = function(options) {
-        this.options = options || {};
-        this.level = options.level || 'info';
-        this.name = 'TDSConsoleTransport';
-        this.output = [];
-    };
-    util.inherits(TDS.log_transport, winston.Transport);
-
-
-    /**
-     */
-    TDS.log_transport.prototype.flush = function(immediate) {
-        var my;
-
-        my = this;
-
-        if (immediate) {
-            process.stdout.write(
-                my.output.map(function(item) {
-                    return my.options.formatter(item);
-                }).join('\n'));
-        }
-
-        setTimeout(function() {
-            var log,
-                ok;
-
-            if (my.output.length > 0) {
-                log = my.output.splice(0, 25);
-                log = log.map(function(item) {
-                    return my.options.formatter(item);
-                });
-
-                ok = process.stdout.write(log.join('\n'));
-                if (!ok) {
-                    process.nextTick(function() {
-                        process.stdout.write('\n' + log.join('\n'));
-                    });
-                }
-            }
-        }, 100);
-    };
-
-    /**
-     */
-    TDS.log_transport.prototype.log = function(level, msg, meta, callback) {
-        this.output.push(
-            {
-                level: level,
-                message: msg,
-                meta: meta,
-                time: Date.now()
-            });
-        this.flush();
-        callback(null, true);
     };
 
     /**
