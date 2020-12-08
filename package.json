@@ -94,7 +94,6 @@
         "opener": "^1.5.2",
         "permessage-deflate": "^0.1.7",
         "pouchdb-all-dbs": "^1.0.2",
-        "promisify-child-process": "^4.1.1",
         "readline-sync": "^1.4.10",
         "semver": "^7.3.4",
         "shelljs": "^0.8.4",
