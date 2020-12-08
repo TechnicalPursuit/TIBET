@@ -115,7 +115,7 @@
         "babel-minify": "^0.5.1",
         "chai": "^4.2.0",
         "chrome-launcher": "^0.13.4",
-        "eslint": "^7.14.0",
+        "eslint": "^7.15.0",
         "less": "^3.12.2",
         "mocha": "^8.2.1",
         "mutation-summary": "github:TechnicalPursuit/mutation-summary",
