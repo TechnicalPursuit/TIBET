@@ -145,6 +145,13 @@
                 cfgparams,
                 params,
 
+                branchCmd,
+                branchResult,
+                targetBranch,
+                targetRegex,
+                currentBranch,
+                result,
+
                 execArgs,
 
                 credentialsCapturer,
@@ -249,6 +256,34 @@
             if (CLI.notValid(params.appname)) {
                 cmd.warn('Missing parameter: appname');
                 return 1;
+            }
+
+            //  ---
+            //  Make sure that, if the current branch isn't the same as the
+            //  release target branch, that the user is ok with deploying the
+            //  current branch.
+            //  ---
+
+            // Get current branch name...if detached this will be a commit hash.
+            branchCmd = 'git rev-parse --abbrev-ref HEAD';
+            branchResult = this.shexec(branchCmd);
+
+            targetBranch = this.getcfg('cli.release.target', 'master');
+            targetRegex = new RegExp('^\s*' + targetBranch + '\s*$');
+            currentBranch = branchResult.stdout.trim();
+
+            if (targetRegex.test(currentBranch) !== true && !this.options.force) {
+                result = CLI.prompt.question(
+                    'Current branch ' + currentBranch +
+                    ' is not the same as the release target branch: ' +
+                    targetBranch +
+                    ' Release the current branch anyway?' +
+                    ' Enter \'yes\': ');
+
+                if (!/^y/i.test(result)) {
+                    this.log('npm publish cancelled. Use --force to override');
+                    return;
+                }
             }
 
             //  ---
