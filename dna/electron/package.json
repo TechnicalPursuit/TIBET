@@ -6,7 +6,7 @@
     "dependencies": {
         "chokidar": "^3.4.2",
         "electron-updater": "^4.3.4",
-        "marked": "^0.8.2",
+        "marked": "^0.7.0",
         "marked-man": "^0.7.0",
         "minimist": "^1.2.5",
         "shelljs": "^0.8.4"
