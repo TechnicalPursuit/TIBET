@@ -101,14 +101,27 @@ GIT_COMMAND = 'git';
  *     finishes.
  */
 Cmd.prototype.execute = async function() {
+
     var version,
+        fullVersion,
 
         meta,
 
         gitpath,
         tibetpath,
 
+        branchCmd,
+        branchResult,
+
+        srcBranch,
+        srcRegex,
+
+        targetBranch,
+
         execArgs,
+
+        versionCmd,
+        versionResult,
 
         result;
 
@@ -116,9 +129,11 @@ Cmd.prototype.execute = async function() {
     this.info(CLI.beautify(JSON.stringify(this.options)));
 
     if (CLI.inProject()) {
-        version = CLI.getAppVersion();
+        this.error('Do not run this command in a project.');
+        return 1;
     } else {
         version = CLI.getLibVersion();
+        fullVersion = CLI.getLibVersion(true);
     }
 
     meta = {
@@ -142,10 +157,12 @@ Cmd.prototype.execute = async function() {
     tibetpath = 'tibet';
 
     /*
-     * The steps to building a TIBET release are as follows
+     * The steps to building a TIBET release are as follows:
+     *      git checkout master
      *      tibet build --release
-     *      git commit
      *      tibet version (--major|--minor|--patch) --suffix final
+     *      git commit -am "Update version to:" + fullVersion
+     *      git push
      *      tibet release
      *      tibet deploy npm
      *      tibet deploy dockerhub '{
@@ -166,13 +183,67 @@ Cmd.prototype.execute = async function() {
      *          }'
     */
 
-    // 'docker build --no-cache -f Dockerfile_DEPLOY -t technicalpursuit/tibet:latest .',
     if (!CLI.isTrue(this.options.major) &&
         !CLI.isTrue(this.options.minor) &&
         !CLI.isTrue(this.options.patch)) {
         this.warn('Missing parameter: release level (specify using' +
                     ' --major, --minor, --patch).');
         return 1;
+    }
+
+
+    //  ---
+    //  Checkout the branch to deploy
+    //  ---
+
+    //  Verify the current branch is the proper source branch.
+
+    // Get current branch name...if detached this will be a commit hash.
+    branchCmd = 'git rev-parse --abbrev-ref HEAD';
+    branchResult = this.shexec(branchCmd);
+
+    srcBranch = this.getcfg('cli.release.source', 'develop');
+
+    srcRegex = new RegExp('^\s*' + srcBranch + '\s*$');
+    if (srcRegex.test(branchResult.stdout.trim()) !== true &&
+        !this.options.force) {
+        this.error('Not on ' + srcBranch + ' branch. Use --force to override.');
+        throw new Error('BadSourceBranch');
+    }
+
+
+    //  ---
+    //  Stash any changes that exist on the source branch.
+    //  ---
+
+    execArgs = [
+                    'stash',
+                    'push'
+                ];
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, gitpath, execArgs);
+    }
+
+
+    //  ---
+    //  Check out the target branch (because that's where 'tibet release' put
+    //  the release'd code).
+    //  ---
+
+    targetBranch = this.getcfg('cli.release.target', 'master');
+
+    execArgs = [
+                    'checkout',
+                    targetBranch
+                ];
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, gitpath, execArgs);
     }
 
     //  ---
@@ -194,25 +265,6 @@ Cmd.prototype.execute = async function() {
 
 
     //  ---
-    //  Commit before we version stamp
-    //  ---
-
-    execArgs = [
-                    'commit',
-                    '--am',
-                    '"Ready to version"'
-                ];
-
-    this.log('Commit changes before version stamp');
-
-    if (this.options['dry-run']) {
-        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
-    } else {
-        await CLI.execAsync(this, gitpath, execArgs);
-    }
-
-
-    //  ---
     //  Perform version stamp
     //  ---
 
@@ -222,10 +274,13 @@ Cmd.prototype.execute = async function() {
 
     if (CLI.isTrue(this.options.major)) {
         execArgs.push('--major');
+        meta.source.major = (parseInt(meta.source.major) + 1).toString();
     } else if (CLI.isTrue(this.options.minor)) {
         execArgs.push('--minor');
+        meta.source.minor = (parseInt(meta.source.minor) + 1).toString();
     } else if (CLI.isTrue(this.options.patch)) {
         execArgs.push('--patch');
+        meta.source.patch = (parseInt(meta.source.patch) + 1).toString();
     }
 
     execArgs.push('--suffix', 'final');
@@ -236,6 +291,70 @@ Cmd.prototype.execute = async function() {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
     } else {
         await CLI.execAsync(this, tibetpath, execArgs);
+    }
+
+
+    //  ---
+    //  Get the updated version stamp.
+    //  ---
+
+    this.log('Retrieve the updated version stamp');
+
+    if (this.options['dry-run']) {
+        versionResult = 'tibet@' +
+                        meta.source.major + '.' +
+                        meta.source.minor + '.' +
+                        meta.source.patch + '+gXXXXXXXXXX.XXX.XXXXXXXXXXXXX';
+    } else {
+        versionCmd = 'tibet version --full';
+        versionResult = this.shexec(versionCmd);
+        versionResult = CLI.clean(versionResult.stdout).trim();
+    }
+
+    if (!this.options['dry-run']) {
+        result = CLI.prompt.question(
+            'New version stamp computed as: ' + versionResult + '.' +
+            ' Commit this version stamp? ' +
+            '? Enter \'yes\' after inspection: ');
+        if (!/^y/i.test(result)) {
+            this.log('Version stamping cancelled.');
+            return;
+        }
+    }
+
+    //  ---
+    //  Commit the version stamp changes.
+    //  ---
+
+    execArgs = [
+                    'commit',
+                    '-am',
+                    '"Update the version to: ' + versionResult + '"'
+                ];
+
+    this.log('Commit the version stamp changes');
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, gitpath, execArgs);
+    }
+
+
+    //  ---
+    //  Push the version stamp changes.
+    //  ---
+
+    execArgs = [
+                    'push'
+                ];
+
+    this.log('Push the version stamp changes');
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, gitpath, execArgs);
     }
 
 
@@ -334,6 +453,38 @@ Cmd.prototype.execute = async function() {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
     } else {
         await CLI.execAsync(this, tibetpath, execArgs);
+    }
+
+
+    //  ---
+    //  Reset git back to source branch
+    //  ---
+
+    execArgs = [
+                    'checkout',
+                    srcBranch
+                ];
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, gitpath, execArgs);
+    }
+
+
+    //  ---
+    //  Unstash any changes that existed on the source branch.
+    //  ---
+
+    execArgs = [
+                    'stash',
+                    'pop'
+                ];
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, gitpath, execArgs);
     }
 
     return 0;
