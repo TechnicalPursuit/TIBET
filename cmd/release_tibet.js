@@ -229,24 +229,6 @@ Cmd.prototype.execute = async function() {
 
 
     //  ---
-    //  Check out the target branch (because that's where 'tibet release' put
-    //  the release'd code).
-    //  ---
-
-    targetBranch = this.getcfg('cli.release.target', 'master');
-
-    execArgs = [
-                    'checkout',
-                    targetBranch
-                ];
-
-    if (this.options['dry-run']) {
-        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
-    } else {
-        await CLI.execAsync(this, gitpath, execArgs);
-    }
-
-    //  ---
     //  Build the TIBET release
     //  ---
 
@@ -372,6 +354,25 @@ Cmd.prototype.execute = async function() {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
     } else {
         await CLI.execAsync(this, tibetpath, execArgs);
+    }
+
+
+    //  ---
+    //  Check out the target branch (because that's where 'tibet release' put
+    //  the release'd code).
+    //  ---
+
+    targetBranch = this.getcfg('cli.release.target', 'master');
+
+    execArgs = [
+                    'checkout',
+                    targetBranch
+                ];
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, gitpath, execArgs);
     }
 
 
