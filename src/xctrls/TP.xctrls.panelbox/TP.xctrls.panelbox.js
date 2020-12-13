@@ -163,6 +163,42 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.panelbox.Inst.defineMethod('isScalarValued',
+function(aspectName) {
+
+    /**
+     * @method isScalarValued
+     * @summary Returns true if the receiver deals with scalar values.
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is scalar valued for.
+     * @returns {Boolean} For this type, this returns true.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.panelbox.Inst.defineMethod('isSingleValued',
+function(aspectName) {
+
+    /**
+     * @method isSingleValued
+     * @summary Returns true if the receiver deals with single values.
+     * @description See the TP.dom.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
+     * @returns {Boolean} False for this type as it's not single valued.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.panelbox.Inst.defineMethod('refresh',
 function(shouldRender, shouldRefreshBindings) {
 

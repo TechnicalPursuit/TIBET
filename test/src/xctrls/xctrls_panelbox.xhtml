@@ -19,6 +19,13 @@
     ]]>
     </style>
 
+    <!-- The test data for value bound selection tests -->
+    <tibet:data name="urn:tibet:bound_selection_test_data" content="TP.core.Hash">
+        <![CDATA[
+        {"selection_set_1": "baz"}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body data-theme="tpi">
@@ -27,25 +34,31 @@
     <br/>
     panelbox #1:
     <br/>
-    A standard XControls panelbox showing 3 panels. Panel #1 is disabled and the panelbox cannot be switched to that panel:
+    A standard XControls panelbox showing 4 panels. Panel #3 is disabled and the panelbox cannot be switched to that panel:
 
-    <xctrls:panelbox id="panelbox1">
+    <xctrls:panelbox id="panelbox1" bind:in="urn:tibet:bound_selection_test_data#tibet(selection_set_1)">
         <xctrls:panel>
-            <xctrls:value>0</xctrls:value>
+            <xctrls:value>foo</xctrls:value>
             <xctrls:content>
                 This is content for panel #0.
             </xctrls:content>
         </xctrls:panel>
-        <xctrls:panel pclass:disabled="true">
-            <xctrls:value>1</xctrls:value>
+        <xctrls:panel>
+            <xctrls:value>bar</xctrls:value>
             <xctrls:content>
                 This is content for panel #1.
             </xctrls:content>
         </xctrls:panel>
         <xctrls:panel>
-            <xctrls:value>2</xctrls:value>
+            <xctrls:value>baz</xctrls:value>
             <xctrls:content>
                 This is content for panel #2.
+            </xctrls:content>
+        </xctrls:panel>
+        <xctrls:panel pclass:disabled="true">
+            <xctrls:value>goo</xctrls:value>
+            <xctrls:content>
+                This is content for panel #3. It should never be shown.
             </xctrls:content>
         </xctrls:panel>
     </xctrls:panelbox>
@@ -53,10 +66,10 @@
     <br/>
     <br/>
 
-    <select name="select_panel" id="select_panel" onchange="TP.byId('panelbox1').setValue(event.target.value)">
-        <option id="select_panel_0" value="0">Panel #0</option>
-        <option id="select_panel_1" value="1">Panel #1</option>
-        <option id="select_panel_2" value="2">Panel #2</option>
+    <select name="select_panel" bind:io="urn:tibet:bound_selection_test_data#tibet(selection_set_1)">
+        <option id="select_panel_0" value="foo">Panel #0</option>
+        <option id="select_panel_1" value="bar">Panel #1</option>
+        <option id="select_panel_2" value="baz">Panel #2</option>
     </select>
 
 </body>
