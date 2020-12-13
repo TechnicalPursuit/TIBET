@@ -19,18 +19,18 @@
 
     release({
         //  new release
-        semver: '5.2.1+gb6104db7b2.0.1607871022636',
+        semver: '5.2.1+g5acb1d73b8.9.1607872089830',
         major: '5',
         minor: '2',
         patch: '1',
         suffix: '',
         increment: '0',
-        time: '1607871022636',
+        time: '1607872089830',
         //  prior semver
-        describe: '5.2.0-0-gb6104db7b2-dirty',
+        describe: '5.2.0-9-g5acb1d73b8',
         ptag: '5.2.0',
-        commits: '0',
-        phash: 'b6104db7b2'
+        commits: '9',
+        phash: '5acb1d73b8'
     },
     'lib');
 
