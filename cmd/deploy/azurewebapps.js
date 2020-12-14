@@ -13,7 +13,6 @@
  *          "azurewebapps": {
  *              "projectname": "myproject" (defaults to project.name),
  *              "projectversion": "0.1.0" (defaults to project.version),
- *              "username": "bedney@technicalpursuit.com",
  *              "resourcegroupname": "TIBETAzureTestResourceGroup",
  *              "resourcegrouplocation": "Central US",
  *              "containerregistryname": "TIBETAzureTestContainerRegistry",
@@ -27,9 +26,9 @@
  *      }
  *
  * and/or as an inline parameter to the command, which here shows a parameter
- * that is not placed in the 'tds.json' file for obvious reasons:
+ * that is not placed in the 'tds.json' file:
  *
- *      tibet deploy azurewebapps '{"password":"passwordMyPassword"}'
+ *      tibet deploy azurewebapps '{"nodockercache": true}'
  *
  * These parameter sets are combined to form the full parameter set.
  */

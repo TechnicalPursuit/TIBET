@@ -23,9 +23,9 @@
  *      }
  *
  * and/or as an inline parameter to the command, which here shows a parameter
- * that is not placed in the 'tds.json' file for obvious reasons:
+ * that is not placed in the 'tds.json' file:
  *
- *      tibet deploy awselasticbeanstalk '{"password":"passwordMyPassword"}'
+ *      tibet deploy azurewebapps '{"nodockercache": true}'
  *
  * These parameter sets are combined to form the full parameter set.
  */
