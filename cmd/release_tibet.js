@@ -158,12 +158,13 @@ Cmd.prototype.execute = async function() {
 
     /*
      * The steps to building a TIBET release are as follows:
-     *      git checkout master
+     *      git stash push
      *      tibet build --release
      *      tibet version (--major|--minor|--patch) --suffix final
      *      git commit -am "Update version to:" + fullVersion
      *      git push
      *      tibet release
+     *      tibet checkout <targetbranch>
      *      tibet deploy npm
      *      tibet deploy dockerhub '{
      *          "projectname":"tibet",
@@ -181,6 +182,8 @@ Cmd.prototype.execute = async function() {
      *              "technicalpursuit/tibet:" + meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch
      *          ]
      *          }'
+     *      tibet checkout <sourcebranch>
+     *      git stash pop
     */
 
     if (!CLI.isTrue(this.options.major) &&
@@ -359,7 +362,8 @@ Cmd.prototype.execute = async function() {
 
     //  ---
     //  Check out the target branch (because that's where 'tibet release' put
-    //  the release'd code).
+    //  the release'd code, but it went ahead and put our branch back to where
+    //  it started).
     //  ---
 
     targetBranch = this.getcfg('cli.release.target', 'master');
