@@ -226,11 +226,6 @@
                 return 1;
             }
 
-            if (CLI.notValid(params.password)) {
-                cmd.warn('Missing parameter: password');
-                return 1;
-            }
-
             if (CLI.notValid(params.resourcegroupname)) {
                 cmd.warn('Missing parameter: resourcegroupname');
                 return 1;
