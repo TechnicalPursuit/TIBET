@@ -1,12 +1,16 @@
 /**
- * @copyright Copyright (C) {{year}}, the AUTHORS. All Rights Reserved.
+ * @copyright Copyright (C) 2020, the AUTHORS. All Rights Reserved.
  */
 
 (function() {
+    'use strict';
+
     var release;
 
-    /* eslint-disable arrow-parens, arrow-body-style */
-    release = TP.sys.release || (data => data);
+    release = TP && TP.sys && TP.sys.release ? TP.sys.release :
+        (data) => {
+            module.exports = data;
+        };
 
     //  --- latest.js start ---
     /* eslint-disable quote-props,quotes */
