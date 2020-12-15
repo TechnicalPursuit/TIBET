@@ -447,6 +447,33 @@
             }
 
             //  ---
+            //  Make sure we're logged into AWS
+            //  ---
+
+            execArgs = [
+                            'iam',
+                            'get-user'
+                        ];
+
+            cmd.log('Ensuring we\'re logged into AWS');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                stdoutStr = '{"User": {"UserId": "164964774525"}}';
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer);
+            }
+
+            if (/Unable to locate credentials/.test(stderrStr) ||
+                /Access Denied/.test(stderrStr)) {
+                cmd.warn('Not logged into AWS' +
+                            ' - please configure your AWS credentials' +
+                            ' - aborting');
+                return;
+            }
+
+            //  ---
             //  Set the deployment region in the current AWS profile
             //  ---
 

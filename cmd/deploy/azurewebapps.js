@@ -151,6 +151,8 @@
                 currentBranch,
                 result,
 
+                azureInfoUserName,
+
                 execArgs,
 
                 stdoutCapturer,
@@ -314,23 +316,44 @@
             }
 
             //  ---
-            //  Log into Azure
+            //  Make sure we're logged into Azure
             //  ---
 
             execArgs = [
-                            'login',
-                            '-u',
-                            params.username,
-                            '-p',
-                            params.password
+                            'account',
+                            'list',
+                            '--refresh'
                         ];
 
-            cmd.log('Logging into Azure');
+            cmd.log('Ensuring we\'re logged into Azure');
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+                stdoutStr = '[{"user": {"name": "bedney@technicalpursuit.com", "type": "user"}}]';
             } else {
-                await CLI.execAsync(this, azuretoolspath, execArgs);
+                await CLI.execAsync(this, azuretoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer);
+            }
+
+            if (/Please run "az login"/.test(stderrStr)) {
+                cmd.warn('Not logged into Azure' +
+                            ' - please run "az login"' +
+                            ' - aborting');
+                return;
+            }
+
+            try {
+                azureInfoUserName = JSON.parse(stdoutStr)[0].user.name;
+            } catch (e) {
+                cmd.error('Invalid user info JSON: ' + e.message);
+                return 1;
+            }
+
+            if (azureInfoUserName !== params.username) {
+                cmd.warn('supplied username: "' + params.username +
+                            '" does not match Azure username: "' +
+                            azureInfoUserName +
+                            '" - aborting');
             }
 
             //  ---
