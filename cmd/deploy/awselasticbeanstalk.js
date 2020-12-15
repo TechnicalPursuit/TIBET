@@ -301,8 +301,11 @@
 
                 execArgs,
 
-                credentialsCapturer,
-                credentialsStr,
+                stdoutCapturer,
+                stdoutStr,
+                stderrCapturer,
+                stderrStr,
+
                 isGitProject,
 
                 credentials,
@@ -393,6 +396,14 @@
                 return 1;
             }
 
+            stdoutCapturer = function(output) {
+                stdoutStr = output;
+            };
+
+            stderrCapturer = function(output) {
+                stderrStr = output;
+            };
+
             //  ---
             //  Make sure that, if the current branch isn't the same as the
             //  release target branch, that the user is ok with deploying the
@@ -469,18 +480,14 @@
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
-                credentialsStr = '{"authorizationData": [{"authorizationToken":"QVdTOmV5SndZWGxzYjJGa0lqb2lkVXcxU1ZSSk5VWTNRMk5IVjBWM2IwbGtaVEpYY1cxWlZGcDVkR0psYzJkbFFWZ3hlR05JYmpkQlNIQlZUV3h3TXpaWVVHMWlSbk5DVUdNeV","expiresAt":"2020-12-08T06:58:29.343000-06:00","proxyEndpoint":"https://164964774525.dkr.ecr.us-east-1.amazonaws.com"}]}';
+                stdoutStr = '{"authorizationData": [{"authorizationToken":"QVdTOmV5SndZWGxzYjJGa0lqb2lkVXcxU1ZSSk5VWTNRMk5IVjBWM2IwbGtaVEpYY1cxWlZGcDVkR0psYzJkbFFWZ3hlR05JYmpkQlNIQlZUV3h3TXpaWVVHMWlSbk5DVUdNeV","expiresAt":"2020-12-08T06:58:29.343000-06:00","proxyEndpoint":"https://164964774525.dkr.ecr.us-east-1.amazonaws.com"}]}';
             } else {
-                credentialsCapturer = function(output) {
-                    credentialsStr = output;
-                };
-
                 await CLI.execAsync(this, awstoolspath, execArgs, false,
-                                    credentialsCapturer);
+                                    stdoutCapturer);
             }
 
             try {
-                credentials = JSON.parse(credentialsStr);
+                credentials = JSON.parse(stdoutStr);
             } catch (e) {
                 cmd.error('Invalid container registry credentials JSON: ' +
                                                                 e.message);

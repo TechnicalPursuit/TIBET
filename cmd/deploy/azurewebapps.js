@@ -153,8 +153,11 @@
 
                 execArgs,
 
-                credentialsCapturer,
-                credentialsStr,
+                stdoutCapturer,
+                stdoutStr,
+                stderrCapturer,
+                stderrStr,
+
                 isGitProject,
 
                 credentials,
@@ -258,6 +261,14 @@
                 cmd.warn('Missing parameter: appname');
                 return 1;
             }
+
+            stdoutCapturer = function(output) {
+                stdoutStr = output;
+            };
+
+            stderrCapturer = function(output) {
+                stderrStr = output;
+            };
 
             //  ---
             //  Make sure that, if the current branch isn't the same as the
@@ -392,18 +403,14 @@
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
-                credentialsStr = '{"passwords": [{"name": "password","value": "J0h3TsVwIXuNv3TMvNE=UI+7P1h7qd=i"},{"name": "password2","value": "ofiFwlkn4P9bjaKKy8dfRJttU=nMmA/f"}], "username": "TIBETAzureTestContainerRegistry"}';
+                stdoutStr = '{"passwords": [{"name": "password","value": "J0h3TsVwIXuNv3TMvNE=UI+7P1h7qd=i"},{"name": "password2","value": "ofiFwlkn4P9bjaKKy8dfRJttU=nMmA/f"}], "username": "TIBETAzureTestContainerRegistry"}';
             } else {
-                credentialsCapturer = function(output) {
-                    credentialsStr = output;
-                };
-
                 await CLI.execAsync(this, azuretoolspath, execArgs, false,
-                                    credentialsCapturer);
+                                    stdoutCapturer);
             }
 
             try {
-                credentials = JSON.parse(credentialsStr);
+                credentials = JSON.parse(stdoutStr);
             } catch (e) {
                 cmd.error('Invalid container registry credentials JSON: ' +
                                                                 e.message);
