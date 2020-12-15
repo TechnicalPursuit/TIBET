@@ -13,7 +13,6 @@
  *          "azurewebapps": {
  *              "projectname": "myproject" (defaults to project.name),
  *              "projectversion": "0.1.0" (defaults to project.version),
- *              "username": "bedney@technicalpursuit.com",
  *              "resourcegroupname": "TIBETAzureTestResourceGroup",
  *              "resourcegrouplocation": "Central US",
  *              "containerregistryname": "TIBETAzureTestContainerRegistry",
@@ -27,9 +26,9 @@
  *      }
  *
  * and/or as an inline parameter to the command, which here shows a parameter
- * that is not placed in the 'tds.json' file for obvious reasons:
+ * that is not placed in the 'tds.json' file:
  *
- *      tibet deploy azurewebapps '{"password":"passwordMyPassword"}'
+ *      tibet deploy azurewebapps '{"nodockercache": true}'
  *
  * These parameter sets are combined to form the full parameter set.
  */
@@ -152,16 +151,25 @@
                 currentBranch,
                 result,
 
+                azureInfoUserName,
+
                 execArgs,
 
-                credentialsCapturer,
-                credentialsStr,
+                stdoutCapturer,
+                stdoutStr,
+                stderrCapturer,
+                stderrStr,
+
+                isGitProject,
+
                 credentials,
 
                 containerRegistryLocation,
                 containerRegistryPassword,
 
-                tag;
+                tag,
+
+                webappURL;
 
             /* eslint-disable consistent-this */
             cmd = this;
@@ -218,11 +226,6 @@
                 return 1;
             }
 
-            if (CLI.notValid(params.password)) {
-                cmd.warn('Missing parameter: password');
-                return 1;
-            }
-
             if (CLI.notValid(params.resourcegroupname)) {
                 cmd.warn('Missing parameter: resourcegroupname');
                 return 1;
@@ -258,52 +261,96 @@
                 return 1;
             }
 
+            stdoutCapturer = function(output) {
+                stdoutStr = output;
+            };
+
+            stderrCapturer = function(output) {
+                stderrStr = output;
+            };
+
             //  ---
             //  Make sure that, if the current branch isn't the same as the
             //  release target branch, that the user is ok with deploying the
             //  current branch.
             //  ---
 
+            isGitProject = true;
+
             // Get current branch name...if detached this will be a commit hash.
             branchCmd = 'git rev-parse --abbrev-ref HEAD';
-            branchResult = this.shexec(branchCmd);
+            try {
+                branchResult = this.shexec(branchCmd);
+            } catch (e) {
+                if (/fatal: not a git repository/.test(e.message)) {
+                    isGitProject = false;
+                } else {
+                    cmd.error(e.message);
+                    return 1;
+                }
+            }
 
-            targetBranch = this.getcfg('cli.release.target', 'master');
-            targetRegex = new RegExp('^\s*' + targetBranch + '\s*$');
-            currentBranch = branchResult.stdout.trim();
+            if (isGitProject) {
+                targetBranch = this.getcfg('cli.release.target', 'master');
+                targetRegex = new RegExp('^\s*' + targetBranch + '\s*$');
+                currentBranch = branchResult.stdout.trim();
 
-            if (targetRegex.test(currentBranch) !== true && !this.options.force) {
-                result = CLI.prompt.question(
-                    'Current branch ' + currentBranch +
-                    ' is not the same as the release target branch: ' +
-                    targetBranch +
-                    ' Release the current branch anyway?' +
-                    ' Enter \'yes\': ');
+                if (targetRegex.test(currentBranch) !== true &&
+                    !this.options.force) {
+                    result = CLI.prompt.question(
+                        'Current branch ' + currentBranch +
+                        ' is not the same as the release target branch: ' +
+                        targetBranch +
+                        ' Release the current branch anyway?' +
+                        ' Enter \'yes\': ');
 
-                if (!/^y/i.test(result)) {
-                    this.log('npm publish cancelled. Use --force to override');
-                    return;
+                    if (!/^y/i.test(result)) {
+                        this.log(
+                            'npm publish cancelled. Use --force to override');
+                        return;
+                    }
                 }
             }
 
             //  ---
-            //  Log into Azure
+            //  Make sure we're logged into Azure
             //  ---
 
             execArgs = [
-                            'login',
-                            '-u',
-                            params.username,
-                            '-p',
-                            params.password
+                            'account',
+                            'list',
+                            '--refresh'
                         ];
 
-            cmd.log('Logging into Azure');
+            cmd.log('Ensuring we\'re logged into Azure');
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+                stdoutStr = '[{"user": {"name": "bedney@technicalpursuit.com", "type": "user"}}]';
             } else {
-                await CLI.execAsync(this, azuretoolspath, execArgs);
+                await CLI.execAsync(this, azuretoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer);
+            }
+
+            if (/Please run "az login"/.test(stderrStr)) {
+                cmd.warn('Not logged into Azure' +
+                            ' - please run "az login"' +
+                            ' - aborting');
+                return;
+            }
+
+            try {
+                azureInfoUserName = JSON.parse(stdoutStr)[0].user.name;
+            } catch (e) {
+                cmd.error('Invalid user info JSON: ' + e.message);
+                return 1;
+            }
+
+            if (azureInfoUserName !== params.username) {
+                cmd.warn('supplied username: "' + params.username +
+                            '" does not match Azure username: "' +
+                            azureInfoUserName +
+                            '" - aborting');
             }
 
             //  ---
@@ -376,18 +423,14 @@
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
-                credentialsStr = '{"passwords": [{"name": "password","value": "J0h3TsVwIXuNv3TMvNE=UI+7P1h7qd=i"},{"name": "password2","value": "ofiFwlkn4P9bjaKKy8dfRJttU=nMmA/f"}], "username": "TIBETAzureTestContainerRegistry"}';
+                stdoutStr = '{"passwords": [{"name": "password","value": "J0h3TsVwIXuNv3TMvNE=UI+7P1h7qd=i"},{"name": "password2","value": "ofiFwlkn4P9bjaKKy8dfRJttU=nMmA/f"}], "username": "TIBETAzureTestContainerRegistry"}';
             } else {
-                credentialsCapturer = function(output) {
-                    credentialsStr = output;
-                };
-
                 await CLI.execAsync(this, azuretoolspath, execArgs, false,
-                                    credentialsCapturer);
+                                    stdoutCapturer);
             }
 
             try {
-                credentials = JSON.parse(credentialsStr);
+                credentials = JSON.parse(stdoutStr);
             } catch (e) {
                 cmd.error('Invalid container registry credentials JSON: ' +
                                                                 e.message);
@@ -576,6 +619,37 @@
                 await CLI.execAsync(this, azuretoolspath, execArgs);
             }
 
+            //  ---
+            //  Grab the URL that this web app can be found under
+            //  ---
+
+            execArgs = [
+                            'webapp',
+                            'show',
+                            '--name',
+                            params.appname,
+                            '--resource-group',
+                            params.resourcegroupname
+                        ];
+
+            cmd.log('Retrieving the webapp URL on Azure');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, azuretoolspath, execArgs, false,
+                                    stdoutCapturer);
+            }
+
+            try {
+                webappURL = JSON.parse(stdoutStr).defaultHostName;
+            } catch (e) {
+                cmd.error('Invalid webapp info JSON: ' + e.message);
+                return 1;
+            }
+
+            cmd.log('TIBET APP will available at: "http://' + webappURL + '"' +
+                    ' within approximately 5 minutes');
         };
     };
 
