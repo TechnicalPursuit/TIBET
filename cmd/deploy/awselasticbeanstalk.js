@@ -303,6 +303,8 @@
 
                 credentialsCapturer,
                 credentialsStr,
+                isGitProject,
+
                 credentials,
 
                 containerRegistryLocation,
@@ -397,25 +399,39 @@
             //  current branch.
             //  ---
 
+            isGitProject = true;
+
             // Get current branch name...if detached this will be a commit hash.
             branchCmd = 'git rev-parse --abbrev-ref HEAD';
-            branchResult = this.shexec(branchCmd);
+            try {
+                branchResult = this.shexec(branchCmd);
+            } catch (e) {
+                if (/fatal: not a git repository/.test(e.message)) {
+                    isGitProject = false;
+                } else {
+                    cmd.error(e.message);
+                    return 1;
+                }
+            }
 
-            targetBranch = this.getcfg('cli.release.target', 'master');
-            targetRegex = new RegExp('^\s*' + targetBranch + '\s*$');
-            currentBranch = branchResult.stdout.trim();
+            if (isGitProject) {
+                targetBranch = this.getcfg('cli.release.target', 'master');
+                targetRegex = new RegExp('^\s*' + targetBranch + '\s*$');
+                currentBranch = branchResult.stdout.trim();
 
-            if (targetRegex.test(currentBranch) !== true && !this.options.force) {
-                result = CLI.prompt.question(
-                    'Current branch ' + currentBranch +
-                    ' is not the same as the release target branch: ' +
-                    targetBranch +
-                    ' Release the current branch anyway?' +
-                    ' Enter \'yes\': ');
+                if (targetRegex.test(currentBranch) !== true &&
+                    !this.options.force) {
+                    result = CLI.prompt.question(
+                        'Current branch ' + currentBranch +
+                        ' is not the same as the release target branch: ' +
+                        targetBranch +
+                        ' Release the current branch anyway?' +
+                        ' Enter \'yes\': ');
 
-                if (!/^y/i.test(result)) {
-                    this.log('npm publish cancelled. Use --force to override');
-                    return;
+                    if (!/^y/i.test(result)) {
+                        this.log('npm publish cancelled. Use --force to override');
+                        return;
+                    }
                 }
             }
 
