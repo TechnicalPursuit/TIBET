@@ -39,6 +39,9 @@
         CLI,
         sh,
 
+        promisify,
+        sleep,
+
         DOCKER_COMMAND,
 
         ZIP_COMMAND,
@@ -54,6 +57,9 @@
 
     CLI = require('../../src/tibet/cli/_cli');
     sh = require('shelljs');
+
+    promisify = require('util').promisify;
+    sleep = promisify(setTimeout);
 
     //  ---
     //  Instance Attributes
@@ -327,7 +333,9 @@
                 infoFilePath,
                 zippedInfoFile,
 
-                infoBucketName;
+                infoBucketName,
+
+                webappURL;
 
             /* eslint-disable consistent-this */
             cmd = this;
@@ -799,7 +807,43 @@
                 await CLI.execAsync(this, awstoolspath, execArgs);
             }
 
-            return;
+            //  ---
+            //  Sleep to allow AWS to get far enough to produce an endpoint URL
+            //  ---
+
+            cmd.log('Pausing 10 seconds to allow AWS to create endpoint URL');
+
+            await sleep(10000);
+
+            //  ---
+            //  Grab the URL that this web app can be found under
+            //  ---
+
+            execArgs = [
+                            'elasticbeanstalk',
+                            'describe-environments',
+                            '--application-name',
+                            params.appname
+                        ];
+
+            cmd.log('Retrieving the webapp URL on AWS');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer);
+            }
+
+            try {
+                webappURL = JSON.parse(stdoutStr).Environments[0].CNAME;
+            } catch (e) {
+                cmd.error('Invalid webapp info JSON: ' + e.message);
+                return 1;
+            }
+
+            cmd.log('TIBET APP will available at: "http://' + webappURL + '"' +
+                    ' within approximately 5 minutes');
         };
     };
 

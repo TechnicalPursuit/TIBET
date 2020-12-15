@@ -167,7 +167,9 @@
                 containerRegistryLocation,
                 containerRegistryPassword,
 
-                tag;
+                tag,
+
+                webappURL;
 
             /* eslint-disable consistent-this */
             cmd = this;
@@ -622,6 +624,37 @@
                 await CLI.execAsync(this, azuretoolspath, execArgs);
             }
 
+            //  ---
+            //  Grab the URL that this web app can be found under
+            //  ---
+
+            execArgs = [
+                            'webapp',
+                            'show',
+                            '--name',
+                            params.appname,
+                            '--resource-group',
+                            params.resourcegroupname
+                        ];
+
+            cmd.log('Retrieving the webapp URL on Azure');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + azuretoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, azuretoolspath, execArgs, false,
+                                    stdoutCapturer);
+            }
+
+            try {
+                webappURL = JSON.parse(stdoutStr).defaultHostName;
+            } catch (e) {
+                cmd.error('Invalid webapp info JSON: ' + e.message);
+                return 1;
+            }
+
+            cmd.log('TIBET APP will available at: "http://' + webappURL + '"' +
+                    ' within approximately 5 minutes');
         };
     };
 
