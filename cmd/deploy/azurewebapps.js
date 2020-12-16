@@ -282,7 +282,8 @@
             try {
                 branchResult = this.shexec(branchCmd);
             } catch (e) {
-                if (/fatal: not a git repository/.test(e.message)) {
+                if (/fatal: not a git repository/.test(e.message) ||
+                    /fatal: ambiguous argument 'HEAD'/.test(e.message)) {
                     isGitProject = false;
                 } else {
                     cmd.error(e.message);
