@@ -109,6 +109,8 @@ Cmd.prototype.execute = async function() {
         gitpath,
         tibetpath,
 
+        result,
+
         branchCmd,
         branchResult,
 
@@ -120,9 +122,7 @@ Cmd.prototype.execute = async function() {
         execArgs,
 
         versionCmd,
-        versionResult,
-
-        result;
+        versionResult;
 
     this.info('Options:');
     this.info(CLI.beautify(JSON.stringify(this.options)));
@@ -192,6 +192,18 @@ Cmd.prototype.execute = async function() {
         return 1;
     }
 
+    //  ---
+    //  Make sure that we prompt the user to be logged into both npm and Docker.
+    //  ---
+
+    result = CLI.prompt.question(
+        'Make sure that you are logged into "git", "npm" and "Dockerhub"' +
+        ' before proceeding. Proceed?' +
+        ' Enter \'yes\': ');
+    if (!/^y/i.test(result)) {
+        this.log('TIBET release cancelled.');
+        return;
+    }
 
     //  ---
     //  Checkout the branch to deploy
