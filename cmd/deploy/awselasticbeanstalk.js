@@ -942,9 +942,9 @@
             //  Sleep to allow AWS to get far enough to produce an endpoint URL
             //  ---
 
-            cmd.log('Pausing 10 seconds to allow AWS to create endpoint URL');
+            cmd.log('Pausing 20 seconds to allow AWS to create endpoint URL');
 
-            await sleep(10000);
+            await sleep(20000);
 
             //  ---
             //  Grab the URL that this web app can be found under
