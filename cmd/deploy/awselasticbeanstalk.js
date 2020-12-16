@@ -23,9 +23,9 @@
  *      }
  *
  * and/or as an inline parameter to the command, which here shows a parameter
- * that is not placed in the 'tds.json' file for obvious reasons:
+ * that is not placed in the 'tds.json' file:
  *
- *      tibet deploy awselasticbeanstalk '{"password":"passwordMyPassword"}'
+ *      tibet deploy awselasticbeanstalk '{"nodockercache": true}'
  *
  * These parameter sets are combined to form the full parameter set.
  */
@@ -38,6 +38,9 @@
 
         CLI,
         sh,
+
+        promisify,
+        sleep,
 
         DOCKER_COMMAND,
 
@@ -54,6 +57,9 @@
 
     CLI = require('../../src/tibet/cli/_cli');
     sh = require('shelljs');
+
+    promisify = require('util').promisify;
+    sleep = promisify(setTimeout);
 
     //  ---
     //  Instance Attributes
@@ -301,8 +307,13 @@
 
                 execArgs,
 
-                credentialsCapturer,
-                credentialsStr,
+                stdoutCapturer,
+                stdoutStr,
+                stderrCapturer,
+                stderrStr,
+
+                isGitProject,
+
                 credentials,
 
                 containerRegistryLocation,
@@ -322,7 +333,12 @@
                 infoFilePath,
                 zippedInfoFile,
 
-                infoBucketName;
+                infoBucketName,
+
+                appInfo,
+                envInfo,
+
+                webappURL;
 
             /* eslint-disable consistent-this */
             cmd = this;
@@ -391,32 +407,82 @@
                 return 1;
             }
 
+            stdoutCapturer = function(output) {
+                stdoutStr = output;
+            };
+
+            stderrCapturer = function(output) {
+                stderrStr = output;
+            };
+
             //  ---
             //  Make sure that, if the current branch isn't the same as the
             //  release target branch, that the user is ok with deploying the
             //  current branch.
             //  ---
 
+            isGitProject = true;
+
             // Get current branch name...if detached this will be a commit hash.
             branchCmd = 'git rev-parse --abbrev-ref HEAD';
-            branchResult = this.shexec(branchCmd);
-
-            targetBranch = this.getcfg('cli.release.target', 'master');
-            targetRegex = new RegExp('^\s*' + targetBranch + '\s*$');
-            currentBranch = branchResult.stdout.trim();
-
-            if (targetRegex.test(currentBranch) !== true && !this.options.force) {
-                result = CLI.prompt.question(
-                    'Current branch ' + currentBranch +
-                    ' is not the same as the release target branch: ' +
-                    targetBranch +
-                    ' Release the current branch anyway?' +
-                    ' Enter \'yes\': ');
-
-                if (!/^y/i.test(result)) {
-                    this.log('npm publish cancelled. Use --force to override');
-                    return;
+            try {
+                branchResult = this.shexec(branchCmd);
+            } catch (e) {
+                if (/fatal: not a git repository/.test(e.message) ||
+                    /fatal: ambiguous argument 'HEAD'/.test(e.message)) {
+                    isGitProject = false;
+                } else {
+                    cmd.error(e.message);
+                    return 1;
                 }
+            }
+
+            if (isGitProject) {
+                targetBranch = this.getcfg('cli.release.target', 'master');
+                targetRegex = new RegExp('^\s*' + targetBranch + '\s*$');
+                currentBranch = branchResult.stdout.trim();
+
+                if (targetRegex.test(currentBranch) !== true &&
+                    !this.options.force) {
+                    result = CLI.prompt.question(
+                        'Current branch ' + currentBranch +
+                        ' is not the same as the release target branch: ' +
+                        targetBranch +
+                        ' Release the current branch anyway?' +
+                        ' Enter \'yes\': ');
+
+                    if (!/^y/i.test(result)) {
+                        this.log('npm publish cancelled. Use --force to override');
+                        return;
+                    }
+                }
+            }
+
+            //  ---
+            //  Make sure we're logged into AWS
+            //  ---
+
+            execArgs = [
+                            'iam',
+                            'get-user'
+                        ];
+
+            cmd.log('Ensuring we\'re logged into AWS');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                stdoutStr = '{"User": {"UserId": "164964774525"}}';
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer);
+            }
+
+            if (/Unable to locate credentials/.test(stderrStr) ||
+                /Access Denied/.test(stderrStr)) {
+                cmd.warn('Not logged into AWS' +
+                            ' - please configure your AWS credentials' +
+                            ' - aborting');
+                return;
             }
 
             //  ---
@@ -453,23 +519,23 @@
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
-                credentialsStr = '{"authorizationData": [{"authorizationToken":"QVdTOmV5SndZWGxzYjJGa0lqb2lkVXcxU1ZSSk5VWTNRMk5IVjBWM2IwbGtaVEpYY1cxWlZGcDVkR0psYzJkbFFWZ3hlR05JYmpkQlNIQlZUV3h3TXpaWVVHMWlSbk5DVUdNeV","expiresAt":"2020-12-08T06:58:29.343000-06:00","proxyEndpoint":"https://164964774525.dkr.ecr.us-east-1.amazonaws.com"}]}';
+                stdoutStr = '{"authorizationData": [{"authorizationToken":"QVdTOmV5SndZWGxzYjJGa0lqb2lkVXcxU1ZSSk5VWTNRMk5IVjBWM2IwbGtaVEpYY1cxWlZGcDVkR0psYzJkbFFWZ3hlR05JYmpkQlNIQlZUV3h3TXpaWVVHMWlSbk5DVUdNeV","expiresAt":"2020-12-08T06:58:29.343000-06:00","proxyEndpoint":"https://164964774525.dkr.ecr.us-east-1.amazonaws.com"}]}';
             } else {
-                credentialsCapturer = function(output) {
-                    credentialsStr = output;
-                };
-
                 await CLI.execAsync(this, awstoolspath, execArgs, false,
-                                    credentialsCapturer);
+                                    stdoutCapturer);
             }
 
             try {
-                credentials = JSON.parse(credentialsStr);
+                credentials = JSON.parse(stdoutStr);
             } catch (e) {
                 cmd.error('Invalid container registry credentials JSON: ' +
                                                                 e.message);
                 return 1;
             }
+
+            //  ---
+            //  Parse out AWS Elastic Container Registry credentials
+            //  ---
 
             containerRegistryLocation =
                 credentials.authorizationData[0].proxyEndpoint;
@@ -487,23 +553,48 @@
             containerRegistryPassword = credentialsData[1];
 
             //  ---
-            //  Create an container image repository in the AWS Elastic
-            //  Container Registry
+            //  Check to see if a registry already exists
             //  ---
 
             execArgs = [
                             'ecr',
-                            'create-repository',
-                            '--repository-name',
+                            'describe-repositories',
+                            '--repository-names',
                             params.projectname
                         ];
 
-            cmd.log('Creating ECR repository: ' + params.projectname);
+            cmd.log('Checking for ECR repository: ' + params.projectname);
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                stderrStr = 'fluffy';
             } else {
-                await CLI.execAsync(this, awstoolspath, execArgs);
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer, false,
+                                    false);
+            }
+
+            if (/does not exist in the registry/.test(stderrStr)) {
+                //  ---
+                //  Create an container image repository in the AWS Elastic
+                //  Container Registry
+                //  ---
+
+                execArgs = [
+                                'ecr',
+                                'create-repository',
+                                '--repository-name',
+                                params.projectname
+                            ];
+
+                cmd.log('Creating ECR repository: ' + params.projectname);
+
+                if (cmd.options['dry-run']) {
+                    cmd.log('DRY RUN: ' +
+                            awstoolspath + ' ' + execArgs.join(' '));
+                } else {
+                    await CLI.execAsync(this, awstoolspath, execArgs);
+                }
             }
 
             //  ---
@@ -675,22 +766,58 @@
             }
 
             //  ---
-            //  Create a new Elastic Beanstalk application
+            //  Check to see if an Elastic Beanstalk application with our
+            //  appname already exists.
             //  ---
 
             execArgs = [
                             'elasticbeanstalk',
-                            'create-application',
-                            '--application-name',
+                            'describe-applications',
+                            '--application-names',
                             params.appname
                         ];
 
-            cmd.log('Creating a new application: ' + params.appname);
+            cmd.log('Checking for an existing application with name: ' +
+                    params.appname);
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
             } else {
-                await CLI.execAsync(this, awstoolspath, execArgs);
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer);
+            }
+
+            try {
+                appInfo = JSON.parse(stdoutStr);
+            } catch (e) {
+                cmd.error('Invalid application description JSON: ' + e.message);
+                return 1;
+            }
+
+            if (appInfo.Applications.length > 0 &&
+                appInfo.Applications[0].ApplicationName === params.appname) {
+                //  empty
+            } else {
+
+                //  ---
+                //  Create a new Elastic Beanstalk application
+                //  ---
+
+                execArgs = [
+                                'elasticbeanstalk',
+                                'create-application',
+                                '--application-name',
+                                params.appname
+                            ];
+
+                cmd.log('Creating a new application: ' + params.appname);
+
+                if (cmd.options['dry-run']) {
+                    cmd.log(
+                        'DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                } else {
+                    await CLI.execAsync(this, awstoolspath, execArgs);
+                }
             }
 
             //  ---
@@ -715,6 +842,68 @@
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
             } else {
                 await CLI.execAsync(this, awstoolspath, execArgs);
+            }
+
+            //  ---
+            //  See if any environments matching our name exist
+            //  ---
+
+            execArgs = [
+                            'elasticbeanstalk',
+                            'describe-environments',
+                            '--application-name',
+                            params.appname
+                        ];
+
+            cmd.log('Checking for existing environment');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer,
+                                    false, false);
+            }
+
+            try {
+                envInfo = JSON.parse(stdoutStr).Environments;
+            } catch (e) {
+                cmd.error('Invalid environment info JSON: ' + e.message);
+                return 1;
+            }
+
+            if (envInfo.length > 0) {
+
+                if (envInfo[0].Status !== 'Terminated') {
+                    //  ---
+                    //  Terminate any Elastic Beanstalk environment that exists
+                    //  with the same name.
+                    //  ---
+
+                    execArgs = [
+                                    'elasticbeanstalk',
+                                    'terminate-environment',
+                                    '--environment-name',
+                                    params.projectname
+                                ];
+
+                    cmd.log('Terminating any application environment named: ' +
+                            params.projectname);
+
+
+                    if (cmd.options['dry-run']) {
+                        cmd.log(
+                        'DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                        stderrStr = 'fluffy';
+                    } else {
+                        await CLI.execAsync(this, awstoolspath, execArgs);
+                    }
+
+                    cmd.log('Pausing 3 minutes to allow AWS to terminate' +
+                            ' environment');
+
+                    await sleep(180000);
+                }
             }
 
             //  ---
@@ -749,7 +938,44 @@
                 await CLI.execAsync(this, awstoolspath, execArgs);
             }
 
-            return;
+            //  ---
+            //  Sleep to allow AWS to get far enough to produce an endpoint URL
+            //  ---
+
+            cmd.log('Pausing 20 seconds to allow AWS to create endpoint URL');
+
+            await sleep(20000);
+
+            //  ---
+            //  Grab the URL that this web app can be found under
+            //  ---
+
+            execArgs = [
+                            'elasticbeanstalk',
+                            'describe-environments',
+                            '--application-name',
+                            params.appname
+                        ];
+
+            cmd.log('Retrieving the webapp URL on AWS');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer);
+            }
+
+            try {
+                webappURL = JSON.parse(stdoutStr).Environments[0].CNAME;
+            } catch (e) {
+                cmd.error('Invalid webapp info JSON: ' + e.message);
+                return 1;
+            }
+
+            cmd.log('TIBET APP will available at: "http://' + webappURL + '"' +
+                    ' within approximately 5 minutes from: ' +
+                    new Date(Date.now()).toISOString());
         };
     };
 

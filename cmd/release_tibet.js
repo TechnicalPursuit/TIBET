@@ -103,7 +103,6 @@ GIT_COMMAND = 'git';
 Cmd.prototype.execute = async function() {
 
     var version,
-        fullVersion,
 
         meta,
 
@@ -133,7 +132,6 @@ Cmd.prototype.execute = async function() {
         return 1;
     } else {
         version = CLI.getLibVersion();
-        fullVersion = CLI.getLibVersion(true);
     }
 
     meta = {
@@ -158,12 +156,13 @@ Cmd.prototype.execute = async function() {
 
     /*
      * The steps to building a TIBET release are as follows:
-     *      git checkout master
+     *      git stash push
      *      tibet build --release
      *      tibet version (--major|--minor|--patch) --suffix final
-     *      git commit -am "Update version to:" + fullVersion
+     *      git commit -am "Update the version to: <newversion>"
      *      git push
      *      tibet release
+     *      tibet checkout <targetbranch>
      *      tibet deploy npm
      *      tibet deploy dockerhub '{
      *          "projectname":"tibet",
@@ -181,6 +180,8 @@ Cmd.prototype.execute = async function() {
      *              "technicalpursuit/tibet:" + meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch
      *          ]
      *          }'
+     *      tibet checkout <sourcebranch>
+     *      git stash pop
     */
 
     if (!CLI.isTrue(this.options.major) &&
@@ -229,24 +230,6 @@ Cmd.prototype.execute = async function() {
 
 
     //  ---
-    //  Check out the target branch (because that's where 'tibet release' put
-    //  the release'd code).
-    //  ---
-
-    targetBranch = this.getcfg('cli.release.target', 'master');
-
-    execArgs = [
-                    'checkout',
-                    targetBranch
-                ];
-
-    if (this.options['dry-run']) {
-        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
-    } else {
-        await CLI.execAsync(this, gitpath, execArgs);
-    }
-
-    //  ---
     //  Build the TIBET release
     //  ---
 
@@ -274,13 +257,13 @@ Cmd.prototype.execute = async function() {
 
     if (CLI.isTrue(this.options.major)) {
         execArgs.push('--major');
-        meta.source.major = (parseInt(meta.source.major) + 1).toString();
+        meta.source.major = (parseInt(meta.source.major, 10) + 1).toString();
     } else if (CLI.isTrue(this.options.minor)) {
         execArgs.push('--minor');
-        meta.source.minor = (parseInt(meta.source.minor) + 1).toString();
+        meta.source.minor = (parseInt(meta.source.minor, 10) + 1).toString();
     } else if (CLI.isTrue(this.options.patch)) {
         execArgs.push('--patch');
-        meta.source.patch = (parseInt(meta.source.patch) + 1).toString();
+        meta.source.patch = (parseInt(meta.source.patch, 10) + 1).toString();
     }
 
     execArgs.push('--suffix', 'final');
@@ -372,6 +355,26 @@ Cmd.prototype.execute = async function() {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
     } else {
         await CLI.execAsync(this, tibetpath, execArgs);
+    }
+
+
+    //  ---
+    //  Check out the target branch (because that's where 'tibet release' put
+    //  the release'd code, but it went ahead and put our branch back to where
+    //  it started).
+    //  ---
+
+    targetBranch = this.getcfg('cli.release.target', 'master');
+
+    execArgs = [
+                    'checkout',
+                    targetBranch
+                ];
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, gitpath, execArgs);
     }
 
 
