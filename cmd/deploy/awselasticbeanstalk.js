@@ -974,7 +974,8 @@
             }
 
             cmd.log('TIBET APP will available at: "http://' + webappURL + '"' +
-                    ' within approximately 5 minutes');
+                    ' within approximately 5 minutes from: ' +
+                    new Date(Date.now()).toISOString());
         };
     };
 
