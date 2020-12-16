@@ -16,8 +16,8 @@
  *              "projectversion": "0.1.0" (defaults to project.version),
  *              "nodockercache": "true" (defaults to false),
  *              "dockerfile": "Dockerfile_SPECIAL" (defaults to 'Dockerfile'),
- *              "extra_tag_entries": ["technicalpursuit/myproject:latest technicalpursuit/myproject:footag"] (defaults to []),
- *              "extra_push_entries": [] (defaults to [])
+ *              "extra_tag_entries": [["technicalpursuit/myproject:latest"],["technicalpursuit/myproject:footag"]] (defaults to []),
+ *              "extra_push_entries": ["technicalpursuit/myproject:footag"] (defaults to [])
  *          }
  *      }
  *
@@ -110,6 +110,9 @@
 
                 execArgs,
                 tag,
+
+                sourceTag,
+                targetTag,
 
                 i,
                 entry;
@@ -264,11 +267,15 @@
             if (CLI.notEmpty(params.extra_tag_entries)) {
                 for (i = 0; i < params.extra_tag_entries.length; i++) {
                     entry = params.extra_tag_entries[i];
+                    sourceTag = entry[0];
+                    targetTag = entry[1];
+
                     cmd.log('Tagging Docker image: ' + entry);
 
                     execArgs = [
                                     'tag',
-                                    entry
+                                    sourceTag,
+                                    targetTag
                                 ];
 
                     if (cmd.options['dry-run']) {
