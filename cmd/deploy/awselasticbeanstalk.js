@@ -25,7 +25,7 @@
  * and/or as an inline parameter to the command, which here shows a parameter
  * that is not placed in the 'tds.json' file:
  *
- *      tibet deploy azurewebapps '{"nodockercache": true}'
+ *      tibet deploy awselasticbeanstalk '{"nodockercache": true}'
  *
  * These parameter sets are combined to form the full parameter set.
  */
@@ -335,6 +335,9 @@
 
                 infoBucketName,
 
+                appInfo,
+                envInfo,
+
                 webappURL;
 
             /* eslint-disable consistent-this */
@@ -425,7 +428,8 @@
             try {
                 branchResult = this.shexec(branchCmd);
             } catch (e) {
-                if (/fatal: not a git repository/.test(e.message)) {
+                if (/fatal: not a git repository/.test(e.message) ||
+                    /fatal: ambiguous argument 'HEAD'/.test(e.message)) {
                     isGitProject = false;
                 } else {
                     cmd.error(e.message);
@@ -529,6 +533,10 @@
                 return 1;
             }
 
+            //  ---
+            //  Parse out AWS Elastic Container Registry credentials
+            //  ---
+
             containerRegistryLocation =
                 credentials.authorizationData[0].proxyEndpoint;
 
@@ -545,23 +553,48 @@
             containerRegistryPassword = credentialsData[1];
 
             //  ---
-            //  Create an container image repository in the AWS Elastic
-            //  Container Registry
+            //  Check to see if a registry already exists
             //  ---
 
             execArgs = [
                             'ecr',
-                            'create-repository',
-                            '--repository-name',
+                            'describe-repositories',
+                            '--repository-names',
                             params.projectname
                         ];
 
-            cmd.log('Creating ECR repository: ' + params.projectname);
+            cmd.log('Checking for ECR repository: ' + params.projectname);
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                stderrStr = 'fluffy';
             } else {
-                await CLI.execAsync(this, awstoolspath, execArgs);
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer, false,
+                                    false);
+            }
+
+            if (/does not exist in the registry/.test(stderrStr)) {
+                //  ---
+                //  Create an container image repository in the AWS Elastic
+                //  Container Registry
+                //  ---
+
+                execArgs = [
+                                'ecr',
+                                'create-repository',
+                                '--repository-name',
+                                params.projectname
+                            ];
+
+                cmd.log('Creating ECR repository: ' + params.projectname);
+
+                if (cmd.options['dry-run']) {
+                    cmd.log('DRY RUN: ' +
+                            awstoolspath + ' ' + execArgs.join(' '));
+                } else {
+                    await CLI.execAsync(this, awstoolspath, execArgs);
+                }
             }
 
             //  ---
@@ -733,22 +766,58 @@
             }
 
             //  ---
-            //  Create a new Elastic Beanstalk application
+            //  Check to see if an Elastic Beanstalk application with our
+            //  appname already exists.
             //  ---
 
             execArgs = [
                             'elasticbeanstalk',
-                            'create-application',
-                            '--application-name',
+                            'describe-applications',
+                            '--application-names',
                             params.appname
                         ];
 
-            cmd.log('Creating a new application: ' + params.appname);
+            cmd.log('Checking for an existing application with name: ' +
+                    params.appname);
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
             } else {
-                await CLI.execAsync(this, awstoolspath, execArgs);
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer);
+            }
+
+            try {
+                appInfo = JSON.parse(stdoutStr);
+            } catch (e) {
+                cmd.error('Invalid application description JSON: ' + e.message);
+                return 1;
+            }
+
+            if (appInfo.Applications.length > 0 &&
+                appInfo.Applications[0].ApplicationName === params.appname) {
+                //  empty
+            } else {
+
+                //  ---
+                //  Create a new Elastic Beanstalk application
+                //  ---
+
+                execArgs = [
+                                'elasticbeanstalk',
+                                'create-application',
+                                '--application-name',
+                                params.appname
+                            ];
+
+                cmd.log('Creating a new application: ' + params.appname);
+
+                if (cmd.options['dry-run']) {
+                    cmd.log(
+                        'DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                } else {
+                    await CLI.execAsync(this, awstoolspath, execArgs);
+                }
             }
 
             //  ---
@@ -773,6 +842,68 @@
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
             } else {
                 await CLI.execAsync(this, awstoolspath, execArgs);
+            }
+
+            //  ---
+            //  See if any environments matching our name exist
+            //  ---
+
+            execArgs = [
+                            'elasticbeanstalk',
+                            'describe-environments',
+                            '--application-name',
+                            params.appname
+                        ];
+
+            cmd.log('Checking for existing environment');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer,
+                                    false, false);
+            }
+
+            try {
+                envInfo = JSON.parse(stdoutStr).Environments;
+            } catch (e) {
+                cmd.error('Invalid environment info JSON: ' + e.message);
+                return 1;
+            }
+
+            if (envInfo.length > 0) {
+
+                if (envInfo[0].Status !== 'Terminated') {
+                    //  ---
+                    //  Terminate any Elastic Beanstalk environment that exists
+                    //  with the same name.
+                    //  ---
+
+                    execArgs = [
+                                    'elasticbeanstalk',
+                                    'terminate-environment',
+                                    '--environment-name',
+                                    params.projectname
+                                ];
+
+                    cmd.log('Terminating any application environment named: ' +
+                            params.projectname);
+
+
+                    if (cmd.options['dry-run']) {
+                        cmd.log(
+                        'DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                        stderrStr = 'fluffy';
+                    } else {
+                        await CLI.execAsync(this, awstoolspath, execArgs);
+                    }
+
+                    cmd.log('Pausing 3 minutes to allow AWS to terminate' +
+                            ' environment');
+
+                    await sleep(180000);
+                }
             }
 
             //  ---
@@ -811,9 +942,9 @@
             //  Sleep to allow AWS to get far enough to produce an endpoint URL
             //  ---
 
-            cmd.log('Pausing 10 seconds to allow AWS to create endpoint URL');
+            cmd.log('Pausing 20 seconds to allow AWS to create endpoint URL');
 
-            await sleep(10000);
+            await sleep(20000);
 
             //  ---
             //  Grab the URL that this web app can be found under
@@ -843,7 +974,8 @@
             }
 
             cmd.log('TIBET APP will available at: "http://' + webappURL + '"' +
-                    ' within approximately 5 minutes');
+                    ' within approximately 5 minutes from: ' +
+                    new Date(Date.now()).toISOString());
         };
     };
 

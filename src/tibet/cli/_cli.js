@@ -1668,10 +1668,14 @@ CLI.quoted = function(aString, aQuoteChar) {
  *     out output.
  * @param {Function} [stderrcb] The Function to execute when there is standard
  *     error output.
+ * @param {Boolean} [reportStderrAsError=true] Whether or not this process will
+ *     report output to stderr as an 'error'.
+ * @param {Boolean} [exitOnNonZeroCode=true] Whether or not this process will
+ *     exit when the child process exits with a non-zero exit code.
  * @returns {Promise} A thenable representing the spawned child shell process.
  */
 CLI.execAsync = function(cmd, commandpath, params, interactive, stdoutcb,
-                            stderrcb) {
+                            stderrcb, reportStderrorAsError, exitOnNonZeroCode) {
 
     var spawnParams,
         options,
@@ -1747,14 +1751,18 @@ CLI.execAsync = function(cmd, commandpath, params, interactive, stdoutcb,
                         stderrcb(msg);
                     }
 
-                    cmd.error(msg);
+                    if (!CLI.isFalse(reportStderrorAsError)) {
+                        cmd.error(msg);
+                    } else {
+                        cmd.log(msg);
+                    }
                 });
             }
 
             child.on('exit', function(code) {
                 var msg;
 
-                if (code !== 0) {
+                if (code !== 0 && !CLI.isFalse(exitOnNonZeroCode)) {
                     msg = 'Execution stopped with status: ' + code;
                     if (!cmd.options.debug || !cmd.options.verbose) {
                         msg += ' Retry with --debug --verbose for more' +
