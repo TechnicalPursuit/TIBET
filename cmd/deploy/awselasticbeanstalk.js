@@ -335,6 +335,9 @@
 
                 infoBucketName,
 
+                appInfo,
+                envInfo,
+
                 webappURL;
 
             /* eslint-disable consistent-this */
@@ -530,6 +533,10 @@
                 return 1;
             }
 
+            //  ---
+            //  Parse out AWS Elastic Container Registry credentials
+            //  ---
+
             containerRegistryLocation =
                 credentials.authorizationData[0].proxyEndpoint;
 
@@ -546,23 +553,48 @@
             containerRegistryPassword = credentialsData[1];
 
             //  ---
-            //  Create an container image repository in the AWS Elastic
-            //  Container Registry
+            //  Check to see if a registry already exists
             //  ---
 
             execArgs = [
                             'ecr',
-                            'create-repository',
-                            '--repository-name',
+                            'describe-repositories',
+                            '--repository-names',
                             params.projectname
                         ];
 
-            cmd.log('Creating ECR repository: ' + params.projectname);
+            cmd.log('Checking for ECR repository: ' + params.projectname);
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                stderrStr = 'fluffy';
             } else {
-                await CLI.execAsync(this, awstoolspath, execArgs);
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer, false,
+                                    false);
+            }
+
+            if (/does not exist in the registry/.test(stderrStr)) {
+                //  ---
+                //  Create an container image repository in the AWS Elastic
+                //  Container Registry
+                //  ---
+
+                execArgs = [
+                                'ecr',
+                                'create-repository',
+                                '--repository-name',
+                                params.projectname
+                            ];
+
+                cmd.log('Creating ECR repository: ' + params.projectname);
+
+                if (cmd.options['dry-run']) {
+                    cmd.log('DRY RUN: ' +
+                            awstoolspath + ' ' + execArgs.join(' '));
+                } else {
+                    await CLI.execAsync(this, awstoolspath, execArgs);
+                }
             }
 
             //  ---
@@ -734,22 +766,58 @@
             }
 
             //  ---
-            //  Create a new Elastic Beanstalk application
+            //  Check to see if an Elastic Beanstalk application with our
+            //  appname already exists.
             //  ---
 
             execArgs = [
                             'elasticbeanstalk',
-                            'create-application',
-                            '--application-name',
+                            'describe-applications',
+                            '--application-names',
                             params.appname
                         ];
 
-            cmd.log('Creating a new application: ' + params.appname);
+            cmd.log('Checking for an existing application with name: ' +
+                    params.appname);
 
             if (cmd.options['dry-run']) {
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
             } else {
-                await CLI.execAsync(this, awstoolspath, execArgs);
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer);
+            }
+
+            try {
+                appInfo = JSON.parse(stdoutStr);
+            } catch (e) {
+                cmd.error('Invalid application description JSON: ' + e.message);
+                return 1;
+            }
+
+            if (appInfo.Applications.length > 0 &&
+                appInfo.Applications[0].ApplicationName === params.appname) {
+                //  empty
+            } else {
+
+                //  ---
+                //  Create a new Elastic Beanstalk application
+                //  ---
+
+                execArgs = [
+                                'elasticbeanstalk',
+                                'create-application',
+                                '--application-name',
+                                params.appname
+                            ];
+
+                cmd.log('Creating a new application: ' + params.appname);
+
+                if (cmd.options['dry-run']) {
+                    cmd.log(
+                        'DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                } else {
+                    await CLI.execAsync(this, awstoolspath, execArgs);
+                }
             }
 
             //  ---
@@ -774,6 +842,68 @@
                 cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
             } else {
                 await CLI.execAsync(this, awstoolspath, execArgs);
+            }
+
+            //  ---
+            //  See if any environments matching our name exist
+            //  ---
+
+            execArgs = [
+                            'elasticbeanstalk',
+                            'describe-environments',
+                            '--application-name',
+                            params.appname
+                        ];
+
+            cmd.log('Checking for existing environment');
+
+            if (cmd.options['dry-run']) {
+                cmd.log('DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+            } else {
+                await CLI.execAsync(this, awstoolspath, execArgs, false,
+                                    stdoutCapturer, stderrCapturer,
+                                    false, false);
+            }
+
+            try {
+                envInfo = JSON.parse(stdoutStr).Environments;
+            } catch (e) {
+                cmd.error('Invalid environment info JSON: ' + e.message);
+                return 1;
+            }
+
+            if (envInfo.length > 0) {
+
+                if (envInfo[0].Status !== 'Terminated') {
+                    //  ---
+                    //  Terminate any Elastic Beanstalk environment that exists
+                    //  with the same name.
+                    //  ---
+
+                    execArgs = [
+                                    'elasticbeanstalk',
+                                    'terminate-environment',
+                                    '--environment-name',
+                                    params.projectname
+                                ];
+
+                    cmd.log('Terminating any application environment named: ' +
+                            params.projectname);
+
+
+                    if (cmd.options['dry-run']) {
+                        cmd.log(
+                        'DRY RUN: ' + awstoolspath + ' ' + execArgs.join(' '));
+                        stderrStr = 'fluffy';
+                    } else {
+                        await CLI.execAsync(this, awstoolspath, execArgs);
+                    }
+
+                    cmd.log('Pausing 3 minutes to allow AWS to terminate' +
+                            ' environment');
+
+                    await sleep(180000);
+                }
             }
 
             //  ---
