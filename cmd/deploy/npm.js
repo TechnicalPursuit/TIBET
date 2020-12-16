@@ -19,9 +19,9 @@
  *      }
  *
  * and/or as an inline parameter to the command, which here shows a parameter
- * that is not placed in the 'tds.json' file for obvious reasons:
+ * that is not placed in the 'tds.json' file:
  *
- *      tibet deploy npm '{"password":"passwordMyPassword"}'
+ *      tibet deploy npm '{"foo":"bar"}'
  *
  * These parameter sets are combined to form the full parameter set.
  */
@@ -150,6 +150,19 @@
 
             params = CLI.blend({}, inlineparams);
             params = CLI.blend(params, cfgparams);
+
+            //  ---
+            //  Make sure that we prompt the user to be logged into npm.
+            //  ---
+
+            result = CLI.prompt.question(
+                'Make sure that you are logged into "npm" before' +
+                ' proceeding. Proceed?' +
+                ' Enter \'yes\': ');
+            if (!/^y/i.test(result)) {
+                this.log('npm deploy cancelled.');
+                return;
+            }
 
             //  ---
             //  Make sure that, if the current branch isn't the same as the
