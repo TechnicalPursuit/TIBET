@@ -412,11 +412,14 @@ Cmd.prototype.execute = async function() {
 
     this.log('Deploy to npm');
 
+    //  'tibet deploy npm' supports '--dry-run' natively, so we just push the
+    //  argument here and let it run for real.
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
-    } else {
-        await CLI.execAsync(this, tibetpath, execArgs);
+        execArgs.push('--dry-run');
     }
+
+    await CLI.execAsync(this, tibetpath, execArgs);
 
 
     //  ---
@@ -472,11 +475,14 @@ Cmd.prototype.execute = async function() {
 
     this.log('Deploy to DockerHub');
 
+    //  'tibet deploy dockerhub' supports '--dry-run' natively, so we just push
+    //  the argument here and let it run for real.
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
-    } else {
-        await CLI.execAsync(this, tibetpath, execArgs);
+        execArgs.push('--dry-run');
     }
+
+    await CLI.execAsync(this, tibetpath, execArgs);
 
 
     //  ---
