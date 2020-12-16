@@ -103,7 +103,6 @@ GIT_COMMAND = 'git';
 Cmd.prototype.execute = async function() {
 
     var version,
-        fullVersion,
 
         meta,
 
@@ -133,7 +132,6 @@ Cmd.prototype.execute = async function() {
         return 1;
     } else {
         version = CLI.getLibVersion();
-        fullVersion = CLI.getLibVersion(true);
     }
 
     meta = {
@@ -161,7 +159,7 @@ Cmd.prototype.execute = async function() {
      *      git stash push
      *      tibet build --release
      *      tibet version (--major|--minor|--patch) --suffix final
-     *      git commit -am "Update version to:" + fullVersion
+     *      git commit -am "Update the version to: <newversion>"
      *      git push
      *      tibet release
      *      tibet checkout <targetbranch>
@@ -259,13 +257,13 @@ Cmd.prototype.execute = async function() {
 
     if (CLI.isTrue(this.options.major)) {
         execArgs.push('--major');
-        meta.source.major = (parseInt(meta.source.major) + 1).toString();
+        meta.source.major = (parseInt(meta.source.major, 10) + 1).toString();
     } else if (CLI.isTrue(this.options.minor)) {
         execArgs.push('--minor');
-        meta.source.minor = (parseInt(meta.source.minor) + 1).toString();
+        meta.source.minor = (parseInt(meta.source.minor, 10) + 1).toString();
     } else if (CLI.isTrue(this.options.patch)) {
         execArgs.push('--patch');
-        meta.source.patch = (parseInt(meta.source.patch) + 1).toString();
+        meta.source.patch = (parseInt(meta.source.patch, 10) + 1).toString();
     }
 
     execArgs.push('--suffix', 'final');
