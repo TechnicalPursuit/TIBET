@@ -196,7 +196,8 @@ Cmd.prototype.execute = function() {
     }
 
     this.log('freezing packaged library resources...');
-    err = sh.cp('-Rn', libbase + '/', infroot);
+    err = sh.cp(
+            '-Rn', libbase + '/', infroot);
     if (sh.error()) {
         this.error('Error cloning ' + libbase + ': ' + err.stderr);
         return 1;
@@ -212,53 +213,64 @@ Cmd.prototype.execute = function() {
     }
 
     this.log('freezing library dependencies...');
-    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'deps') + '/', infroot);
+    err = sh.cp(
+            '-Rn', CLI.joinPaths(app_npm, 'tibet', 'deps') + '/', infroot);
     if (sh.error()) {
         this.error('Error cloning tibet/deps: ' + err.stderr);
         return 1;
     }
 
     this.log('freezing library support resources...');
-    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'etc') + '/', infroot);
+    err = sh.cp(
+            '-Rn', CLI.joinPaths(app_npm, 'tibet', 'etc') + '/', infroot);
     if (sh.error()) {
         this.error('Error cloning tibet/etc: ' + err.stderr);
         return 1;
     }
 
     this.log('freezing standard library docs...');
-    err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'doc') + '/', infroot);
+    err = sh.cp(
+            '-Rn', CLI.joinPaths(app_npm, 'tibet', 'doc') + '/', infroot);
     if (sh.error()) {
         this.error('Error cloning tibet/doc: ' + err.stderr);
         return 1;
     }
 
+    //  The user specified '--source', which means we copy the 'src', 'test' and
+    //  'demo' directories into the frozen app.
     if (this.options.source) {
         this.log('freezing library source...');
-        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'src') + '/', infroot);
+        err = sh.cp(
+                '-Rn', CLI.joinPaths(app_npm, 'tibet', 'src') + '/', infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/src: ' + err.stderr);
             return 1;
         }
 
         this.log('freezing library tests...');
-        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'test') + '/', infroot);
+        err = sh.cp(
+                '-Rn', CLI.joinPaths(app_npm, 'tibet', 'test') + '/', infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/test: ' + err.stderr);
             return 1;
         }
 
         this.log('freezing library demos...');
-        err = sh.cp('-Rn', CLI.joinPaths(app_npm, 'tibet', 'demo') + '/', infroot);
+        err = sh.cp(
+                '-Rn', CLI.joinPaths(app_npm, 'tibet', 'demo') + '/', infroot);
         if (sh.error()) {
             this.error('Error cloning tibet/demo: ' + err.stderr);
             return 1;
         }
     } else {
+        //  Otherwise, we just copy selected directories ('tibet/boot' and
+        //  'tibet/tools') out of the 'src' directory.
         this.log('freezing developer boot resources...');
         sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'boot'));
-        err = sh.cp('-Rn',
-                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'boot') + '/',
-                    CLI.joinPaths(infroot, 'src', 'tibet'));
+        err = sh.cp(
+                '-Rn',
+                CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'boot') + '/',
+                CLI.joinPaths(infroot, 'src', 'tibet'));
         if (sh.error()) {
             this.error('Error cloning tibet boot: ' + err.stderr);
             return 1;
@@ -266,9 +278,10 @@ Cmd.prototype.execute = function() {
 
         this.log('freezing developer tool resources...');
         sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'tools'));
-        err = sh.cp('-Rn',
-                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'tools') + '/',
-                    CLI.joinPaths(infroot, 'src', 'tibet'));
+        err = sh.cp(
+                '-Rn',
+                CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'tools') + '/',
+                CLI.joinPaths(infroot, 'src', 'tibet'));
         if (sh.error()) {
             this.error('Error cloning tibet tools: ' + err.stderr);
             return 1;
@@ -284,13 +297,14 @@ Cmd.prototype.execute = function() {
     if (this.options.standalone) {
 
         //  If '--source' was supplied, then we already copied the entire
-        //  src/tibet directory above.
+        //  'src/tibet' directory above.
         if (!this.options.source) {
             this.log('freezing developer cli resources...');
             sh.mkdir('-p', CLI.joinPaths(infroot, 'src', 'tibet', 'cli'));
-            err = sh.cp('-Rn',
-                        CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'cli') + '/',
-                        CLI.joinPaths(infroot, 'src', 'tibet'));
+            err = sh.cp(
+                    '-Rn',
+                    CLI.joinPaths(app_npm, 'tibet', 'src', 'tibet', 'cli') + '/',
+                    CLI.joinPaths(infroot, 'src', 'tibet'));
             if (sh.error()) {
                 this.error('Error cloning tibet cli: ' + err.stderr);
                 return 1;
