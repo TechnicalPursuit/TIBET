@@ -296,6 +296,26 @@ Cmd.prototype.execute = function() {
     //  TIBET's node_modules directory into the standalone project.
     if (this.options.standalone) {
 
+        this.log('freezing developer bin resources...');
+        sh.mkdir('-p', CLI.joinPaths(infroot, 'bin'));
+        err = sh.cp('-Rn',
+                    CLI.joinPaths(app_npm, 'tibet', 'bin') + '/',
+                    infroot);
+        if (sh.error()) {
+            this.error('Error cloning tibet bin: ' + err.stderr);
+            return 1;
+        }
+
+        this.log('freezing developer cmd resources...');
+        sh.mkdir('-p', CLI.joinPaths(infroot, 'cmd'));
+        err = sh.cp('-Rn',
+                    CLI.joinPaths(app_npm, 'tibet', 'cmd') + '/',
+                    infroot);
+        if (sh.error()) {
+            this.error('Error cloning tibet cmd: ' + err.stderr);
+            return 1;
+        }
+
         //  If '--source' was supplied, then we already copied the entire
         //  'src/tibet' directory above.
         if (!this.options.source) {
@@ -311,6 +331,28 @@ Cmd.prototype.execute = function() {
             }
         }
 
+        //  'demo' was frozen as part of the 'source' freezing process
+
+        //  'deps' was frozen as part of the regular freezing process
+
+        this.log('freezing developer dna resources...');
+        sh.mkdir('-p', CLI.joinPaths(infroot, 'dna'));
+        err = sh.cp('-Rn',
+                    CLI.joinPaths(app_npm, 'tibet', 'dna') + '/',
+                    infroot);
+        if (sh.error()) {
+            this.error('Error cloning tibet dna: ' + err.stderr);
+            return 1;
+        }
+
+        //  'doc' was frozen as part of the regular freezing process
+
+        //  'etc' was frozen as part of the regular freezing process
+
+        //  parts of 'lib' were frozen as part of the regular freezing process
+
+        //  'src' was frozen as part of the 'source' freezing process
+
         this.log('freezing developer tds resources...');
         sh.mkdir('-p', CLI.joinPaths(infroot, 'tds'));
         err = sh.cp('-Rn',
@@ -320,6 +362,8 @@ Cmd.prototype.execute = function() {
             this.error('Error cloning tibet tds: ' + err.stderr);
             return 1;
         }
+
+        //  'test' was frozen as part of the 'source' freezing process
 
         this.log('freezing developer node_modules resources...');
         err = sh.cp('-Rn',
