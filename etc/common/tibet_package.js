@@ -2204,6 +2204,27 @@
 
     /**
      * Returns true if the current context is within a TIBET project (inProject)
+     * and that project has been frozen (i.e. has a real directory as
+     * 'TIBET-INF/tibet').
+     * @returns {Boolean} True if the package context is frozen.
+     */
+    Package.prototype.isFrozen = function() {
+        var frozenDir;
+
+        if (!this.initialized || !this.inProject()) {
+            return false;
+        }
+
+        frozenDir = this.expandPath(
+                            this.joinPaths(this.getAppRoot(),
+                                            this.getcfg('path.tibet_inf'),
+                                            this.getcfg('path.tibet_lib')));
+
+        return !sh.test('-L', frozenDir) && sh.test('-d', frozenDir);
+    };
+
+    /**
+     * Returns true if the current context is within a TIBET project (inProject)
      * and that project has been initialized (has node_modules/tibet or similar).
      * @returns {Boolean} True if the package context is initialized.
      */
@@ -2263,6 +2284,27 @@
         return aPath.indexOf('~') === 0;
     };
 
+
+    /**
+     * Returns true if the current context is within a TIBET project (inProject)
+     * and that project has been frozen in a 'standalone' manner (i.e. has
+     * 'tibet.js' as a *real* file).
+     * @returns {Boolean} True if the package context is 'standalone' frozen.
+     */
+    Package.prototype.isStandaloneFrozen = function() {
+        var frozenFile;
+
+        if (!this.initialized || !this.inProject()) {
+            return false;
+        }
+
+        frozenFile = this.expandPath(
+                            this.joinPaths(this.getAppHead(),
+                                            this.getcfg('path.npm_dir'),
+                                            'tibet.js'));
+
+        return sh.test('-f', frozenFile);
+    };
 
     /**
      * Returns the joined path in an *OS independent* manner (i.e. with '/' as
