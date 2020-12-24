@@ -44,7 +44,6 @@
         "ansi-styles": "^5.0.0",
         "aws-sdk": "^2.804.0",
         "bluebird": "^3.7.2",
-        "bower": "^1.8.8",
         "chrome-launcher": "^0.13.4",
         "chokidar": "^3.4.3",
         "codemirror": "github:TechnicalPursuit/codemirror",
@@ -118,7 +117,6 @@
         "npm": ">=6"
     },
     "scripts": {
-        "preinstall": "npm install -g bower --allow-root",
         "test": "./bin/tibet checkup",
         "test_cli": "mocha ./test/mocha/cli_test.js"
     },
