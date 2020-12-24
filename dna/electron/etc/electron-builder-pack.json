@@ -10,6 +10,10 @@
         {
             "from": "./build",
             "to": "./app/build"
+        },
+        {
+            "from": "./TIBET-INF/tibet/lib/tibet_standalone.js",
+            "to": "./app/node_modules/tibet.js"
         }
     ],
     "mac": {
