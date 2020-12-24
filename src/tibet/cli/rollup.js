@@ -19,14 +19,12 @@
 'use strict';
 
 var CLI,
-    fs,
     babel,
     minify,
     Cmd;
 
 
 CLI = require('./_cli');
-fs = require('fs');
 
 babel = require('@babel/core');
 minify = require('babel-minify');
@@ -231,7 +229,7 @@ Cmd.prototype.executeForEach = function(list) {
             if (/\.min\.js$/.test(src) ||
                 CLI.notEmpty(item.getAttribute('no-minify')) ||
                 !cmd.options.minify) {
-                code = fs.readFileSync(src, {encoding: 'utf8'});
+                code = CLI.sh.cat(src).toString();
                 if (item.getAttribute('type') === 'module') {
                     id = src;
                     index = id.lastIndexOf('.');
@@ -249,10 +247,10 @@ Cmd.prototype.executeForEach = function(list) {
                 }
             } else {
                 if (usecache) {
-                    code = fs.readFileSync(cachename, {encoding: 'utf8'});
+                    code = CLI.sh.cat(cachename).toString();
                 } else {
                     try {
-                        code = fs.readFileSync(src, {encoding: 'utf8'});
+                        code = CLI.sh.cat(src).toString();
                         if (item.getAttribute('type') === 'module') {
                             id = src;
                             index = id.lastIndexOf('.');

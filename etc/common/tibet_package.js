@@ -17,8 +17,7 @@
 
 (function() {
 
-    var fs,
-        path,
+    var path,
         sh,
         dom,
         Package,
@@ -36,7 +35,6 @@
         notEmpty,
         notValid;
 
-    fs = require('fs');
     path = require('path');
     sh = require('shelljs');
     dom = require('xmldom');
@@ -607,9 +605,7 @@
                     throw new Error(msg);
                 }
 
-                xml = fs.readFileSync(expanded, {
-                    encoding: 'utf8'
-                });
+                xml = sh.cat(expanded).toString();
                 if (!xml) {
                     msg = 'Unable to read package: ' + expanded;
                     throw new Error(msg);
@@ -1035,9 +1031,7 @@
                     throw new Error(msg);
                 }
 
-                xml = fs.readFileSync(expanded, {
-                    encoding: 'utf8'
-                });
+                xml = sh.cat(expanded).toString();
                 if (!xml) {
                     msg = 'Unable to read package: ' + expanded;
                     throw new Error(msg);
@@ -2241,14 +2235,16 @@
         //  top-level directory. TIBET-INF on the other hand will float based on
         //  whether the app is frozen or not (or a couchdb template with an
         //  attachments directory or similar "substructure).
-        return fs.existsSync(
+        return sh.test(
+                '-d',
                 this.joinPaths(this.getAppHead(),
                     this.getcfg('path.npm_dir'),
                     this.getcfg('path.tibet_lib'))) ||
-            fs.existsSync(
-                this.joinPaths(this.getAppRoot(),
-                    this.getcfg('path.tibet_inf'),
-                    this.getcfg('path.tibet_lib')));
+                sh.test(
+                    '-d',
+                    this.joinPaths(this.getAppRoot(),
+                        this.getcfg('path.tibet_inf'),
+                        this.getcfg('path.tibet_lib')));
     };
 
 

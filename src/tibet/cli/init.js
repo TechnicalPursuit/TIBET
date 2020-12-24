@@ -26,12 +26,10 @@
 'use strict';
 
 var CLI,
-    Cmd,
-    fs;
+    Cmd;
 
 
 CLI = require('./_cli');
-fs = require('fs');
 
 //  ---
 //  Type Construction
@@ -177,7 +175,7 @@ Cmd.prototype.execute = function() {
         cmd.debug('linkto: ' + linkto);
         cmd.debug('steps: ' + steps);
 
-        if (fs.existsSync(linkfrom)) {
+        if (sh.test('-e', linkfrom)) {
             if (!cmd.options.force) {
                 //  not being asked to force-rebuild the link
                 cmd.warn(infpath + ' exists. skipping link without --force.');
@@ -195,15 +193,13 @@ Cmd.prototype.execute = function() {
         //  NB: The source path to the command here is used as a raw argument.
         //  In other words, the '../..' is *not* evaluated against the current
         //  working directory. It is used as is to create the link.
-        try {
-            //  Note: the 3rd argument here, 'junction', is needed for NTFS and
-            //  is ignored for other file systems.
-            fs.symlinkSync(linkto, linkfrom, 'junction');
-            cmd.log('TIBET development dependency linked.');
-        } catch (e) {
-            cmd.error('Error linking library launch directory: ' + e.message);
+        lnerr = sh.ln('-sf', linkto, linkfrom);
+        if (sh.error()) {
+            cmd.error('Error linking library launch directory: ' + lnerr.stderr);
             return 1;
         }
+
+        cmd.log('TIBET development dependency linked.');
 
         cmd.log('project initialized successfully.');
         cmd.info(

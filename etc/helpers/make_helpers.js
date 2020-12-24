@@ -843,7 +843,7 @@ helpers.transform = function(make, options) {
 
     make.trace('Processing file: ' + source);
     try {
-        text = fs.readFileSync(source, {encoding: 'utf8'});
+        text = sh.cat(source).toString();
         if (!text) {
             throw new Error('Empty');
         }
@@ -883,7 +883,7 @@ helpers.transform = function(make, options) {
         make.trace('Updating file: ' + target);
         try {
             content = CLI.normalizeLineEndings(content);
-            fs.writeFileSync(target, content);
+            new sh.ShellString(content).to(target);
         } catch (e) {
             make.error('Error writing file ' + target + ': ' + e.message);
             deferred.reject(e.message);

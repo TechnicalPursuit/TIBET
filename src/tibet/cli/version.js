@@ -18,7 +18,6 @@
 
 var CLI,
     Cmd,
-    fs,
     hb,
     helpers,
     semver,
@@ -26,7 +25,6 @@ var CLI,
 
 CLI = require('./_cli');
 
-fs = require('fs');
 hb = require('handlebars');
 semver = require('semver');
 helpers = require('../../../etc/helpers/config_helpers');
@@ -353,7 +351,7 @@ Cmd.prototype.updateVersionFiles = function(source) {
 
     file = CLI.expandPath(CLI.getcfg(cfgkey));
     try {
-        data = fs.readFileSync(file, {encoding: 'utf8'});
+        data = CLI.sh.cat(file).toString();
         if (!data) {
             throw new Error('NoData');
         }
@@ -397,7 +395,7 @@ Cmd.prototype.updateVersionFiles = function(source) {
         this.info('Updating target version file: ' + file);
         try {
             content = CLI.normalizeLineEndings(content);
-            fs.writeFileSync(file, content);
+            new CLI.sh.ShellString(content).to(file);
         } catch (e) {
             this.error('Error writing file ' + file + ': ' + e.message);
             return;
@@ -416,7 +414,7 @@ Cmd.prototype.updateVersionFiles = function(source) {
         try {
             content = CLI.beautify(JSON.stringify(CLI.config.npm));
             content = CLI.normalizeLineEndings(content);
-            fs.writeFileSync(file, content);
+            new CLI.sh.ShellString(content).to(file);
         } catch (e) {
             this.error('Error writing file ' + file + ': ' + e.message);
             return;
