@@ -11,6 +11,10 @@
             if (make.sh.test('-d', fullpath)) {
                 make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
             }
+            fullpath = make.CLI.expandPath('~app/dist');
+            if (make.sh.test('-d', fullpath)) {
+                make.sh.rm('-rf', fullpath);
+            }
         } catch (e) {
             reject(e);
         }

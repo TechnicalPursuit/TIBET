@@ -1481,6 +1481,33 @@ CLI.isInitialized = function() {
     return this._package.isInitialized();
 };
 
+/**
+ * Returns true if the current operation is happening in a project (inProject)
+ * and that project has been frozen.
+ * @returns {Boolean} True if the current context is in a frozen project.
+ */
+CLI.isFrozen = function() {
+    if (!this.inProject()) {
+        return false;
+    }
+
+    return this._package.isFrozen();
+};
+
+/**
+ * Returns true if the current operation is happening in a project (inProject)
+ * and that project has been frozen in a 'standalone' manner.
+ * @returns {Boolean} True if the current context is in a 'standalone' frozen
+ * project.
+ */
+CLI.isStandaloneFrozen = function() {
+    if (!this.inProject()) {
+        return false;
+    }
+
+    return this._package.isStandaloneFrozen();
+};
+
 
 /**
  * Returns the joined path in an *OS independent* manner (i.e. with '/' as the
