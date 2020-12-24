@@ -18,7 +18,6 @@
 'use strict';
 
 var CLI,
-    fs,
     path,
     sh,
     less,
@@ -31,7 +30,6 @@ var CLI,
 
 
 CLI = require('./_cli');
-fs = require('fs');
 path = require('path');
 less = require('less');
 sass = require('node-sass');
@@ -681,7 +679,7 @@ Cmd.prototype.processResources = function() {
             //  NOTE we wrap things in TIBET URI constructors and set their
             //  content to the original content, escaped for single-quoting.
             //  This effectively will pre-cache these values, avoiding HTTP.
-            data = fs.readFileSync(fullpath, {encoding: 'utf8'});
+            data = sh.cat(fullpath).toString();
 
             //  Dispatch to a proper handler which will resolve the promise once
             //  it completes any file-specific processing.
@@ -707,7 +705,7 @@ Cmd.prototype.processResources = function() {
 
                 content = CLI.normalizeLineEndings(content);
 
-                fs.writeFileSync(file, content);
+                new sh.ShellString(content).to(file);
 
                 return resolve();
             }
@@ -837,7 +835,7 @@ Cmd.prototype.processLessResource = function(options) {
 
         content = CLI.normalizeLineEndings(content);
 
-        fs.writeFileSync(fname, content);
+        new sh.ShellString(content).to(fname);
 
         return options.resolve();
     },
@@ -947,7 +945,7 @@ Cmd.prototype.processScssResource = function(options) {
 
         content = CLI.normalizeLineEndings(content);
 
-        fs.writeFileSync(fname, content);
+        new sh.ShellString(content).to(fname);
 
         return options.resolve();
     });
@@ -992,7 +990,7 @@ Cmd.prototype.processXmlResource = function(options) {
 
     content = CLI.normalizeLineEndings(content);
 
-    fs.writeFileSync(file, content);
+    new sh.ShellString(content).to(file);
 
     return options.resolve();
 };

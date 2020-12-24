@@ -57,7 +57,7 @@
         fileDelete = function(filePath) {
 
             try {
-                fs.unlinkSync(filePath);
+                sh.rm('-rf', filePath);
 
                 return {
                     ok: true
