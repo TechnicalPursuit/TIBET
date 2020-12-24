@@ -537,6 +537,40 @@ Cmd.prototype.execute = function() {
     helpers.link_apps_and_tibet(cmd, source, target, {config: bundle});
 
     //  ---
+    //  If we're freezing 'standalone', we need to copy a version of 'tibet.js'
+    //  that has the proper paths for a frozen directory structure (in the
+    //  library as 'tibet_standalone.js' but needing to be copied as 'tibet.js')
+    //  into the project's 'node_modules' directory. We then unlink the global
+    //  'npm link'ed version of TIBET - this is what finishes the freezing
+    //  process as truly 'standalone'.
+    //  ---
+
+    if (this.options.standalone) {
+
+        this.log('copying standalone version of tibet.js...');
+        err = sh.cp(
+                '-f',
+                CLI.joinPaths(libbase, 'tibet_standalone.js'),
+                CLI.joinPaths(app_npm, 'tibet.js'));
+        if (sh.error()) {
+            this.error('Error copying tibet_standalone.js: ' + err.stderr);
+            return 1;
+        }
+
+        //  Now that we've copied the standalone version of 'tibet.js', we can
+        //  remove the link to the global tibet.
+
+        this.log('removing node_modules/tibet link to global tibet...');
+        err = sh.rm('-rf', CLI.joinPaths(app_npm, 'tibet'));
+
+        if (sh.error()) {
+            this.error('Error removing node_modules/tibet link: ' +
+                        err.stderr);
+            return 1;
+        }
+    }
+
+    //  ---
     //  Finished
     //  ---
 

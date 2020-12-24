@@ -92,6 +92,8 @@ Cmd.prototype.execute = function() {
         app_npm,
         infroot,
 
+        standalone_tibet,
+
         lnflags,
         linksrcdir,
         linkdestdir,
@@ -142,6 +144,31 @@ Cmd.prototype.execute = function() {
     if (!this.options.force) {
         this.warn('Use --force to confirm destruction of ~app_inf/tibet.');
         return 1;
+    }
+
+    //  Make sure that we remove the 'standalone' version of tibet.js. It will
+    //  have been added as part of 'standalone' freezing (which will happen if
+    //  the '--standalone' flag was used).
+    standalone_tibet = CLI.joinPaths(app_npm, 'tibet.js');
+    if (sh.test('-e', standalone_tibet)) {
+        this.log('removing standalone version of tibet.js...');
+
+        err = sh.rm('-f', standalone_tibet);
+        if (sh.error()) {
+            this.warn('Couldn\'t remove standalone version of tibet.js: ' +
+                        err.stderr);
+        }
+
+        this.log('restoring global tibet link...');
+
+        //  Make sure that we relink TIBET into the project's 'node_modules'
+        //  directory if it got removed as part of 'standalone' freezing (which
+        //  will happen if the '--standalone' flag was used).
+        sh.exec('npm link tibet');
+        if (sh.error()) {
+            this.error('Error relinking global tibet: ' + err.stderr);
+            return 1;
+        }
     }
 
     err = sh.rm('-rf', infroot);
