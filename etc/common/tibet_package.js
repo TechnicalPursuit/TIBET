@@ -2233,6 +2233,10 @@
             return false;
         }
 
+        if (this.isFrozen()) {
+            return true;
+        }
+
         //  NOTE that node_modules never "floats", it's always relative to the
         //  top-level directory. TIBET-INF on the other hand will float based on
         //  whether the app is frozen or not (or a couchdb template with an
