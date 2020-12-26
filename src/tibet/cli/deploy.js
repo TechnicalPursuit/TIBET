@@ -31,6 +31,12 @@ Cmd = function() { /* init */ };
 Cmd.Parent = require('./_multi');
 Cmd.prototype = new Cmd.Parent();
 
+/**
+ * Reference to the overall CLI for logging etc.
+ * @type {Object}
+ */
+Cmd.CLI = CLI;
+
 //  NOTE: we want deploy to be able to load runtime extensions so we need to
 //  ensure we patch in an initialize hook.
 Cmd.initialize = Cmd.Parent.initialize;
