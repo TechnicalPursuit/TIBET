@@ -3,16 +3,24 @@
 
     module.exports = function(make, resolve, reject) {
 
-        var electronBuilder,
+        var isFrozen,
+
+            electronBuilder,
 
             etcPath,
             configPath,
 
+            updateURL,
+
             electronConfig,
 
-            isFrozen,
-
             promise;
+
+        isFrozen = make.CLI.isFrozen();
+        if (isFrozen) {
+            reject('Project already frozen. Please thaw and try again.');
+            return;
+        }
 
         electronBuilder = require('electron-builder');
 
@@ -22,16 +30,22 @@
 
         configPath = make.CLI.joinPaths(
                         etcPath,
-                        'electron-builder-pack.json');
+                        'electron-builder-config.json');
+
+        updateURL = make.CLI.cfg('deploy.electron.updateURL', null, true);
 
         electronConfig = require(configPath);
 
-        isFrozen = make.CLI.isFrozen();
-
-        if (isFrozen) {
-            reject('Project already frozen. Please thaw and try again.');
-            return;
-        }
+        //  Add a 'publish' config, even though we're not publishing in this
+        //  step - that takes place in our deploy command.. This 'provider' won't
+        //  actually copy files anywhere, but is necessary to generate the proper
+        //  .yml files for when we actually deploy.
+        electronConfig.publish = [
+            {
+                provider: 'generic',
+                url: updateURL
+            }
+        ];
 
         promise = new Promise(function(resolver, rejector) {
 
@@ -40,7 +54,6 @@
             return electronBuilder.build({
                 mac: ['default'],
                 win: ['default'],
-                publish: 'never',
                 config: electronConfig
             }).then(
                 function() {
