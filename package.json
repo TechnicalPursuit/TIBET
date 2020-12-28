@@ -1,6 +1,6 @@
 {
     "name": "tibet",
-    "version": "5.2.2",
+    "version": "5.2.3",
     "description": "The TIBET Low Code Development Platform.",
     "keywords": ["Cloud Admin", "CouchDB", "Database Admin", "Desktop", "DevOps", "Electron", "Low Code", "No Code", "IDE", "Admin Tools", "Workflow"],
     "homepage": "http://www.technicalpursuit.com",
@@ -27,8 +27,8 @@
     "license": "RPL-1.5",
     "main": "./lib/tibet.js",
     "bin": {
-        "tibet": "./bin/tibet",
-        "tibet_debug": "./bin/tibet_debug"
+        "tibet": "bin/tibet",
+        "tibet_debug": "bin/tibet_debug"
     },
     "directories": {
         "bin": "./bin",
