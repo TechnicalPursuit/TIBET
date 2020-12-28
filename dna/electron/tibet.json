@@ -1,7 +1,17 @@
 {
-    "//" : "TIBET project file. Set configuration parameters here.",
+    "//": "TIBET project file. Set configuration parameters here.",
     "project": {
         "name": "{{appname}}"
+    },
+    "deploy": {
+        "electron": {
+            "updateURL": "https://{{appname}}.s3.amazonaws.com",
+            "provider": "s3",
+            "s3": {
+                "bucket": "{{appname}}",
+                "region": "us-east-1"
+            }
+        }
     },
     "tibet": {
         "dna": "{{dna}}",

@@ -1,7 +1,5 @@
 {
     "appId": "org.electronjs.{{appname}}",
-    "publish": [{
-    }],
     "asar": false,
     "extraResources": [
         {
@@ -12,6 +10,10 @@
         {
             "from": "./build",
             "to": "./app/build"
+        },
+        {
+            "from": "./TIBET-INF/tibet/lib/tibet_standalone.js",
+            "to": "./app/node_modules/tibet.js"
         }
     ],
     "mac": {
@@ -22,6 +24,5 @@
         "signIgnore": ".*\\.app$",
         "strictVerify": false,
         "target": ["dmg", "zip"]
-    },
-    "afterSign": "./etc/mac_build_files/notarize.js"
+    }
 }
