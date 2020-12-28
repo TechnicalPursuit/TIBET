@@ -17,8 +17,7 @@
 
 (function() {
 
-    var fs,
-        path,
+    var path,
         sh,
         dom,
         Package,
@@ -36,7 +35,6 @@
         notEmpty,
         notValid;
 
-    fs = require('fs');
     path = require('path');
     sh = require('shelljs');
     dom = require('xmldom');
@@ -607,9 +605,7 @@
                     throw new Error(msg);
                 }
 
-                xml = fs.readFileSync(expanded, {
-                    encoding: 'utf8'
-                });
+                xml = sh.cat(expanded).toString();
                 if (!xml) {
                     msg = 'Unable to read package: ' + expanded;
                     throw new Error(msg);
@@ -1035,9 +1031,7 @@
                     throw new Error(msg);
                 }
 
-                xml = fs.readFileSync(expanded, {
-                    encoding: 'utf8'
-                });
+                xml = sh.cat(expanded).toString();
                 if (!xml) {
                     msg = 'Unable to read package: ' + expanded;
                     throw new Error(msg);
@@ -2204,6 +2198,27 @@
 
     /**
      * Returns true if the current context is within a TIBET project (inProject)
+     * and that project has been frozen (i.e. has a real directory as
+     * 'TIBET-INF/tibet').
+     * @returns {Boolean} True if the package context is frozen.
+     */
+    Package.prototype.isFrozen = function() {
+        var frozenDir;
+
+        if (!this.initialized || !this.inProject()) {
+            return false;
+        }
+
+        frozenDir = this.expandPath(
+                            this.joinPaths(this.getAppRoot(),
+                                            this.getcfg('path.tibet_inf'),
+                                            this.getcfg('path.tibet_lib')));
+
+        return !sh.test('-L', frozenDir) && sh.test('-d', frozenDir);
+    };
+
+    /**
+     * Returns true if the current context is within a TIBET project (inProject)
      * and that project has been initialized (has node_modules/tibet or similar).
      * @returns {Boolean} True if the package context is initialized.
      */
@@ -2212,18 +2227,24 @@
             return false;
         }
 
+        if (this.isFrozen()) {
+            return true;
+        }
+
         //  NOTE that node_modules never "floats", it's always relative to the
         //  top-level directory. TIBET-INF on the other hand will float based on
         //  whether the app is frozen or not (or a couchdb template with an
         //  attachments directory or similar "substructure).
-        return fs.existsSync(
+        return sh.test(
+                '-d',
                 this.joinPaths(this.getAppHead(),
                     this.getcfg('path.npm_dir'),
                     this.getcfg('path.tibet_lib'))) ||
-            fs.existsSync(
-                this.joinPaths(this.getAppRoot(),
-                    this.getcfg('path.tibet_inf'),
-                    this.getcfg('path.tibet_lib')));
+                sh.test(
+                    '-d',
+                    this.joinPaths(this.getAppRoot(),
+                        this.getcfg('path.tibet_inf'),
+                        this.getcfg('path.tibet_lib')));
     };
 
 
@@ -2263,6 +2284,27 @@
         return aPath.indexOf('~') === 0;
     };
 
+
+    /**
+     * Returns true if the current context is within a TIBET project (inProject)
+     * and that project has been frozen in a 'standalone' manner (i.e. has
+     * 'tibet.js' as a *real* file).
+     * @returns {Boolean} True if the package context is 'standalone' frozen.
+     */
+    Package.prototype.isStandaloneFrozen = function() {
+        var frozenFile;
+
+        if (!this.initialized || !this.inProject()) {
+            return false;
+        }
+
+        frozenFile = this.expandPath(
+                            this.joinPaths(this.getAppHead(),
+                                            this.getcfg('path.npm_dir'),
+                                            'tibet.js'));
+
+        return sh.test('-f', frozenFile);
+    };
 
     /**
      * Returns the joined path in an *OS independent* manner (i.e. with '/' as

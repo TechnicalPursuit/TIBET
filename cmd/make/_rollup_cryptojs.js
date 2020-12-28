@@ -3,48 +3,59 @@
 
     module.exports = function(make, resolve, reject) {
 
-        make.sh.exec('bower install cryptojslib');
+        var CLI,
+            sh,
 
-        make.sh.cd('bower_components/cryptojslib');
+            clonedir,
+            cryptodepsdir;
 
-        make.sh.mkdir(
-            make.CLI.joinPaths('..', '..', 'deps', 'cryptojs'));
+        CLI = make.CLI;
+        sh = make.sh;
 
-        make.sh.cp(
+        clonedir = sh.tempdir();
+        sh.cd(clonedir);
+
+        sh.rm('-rf', 'CryptoJS');
+
+        sh.exec('git clone https://github.com/sytelus/CryptoJS.git');
+        sh.cd('CryptoJS');
+        clonedir = sh.pwd().toString();
+
+        cryptodepsdir = CLI.joinPaths(CLI.getLibRoot(), 'deps', 'cryptojs');
+
+        if (!sh.test('-d', cryptodepsdir)) {
+            sh.mkdir(cryptodepsdir);
+        }
+
+        sh.cp(
             '-R',
-            make.CLI.joinPaths('.', 'components', 'core.js'),
-            make.CLI.joinPaths(
-                '..', '..', 'deps', 'cryptojs', 'CryptoJS-core-tpi.js'));
+            CLI.joinPaths(clonedir, 'components', 'core.js'),
+            CLI.joinPaths(cryptodepsdir, 'CryptoJS-core-tpi.js'));
 
-        make.sh.cp(
+        sh.cp(
             '-R',
-            make.CLI.joinPaths('.', 'components', 'md5.js'),
-            make.CLI.joinPaths(
-                '..', '..', 'deps', 'cryptojs', 'CryptoJS-md5-tpi.js'));
+            CLI.joinPaths(clonedir, 'components', 'md5.js'),
+            CLI.joinPaths(cryptodepsdir, 'CryptoJS-md5-tpi.js'));
 
-        make.sh.cp(
+        sh.cp(
             '-R',
-            make.CLI.joinPaths('.', 'components', 'sha1.js'),
-            make.CLI.joinPaths(
-                '..', '..', 'deps', 'cryptojs', 'CryptoJS-sha1-tpi.js'));
+            CLI.joinPaths(clonedir, 'components', 'sha1.js'),
+            CLI.joinPaths(cryptodepsdir, 'CryptoJS-sha1-tpi.js'));
 
-        make.sh.cp(
+        sh.cp(
             '-R',
-            make.CLI.joinPaths('.', 'components', 'enc-base64.js'),
-            make.CLI.joinPaths(
-                '..', '..', 'deps', 'cryptojs', 'CryptoJS-enc-base64-tpi.js'));
+            CLI.joinPaths(clonedir, 'components', 'enc-base64.js'),
+            CLI.joinPaths(cryptodepsdir, 'CryptoJS-enc-base64-tpi.js'));
 
-        make.sh.cp(
+        sh.cp(
             '-R',
-            make.CLI.joinPaths('.', 'components', 'cipher-core.js'),
-            make.CLI.joinPaths(
-                '..', '..', 'deps', 'cryptojs', 'CryptoJS-cipher-core-tpi.js'));
+            CLI.joinPaths(clonedir, 'components', 'cipher-core.js'),
+            CLI.joinPaths(cryptodepsdir, 'CryptoJS-cipher-core-tpi.js'));
 
-        make.sh.cp(
+        sh.cp(
             '-R',
-            make.CLI.joinPaths('.', 'components', 'format-hex.js'),
-            make.CLI.joinPaths(
-                '..', '..', 'deps', 'cryptojs', 'CryptoJS-format-hex-tpi.js'));
+            CLI.joinPaths(clonedir, 'components', 'format-hex.js'),
+            CLI.joinPaths(cryptodepsdir, 'CryptoJS-format-hex-tpi.js'));
 
         resolve();
     };

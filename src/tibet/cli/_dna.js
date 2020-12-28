@@ -21,14 +21,12 @@
 
 var CLI,
     path,
-    fs,
     handlebars,
     helpers,
     Cmd;
 
 CLI = require('./_cli');
 path = require('path');
-fs = require('fs');
 handlebars = require('handlebars');
 helpers = require('../../../etc/helpers/config_helpers');
 
@@ -724,7 +722,7 @@ Cmd.prototype.executeProcess = function() {
         cmd.verbose('processing file: ' + fullpath);
 
         try {
-            data = fs.readFileSync(fullpath, {encoding: 'utf8'});
+            data = CLI.sh.cat(fullpath).toString();
             if (!data) {
                 throw new Error('Empty');
             }
@@ -769,7 +767,7 @@ Cmd.prototype.executeProcess = function() {
             cmd.verbose('updating file: ' + fullpath);
             try {
                 content = CLI.normalizeLineEndings(content);
-                fs.writeFileSync(fullpath, content);
+                new CLI.sh.ShellString(content).to(fullpath);
             } catch (e) {
                 cmd.error('Error writing file ' + fullpath + ': ' + e.message);
                 code = 1;

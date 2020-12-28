@@ -25,7 +25,6 @@
 
         var CLI,
 
-            fs,
             sh,
             electron,
 
@@ -44,7 +43,6 @@
 
         CLI = require('../../src/tibet/cli/_cli');
 
-        fs = require('fs');
         sh = require('shelljs');
 
         electron = require('electron');
@@ -57,7 +55,7 @@
         fileDelete = function(filePath) {
 
             try {
-                fs.unlinkSync(filePath);
+                sh.rm('-rf', filePath);
 
                 return {
                     ok: true
@@ -81,7 +79,7 @@
             var doesExist;
 
             try {
-                doesExist = fs.existsSync(filePath);
+                doesExist = sh.test('-e', filePath);
 
                 return {
                     ok: true,
@@ -106,7 +104,7 @@
             var data;
 
             try {
-                data = fs.readFileSync(filePath, 'utf8');
+                data = sh.cat(filePath);
 
                 return {
                     ok: true,
@@ -130,10 +128,11 @@
 
             try {
 
-                //  NB: we take the mode, either 'a' or 'w', and append a '+' to
-                //  it so that this call will automatically create the file if
-                //  it doesn't exist.
-                fs.writeFileSync(filePath, body, {flag: mode + '+'});
+                if (mode === 'a') {
+                    new sh.ShellString(body).toEnd(filePath);
+                } else {
+                    new sh.ShellString(body).to(filePath);
+                }
 
                 return {
                     ok: true

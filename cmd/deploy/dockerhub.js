@@ -16,15 +16,15 @@
  *              "projectversion": "0.1.0" (defaults to project.version),
  *              "nodockercache": "true" (defaults to false),
  *              "dockerfile": "Dockerfile_SPECIAL" (defaults to 'Dockerfile'),
- *              "extra_tag_entries": ["technicalpursuit/myproject:latest technicalpursuit/myproject:footag"] (defaults to []),
- *              "extra_push_entries": [] (defaults to [])
+ *              "extra_tag_entries": [["technicalpursuit/myproject:latest"],["technicalpursuit/myproject:footag"]] (defaults to []),
+ *              "extra_push_entries": ["technicalpursuit/myproject:footag"] (defaults to [])
  *          }
  *      }
  *
  * and/or as an inline parameter to the command, which here shows a parameter
- * that is not placed in the 'tds.json' file for obvious reasons:
+ * that is not placed in the 'tds.json' file:
  *
- *      tibet deploy dockerhub '{"password":"passwordMyPassword"}'
+ *      tibet deploy dockerhub '{"foo":"bar"}'
  *
  * These parameter sets are combined to form the full parameter set.
  */
@@ -111,6 +111,9 @@
                 execArgs,
                 tag,
 
+                sourceTag,
+                targetTag,
+
                 i,
                 entry;
 
@@ -164,19 +167,22 @@
             params.projectversion = params.projectversion ||
                                     CLI.cfg('npm.version');
 
-            if (CLI.notValid(params.username)) {
-                cmd.warn('Missing parameter: username');
-                return 1;
-            }
-
-            if (CLI.notValid(params.password)) {
-                cmd.warn('Missing parameter: password');
-                return 1;
-            }
-
             if (CLI.notValid(params.account)) {
                 cmd.warn('Missing parameter: account');
                 return 1;
+            }
+
+            //  ---
+            //  Make sure that we prompt the user to be logged into Dockerhub.
+            //  ---
+
+            result = CLI.prompt.question(
+                'Make sure that you are logged into "Dockerhub" before' +
+                ' proceeding. Proceed?' +
+                ' Enter \'yes\': ');
+            if (!/^y/i.test(result)) {
+                this.log('Dockerhub deploy cancelled.');
+                return;
             }
 
             //  ---
@@ -205,27 +211,6 @@
                     this.log('npm publish cancelled. Use --force to override');
                     return;
                 }
-            }
-
-            //  ---
-            //  Log into DockerHub
-            //  ---
-
-            execArgs = [
-                            'login',
-                            '--username',
-                            params.username,
-                            '--password',
-                            params.password,
-                            'docker.io'
-                        ];
-
-            cmd.log('Logging into DockerHub');
-
-            if (cmd.options['dry-run']) {
-                cmd.log('DRY RUN: ' + dockerpath + ' ' + execArgs.join(' '));
-            } else {
-                await CLI.execAsync(this, dockerpath, execArgs);
             }
 
             //  ---
@@ -282,11 +267,15 @@
             if (CLI.notEmpty(params.extra_tag_entries)) {
                 for (i = 0; i < params.extra_tag_entries.length; i++) {
                     entry = params.extra_tag_entries[i];
+                    sourceTag = entry[0];
+                    targetTag = entry[1];
+
                     cmd.log('Tagging Docker image: ' + entry);
 
                     execArgs = [
                                     'tag',
-                                    entry
+                                    sourceTag,
+                                    targetTag
                                 ];
 
                     if (cmd.options['dry-run']) {

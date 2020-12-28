@@ -1,6 +1,6 @@
 {
     "name": "tibet",
-    "version": "5.2.2",
+    "version": "5.2.3",
     "description": "The TIBET Low Code Development Platform.",
     "keywords": ["Cloud Admin", "CouchDB", "Database Admin", "Desktop", "DevOps", "Electron", "Low Code", "No Code", "IDE", "Admin Tools", "Workflow"],
     "homepage": "http://www.technicalpursuit.com",
@@ -27,8 +27,8 @@
     "license": "RPL-1.5",
     "main": "./lib/tibet.js",
     "bin": {
-        "tibet": "./bin/tibet",
-        "tibet_debug": "./bin/tibet_debug"
+        "tibet": "bin/tibet",
+        "tibet_debug": "bin/tibet_debug"
     },
     "directories": {
         "bin": "./bin",
@@ -44,9 +44,8 @@
         "ansi-styles": "^5.0.0",
         "aws-sdk": "^2.804.0",
         "bluebird": "^3.7.2",
-        "bower": "^1.8.8",
-        "chrome-launcher": "^0.13.4",
         "chokidar": "^3.4.3",
+        "chrome-launcher": "^0.13.4",
         "codemirror": "github:TechnicalPursuit/codemirror",
         "cors": "^2.8.5",
         "d3-dispatch": "^2.0.0",
@@ -77,7 +76,7 @@
         "nano": "^8.2.3",
         "node-forge": "^0.10.0",
         "npm": "^6.14.9",
-        "open-editor": "^2.0.1",
+        "open-editor": "^3.0.0",
         "opener": "^1.5.2",
         "permessage-deflate": "^0.1.7",
         "pouchdb-all-dbs": "^1.0.2",
@@ -118,7 +117,6 @@
         "npm": ">=6"
     },
     "scripts": {
-        "preinstall": "npm install -g bower --allow-root",
         "test": "./bin/tibet checkup",
         "test_cli": "mocha ./test/mocha/cli_test.js"
     },

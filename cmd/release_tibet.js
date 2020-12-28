@@ -109,6 +109,8 @@ Cmd.prototype.execute = async function() {
         gitpath,
         tibetpath,
 
+        result,
+
         branchCmd,
         branchResult,
 
@@ -120,9 +122,7 @@ Cmd.prototype.execute = async function() {
         execArgs,
 
         versionCmd,
-        versionResult,
-
-        result;
+        versionResult;
 
     this.info('Options:');
     this.info(CLI.beautify(JSON.stringify(this.options)));
@@ -170,9 +170,9 @@ Cmd.prototype.execute = async function() {
      *          "nodockercache": true,
      *          "dockerfile": "Dockerfile_DEPLOY",
      *          "extra_tag_entries": [
-     *              "technicalpursuit/tibet:latest technicalpursuit/tibet:" + meta.source.major,
-     *              "technicalpursuit/tibet:latest technicalpursuit/tibet:" + meta.source.major + '.' + meta.source.minor,
-     *              "technicalpursuit/tibet:latest technicalpursuit/tibet:" + meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch,
+     *              ["technicalpursuit/tibet:latest","technicalpursuit/tibet:<meta.source.major>"],
+     *              ["technicalpursuit/tibet:latest","technicalpursuit/tibet:<meta.source.major>.<meta.source.minor>"],
+     *              ["technicalpursuit/tibet:latest","technicalpursuit/tibet:<meta.source.major>.<meta.source.minor>.<meta.source.patch>"],
      *          ],
      *          "extra_push_entries": [
      *              "technicalpursuit/tibet:" + meta.source.major
@@ -192,6 +192,18 @@ Cmd.prototype.execute = async function() {
         return 1;
     }
 
+    //  ---
+    //  Make sure that we prompt the user to be logged into both npm and Docker.
+    //  ---
+
+    result = CLI.prompt.question(
+        'Make sure that you are logged into "git", "npm" and "Dockerhub"' +
+        ' before proceeding. Proceed?' +
+        ' Enter \'yes\': ');
+    if (!/^y/i.test(result)) {
+        this.log('TIBET release cancelled.');
+        return;
+    }
 
     //  ---
     //  Checkout the branch to deploy
@@ -400,11 +412,14 @@ Cmd.prototype.execute = async function() {
 
     this.log('Deploy to npm');
 
+    //  'tibet deploy npm' supports '--dry-run' natively, so we just push the
+    //  argument here and let it run for real.
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
-    } else {
-        await CLI.execAsync(this, tibetpath, execArgs);
+        execArgs.push('--dry-run');
     }
+
+    await CLI.execAsync(this, tibetpath, execArgs);
 
 
     //  ---
@@ -429,20 +444,28 @@ Cmd.prototype.execute = async function() {
 
      execArgs.push(
         '{' +
+            '"account": "technicalpursuit", ' +
             '"projectname": "tibet", ' +
             '"projectversion": "latest", ' +
             '"nodockercache": true, ' +
             '"dockerfile": "Dockerfile_DEPLOY", ' +
 
             '"extra_tag_entries": [' +
-                '"technicalpursuit/tibet:latest technicalpursuit/tibet:' +
-                meta.source.major + '", ' +
-                '"technicalpursuit/tibet:latest technicalpursuit/tibet:' +
-                meta.source.major + '.' + meta.source.minor + '", ' +
-                '"technicalpursuit/tibet:latest technicalpursuit/tibet:' +
-                meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch +
-            '"], ' +
-
+                '[' +
+                    '"technicalpursuit/tibet:latest"' + ',' +
+                    '"technicalpursuit/tibet:' + meta.source.major + '"' +
+                ']' +
+                ',' +
+                '[' +
+                    '"technicalpursuit/tibet:latest"' + ',' +
+                    '"technicalpursuit/tibet:' + meta.source.major + '.' + meta.source.minor + '"' +
+                ']' +
+                ',' +
+                '[' +
+                    '"technicalpursuit/tibet:latest"' + ',' +
+                    '"technicalpursuit/tibet:' + meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch + '"' +
+                ']' +
+            '],' +
             '"extra_push_entries": [' +
                 '"technicalpursuit/tibet:' + meta.source.major + '", ' +
                 '"technicalpursuit/tibet:' + meta.source.major + '.' + meta.source.minor + '", ' +
@@ -452,11 +475,14 @@ Cmd.prototype.execute = async function() {
 
     this.log('Deploy to DockerHub');
 
+    //  'tibet deploy dockerhub' supports '--dry-run' natively, so we just push
+    //  the argument here and let it run for real.
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
-    } else {
-        await CLI.execAsync(this, tibetpath, execArgs);
+        execArgs.push('--dry-run');
     }
+
+    await CLI.execAsync(this, tibetpath, execArgs);
 
 
     //  ---

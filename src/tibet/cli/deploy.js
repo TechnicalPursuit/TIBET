@@ -31,6 +31,12 @@ Cmd = function() { /* init */ };
 Cmd.Parent = require('./_multi');
 Cmd.prototype = new Cmd.Parent();
 
+/**
+ * Reference to the overall CLI for logging etc.
+ * @type {Object}
+ */
+Cmd.CLI = CLI;
+
 //  NOTE: we want deploy to be able to load runtime extensions so we need to
 //  ensure we patch in an initialize hook.
 Cmd.initialize = Cmd.Parent.initialize;
@@ -56,36 +62,6 @@ Cmd.NAME = 'deploy';
  * @type {string}
  */
 Cmd.prototype.USAGE = 'tibet deploy <helper> [<options>]';
-
-
-//  ---
-//  Instance Methods
-//  ---
-
-/**
- * Runs the deploy command, using the default 'tibet make' support.
- * @returns {Number} A return code.
- */
-Cmd.prototype.executeMake = function() {
-    var command;
-
-    this.info('checking for `tibet make deploy` target...');
-
-    if (CLI.hasMakeTarget('deploy')) {
-        command = 'deploy';
-        this.warn('Delegating to \'tibet make ' + command + '\'');
-        return CLI.runViaMake(command);
-    } else if (CLI.hasMakeTarget('_deploy')) {
-        command = '_deploy';
-        this.warn('Delegating to \'tibet make ' + command + '\'');
-        return CLI.runViaMake(command);
-    }
-
-    this.warn('No make deploy or makefile deploy target found.');
-
-    return 0;
-};
-
 
 module.exports = Cmd;
 

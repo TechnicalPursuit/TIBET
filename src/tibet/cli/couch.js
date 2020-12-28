@@ -603,7 +603,7 @@ Cmd.prototype.executePushapp = function() {
 
                 spec.name = couchAttachment(item);
                 spec.content_type = couchMime(item);
-                spec.data = fs.readFileSync(item);
+                spec.data = sh.cat(item).toString();
 
                 //  One thing we have to adjust during push is that we need
                 //  to reset the app_root to point to app_head. This is
@@ -841,7 +841,7 @@ Cmd.prototype.executePushapp = function() {
                             data = doc_atts[att_name].data;
                         } else {
                             //  New file. Have to read it.
-                            data = fs.readFileSync(file_name);
+                            data = sh.cat(file_name).toString();
                         }
 
                         attachments.push({
