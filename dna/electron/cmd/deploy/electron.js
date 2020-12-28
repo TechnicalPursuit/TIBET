@@ -89,7 +89,7 @@
                 boolean: ['dry-run', 'notarize'],
                 default: {
                     'dry-run': false,
-                    'notarize': true
+                    notarize: true
                 }
             });
 
@@ -211,7 +211,7 @@
                                 ' path: ' + distPath +
                                 ' project name: ' + projectName);
                     } else {
-                        if (cmd.options['notarize']) {
+                        if (cmd.options.notarize) {
                             await this.notarizeMac(distPath, projectName);
                         }
                     }
