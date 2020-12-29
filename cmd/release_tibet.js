@@ -308,6 +308,30 @@ Cmd.prototype.execute = async function() {
         versionResult = CLI.clean(versionResult.stdout).trim();
     }
 
+    //  ---
+    //  Rebuild the docs (using --force because of a bug around comparing
+    //  freshness of the files with the current version stamp), now that we've
+    //  updated the version stamp.
+    //  ---
+
+    execArgs = [
+                    'build_docs',
+                    '--force'
+                ];
+
+    this.log('Update *all* of the docs to the new version stamp');
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, tibetpath, execArgs);
+    }
+
+
+    //  ---
+    //  Make sure that we prompt the user to commit the version stamp.
+    //  ---
+
     if (!this.options['dry-run']) {
         result = CLI.prompt.question(
             'New version stamp computed as: ' + versionResult + '.' +
@@ -318,6 +342,7 @@ Cmd.prototype.execute = async function() {
             return;
         }
     }
+
 
     //  ---
     //  Commit the version stamp changes.
