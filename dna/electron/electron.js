@@ -719,7 +719,6 @@ ipcMain.handle('TP.sig.ChangeUpdaterMenuItem',
         menu = Menu.getApplicationMenu();
         menuItem = menu.getMenuItemById('updater');
 
-        menuItem.label = menuItemInfo.label;
         menuItem.enabled = menuItemInfo.enabled;
     });
 
