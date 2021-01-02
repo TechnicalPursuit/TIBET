@@ -6,22 +6,10 @@
 <title>{{appname}}</title>
 <link rel="shortcut icon" href="/media/favicon.ico" type="image/x-icon"/>
 <link rel="icon" href="/media/favicon.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="/styles/index.css" type="text/css"/>
 
-<style type="text/css">
-html,body,iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    overflow: hidden;
-}
-</style>
 </head>
-<body onload="init()">
+<body>
 
 <iframe id="UIROOT" frameborder="0"
     src="/TIBET-INF/boot/xhtml/blank.xhtml"></iframe>
@@ -37,31 +25,6 @@ html,body,iframe {
 
 <script src="/TIBET-INF/tibet/lib/src/tibet_loader.min.js"></script>
 
-<script>
-//<![CDATA[
-function init() {
-    if (window['TP'] && TP.boot) {
-
-        \{{#if parallel}}
-            //  If parallel booting we leave tibet.json values intact.
-            TP.boot.launch();
-        \{{else}}
-            //  Force parallel off from server side to support reload.
-            TP.boot.launch({boot: { parallel: false}});
-        \{{/if}}
-        return;
-    }
-
-    //  If TP isn't real it means tibet_loader wasn't found. Try to notify about
-    //  that in a reasonable fashion so the UI doesn't just look hung.
-    if (top.UIBOOT && top.UIBOOT.contentDocument) {
-        top.UIBOOT.contentDocument.getElementById('BOOT-IMAGE').src =
-            '/TIBET-INF/boot/media/alert.png'
-        top.UIBOOT.contentDocument.getElementById('BOOT-SUBHEAD').innerHTML =
-            'Error loading. Was the project initialized via `tibet init`?'
-    }
-}
-//]]>
-</script>
+<script src="index.js"></script>
 </body>
 </html>
