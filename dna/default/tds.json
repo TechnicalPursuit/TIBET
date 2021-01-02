@@ -1,5 +1,9 @@
 {
     "default": {
+        "csp": {
+            "scriptSrc": ["self", "unsafe-inline", "unsafe-eval"],
+            "styleSrc": ["self", "unsafe-inline"]
+        },
         "https": false,
         "https_port": 1443,
         "port": 1407,

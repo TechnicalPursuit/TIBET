@@ -16,7 +16,14 @@
         var app,
             helmet,
             noCache,
-            TDS;
+            TDS,
+
+            reportUri,
+            reportOnly,
+            defaultSrc,
+            scriptSrc,
+            styleSrc,
+            objectSrc;
 
         app = options.app;
         TDS = app.TDS;
@@ -39,18 +46,43 @@
         app.use(helmet.frameguard('sameorigin'));
         app.use(helmet.xssFilter());
 
-        //  Should be more configurable. This is just a placeholder for now.
-        /* eslint-disable quotes */
+        reportUri = TDS.getcfg('tds.csp.reportUri', '/');
+        reportOnly = TDS.getcfg('tds.csp.reportOnly', true);
+
+        defaultSrc = TDS.getcfg('tds.csp.defaultSrc', ['self']);
+        defaultSrc = defaultSrc.map(
+                        function(item) {
+                            return TDS.quote(item, '\'');
+                        });
+
+        scriptSrc = TDS.getcfg('tds.csp.scriptSrc', ['self']);
+        scriptSrc = scriptSrc.map(
+                        function(item) {
+                            return TDS.quote(item, '\'');
+                        });
+
+        styleSrc = TDS.getcfg('tds.csp.styleSrc', ['self']);
+        styleSrc = styleSrc.map(
+                        function(item) {
+                            return TDS.quote(item, '\'');
+                        });
+
+        objectSrc = TDS.getcfg('tds.csp.objectSrc', ['none']);
+        objectSrc = objectSrc.map(
+                        function(item) {
+                            return TDS.quote(item, '\'');
+                        });
+
         app.use(helmet.contentSecurityPolicy({
             directives: {
-                reportUri: '/',
-                defaultSrc: ["'self'"],
-                scriptSrc: ["'self'"],
-                objectSrc: ["'none'"]
+                reportUri: reportUri,
+                defaultSrc: defaultSrc,
+                scriptSrc: scriptSrc,
+                styleSrc: styleSrc,
+                objectSrc: objectSrc
             },
-            reportOnly: true
+            reportOnly: reportOnly
         }));
-        /* eslint-enable quotes */
 
         //  Should be more configurable. These are disabled by default.
         // app.use(helmet.hpkp());
