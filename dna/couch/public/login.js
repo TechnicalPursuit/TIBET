@@ -1,7 +1,9 @@
 /* global login */
 document.getElementById('login').addEventListener(
 'submit',
-function() {
+function(evt) {
+
+    evt.preventDefault();
     login();
 },
 false);
