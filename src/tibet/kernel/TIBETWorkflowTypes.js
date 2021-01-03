@@ -4549,6 +4549,28 @@ function(aUser) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.User.Type.defineMethod('setupUserResources',
+function() {
+
+    /**
+     * @method setupUserResources
+     * @summary Sets up user information under specific resource URNs.
+     * @description This method register the effective user object under
+     *     'urn:tibet:user' and the effective user's vCard under
+     *     'urn:tibet:userinfo'.
+     * @returns {TP.meta.core.User} The TP.core.User type object.
+     */
+
+    TP.uc('urn:tibet:user').setResource(
+                                this.getEffectiveUser());
+    TP.uc('urn:tibet:userinfo').setResource(
+                                this.getEffectiveUser().get('vcard'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
