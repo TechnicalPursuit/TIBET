@@ -457,6 +457,7 @@ Cmd.prototype.updateVersionFiles = function(source) {
     version = pkgNode.getAttribute('version');
     if (version !== fullVersion) {
         pkgNode.setAttribute('version', fullVersion);
+        this.info('Updating version attribute in: ' + pkgName);
         this.writePackageNode(pkgName, pkgNode);
     }
 
@@ -474,6 +475,7 @@ Cmd.prototype.updateVersionFiles = function(source) {
         //  NOTE the test here is against the full version with git metadata
         if (version !== fullVersion) {
             mainNode.setAttribute('version', fullVersion);
+            this.info('Updating version attribute in: ' + mainName);
             this.writePackageNode(mainName, mainNode);
         }
     }
