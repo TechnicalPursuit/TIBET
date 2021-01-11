@@ -14,13 +14,18 @@
      */
     module.exports = function(options) {
         var app,
+            TDS,
+
             helmet,
             noCache,
-            TDS,
+
+            cspKeywords,
+            quoteValue,
 
             reportUri,
             reportOnly,
             defaultSrc,
+            imgSrc,
             scriptSrc,
             styleSrc,
             objectSrc;
@@ -46,37 +51,52 @@
         app.use(helmet.frameguard('sameorigin'));
         app.use(helmet.xssFilter());
 
+        //  Set up CSP directives
+
+        //  Define a RegExp with all of the CSP keywords from the grammar
+        //  defined in the CSP specification.
+        cspKeywords = new RegExp(
+                        '^(' +
+                        'self' +
+                        '|unsafe-inline' +
+                        '|unsafe-eval' +
+                        '|strict-dynamic' +
+                        '|unsafe-hashes' +
+                        '|report-sample' +
+                        '|unsafe-allow-redirects' +
+                        ')$');
+
+        quoteValue = function(aValue) {
+            if (cspKeywords.test(aValue)) {
+                return TDS.quote(aValue, '\'');
+            }
+
+            return aValue;
+        };
+
         reportUri = TDS.getcfg('tds.csp.reportUri', '/');
         reportOnly = TDS.getcfg('tds.csp.reportOnly', true);
 
         defaultSrc = TDS.getcfg('tds.csp.defaultSrc', ['self']);
-        defaultSrc = defaultSrc.map(
-                        function(item) {
-                            return TDS.quote(item, '\'');
-                        });
+        defaultSrc = defaultSrc.map(quoteValue);
+
+        imgSrc = TDS.getcfg('tds.csp.imgSrc', ['self']);
+        imgSrc = imgSrc.map(quoteValue);
 
         scriptSrc = TDS.getcfg('tds.csp.scriptSrc', ['self']);
-        scriptSrc = scriptSrc.map(
-                        function(item) {
-                            return TDS.quote(item, '\'');
-                        });
+        scriptSrc = scriptSrc.map(quoteValue);
 
         styleSrc = TDS.getcfg('tds.csp.styleSrc', ['self']);
-        styleSrc = styleSrc.map(
-                        function(item) {
-                            return TDS.quote(item, '\'');
-                        });
+        styleSrc = styleSrc.map(quoteValue);
 
         objectSrc = TDS.getcfg('tds.csp.objectSrc', ['none']);
-        objectSrc = objectSrc.map(
-                        function(item) {
-                            return TDS.quote(item, '\'');
-                        });
+        objectSrc = objectSrc.map(quoteValue);
 
         app.use(helmet.contentSecurityPolicy({
             directives: {
                 reportUri: reportUri,
                 defaultSrc: defaultSrc,
+                imgSrc: imgSrc,
                 scriptSrc: scriptSrc,
                 styleSrc: styleSrc,
                 objectSrc: objectSrc
