@@ -182,7 +182,7 @@ Cmd.prototype.executeCancel = function() {
     doc_id = this.getArgument(1);
 
     if (CLI.notEmpty(doc_id)) {
-        this.dbGet(doc_id).then(function(result) {
+        this.dbGet(doc_id, null, {cfg_root: 'tds.tws'}).then(function(result) {
             if (result.type !== 'job') {
                 CLI.handleCouchError(new Error('Invalid job'), 'tws', 'cancel');
                 return;
@@ -194,12 +194,13 @@ Cmd.prototype.executeCancel = function() {
             }
 
             result.state = '$$cancelled';
-            thisref.dbInsert(result).then(function(result2) {
-                thisref.info(CLI.beautify(result2));
-            }).catch(function(err) {
-                CLI.handleCouchError(err, 'tws', 'cancel');
-                return;
-            });
+            thisref.dbInsert(result, null, {cfg_root: 'tds.tws'}).then(
+                function(result2) {
+                    thisref.info(CLI.beautify(result2));
+                }).catch(function(err) {
+                    CLI.handleCouchError(err, 'tws', 'cancel');
+                    return;
+                });
         }).catch(function(err) {
             CLI.handleCouchError(err, 'tws', 'cancel');
             return;
@@ -288,7 +289,7 @@ Cmd.prototype.executeDisableFlow = function() {
     doc_id = this.getArgument(1);
 
     if (CLI.notEmpty(doc_id)) {
-        this.dbGet(doc_id).then(function(result) {
+        this.dbGet(doc_id, null, {cfg_root: 'tds.tws'}).then(function(result) {
             if (result.type !== 'flow') {
                 CLI.handleCouchError(new Error('Invalid flow'), 'tws', 'enable');
                 return;
@@ -300,12 +301,13 @@ Cmd.prototype.executeDisableFlow = function() {
             }
 
             result.enabled = false;
-            thisref.dbInsert(result).then(function(result2) {
-                thisref.info(CLI.beautify(result2));
-            }).catch(function(err) {
-                CLI.handleCouchError(err, 'tws', 'enable');
-                return;
-            });
+            thisref.dbInsert(result, null, {cfg_root: 'tds.tws'}).then(
+                function(result2) {
+                    thisref.info(CLI.beautify(result2));
+                }).catch(function(err) {
+                    CLI.handleCouchError(err, 'tws', 'enable');
+                    return;
+                });
         }).catch(function(err) {
             CLI.handleCouchError(err, 'tws', 'enable');
             return;
@@ -401,7 +403,7 @@ Cmd.prototype.executeEnableFlow = function() {
     doc_id = this.getArgument(1);
 
     if (CLI.notEmpty(doc_id)) {
-        this.dbGet(doc_id).then(function(result) {
+        this.dbGet(doc_id, null, {cfg_root: 'tds.tws'}).then(function(result) {
             if (result.type !== 'flow') {
                 CLI.handleCouchError(new Error('Invalid flow'), 'tws', 'enable');
                 return;
@@ -413,12 +415,13 @@ Cmd.prototype.executeEnableFlow = function() {
             }
 
             result.enabled = true;
-            thisref.dbInsert(result).then(function(result2) {
-                thisref.info(CLI.beautify(result2));
-            }).catch(function(err) {
-                CLI.handleCouchError(err, 'tws', 'enable');
-                return;
-            });
+            thisref.dbInsert(result, null, {cfg_root: 'tds.tws'}).then(
+                function(result2) {
+                    thisref.info(CLI.beautify(result2));
+                }).catch(function(err) {
+                    CLI.handleCouchError(err, 'tws', 'enable');
+                    return;
+                });
         }).catch(function(err) {
             CLI.handleCouchError(err, 'tws', 'enable');
             return;
@@ -467,7 +470,7 @@ Cmd.prototype.executeInit = function() {
     params = couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tws'
+        cfg_root: 'tds.tws'
     });
 
     db_url = params.db_url;
@@ -667,7 +670,7 @@ Cmd.prototype.executeList = function() {
     doc_id = this.getArgument(1);
 
     if (CLI.notEmpty(doc_id)) {
-        this.dbGet(doc_id).then(function(result) {
+        this.dbGet(doc_id, null, {cfg_root: 'tds.tws'}).then(function(result) {
             thisref.info(CLI.beautify(result));
         }).catch(function(err) {
             CLI.handleCouchError(err, 'tws', 'list');
@@ -690,7 +693,9 @@ Cmd.prototype.executeListFlows = function() {
 
     thisref = this;
 
-    this.dbView('flows', {include_docs: true}).then(function(result) {
+    this.dbView('flows',
+                {include_docs: true},
+                {cfg_root: 'tds.tws'}).then(function(result) {
         if (thisref.options.verbose) {
             thisref.log(CLI.beautify(result));
         } else {
@@ -733,7 +738,9 @@ Cmd.prototype.executeListJobs = function() {
     }
     viewname = 'jobs_' + subset;
 
-    this.dbView(viewname, {include_docs: true}).then(function(result) {
+    this.dbView(viewname,
+                {include_docs: true},
+                {cfg_root: 'tds.tws'}).then(function(result) {
         if (thisref.options.verbose) {
             thisref.log(CLI.beautify(result));
         } else {
@@ -759,7 +766,9 @@ Cmd.prototype.executeListTasks = function() {
 
     thisref = this;
 
-    this.dbView('tasks', {include_docs: true}).then(function(result) {
+    this.dbView('tasks',
+                {include_docs: true},
+                {cfg_root: 'tds.tws'}).then(function(result) {
         if (thisref.options.verbose) {
             thisref.log(CLI.beautify(result));
         } else {
@@ -767,7 +776,7 @@ Cmd.prototype.executeListTasks = function() {
                 var target;
 
                 if (item.doc.flow) {
-                    target = 'flow ' + item.doc.flow;
+                   target = 'flow ' + item.doc.flow;
                 } else {
                    target = 'plugin ' + (item.doc.plugin || item.doc.name);
                 }
@@ -806,7 +815,7 @@ Cmd.prototype.executeListViews = function() {
     params = couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tws'
+        cfg_root: 'tds.tws'
     });
 
     this.dbGet('_design/' + params.db_app, {}, params).then(function(result) {
@@ -874,7 +883,7 @@ Cmd.prototype.executePush = function() {
     couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tws'
+        cfg_root: 'tds.tws'
     });
 
     flags = ['design', 'flows', 'map', 'tasks', 'views'];
@@ -920,7 +929,7 @@ Cmd.prototype.executePushDesign = function() {
     params = couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tws'
+        cfg_root: 'tds.tws'
     });
 
     db_app = params.db_app;
@@ -973,7 +982,7 @@ Cmd.prototype.executePushFlows = function() {
     couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tws'
+        cfg_root: 'tds.tws'
     });
 
     this.pushDir('~tws/flows');
@@ -990,7 +999,7 @@ Cmd.prototype.executePushMap = function() {
     couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tws'
+        cfg_root: 'tds.tws'
     });
 
     this.pushDir('~tws/tasks');
@@ -1008,7 +1017,7 @@ Cmd.prototype.executePushTasks = function() {
     couch.getCouchParameters({
         requestor: CLI,
         confirm: this.options.confirm,
-        cfg_root: 'tws'
+        cfg_root: 'tds.tws'
     });
 
     this.pushDir('~tws/tasks');
@@ -1183,7 +1192,7 @@ Cmd.prototype.executeSubmit = function() {
 
     //  Force check of database parameters with optional confirmation...
 
-    this.dbInsert(doc).then(function(result) {
+    this.dbInsert(doc, null, {cfg_root: 'tds.tws'}).then(function(result) {
         thisref.info(CLI.beautify(result));
     }).catch(function(err) {
         CLI.handleCouchError(err, 'tws', 'submit');

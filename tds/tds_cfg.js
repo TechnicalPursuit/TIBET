@@ -178,20 +178,20 @@
         //  tws
         //  ---
 
-        setcfg('tws.db_app', 'tws');
-        setcfg('tws.db_name', 'tasks');   //  often a suffix on proj db
-        setcfg('tws.host', '127.0.0.1');
-        setcfg('tws.port', '5984');
-        setcfg('tws.scheme', 'http');
+        setcfg('tds.tws.db_app', 'tws');
+        setcfg('tds.tws.db_name', 'tasks');   //  often a suffix on proj db
+        setcfg('tds.tws.host', '127.0.0.1');
+        setcfg('tds.tws.port', '5984');
+        setcfg('tds.tws.scheme', 'http');
 
-        setcfg('tws.dryrun', false);
+        setcfg('tds.tws.dryrun', false);
 
-        setcfg('tws.watch.feed', 'continuous');
-        setcfg('tws.watch.heartbeat', 500);
-        setcfg('tws.watch.inactivity_ms', null);
-        setcfg('tws.watch.initial_retry_delay', 1000);
-        setcfg('tws.watch.max_retry_seconds', 360);
-        setcfg('tws.watch.response_grace_time', 5000);
+        setcfg('tds.tws.watch.feed', 'continuous');
+        setcfg('tds.tws.watch.heartbeat', 500);
+        setcfg('tds.tws.watch.inactivity_ms', null);
+        setcfg('tds.tws.watch.initial_retry_delay', 1000);
+        setcfg('tds.tws.watch.max_retry_seconds', 360);
+        setcfg('tds.tws.watch.response_grace_time', 5000);
     };
 
     module.exports = Config;
