@@ -178,7 +178,7 @@
         options.tds_tasks = options.tds_tasks || {};
 
         dbParams = TDS.getCouchParameters({
-            cfg_root: 'tws'
+            cfg_root: 'tds.tws'
         });
         db_url = dbParams.db_url;
         db_name = dbParams.db_name;
@@ -1573,13 +1573,13 @@
 
         feedopts = {
             db: db_url + '/' + db_name,
-        //    feed: TDS.getcfg('tws.watch.feed') || 'continuous',
-            heartbeat: TDS.getcfg('tws.watch.heartbeat') || 1000,
-            confirm_timeout: TDS.getcfg('tws.watch.confirm_timeout') || 5000,
-        //    inactivity_ms: TDS.getcfg('tws.watch.inactivity_ms') || null,
-        //    initial_retry_delay: TDS.getcfg('tws.watch.initial_retry_delay') || 1000,
-        //    max_retry_seconds: TDS.getcfg('tws.watch.max_retry_seconds') || 360,
-        //    response_grace_time: TDS.getcfg('tws.watch.response_grace_time') || 5000,
+        //    feed: TDS.getcfg('tds.tws.watch.feed') || 'continuous',
+            heartbeat: TDS.getcfg('tds.tws.watch.heartbeat') || 1000,
+            confirm_timeout: TDS.getcfg('tds.tws.watch.confirm_timeout') || 5000,
+        //    inactivity_ms: TDS.getcfg('tds.tws.watch.inactivity_ms') || null,
+        //    initial_retry_delay: TDS.getcfg('tds.tws.watch.initial_retry_delay') || 1000,
+        //    max_retry_seconds: TDS.getcfg('tds.tws.watch.max_retry_seconds') || 360,
+        //    response_grace_time: TDS.getcfg('tds.tws.watch.response_grace_time') || 5000,
             since: 'now'
         };
 
@@ -1613,7 +1613,7 @@
                     /\//g, '\\/');
             };
 
-            filter = TDS.cfg('tws.watch.filter');
+            filter = TDS.cfg('tds.tws.watch.filter');
             if (filter) {
                 regex = new RegExp(escaper(filter));
                 if (regex) {
@@ -1795,7 +1795,7 @@
         //  Routes
         //  ---
 
-        app.post(TDS.cfg('tws.job.uri'), loggedInOrLocalDev,
+        app.post(TDS.cfg('tds.tws.job.uri'), loggedInOrLocalDev,
             options.parsers.json, TDS.workflow.job);
     };
 

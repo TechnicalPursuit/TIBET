@@ -214,7 +214,7 @@
     //  ---
 
     TDS.ifDryrun = function() {
-        return TDS.cfg('tws.dryrun') === true;
+        return TDS.cfg('tds.tws.dryrun') === true;
     };
 
     //  ---
