@@ -3486,6 +3486,56 @@ function(aRequest, aResult) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Response.Inst.defineMethod('asPromise',
+function() {
+
+    /**
+     * @method then
+     * @summary A method which returns a 'Promises/A+' compliant Promise object.
+     * @description The returned Promise will be resolved (fulfilled or
+     *     rejected) when the TP.sig.Request for this TP.sig.Response completes.
+     * @returns {Promise} A promise that can be used to be the 'next step' in a
+     *     chain of promises.
+     */
+
+    var request,
+        promise,
+        fault,
+        err;
+
+    request = this.getRequest();
+
+    //  Stash away references to the resolver and rejector of the Promise).
+    //  We'll need them to resolve() or reject() the Promise later when the
+    //  request completes.
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+            request.set('$deferredPromiseResolver', resolver);
+            request.set('$deferredPromiseRejector', rejector);
+        });
+
+    if (request.didComplete()) {
+        if (request.didSucceed()) {
+            request.get('$deferredPromiseResolver')(request.getResult());
+        } else {
+            fault = request.get('faultInfo');
+            if (TP.isValid(fault)) {
+                err = fault.at('error');
+            }
+            if (TP.notValid(err)) {
+                err = new Error('UnknownRequestFault');
+            }
+            request.get('$deferredPromiseRejector')(err);
+        }
+    }
+
+    return promise;
+}, {
+    dependencies: [TP.extern.Promise]
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Response.Inst.defineMethod('cancelJob',
 function(aFaultString, aFaultCode, aFaultInfo) {
 
