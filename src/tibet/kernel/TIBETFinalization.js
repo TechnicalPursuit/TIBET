@@ -253,6 +253,11 @@ function() {
                             TP.core.User.setupUserResources();
                         });
                     TP.httpGet(uri, req);
+
+                    //  Return the request's response as a Promise. This will
+                    //  cause the request to succeed or fail before the rest of
+                    //  the Promise chain can proceed.
+                    return req.getResponse().asPromise();
                 }
             } else {
                 //  Not a login-restricted application. Force construction of
