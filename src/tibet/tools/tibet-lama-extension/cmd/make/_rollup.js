@@ -25,8 +25,12 @@
         //  Build both a development and deployment variation.
         make.helpers.rollup_app(make, {
             config: config,
-            headers: true
+            headers: true,
+            minify: false,
+            zip: options.zip,
+            brotli: options.brotli
         }).then(function() {
+            if (options.minify) {
             return make.helpers.rollup_app(make, {
                 config: config,
                 headers: true,
@@ -34,6 +38,7 @@
                 zip: options.zip,
                 brotli: options.brotli
             });
+            }
         }).then(resolve, reject);
     };
 
