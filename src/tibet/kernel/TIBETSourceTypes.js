@@ -240,6 +240,10 @@ function() {
 
     this.set('$customEventHandlers', TP.hc());
 
+    //  Push ourself as a controller onto the application's controller stack.
+    //  This will allow us to receive the TP.sig.AppShutdown signal below.
+    TP.sys.getApplication().pushController(this);
+
     return this;
 });
 
