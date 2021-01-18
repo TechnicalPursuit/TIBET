@@ -1906,7 +1906,7 @@ function(signalTypes) {
      *     TP.sig.SourceSignal subtypes to check for custom handler
      *     registration.
      * @exception TP.sig.InvalidSource
-     * @returns {TP.core.RemoteMessageSource} The receiver.
+     * @returns {TP.core.ElectronMessageSource} The receiver.
      */
 
     //  TP.core.ElectronMessageSource has no custom handlers.
@@ -1930,7 +1930,7 @@ function(signalTypes) {
      * @param {TP.sig.SourceSignal[]} signalTypes An Array of
      *     TP.sig.SourceSignal subtypes to check for custom handler
      *     registration.
-     * @returns {TP.core.RemoteMessageSource} The receiver.
+     * @returns {TP.core.ElectronMessageSource} The receiver.
      */
 
     //  TP.core.ElectronMessageSource has no custom handlers.
