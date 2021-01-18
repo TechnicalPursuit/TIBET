@@ -773,23 +773,10 @@ function() {
         return false;
     }
 
-    //  Install an unload observer on the main window to close the source before
-    //  leaving.
-    //  TODO: Shouldn't this be moved to an AppShutdown handler like the
-    //  TP.core.MessageSource defines above... and then it needs to subscribe to
-    //  those.
-    window.addEventListener('unload',
-        function() {
-            source.close();
-        }, false);
-
     this.set('source', source);
     this.setupStandardHandlers();
 
-    //  The receiver is now active.
-    this.isActive(true);
-
-    return true;
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -839,6 +826,32 @@ function() {
      */
 
     TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteMessageSource.Inst.defineMethod('deactivate',
+function(closed) {
+
+    /**
+     * @method deactivate
+     * @summary Deactivates observation of the message source.
+     * @param {Boolean} [closed=false] True to tell deactivate any remote
+     *     connection that the receiver is managing is already closed so skip
+     *     any internal close call.
+     * @returns {Boolean} Whether or not the connection closed successfully.
+     */
+
+    var source;
+
+    if (TP.notTrue(closed)) {
+        source = this.get('source');
+        if (TP.isValid(source)) {
+            source.close();
+        }
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
