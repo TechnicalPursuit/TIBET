@@ -222,6 +222,7 @@ function() {
                 uri = TP.sys.cfg('tds.vcard.uri');
                 if (TP.isEmpty(uri)) {
                     TP.core.User.getRealUser();
+                    TP.core.User.setupUserResources();
                 } else {
                     uri = TP.uriExpandPath(uri);
                     req = TP.request('uri', uri, 'async', true);
