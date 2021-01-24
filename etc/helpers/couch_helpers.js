@@ -220,7 +220,7 @@ helpers.getCouchDatabase = function(options) {
  *     'needsapp' as false to turn off any prompting specific to an application
  *     name (aka design document name) and 'needsdb' as false to turn off any
  *     prompting specific to a database name. A 'cfg_root' value defaults to
- *     'couch' but can be set to 'tws' for example to leverage config
+ *     'couch' but can be set to 'tds.tws' for example to leverage config
  *     data specific to the TWS.
  * @returns {Object} An object with db_url, db_name, and db_app values.
  */

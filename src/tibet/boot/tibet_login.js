@@ -10,20 +10,12 @@
 
 (function(root) {
 
-    var tds_auth_uri;
-
-    //  If TIBET has loaded we can ask cfg for the value...(or it can be spoofed
-    //  in script content in the login page itself).
-    try {
-        tds_auth_uri = root.TP.tds_auth_uri ||
-            root.TP.sys.getcfg('tds.auth.uri') ||
-            root.TP.cfg.tds.auth.uri;
-    } catch (err) {
-        tds_auth_uri = '/login';
-    }
-
     root.login = function() {
-        var usernameField,
+
+        var tds_home_uri,
+            tds_auth_uri,
+
+            usernameField,
             passwordField,
             loc,
             hash,
@@ -32,6 +24,25 @@
 
         if (!top.sessionStorage) {
             return;
+        }
+
+        //  If TIBET has loaded we can ask cfg for the value...(or it can be
+        //  supplied as configuration data in session storage by other script
+        //  content from the login page itself).
+        try {
+            tds_home_uri = top.sessionStorage.getItem('TDS.home.uri') ||
+                            root.TP.sys.getcfg('tds.home.uri') ||
+                            root.TP.cfg.tds.home.uri;
+        } catch (err) {
+            tds_home_uri = '/';
+        }
+
+        try {
+            tds_auth_uri = top.sessionStorage.getItem('TDS.auth.uri') ||
+                            root.TP.sys.getcfg('tds.auth.uri') ||
+                            root.TP.cfg.tds.auth.uri;
+        } catch (err) {
+            tds_auth_uri = '/login';
         }
 
         usernameField = document.getElementById('username');
@@ -87,7 +98,7 @@
                 }
 
                 //  Go "home" and let it route now that authenticated.
-                window.location.replace('/');
+                window.location.replace(tds_home_uri);
             } else {
                 //  If we failed to log in remain on the login page.
                 window.location.replace(tds_auth_uri);

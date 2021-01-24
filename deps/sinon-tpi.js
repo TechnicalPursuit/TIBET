@@ -1,4 +1,4 @@
-/* Sinon.JS 9.2.1, 2020-10-28, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/* Sinon.JS 9.2.2, 2020-12-11, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
 var behavior = require("./sinon/behavior");
@@ -963,7 +963,10 @@ function wrapFunc(f) {
 }
 
 function fakeClass() {
-    var promiseLib = Promise;
+    var promiseLib = null;
+    if (typeof Promise === "function") {
+        promiseLib = Promise;
+    }
 
     function fake(f) {
         if (arguments.length > 0 && typeof f !== "function") {
@@ -7199,7 +7202,7 @@ function iterableToString(obj) {
 function mapToString(map) {
     var representation = "";
 
-    /* eslint-disable-next-line local-rules/no-prototype-methods */
+    // eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods
     map.forEach(function(value, key) {
         representation += "[" + stringify(key) + "," + stringify(value) + "],";
     });
@@ -7218,7 +7221,7 @@ function mapToString(map) {
 function genericIterableToString(iterable) {
     var representation = "";
 
-    /* eslint-disable-next-line local-rules/no-prototype-methods */
+    // eslint-disable-next-line @sinonjs/no-prototype-methods/no-prototype-methods
     iterable.forEach(function(value) {
         representation += stringify(value) + ",";
     });

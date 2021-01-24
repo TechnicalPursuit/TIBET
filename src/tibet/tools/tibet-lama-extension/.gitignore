@@ -44,5 +44,5 @@ Thumbs.db
 /.tibetlint.json
 
 # TIBET
-/public/build
-/public/TIBET-INF/tibet
+/build
+/TIBET-INF/tibet

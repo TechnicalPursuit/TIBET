@@ -1,7 +1,7 @@
 /**
- * Fuse.js v6.4.3 - Lightweight fuzzy-search (http://fusejs.io)
+ * Fuse.js v6.4.5 - Lightweight fuzzy-search (http://fusejs.io)
  *
- * Copyright (c) 2020 Kiro Risk (http://kiro.me)
+ * Copyright (c) 2021 Kiro Risk (http://kiro.me)
  * All Rights Reserved. Apache Software License 2.0
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -1503,7 +1503,7 @@
         var isMatch = !!indices.length;
         return {
           isMatch: isMatch,
-          score: isMatch ? 1 : 0,
+          score: isMatch ? 0 : 1,
           indices: indices
         };
       }
@@ -2234,7 +2234,7 @@
     });
   }
 
-  Fuse.version = '6.4.3';
+  Fuse.version = '6.4.5';
   Fuse.createIndex = createIndex;
   Fuse.parseIndex = parseIndex;
   Fuse.config = Config;

@@ -51,11 +51,11 @@
         //  * means load them all...but we need to build the list via scan.
         if (plugins === '*') {
             plugins = sh.find(pluginDir).filter(
-                function(file) {
+                function(fname) {
                     var filename,
                         base;
 
-                    filename = file.toString();
+                    filename = fname.toString();
 
                     base = path.basename(filename);
                     return !base.match(/^(\.|_)/) &&

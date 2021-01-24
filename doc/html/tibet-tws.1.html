@@ -33,7 +33,7 @@ you to view, cancel, retry, and otherwise interact with the TWS engine and the
 data which drives it.</p>
 <p>Required CouchDB parameters such as server URL and database name are first
 checked against <code>ENVIRONMENT VARIABLES</code>, then against a set of TIBET
-configuration values rooted on <code>tws</code>.</p>
+configuration values rooted on <code>tds.tws</code>.</p>
 <p>If the <code>--confirm</code> flag is active (the default) parameter values that are
 discovered are presented to you for confirmation/adjustment. Prompting can be
 turned off via the <code>--no-confirm</code> flag or the <code>cli.tws.confirm</code> configuration
@@ -59,20 +59,20 @@ general you can set the TIBET configuration value <code>cli.tws.confirm</code> t
 </ul>
 <h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
 <ul>
-<li><p><code>tws.scheme</code> :
+<li><p><code>tds.tws.scheme</code> :
 The CouchDB server scheme. Default is <code>http</code>.</p>
 </li>
-<li><p><code>tws.host</code> :
+<li><p><code>tds.tws.host</code> :
 The CouchDB server hostname or IP address. Default is <code>127.0.0.1</code>.</p>
 </li>
-<li><p><code>tws.port</code> :
+<li><p><code>tds.tws.port</code> :
 The CouchDB server port. Default is <code>5984</code>.</p>
 </li>
-<li><p><code>tws.db_name</code>:
+<li><p><code>tds.tws.db_name</code>:
 The CouchDB database name to use. Defaults to the current project name +
 <code>_tasks</code>.</p>
 </li>
-<li><p><code>tws.app_name</code>:
+<li><p><code>tds.tws.app_name</code>:
 The CouchDB application name to use. Defaults to <code>tws</code>.</p>
 </li>
 </ul>
@@ -285,7 +285,7 @@ variables or provide your credentials in your <code>CouchDB url</code> prompt re
 
 </div>
 <div id="footer">
-    TIBET 5.2.3 - Copyright (C) 2020 Technical Pursuit Inc.
+    TIBET 5.2.4 - Copyright (C) 2021 Technical Pursuit Inc.
 </div>
 </div>
 </body>

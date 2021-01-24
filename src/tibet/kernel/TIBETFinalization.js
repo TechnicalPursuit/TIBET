@@ -241,19 +241,29 @@ function() {
                                                                 ' vcard.') : 0;
                                 TP.core.User.getRealUser();
                             }
+
+                            TP.core.User.setupUserResources();
                         });
                     req.defineHandler('IOFailed',
                         function(aSignal) {
                             TP.ifWarn() ?
                                 TP.warn('Invalid or missing user vcard.') : 0;
+
                             TP.core.User.getRealUser();
+                            TP.core.User.setupUserResources();
                         });
                     TP.httpGet(uri, req);
+
+                    //  Return the request's response as a Promise. This will
+                    //  cause the request to succeed or fail before the rest of
+                    //  the Promise chain can proceed.
+                    return req.getResponse().asPromise();
                 }
             } else {
                 //  Not a login-restricted application. Force construction of
                 //  default user.
                 TP.core.User.getRealUser();
+                TP.core.User.setupUserResources();
             }
         });
 
@@ -264,10 +274,6 @@ function() {
 
             //  Set up common URIs for the user object, the raw user vCard data
             //  and the host data.
-            TP.uc('urn:tibet:user').setResource(
-                                        TP.sys.getEffectiveUser());
-            TP.uc('urn:tibet:userinfo').setResource(
-                                        TP.sys.getEffectiveUser().get('vcard'));
             TP.uc('urn:tibet:hosturi').setResource(
                                         TP.uc('~').getConcreteURI());
 

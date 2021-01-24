@@ -5,5 +5,7 @@ deps/**
 lib/src/*
 **/lib/src/*
 **/*.__appname__.*.js
+
+# TIBET
 /public/build
 /public/TIBET-INF/tibet

@@ -65,14 +65,15 @@ Cmd.NAME = 'release_tibet';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['check', 'full', 'major', 'minor', 'patch', 'sync', 'dry-run'],
+    boolean: ['check', 'full', 'major', 'minor', 'patch', 'sync', 'dry-run', 'dirty'],
     string: ['context', 'suffix', 'version'],
     number: ['increment'],
     default: {
         major: false,
         minor: false,
         patch: false,
-        sync: false
+        sync: false,
+        dirty: false
     }
 },
 Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -117,6 +118,8 @@ Cmd.prototype.execute = async function() {
         srcBranch,
         srcRegex,
 
+        source,
+
         targetBranch,
 
         execArgs,
@@ -156,9 +159,9 @@ Cmd.prototype.execute = async function() {
 
     /*
      * The steps to building a TIBET release are as follows:
-     *      git stash push
      *      tibet build --release
      *      tibet version (--major|--minor|--patch) --suffix final
+     *      tibet build_docs --force
      *      git commit -am "Update the version to: <newversion>"
      *      git push
      *      tibet release
@@ -181,7 +184,6 @@ Cmd.prototype.execute = async function() {
      *          ]
      *          }'
      *      tibet checkout <sourcebranch>
-     *      git stash pop
     */
 
     if (!CLI.isTrue(this.options.major) &&
@@ -205,6 +207,7 @@ Cmd.prototype.execute = async function() {
         return;
     }
 
+
     //  ---
     //  Checkout the branch to deploy
     //  ---
@@ -226,18 +229,17 @@ Cmd.prototype.execute = async function() {
 
 
     //  ---
-    //  Stash any changes that exist on the source branch.
+    //  Verify the branch isn't "dirty".
     //  ---
 
-    execArgs = [
-                    'stash',
-                    'push'
-                ];
+    //  gather git's view of the current branch commit info
+    source = versioning.parseGitDescription();
 
-    if (this.options['dry-run']) {
-        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
-    } else {
-        await CLI.execAsync(this, gitpath, execArgs);
+    //  If the branch is dirty we can force continuing with the --dirty flag.
+    if (source.dirty && !this.options.dirty) {
+        this.error(
+            'Cannot release dirty branch. Stash, commit, or use --dirty.');
+        throw new Error('DirtyBranch');
     }
 
 
@@ -306,6 +308,30 @@ Cmd.prototype.execute = async function() {
         versionResult = CLI.clean(versionResult.stdout).trim();
     }
 
+    //  ---
+    //  Rebuild the docs (using --force because of a bug around comparing
+    //  freshness of the files with the current version stamp), now that we've
+    //  updated the version stamp.
+    //  ---
+
+    execArgs = [
+                    'build_docs',
+                    '--force'
+                ];
+
+    this.log('Update *all* of the docs to the new version stamp');
+
+    if (this.options['dry-run']) {
+        this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
+    } else {
+        await CLI.execAsync(this, tibetpath, execArgs);
+    }
+
+
+    //  ---
+    //  Make sure that we prompt the user to commit the version stamp.
+    //  ---
+
     if (!this.options['dry-run']) {
         result = CLI.prompt.question(
             'New version stamp computed as: ' + versionResult + '.' +
@@ -316,6 +342,7 @@ Cmd.prototype.execute = async function() {
             return;
         }
     }
+
 
     //  ---
     //  Commit the version stamp changes.
@@ -500,21 +527,6 @@ Cmd.prototype.execute = async function() {
         await CLI.execAsync(this, gitpath, execArgs);
     }
 
-
-    //  ---
-    //  Unstash any changes that existed on the source branch.
-    //  ---
-
-    execArgs = [
-                    'stash',
-                    'pop'
-                ];
-
-    if (this.options['dry-run']) {
-        this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
-    } else {
-        await CLI.execAsync(this, gitpath, execArgs);
-    }
 
     return 0;
 };

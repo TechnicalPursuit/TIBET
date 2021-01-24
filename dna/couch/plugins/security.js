@@ -14,9 +14,21 @@
      */
     module.exports = function(options) {
         var app,
+            TDS,
+
             helmet,
             noCache,
-            TDS;
+
+            cspKeywords,
+            quoteValue,
+
+            reportUri,
+            reportOnly,
+            defaultSrc,
+            imgSrc,
+            scriptSrc,
+            styleSrc,
+            objectSrc;
 
         app = options.app;
         TDS = app.TDS;
@@ -39,18 +51,58 @@
         app.use(helmet.frameguard('sameorigin'));
         app.use(helmet.xssFilter());
 
-        //  Should be more configurable. This is just a placeholder for now.
-        /* eslint-disable quotes */
+        //  Set up CSP directives
+
+        //  Define a RegExp with all of the CSP keywords from the grammar
+        //  defined in the CSP specification.
+        cspKeywords = new RegExp(
+                        '^(' +
+                        'self' +
+                        '|unsafe-inline' +
+                        '|unsafe-eval' +
+                        '|strict-dynamic' +
+                        '|unsafe-hashes' +
+                        '|report-sample' +
+                        '|unsafe-allow-redirects' +
+                        ')$');
+
+        quoteValue = function(aValue) {
+            if (cspKeywords.test(aValue)) {
+                return TDS.quote(aValue, '\'');
+            }
+
+            return aValue;
+        };
+
+        reportUri = TDS.getcfg('tds.csp.reportUri', '/');
+        reportOnly = TDS.getcfg('tds.csp.reportOnly', true);
+
+        defaultSrc = TDS.getcfg('tds.csp.defaultSrc', ['self']);
+        defaultSrc = defaultSrc.map(quoteValue);
+
+        imgSrc = TDS.getcfg('tds.csp.imgSrc', ['self']);
+        imgSrc = imgSrc.map(quoteValue);
+
+        scriptSrc = TDS.getcfg('tds.csp.scriptSrc', ['self']);
+        scriptSrc = scriptSrc.map(quoteValue);
+
+        styleSrc = TDS.getcfg('tds.csp.styleSrc', ['self']);
+        styleSrc = styleSrc.map(quoteValue);
+
+        objectSrc = TDS.getcfg('tds.csp.objectSrc', ['none']);
+        objectSrc = objectSrc.map(quoteValue);
+
         app.use(helmet.contentSecurityPolicy({
             directives: {
-                reportUri: '/',
-                defaultSrc: ["'self'"],
-                scriptSrc: ["'self'"],
-                objectSrc: ["'none'"]
+                reportUri: reportUri,
+                defaultSrc: defaultSrc,
+                imgSrc: imgSrc,
+                scriptSrc: scriptSrc,
+                styleSrc: styleSrc,
+                objectSrc: objectSrc
             },
-            reportOnly: true
+            reportOnly: reportOnly
         }));
-        /* eslint-enable quotes */
 
         //  Should be more configurable. These are disabled by default.
         // app.use(helmet.hpkp());

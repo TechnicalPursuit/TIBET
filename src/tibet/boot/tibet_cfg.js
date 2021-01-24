@@ -778,7 +778,7 @@
     TP.sys.setcfg('tds.user.uri', '/whoami');
     TP.sys.setcfg('tds.vcard.uri', '/vcard');
 
-    TP.sys.setcfg('tws.job.uri', '/_tws/jobs');
+    TP.sys.setcfg('tds.tws.job.uri', '/_tws/jobs');
 
     //  what url does client use to connect to the TDS watch SSE endpoint (and
     //  where does the TDS watch plugin configure its route to listen).

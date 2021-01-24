@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package xmlns="http://www.technicalpursuit.com/1999/tibet" name="TIBET" default="base" basedir="~lib_cfg" version="5.2.3+g536294056d.30.1609191594752">
+<package xmlns="http://www.technicalpursuit.com/1999/tibet" name="TIBET" default="base" basedir="~lib_cfg" version="5.2.4+g1180989c6d.35.1611503045798">
 
 <config id="loader">
     <script src="~lib_copyright_file" no-minify="no-minify"/>

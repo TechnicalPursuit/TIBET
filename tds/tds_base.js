@@ -214,7 +214,7 @@
     //  ---
 
     TDS.ifDryrun = function() {
-        return TDS.cfg('tws.dryrun') === true;
+        return TDS.cfg('tds.tws.dryrun') === true;
     };
 
     //  ---
@@ -461,7 +461,8 @@
         }
 
         buildmsg = TDS.colorize('Project not built.' +
-                    ' Run `tibet build` for production url: ', 'warn') +
+                    ' Run `tibet build --minify` for production url: ',
+                                                                'warn') +
                     TDS.colorize(protocol + '://' + host +
                         (port === 80 ? '' : ':' + port), 'host');
 
