@@ -2867,6 +2867,8 @@
         fullpath = this.expandPath(this.joinPaths(root, Package.PROJECT_FILE));
         if (sh.test('-f', fullpath)) {
             try {
+                require.uncache(fullpath);
+
                 //  Load project file, or default to an object we can test to
                 //  see that we are not in a project (see inProject).
                 //  TODO: this key should be a constant somewhere.
@@ -2885,6 +2887,8 @@
         fullpath = this.expandPath(this.joinPaths(head, Package.SERVER_FILE));
         if (sh.test('-f', fullpath)) {
             try {
+                require.uncache(fullpath);
+
                 this.tds = require(fullpath) || {
                     tds: {}
                 };
@@ -2900,6 +2904,8 @@
         fullpath = this.expandPath(this.joinPaths(head, Package.USER_FILE));
         if (sh.test('-f', fullpath)) {
             try {
+                require.uncache(fullpath);
+
                 this.users = require(fullpath) || {
                     users: {}
                 };
@@ -2915,6 +2921,8 @@
         fullpath = this.expandPath(this.joinPaths(head, Package.NPM_FILE));
         if (sh.test('-f', fullpath)) {
             try {
+                require.uncache(fullpath);
+
                 this.npm = require(fullpath) || {};
             } catch (e) {
                 msg = 'Error loading npm file: ' + e.message;
