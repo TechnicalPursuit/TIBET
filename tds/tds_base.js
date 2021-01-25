@@ -964,6 +964,9 @@
         var opts;
 
         if (this._package) {
+            if (TDS.notEmpty(options)) {
+                this._package.setRuntimeOptions(options);
+            }
             return this._package;
         }
 

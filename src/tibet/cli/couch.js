@@ -242,7 +242,7 @@ Cmd.prototype.executeCompactdb = function() {
     arginfo = couch.getDBReferenceInfo(arg1);
 
     db_name = arginfo.db_name || params.db_name;
-    app_name = arginfo.db_app || params.app_name;
+    app_name = arginfo.db_app || params.db_app;
 
     result = CLI.prompt.question(
         'Compact database [' + couch.maskCouchAuth(db_url) + '/' + db_name +

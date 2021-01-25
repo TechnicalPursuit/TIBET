@@ -1714,6 +1714,20 @@
 
 
     /**
+     * Returns the current process environment (or 'development' if not set).
+     * Defaults to any command line value followed by NODE_ENV followed by any
+     * 'env' cfg variable value.
+     * @returns {String} The environment name.
+     */
+    Package.prototype.getEnv = function() {
+        return this.options.env ||
+                process.env.NODE_ENV ||
+                this.getcfg('env') ||
+                'development';
+    };
+
+
+    /**
      * Returns a full path by using any basedir information in anElement and
      * blending it with any virtual or relative path information from aPath.
      * @param {Element} anElement The element from which to begin basedir
@@ -2867,6 +2881,8 @@
         fullpath = this.expandPath(this.joinPaths(root, Package.PROJECT_FILE));
         if (sh.test('-f', fullpath)) {
             try {
+                require.uncache(fullpath);
+
                 //  Load project file, or default to an object we can test to
                 //  see that we are not in a project (see inProject).
                 //  TODO: this key should be a constant somewhere.
@@ -2885,6 +2901,8 @@
         fullpath = this.expandPath(this.joinPaths(head, Package.SERVER_FILE));
         if (sh.test('-f', fullpath)) {
             try {
+                require.uncache(fullpath);
+
                 this.tds = require(fullpath) || {
                     tds: {}
                 };
@@ -2900,6 +2918,8 @@
         fullpath = this.expandPath(this.joinPaths(head, Package.USER_FILE));
         if (sh.test('-f', fullpath)) {
             try {
+                require.uncache(fullpath);
+
                 this.users = require(fullpath) || {
                     users: {}
                 };
@@ -2915,6 +2935,8 @@
         fullpath = this.expandPath(this.joinPaths(head, Package.NPM_FILE));
         if (sh.test('-f', fullpath)) {
             try {
+                require.uncache(fullpath);
+
                 this.npm = require(fullpath) || {};
             } catch (e) {
                 msg = 'Error loading npm file: ' + e.message;
@@ -2939,7 +2961,7 @@
                 this.overlayProperties(this.tds.default, 'tds');
             }
 
-            env = this.getcfg('env') || this.options.env || 'development';
+            env = this.getEnv();
             if (this.tds[env]) {
                 this.overlayProperties(this.tds[env], 'tds');
             }
@@ -2953,7 +2975,7 @@
                 this.overlayProperties(this.users.default, 'users');
             }
 
-            env = this.getcfg('env') || this.options.env || 'development';
+            env = this.getEnv();
             if (this.users[env]) {
                 this.overlayProperties(this.users[env], 'users');
             }

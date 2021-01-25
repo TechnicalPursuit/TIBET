@@ -63,7 +63,11 @@ Cmd.NAME = 'start';
 //  We use the TDS's list here so we create a 'copy' and add to it.
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     CLI.blend({
-        boolean: ['debugger']
+        boolean: ['debugger'],
+        string: ['env'],
+        default: {
+            env: 'development'
+        }
     }, TDS.PARSE_OPTIONS),
 Cmd.Parent.prototype.PARSE_OPTIONS);
 
@@ -76,6 +80,25 @@ Cmd.prototype.USAGE = 'tibet start [--env <name>] [--debug] [--level=[\'all\'|\'
 //  ---
 //  Instance Methods
 //  ---
+
+/**
+ * Check arguments and configure default values prior to running prereqs.
+ * @returns {Object}
+ */
+Cmd.prototype.configure = function() {
+    var options;
+
+    options = this.options;
+
+    if (process.env.NODE_ENV !== options.env) {
+        process.env.NODE_ENV = options.env;
+        CLI.initPackage(true);
+    }
+
+    this.trace('configure:\n' + CLI.beautify(JSON.stringify(options)));
+
+    return options;
+};
 
 /**
  * Runs the command. For this type the goal is to provide easy startup of the
