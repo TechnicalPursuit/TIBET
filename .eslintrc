@@ -109,7 +109,7 @@
         "one-var-declaration-per-line": 1,
         "operator-linebreak": [1, "after", { "overrides": { "?": "after"}}],
         "padding-line-between-statements": [1, {"blankLine": "always", "prev": "var", "next": "*"}],
-        "quotes": [2, "single"],
+        "quotes": [2, "single", {"allowTemplateLiterals": true}],
         "quote-props": [2, "as-needed"],
         "radix": 1,
         "rest-spread-spacing": [1, "never"],

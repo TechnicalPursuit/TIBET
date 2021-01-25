@@ -36,7 +36,7 @@ helpers = {};
  * Cache of last-used couch parameters.
  * @type {Object}
  */
-helpers.lastCouchParams = null;
+helpers.lastCouchParams = {};
 
 
 /**
@@ -228,6 +228,7 @@ helpers.getCouchParameters = function(options) {
     var opts,
         requestor,
         cfg_root,
+        cfg_key,
         result,
         db_url,
         db_scheme,
@@ -247,11 +248,15 @@ helpers.getCouchParameters = function(options) {
         opts.confirm = false;
     }
 
-    if (requestor.blend && helpers.lastCouchParams) {
-        opts = requestor.blend(opts, helpers.lastCouchParams);
-    }
-
     cfg_root = opts.cfg_root || 'cli.couch';
+
+    cfg_key = cfg_root.replace(/\./g, '_');
+
+    if (requestor.blend &&
+        helpers.lastCouchParams &&
+        helpers.lastCouchParams[cfg_key]) {
+        opts = requestor.blend(opts, helpers.lastCouchParams[cfg_key]);
+    }
 
     db_url = opts.db_url || helpers.getCouchURL(opts);
 
@@ -323,7 +328,7 @@ helpers.getCouchParameters = function(options) {
     };
 
     //  Cache so we can reuse across multiple non-confirm calls.
-    helpers.lastCouchParams = params;
+    helpers.lastCouchParams[cfg_key] = params;
 
     return params;
 };
