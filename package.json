@@ -1,6 +1,6 @@
 {
     "name": "tibet",
-    "version": "5.2.4",
+    "version": "5.2.5",
     "description": "The TIBET Low Code Development Platform.",
     "keywords": ["Cloud Admin", "CouchDB", "Database Admin", "Desktop", "DevOps", "Electron", "Low Code", "No Code", "IDE", "Admin Tools", "Workflow"],
     "homepage": "http://www.technicalpursuit.com",
