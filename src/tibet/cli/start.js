@@ -63,7 +63,11 @@ Cmd.NAME = 'start';
 //  We use the TDS's list here so we create a 'copy' and add to it.
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     CLI.blend({
-        boolean: ['debugger']
+        boolean: ['debugger'],
+        string: ['env'],
+        default: {
+            env: 'development'
+        }
     }, TDS.PARSE_OPTIONS),
 Cmd.Parent.prototype.PARSE_OPTIONS);
 
