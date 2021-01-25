@@ -1392,8 +1392,8 @@ CLI.inGulpProject = function() {
  * Initializes the package instance we'll use for path resolution and package
  * processing.
  */
-CLI.initPackage = function() {
-    if (this._package) {
+CLI.initPackage = function(rebuild) {
+    if (this._package && !rebuild) {
         return;
     }
 
