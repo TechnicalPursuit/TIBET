@@ -100,7 +100,7 @@ URL-encoded value.
   * `couch.db_name`:
     The CouchDB database name to use. Defaults to the current project name.
 
-  * `couch.app_name`:
+  * `couch.db_app`:
     The CouchDB application name to use. Defaults to the current project name.
 
 ## ENVIRONMENT VARIABLES

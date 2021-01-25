@@ -61,7 +61,7 @@ general you can set the TIBET configuration value `cli.tws.confirm` to false.
     The CouchDB database name to use. Defaults to the current project name +
     `_tasks`.
 
-  * `tds.tws.app_name`:
+  * `tds.tws.db_app`:
     The CouchDB application name to use. Defaults to `tws`.
 
 ## ENVIRONMENT VARIABLES
