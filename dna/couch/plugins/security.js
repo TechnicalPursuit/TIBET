@@ -28,7 +28,9 @@
             imgSrc,
             scriptSrc,
             styleSrc,
-            objectSrc;
+            objectSrc,
+            frameSrc,
+            connectSrc;
 
         app = options.app;
         TDS = app.TDS;
@@ -92,6 +94,12 @@
         objectSrc = TDS.getcfg('tds.csp.objectSrc', ['none']);
         objectSrc = objectSrc.map(quoteValue);
 
+        frameSrc = TDS.getcfg('tds.csp.frameSrc', ['none']);
+        frameSrc = frameSrc.map(quoteValue);
+
+        connectSrc = TDS.getcfg('tds.csp.connectSrc', ['none']);
+        connectSrc = connectSrc.map(quoteValue);
+
         app.use(helmet.contentSecurityPolicy({
             directives: {
                 reportUri: reportUri,
@@ -99,7 +107,9 @@
                 imgSrc: imgSrc,
                 scriptSrc: scriptSrc,
                 styleSrc: styleSrc,
-                objectSrc: objectSrc
+                objectSrc: objectSrc,
+                frameSrc: frameSrc,
+                connectSrc: connectSrc
             },
             reportOnly: reportOnly
         }));
