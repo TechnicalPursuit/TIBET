@@ -82,6 +82,25 @@ Cmd.prototype.USAGE = 'tibet start [--env <name>] [--debug] [--level=[\'all\'|\'
 //  ---
 
 /**
+ * Check arguments and configure default values prior to running prereqs.
+ * @returns {Object}
+ */
+Cmd.prototype.configure = function() {
+    var options;
+
+    options = this.options;
+
+    if (process.env.NODE_ENV !== options.env) {
+        process.env.NODE_ENV = options.env;
+        CLI.initPackage(true);
+    }
+
+    this.trace('configure:\n' + CLI.beautify(JSON.stringify(options)));
+
+    return options;
+};
+
+/**
  * Runs the command. For this type the goal is to provide easy startup of the
  * local TIBET server.
  * @returns {Number|Promise} The return code produced by running the command (a
