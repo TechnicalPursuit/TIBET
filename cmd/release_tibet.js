@@ -80,6 +80,13 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
+ * The timeout used for command invocation. Releasing TIBET can take a long time
+ * so we give this a generous amount of time.
+ * @type {Number}
+ */
+Cmd.prototype.TIMEOUT = 1000 * 60 * 10;
+
+/**
  * The command usage string.
  * @type {string}
  */
