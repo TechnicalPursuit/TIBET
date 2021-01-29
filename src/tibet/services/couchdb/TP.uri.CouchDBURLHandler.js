@@ -1256,8 +1256,6 @@ function(targetURI, aRequest) {
             return authRequest.getResponse();
         }
 
-        saveURI = targetURI;
-
         //  It's best to make CouchDB to deal with 'simple CORS' (i.e. no
         //  preflight requests, etc.) if possible. Configure that here so that
         //  TIBET's low-level HTTP machinery doesn't try to add headers, etc.
@@ -1266,6 +1264,8 @@ function(targetURI, aRequest) {
         request.atPut('simple_cors_only', true);
         request.atPut('withCredentials', true);
     }
+
+    saveURI = targetURI;
 
     //  Add a local handler for when the request succeeds that will update the
     //  '_rev' in the locally cached data to the new 'rev' sent back by the
