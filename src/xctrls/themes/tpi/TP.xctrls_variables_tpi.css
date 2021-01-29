@@ -97,6 +97,9 @@ xctrls|radioitem {
 
     /* xctrls|radioitem variables */
 
+    --xctrls-radioitem-item-margin: 0.25em;
+    --xctrls-radioitem-label-margin: 0.25em;
+
     --xctrls-radioitem-font-family: arial, helvetica, clean, sans-serif;
     --xctrls-radioitem-font-color-normal: black;
     --xctrls-radioitem-font-color-hover: #666;

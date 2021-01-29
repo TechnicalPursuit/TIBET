@@ -13,11 +13,14 @@
 *[data-theme~="tpi"] xctrls|radioitem {
 
     background-color: var(--xctrls-radioitem-background-color-normal);
+
+    margin-right: var(--xctrls-radioitem-item-margin);
 }
 
 /* The radioitem's value (the checkmark) */
 *[data-theme~="tpi"] xctrls|radioitem > *[tibet|pelem="value"] {
 
+    margin-right: var(--xctrls-radioitem-label-margin);
 }
 
 /* Hovering over the radioitem */
