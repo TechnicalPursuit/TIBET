@@ -2,7 +2,7 @@
 # TIBET CODE.
 
 # Start with Node 12.X and the Debian Linux 'Stretch Slim' image.
-FROM node:12.18.0-stretch-slim
+FROM node:12.20.1-stretch-slim
 
 # Grab the latest package definitions for apt-get
 RUN apt-get update && apt-get install -y gnupg2
