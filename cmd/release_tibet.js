@@ -84,7 +84,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * so we give this a generous amount of time.
  * @type {Number}
  */
-Cmd.prototype.TIMEOUT = 1000 * 60 * 10;
+Cmd.prototype.TIMEOUT = 1000 * 60 * 20;
 
 /**
  * The command usage string.
