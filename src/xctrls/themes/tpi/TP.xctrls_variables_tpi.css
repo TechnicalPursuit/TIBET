@@ -114,7 +114,7 @@ xctrls|radioitem {
     --xctrls-radioitem-background-color-disabled: transparent;
 
     --xctrls-radioitem-check-color-normal: black;
-    --xctrls-radioitem-check-color-hover: cornsilk;
+    --xctrls-radioitem-check-color-hover: gold;
     --xctrls-radioitem-check-color-focus: gold;
     --xctrls-radioitem-check-color-active: gold;
     --xctrls-radioitem-check-color-disabled: #eee;
