@@ -97,6 +97,9 @@ xctrls|radioitem {
 
     /* xctrls|radioitem variables */
 
+    --xctrls-radioitem-item-margin: 0.25em;
+    --xctrls-radioitem-label-margin: 0.25em;
+
     --xctrls-radioitem-font-family: arial, helvetica, clean, sans-serif;
     --xctrls-radioitem-font-color-normal: black;
     --xctrls-radioitem-font-color-hover: #666;
@@ -104,14 +107,14 @@ xctrls|radioitem {
     --xctrls-radioitem-font-color-active: #666;
     --xctrls-radioitem-font-color-disabled: #aaa;
 
-    --xctrls-radioitem-background-color-normal: white;
-    --xctrls-radioitem-background-color-hover: white;
-    --xctrls-radioitem-background-color-focus: white;
-    --xctrls-radioitem-background-color-active: white;
-    --xctrls-radioitem-background-color-disabled: white;
+    --xctrls-radioitem-background-color-normal: transparent;
+    --xctrls-radioitem-background-color-hover: transparent;
+    --xctrls-radioitem-background-color-focus: transparent;
+    --xctrls-radioitem-background-color-active: transparent;
+    --xctrls-radioitem-background-color-disabled: transparent;
 
     --xctrls-radioitem-check-color-normal: black;
-    --xctrls-radioitem-check-color-hover: cornsilk;
+    --xctrls-radioitem-check-color-hover: gold;
     --xctrls-radioitem-check-color-focus: gold;
     --xctrls-radioitem-check-color-active: gold;
     --xctrls-radioitem-check-color-disabled: #eee;
