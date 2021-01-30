@@ -3704,6 +3704,9 @@ TP.dom.CollectionNode.Type.defineAttribute('tagname', null);
 //  a registry of 'original nodes' that were authored.
 TP.dom.CollectionNode.Type.defineAttribute('originals');
 
+//  whether or not we're in the middle of recasting this node.
+TP.dom.CollectionNode.$set('$isRecasting', false);
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
@@ -3857,12 +3860,18 @@ function(aDocument) {
 
                     oldParentNode = oldNode.parentNode;
 
-                    //  process the content, supplying the authored node as
-                    //  the 'alternate element' to process. This is the core
-                    //  of 'recasting'. Note that awaken will happen via the
-                    //  core TIBET Mutation Observer when the new node is
-                    //  attached to the DOM. It will send a MutationAttach
-                    //  signal that we install a handler for below.
+                    //  process the content, supplying the authored node as the
+                    //  'alternate element' to process. This is the core of
+                    //  'recasting'. Note that awaken will happen via the core
+                    //  TIBET Mutation Observer when the new node is attached to
+                    //  the DOM. It will send a MutationAttach signal that we
+                    //  install a handler for below.
+
+                    //  We're getting ready to some recasting. Flip the
+                    //  type-level flag on. This is used by some types to manage
+                    //  things like caches of markup.
+                    TP.dom.CollectionNode.$set('$isRecasting', true);
+
                     aTPElem.setAttribute('tibet:recasting', true);
                     aTPElem.compile(null, true, authoredElem);
 
@@ -3877,34 +3886,34 @@ function(aDocument) {
 
                     recastTPDoc = TP.tpdoc(aTPElem);
 
-                    //  Install a handler looking for a MutationAttach
-                    //  signal that will have the global ID for the element
-                    //  being recast.
+                    //  Install a handler looking for a MutationAttach signal
+                    //  that will have the global ID for the element being
+                    //  recast.
                     handler = function(aSignal) {
 
                         var recastTPElem;
 
-                        //  If one of the mutated nodes was our recast
-                        //  Element, then the GIDs will be the same (but its
-                        //  a 'new element' insofar as the DOM is concerned,
-                        //  so we can't use '===' comparing).
+                        //  If one of the mutated nodes was our recast Element
+                        //  then the GIDs will be the same (but its a 'new
+                        //  element' insofar as the DOM is concerned, so we
+                        //  can't use '===' comparing).
                         if (aSignal.at('mutatedNodeIDs').contains(gid)) {
 
                             //  Make sure to uninstall the handler.
                             handler.ignore(recastTPDoc,
                                             'TP.sig.MutationAttach');
 
-                            //  Grab the wrapped element by using the GID to
-                            //  get a reference back to it.
+                            //  Grab the wrapped element by using the GID to get
+                            //  a reference back to it.
                             recastTPElem = TP.bySystemId(gid);
 
-                            //  Refresh any data bindings that are a part of
-                            //  or are under the recast element.
+                            //  Refresh any data bindings that are a part of or
+                            //  are under the recast element.
                             recastTPElem.refresh();
 
-                            //  If the two nodes, old and new, are not
-                            //  equal, then update the source document,
-                            //  replacing one with the other.
+                            //  If the two nodes, old and new, are not equal,
+                            //  then update the source document, replacing one
+                            //  with the other.
                             if (!TP.nodeEqualsNode(
                                     oldNodeClone, newNodeClone)) {
 
@@ -3928,12 +3937,14 @@ function(aDocument) {
                                         TP.hc('recastTarget',
                                                 recastTPElem));
                         }
+
+                        //  We're done recasting. Flip the type-level flag off.
+                        TP.dom.CollectionNode.$set('$isRecasting', false);
                     };
 
-                    //  Set up the MutationAttach observation on the
-                    //  original Element's Document. This will stay the
-                    //  same throughout the recasting process, so we're safe
-                    //  to do that.
+                    //  Set up the MutationAttach observation on the original
+                    //  Element's Document. This will stay the same throughout
+                    //  the recasting process, so we're safe to do that.
                     handler.observe(recastTPDoc, 'TP.sig.MutationAttach');
                 }).queueAfterNextRepaint(TP.nodeGetWindow(authoredElem));
             }
@@ -9326,6 +9337,15 @@ function(aRequest, replaceNode, alternateNode) {
             nodeLID = TP.lid(node);
             newNode = TP.$compiled_doc_cache.at(nodeLID);
 
+            //  If we have a cached node, but we're recasting, then remove the
+            //  cache entry and set newNode to null so that we go back through
+            //  the tag compiler.
+            if (TP.isNode(newNode) &&
+                TP.dom.CollectionNode.$get('$isRecasting')) {
+                TP.$compiled_doc_cache.removeKey(nodeLID);
+                newNode = null;
+            }
+
             //  If we successfully found an entry in the cache, then set the
             //  flags to not process and indicate that we found an entry in the
             //  cache.
@@ -11270,6 +11290,14 @@ function(resource, mimeType, setupFunc) {
     //  If a TP.dom.ElementNode with a URI that matches the src has been cached,
     //  then return it.
     result = this.get('$resourceElements').at(src);
+
+    //  If we have a cached result, but we're recasting, then set result to null
+    //  so that we retrieve the new markup from the URI cache. The new result
+    //  will be cached below before we exit this method.
+    if (TP.isValid(result) && TP.dom.CollectionNode.$get('$isRecasting')) {
+        result = null;
+    }
+
     if (TP.isValid(result)) {
         return result;
     }
