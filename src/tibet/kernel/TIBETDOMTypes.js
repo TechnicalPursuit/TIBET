@@ -3705,7 +3705,7 @@ TP.dom.CollectionNode.Type.defineAttribute('tagname', null);
 TP.dom.CollectionNode.Type.defineAttribute('originals');
 
 //  whether or not we're in the middle of recasting this node.
-TP.dom.CollectionNode.$set('$isRecasting', false);
+TP.dom.CollectionNode.Type.defineAttribute('$isRecasting', false);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
