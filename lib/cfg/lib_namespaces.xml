@@ -339,6 +339,8 @@
     <script src="xctrls/TP.xctrls.SharedOverlay.js"/>
 
     <script src="xctrls/TP.xctrls.label/TP.xctrls.label.js"/>
+    <script src="xctrls/TP.xctrls.image/TP.xctrls.image.js"/>
+
     <script src="xctrls/TP.xctrls.panel/TP.xctrls.panel.js"/>
 
     <package src="xctrls/TP.xctrls.button/TP.xctrls.button.xml" config="base"/>
