@@ -34,16 +34,21 @@ lama|inspectoritem > div {
     bottom: 0;
     left: 0;
 
-    margin: 0.25em;
     padding: 0.25em;
-
-    border: solid 1px #aaa;
-    border-radius: 3px;
 }
 
 lama|inspectoritem > div.scrollable {
 
     overflow: auto;
+}
+
+lama|inspectoritem > div.filler {
+
+    border-top: solid 1px #aaa;
+    border-right: solid 1px #aaa;
+    border-bottom: solid 1px #aaa;
+
+    border-radius: 3px;
 }
 
 lama|inspectoritem > div.wrapped {

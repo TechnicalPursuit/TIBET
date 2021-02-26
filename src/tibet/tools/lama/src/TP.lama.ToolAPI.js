@@ -429,9 +429,12 @@ function(options) {
                             TP.request('signalChange', false));
 
         contentElem = TP.elem(
-                '<xctrls:list bind:in="{data: ' +
-                dataURI.asString() +
-                '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+                '<xctrls:list filter="true"' +
+                ' alwayschange="true" itemtoggle="false"/>');
+
+        TP.elementSetAttribute(
+            contentElem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
     } else {
 
         contentElem = TP.xhtmlnode(
