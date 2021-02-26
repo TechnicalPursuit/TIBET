@@ -1004,6 +1004,8 @@ function(pathParts) {
 TP.lama.inspector.Inst.defineAttribute('$haloAddedTarget');
 TP.lama.inspector.Inst.defineAttribute('$lastHaloTargetGID');
 
+TP.lama.inspector.Inst.defineAttribute('$noFillerBaysWidth');
+
 TP.lama.inspector.Inst.defineAttribute('dynamicContentEntries');
 
 TP.lama.inspector.Inst.defineAttribute('selectedItems');
@@ -1362,18 +1364,34 @@ function(info) {
      * @returns {TP.lama.inspector} The receiver.
      */
 
-    var target,
+    var inspectorElem,
+
+        target,
         aspect,
 
         targetURI,
+
+        baysWidth,
+
+        screenWidthAndHeight,
+        screenWidth,
+
+        diff,
+        inspectorBays,
+        inspectorItemsStyleSheetElem,
+        inspectorBaySize,
+        numToAdd,
+        bayConfig,
+        newTPElem,
+        i,
 
         selectedItems,
         params,
 
         toolbar,
-        toolbarContent,
+        toolbarContent;
 
-        inspectorBays;
+    inspectorElem = this.getNativeNode();
 
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
@@ -1384,8 +1402,70 @@ function(info) {
         targetURI.setResource(target, TP.request('signalChange', false));
     }
 
+    //  Grab the sum total of all of the widths of the bays and set an instance
+    //  variable with the value, which we'll use for scrolling, etc. purposes.
+    baysWidth = this.getInspectorBaysWidth();
+    this.set('$noFillerBaysWidth', baysWidth);
+
+    //  Grab the screen width. We'll use this below to determine whether or not
+    //  we need 'filler bays'. Most of the time we will, since the user can
+    //  emlarge the window past the end of the last 'real' bay.
+    screenWidthAndHeight = TP.windowGetScreenWidthAndHeight(
+                            TP.nodeGetTopWindow(inspectorElem));
+    screenWidth = screenWidthAndHeight.first();
+
+    //  If the width of the 'real bays' is less than the screen width (more than
+    //  likely), then add 'filler' bays to 'fill out' the rest of the space.
+    if (baysWidth < screenWidth) {
+
+        //  The difference between the screen width and the bays width.
+        diff = screenWidth - baysWidth;
+
+        //  Grab the inspector bays (but not the filler bays).
+        inspectorBays = this.getInspectorBays();
+
+        //  This should never be empty (we should always have at least one 'real
+        //  bay'), but just in case.
+        if (TP.notEmpty(inspectorBays)) {
+
+            //  Grab the style sheet element that contains the rule that gives
+            //  us our minimum width for inspector bays.
+            inspectorItemsStyleSheetElem =
+                TP.styleSheetGetOwnerNode(
+                    inspectorBays.first().getStylesheetForStyleResource());
+
+            //  Query it for the custom CSS property that defines the minimum
+            //  bay width.
+            inspectorBaySize = TP.cssElementGetCustomCSSPropertyValue(
+                                        inspectorItemsStyleSheetElem,
+                                        'lama|inspectoritem',
+                                        '--lama-inspector-item-minwidth');
+            inspectorBaySize = inspectorBaySize.asNumber();
+
+            //  Divide it and round up (it's better to add 1 more than be short
+            //  1 bay).
+            numToAdd = (diff / inspectorBaySize).ceil();
+
+            bayConfig = TP.getConfigForTool(
+                        this,
+                        'inspector',
+                        TP.hc('pathParts', TP.ac('FILLER'),
+                                'targetAspect', null,
+                                'targetObject', null));
+
+            //  Create new 'filler' bay content.
+            newTPElem = TP.wrap(TP.xhtmlnode('<div class="filler"/>'));
+
+            //  Iterate and add filler bays.
+            for (i = 0; i < numToAdd; i++) {
+                bayConfig.atPut('pathParts', TP.ac('FILLER_' + i));
+                this.addBay(newTPElem.clone(), bayConfig, false);
+            }
+        }
+    }
+
     (function() {
-        //  Scroll them to the end
+        //  Scroll them to the end (of the real bays).
         this.scrollBaysToEnd();
 
         //  Update the toolbar (or clear it)
