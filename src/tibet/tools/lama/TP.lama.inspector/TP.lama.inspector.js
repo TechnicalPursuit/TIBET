@@ -3609,7 +3609,13 @@ function(direction) {
         inspectorBays,
 
         len,
-        i;
+        i,
+
+        currentBay,
+        computedBay,
+
+        eastEdgeX,
+        newEdge;
 
     inspectorElem = this.getNativeNode();
 
@@ -3629,26 +3635,64 @@ function(direction) {
         //  that we start at 1, since if the leftmost bay is wholly visible,
         //  then we don't need to do any scrolling from the left at all.
         for (i = 1; i < len; i++) {
-            if (inspectorBays.at(i).isVisible()) {
-                inspectorElem.scrollLeft =
-                    inspectorBays.at(i - 1).getNativeNode().offsetLeft;
+
+            currentBay = inspectorBays.at(i);
+
+            //  If the bay is completely visible
+            if (currentBay.isVisible()) {
+                computedBay = inspectorBays.at(i - 1);
+                break;
+            }
+
+            if (currentBay.isVisible(true)) {
+                computedBay = currentBay;
                 break;
             }
         }
+
+        inspectorElem.scrollLeft = computedBay.getOffsetPoint().getX();
     } else if (direction === TP.RIGHT) {
 
         //  Find first bay from the righthand side that is wholly visible. Note
         //  that we're iterating backwards, which would normally mean that we
-        //  start at len -1, but because if the rightmost bay is wholly visible,
-        //  then we don't need to do any scrolling from the right at all, we
-        //  start at len - 2.
-        for (i = len - 2; i >= 0; i--) {
-            if (inspectorBays.at(i).isVisible()) {
-                inspectorElem.scrollLeft =
-                    inspectorBays.at(i + 1).getNativeNode().offsetLeft;
+        //  start at len - 1, but because if the rightmost bay is wholly
+        //  visible, then we don't need to do any scrolling from the right at
+        //  all, we start at len - 2.
+        for (i = len - 1; i >= 0; i--) {
+            currentBay = inspectorBays.at(i);
+
+            if (currentBay.isVisible()) {
+                computedBay = inspectorBays.at(i + 1);
+                break;
+            }
+
+            if (currentBay.isVisible(true)) {
+                computedBay = currentBay;
                 break;
             }
         }
+
+        eastEdgeX = computedBay.getOffsetRect().getEdgePoint(TP.EAST).getX();
+
+        newEdge = eastEdgeX - this.getWidth();
+
+        newEdge = newEdge.max(0);
+
+        //  If the scrollLeft is already at the new edge and we're not yet to
+        //  end of the list, then that must mean we're right on the edge of the
+        //  bay.
+        //  This means that this calculation won't allow us to proceed, which
+        //  means that we need to force the inspector to go one more bay to the
+        //  right.
+        if (inspectorElem.scrollLeft === newEdge && i < len - 1) {
+            //  Grab one more bay to the right, get it's 'east' edge and use
+            //  that to recompute the new edge.
+            computedBay = inspectorBays.at(i + 1);
+            eastEdgeX = computedBay.getOffsetRect().getEdgePoint(TP.EAST).getX();
+            newEdge = eastEdgeX - this.getWidth();
+        }
+
+        inspectorElem.scrollLeft = newEdge;
     }
 
     //  Make sure to update the scroll buttons :-).
@@ -3668,7 +3712,23 @@ function() {
      * @returns {TP.lama.inspector} The receiver.
      */
 
-    this.scrollTo(TP.RIGHT);
+    var inspectorBays,
+
+        currentBay,
+
+        eastEdgeX;
+
+    //  Grab the inspector bays (but not the filler bays).
+    inspectorBays = this.getInspectorBays();
+    if (TP.isEmpty(inspectorBays)) {
+        return this;
+    }
+
+    currentBay = inspectorBays.last();
+
+    eastEdgeX = currentBay.getOffsetRect().getEdgePoint(TP.EAST).getX();
+
+    this.getNativeNode().scrollLeft = eastEdgeX - this.getWidth();
 
     //  Make sure to update the scroll buttons :-).
     this.updateScrollButtons();
