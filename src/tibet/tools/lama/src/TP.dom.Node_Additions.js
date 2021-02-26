@@ -553,18 +553,24 @@ function(options) {
 
     var targetAspect,
 
-        dataURI;
+        dataURI,
+        elem;
 
     targetAspect = options.at('targetAspect');
 
     if (targetAspect === 'Node Instance Data' ||
         targetAspect === 'Node Local Data') {
+
         dataURI = TP.uc(options.at('bindLoc'));
 
-        return TP.elem(
-                '<xctrls:list bind:in="{data: ' +
-                dataURI.asString() +
-                '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+        elem = TP.elem(
+                '<xctrls:list filter="true"' +
+                ' alwayschange="true" itemtoggle="false"/>');
+
+        TP.elementSetAttribute(
+                elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+        return elem;
     }
 
     return this.callNextMethod();
@@ -1835,15 +1841,21 @@ function(options) {
      *     bay.
      */
 
-    var dataURI;
+    var dataURI,
+        elem;
 
     if (options.at('targetAspect') === this.getID()) {
+
         dataURI = TP.uc(options.at('bindLoc'));
 
-        return TP.elem(
-                '<xctrls:list bind:in="{data: ' +
-                dataURI.asString() +
-                '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+        elem = TP.elem(
+                '<xctrls:list filter="true"' +
+                ' alwayschange="true" itemtoggle="false"/>');
+
+        TP.elementSetAttribute(
+                elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+        return elem;
     }
 
     return this.callNextMethod();

@@ -4985,17 +4985,21 @@ function(anElement, partial, direction, wantsTransformed) {
     //  viewport's width and height, we can determine whether a side is visible
     //  or not.
     topVisible = elemTop >= offsetTop &&
-                    topLeftCornerVisible &&
-                    topRightCornerVisible;
+                    TP.isTrue(partial) ?
+                    topLeftCornerVisible || topRightCornerVisible :
+                    topLeftCornerVisible && topRightCornerVisible;
     bottomVisible = elemBottom <= offsetBottom &&
-                    bottomLeftCornerVisible &&
-                    bottomRightCornerVisible;
+                    TP.isTrue(partial) ?
+                    bottomLeftCornerVisible || bottomRightCornerVisible :
+                    bottomLeftCornerVisible && bottomRightCornerVisible;
     leftVisible = elemLeft >= offsetLeft &&
-                    topLeftCornerVisible &&
-                    bottomLeftCornerVisible;
+                    TP.isTrue(partial) ?
+                    topLeftCornerVisible || bottomLeftCornerVisible :
+                    topLeftCornerVisible && bottomLeftCornerVisible;
     rightVisible = elemRight <= offsetRight &&
-                    topRightCornerVisible &&
-                    bottomRightCornerVisible;
+                    TP.isTrue(partial) ?
+                    topRightCornerVisible || bottomRightCornerVisible :
+                    topRightCornerVisible && bottomRightCornerVisible;
 
     //  If we allow the call to return a 'partially visible' element, we use OR
     //  on the comparisons here - otherwise, we use AND.

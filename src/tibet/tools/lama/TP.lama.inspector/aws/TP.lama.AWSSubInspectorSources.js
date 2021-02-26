@@ -409,14 +409,19 @@ function(options) {
 TP.lama.AWSSubInspectorSources.Inst.defineMethod('getContentForInspectorForS3Designation',
 function(options) {
 
-    var dataURI;
+    var dataURI,
+        elem;
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem(
-            '<xctrls:list bind:in="{data: ' +
-            dataURI.asString() +
-            '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+    elem = TP.elem(
+            '<xctrls:list filter="true"' +
+            ' alwayschange="true" itemtoggle="false"/>');
+
+    TP.elementSetAttribute(
+            elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -424,14 +429,19 @@ function(options) {
 TP.lama.AWSSubInspectorSources.Inst.defineMethod('getContentForInspectorForS3AllBuckets',
 function(options) {
 
-    var dataURI;
+    var dataURI,
+        elem;
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem(
-            '<xctrls:list bind:in="{data: ' +
-            dataURI.asString() +
-            '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+    elem = TP.elem(
+            '<xctrls:list filter="true"' +
+            ' alwayschange="true" itemtoggle="false"/>');
+
+    TP.elementSetAttribute(
+            elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -439,14 +449,19 @@ function(options) {
 TP.lama.AWSSubInspectorSources.Inst.defineMethod('getContentForInspectorForS3BucketContent',
 function(options) {
 
-    var dataURI;
+    var dataURI,
+        elem;
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem(
-            '<xctrls:list bind:in="{data: ' +
-            dataURI.asString() +
-            '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+    elem = TP.elem(
+            '<xctrls:list filter="true"' +
+            ' alwayschange="true" itemtoggle="false"/>');
+
+    TP.elementSetAttribute(
+            elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -470,14 +485,19 @@ function(options) {
 TP.lama.AWSSubInspectorSources.Inst.defineMethod('getContentForInspectorForLambdaDesignation',
 function(options) {
 
-    var dataURI;
+    var dataURI,
+        elem;
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem(
-            '<xctrls:list bind:in="{data: ' +
-            dataURI.asString() +
-            '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+    elem = TP.elem(
+            '<xctrls:list filter="true"' +
+            ' alwayschange="true" itemtoggle="false"/>');
+
+    TP.elementSetAttribute(
+            elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -485,14 +505,19 @@ function(options) {
 TP.lama.AWSSubInspectorSources.Inst.defineMethod('getContentForInspectorForLambdaAllFunctions',
 function(options) {
 
-    var dataURI;
+    var dataURI,
+        elem;
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem(
-            '<xctrls:list bind:in="{data: ' +
-            dataURI.asString() +
-            '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+    elem = TP.elem(
+            '<xctrls:list filter="true"' +
+            ' alwayschange="true" itemtoggle="false"/>');
+
+    TP.elementSetAttribute(
+            elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
