@@ -1095,7 +1095,7 @@ function(target, forceRebuild) {
 //  ------------------------------------------------------------------------
 
 TP.lama.inspector.Inst.defineMethod('addBay',
-function(bayContent, bayConfig) {
+function(bayContent, bayConfig, process) {
 
     /**
      * @method addBay
@@ -1111,6 +1111,8 @@ function(bayContent, bayConfig) {
      *                                      onto the bay inspector item itself
      *                                      to adjust to the content being
      *                                      placed in it.
+     * @param {Boolean} [process=true] Whether or not to process the supplied
+     *     content. The default is true.
      * @returns {TP.lama.inspector} The receiver.
      */
 
@@ -1150,10 +1152,14 @@ function(bayContent, bayConfig) {
     //  inspector's overall container.
     bay.setRawContent(TP.wrap(bayContent));
 
-    //  Append the new inspector item to the container here. Content compilation
-    //  will take place here.
-    //  Note the reassignment here.
-    bay = this.get('container').addContent(bay);
+    if (TP.notFalse(process)) {
+        //  Append the new inspector item to the container here. Content
+        //  compilation will take place here.
+        //  Note the reassignment here.
+        bay = this.get('container').addContent(bay);
+    } else {
+        bay = this.get('container').addRawContent(bay);
+    }
 
     //  Awaken the content here.
     bay.awaken();
