@@ -1325,7 +1325,8 @@ function(startBay) {
         len,
         i;
 
-    existingBays = TP.byCSSPath(' lama|inspectoritem', this);
+    //  Grab the inspector bays (*including* the filler bays).
+    existingBays = this.getInspectorBays(true);
     if (TP.isEmpty(existingBays)) {
         return this;
     }
@@ -1401,7 +1402,8 @@ function(info) {
             toolbar.empty();
         }
 
-        inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+        //  Grab the inspector bays (but not the filler bays).
+        inspectorBays = this.getInspectorBays();
         if (TP.notEmpty(inspectorBays)) {
             inspectorBays.last().focus();
         }
@@ -1511,7 +1513,9 @@ function(anInfo) {
 
     //  Grab all of the inspector bays in the receiver.
     //  NB: inspectorBays could be empty here, and that's ok.
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+    //  Grab the inspector bays (but not the filler bays).
+    inspectorBays = this.getInspectorBays();
 
     //  Pass along any extra targeting information that editors or property
     //  panels would want by putting that onto one of our slots.
@@ -1603,7 +1607,9 @@ function(anInfo) {
         this.populateBayUsing(info);
 
         //  Now that we have more inspector items, obtain the list again.
-        inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+        //  Grab the inspector bays (but not the filler bays).
+        inspectorBays = this.getInspectorBays();
 
     } else if (TP.isValid(target) && TP.isValid(resolver)) {
 
@@ -1700,8 +1706,9 @@ function(anInfo) {
             info.atPut('bayIndex', 2);
 
             //  Now that we have more inspector items, obtain the list again.
-            inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
 
+            //  Grab the inspector bays (but not the filler bays).
+            inspectorBays = this.getInspectorBays();
         } else {
             //  No root resolver - can't go any further
             return this;
@@ -1774,7 +1781,9 @@ function(anInfo) {
             info.atPut('bayIndex', 2);
 
             //  Now that we have more inspector items, obtain the list again.
-            inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+            //  Grab the inspector bays (but not the filler bays).
+            inspectorBays = this.getInspectorBays();
 
         } else {
 
@@ -1802,7 +1811,9 @@ function(anInfo) {
                 info.atPut('bayIndex', 2);
 
                 //  Now that we have more inspector items, obtain the list again.
-                inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+                //  Grab the inspector bays (but not the filler bays).
+                inspectorBays = this.getInspectorBays();
             }
         }
     }
@@ -1847,7 +1858,9 @@ function(anInfo) {
             this.populateBayUsing(rootInfo, false);
 
             //  Now that we have more inspector items, obtain the list again.
-            inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+            //  Grab the inspector bays (but not the filler bays).
+            inspectorBays = this.getInspectorBays();
         } else {
             //  If any of these path parts returned an alias, look it up here.
             pathParts = this.getType().resolvePathAliases(pathParts);
@@ -1920,7 +1933,9 @@ function(anInfo) {
 
                 //  Now that we have more inspector items, obtain the list
                 //  again.
-                inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+                //  Grab the inspector bays (but not the filler bays).
+                inspectorBays = this.getInspectorBays();
             }
         }
     } else {
@@ -1988,7 +2003,8 @@ function(aSlotPosition) {
         return null;
     }
 
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+    //  Grab the inspector bays (but not the filler bays).
+    inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return null;
     }
@@ -2187,7 +2203,8 @@ function() {
 
         lastResolver;
 
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+    //  Grab the inspector bays (but not the filler bays).
+    inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return null;
     }
@@ -2844,6 +2861,97 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.lama.inspector.Inst.defineMethod('getInspectorBays',
+function(shouldIncludeFillers) {
+
+    /**
+     * @method getInspectorBays
+     * @summary Returns the receiver's inspector bay items.
+     * @param {Boolean} [shouldIncludeFillers=false] Whether or not to include
+     *     'filler' bays in the list of returned bays.
+     * @returns {TP.lama.inspectoritem[]} An Array of the receiver's inspector
+     *     bay items.
+     */
+
+    var includeFillers,
+
+        existingBays,
+
+        filteredBays,
+
+        len,
+        i;
+
+    includeFillers = TP.ifInvalid(shouldIncludeFillers, false);
+
+    //  Grab all of the existing bays.
+    existingBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+    //  If we *are* including filler bays, just return the list here.
+    if (includeFillers) {
+        return existingBays;
+    }
+
+    //  Otherwise, iterate over all of the bays and filter out the fillers.
+
+    filteredBays = TP.ac();
+
+    len = existingBays.getSize();
+    for (i = 0; i < len; i++) {
+        if (existingBays.at(i).getLocalID().contains('FILLER')) {
+            continue;
+        }
+
+        filteredBays.push(existingBays.at(i));
+    }
+
+    return filteredBays;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lama.inspector.Inst.defineMethod('getInspectorBaysWidth',
+function(shouldIncludeFillers) {
+
+    /**
+     * @method getInspectorBaysWidth
+     * @summary Returns the sum total of the receiver's inspector bay items
+     *     widths.
+     * @param {Boolean} [shouldIncludeFillers=false] Whether or not to include
+     *     'filler' bays in the list of returned bays.
+     * @returns {Number} The width of the inspector bay items summed together.
+     */
+
+    var includeFillers,
+
+        existingBays,
+        baysWidth,
+
+        len,
+        i;
+
+    includeFillers = TP.ifInvalid(shouldIncludeFillers, false);
+
+    existingBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+    baysWidth = 0;
+
+    //  Iterate over the bays and sum up their widths
+
+    len = existingBays.getSize();
+    for (i = 0; i < len; i++) {
+        if (existingBays.at(i).getLocalID().contains('FILLER') &&
+            !includeFillers) {
+            continue;
+        }
+        baysWidth += existingBays.at(i).getWidth();
+    }
+
+    return baysWidth;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lama.inspector.Inst.defineMethod('populateBayUsing',
 function(info, createHistoryEntry) {
 
@@ -2892,8 +3000,9 @@ function(info, createHistoryEntry) {
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
 
+    //  Grab the inspector bays (*including* the filler bays).
     //  NB: existingBays could be empty here, and that's ok.
-    existingBays = TP.byCSSPath(' lama|inspectoritem', this);
+    existingBays = this.getInspectorBays(true);
 
     newBayNum = info.at('bayIndex');
 
@@ -3096,7 +3205,9 @@ function(aBayNum) {
     }
 
     //  Grab the inspector bay corresponding to that bay number
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+    //  Grab the inspector bays (but not the filler bays).
+    inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return this;
     }
@@ -3189,7 +3300,9 @@ function(aBayNum) {
     }
 
     //  Grab the inspector bay corresponding to that bay number
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+    //  Grab the inspector bays (but not the filler bays).
+    inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return this;
     }
@@ -3414,7 +3527,8 @@ function(direction) {
 
     inspectorElem = this.getNativeNode();
 
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+    //  Grab the inspector bays (but not the filler bays).
+    inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return this;
     }
@@ -3663,7 +3777,8 @@ function(pathParts) {
         targetAspect,
         info;
 
-    inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+    //  Grab the inspector bays (but not the filler bays).
+    inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return this;
     }
@@ -3719,7 +3834,9 @@ function(pathParts) {
 
             //  Now that we have more inspector items, obtain the list
             //  again.
-            inspectorBays = TP.byCSSPath(' lama|inspectoritem', this);
+
+            //  Grab the inspector bays (but not the filler bays).
+            inspectorBays = this.getInspectorBays();
         }
     }
 
