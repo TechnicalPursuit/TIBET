@@ -5,7 +5,7 @@
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 
-@import url("../TP.xctrls.pagerbar_all.css");
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.pagerbar_all.css");
 
 /* The pagerbar */
 *[data-theme~="tpi"] xctrls|pagerbar {

@@ -5,7 +5,7 @@
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 
-@import url("../TP.xctrls.sticky_all.css");
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.sticky_all.css");
 
 /* The sticky */
 *[data-theme~="tpi"] xctrls|sticky {
