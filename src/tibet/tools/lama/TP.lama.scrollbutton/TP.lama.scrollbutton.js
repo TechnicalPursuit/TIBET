@@ -119,19 +119,30 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.lama.scrollbutton.Inst.defineMethod('updateForScrollingContent',
-function() {
+function(aWidth, aHeight) {
 
     /**
      * @method updateForScrollingContent
      * @summary Updates the receiver to accurately reflect the scroll position
      *     of the content it is connected to.
+     * @param {Number} [aWidth] An optional parameter that should be the
+     *     scrolling width that this method will use to update itself. If this
+     *     method is not supplied, the receiver's 'scrollingContentTPElem's
+     *     scrollWidth will be used.
+     * @param {Number} [aHeight] An optional parameter that should be the
+     *     scrolling height that this method will use to update itself. If this
+     *     method is not supplied, the receiver's 'scrollingContentTPElem's
+     *     scrollHeight will be used.
      * @returns {TP.lama.scrollbutton} The receiver.
      */
 
     var elem,
         orientation,
 
-        contentElem;
+        contentElem,
+
+        scrollWidth,
+        scrollHeight;
 
     elem = this.getNativeNode();
     orientation = TP.elementGetAttribute(elem, 'orientation', true);
@@ -144,6 +155,9 @@ function() {
 
     contentElem = contentElem.getNativeNode();
 
+    scrollWidth = TP.ifInvalid(aWidth, contentElem.scrollWidth);
+    scrollHeight = TP.ifInvalid(aHeight, contentElem.scrollHeight);
+
     //  Tweak the receiver's 'class' attribute, adding or removing the 'more'
     //  class depending on whether the content it is connected to has more
     //  content in that direction.
@@ -155,7 +169,7 @@ function() {
             return this;
         }
 
-        if (contentElem.scrollHeight >
+        if (scrollHeight >
             contentElem.scrollTop + contentElem.offsetHeight) {
             TP.elementAddClass(elem, 'more');
         } else {
@@ -174,7 +188,7 @@ function() {
             return this;
         }
 
-        if (contentElem.scrollWidth >
+        if (scrollWidth >
             contentElem.scrollLeft + contentElem.offsetWidth) {
             TP.elementAddClass(elem, 'more');
         } else {

@@ -3747,7 +3747,8 @@ function() {
      * @returns {TP.lama.inspector} The receiver.
      */
 
-    var arrows;
+    var arrows,
+        baysWidth;
 
     arrows = TP.byCSSPath(
                 '> lama|scrollbutton',
@@ -3755,9 +3756,11 @@ function() {
                 false,
                 true);
 
+    baysWidth = TP.ifInvalid(this.get('$noFillerBaysWidth'), null);
+
     arrows.forEach(
             function(anArrow) {
-                anArrow.updateForScrollingContent();
+                anArrow.updateForScrollingContent(baysWidth);
             });
 
     return this;
