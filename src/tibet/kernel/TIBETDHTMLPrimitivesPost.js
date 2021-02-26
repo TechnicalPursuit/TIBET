@@ -1182,10 +1182,6 @@ function(aDocument, themeName) {
         } else if (projectTheme === libTheme) {
             //  Otherwise, they're both the same - just use the 'project' theme.
             TP.elementSetAttribute(body, 'data-theme', projectTheme, true);
-        } else {
-            //  Otherwise, use them both.
-            TP.elementSetAttribute(
-                body, 'data-theme', libTheme + ' ' + projectTheme, true);
         }
     }
 
