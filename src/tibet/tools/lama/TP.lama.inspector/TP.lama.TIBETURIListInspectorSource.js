@@ -121,14 +121,19 @@ function(options) {
      *     bay.
      */
 
-    var dataURI;
+    var dataURI,
+        elem;
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem(
-            '<xctrls:list bind:in="{data: ' +
-            dataURI.asString() +
-            '}" filter="true" alwayschange="true" itemtoggle="false" tooltips="true"/>');
+    elem = TP.elem(
+            '<xctrls:list filter="true"' +
+            ' alwayschange="true" itemtoggle="false" tooltips="true"/>');
+
+    TP.elementSetAttribute(
+            elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------

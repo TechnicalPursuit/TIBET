@@ -202,14 +202,19 @@ function(options) {
      *     bay.
      */
 
-    var dataURI;
+    var dataURI,
+        elem;
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem(
-            '<xctrls:list bind:in="{data: ' +
-            dataURI.asString() +
-            '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+    elem = TP.elem(
+            '<xctrls:list filter="true"' +
+            ' alwayschange="true" itemtoggle="false"/>');
+
+    TP.elementSetAttribute(
+            elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -1147,7 +1152,8 @@ function(bayContent, bayConfig, process) {
     id = id.replace(TP.regex.INVALID_ID_CHARS, '_');
 
     //  Create an inspectoritem element with that ID.
-    bay = TP.tpelem('<lama:inspectoritem id="' + id + '"/>');
+    bay = TP.tpelem('<lama:inspectoritem/>');
+    bay.setAttribute('id', id);
 
     //  NOTE: We use setRawContent() here to avoid compiling twice. The content
     //  will be processed when it, along with it's item, is added to the
@@ -4072,7 +4078,8 @@ function(options) {
      *     bay.
      */
 
-    var dataURI;
+    var dataURI,
+        elem;
 
     //  If the targetAspect is TP.NOT_FOUND, then we have an uninspectable
     //  object.
@@ -4085,10 +4092,14 @@ function(options) {
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem(
-            '<xctrls:list bind:in="{data: ' +
-            dataURI.asString() +
-            '}" filter="true" alwayschange="true" itemtoggle="false"/>');
+    elem = TP.elem(
+            '<xctrls:list filter="true"' +
+            ' alwayschange="true" itemtoggle="false"/>');
+
+    TP.elementSetAttribute(
+            elem, 'bind:in', '{data: ' + dataURI.asString() + '}', true);
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
