@@ -1625,8 +1625,10 @@ function() {
         rowHeight = this.getRowHeight();
 
         //  The number of currently displayed rows is computed by dividing the
-        //  containerHeight by the rowHeight
-        computedRowCount = (containerHeight / rowHeight).floor();
+        //  containerHeight by the rowHeight. Note here that we 'round up' to
+        //  make sure that we err on the side of *more* spacing rows rather than
+        //  less for maximum visual crispness.
+        computedRowCount = (containerHeight / rowHeight).ceil();
 
         //  The number of rows of data in the current selection. These will
         //  also include spacing rows if previously built by this call.
