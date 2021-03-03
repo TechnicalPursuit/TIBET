@@ -36,7 +36,7 @@ TP.dom.D3VirtualList.Type.set('shouldOrder', false);
 
 TP.dom.D3VirtualList.Inst.defineAttribute('$virtualScroller');
 
-TP.dom.D3VirtualList.Inst.defineAttribute('$hasBumpRow');
+TP.dom.D3VirtualList.Inst.defineAttribute('$hasBumpRows');
 
 TP.dom.D3VirtualList.Inst.defineAttribute('$startOffset');
 TP.dom.D3VirtualList.Inst.defineAttribute('$endOffset');
@@ -245,7 +245,7 @@ function() {
     //  The current row height.
     rowHeight = this.getRowHeight();
 
-    this.$set('$hasBumpRow', false, false);
+    this.$set('$hasBumpRows', false, false);
 
     //  Viewport height less than row height. Default to 1 row.
     if (viewportHeight < rowHeight) {
@@ -257,12 +257,15 @@ function() {
         //  Grab the border size
         borderSize = this.getRowBorderHeight();
 
+        //  Double the border size to ensure enough overlap.
+        borderSize *= 2;
+
         //  If the viewport, minus the border height, doesn't fall on an even
         //  boundary, then increment the count by 1, so that we get an overlap
         //  to avoid 'blank' spaces.
         if ((viewportHeight - borderSize) % rowHeight !== 0) {
             computedRowCount += 1;
-            this.$set('$hasBumpRow', true, false);
+            this.$set('$hasBumpRows', true, false);
         }
     }
 
@@ -746,7 +749,7 @@ TP.extern.d3.VirtualScroller = function() {
 
         scrollRenderFrame = function(scrollPosition) {
 
-            var hasBumpRow,
+            var hasBumpRows,
 
                 startOffset,
                 endOffset,
@@ -757,16 +760,16 @@ TP.extern.d3.VirtualScroller = function() {
 
                 rowSelector;
 
-            hasBumpRow = control.$get('$hasBumpRow');
+            hasBumpRows = control.$get('$hasBumpRows');
 
-            //  Calculate the start offset (if there was a 'bump row', add 1 to
+            //  Calculate the start offset (if there are 'bump rows', add 2 to
             //  offset 0 position vs totalRow count diff)
-            if (hasBumpRow) {
+            if (hasBumpRows) {
                 startOffset = Math.max(
                     0,
-                    Math.min(scrollPosition, totalRows - computedRowCount + 1));
+                    Math.min(scrollPosition, totalRows - computedRowCount + 2));
 
-                endOffset = startOffset + computedRowCount + 1;
+                endOffset = startOffset + computedRowCount + 2;
             } else {
                 startOffset = Math.max(
                     0,
