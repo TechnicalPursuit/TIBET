@@ -3547,8 +3547,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         return false;
     }
 
-    //  If it's a Window or Document, just return false to tell the signaling
-    //  system to *not* add the observation to the main notification engine.
+    //  If we're running in headless mode, just return false to tell the
+    //  signaling system to *not* add the observation to the main
+    //  notification engine.
     if (TP.sys.cfg('boot.context') === 'headless') {
         return false;
     }
@@ -3658,9 +3659,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         return false;
     }
 
-    //  If it's a Window or Document, just return false to tell the signaling
-    //  system to *not* remove the observation from the main notification
-    //  engine.
+    //  If we're running in headless mode, just return false to tell the
+    //  signaling system to *not* remove the observation from the main
+    //  notification engine.
     if (TP.sys.cfg('boot.context') === 'headless') {
         return false;
     }
