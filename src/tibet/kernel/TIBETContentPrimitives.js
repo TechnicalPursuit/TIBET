@@ -126,7 +126,7 @@ function(aString) {
     //  Tokenize the input string, supplying our own set of 'operators'.
     tokens = TP.$tokenize(
                     aString,
-                    TP.ac('{', ':', '}', '.', ','),
+                    TP.ac('{', ':', '}', '[', ']', '.', ','),
                     true);  //  We specify 'tsh' (meaning that we want URI
                             //  parsing)
 
@@ -173,7 +173,7 @@ function(aString) {
 
         lastToken = lastNonSpaceToken(startIndex);
 
-        if (lastToken.value === '}') {
+        if (lastToken.value === '}' || lastToken.value === ']') {
             return false;
         }
 
@@ -185,7 +185,7 @@ function(aString) {
 
         nextToken = nextNonSpaceToken(startIndex);
 
-        if (nextToken.value === '{') {
+        if (nextToken.value === '{' || nextToken.value === '[') {
             return false;
         }
 
@@ -266,6 +266,14 @@ function(aString) {
                     }
 
                     context = null;
+                } else if (val === '[') {
+                    str += '[';
+
+                    if (nextTokenNeedsQuote(i)) {
+                        str += '"';
+                    }
+
+                    context = null;
                 } else if (val === ':') {
                     if (lastTokenNeedsQuote(i)) {
                         str += '"';
@@ -306,6 +314,25 @@ function(aString) {
                     //  We're at the end of a value - need to reset for the next
                     //  value.
                     useGlobalContext = true;
+                } else if (val === ']') {
+
+                    //  We're at the end of a value - need to consume the
+                    if (TP.isValid(context)) {
+                        val = context;
+                        str += val;
+                    }
+
+                    if (lastTokenNeedsQuote(i)) {
+                        str += '"';
+                    }
+
+                    str += ']';
+
+                    context = null;
+
+                    //  We're at the end of a value - need to reset for the next
+                    //  value.
+                    useGlobalContext = true;
                 } else if (val === '}') {
 
                     //  We're at the end of a value - need to consume the
@@ -336,6 +363,7 @@ function(aString) {
                 nextNSToken = nextNonSpaceToken(i);
 
                 if (lastNSToken.value === '{' ||
+                    lastNSToken.value === '[' ||
                     lastNSToken.value === ':' ||
                     lastNSToken.value === ',' ||
                     lastNSToken.value === '"') {
@@ -343,6 +371,7 @@ function(aString) {
                 }
 
                 if (nextNSToken.value === '}' ||
+                    nextNSToken.value === ']' ||
                     nextNSToken.value === ':' ||
                     nextNSToken.value === ',' ||
                     nextNSToken.value === '"') {
