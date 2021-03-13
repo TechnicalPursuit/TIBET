@@ -235,11 +235,7 @@ function(aString) {
                     if (TP.notValid(context)) {
 
                         //  If useGlobalContext is still true, try to use the
-                        //  previous token's value as the context. Otherwise, if
-                        //  we've already flipped useGlobalContext to false,
-                        //  then we're not at the 'first segment' of a '.'
-                        //  separated value and so we just append the '.' and
-                        //  move on.
+                        //  previous token's value as the context.
                         if (useGlobalContext) {
                             context = tokens.at(i - 1).value;
 
@@ -252,7 +248,15 @@ function(aString) {
                                 str += '.';
                             }
 
+                            if (context === ']' || context === '}') {
+                                context = null;
+                                str += '.';
+                            }
                         } else {
+                            //  Otherwise, if we've already flipped
+                            //  useGlobalContext to false, then we're not at the
+                            //  'first segment' of a '.' separated value and so
+                            //  we just append the '.' and move on.
                             str += '.';
                         }
                     }
@@ -293,7 +297,7 @@ function(aString) {
                 } else if (val === ',') {
 
                     //  We're at the end of a value - need to consume the
-                    //  context
+                    //  context.
                     if (TP.isValid(context)) {
                         val = context;
                         str += val;
@@ -317,6 +321,7 @@ function(aString) {
                 } else if (val === ']') {
 
                     //  We're at the end of a value - need to consume the
+                    //  context.
                     if (TP.isValid(context)) {
                         val = context;
                         str += val;
@@ -336,6 +341,7 @@ function(aString) {
                 } else if (val === '}') {
 
                     //  We're at the end of a value - need to consume the
+                    //  context.
                     if (TP.isValid(context)) {
                         val = context;
                         str += val;
