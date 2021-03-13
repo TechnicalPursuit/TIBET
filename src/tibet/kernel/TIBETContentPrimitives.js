@@ -397,6 +397,7 @@ function(aString, shouldConvertArrayBrackets) {
                 lastNSToken = lastNonSpaceToken(i);
                 nextNSToken = nextNonSpaceToken(i);
 
+                /* eslint-disable no-extra-parens */
                 if (lastNSToken.value === '{' ||
                     (lastNSToken.value === '[' && convertArrayBrackets) ||
                     lastNSToken.value === ':' ||
@@ -412,6 +413,7 @@ function(aString, shouldConvertArrayBrackets) {
                     nextNSToken.value === '"') {
                     break;
                 }
+                /* eslint-enable no-extra-parens */
 
                 //  it's a space - leave it alone
                 str += val;

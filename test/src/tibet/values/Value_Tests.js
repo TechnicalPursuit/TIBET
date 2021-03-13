@@ -2778,7 +2778,7 @@ function() {
         val = TP.reformatJSToJSON(
                 '{foo:[\'bar and baz\',\'moo and foo\'],baz:{goo:[\'moo and too\',\'goo and foo\']}}');
         correctVal = TP.json(
-                {foo: ['\'bar and baz\'','\'moo and foo\''], baz: {goo: ['\'moo and too\'','\'goo and foo\'']}});
+                {foo: ['\'bar and baz\'', '\'moo and foo\''], baz: {goo: ['\'moo and too\'', '\'goo and foo\'']}});
 
         test.assert.isEqualTo(val, correctVal);
 
@@ -2793,7 +2793,7 @@ function() {
         val = TP.reformatJSToJSON(
                 '{ foo : [ \'bar and baz\' , \'moo and foo\' ] , baz : { goo : [ \'moo and too\',\'goo and foo\' ] } }');
         correctVal = TP.json(
-                {foo: ['\'bar and baz\'','\'moo and foo\''], baz: {goo: ['\'moo and too\'','\'goo and foo\'']}});
+                {foo: ['\'bar and baz\'', '\'moo and foo\''], baz: {goo: ['\'moo and too\'', '\'goo and foo\'']}});
 
         test.assert.isEqualTo(val, correctVal);
 
