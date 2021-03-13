@@ -6333,14 +6333,22 @@ function(signalData, originElem, triggerSignal, aPayload, aPolicy, signalType) {
     var doc,
         sigData,
         sigParams,
+        targets,
+        orgids,
         orgid,
+        len,
+        i,
         target,
         sigName,
         sigPayload,
         policy,
+        payload,
         delay;
 
     doc = TP.nodeGetDocument(originElem);
+
+    //  Create an Array for the set of targets.
+    targets = TP.ac();
 
     //  If signal data is a string it can be either a signal name or a
     //  descriptor in pseudo-JSON form. Try to get it into hash form either way.
@@ -6353,7 +6361,8 @@ function(signalData, originElem, triggerSignal, aPayload, aPolicy, signalType) {
             //  What's left is a JS-formatted String. Parse that into a Hash.
             sigParams = TP.json2js(TP.reformatJSToJSON(sigData));
         } else {
-            sigParams = TP.hc('signal', sigData, 'target', originElem);
+            sigParams = TP.hc('signal', sigData);
+            //targets.push(originElem);
         }
     } else {
         sigParams = signalData;
@@ -6371,14 +6380,21 @@ function(signalData, originElem, triggerSignal, aPayload, aPolicy, signalType) {
 
     //  If an 'origin' slot was supplied, then we look that up by ID (using
     //  the original origin's document).
-    if (TP.notEmpty(orgid = sigParams.at('origin'))) {
+    if (TP.notEmpty(orgids = sigParams.at('origin'))) {
 
-        //  Just in case it was supplied as a quoted value
-        orgid = orgid.unquoted();
+        if (!TP.isArray(orgids)) {
+            orgids = TP.ac(orgids);
+        }
 
-        //  Note how we pass false to avoid getting a wrapped origin, which
-        //  we don't want here.
-        target = TP.byId(orgid, doc, false);
+        len = orgids.getSize();
+        for (i = 0; i < len; i++) {
+            //  Just in case it was supplied as a quoted value
+            orgid = orgids.at(i).unquoted();
+
+            //  Note how we pass false to avoid getting a wrapped origin, which
+            //  we don't want here.
+            targets.push(TP.byId(orgid, doc, false));
+        }
     }
 
     //  ---
@@ -6424,32 +6440,63 @@ function(signalData, originElem, triggerSignal, aPayload, aPolicy, signalType) {
     //  here, which is especially important if the trigger is undefined.
     sigPayload.atPut('triggerTPDocument', TP.tpdoc(doc));
 
-    //  Note that it's important to put the current target on the signal here in
-    //  case that the new signal is a RESPONDER_FIRING signal (very likely) as
-    //  it will look there for the first responder when computing the responder
-    //  chain.
-    target = TP.ifInvalid(target, originElem);
-    sigPayload.atPut('target', target);
-
-    //  Queue the new signal and continue - thereby skipping processing for the
-    //  bubbling phase of this signal (for this target) in deference to
-    //  signaling the new signal. Note here how we supply a signal type as the
-    //  default type to use if the mapped signal type isn't a real type.
-
     //  If a delay was defined and it can be converted into a Number, then set
     //  up a timeout to queue the signal after that delay. Otherwise, queue the
     //  signal immediately.
     delay = sigPayload.at('delay');
+    if (TP.notEmpty(delay)) {
+        delay = delay.asNumber();
+    }
 
     policy = TP.ifInvalid(sigParams.at('policy'), aPolicy);
 
-    if (TP.notEmpty(delay) && TP.isNumber(delay = delay.asNumber())) {
-        setTimeout(
-            function() {
-                TP.queue(target, sigName, sigPayload, policy, signalType);
-            }, delay);
+    if (TP.notEmpty(targets)) {
+
+        len = targets.getSize();
+        for (i = 0; i < len; i++) {
+
+            payload = TP.copy(sigPayload);
+
+            target = targets.at(i);
+
+            //  Note that it's important to put the current target on the signal
+            //  here in case that the new signal is a RESPONDER_FIRING signal
+            //  (very likely) as it will look there for the first responder when
+            //  computing the responder chain.
+            target = TP.ifInvalid(target, originElem);
+            payload.atPut('target', target);
+
+            //  Queue the new signal and continue - thereby skipping processing
+            //  for the bubbling phase of this signal (for this target) in
+            //  deference to signaling the new signal. Note here how we supply a
+            //  signal type as the default type to use if the mapped signal type
+            //  isn't a real type.
+
+            if (TP.notEmpty(delay) && TP.isNumber(delay)) {
+                /* eslint-disable no-loop-func */
+                setTimeout(
+                    function() {
+                        TP.queue(target, sigName, payload, policy, signalType);
+                    }, delay);
+                /* eslint-enable no-loop-func */
+            } else {
+                TP.queue(target, sigName, payload, policy, signalType);
+            }
+        }
     } else {
-        TP.queue(target, sigName, sigPayload, policy, signalType);
+
+        payload = TP.copy(sigPayload);
+
+        payload.atPut('target', originElem);
+
+        if (TP.notEmpty(delay) && TP.isNumber(delay)) {
+            setTimeout(
+                function() {
+                    TP.queue(originElem, sigName, payload, policy, signalType);
+                }, delay);
+        } else {
+            TP.queue(originElem, sigName, payload, policy, signalType);
+        }
     }
 
     return;
