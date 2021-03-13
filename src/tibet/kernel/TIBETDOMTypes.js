@@ -14603,7 +14603,7 @@ function(storageInfo) {
 
                         //  Reconstitute the attribute value (which contains all
                         //  of the binding entries) into JSON.
-                        entryStr = TP.reformatJSToJSON(attrValue);
+                        entryStr = TP.reformatJSToJSON(attrValue, false);
                         bindEntries = TP.json2js(entryStr);
 
                         //  Iterate over each attribute name/value pair.

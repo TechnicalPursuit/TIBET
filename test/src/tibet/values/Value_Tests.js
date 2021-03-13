@@ -3054,6 +3054,31 @@ function() {
 
         test.assert.isEqualTo(val, correctVal);
     });
+
+    this.it('embedded \'[\' and \']\' characters', function(test, options) {
+
+        var val,
+            correctVal;
+
+        //  no separating whitespace
+        val = TP.reformatJSToJSON('{foo:\'[[bar]]\'}');
+        correctVal = TP.json({foo: '\'[[bar]]\''});
+
+        test.assert.isEqualTo(val, correctVal);
+    });
+
+    this.it('embedded \'{\' and \'}\' characters', function(test, options) {
+
+        var val,
+            correctVal;
+
+        //  no separating whitespace
+        val = TP.reformatJSToJSON('{foo:\'{{bar}}\'}');
+        correctVal = TP.json({foo: '\'{{bar}}\''});
+
+        test.assert.isEqualTo(val, correctVal);
+    });
+
 });
 
 //  ------------------------------------------------------------------------

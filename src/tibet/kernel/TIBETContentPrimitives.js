@@ -77,7 +77,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('reformatJSToJSON',
-function(aString) {
+function(aString, shouldConvertArrayBrackets) {
 
     /**
      * @method reformatJSToJSON
@@ -90,10 +90,15 @@ function(aString) {
      *     from which this method will produce:
      *          {"index":1,"position":"before"}
      * @param {String} aString The string to reformat into proper JSON.
+     * @param {Boolean} [shouldConvertArrayBrackets=true] Whether or not to
+     *     convert Array brackets (i.e. '[' and ']') to real Arrays. The default
+     *     is true.
      * @returns {String} A properly quoted JSON string.
      */
 
-    var lastNonSpaceToken,
+    var convertArrayBrackets,
+
+        lastNonSpaceToken,
         nextNonSpaceToken,
         lastTokenNeedsQuote,
         nextTokenNeedsQuote,
@@ -123,12 +128,24 @@ function(aString) {
     //  be a property name) into a URI.
     delete TP.boot.$uriSchemes.data;
 
-    //  Tokenize the input string, supplying our own set of 'operators'.
-    tokens = TP.$tokenize(
-                    aString,
-                    TP.ac('{', ':', '}', '[', ']', '.', ','),
-                    true);  //  We specify 'tsh' (meaning that we want URI
-                            //  parsing)
+    convertArrayBrackets = TP.notFalse(shouldConvertArrayBrackets);
+
+    if (convertArrayBrackets) {
+        //  Tokenize the input string, supplying our own set of 'operators'.
+        tokens = TP.$tokenize(
+                        aString,
+                        TP.ac('{', ':', '}', '[', ']', '.', ','),
+                        true);  //  We specify 'tsh' (meaning that we want URI
+                                //  parsing)
+    } else {
+        //  Tokenize the input string, supplying our own set of 'operators'.
+        tokens = TP.$tokenize(
+                        aString,
+                        TP.ac('{', ':', '}', '.', ','),
+                        true);  //  We specify 'tsh' (meaning that we want URI
+                                //  parsing)
+    }
+
 
     //  Restore the 'data' property.
     TP.boot.$uriSchemes.data = 'data';
@@ -173,8 +190,14 @@ function(aString) {
 
         lastToken = lastNonSpaceToken(startIndex);
 
-        if (lastToken.value === '}' || lastToken.value === ']') {
-            return false;
+        if (convertArrayBrackets) {
+            if (lastToken.value === '}' || lastToken.value === ']') {
+                return false;
+            }
+        } else {
+            if (lastToken.value === '}') {
+                return false;
+            }
         }
 
         return true;
@@ -185,8 +208,14 @@ function(aString) {
 
         nextToken = nextNonSpaceToken(startIndex);
 
-        if (nextToken.value === '{' || nextToken.value === '[') {
-            return false;
+        if (convertArrayBrackets) {
+            if (nextToken.value === '{' || nextToken.value === '[') {
+                return false;
+            }
+        } else {
+            if (nextToken.value === '{') {
+                return false;
+            }
         }
 
         return true;
@@ -270,7 +299,7 @@ function(aString) {
                     }
 
                     context = null;
-                } else if (val === '[') {
+                } else if (val === '[' && convertArrayBrackets) {
                     str += '[';
 
                     if (nextTokenNeedsQuote(i)) {
@@ -318,7 +347,7 @@ function(aString) {
                     //  We're at the end of a value - need to reset for the next
                     //  value.
                     useGlobalContext = true;
-                } else if (val === ']') {
+                } else if (val === ']' && convertArrayBrackets) {
 
                     //  We're at the end of a value - need to consume the
                     //  context.
@@ -369,7 +398,7 @@ function(aString) {
                 nextNSToken = nextNonSpaceToken(i);
 
                 if (lastNSToken.value === '{' ||
-                    lastNSToken.value === '[' ||
+                    (lastNSToken.value === '[' && convertArrayBrackets) ||
                     lastNSToken.value === ':' ||
                     lastNSToken.value === ',' ||
                     lastNSToken.value === '"') {
@@ -377,7 +406,7 @@ function(aString) {
                 }
 
                 if (nextNSToken.value === '}' ||
-                    nextNSToken.value === ']' ||
+                    (nextNSToken.value === ']' && convertArrayBrackets) ||
                     nextNSToken.value === ':' ||
                     nextNSToken.value === ',' ||
                     nextNSToken.value === '"') {
