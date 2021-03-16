@@ -14,9 +14,6 @@ xctrls|checkitem {
     justify-content: center;
     align-items: center;
 
-    /* Order check image before label */
-    flex-direction: row-reverse;
-
     user-select: none;
 }
 
