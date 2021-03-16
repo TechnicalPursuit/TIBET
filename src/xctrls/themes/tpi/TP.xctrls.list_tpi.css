@@ -2,11 +2,11 @@
     CSS styles for 'xctrls:list' controls for the 'tpi' theme.
 */
 
-@import url("../TP.xctrls.list_all.css");
-
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.list_all.css");
 
 /* The list */
 *[data-theme~="tpi"] xctrls|list {

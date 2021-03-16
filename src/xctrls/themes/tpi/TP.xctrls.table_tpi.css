@@ -2,11 +2,11 @@
     CSS styles for 'xctrls:table' controls for the 'tpi' theme.
 */
 
-@import url("../TP.xctrls.table_all.css");
-
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.table_all.css");
 
 /* The table */
 *[data-theme~="tpi"] xctrls|table {

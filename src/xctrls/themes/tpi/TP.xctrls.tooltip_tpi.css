@@ -2,10 +2,10 @@
     CSS styles for 'xctrls:tooltip' controls for the 'tpi' theme.
 */
 
-@import url("../TP.xctrls.tooltip_all.css");
-
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
+
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.tooltip_all.css");
 
 /* The tooltip */
 *[data-theme~="tpi"] xctrls|tooltip {

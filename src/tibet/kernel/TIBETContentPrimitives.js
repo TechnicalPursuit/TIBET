@@ -77,7 +77,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('reformatJSToJSON',
-function(aString) {
+function(aString, shouldConvertArrayBrackets) {
 
     /**
      * @method reformatJSToJSON
@@ -90,10 +90,15 @@ function(aString) {
      *     from which this method will produce:
      *          {"index":1,"position":"before"}
      * @param {String} aString The string to reformat into proper JSON.
+     * @param {Boolean} [shouldConvertArrayBrackets=true] Whether or not to
+     *     convert Array brackets (i.e. '[' and ']') to real Arrays. The default
+     *     is true.
      * @returns {String} A properly quoted JSON string.
      */
 
-    var lastNonSpaceToken,
+    var convertArrayBrackets,
+
+        lastNonSpaceToken,
         nextNonSpaceToken,
         lastTokenNeedsQuote,
         nextTokenNeedsQuote,
@@ -123,12 +128,24 @@ function(aString) {
     //  be a property name) into a URI.
     delete TP.boot.$uriSchemes.data;
 
-    //  Tokenize the input string, supplying our own set of 'operators'.
-    tokens = TP.$tokenize(
-                    aString,
-                    TP.ac('{', ':', '}', '.', ','),
-                    true);  //  We specify 'tsh' (meaning that we want URI
-                            //  parsing)
+    convertArrayBrackets = TP.notFalse(shouldConvertArrayBrackets);
+
+    if (convertArrayBrackets) {
+        //  Tokenize the input string, supplying our own set of 'operators'.
+        tokens = TP.$tokenize(
+                        aString,
+                        TP.ac('{', ':', '}', '[', ']', '.', ','),
+                        true);  //  We specify 'tsh' (meaning that we want URI
+                                //  parsing)
+    } else {
+        //  Tokenize the input string, supplying our own set of 'operators'.
+        tokens = TP.$tokenize(
+                        aString,
+                        TP.ac('{', ':', '}', '.', ','),
+                        true);  //  We specify 'tsh' (meaning that we want URI
+                                //  parsing)
+    }
+
 
     //  Restore the 'data' property.
     TP.boot.$uriSchemes.data = 'data';
@@ -173,8 +190,14 @@ function(aString) {
 
         lastToken = lastNonSpaceToken(startIndex);
 
-        if (lastToken.value === '}') {
-            return false;
+        if (convertArrayBrackets) {
+            if (lastToken.value === '}' || lastToken.value === ']') {
+                return false;
+            }
+        } else {
+            if (lastToken.value === '}') {
+                return false;
+            }
         }
 
         return true;
@@ -185,8 +208,14 @@ function(aString) {
 
         nextToken = nextNonSpaceToken(startIndex);
 
-        if (nextToken.value === '{') {
-            return false;
+        if (convertArrayBrackets) {
+            if (nextToken.value === '{' || nextToken.value === '[') {
+                return false;
+            }
+        } else {
+            if (nextToken.value === '{') {
+                return false;
+            }
         }
 
         return true;
@@ -235,11 +264,7 @@ function(aString) {
                     if (TP.notValid(context)) {
 
                         //  If useGlobalContext is still true, try to use the
-                        //  previous token's value as the context. Otherwise, if
-                        //  we've already flipped useGlobalContext to false,
-                        //  then we're not at the 'first segment' of a '.'
-                        //  separated value and so we just append the '.' and
-                        //  move on.
+                        //  previous token's value as the context.
                         if (useGlobalContext) {
                             context = tokens.at(i - 1).value;
 
@@ -252,7 +277,15 @@ function(aString) {
                                 str += '.';
                             }
 
+                            if (context === ']' || context === '}') {
+                                context = null;
+                                str += '.';
+                            }
                         } else {
+                            //  Otherwise, if we've already flipped
+                            //  useGlobalContext to false, then we're not at the
+                            //  'first segment' of a '.' separated value and so
+                            //  we just append the '.' and move on.
                             str += '.';
                         }
                     }
@@ -260,6 +293,14 @@ function(aString) {
                     break;
                 } else if (val === '{') {
                     str += '{';
+
+                    if (nextTokenNeedsQuote(i)) {
+                        str += '"';
+                    }
+
+                    context = null;
+                } else if (val === '[' && convertArrayBrackets) {
+                    str += '[';
 
                     if (nextTokenNeedsQuote(i)) {
                         str += '"';
@@ -285,7 +326,7 @@ function(aString) {
                 } else if (val === ',') {
 
                     //  We're at the end of a value - need to consume the
-                    //  context
+                    //  context.
                     if (TP.isValid(context)) {
                         val = context;
                         str += val;
@@ -306,9 +347,30 @@ function(aString) {
                     //  We're at the end of a value - need to reset for the next
                     //  value.
                     useGlobalContext = true;
+                } else if (val === ']' && convertArrayBrackets) {
+
+                    //  We're at the end of a value - need to consume the
+                    //  context.
+                    if (TP.isValid(context)) {
+                        val = context;
+                        str += val;
+                    }
+
+                    if (lastTokenNeedsQuote(i)) {
+                        str += '"';
+                    }
+
+                    str += ']';
+
+                    context = null;
+
+                    //  We're at the end of a value - need to reset for the next
+                    //  value.
+                    useGlobalContext = true;
                 } else if (val === '}') {
 
                     //  We're at the end of a value - need to consume the
+                    //  context.
                     if (TP.isValid(context)) {
                         val = context;
                         str += val;
@@ -335,7 +397,9 @@ function(aString) {
                 lastNSToken = lastNonSpaceToken(i);
                 nextNSToken = nextNonSpaceToken(i);
 
+                /* eslint-disable no-extra-parens */
                 if (lastNSToken.value === '{' ||
+                    (lastNSToken.value === '[' && convertArrayBrackets) ||
                     lastNSToken.value === ':' ||
                     lastNSToken.value === ',' ||
                     lastNSToken.value === '"') {
@@ -343,11 +407,13 @@ function(aString) {
                 }
 
                 if (nextNSToken.value === '}' ||
+                    (nextNSToken.value === ']' && convertArrayBrackets) ||
                     nextNSToken.value === ':' ||
                     nextNSToken.value === ',' ||
                     nextNSToken.value === '"') {
                     break;
                 }
+                /* eslint-enable no-extra-parens */
 
                 //  it's a space - leave it alone
                 str += val;

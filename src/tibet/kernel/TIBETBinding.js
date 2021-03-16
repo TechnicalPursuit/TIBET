@@ -1238,7 +1238,7 @@ function(targetElement, attributeValue) {
     //      which are converted to:
     //
     //      {"value": "urn:tibet:fluffy"}
-    entryStr = TP.reformatJSToJSON(attributeValue);
+    entryStr = TP.reformatJSToJSON(attributeValue, false);
 
     //  If we couldn't get a JSON String, try to default it to {"value":"..."}
     if (!TP.isJSONString(entryStr)) {
@@ -4877,7 +4877,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                 //  Make a JSON-y string from the attribute value. If it can't
                 //  be converted, then it's a shorthand. Assign it to 'value'
                 //  and try again.
-                bindStr = TP.reformatJSToJSON(attrVal);
+                bindStr = TP.reformatJSToJSON(attrVal, false);
                 if (!TP.isJSONString(bindStr)) {
                     bindStr = '{"value":"' + attrVal + '"}';
                 }
@@ -5416,7 +5416,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     if (/\{/g.test(attrVal)) {
                         //  Grab all of the binding values by parsing the
                         //  attribute value and making it into a Hash.
-                        attrInfo = TP.json2js(TP.reformatJSToJSON(attrVal));
+                        attrInfo = TP.json2js(TP.reformatJSToJSON(attrVal, false));
 
                         //  Select only those UI aspects that match the
                         //  leafMatcher (and therefore have a reference to the
@@ -6183,7 +6183,7 @@ function(regenerateIfNecessary) {
                             }
 
                             jsonStr = TP.reformatJSToJSON(
-                                        templatedAttr.nodeValue);
+                                        templatedAttr.nodeValue, false);
 
                             attrData = TP.json2js(jsonStr);
 
@@ -6232,7 +6232,7 @@ function(regenerateIfNecessary) {
                             var jsonStr,
                                 attrData;
 
-                            jsonStr = TP.reformatJSToJSON(anAttr.nodeValue);
+                            jsonStr = TP.reformatJSToJSON(anAttr.nodeValue, false);
 
                             attrData = TP.json2js(jsonStr);
 

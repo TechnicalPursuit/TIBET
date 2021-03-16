@@ -2,10 +2,10 @@
     CSS styles for 'xctrls:button' controls for the 'tpi' theme.
 */
 
-@import url("../TP.xctrls.button_all.css");
-
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
+
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.button_all.css");
 
 /* The button */
 *[data-theme~="tpi"] xctrls|button {

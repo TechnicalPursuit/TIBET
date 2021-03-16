@@ -11,6 +11,39 @@
     cursor: pointer;
 }
 
+/* The radioitem (image left aligned). The default. */
+*[data-theme] xctrls|radioitem {
+
+    /* Order: image before label */
+    flex-direction: row-reverse;
+}
+
+/* The radioitem (image right aligned) */
+*[data-theme] xctrls|radioitem[alignment="right"] {
+
+    /* Order: label before image */
+    flex-direction: row;
+}
+
+/* The radioitem (image top aligned) */
+*[data-theme] xctrls|radioitem[alignment="top"] {
+
+    /* Order: image before label */
+    flex-direction: column-reverse;
+}
+
+/* The radioitem (image bottom aligned) */
+*[data-theme] xctrls|radioitem[alignment="bottom"] {
+
+    /* Order: label before image */
+    flex-direction: column;
+}
+
+/* The radioitem label */
+*[data-theme] xctrls|radioitem > xctrls|label {
+
+}
+
 /* All themed 'xctrls:radioitem' controls ::value pseudo-element */
 *[data-theme] xctrls|radioitem > *[tibet|pelem="value"] {
 

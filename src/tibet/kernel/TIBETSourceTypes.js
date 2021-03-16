@@ -1527,6 +1527,13 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
         entryKey;
 
+    //  If we're running in headless mode, just return false to tell the
+    //  signaling system to *not* add the observation to the main
+    //  notification engine.
+    if (TP.sys.cfg('boot.context') === 'headless') {
+        return false;
+    }
+
     if (TP.sys.cfg('boot.context') !== 'electron') {
         return this.raise('UnsupportedOperation');
     }
@@ -1642,6 +1649,13 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
         listener;
 
+    //  If we're running in headless mode, just return false to tell the
+    //  signaling system to *not* add the observation to the main
+    //  notification engine.
+    if (TP.sys.cfg('boot.context') === 'headless') {
+        return false;
+    }
+
     if (TP.sys.cfg('boot.context') !== 'electron') {
         return this.raise('UnsupportedOperation');
     }
@@ -1722,6 +1736,11 @@ function(aSignal, varargs) {
 
         len,
         i;
+
+    //  If we're running in headless mode, just return a resolved Promise.
+    if (TP.sys.cfg('boot.context') === 'headless') {
+        return Promise.resolve();
+    }
 
     if (TP.sys.cfg('boot.context') !== 'electron') {
         return this.raise('UnsupportedOperation');
@@ -3547,6 +3566,13 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         return false;
     }
 
+    //  If we're running in headless mode, just return false to tell the
+    //  signaling system to *not* add the observation to the main
+    //  notification engine.
+    if (TP.sys.cfg('boot.context') === 'headless') {
+        return false;
+    }
+
     //  If it's a Window or Document, just return true to tell the signaling
     //  system to add the observation to the main notification engine.
     if (TP.isWindow(anOrigin) || TP.isDocument(anOrigin)) {
@@ -3649,6 +3675,13 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         signals;
 
     if (TP.notValid(anOrigin)) {
+        return false;
+    }
+
+    //  If we're running in headless mode, just return false to tell the
+    //  signaling system to *not* remove the observation from the main
+    //  notification engine.
+    if (TP.sys.cfg('boot.context') === 'headless') {
         return false;
     }
 
