@@ -3,6 +3,9 @@
 */
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 html,
 body {
@@ -44,6 +47,39 @@ xctrls|panelbox {
     border-style: solid;
     border-width: 2px;
     border-color: --xctrls-border-color-normal;
+}
+
+/* Specific to the TIBET logo SVG image that we use for these tests */
+xctrls|imageitem > *[tibet|pelem="value"] svg|path {
+
+    fill: black;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+*[data-theme~="tpi"] xctrls|imageitem:hover > *[tibet|pelem="value"] svg|path {
+
+    fill: orange;
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|focus] > *[tibet|pelem="value"] svg|path {
+
+    fill: blue;
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|active] > *[tibet|pelem="value"] svg|path {
+
+    fill: red;
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|selected] > *[tibet|pelem="value"] svg|path {
+
+    fill: green;
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|disabled] > *[tibet|pelem="value"] svg|path {
+
+    fill: grey;
 }
 
 span.large {

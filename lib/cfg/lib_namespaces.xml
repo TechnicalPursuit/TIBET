@@ -297,6 +297,7 @@
     <resource href="xctrls/themes/TP.xctrls.checkitem_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.combo_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.dialog_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.imageitem_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.list_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.notifier_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.pagerbar_all.css"/>
@@ -350,6 +351,7 @@
     <package src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.xml" config="base"/>
     <package src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.xml" config="base"/>
     <package src="xctrls/TP.xctrls.hint/TP.xctrls.hint.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.imageitem/TP.xctrls.imageitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.list/TP.xctrls.list.xml" config="base"/>
     <package src="xctrls/TP.xctrls.notifier/TP.xctrls.notifier.xml" config="base"/>
     <package src="xctrls/TP.xctrls.pagerbar/TP.xctrls.pagerbar.xml" config="base"/>

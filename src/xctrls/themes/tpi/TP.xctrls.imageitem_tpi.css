@@ -1,0 +1,134 @@
+/*
+    CSS styles for the 'xctrls:imageitem' control.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.imageitem_all.css");
+
+/* The imageitem */
+*[data-theme~="tpi"] xctrls|imageitem {
+
+    background-color: var(--xctrls-imageitem-background-color-normal);
+}
+
+/* The imageitem's value (the checkmark) */
+*[data-theme~="tpi"] xctrls|imageitem > *[tibet|pelem="value"] {
+
+}
+
+/* Hovering over the imageitem */
+*[data-theme~="tpi"] xctrls|imageitem:hover {
+
+    background-color: var(--xctrls-imageitem-background-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|imageitem:hover > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|imageitem:hover[pclass|selected] > *[tibet|pelem="value"] {
+
+}
+
+/* Focusing on the imageitem */
+*[data-theme~="tpi"] xctrls|imageitem[pclass|focus] {
+
+    background-color: var(--xctrls-imageitem-background-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|focus] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|focus][pclass|selected] > *[tibet|pelem="value"] {
+
+}
+
+/* Clicking down on the imageitem */
+*[data-theme~="tpi"] xctrls|imageitem[pclass|active] {
+
+    background-color: var(--xctrls-imageitem-background-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|active] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|active][pclass|selected] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|active][pclass|selected] > *[tibet|pelem="value"] svg|rect {
+
+    stroke: var(--xctrls-imageitem-check-border-color-active);
+}
+
+/* The imageitem is disabled */
+*[data-theme~="tpi"] xctrls|imageitem[pclass|disabled] {
+
+    background-color: var(--xctrls-imageitem-background-color-disabled);
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|disabled] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|disabled][pclass|active] > *[tibet|pelem="value"] {
+
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|disabled][pclass|active][pclass|selected] > *[tibet|pelem="value"] {
+
+}
+
+/* The imageitem is selected */
+*[data-theme~="tpi"] xctrls|imageitem[pclass|selected] > *[tibet|pelem="value"] {
+
+}
+
+/* The imageitem label */
+*[data-theme~="tpi"] xctrls|imageitem > xctrls|label {
+
+    font-family: var(--xctrls-imageitem-font-family);
+    color: var(--xctrls-imageitem-font-color-normal);
+}
+
+/* Hovering over the imageitem, label must highlight */
+*[data-theme~="tpi"] xctrls|imageitem:hover > xctrls|label {
+
+    color: var(--xctrls-imageitem-font-color-hover);
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|focus] {
+
+}
+
+/* Focusing on the imageitem, label must highlight */
+*[data-theme~="tpi"] xctrls|imageitem[pclass|focus] > xctrls|label {
+
+    color: var(--xctrls-imageitem-font-color-focus);
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|focus][pclass|selected] > xctrls|label {
+
+}
+
+/* Clicking down on the imageitem, label must highlight */
+*[data-theme~="tpi"] xctrls|imageitem[pclass|active] > xctrls|label {
+
+    color: var(--xctrls-imageitem-font-color-active);
+}
+
+*[data-theme~="tpi"] xctrls|imageitem[pclass|active][pclass|selected] > xctrls|label {
+
+}
+
+/* The imageitem is disabled, so is the label */
+*[data-theme~="tpi"] xctrls|imageitem[pclass|disabled] > xctrls|label {
+
+    color: var(--xctrls-imageitem-font-color-disabled);
+}
