@@ -11,34 +11,35 @@
     cursor: pointer;
 }
 
-/* The imageitem label (image right aligned). The default. */
+/* The imageitem (image right aligned). The default. */
 *[data-theme] xctrls|imageitem {
 
     /* Order: label before image */
     flex-direction: row;
 }
 
-/* The imageitem label (image left aligned) */
+/* The imageitem (image left aligned) */
 *[data-theme] xctrls|imageitem[alignment="left"] {
 
     /* Order: image before label */
     flex-direction: row-reverse;
 }
 
-/* The imageitem label (image top aligned) */
+/* The imageitem (image top aligned) */
 *[data-theme] xctrls|imageitem[alignment="top"] {
 
     /* Order: image before label */
     flex-direction: column-reverse;
 }
 
-/* The imageitem label (image bottom aligned) */
+/* The imageitem (image bottom aligned) */
 *[data-theme] xctrls|imageitem[alignment="bottom"] {
 
     /* Order: label before image */
     flex-direction: column;
 }
 
+/* The imageitem label */
 *[data-theme] xctrls|imageitem > xctrls|label {
 
 }
