@@ -11,10 +11,32 @@
     cursor: pointer;
 }
 
-/* The checkitem label */
+/* The checkitem label (image right aligned). The default. */
 *[data-theme] xctrls|checkitem > xctrls|label {
 
-    order: 1;
+    /* Order: label before image */
+    flex-direction: row;
+}
+
+/* The checkitem label (image left aligned) */
+*[data-theme] xctrls|checkitem[alignment="left"] {
+
+    /* Order: image before label */
+    flex-direction: row-reverse;
+}
+
+/* The checkitem label (image top aligned) */
+*[data-theme] xctrls|checkitem[alignment="top"] {
+
+    /* Order: image before label */
+    flex-direction: column-reverse;
+}
+
+/* The checkitem label (image bottom aligned) */
+*[data-theme] xctrls|checkitem[alignment="bottom"] {
+
+    /* Order: label before image */
+    flex-direction: column;
 }
 
 /* All themed 'xctrls:checkitem' controls ::value pseudo-element */
