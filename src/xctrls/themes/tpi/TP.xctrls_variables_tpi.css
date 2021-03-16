@@ -194,6 +194,36 @@ xctrls|dialog {
     --xctrls-dialog-footer-background-color: #eee;
 }
 
+xctrls|imageitem {
+
+    /* xctrls|imageitem variables */
+
+    --xctrls-imageitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-imageitem-font-color-normal: black;
+    --xctrls-imageitem-font-color-hover: #666;
+    --xctrls-imageitem-font-color-focus: #666;
+    --xctrls-imageitem-font-color-active: #666;
+    --xctrls-imageitem-font-color-disabled: #aaa;
+
+    --xctrls-imageitem-background-color-normal: white;
+    --xctrls-imageitem-background-color-hover: white;
+    --xctrls-imageitem-background-color-focus: white;
+    --xctrls-imageitem-background-color-active: white;
+    --xctrls-imageitem-background-color-disabled: white;
+
+    --xctrls-imageitem-check-border-color-normal: black;
+    --xctrls-imageitem-check-border-color-hover: black;
+    --xctrls-imageitem-check-border-color-focus: black;
+    --xctrls-imageitem-check-border-color-active: black;
+    --xctrls-imageitem-check-border-color-disabled: #eee;
+
+    --xctrls-imageitem-check-color-normal: black;
+    --xctrls-imageitem-check-color-hover: cornsilk;
+    --xctrls-imageitem-check-color-focus: gold;
+    --xctrls-imageitem-check-color-active: gold;
+    --xctrls-imageitem-check-color-disabled: #eee;
+}
+
 xctrls|list {
 
     /* xctrls|list variables */

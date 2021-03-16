@@ -1,0 +1,108 @@
+/*
+    CSS styles for the 'xctrls:imageitem' control.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The imageitem */
+xctrls|imageitem {
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+}
+
+/* The imageitem's value (the checkmark) */
+xctrls|imageitem > *[tibet|pelem="value"] {
+
+}
+
+xctrls|imageitem > *[tibet|pelem="value"] svg|svg {
+
+    display: block;
+
+    width: 1em;
+    height: 1em;
+}
+
+/* Hovering over the imageitem */
+xctrls|imageitem:hover {
+
+}
+
+xctrls|imageitem:hover > *[tibet|pelem="value"] {
+
+}
+
+/* Focusing on the imageitem */
+xctrls|imageitem[pclass|focus] {
+
+}
+
+/* Clicking down on the imageitem */
+xctrls|imageitem[pclass|active] {
+
+}
+
+xctrls|imageitem[pclass|active] > *[tibet|pelem="value"] {
+
+}
+
+xctrls|imageitem[pclass|active][pclass|selected] > *[tibet|pelem="value"] {
+
+}
+
+/* The imageitem is disabled */
+xctrls|imageitem[pclass|disabled] {
+
+}
+
+xctrls|imageitem[pclass|disabled] > *[tibet|pelem="value"] {
+
+}
+
+xctrls|imageitem[pclass|disabled][pclass|active] > *[tibet|pelem="value"] {
+
+}
+
+xctrls|imageitem[pclass|disabled][pclass|active][pclass|selected] > *[tibet|pelem="value"] {
+
+}
+
+/* The imageitem is selected */
+xctrls|imageitem[pclass|selected] {
+
+}
+
+xctrls|imageitem[pclass|selected] > *[tibet|pelem="value"] {
+
+}
+
+/* The imageitem label */
+xctrls|imageitem > xctrls|label {
+
+    flex: 1;
+}
+
+/* Clicking down on the imageitem, label must highlight */
+xctrls|imageitem[pclass|active] {
+
+}
+
+xctrls|imageitem[pclass|active] > xctrls|label {
+
+}
+
+xctrls|imageitem[pclass|active][pclass|selected] > xctrls|label {
+
+}
+
+/* The imageitem is disabled, so is the label */
+xctrls|imageitem[pclass|disabled] > xctrls|label {
+
+}
