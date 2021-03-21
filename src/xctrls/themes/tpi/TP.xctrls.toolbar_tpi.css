@@ -1,0 +1,27 @@
+/*
+    CSS styles for 'xctrls:toolbar' controls for the 'tpi' theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.toolbar_all.css");
+
+/* The toolbar */
+*[data-theme~="tpi"] xctrls|toolbar {
+
+    background-color: var(--xctrls-toolbar-background-color);
+
+    border-width: var(--xctrls-toolbar-border-width);
+    border-style: var(--xctrls-toolbar-border-style);
+    border-radius: var(--xctrls-toolbar-border-radius);
+    border-color: var(--xctrls-toolbar-border-color-normal);
+}
+
+/* The toolbar is disabled */
+*[data-theme~="tpi"] xctrls|toolbar[pclass|disabled] {
+
+    border-color: var(--xctrls-toolbar-border-color-disabled);
+}
+

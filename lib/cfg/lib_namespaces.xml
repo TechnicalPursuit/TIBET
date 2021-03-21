@@ -306,6 +306,7 @@
     <resource href="xctrls/themes/TP.xctrls.select_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.sticky_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.tabbar_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.toolbar_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.table_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.textitem_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.tooltip_all.css"/>
@@ -364,6 +365,7 @@
     <package src="xctrls/TP.xctrls.tabbar/TP.xctrls.tabbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.table/TP.xctrls.table.xml" config="base"/>
     <package src="xctrls/TP.xctrls.textitem/TP.xctrls.textitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.toolbar/TP.xctrls.toolbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.tooltip/TP.xctrls.tooltip.xml" config="base"/>
 
     <!-- BEGIN xctrls:codeeditor -->

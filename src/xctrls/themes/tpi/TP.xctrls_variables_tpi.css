@@ -475,3 +475,17 @@ xctrls|pageritem {
 
     --xctrls-pageritem-background-color-selected-normal: gold;
 }
+
+xctrls|toolbar {
+
+    /* xctrls|toolbar variables */
+
+    --xctrls-toolbar-border-width: 1px;
+    --xctrls-toolbar-border-style: solid;
+    --xctrls-toolbar-border-radius: 5px;
+
+    --xctrls-toolbar-border-color-normal: #333;
+    --xctrls-toolbar-border-color-disabled: initial;
+
+    --xctrls-toolbar-background-color: gold;
+}

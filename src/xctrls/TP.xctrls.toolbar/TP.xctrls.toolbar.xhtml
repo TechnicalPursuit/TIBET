@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+
+<xctrls:toolbar
+        id="{{$SOURCE.(@id)}}"
+        tibet:assembly="xctrls:toolbar">
+    <xctrls:itemgroup
+        bind:io="{{$SOURCE.(@bind:io)}}"
+        multiple="{{$SOURCE.(@multiple)}}">
+    {{$SOURCE.(./*)}}
+    </xctrls:itemgroup>
+</xctrls:toolbar>
+
