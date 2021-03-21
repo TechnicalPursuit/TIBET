@@ -1,0 +1,19 @@
+/*
+    CSS styles for the 'xctrls:toolbar' control.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+xctrls|toolbar {
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+xctrls|toolbar xctrls|itemgroup {
+
+    /* We want to pretend that the itemgroup doesn't exist (CSS-wise) */
+    display: contents;
+}

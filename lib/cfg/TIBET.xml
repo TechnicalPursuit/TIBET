@@ -199,6 +199,9 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.textitem-TP.xctrls.textitem.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.textitem-TP.xctrls.textitem.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.textitem_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.toolbar-TP.xctrls.toolbar.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.toolbar-TP.xctrls.toolbar.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.toolbar_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.tooltip-TP.xctrls.tooltip.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.tooltip-TP.xctrls.tooltip.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.tooltip_tpi.css.js"/>
@@ -222,6 +225,7 @@
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.tabbar_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.table_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.textitem_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.toolbar_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.tooltip_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-system_alert.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-system_confirm.xhtml.js"/>
