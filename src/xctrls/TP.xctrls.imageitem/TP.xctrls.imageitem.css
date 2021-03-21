@@ -17,17 +17,9 @@ xctrls|imageitem {
     user-select: none;
 }
 
-/* The imageitem's value (the checkmark) */
+/* The imageitem's value */
 xctrls|imageitem > *[tibet|pelem="value"] {
 
-}
-
-xctrls|imageitem > *[tibet|pelem="value"] svg|svg {
-
-    display: block;
-
-    width: 1em;
-    height: 1em;
 }
 
 /* Hovering over the imageitem */
