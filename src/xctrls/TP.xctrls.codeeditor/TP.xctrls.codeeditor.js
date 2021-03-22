@@ -839,6 +839,9 @@ function() {
             aSignal.stopPropagation();
         });
 
+    //  Set the editor to not show the print margin by default.
+    editorObj.setShowPrintMargin(false);
+
     //  Set the editor to use soft tabs and to navigate within them (i.e. allow
     //  backspace and arrowing over the spaces that got inserted with a soft
     //  tab).
