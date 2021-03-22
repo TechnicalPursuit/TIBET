@@ -1131,7 +1131,10 @@ function(aState, signalOrParams, childExit) {
         parent,
         type,
         child,
-        states;
+        states,
+        reachables,
+        names,
+        name;
 
     oldState = this.getCurrentState(childExit);
     newState = this.getStateName(aState);
@@ -1351,27 +1354,38 @@ function(aState, signalOrParams, childExit) {
         //  We can automatically deactivate when we reach the final state if
         //  that state is "final only" meaning it can't transition to any other
         //  state as an alternative route.
-        states = this.$getFinalStates();
-        if (states.indexOf(newState) !== TP.NOT_FOUND) {
+        if (TP.notEmpty(oldState)) {
+            states = this.$getFinalStates();
+            if (states.indexOf(newState) !== TP.NOT_FOUND) {
 
-            //  A final state. But it is a "final only" state?
-            states = this.get('byInitial').at(newState);
-            states = states.map(
-                        function(item) {
-                            return item.at(0);
-                        });
-            if (states.length === 1 && states.at(0) ===
-                    this.getStateName(null)) {
+                //  A final state. Obtain states that newState can transition to
+                //  and ask if it is a "final only" state.
+                states = this.get('byInitial');
+                reachables = states.at(newState);
 
-                this.deactivate();
+                names = reachables.map(
+                            function(item) {
+                                return item.at(0);
+                            });
 
-                //  If we're a nested state machine we're essentially done, but
-                //  we need to also trigger our parent to update since the
-                //  child has reached a terminal point.
-                if (TP.isValid(parent = this.get('parent'))) {
-                    //  NOTE that this should cause a parent transition which
-                    //  ultimately exits the parent and cleans up references.
-                    parent.updateCurrentState(details, true);
+                if (names.length === 1) {
+                    name = names.at(0);
+
+                    if (name !== oldState &&
+                        name === this.getStateName(null)) {
+
+                        this.deactivate();
+
+                        //  If we're a nested state machine we're essentially
+                        //  done, but we need to also trigger our parent to
+                        //  update since the child has reached a terminal point.
+                        if (TP.isValid(parent = this.get('parent'))) {
+                            //  NOTE that this should cause a parent transition
+                            //  which ultimately exits the parent and cleans up
+                            //  references.
+                            parent.updateCurrentState(details, true);
+                        }
+                    }
                 }
             }
         }
