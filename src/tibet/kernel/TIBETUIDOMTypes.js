@@ -2848,12 +2848,12 @@ function(selectorText, aPropertyName, aRuleIndex) {
 
     styleSheet = this.getStylesheetForStyleResource();
     if (!TP.isStyleSheet(styleSheet)) {
-        return TP.raise(this, 'TP.sig.InvalidStyleSheet');
+        return this.raise('TP.sig.InvalidStyleSheet');
     }
 
     sheetOwnerElem = TP.styleSheetGetOwnerNode(styleSheet);
     if (!TP.isElement(sheetOwnerElem)) {
-        return TP.raise(this, 'TP.sig.InvalidElement');
+        return this.raise('TP.sig.InvalidElement');
     }
 
     return TP.cssElementGetCustomCSSPropertyValue(
@@ -4900,12 +4900,12 @@ function(selectorText, aPropertyName, aPropertyValue, aRuleIndex,
 
     styleSheet = this.getStylesheetForStyleResource();
     if (!TP.isStyleSheet(styleSheet)) {
-        return TP.raise(this, 'TP.sig.InvalidStyleSheet');
+        return this.raise('TP.sig.InvalidStyleSheet');
     }
 
     sheetOwnerElem = TP.styleSheetGetOwnerNode(styleSheet);
     if (!TP.isElement(sheetOwnerElem)) {
-        return TP.raise(this, 'TP.sig.InvalidElement');
+        return this.raise('TP.sig.InvalidElement');
     }
 
     TP.cssElementSetCustomCSSPropertyValue(
