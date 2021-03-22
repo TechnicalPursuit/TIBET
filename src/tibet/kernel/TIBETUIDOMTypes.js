@@ -2826,6 +2826,42 @@ function(aProperty, inPixels) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('getAssociatedCustomCSSProperty',
+function(selectorText, aPropertyName, aRuleIndex) {
+
+    /**
+     * @method getAssociatedCustomCSSProperty
+     * @summary Gets the value of the named custom CSS property found in a rule
+     *     associated with the receiver.
+     * @param {String} selectorText The text of the selector to match.
+     * @param {String} aPropertyName The CSS custom property name to get the
+     *     value of.
+     * @param {Number} [aRuleIndex=0] The index of the rule to obtain the value
+     *     from if there is more than 1 rule that has the same selector.
+     * @exception TP.sig.InvalidStyleSheet
+     * @exception TP.sig.InvalidElement
+     * @returns {Object|null} The property value or null.
+     */
+
+    var styleSheet,
+        sheetOwnerElem;
+
+    styleSheet = this.getStylesheetForStyleResource();
+    if (!TP.isStyleSheet(styleSheet)) {
+        return this.raise('TP.sig.InvalidStyleSheet');
+    }
+
+    sheetOwnerElem = TP.styleSheetGetOwnerNode(styleSheet);
+    if (!TP.isElement(sheetOwnerElem)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    return TP.cssElementGetCustomCSSPropertyValue(
+            sheetOwnerElem, selectorText, aPropertyName, aRuleIndex);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('getDisplayValue',
 function(anAttribute) {
 
@@ -4834,6 +4870,49 @@ function(attributeName, attributeValue, shouldSignal) {
 
     //  setAttribute returns void according to the spec
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('setAssociatedCustomCSSProperty',
+function(selectorText, aPropertyName, aPropertyValue, aRuleIndex,
+         shouldSignal) {
+
+    /**
+     * @method setAssociatedCustomCSSProperty
+     * @summary Sets the value of the named custom CSS property found in a rule
+     *     associated with the receiver.
+     * @param {String} selectorText The text of the selector to match.
+     * @param {String} aPropertyName The CSS custom property name to set the
+     *     value of.
+     * @param {String} aPropertyValue The value to set the CSS custom property
+     *     to.
+     * @param {Number} [aRuleIndex=0] The index of the rule to change if there
+     *     is more than 1 rule that has the same selector.
+     * @param {Boolean} [shouldSignal=true] If false no signaling occurs.
+     * @exception TP.sig.InvalidStyleSheet
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var styleSheet,
+        sheetOwnerElem;
+
+    styleSheet = this.getStylesheetForStyleResource();
+    if (!TP.isStyleSheet(styleSheet)) {
+        return this.raise('TP.sig.InvalidStyleSheet');
+    }
+
+    sheetOwnerElem = TP.styleSheetGetOwnerNode(styleSheet);
+    if (!TP.isElement(sheetOwnerElem)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    TP.cssElementSetCustomCSSPropertyValue(
+            sheetOwnerElem, selectorText, aPropertyName, aPropertyValue,
+            aRuleIndex, shouldSignal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

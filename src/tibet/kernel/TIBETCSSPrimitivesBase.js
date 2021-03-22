@@ -1675,6 +1675,7 @@ function(anElement, selectorText, aPropertyName, aRuleIndex) {
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidStyleSheet
      * @exception TP.sig.InvalidStyleRule
+     * @returns {Object|null} The property value or null.
      */
 
     var styleSheet,
@@ -1707,7 +1708,7 @@ function(anElement, selectorText, aPropertyName, aRuleIndex) {
     //  selector.
     styleRules = TP.styleSheetGetStyleRulesMatching(styleSheet, selectorText);
     if (TP.isEmpty(styleRules)) {
-        return;
+        return null;
     }
 
     //  If a rule index isn't supplied, then we default it to 0. There may be
