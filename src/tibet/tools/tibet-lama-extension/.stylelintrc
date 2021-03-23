@@ -44,7 +44,7 @@
         "**/node_modules/**",
         "deps/**",
         "lib/src/**",
-        "**/sherpa/cm_theme/*",
+        "**/lama/cm_theme/*",
         "**/build/**",
         "**/*.__*__.*.js",
         "**/boot/styles/**"
