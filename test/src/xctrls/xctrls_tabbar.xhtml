@@ -122,6 +122,13 @@
         ]]>
     </tibet:data>
 
+    <!-- The test data for static item selection tests -->
+    <tibet:data name="urn:tibet:static_selection_test_data" content="TP.core.Hash">
+        <![CDATA[
+        {"selection_set_1": "before"}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body data-theme="tpi">
@@ -178,8 +185,27 @@
     tabbar #6:
     <br/>
 
+    A standard XControls tabbar enabled showing only static content:
+    <xctrls:tabbar id="tabbar6" bind:io="{value: urn:tibet:static_selection_test_data#tibet(selection_set_1)}">
+        <xctrls:tabitem tabindex="0" on:click="TestClick">
+            <xctrls:label>Before Content</xctrls:label>
+            <xctrls:value>before</xctrls:value>
+        </xctrls:tabitem>
+        <xctrls:tabitem tabindex="0">
+            <xctrls:label>After Content</xctrls:label>
+            <xctrls:value>after</xctrls:value>
+        </xctrls:tabitem>
+    </xctrls:tabbar>
+
+    <br/>
+    <br/>
+
+    <br/>
+    tabbar #7:
+    <br/>
+
     A standard XControls tabbar enabled showing static and templated content and value bound to a selection model:
-    <xctrls:tabbar id="tabbar6" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}">
+    <xctrls:tabbar id="tabbar7" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}">
         <xctrls:tabitem tabindex="0">
             <xctrls:label>Before Content</xctrls:label>
             <xctrls:value>before</xctrls:value>

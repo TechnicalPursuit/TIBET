@@ -656,7 +656,7 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.SelectingUIElement Methods
+//  TP.core.SelectingUIElementNode Methods
 //  ------------------------------------------------------------------------
 
 TP.xctrls.Lattice.Inst.defineMethod('allowsMultiples',
