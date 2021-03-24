@@ -7,12 +7,9 @@
     <span tibet:assembly="xctrls:pagerbar">
         <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
             <xctrls:content tibet:pelem="choices" class="noselect">
-            {{$SOURCE.(./*[local-name() = 'template']/preceding-sibling::*[local-name() = 'pageritem'])}}
-            <span class="templated"/>
-            {{$SOURCE.(./*[local-name() = 'template']/following-sibling::*[local-name() = 'pageritem'])}}
+            {{$SOURCE.(./node())}}
             </xctrls:content>
         </tibet:group>
-        {{$SOURCE.(./*[local-name() = 'template'])}}
     </span>
 </xctrls:pagerbar>
 

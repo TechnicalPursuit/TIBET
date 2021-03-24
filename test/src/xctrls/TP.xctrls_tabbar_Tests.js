@@ -856,7 +856,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.tabbar.Type.describe('TP.xctrls.tabbar: mixed content',
+TP.xctrls.tabbar.Type.describe('TP.xctrls.tabbar: static content',
 function() {
 
     var driver,
@@ -905,15 +905,15 @@ function() {
 
         tabbar = TP.byId('tabbar6', windowContext);
 
-        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+        modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
 
         test.assert.isEqualTo(
             tabbar.get('value'),
-            'foo');
+            'before');
 
         test.assert.isEqualTo(
-            TP.val(modelObj.get('selection_set_2')),
-            'foo');
+            TP.val(modelObj.get('selection_set_1')),
+            'before');
     });
 
     //  ---
@@ -956,9 +956,159 @@ function() {
             modelObj,
 
             staticTabbarItem,
-            dynamicTabbarItem;
+
+            localHandlerRan;
 
         tabbar = TP.byId('tabbar6', windowContext);
+
+        modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction - first, one of the
+        //  'static' items.
+
+        staticTabbarItem = tabbar.get('allItemContent').first();
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    staticTabbarItem = tabbar.get('allItemContent').first();
+                    staticTabbarItem.defineHandler(
+                        'TestClick',
+                        function() {
+                            localHandlerRan = true;
+                        });
+                    return staticTabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(staticTabbarItem).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    tabbar.get('value'),
+                    'before');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('selection_set_1')),
+                    'before');
+
+                test.assert.isTrue(localHandlerRan);
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.tabbar.Type.describe('TP.xctrls.tabbar: mixed content',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            var loc;
+
+            windowContext = driver.get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
+            loadURI = TP.uc(loc);
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:tabbar - initial setup', function(test, options) {
+
+        var tabbar,
+
+            modelObj;
+
+        tabbar = TP.byId('tabbar7', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            tabbar.get('value'),
+            'foo');
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            'foo');
+    });
+
+    //  ---
+
+    this.it('xctrls:tabbar - test for static content', function(test, options) {
+
+        var tabbar,
+
+            firstTabbarItem,
+            lastTabbarItem;
+
+        tabbar = TP.byId('tabbar7', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstTabbarItem = tabbar.get('allItemContent').first();
+                    lastTabbarItem = tabbar.get('allItemContent').last();
+                    return firstTabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
+        //  The 2nd child element will be an 'xctrls:value'
+
+        test.assert.isEqualTo(
+            firstTabbarItem.getChildElements().at(1).getTextContent(),
+            'before');
+
+        test.assert.isEqualTo(
+            lastTabbarItem.getChildElements().at(1).getTextContent(),
+            'after');
+    });
+
+    //  ---
+
+    this.it('xctrls:tabbar - change value via user interaction', function(test, options) {
+
+        var tabbar,
+
+            modelObj,
+
+            staticTabbarItem,
+            dynamicTabbarItem;
+
+        tabbar = TP.byId('tabbar7', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 

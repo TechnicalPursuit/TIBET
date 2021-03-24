@@ -884,7 +884,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.pagerbar.Type.describe('TP.xctrls.pagerbar: mixed content',
+TP.xctrls.pagerbar.Type.describe('TP.xctrls.pagerbar: static content',
 function() {
 
     var driver,
@@ -933,6 +933,156 @@ function() {
 
         pagerbar = TP.byId('pagerbar6', windowContext);
 
+        modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'before');
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'before');
+    });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - test for static content', function(test, options) {
+
+        var pagerbar,
+
+            firstpagerbarItem,
+            lastpagerbarItem;
+
+        pagerbar = TP.byId('pagerbar6', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstpagerbarItem = pagerbar.get('allItemContent').first();
+                    lastpagerbarItem = pagerbar.get('allItemContent').last();
+                    return firstpagerbarItem;
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        //  The 2nd child element will be an 'xctrls:value'
+
+        test.assert.isEqualTo(
+            firstpagerbarItem.getChildElements().at(1).getTextContent(),
+            'before');
+
+        test.assert.isEqualTo(
+            lastpagerbarItem.getChildElements().at(1).getTextContent(),
+            'after');
+    });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+
+        var pagerbar,
+
+            modelObj,
+
+            staticpagerbarItem,
+
+            localHandlerRan;
+
+        pagerbar = TP.byId('pagerbar6', windowContext);
+
+        modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction - first, one of the
+        //  'static' items.
+
+        staticpagerbarItem = pagerbar.get('allItemContent').first();
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    staticpagerbarItem = pagerbar.get('allItemContent').first();
+                    staticpagerbarItem.defineHandler(
+                        'TestClick',
+                        function() {
+                            localHandlerRan = true;
+                        });
+                    return staticpagerbarItem;
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.getDriver().constructSequence().
+                    click(staticpagerbarItem).
+                    run();
+            });
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    pagerbar.get('value'),
+                    'before');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('selection_set_1')),
+                    'before');
+
+                test.assert.isTrue(localHandlerRan);
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.pagerbar.Type.describe('TP.xctrls.pagerbar: mixed content',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            var loc;
+
+            windowContext = driver.get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
+            loadURI = TP.uc(loc);
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - initial setup', function(test, options) {
+
+        var pagerbar,
+
+            modelObj;
+
+        pagerbar = TP.byId('pagerbar7', windowContext);
+
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
         test.assert.isEqualTo(
@@ -958,7 +1108,7 @@ function() {
             firstPagerbarItem,
             lastPagerbarItem;
 
-        pagerbar = TP.byId('pagerbar6', windowContext);
+        pagerbar = TP.byId('pagerbar7', windowContext);
 
         test.andIfNotValidWaitFor(
                 function() {
@@ -991,7 +1141,7 @@ function() {
             staticPagerItem,
             dynamicPagerItem;
 
-        pagerbar = TP.byId('pagerbar6', windowContext);
+        pagerbar = TP.byId('pagerbar7', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1103,7 +1253,7 @@ function() {
 
             modelObj;
 
-        pagerbar = TP.byId('pagerbar7', windowContext);
+        pagerbar = TP.byId('pagerbar8', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1134,7 +1284,7 @@ function() {
             nextPagerItem,
             endPagerItem;
 
-        pagerbar = TP.byId('pagerbar7', windowContext);
+        pagerbar = TP.byId('pagerbar8', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1298,7 +1448,7 @@ function() {
             nextPagerItem,
             endPagerItem;
 
-        pagerbar = TP.byId('pagerbar7', windowContext);
+        pagerbar = TP.byId('pagerbar8', windowContext);
 
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
@@ -1456,7 +1606,7 @@ function() {
 
             modelObj;
 
-        pagerbar = TP.byId('pagerbar8', windowContext);
+        pagerbar = TP.byId('pagerbar9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1482,7 +1632,7 @@ function() {
             modelObj,
             firstPagerbarItem;
 
-        pagerbar = TP.byId('pagerbar8', windowContext);
+        pagerbar = TP.byId('pagerbar9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 

@@ -122,7 +122,15 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem;
+        tpElem,
+
+        templateStandinElem,
+
+        templateTPElem,
+        templateElem,
+
+        assemblyElem,
+        contentTemplateExprTPElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -140,6 +148,38 @@ function(aRequest) {
     if (TP.elementHasAttribute(elem, 'disabled', true)) {
         tpElem.get('group').setAttribute('disabled', true);
     }
+
+    //  Create a span that will stand in for the template.
+    templateStandinElem = TP.xhtmlnode('<span class="templated"/>');
+
+    //  If the user authored a valid tibet:template element, then we replace it
+    //  with our standin and move it to be the last child in the assembly.
+    templateTPElem = tpElem.get(' tibet|template');
+    if (TP.isValid(templateTPElem)) {
+        //  Replace the template with the standin.
+        templateElem = templateTPElem.getNativeNode();
+        TP.elementReplaceWith(templateElem, templateStandinElem);
+
+        //  Find the assembly element and append the tibet:template as it's last
+        //  child.
+        assemblyElem = tpElem.get(' span[tibet|assembly="' +
+                        tpElem.getCanonicalName() +
+                        '"]').getNativeNode();
+        TP.nodeAppendChild(assemblyElem, templateElem, false);
+    } else {
+        //  Otherwise, there was no authored tibet:template element, but we
+        //  still need the standin since other machinery in this type uses that
+        //  for things like querying for static item elements the author might
+        //  have placed inside of
+        contentTemplateExprTPElem =
+            tpElem.get(' xctrls|content > span[tibet|templateexpr]');
+        TP.nodeAppendChild(contentTemplateExprTPElem.getNativeNode(),
+                            templateStandinElem);
+    }
+
+    //  Update any internal data structures that we can derive from static item
+    //  content.
+    tpElem.updateDataFromStaticContent();
 
     return;
 });
@@ -185,7 +225,7 @@ function() {
 
     /**
      * @method allowsMultiples
-     * @summary Returns true by default.
+     * @summary Returns false by default.
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
      */
 
@@ -204,23 +244,30 @@ function() {
      * @returns {TP.xctrls.item[]} All of the receiver's item content.
      */
 
-    var defaultTagName,
-        defaultTagSelector,
+    var precedingResult,
 
-        getterPath;
+        getterPath,
 
-    //  Grab the default tag name and change it into something that can be used
-    //  by a CSS selector.
-    defaultTagName = this.getType().get('defaultItemTagName');
-    defaultTagSelector = defaultTagName.replace(':', '|');
+        result;
 
     //  Build a path to all items (descendants somewhere under the
-    //  'xctrls|content' element).
-    getterPath = TP.cpc(
-                    '> span tibet|group xctrls|content ' + defaultTagSelector,
-                    TP.hc('shouldCollapse', false));
+    //  'xctrls:content' element).
 
-    return this.get(getterPath);
+    //  NB: This will return its results already reversed - check the method for
+    //  more info.
+    precedingResult = this.getPrecedingStaticItemContent();
+
+    //  Now that we have the preceding items, grab the rest of them.
+    getterPath = TP.xpc(
+            './/*[@class = "templated"]/*' +
+            ' | ' +
+            './/*[@class = "templated"]/following-sibling::*' +
+                    '[substring(name(), string-length(name()) - 3) = "item"]',
+        TP.hc('shouldCollapse', false));
+
+    result = precedingResult.concat(this.get(getterPath));
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
@@ -285,18 +332,10 @@ function() {
      * @returns {TP.xctrls.item} The focused item.
      */
 
-    var defaultTagName,
-        defaultTagSelector,
-
-        getterPath;
-
-    //  Grab the default tag name and change it into something that can be used
-    //  by a CSS selector.
-    defaultTagName = this.getType().get('defaultItemTagName');
-    defaultTagSelector = defaultTagName.replace(':', '|');
+    var getterPath;
 
     getterPath = TP.cpc('> span tibet|group xctrls|content ' +
-                        defaultTagSelector + '[pclass|focus]',
+                        '*[pclass|focus]',
                     TP.hc('shouldCollapse', true));
 
     return this.get(getterPath);
@@ -315,21 +354,14 @@ function() {
      *     follows any dynamic item content.
      */
 
-    var defaultTagName,
-        defaultTagSelector,
-
-        getterPath;
-
-    //  Grab the default tag name and slice off the 'local name' that can be
-    //  used in an XPath.
-    defaultTagName = this.getType().get('defaultItemTagName');
-    defaultTagSelector = defaultTagName.slice(defaultTagName.indexOf(':') + 1);
+    var getterPath;
 
     //  Build a path to only items that occur after the dynamic, templated
     //  content.
-    getterPath = TP.xpc('.//*[@class = "templated"]/following-sibling::*/' +
-                        '*[local-name() = "' + defaultTagSelector + '"]',
-                    TP.hc('shouldCollapse', false));
+    getterPath = TP.xpc(
+                    './/*[@class = "templated"]/following-sibling::*' +
+                    '[substring(name(), string-length(name()) - 3) = "item"]',
+                TP.hc('shouldCollapse', false));
 
     return this.get(getterPath);
 });
@@ -347,23 +379,23 @@ function() {
      *     precedes any dynamic item content.
      */
 
-    var defaultTagName,
-        defaultTagSelector,
-
-        getterPath;
-
-    //  Grab the default tag name and slice off the 'local name' that can be
-    //  used in an XPath.
-    defaultTagName = this.getType().get('defaultItemTagName');
-    defaultTagSelector = defaultTagName.slice(defaultTagName.indexOf(':') + 1);
+    var getterPath,
+        result;
 
     //  Build a path to only items that occur before the dynamic, templated
     //  content.
-    getterPath = TP.xpc('.//*[@class = "templated"]/preceding-sibling::*/' +
-                        '*[local-name() = "' + defaultTagSelector + '"]',
-                    TP.hc('shouldCollapse', false));
+    getterPath = TP.xpc(
+                    './/*[@class = "templated"]/preceding-sibling::*' +
+                    '[substring(name(), string-length(name()) - 3) = "item"]',
+                TP.hc('shouldCollapse', false));
 
-    return this.get(getterPath);
+    result = this.get(getterPath);
+
+    //  Reverse the result since 'preceding-sibling' will traverse back up from
+    //  our templated content and we want 'document order'.
+    result.reverse();
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
@@ -868,6 +900,39 @@ function(aDataObject, shouldSignal) {
         //  When the data changes, we have to re-render.
         this.render();
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('updateDataFromStaticContent',
+function() {
+
+    /**
+     * @method updateDataFromStaticContent
+     * @summary Updates an internal data structures from static item content
+     *     that the author might have put into the receiver.
+     * @description This method is called when the receiver is first awakened
+     *     in order to set up any data structures that are required to treat
+     *     static content as we would dynamically generated content.
+     * @returns {TP.xctrls.itemset} The receiver.
+     */
+
+    var keys,
+        allItems;
+
+    keys = TP.ac();
+
+    //  Stamp all of the items in the item content with an index.
+    allItems = this.get('allItemContent');
+    allItems.forEach(
+        function(item, index) {
+            keys.push(item.get('value'));
+            item.setAttribute('itemnum', index);
+        });
+
+    this.set('$dataKeys', keys, false);
 
     return this;
 });
