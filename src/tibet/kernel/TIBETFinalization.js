@@ -511,7 +511,7 @@ function() {
                         });
 
                     TP.boot.$getStageInfo('starting').head =
-                        'Launching TIBET Lama&#8482; IDE...';
+                        'Loading developer extensions...';
                 }
 
                 //  If we initialized without error move on to starting.
