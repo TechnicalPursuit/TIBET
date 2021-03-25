@@ -8,6 +8,11 @@
 @import url("~TP.xctrls.XMLNS/themes/TP.xctrls.toolbar_all.css");
 
 /* The toolbar */
+*[data-theme~="tpi"] xctrls|toolbar {
+
+}
+
+/* Toolbar items */
 *[data-theme~="tpi"] xctrls|toolbar *[itemnum] {
 
 }

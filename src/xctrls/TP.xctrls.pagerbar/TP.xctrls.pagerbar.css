@@ -14,18 +14,20 @@ xctrls|pagerbar xctrls|content {
     display: flex;
 }
 
-xctrls|pagerbar xctrls|pageritem {
+xctrls|pagerbar xctrls|content .templated {
 
-    order: 1;
-    flex: 0 1 auto;
+    /* We want to pretend that the span holding templated content doesn't exist
+     * (CSS-wise) */
+    display: contents;
 }
 
-xctrls|pagerbar xctrls|content > .templated {
-
-    display: flex;
-}
-
-xctrls|pagerbar xctrls|content > .templated:empty {
+xctrls|pagerbar xctrls|content .templated:empty {
 
     display: none;
 }
+
+xctrls|pagerbar xctrls|pageritem {
+
+    flex: 0 1 auto;
+}
+

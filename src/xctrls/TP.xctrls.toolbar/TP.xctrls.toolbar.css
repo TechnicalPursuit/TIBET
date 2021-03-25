@@ -6,19 +6,22 @@
 
 xctrls|toolbar {
 
+    user-select: none;
 }
 
 xctrls|toolbar xctrls|content {
 
     display: flex;
-
-    justify-content: center;
-    align-items: center;
 }
 
-xctrls|toolbar .templated {
+xctrls|toolbar xctrls|content .templated {
 
     /* We want to pretend that the span holding templated content doesn't exist
      * (CSS-wise) */
     display: contents;
+}
+
+xctrls|toolbar xctrls|content .templated:empty {
+
+    display: none;
 }

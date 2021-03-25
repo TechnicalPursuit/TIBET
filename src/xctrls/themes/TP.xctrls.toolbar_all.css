@@ -14,3 +14,13 @@
 
     flex-direction: column;
 }
+
+/* All themed, non-disabled 'xctrls:toolbar' controls */
+*[data-theme] xctrls|toolbar:not([pclass|disabled]) {
+
+}
+
+/* All themed, non-disabled 'xctrls:toolbar' control labels */
+*[data-theme] xctrls|toolbar:not([pclass|disabled]) > xctrls|label {
+
+}

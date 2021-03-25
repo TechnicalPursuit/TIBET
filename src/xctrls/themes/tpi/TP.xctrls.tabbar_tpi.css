@@ -8,6 +8,11 @@
 @import url("~TP.xctrls.XMLNS/themes/TP.xctrls.tabbar_all.css");
 
 /* The tabbar */
+*[data-theme~="tpi"] xctrls|tabbar {
+
+}
+
+/* Tabbar items */
 *[data-theme~="tpi"] xctrls|tabbar xctrls|tabitem {
 
     border-width: var(--xctrls-tabitem-border-width);
