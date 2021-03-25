@@ -282,7 +282,7 @@ function(force) {
     current = this.get('state');
     states = this.$getFinalStates();
 
-    if (states.indexOf(current) === TP.NOT_FOUND) {
+    if (states.indexOf(current) === TP.NOT_FOUND && !this.isOnOffOnly()) {
         //  Not a final state...
         if (TP.notTrue(force)) {
             this.raise('InvalidFinalState', 'Deactivating in non-final state.');
@@ -953,6 +953,52 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.StateMachine.Inst.defineMethod('isOnOffOnly',
+function() {
+
+    /**
+     * @method isOnOffOnly
+     * @summary Checks if the receiver only has one state other than 'Null'.
+     *     This type of state machine can be defined by using a single
+     *     defineState(null, 'On') statement. In such a machine there should
+     *     be no warnings/errors about transitions or transitions to 'Null'
+     *     based on triggers. Only activate() and deactivate() (on and off)
+     *     are valid operations.
+     * @returns {Boolean} Whether or not the receiver is on/off only.
+     */
+
+    var starts,
+        start,
+        targets;
+
+    //  There can be only one... start state (aka the 'ON' state).
+    starts = this.$getStartStates();
+    if (starts.getSize() !== 1) {
+        return false;
+    }
+
+    start = starts.at(0);
+
+    //  The start state can only transition back to 'OFF' or.stay 'ON'
+    targets = this.getTargetStates(start);
+    switch (targets.getSize()) {
+    case 0:
+            //  defineState(null, 'on') only... no target state defs.
+            return true;
+    case 1:
+            //  defineState(null, 'on'); defineState('on'); only.
+            return targets.at(0) === start ||
+                targets.at(0) === 'Null';
+    case 2:
+            return targets.indexOf(start) !== TP.NOT_FOUND &&
+                targets.indexOf('Null') !== TP.NOT_FOUND;
+    default:
+            return false;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.StateMachine.Inst.defineMethod('mayTransition',
 function(initialState, targetState, trigger) {
 
@@ -975,6 +1021,11 @@ function(initialState, targetState, trigger) {
 
     initial = this.getStateName(initialState);
     target = this.getStateName(targetState);
+
+    //  On/Off only machines do not auto-deactivate via transitions.
+    if (this.isOnOffOnly() && target === 'Null') {
+        return false;
+    }
 
     if (TP.notValid(initialState)) {
         details = this.get('byInitial').at(this.getStateName(null));
@@ -1354,7 +1405,7 @@ function(aState, signalOrParams, childExit) {
         //  We can automatically deactivate when we reach the final state if
         //  that state is "final only" meaning it can't transition to any other
         //  state as an alternative route.
-        if (TP.notEmpty(oldState)) {
+        if (TP.notEmpty(oldState) && !this.isOnOffOnly()) {
             states = this.$getFinalStates();
             if (states.indexOf(newState) !== TP.NOT_FOUND) {
 
@@ -1443,10 +1494,9 @@ function(signalOrParams, childExit) {
     //          ' newState: ' + newState);
 
     //  Get the list of potential target states to be checked.
-    stateTargets = this.get('byInitial').at(oldState);
+    stateTargets = TP.ifInvalid(this.get('byInitial').at(oldState), TP.ac());
 
-    if (TP.isEmpty(stateTargets)) {
-
+    if (TP.isEmpty(stateTargets) && !this.isOnOffOnly()) {
         //  No target states means we're at a final state, but apparently didn't
         //  deactivate since we're still receiving input from our triggers.
         TP.ifWarn() ?
