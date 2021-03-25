@@ -171,25 +171,6 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  Tag Phase Support
-//  ------------------------------------------------------------------------
-
-TP.xctrls.Element.Type.defineMethod('shouldWrapACPOutput',
-function() {
-
-    /**
-     * @method shouldWrapACPOutput
-     * @summary Whether or not we should wrap ACP expression output in an XHTML
-     *     span element. The default is true, but some subtypes that allow ACP
-     *     in their embedded templates might choose to not generate these
-     *     wrapper spans.
-     * @returns {Boolean} Whether or not to wrap it.
-     */
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
