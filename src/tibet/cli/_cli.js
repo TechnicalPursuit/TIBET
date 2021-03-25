@@ -1272,6 +1272,35 @@ CLI.getCurrentDirectory = function() {
 
 
 /**
+ *  Returns the last modified time of a file, or 0 if the file can't be found or
+ *  accessed for statistics.
+ *  @param {String} file The file to check. This should be any path that can be
+ *      expanded properly by CLI.expandPath.
+ *  @returns {Number} A file modification date/time in timestamp format or 0.
+ */
+CLI.getFileModifiedTime = function(file) {
+    var filePath,
+        fileStats,
+        fileTime;
+
+    try {
+        filePath = CLI.expandPath(file);
+        fileStats = fs.statSync(filePath);
+    } catch (e) {
+        if (/no such file/i.test(e)) {
+            return 0;
+        }
+
+        //  Usually a 'file does not exist' error.
+        return 0;
+    }
+    fileTime = fileStats.mtime.getTime();
+
+    return fileTime;
+};
+
+
+/**
  * Returns the targets exported from any makefile in the application. If
  * the makefile file isn't loaded yet this call will attempt to load it.
  * @returns {Array.<String>} The list of available make target names.
