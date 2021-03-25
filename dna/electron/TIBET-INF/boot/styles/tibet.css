@@ -207,6 +207,18 @@ tibet|group {
 
 /*
   ========================================================================
+  'tibet:' template expression wrappers
+  ========================================================================
+*/
+
+*|span[tibet|templateexpr] {
+
+    /* We want to pretend that this span doesn't exist (CSS-wise) */
+    display: contents;
+}
+
+/*
+  ========================================================================
   'resizetracker' class - used on <object> elements to detect resize changes on
   elements.
   ========================================================================

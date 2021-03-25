@@ -4,31 +4,13 @@
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
-@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* All themed 'xctrls:toolbar' controls */
-
-/* A horizontal toolbar - the default */
 *[data-theme] xctrls|toolbar {
 
 }
 
-/* A vertical toolbar - the default */
-*[data-theme] xctrls|toolbar[orientation="vertical"] {
+*[data-theme] xctrls|toolbar[orientation="vertical"] xctrls|content {
 
     flex-direction: column;
-}
-
-*[data-theme] xctrls|toolbar > xctrls|itemgroup {
-
-}
-
-/* All themed, non-disabled 'xctrls:toolbar' controls */
-*[data-theme] xctrls|toolbar > xctrls|itemgroup:not([pclass|disabled]) {
-
-}
-
-/* All themed, non-disabled 'xctrls:toolbar' control labels */
-*[data-theme] xctrls|toolbar > xctrls|itemgroup:not([pclass|disabled]) > xctrls|label {
-
 }

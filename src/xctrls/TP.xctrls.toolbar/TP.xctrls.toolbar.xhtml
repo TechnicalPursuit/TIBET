@@ -2,11 +2,14 @@
 
 <xctrls:toolbar
         id="{{$SOURCE.(@id)}}"
-        tibet:assembly="xctrls:toolbar">
-    <xctrls:itemgroup
-        bind:io="{{$SOURCE.(@bind:io)}}"
-        multiple="{{$SOURCE.(@multiple)}}">
-    {{$SOURCE.(./*)}}
-    </xctrls:itemgroup>
+        tibet:no-mutations="true"
+        tibet:opaque="bind">
+    <span tibet:assembly="xctrls:toolbar">
+        <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
+            <xctrls:content tibet:pelem="choices" class="noselect">
+            {{$SOURCE.(./node())}}
+            </xctrls:content>
+        </tibet:group>
+    </span>
 </xctrls:toolbar>
 
