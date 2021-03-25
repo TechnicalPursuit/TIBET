@@ -148,6 +148,66 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.StateMachine.describe('onoffonly',
+function() {
+
+    var machine;
+
+    this.beforeEach(function(test, options) {
+        machine = TP.core.StateMachine.construct();
+    });
+
+    this.afterEach(function(test, options) {
+        machine.deactivate(true);
+        machine = null;
+    });
+
+    this.it('can define on/off with just on', function(test, options) {
+        machine.defineState(null, 'on');
+        test.assert.isTrue( machine.isOnOffOnly());
+    });
+
+    this.it('can define on/off with just on and off', function(test, options) {
+        machine.defineState(null, 'on');
+        machine.defineState('on');
+        test.assert.isTrue( machine.isOnOffOnly());
+    });
+
+    this.it('can define on/off with self-ref', function(test, options) {
+        machine.defineState(null, 'on');
+        machine.defineState('on', 'on');
+        test.assert.isTrue( machine.isOnOffOnly());
+    });
+
+    this.it('can define on/off with self-ref and off', function(test, options) {
+        machine.defineState(null, 'on');
+        machine.defineState('on', 'on');
+        machine.defineState('on');
+        test.assert.isTrue( machine.isOnOffOnly());
+    });
+
+    //  TODO:   probably detached states should end up as InvalidStateMachine
+    this.it('is still on/off with "detached" state', function(test, options) {
+        machine.defineState(null, 'on');
+        machine.defineState('yep', null);
+        test.assert.isTrue(machine.isOnOffOnly());
+    });
+
+    this.it('is not on/off with any other start state', function(test, options) {
+        machine.defineState(null, 'on');
+        machine.defineState(null, 'nope');
+        test.assert.isFalse(machine.isOnOffOnly());
+    });
+
+    this.it('is not on/off with any other transition', function(test, options) {
+        machine.defineState(null, 'on');
+        machine.defineState('on', 'nope');
+        test.assert.isFalse(machine.isOnOffOnly());
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.StateMachine.describe('activate',
 function() {
 
@@ -214,6 +274,13 @@ function() {
             }, 'InvalidStartState');
     });
 
+    this.it('can activate an on/off state machine', function(test, options) {
+
+        machine.defineState(null, 'on');
+        machine.activate();
+        test.assert.isEqualTo(machine.get('state'), 'On');
+    });
+
     this.it('cannot activate an active state machine', function(test, options) {
 
         machine.defineState(null, 'initial');
@@ -273,7 +340,7 @@ function() {
         machine = null;
     });
 
-    this.it('cannot deactivate unless in final state', function(test, options) {
+    this.it('cannot deactivate without force unless in final state', function(test, options) {
         var result;
 
         machine.defineState(null, 'start');
@@ -321,6 +388,16 @@ function() {
         machine.transition('finish');
 
         test.assert.isTrue(called);
+    });
+
+    this.it('can deactivate on/off state machine without force', function(test, options) {
+        machine.defineState(null, 'on');
+
+        machine.activate();
+        test.assert.isTrue(machine.isActive());
+
+        machine.deactivate();
+        test.assert.isFalse(machine.isActive());
     });
 
     this.it('cannot deactivate an inactive state machine', function(test, options) {
@@ -466,6 +543,78 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');    //  second call here...
 
         test.assert.isTrue(called > 0);
+
+        machine.deactivate(true);
+    });
+
+    this.it('accepts on/off start-only definition', function(test, options) {
+        var called;
+
+        machine.defineState(null, 'on');
+
+        called = 0;
+        machine.defineMethod('transition', function(newState) {
+            called += 1;
+            //  NOTE we have to still set the state on the first pass or the
+            //  second pass won't process correctly since we won't have actually
+            //  transitioned in a concrete sense.
+            machine.$setState(newState);
+        });
+
+        machine.addTrigger(TP.ANY, 'Fluffy');
+
+        machine.activate();             //  first call occurs here...
+
+        TP.signal(TP.ANY, 'Fluffy');    //  second call here...
+
+        test.assert.isTrue(machine.isActive(), 'not active');
+        test.assert.isEqualTo(machine.get('state'), 'On', 'wrong state');
+
+        machine.deactivate(true);
+    });
+
+    this.it('on/off stays on after transitions/updates', function(test, options) {
+        machine.defineState(null, 'on');
+        machine.defineState('on');
+
+        test.assert.isTrue(machine.isOnOffOnly(), 'not onoffonly');
+
+        machine.addTrigger(TP.ANY, 'Fluffy');
+
+        machine.activate();             //  first call occurs here...
+
+        TP.signal(TP.ANY, 'Fluffy');    //  second call here...
+
+        test.assert.isTrue(machine.isActive(), 'not active');
+        test.assert.isEqualTo(machine.get('state'), 'On', 'wrong state');
+
+        machine.deactivate(true);
+    });
+
+    this.it('accepts looped on/off active state definition', function(test, options) {
+        var called;
+
+        machine.defineState(null, 'on');
+        machine.defineState('on', 'on');
+        machine.defineState('on');
+
+        called = 0;
+        machine.defineMethod('transition', function(newState) {
+            called += 1;
+            //  NOTE we have to still set the state on the first pass or the
+            //  second pass won't process correctly since we won't have actually
+            //  transitioned in a concrete sense.
+            machine.$setState(newState);
+        });
+
+        machine.addTrigger(TP.ANY, 'Fluffy');
+
+        machine.activate();             //  first call occurs here...
+
+        TP.signal(TP.ANY, 'Fluffy');    //  second call here...
+
+        test.assert.isTrue(machine.isActive(), 'not active');
+        test.assert.isEqualTo(machine.get('state'), 'On', 'wrong state');
 
         machine.deactivate(true);
     });
