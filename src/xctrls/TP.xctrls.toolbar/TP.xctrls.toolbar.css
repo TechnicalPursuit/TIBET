@@ -1,10 +1,14 @@
 /*
-    CSS styles for the 'xctrls:toolbar' control.
+    CSS styles for 'xctrls:toolbar' controls.
 */
 
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
 xctrls|toolbar {
+
+}
+
+xctrls|toolbar xctrls|content {
 
     display: flex;
 
@@ -12,8 +16,9 @@ xctrls|toolbar {
     align-items: center;
 }
 
-xctrls|toolbar xctrls|itemgroup {
+xctrls|toolbar .templated {
 
-    /* We want to pretend that the itemgroup doesn't exist (CSS-wise) */
+    /* We want to pretend that the span holding templated content doesn't exist
+     * (CSS-wise) */
     display: contents;
 }

@@ -273,6 +273,7 @@
     <script src="~lib_test/src/xctrls/TP.xctrls_tabbar_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_textitem_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_table_Tests.js"/>
+    <script src="~lib_test/src/xctrls/TP.xctrls_toolbar_Tests.js"/>
     <script src="~lib_test/src/xctrls/TP.xctrls_tooltip_Tests.js"/>
 </config>
 
