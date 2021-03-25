@@ -1206,7 +1206,7 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var defaultTagName,
+    var itemTagName,
 
         newContent,
 
@@ -1215,9 +1215,10 @@ function(enterSelection) {
 
         thisref;
 
-    defaultTagName = this.getType().get('defaultItemTagName');
+    itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
+                                this.getType().get('defaultItemTagName'));
 
-    newContent = enterSelection.append(defaultTagName);
+    newContent = enterSelection.append(itemTagName);
 
     shouldConstructCloseMarks = this.getType().get('wantsCloseMarks');
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
@@ -1408,11 +1409,13 @@ function(containerSelection) {
      * @returns {TP.extern.d3.Selection}
      */
 
-    var defaultTagName,
+    var itemTagName,
         defaultTagSelector;
 
-    defaultTagName = this.getType().get('defaultItemTagName');
-    defaultTagSelector = defaultTagName.replace(':', '|');
+    itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
+                                this.getType().get('defaultItemTagName'));
+
+    defaultTagSelector = itemTagName.replace(':', '|');
 
     return containerSelection.selectAll(TP.D3_SELECT_ALL(defaultTagSelector));
 });
