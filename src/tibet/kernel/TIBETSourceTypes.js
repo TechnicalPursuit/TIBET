@@ -1477,6 +1477,8 @@ TP.sig.ElectronSignal.defineSubtype('UpdateAvailable');
 TP.sig.ElectronSignal.defineSubtype('UpdateNotAvailable');
 TP.sig.ElectronSignal.defineSubtype('UpdateDownloaded');
 
+TP.sig.ElectronSignal.defineSubtype('ApplicationDidExit');
+
 //  ========================================================================
 //  TP.core.ElectronMain
 //  ========================================================================
