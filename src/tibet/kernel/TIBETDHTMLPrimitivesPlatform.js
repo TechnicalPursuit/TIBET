@@ -1614,6 +1614,8 @@ TP.hc(
                 return;
             }
 
+            //  On Electron, we always just return, allowing the TIBET/Electron
+            //  machinery to handle shutdown.
             if (TP.sys.cfg('boot.context') === 'electron') {
                 return;
             }
@@ -1680,10 +1682,10 @@ TP.hc(
                 return;
             }
 
-            //  On Electron, we always return true, thereby triggering the
-            //  'will-prevent-unload' event which we handle in the main process.
+            //  On Electron, we always just return, allowing the TIBET/Electron
+            //  machinery to handle shutdown.
             if (TP.sys.cfg('boot.context') === 'electron') {
-                return true;
+                return;
             }
 
             //  If there is no body, there is nothing to protect, so we can
