@@ -840,7 +840,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('terminate',
-function(aURI, navigateToURI, allowCancellation) {
+function(aURI, navigateToURI) {
 
     /**
      * @method terminate
@@ -856,9 +856,9 @@ function(aURI, navigateToURI, allowCancellation) {
      * @param {Boolean} [navigateToURI=true] Whether or not we'll navigate to
      *     the URI. If not, this method will just call TP.sys.finalizeShutdown
      *     manually.
-     * @param {Boolean} [allowCancellation=true] Whether or not this method
-     *     allows the termination process to be cancelled.
-     * @returns {TP.sys} The receiver.
+     * @returns {Boolean} Whether or not we're really terminating. If one of the
+     *     handlers of TP.sig.AppWillShutdown has prevented the default action,
+     *     then we will *not* terminate.
      */
 
     var sig,
@@ -873,15 +873,14 @@ function(aURI, navigateToURI, allowCancellation) {
     //  'prevent default'ed), in which case we just return.
     sig = TP.signal(TP.sys, 'TP.sig.AppWillShutdown');
 
-    //  If we allow cancellation and the signal has been 'prevent default'ed,
-    //  then return.
-    if (TP.notFalse(allowCancellation) && sig.shouldPrevent()) {
+    //  If the signal has been 'prevent default'ed, then return.
+    if (sig.shouldPrevent()) {
 
         //  Put the system in a mode that let's everyone know we're no longer
         //  exiting.
         TP.sys.isExiting(false);
 
-        return this;
+        return false;
     }
 
     //  Make sure to remove the 'TIBET.boot.tibet_token' value from
@@ -933,7 +932,7 @@ function(aURI, navigateToURI, allowCancellation) {
         TP.sys.finalizeShutdown();
     }
 
-    return this;
+    return true;
 });
 
 //  ------------------------------------------------------------------------
