@@ -1762,7 +1762,7 @@ TP.sys.overrides = {};
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.getcfg = function(aKey, aDefault) {
+TP.sys.getcfg = function(aKey, aDefault, asNestedObj) {
 
     /**
      * @method getcfg
@@ -1776,6 +1776,9 @@ TP.sys.getcfg = function(aKey, aDefault) {
      * @param {String} aKey The property name to retrieve.
      * @param {String} aDefault The default value to use when the named property
      *     isn't valid.
+     * @param {Boolean} [asNestedObj=false] Optional flag to convert the result
+     *     to a multi-level structured Object instead of a single-level Object
+     *     with flattened keys.
      * @returns {Object} The value of the named property.
      */
 
@@ -1802,7 +1805,58 @@ TP.sys.getcfg = function(aKey, aDefault) {
         }
     }
 
+    if (asNestedObj) {
+        val = TP.sys.cfgAsNestedObj(val);
+    }
+
     return val;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.sys.cfgAsNestedObj = function(anObj) {
+
+    /**
+     * @method cfgAsNestedObj
+     * @summary Returns the supplied 'flat list' of dot-separated keys as a
+     *     nested Object.
+     * @param {Object} anObj The cfg entries as a single-level object with
+     *     'flattened', dot-separated keys.
+     * @returns {Object} The supplied configuration object converted to an
+     *     Object that has a nested structure that is structured the way the
+     *     keys were supplied in the original object.
+     */
+
+    var resultObj;
+
+    if (!anObj) {
+        return null;
+    }
+
+    resultObj = {};
+
+    Object.keys(anObj).forEach(
+        function(aKey) {
+            var keyParts,
+                currentObj,
+                i;
+
+                keyParts = aKey.split('.');
+
+                currentObj = resultObj;
+
+                for (i = 0; i < keyParts.length - 1; i++) {
+                    if (!currentObj[keyParts[i]]) {
+                        currentObj[keyParts[i]] = {};
+                    }
+
+                    currentObj = currentObj[keyParts[i]];
+                }
+
+                currentObj[keyParts[keyParts.length - 1]] = anObj[aKey];
+            });
+
+    return resultObj;
 };
 
 //  ----------------------------------------------------------------------------
