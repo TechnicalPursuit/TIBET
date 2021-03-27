@@ -506,7 +506,7 @@ Cmd.prototype.execute = function() {
     }
     json.path.lib_root = '~app/TIBET-INF/tibet';
 
-    //  SAVE the file (note the 'to()' call here...
+    //  SAVE the file (note the 'to()' call here...)
     str = CLI.beautify(JSON.stringify(json));
     new sh.ShellString(str).to(file);
 
