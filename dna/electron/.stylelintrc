@@ -29,7 +29,7 @@
         "selector-attribute-quotes": "always",
 
         "selector-type-no-unknown": [ true, {
-            "ignoreNamespaces": [ "tibet", "tsh", "lama", "xctrls", "tibetlama" ],
+            "ignoreNamespaces": [ "tibet", "tsh", "lama", "xctrls" ],
             "ignoreTypes": [ "/*/" ]
         }],
 
