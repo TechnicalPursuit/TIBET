@@ -108,8 +108,11 @@
         //  How long before connections normally time out (15 minutes)
         setcfg('tds.connection_timeout', 15 * 60 * 1000);
 
-        //  How long before connections time out after a shutdown request.
+        //  How long before process.exit after a shutdown request.
         setcfg('tds.shutdown_timeout', 3000);
+
+        //  For shutdown processing how long to timeout connections?
+        setcfg('tds.shutdown_connections', 100);
 
         setcfg('tds.session.store', 'memory');
 

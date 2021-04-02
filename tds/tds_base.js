@@ -1516,6 +1516,9 @@
         var hooks,
             code;
 
+        //  Force connections to become aware of a timeout so they drop.
+        TDS.timeoutConnections(meta);
+
         TDS.logger.system('shutting down TDS middleware', meta);
         if (!TDS.hasConsole()) {
             process.stdout.write(
@@ -1537,12 +1540,6 @@
             }
         });
 
-        TDS.logger.system('TDS middleware shut down', meta);
-        if (!TDS.hasConsole()) {
-            process.stdout.write(
-                TDS.colorize('TDS middleware shut down', 'error'));
-        }
-
         return code;
     };
 
@@ -1552,10 +1549,16 @@
      *     the tds.shutdown_timeout setting. This is only used during shutdown
      *     and can differ from any tds.connection_timeout value.
      */
-    TDS.timeoutConnections = function() {
+    TDS.timeoutConnections = function(meta) {
         var timeout;
 
-        timeout = TDS.getcfg('tds.shutdown_timeout');
+        timeout = TDS.getcfg('tds.shutdown_connections');
+
+        TDS.logger.system('closing active TDS connections', meta);
+        if (!TDS.hasConsole()) {
+            process.stdout.write(
+                TDS.colorize('closing active TDS connections', 'error'));
+        }
 
         Object.keys(TDS._connections).forEach(function(key) {
             var connection;
