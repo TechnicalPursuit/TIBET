@@ -164,26 +164,26 @@ function() {
 
     this.it('can define on/off with just on', function(test, options) {
         machine.defineState(null, 'on');
-        test.assert.isTrue( machine.isOnOffOnly());
+        test.assert.isTrue(machine.isOnOffOnly());
     });
 
     this.it('can define on/off with just on and off', function(test, options) {
         machine.defineState(null, 'on');
         machine.defineState('on');
-        test.assert.isTrue( machine.isOnOffOnly());
+        test.assert.isTrue(machine.isOnOffOnly());
     });
 
     this.it('can define on/off with self-ref', function(test, options) {
         machine.defineState(null, 'on');
         machine.defineState('on', 'on');
-        test.assert.isTrue( machine.isOnOffOnly());
+        test.assert.isTrue(machine.isOnOffOnly());
     });
 
     this.it('can define on/off with self-ref and off', function(test, options) {
         machine.defineState(null, 'on');
         machine.defineState('on', 'on');
         machine.defineState('on');
-        test.assert.isTrue( machine.isOnOffOnly());
+        test.assert.isTrue(machine.isOnOffOnly());
     });
 
     //  TODO:   probably detached states should end up as InvalidStateMachine
@@ -548,13 +548,10 @@ function() {
     });
 
     this.it('accepts on/off start-only definition', function(test, options) {
-        var called;
 
         machine.defineState(null, 'on');
 
-        called = 0;
         machine.defineMethod('transition', function(newState) {
-            called += 1;
             //  NOTE we have to still set the state on the first pass or the
             //  second pass won't process correctly since we won't have actually
             //  transitioned in a concrete sense.
@@ -592,15 +589,12 @@ function() {
     });
 
     this.it('accepts looped on/off active state definition', function(test, options) {
-        var called;
 
         machine.defineState(null, 'on');
         machine.defineState('on', 'on');
         machine.defineState('on');
 
-        called = 0;
         machine.defineMethod('transition', function(newState) {
-            called += 1;
             //  NOTE we have to still set the state on the first pass or the
             //  second pass won't process correctly since we won't have actually
             //  transitioned in a concrete sense.
