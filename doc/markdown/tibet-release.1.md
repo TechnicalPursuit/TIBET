@@ -111,7 +111,7 @@ No process environment variables are required by this command.
     Updating 3d39c02..76a0cc6
     Fast-forward
      package.json                             |  2 +-
-     public/TIBET-INF/cfg/getsherpa.xml       |  2 +-
+     public/TIBET-INF/cfg/getlama.xml         |  2 +-
      public/TIBET-INF/cfg/main.xml            |  2 +-
      public/src/templates/version.js          | 33 ++++++++++++++++----------------
      public/src/templates/version_template.js | 33 ++++++++++++++++----------------

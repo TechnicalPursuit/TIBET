@@ -10,8 +10,8 @@
 Attempts to open the specified file on the operating system using the editor
 provided, or the editor specified by `cli.open.editor`.
 
-This command is typically invoked from the Sherpa when running on the local
-machine. It allows the Sherpa to open a file under development in `vi` or
+This command is typically invoked from the Lama when running on the local
+machine. It allows the Lama to open a file under development in `vi` or
 `VisualStudio Code` for example.
 
 ## OPTIONS

@@ -28,8 +28,7 @@ No process environment variables are required by this command.
     Welcome to TIBET! This quickstart content is intended to get you up and
     running with a minimum of overhead so we'll be working with a limited set of
     commands and using their default options. Once you're done, check out the
-    documentation at https://www.technicalpursuit.com/docs/index.html to dive
-    deeper into TIBET.
+    documentation at https://www.technicalpursuit.com to dive deeper into TIBET.
 
     CREATE A NEW PROJECT
 
@@ -70,7 +69,7 @@ No process environment variables are required by this command.
     for your project in an HTML5 browser and you should see text directing you
     on how to take the next step in your TIBET journey.
 
-    For more info visit https://www.technicalpursuit.com/docs/index.html
+    For more info visit https://www.technicalpursuit.com.
 
 ## TIBET SHELL
 
