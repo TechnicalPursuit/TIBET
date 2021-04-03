@@ -125,7 +125,7 @@
         setTimeout(() => {
             process.exit(code);
         }, TDS.getcfg('tds.shutdown_timeout') + 100);
-    }
+    };
 
     //  ---
     //  Middleware

@@ -28,6 +28,10 @@
         },
         "watch": {
             "event": "fileChange"
-        }
+        },
+        "plugins": {
+            "core": ["profile", "window", "menu", "updater", "watch", "devtools"]
+        },
+        "exitOnAllClosed": true
     }
 }
