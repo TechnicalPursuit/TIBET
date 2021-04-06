@@ -6732,31 +6732,201 @@ function(attributeName, facetName, originalPath) {
 
     internalSlotName = attributeName + '_' + facetName;
 
-    if (!TP.owns(this, '$$access_paths')) {
+    if (!TP.owns(this, '$$attrnames_to_paths')) {
 
         //  NB: This is a JS literal object since this operates at a very low
         //  level and trying to use a TP.core.Hash here causes an endless
         //  recursion.
-        this.$$access_paths = {};
+        this.$$attrnames_to_paths = {};
     }
 
     //  Note here how we use a 'not defined' test here because the value very
     //  well might be 'null' which means that there really is no *access path*
     //  value for this attribute/facet pair (there very well might be another
     //  type of value).
-    if (TP.notDefined(pathVal = this.$$access_paths[internalSlotName])) {
+    if (TP.notDefined(pathVal = this.$$attrnames_to_paths[internalSlotName])) {
 
         pathVal = this.getFacetSettingFor(attributeName, facetName);
 
         if (TP.isValid(pathVal) && pathVal.isAccessPath()) {
-            this.$$access_paths[internalSlotName] = pathVal;
+            this.$$attrnames_to_paths[internalSlotName] = pathVal;
         } else {
-            this.$$access_paths[internalSlotName] = null;
+            this.$$attrnames_to_paths[internalSlotName] = null;
             pathVal = null;
         }
     }
 
     return pathVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getAttributeNameFor',
+function(aPath) {
+
+    /**
+     * @method getAttributeNameFor
+     * @summary Returns any attribute name for the supplied access path, which
+     *     should be an access path facet value, if any, for the supplied
+     *     attribute name. See the 'TP.sys.addMetadata()' call for more
+     *     information about facets.
+     * @param {TP.core.AccessPath} aPath The access path that the attribute name
+     *     might have been associated with as an access path facet.
+     * @returns {String} The attribute name associated with the supplied access
+     *     path value. If there is no attribute name associated with the
+     *     supplied access path, this method returns null.
+     */
+
+    var pathStr,
+        pathInfo;
+
+    //  This method gets called from every getter & setter in the whole system.
+    //  When we look up descriptors, by default this occurs 'up' the entire type
+    //  hierarchy of the receiver (see the getDescriptorFor() methods). These
+    //  descriptors contain the access path settings for a particular attribute.
+
+    //  Therefore, to avoid that lookup overhead we cache any attribute name for
+    //  a particular access pathon the object itself the first time it is looked
+    //  up.
+
+    if (!TP.owns(this, '$$paths_to_attrnames')) {
+
+        //  NB: This is a JS literal object since this operates at a very low
+        //  level and trying to use a TP.core.Hash here causes an endless
+        //  recursion.
+        this.$$paths_to_attrnames = {};
+    }
+
+    //  If will have been keyed by String representation of the path.
+    pathStr = aPath.get('srcPath');
+
+    //  Note here how we use a 'not defined' test here because the value very
+    //  well might be 'null' which means that there really is no attribute name
+    //  value for this access path.
+    if (TP.notDefined(pathInfo = this.$$paths_to_attrnames[pathStr])) {
+
+        pathInfo = this.getAccessPathAliases(pathStr, true);
+
+        if (TP.notEmpty(pathInfo)) {
+            pathInfo = pathInfo.first();
+            this.$$paths_to_attrnames[pathStr] = pathInfo;
+        } else {
+            this.$$paths_to_attrnames[pathStr] = null;
+            pathInfo = null;
+        }
+    }
+
+    return pathInfo;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('computePathOrCustomAccessor',
+function(prefix, attributeName) {
+
+    /**
+     * @method computePathOrCustomAccessor
+     * @summary Returns any path or custom accessor Function (i.e.
+     *     'getFoo'/'setFoo') that is associated with the supplied attribute
+     *     name.
+     * @param {String} prefix A prefix, either 'get' or 'set', to look up an
+     *     associated custom accessor Function. This is not used for path
+     *     lookup.
+     * @param {String} attributeName The name of the attribute to use to look up
+     *     an associated path or custom accessor Function.
+     * @returns {Function|TP.path.AccessPath|null} The custom Function or path
+     *     accessor for the supplied attribute name and prefix (the prefix is
+     *     not used to search for paths). If there is no path or custom accessor
+     *     Function associated with the attribute name, this method returns
+     *     null.
+     */
+
+    //  The attributeName may come in as a String or as a subtype of
+    //  TP.path.AccessPath.
+    //  If it's a String, it can either be:
+    //      1. A simple JS identifier, matching TP.regex.JS_IDENTIFIER
+    //      2. A more complex path.
+    //  If it's a subtype of TP.path.AccessPath, either can either be:
+    //      1. A path that contains a simple JS identifier, matching
+    //      TP.regex.JS_IDENTIFIER
+    //      2. A more complex path.
+    //  In both cases, the path might have a 'custom' getter or setter.
+
+    var path,
+        pathStr,
+
+        func,
+
+        simplePath,
+
+        attrName;
+
+    //  If it's a TP.path.AccessPath
+    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
+
+        //  The attribute name is a path and we also want the String
+        //  representation.
+        path = attributeName;
+        pathStr = path.get('srcPath');
+
+        //  If it's a path with a simple String (i.e. 'foo').
+        if (TP.regex.JS_IDENTIFIER.test(pathStr)) {
+
+            //  Grab any custom accessor using the prefix, the Stringified path
+            //  and the path object. If this path resolves back to an attribute
+            //  name (i.e. 'foo') that has a custom accessor associated with it
+            //  (i.e. 'getFoo'), then that Function will be returned here.
+            func = this.getCustomAccessor(prefix, pathStr, path);
+
+            if (TP.isValid(func)) {
+                return func;
+            }
+
+            //  See if the Stringified path, under the 'value' facet and the
+            //  path object, has an access path. If so, then we found a path for
+            //  the simple attribute name (e.g. 'foo')
+            simplePath = this.getAccessPathFor(pathStr, 'value', path);
+            if (TP.isValid(simplePath)) {
+                path = simplePath;
+            }
+        } else {
+            //  Otherwise, see if we have an attribute name associated with the
+            //  path. This would have been set as part of the attribute
+            //  definition process. We want to see if that then has a custom
+            //  accessor.
+            attrName = this.getAttributeNameFor(path);
+            if (TP.notEmpty(attrName)) {
+                //  If we found an attribute name for the path - check it see if
+                //  it has a custom accessor Function.
+                func = this.getCustomAccessor(prefix, attrName, path);
+
+                if (TP.isValid(func)) {
+                    return func;
+                }
+            }
+        }
+    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
+        //  If the attribute name was String, but is a 'non simple path' (i.e.
+        //  not a simplistic standalone 'foo' or whatever), then create a path
+        //  object from it.
+        path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
+    } else {
+        //  Otherwise, see if the String attribute name has an access path that
+        //  was defined for it's 'value' aspect.
+        path = this.getAccessPathFor(attributeName, 'value');
+
+        //  And then whether it has a custom accessor Function.
+        func = this.getCustomAccessor(prefix, attributeName, path);
+
+        if (TP.isValid(func)) {
+            return func;
+        }
+    }
+
+    //  If a custom accessor Function wasn't returned earlier and path is not
+    //  valid, this will return null.
+
+    return path;
 });
 
 //  ------------------------------------------------------------------------
@@ -6888,11 +7058,7 @@ function(attributeName) {
      * @returns {Object} The value of the attribute on the receiver.
      */
 
-    var path,
-        pathStr,
-
-        funcName,
-
+    var pathOrFunc,
         args;
 
     //  A shortcut - if the attribute name is '.' or '$_', then that's
@@ -6902,86 +7068,23 @@ function(attributeName) {
         return this;
     }
 
-    //  If we got handed an 'access path', then we need to let it handle this.
-    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
-        path = attributeName;
+    //  Compute a path or a custom accessor Function for the supplied attribute
+    //  name and prefix.
+    pathOrFunc = this.computePathOrCustomAccessor('get', attributeName);
 
-        //  If the path's String representation is a simple JS_IDENTIFIER, then
-        //  we need to check to see if this is just a TIBET path with a name to
-        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
-        //  So, here we check to see if there is an access path for this simple
-        //  identifier and, if there is, we use *that* path as the way to access
-        //  the underlying data. If not, then we check to see (since we have a
-        //  JS identifier as a simple path String) if there is a getter that
-        //  matches the identifier.
-        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
-            if (TP.notValid(path = this.getAccessPathFor(
-                                        pathStr, 'value', attributeName))) {
-                //  try common naming convention first
-                funcName = 'get' + TP.makeStartUpper(pathStr);
-                if (TP.canInvoke(this, funcName)) {
-                    switch (arguments.length) {
-                        case 1:
-                            return this[funcName]();
-                        default:
-                            args = TP.args(arguments, 1);
-                            return this[funcName].apply(this, args);
-                    }
-                }
-
-                //  There wasn't a valid access path aliased to that identifier,
-                //  so just use the path we were originally going to use.
-                path = attributeName;
-            }
-        }
-    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
-        path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
+    //  If the result was a Function, then compute the arguments by converting
+    //  them to an Array (slicing off the first argument, since we don't need
+    //  the attribute name) and apply it.
+    if (TP.isCallable(pathOrFunc)) {
+        args = TP.args(arguments, 1);
+        return pathOrFunc.apply(this, args);
+    } else if (TP.isValid(pathOrFunc)) {
+        //  Otherwise, it's a path so set the value using the path.
+        return this.getUsingPath(pathOrFunc, arguments);
     }
 
-    if (TP.notValid(path)) {
-        //  try common naming convention first
-        funcName = 'get' + TP.makeStartUpper(attributeName);
-        if (TP.canInvoke(this, funcName)) {
-            switch (arguments.length) {
-                case 1:
-                    return this[funcName]();
-                default:
-                    args = TP.args(arguments, 1);
-                    return this[funcName].apply(this, args);
-            }
-        }
-    }
-
-    //  If we got a valid path above or if we have a 'value' facet that has an
-    //  access path, then invoke the path.
-    if (TP.isValid(path) ||
-        TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
-
-        pathStr = path.asString();
-        //  A shortcut - if the path string is '.' or '$_', then that's
-        //  shorthand for returning ourselves.
-        if (TP.regex.ONLY_PERIOD.test(pathStr) ||
-            TP.regex.ONLY_STDIN.test(pathStr)) {
-            return this;
-        }
-
-        //  Note here how, if we were given more than 1 arguments, we grab all
-        //  of the arguments supplied, make our path source the first argument
-        //  and invoke with an apply(). Otherwise, we make an Array that has our
-        //  path source and our 'path parameters' as the last argument. In both
-        //  cases, this is because executeGet() takes varargs (in case the path
-        //  is parameterized).
-        if (arguments.length > 1) {
-            args = TP.args(arguments);
-            args.atPut(0, this.getPathSource(path));
-        } else {
-            args = TP.ac(this.getPathSource(path), this.getPathParameters());
-        }
-
-        return path.executeGet.apply(path, args);
-    }
-
-    //  let the standard mechanism handle it
+    //  It's just a String that has no path or custom accessor. Let the standard
+    //  mechanism handle it.
     return this.getProperty(attributeName);
 });
 
@@ -7087,15 +7190,7 @@ function(attributeName) {
      * @returns {Object} The value of the attribute on the receiver.
      */
 
-    var path,
-        pathStr,
-
-        attrStr,
-
-        funcName,
-
-        val,
-
+    var pathOrFunc,
         args;
 
     //  A shortcut - if the attribute name is '.' or '$_', then that's
@@ -7105,97 +7200,24 @@ function(attributeName) {
         return this;
     }
 
-    //  If we got handed an 'access path', then we need to let it handle this.
-    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
-        path = attributeName;
+    //  Compute a path or a custom accessor Function for the supplied attribute
+    //  name and prefix.
+    pathOrFunc = this.computePathOrCustomAccessor('get', attributeName);
 
-        //  If the path's String representation is a simple JS_IDENTIFIER, then
-        //  we need to check to see if this is just a TIBET path with a name to
-        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
-        //  So, here we check to see if there is an access path for this simple
-        //  identifier and, if there is, we use *that* path as the way to access
-        //  the underlying data. If not, then we check to see (since we have a
-        //  JS identifier as a simple path String) if there is a getter that
-        //  matches the identifier.
-        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
-            if (TP.notValid(path = this.getAccessPathFor(
-                                        pathStr, 'value', attributeName))) {
-                //  try common naming convention first
-                funcName = 'get' + TP.makeStartUpper(pathStr);
-                if (TP.canInvoke(this, funcName)) {
-                    switch (arguments.length) {
-                        case 1:
-                            return this[funcName]();
-                        default:
-                            args = TP.args(arguments, 1);
-                            return this[funcName].apply(this, args);
-                    }
-                }
-
-                //  There wasn't a valid access path aliased to that identifier,
-                //  so just use the path we were originally going to use.
-                path = attributeName;
-            }
-        }
-    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
-        path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
+    //  If the result was a Function, then compute the arguments by converting
+    //  them to an Array (slicing off the first argument, since we don't need
+    //  the attribute name) and apply it.
+    if (TP.isCallable(pathOrFunc)) {
+        args = TP.args(arguments, 1);
+        return pathOrFunc.apply(this, args);
+    } else if (TP.isValid(pathOrFunc)) {
+        //  Otherwise, it's a path so set the value using the path.
+        return this.getUsingPath(pathOrFunc, arguments);
     }
 
-    attrStr = attributeName.toString();
-
-    if (TP.notValid(path)) {
-        //  try common naming convention first
-        funcName = 'get' + TP.makeStartUpper(attrStr);
-        if (TP.canInvoke(this, funcName)) {
-            switch (arguments.length) {
-                case 1:
-                    return this[funcName]();
-                default:
-                    args = TP.args(arguments, 1);
-                    return this[funcName].apply(this, args);
-            }
-        }
-
-        //  This part is specific to Array - shortstop for numerical indices
-
-        //  We do want to account for a String that only has a 'whole number'
-        //  in it.
-        if (TP.isNumber(val = attributeName.asNumber())) {
-            return this.$get(val);
-        }
-    }
-
-    //  If we got a valid path above or if we have a 'value' facet that has an
-    //  access path, then invoke the path.
-    if (TP.isValid(path) ||
-        TP.isValid(path = this.getAccessPathFor(attrStr, 'value'))) {
-
-        pathStr = path.asString();
-        //  A shortcut - if the path string is '.' or '$_', then that's
-        //  shorthand for returning ourselves.
-        if (TP.regex.ONLY_PERIOD.test(pathStr) ||
-            TP.regex.ONLY_STDIN.test(pathStr)) {
-            return this;
-        }
-
-        //  Note here how, if we were given more than 1 arguments, we grab all
-        //  of the arguments supplied, make our path source the first argument
-        //  and invoke with an apply(). Otherwise, we make an Array that has our
-        //  path source and our 'path parameters' as the last argument. In both
-        //  cases, this is because executeGet() takes varargs (in case the path
-        //  is parameterized).
-        if (arguments.length > 1) {
-            args = TP.args(arguments);
-            args.atPut(0, this.getPathSource(path));
-        } else {
-            args = TP.ac(this.getPathSource(path), this.getPathParameters());
-        }
-
-        return path.executeGet.apply(path, args);
-    }
-
-    //  let the standard mechanism handle it
-    return this.getProperty(attrStr);
+    //  It's just a String that has no path or custom accessor. Let the standard
+    //  mechanism handle it.
+    return this.getProperty(attributeName);
 });
 
 //  ------------------------------------------------------------------------
@@ -7211,109 +7233,173 @@ function(attributeName) {
      * @returns {Object} The value of the attribute on the receiver.
      */
 
-    var path,
-        pathStr,
-
-        funcName,
-
+    var pathOrFunc,
         args;
 
     //  A shortcut - if the attribute name is '.' or '$_', then that's
     //  shorthand for returning ourselves.
     if (TP.regex.ONLY_PERIOD.test(attributeName) ||
         TP.regex.ONLY_STDIN.test(attributeName)) {
-
-        //  NB: Here we return the primitive string.
-        return this.toString();
+        return this;
     }
 
-    //  If we got handed an 'access path', then we need to let it handle this.
-    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
-        path = attributeName;
+    //  Compute a path or a custom accessor Function for the supplied attribute
+    //  name and prefix.
+    pathOrFunc = this.computePathOrCustomAccessor('get', attributeName);
 
-        //  If the path's String representation is a simple JS_IDENTIFIER, then
-        //  we need to check to see if this is just a TIBET path with a name to
-        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
-        //  So, here we check to see if there is an access path for this simple
-        //  identifier and, if there is, we use *that* path as the way to access
-        //  the underlying data. If not, then we check to see (since we have a
-        //  JS identifier as a simple path String) if there is a getter that
-        //  matches the identifier.
-        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
-            if (TP.notValid(path = this.getAccessPathFor(
-                                        pathStr, 'value', attributeName))) {
-                //  try common naming convention first
-                funcName = 'get' + TP.makeStartUpper(pathStr);
-                if (TP.canInvoke(this, funcName)) {
-                    switch (arguments.length) {
-                        case 1:
-                            return this[funcName]();
-                        default:
-                            args = TP.args(arguments, 1);
-                            return this[funcName].apply(this, args);
-                    }
-                }
-
-                //  There wasn't a valid access path aliased to that identifier,
-                //  so just use the path we were originally going to use.
-                path = attributeName;
-            }
-        }
-    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
-        path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
+    //  If the result was a Function, then compute the arguments by converting
+    //  them to an Array (slicing off the first argument, since we don't need
+    //  the attribute name) and apply it.
+    if (TP.isCallable(pathOrFunc)) {
+        args = TP.args(arguments, 1);
+        return pathOrFunc.apply(this, args);
+    } else if (TP.isValid(pathOrFunc)) {
+        //  Otherwise, it's a path so set the value using the path.
+        return this.getUsingPath(pathOrFunc, arguments);
     }
 
-    if (TP.notValid(path)) {
-        //  try common naming convention first
-        funcName = 'get' + TP.makeStartUpper(attributeName);
-        if (TP.canInvoke(this, funcName)) {
-            switch (arguments.length) {
-                case 1:
-                    return this[funcName]();
-                default:
-                    args = TP.args(arguments, 1);
-                    return this[funcName].apply(this, args);
-            }
-        }
-
-        //  This part is specific to String - shortstop for numerical indices
-
-        if (TP.isNumber(attributeName)) {
-            return this.charAt(attributeName);
-        }
-    }
-
-    //  If we got a valid path above or if we have a 'value' facet that has an
-    //  access path, then invoke the path.
-    if (TP.isValid(path) ||
-        TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
-
-        pathStr = path.asString();
-        //  A shortcut - if the path string is '.' or '$_', then that's
-        //  shorthand for returning ourselves.
-        if (TP.regex.ONLY_PERIOD.test(pathStr) ||
-            TP.regex.ONLY_STDIN.test(pathStr)) {
-            return this;
-        }
-
-        //  Note here how, if we were given more than 1 arguments, we grab all
-        //  of the arguments supplied, make our path source the first argument
-        //  and invoke with an apply(). Otherwise, we make an Array that has our
-        //  path source and our 'path parameters' as the last argument. In both
-        //  cases, this is because executeGet() takes varargs (in case the path
-        //  is parameterized).
-        if (arguments.length > 1) {
-            args = TP.args(arguments);
-            args.atPut(0, this.getPathSource(path));
-        } else {
-            args = TP.ac(this.getPathSource(path), this.getPathParameters());
-        }
-
-        return path.executeGet.apply(path, args);
-    }
-
-    //  let the standard mechanism handle it
+    //  It's just a String that has no path or custom accessor. Let the standard
+    //  mechanism handle it.
     return this.getProperty(attributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getCustomAccessor',
+function(prefix, attributeName, path) {
+
+    /**
+     * @method getCustomAccessor
+     * @summary Returns any custom accessor Function defined with the supplied
+     *     prefix and attribute name (i.e. 'getFoo').
+     * @param {String} prefix A prefix, either 'get' or 'set', to look up an
+     *     associated custom accessor Function.
+     * @param {String} attributeName The name of the attribute to use to look up
+     *     an associated custom accessor Function.
+     * @param {TP.path.AccessPath} [path] An optional path that is associated
+     *     with the supplied attribute name and should be invoked when the
+     *     attribute name is 'get' or 'set'. This is used to provide a
+     *     convenience mechanism when a custom accessor is provided. The caller
+     *     can simply 'callNextMethod' and the path will be executed.
+     * @returns {Function|null} The custom Function accessor for the supplied
+     *     attribute name and prefix. If there is no custom accessor Function
+     *     associated with the attribute name, this method returns null.
+     */
+
+    var funcName,
+
+        func,
+        realFunc,
+
+        nextMethod,
+
+        newFunc;
+
+    //  If its got a custom accessor, return that.
+    funcName = prefix + TP.makeStartUpper(attributeName);
+    if (TP.canInvoke(this, funcName)) {
+        func = this[funcName];
+
+        //  Grab the 'real function' - the defined getter/setter may be a CNM
+        //  wrapper or an MI resolved method or a spy method if we're using the
+        //  test harness.
+        realFunc = TP.getRealFunction(func);
+
+        //  We use the 'callNextMethod' (CNM) functionality in custom accessors
+        //  to allow a caller to just 'call up' when they're done with specific
+        //  accessor logic. Semantically, this does what CNM normally does - the
+        //  'next most specific' logic. For a getter or setter, this will get or
+        //  set the value. This is a convenience since, although for simple
+        //  attributes, '$get' or '$set' can be called, for more complex
+        //  scenarios involving a TP.path.AccessPath, it is unknown inside of
+        //  this method what the path associated with the attribute name is.
+        //  Therefore, this provides a very convenient mechanism for attributes
+        //  that have both a custom accessor *and* use a path to set/get their
+        //  value.
+
+        //  See if the function already has a 'next most specific method'.
+        nextMethod = this.getNextMethod(realFunc);
+
+        //  If it does, we do *not* replace it. We rely on our supertype to 'do
+        //  the right thing' to get/set the value (which might very well use
+        //  this mechanism at its level).
+        if (TP.isValid(nextMethod)) {
+            return func;
+        }
+
+        //  If the optional path associated with the attribute name was
+        //  supplied
+        if (TP.isValid(path)) {
+            //  Build a Function that that will get or set using either
+            //  'getUsingPath' or 'setUsingPath'.
+            newFunc = function(attributeValue, shouldSignal) {
+                var args;
+
+                args = TP.ac(arguments);
+                args.unshift(newFunc.path);
+
+                //  Note that getUsingPath/setUsingPath take an Array of
+                //  arguments as their second parameter - no apply().
+                return this[prefix + 'UsingPath'](newFunc.path, args);
+            };
+
+            newFunc.path = path;
+        } else {
+            //  Otherwise, build a Function that that will get or set using
+            //  either 'getProperty' or 'setProperty'.
+            newFunc = function(attributeValue, shouldSignal) {
+                var args;
+
+                args = TP.ac(arguments);
+                args.unshift(newFunc.attrName);
+
+                //  Note that getProperty/setProperty need to be apply()ed.
+                return this[prefix + 'Property'].apply(this, args);
+            };
+
+            newFunc.attrName = attributeName;
+        }
+
+        //  Install the newly created Function as the '$$nextfunc' (the one that
+        //  will be invoked with CNM) on the *real* Function.
+        realFunc.$$nextfunc = newFunc;
+
+        return func;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getUsingPath',
+function(aPath, pathArgs) {
+
+    /**
+     * @method getUsingPath
+     * @summary Returns the value produced by executing the supplied path
+     *     with the supplied arguments against the receiver.
+     * @param {TP.path.AccessPath} aPath The path to execute.
+     * @param {Object[]|arguments} pathArgs The Array of arguments to execute
+     *     with.
+     * @returns {Object} The value produced by executing the path.
+     */
+
+    var args;
+
+    //  Note here how, if we were given more than 1 argument, we grab all
+    //  of the arguments supplied and make our path source the first argument.
+    //  Otherwise, we make an Array that has our path source and our 'path
+    //  parameters' as the last argument. In both cases, this is because
+    //  executeGet() takes varargs (in case the path is parameterized).
+    if (pathArgs.length > 1) {
+        args = TP.copy(pathArgs);
+        args.atPut(0, this.getPathSource(aPath));
+    } else {
+        args = TP.ac(this.getPathSource(aPath), this.getPathParameters());
+    }
+
+    return aPath.executeGet.apply(aPath, args);
 });
 
 //  ------------------------------------------------------------------------
@@ -7450,11 +7536,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @returns {Object} The receiver.
      */
 
-    var path,
-        pathStr,
-
-        funcName,
-
+    var pathOrFunc,
         args;
 
     if (!TP.isMutable(this)) {
@@ -7466,79 +7548,23 @@ function(attributeName, attributeValue, shouldSignal) {
         return this.raise('TP.sig.InvalidKey');
     }
 
-    //  If we got handed an 'access path', then we need to let it handle this.
-    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
-        path = attributeName;
+    //  Compute a path or a custom accessor Function for the supplied attribute
+    //  name and prefix.
+    pathOrFunc = this.computePathOrCustomAccessor('set', attributeName);
 
-        //  If the path's String representation is a simple JS_IDENTIFIER, then
-        //  we need to check to see if this is just a TIBET path with a name to
-        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
-        //  So, here we check to see if there is an access path for this simple
-        //  identifier and, if there is, we use *that* path as the way to access
-        //  the underlying data. If not, then we check to see (since we have a
-        //  JS identifier as a simple path String) if there is a setter that
-        //  matches the identifier.
-        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
-            if (TP.notValid(path = this.getAccessPathFor(
-                                        pathStr, 'value', attributeName))) {
-                //  try common naming convention first
-                funcName = 'set' + TP.makeStartUpper(pathStr);
-                if (TP.canInvoke(this, funcName)) {
-                    switch (arguments.length) {
-                        case 1:
-                            return this[funcName]();
-                        default:
-                            args = TP.args(arguments, 1);
-                            return this[funcName].apply(this, args);
-                    }
-                }
-
-                //  There wasn't a valid access path aliased to that identifier,
-                //  so just use the path we were originally going to use.
-                path = attributeName;
-            }
-        }
-    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
-        path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
+    //  If the result was a Function, then compute the arguments by converting
+    //  them to an Array (slicing off the first argument, since we don't need
+    //  the attribute name) and apply it.
+    if (TP.isCallable(pathOrFunc)) {
+        args = TP.args(arguments, 1);
+        return pathOrFunc.apply(this, args);
+    } else if (TP.isValid(pathOrFunc)) {
+        //  Otherwise, it's a path so set the value using the path.
+        return this.setUsingPath(pathOrFunc, arguments);
     }
 
-    if (TP.notValid(path)) {
-        //  try common naming convention first
-        funcName = 'set' + TP.makeStartUpper(attributeName);
-        if (TP.canInvoke(this, funcName)) {
-            switch (arguments.length) {
-                case 1:
-                    return this[funcName]();
-                default:
-                    args = TP.args(arguments, 1);
-                    return this[funcName].apply(this, args);
-            }
-        }
-    }
-
-    //  If we got a valid path above or if we have a 'value' facet that has an
-    //  access path, then invoke the path.
-    if (TP.isValid(path) ||
-        TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
-
-        //  Note here how, if we were given more than 3 arguments, we grab all
-        //  of the arguments supplied, make our path source the first argument
-        //  and invoke with an apply(). Otherwise, we make an Array that has our
-        //  path source and our 'path parameters' as the last argument. In both
-        //  cases, this is because executeGet() takes varargs (in case the path
-        //  is parameterized).
-        if (arguments.length > 3) {
-            args = TP.args(arguments);
-            args.atPut(0, this.getPathSource(path));
-        } else {
-            args = TP.ac(this.getPathSource(path), attributeValue, shouldSignal,
-                            this.getPathParameters());
-        }
-
-        return path.executeSet.apply(path, args);
-    }
-
-    //  let the standard method handle it
+    //  It's just a String that has no path or custom accessor. Let the standard
+    //  mechanism handle it.
     return this.setProperty(attributeName, attributeValue, shouldSignal);
 });
 
@@ -7566,101 +7592,70 @@ function(attributeName, attributeValue, shouldSignal) {
      * @returns {Object} The receiver.
      */
 
-    var path,
-        pathStr,
-
-        funcName,
-
-        val,
-
+    var pathOrFunc,
         args;
 
     if (TP.isEmpty(attributeName)) {
         return this.raise('TP.sig.InvalidKey');
     }
 
-    //  If we got handed an 'access path', then we need to let it handle this.
-    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
-        path = attributeName;
+    //  Compute a path or a custom accessor Function for the supplied attribute
+    //  name.
+    pathOrFunc = this.computePathOrCustomAccessor('set', attributeName);
 
-        //  If the path's String representation is a simple JS_IDENTIFIER, then
-        //  we need to check to see if this is just a TIBET path with a name to
-        //  an 'aliased' access path (i.e. 'lastname' -> 'foo.bar.lastname').
-        //  So, here we check to see if there is an access path for this simple
-        //  identifier and, if there is, we use *that* path as the way to access
-        //  the underlying data. If not, then we check to see (since we have a
-        //  JS identifier as a simple path String) if there is a setter that
-        //  matches the identifier.
-        if (TP.regex.JS_IDENTIFIER.test(pathStr = path.get('srcPath'))) {
-            if (TP.notValid(path = this.getAccessPathFor(
-                                        pathStr, 'value', attributeName))) {
-                //  try common naming convention first
-                funcName = 'set' + TP.makeStartUpper(pathStr);
-                if (TP.canInvoke(this, funcName)) {
-                    switch (arguments.length) {
-                        case 1:
-                            return this[funcName]();
-                        default:
-                            args = TP.args(arguments, 1);
-                            return this[funcName].apply(this, args);
-                    }
-                }
-
-                //  There wasn't a valid access path aliased to that identifier,
-                //  so just use the path we were originally going to use.
-                path = attributeName;
-            }
-        }
-    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
-        path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
+    //  If the result was a Function, then compute the arguments by converting
+    //  them to an Array (slicing off the first argument, since we don't need
+    //  the attribute name) and apply it.
+    if (TP.isCallable(pathOrFunc)) {
+        args = TP.args(arguments, 1);
+        return pathOrFunc.apply(this, args);
+    } else if (TP.isValid(pathOrFunc)) {
+        return this.setUsingPath(pathOrFunc, arguments);
     }
 
-    if (TP.notValid(path)) {
-        //  try common naming convention first
-        funcName = 'set' + TP.makeStartUpper(attributeName);
-        if (TP.canInvoke(this, funcName)) {
-            switch (arguments.length) {
-                case 1:
-                    return this[funcName]();
-                default:
-                    args = TP.args(arguments, 1);
-                    return this[funcName].apply(this, args);
-            }
-        }
-
-        //  This part is specific to Array - shortstop for numerical indices
-
-        //  We do want to account for a String that only has a 'whole number'
-        //  in it.
-        if (TP.isNumber(val = attributeName.asNumber())) {
-            return this.$set(val, attributeValue, shouldSignal);
-        }
-    }
-
-    //  If we got a valid path above or if we have a 'value' facet that has an
-    //  access path, then invoke the path.
-    if (TP.isValid(path) ||
-        TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
-
-        //  Note here how, if we were given more than 3 arguments, we grab all
-        //  of the arguments supplied, make our path source the first argument
-        //  and invoke with an apply(). Otherwise, we make an Array that has our
-        //  path source and our 'path parameters' as the last argument. In both
-        //  cases, this is because executeGet() takes varargs (in case the path
-        //  is parameterized).
-        if (arguments.length > 3) {
-            args = TP.args(arguments);
-            args.atPut(0, this.getPathSource(path));
-        } else {
-            args = TP.ac(this.getPathSource(path), attributeValue, shouldSignal,
-                            this.getPathParameters());
-        }
-
-        return path.executeSet.apply(path, args);
-    }
-
-    //  let the standard method handle it
+    //  It's just a String that has no path or custom accessor. Let the standard
+    //  mechanism handle it.
     return this.setProperty(attributeName, attributeValue, shouldSignal);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('setUsingPath',
+function(aPath, pathArgs) {
+
+    /**
+     * @method setUsingPath
+     * @summary Sets the value in the path arguments by executing the supplied
+     *     path with the supplied arguments against the receiver.
+     * @param {TP.path.AccessPath} aPath The path to execute.
+     * @param {Object[]|arguments} pathArgs The Array of arguments to execute
+     *     the path with.
+     * @returns {Object} The value produced by executing the path.
+     */
+
+    var args;
+
+    //  Note here how, if we were given more than 3 arguments, we grab all
+    //  of the arguments supplied and make our path source the first argument.
+    //  Otherwise, we make an Array that has our path source as the first
+    //  argument, the 'value' and 'shouldSignal' flags as our 2nd and 3rd
+    //  arguments respectively  and our 'path parameters' as the last argument.
+
+    //  In both cases, this is because executeSet() takes varargs (in case the
+    //  path is parameterized).
+    if (pathArgs.length > 3) {
+        args = TP.copy(pathArgs);
+        args.atPut(0, this.getPathSource(aPath));
+    } else {
+        //  NB: Note the 'primitive' access here - pathArgs might be a
+        //  'primitive' 'arguments' object.
+        args = TP.ac(this.getPathSource(aPath),
+                        pathArgs[1],
+                        pathArgs[2],
+                        this.getPathParameters());
+    }
+
+    return aPath.executeSet.apply(aPath, args);
 });
 
 //  ------------------------------------------------------------------------
