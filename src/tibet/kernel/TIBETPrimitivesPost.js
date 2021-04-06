@@ -6362,7 +6362,6 @@ function(signalData, originElem, triggerSignal, aPayload, aPolicy, signalType) {
             sigParams = TP.json2js(TP.reformatJSToJSON(sigData));
         } else {
             sigParams = TP.hc('signal', sigData);
-            //targets.push(originElem);
         }
     } else {
         sigParams = signalData;
