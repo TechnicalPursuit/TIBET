@@ -10115,14 +10115,6 @@ function() {
     var theFunction,
         theArgs,
 
-        functionName,
-        functionOwner,
-        functionTrack,
-        functionParent,
-
-        targetObj,
-        symbol,
-
         nextfunc;
 
     //  there is no "next method" after you reach the top (TP.ObjectProto)
@@ -10149,13 +10141,73 @@ function() {
         theArgs = TP.$$currentArgs$$;
     }
 
+    //  Compute the next-most-specific method.
+    nextfunc = this.getNextMethod(theFunction);
+
+    if (TP.isValid(nextfunc)) {
+        return nextfunc.apply(this, theArgs);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getCurrentCallee',
+function() {
+
+    /**
+     * @method getCurrentCallee
+     * @summary Returns the current callee. The current callee will be the
+     *     Function that is currently executing.
+     * @returns {Function} The Function that is currently executing.
+     */
+
+    //  The current callee can be found on the magic property.
+    return TP.$$currentCallee$$;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getNextMethod',
+function(aFunction) {
+
+    /**
+     * @method getNextMethod
+     * @summary Returns the next-most-specific method in the lookup chain.
+     * @param {Function} aFunction The function to compute the
+     *     next-most-specific from.
+     * @returns {Function|undefined} The next-most-specific function.
+     */
+
+    var nextfunc,
+
+        functionName,
+        functionOwner,
+        functionTrack,
+        functionParent,
+
+        targetObj,
+        symbol;
+
+    //  there is no "next method" after you reach the top (TP.ObjectProto)
+    if (this === TP.ObjectProto) {
+        return;
+    }
+
+    //  We could use this[functionName] but that won't provide a way to avoid
+    //  recursions.
+    if (TP.notValid(aFunction)) {
+        return this.raise('TP.sig.InvalidContext');
+    }
+
     //  If a '$$nextfunc' property has been placed on the Function, that means
-    //  that it's either a) already been through here once or b) theFunction
+    //  that it's either a) already been through here once or b) aFunction
     //  represents a local override of a trait-resolved method and that
     //  '$$nextfunc' was captured in 'defineMethod()'. In either case, we don't
     //  have to compute it here.
-    if (theFunction.hasOwnProperty('$$nextfunc')) {
-        nextfunc = theFunction.$$nextfunc;
+    if (aFunction.hasOwnProperty('$$nextfunc')) {
+        nextfunc = aFunction.$$nextfunc;
         if (nextfunc === TP.NONE) {
             return;
         }
@@ -10163,11 +10215,11 @@ function() {
 
     if (TP.notValid(nextfunc)) {
 
-        //  Check to make sure that theFunction really has an owner slot. All
+        //  Check to make sure that aFunction really has an owner slot. All
         //  objects should, but sometimes we get objects from other contexts
         //  (i.e. frames) that don't know what 'owner' is. in those cases we
         //  can't really proceed
-        functionOwner = theFunction[TP.OWNER];
+        functionOwner = aFunction[TP.OWNER];
         if (TP.notValid(functionOwner) || functionOwner === self) {
             return;
         }
@@ -10175,13 +10227,13 @@ function() {
         //  Figure out which track (type or instance) to follow in locating the
         //  parent implementation. Where we look depends on the nature of the
         //  function and its track.
-        functionTrack = theFunction[TP.TRACK];
+        functionTrack = aFunction[TP.TRACK];
         switch (functionTrack) {
             case TP.INST_TRACK:
-                //  make sure that theFunction's owner really has a parent
+                //  make sure that aFunction's owner really has a parent
                 functionParent = functionOwner[TP.SUPER];
                 if (TP.notValid(functionParent)) {
-                    theFunction.$$nextfunc = TP.NONE;
+                    aFunction.$$nextfunc = TP.NONE;
                     return;
                 }
 
@@ -10190,10 +10242,10 @@ function() {
                 break;
 
             case TP.TYPE_TRACK:
-                //  make sure that theFunction's owner really has a parent
+                //  make sure that aFunction's owner really has a parent
                 functionParent = functionOwner.$$supertype;
                 if (TP.notValid(functionParent)) {
-                    theFunction.$$nextfunc = TP.NONE;
+                    aFunction.$$nextfunc = TP.NONE;
                     return;
                 }
 
@@ -10215,7 +10267,7 @@ function() {
 
             case TP.GLOBAL_TRACK:
             case TP.PRIMITIVE_TRACK:
-                theFunction.$$nextfunc = TP.NONE;
+                aFunction.$$nextfunc = TP.NONE;
                 return;
 
             default:
@@ -10223,7 +10275,7 @@ function() {
         }
 
         //  Grab the function name.
-        functionName = theFunction.getName();
+        functionName = aFunction.getName();
 
         //  If the function's 'name' indicates a JS Symbol (i.e. 'Symbol(foo)'),
         //  then try to find a matching Symbol on the target object.
@@ -10238,8 +10290,8 @@ function() {
         }
 
         //  DO NOT RECURSE...NO 'NEXT' FUNCTION
-        if (theFunction === nextfunc) {
-            theFunction.$$nextfunc = TP.NONE;
+        if (aFunction === nextfunc) {
+            aFunction.$$nextfunc = TP.NONE;
             return;
         }
 
@@ -10247,31 +10299,15 @@ function() {
         //  isn't, then mark the '$$nextfunc' property on the receiving Function
         //  as being TP.NONE.
         if (!TP.isCallable(nextfunc)) {
-            theFunction.$$nextfunc = TP.NONE;
+            aFunction.$$nextfunc = TP.NONE;
             return;
         }
 
         //  Cache result for future lookups.
-        theFunction.$$nextfunc = nextfunc;
+        aFunction.$$nextfunc = nextfunc;
     }
 
-    return nextfunc.apply(this, theArgs);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('getCurrentCallee',
-function() {
-
-    /**
-     * @method getCurrentCallee
-     * @summary Returns the current callee. The current callee will be the
-     *     Function that is currently executing.
-     * @returns {Function} The Function that is currently executing.
-     */
-
-    //  The current callee can be found on the magic property.
-    return TP.$$currentCallee$$;
+    return nextfunc;
 });
 
 //  ------------------------------------------------------------------------
@@ -10301,8 +10337,6 @@ function() {
     var theFunction,
         theArgs,
 
-        functionName,
-
         nextfunc;
 
     //  there is no "next method" after you reach the top (TP.ObjectProto)
@@ -10310,13 +10344,9 @@ function() {
         return;
     }
 
+    //  The function we're after will be the current callee. Use the magic
+    //  property.
     theFunction = TP.$$currentCallee$$;
-
-    if (arguments.length > 0) {
-        theArgs = arguments;
-    } else {
-        theArgs = TP.$$currentArgs$$;
-    }
 
     //  We could use this[functionName] but that won't provide a way to avoid
     //  recursions.
@@ -10324,40 +10354,23 @@ function() {
         return this.raise('TP.sig.InvalidContext');
     }
 
-    if (theFunction.hasOwnProperty('$$nextfunc')) {
-        nextfunc = theFunction.$$nextfunc;
-        if (nextfunc === TP.NONE) {
-            return;
-        }
+    //  If explicit arguments were passed in, use those. Otherwise, use the
+    //  magic property that contains the arguments that were in force from the
+    //  callee when this method was invoked.
+    if (arguments.length > 0) {
+        theArgs = arguments;
+    } else {
+        theArgs = TP.$$currentArgs$$;
     }
 
-    if (TP.notValid(nextfunc)) {
+    //  Compute the next-most-specific method.
+    nextfunc = this.getNextMethod(theFunction);
 
-        functionName = theFunction.getName();
-
-        if (TP.isType(this)) {
-            if (!TP.isCallable(nextfunc = Object[functionName])) {
-                theFunction.$$nextfunc = TP.NONE;
-                return;
-            }
-        } else {
-            if (!TP.isCallable(nextfunc = TP.ObjectProto[functionName])) {
-                theFunction.$$nextfunc = TP.NONE;
-                return;
-            }
-        }
-
-        //  DO NOT RECURSE...NO 'NEXT' FUNCTION
-        if (theFunction === nextfunc) {
-            theFunction.$$nextfunc = TP.NONE;
-            return;
-        }
-
-        //  cache result for future lookups
-        theFunction.$$nextfunc = nextfunc;
+    if (TP.isValid(nextfunc)) {
+        return nextfunc.apply(this, theArgs);
     }
 
-    return nextfunc.apply(this, theArgs);
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -10374,6 +10387,149 @@ function() {
 
     //  The current callee can be found on the magic property.
     return TP.$$currentCallee$$;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getNextMethod',
+function(aFunction) {
+
+    /**
+     * @method getNextMethod
+     * @summary Returns the next-most-specific method in the lookup chain.
+     * @param {Function} aFunction The function to compute the
+     *     next-most-specific from.
+     * @returns {Function|undefined} The next-most-specific function.
+     */
+
+    var nextfunc,
+
+        functionName,
+        functionOwner,
+        functionTrack,
+        functionParent,
+
+        targetObj,
+        symbol;
+
+    //  there is no "next method" after you reach the top (TP.ObjectProto)
+    if (this === TP.ObjectProto) {
+        return;
+    }
+
+    //  We could use this[functionName] but that won't provide a way to avoid
+    //  recursions.
+    if (TP.notValid(aFunction)) {
+        return this.raise('TP.sig.InvalidContext');
+    }
+
+    //  If a '$$nextfunc' property has been placed on the Function, that means
+    //  that it's either a) already been through here once or b) aFunction
+    //  represents a local override of a trait-resolved method and that
+    //  '$$nextfunc' was captured in 'defineMethod()'. In either case, we don't
+    //  have to compute it here.
+    if (aFunction.hasOwnProperty('$$nextfunc')) {
+        nextfunc = aFunction.$$nextfunc;
+        if (nextfunc === TP.NONE) {
+            return;
+        }
+    }
+
+    if (TP.notValid(nextfunc)) {
+
+        //  Check to make sure that aFunction really has an owner slot. All
+        //  objects should, but sometimes we get objects from other contexts
+        //  (i.e. frames) that don't know what 'owner' is. in those cases we
+        //  can't really proceed
+        functionOwner = aFunction[TP.OWNER];
+        if (TP.notValid(functionOwner) || functionOwner === self) {
+            return;
+        }
+
+        //  Figure out which track (type or instance) to follow in locating the
+        //  parent implementation. Where we look depends on the nature of the
+        //  function and its track.
+        functionTrack = aFunction[TP.TRACK];
+        switch (functionTrack) {
+            case TP.INST_TRACK:
+                //  make sure that aFunction's owner really has a parent
+                functionParent = functionOwner[TP.SUPER];
+                if (TP.notValid(functionParent)) {
+                    aFunction.$$nextfunc = TP.NONE;
+                    return;
+                }
+
+                targetObj = functionParent[TP.INSTC].prototype;
+
+                break;
+
+            case TP.TYPE_TRACK:
+                //  make sure that aFunction's owner really has a parent
+                functionParent = functionOwner.$$supertype;
+                if (TP.notValid(functionParent)) {
+                    aFunction.$$nextfunc = TP.NONE;
+                    return;
+                }
+
+                targetObj = functionParent[TP.TYPEC].prototype;
+
+                break;
+
+            case TP.TYPE_LOCAL_TRACK:
+                //  local method on the type itself...
+                targetObj = functionOwner[TP.TYPEC].prototype;
+
+                break;
+
+            case TP.LOCAL_TRACK:
+                //  local method on an instance
+                targetObj = functionOwner.getType()[TP.INSTC].prototype;
+
+                break;
+
+            case TP.GLOBAL_TRACK:
+            case TP.PRIMITIVE_TRACK:
+                aFunction.$$nextfunc = TP.NONE;
+                return;
+
+            default:
+                return;
+        }
+
+        //  Grab the function name.
+        functionName = aFunction.getName();
+
+        //  If the function's 'name' indicates a JS Symbol (i.e. 'Symbol(foo)'),
+        //  then try to find a matching Symbol on the target object.
+        if (TP.regex.JS_SYMBOL.test(functionName)) {
+            symbol = Object.getOwnPropertySymbols(targetObj).find(
+                        function(aSymbol) {
+                            return aSymbol.toString() === functionName;
+                        });
+            nextfunc = targetObj[symbol];
+        } else {
+            nextfunc = targetObj[functionName];
+        }
+
+        //  DO NOT RECURSE...NO 'NEXT' FUNCTION
+        if (aFunction === nextfunc) {
+            aFunction.$$nextfunc = TP.NONE;
+            return;
+        }
+
+        //  Make sure the computed next function is a callable value. If it
+        //  isn't, then mark the '$$nextfunc' property on the receiving Function
+        //  as being TP.NONE.
+        if (!TP.isCallable(nextfunc)) {
+            aFunction.$$nextfunc = TP.NONE;
+            return;
+        }
+
+        //  Cache result for future lookups.
+        aFunction.$$nextfunc = nextfunc;
+    }
+
+    return nextfunc;
 });
 
 //  ------------------------------------------------------------------------
