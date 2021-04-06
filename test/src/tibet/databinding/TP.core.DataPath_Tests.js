@@ -2719,6 +2719,8 @@ function(aValue) {
 });
 
 //  ========================================================================
+//  TP.path.SimpleTIBETPath
+//  ========================================================================
 
 TP.path.SimpleTIBETPath.Inst.describe('TP.path.SimpleTIBETPath Inst simple value traversal',
 function() {
@@ -2726,7 +2728,7 @@ function() {
     var singleLevelModel,
         singleLevelPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.json2js('{"foo":"bar"}');
         singleLevelPath = TP.apc('foo');
     });
@@ -2760,7 +2762,7 @@ function() {
     var singleLevelModel,
         singleLevelPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.json2js('{}');
         singleLevelPath = TP.apc('foo');
     });
@@ -2800,7 +2802,7 @@ function() {
     var singleLevelModel,
         singleLevelPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.hc('foo', TP.test.CustomAccessorType.construct());
         singleLevelPath = TP.apc('foo');
     });
@@ -2826,7 +2828,9 @@ function() {
     });
 });
 
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  TP.path.ComplexTIBETPath
+//  ========================================================================
 
 TP.path.ComplexTIBETPath.Inst.describe('TP.path.ComplexTIBETPath Inst simple value Hash traversal',
 function() {
@@ -2837,7 +2841,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.json2js('{"foo":{"hi":"there"}}');
         singleLevelPath = TP.apc('foo.hi');
 
@@ -2898,7 +2902,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.json2js('["one", "two", ["a", "b", "c"]]');
         singleLevelPath = TP.apc('2.1');
 
@@ -2959,7 +2963,7 @@ function() {
         middleResultsModel,
         middleResultsPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         tailResultsModel = TP.json2js(
             '{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
         tailResultsPath = TP.apc('foo.hi[boo,moo]');
@@ -3029,7 +3033,7 @@ function() {
         middleResultsModel,
         middleResultsPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         tailResultsModel = TP.json2js(
             '["one", "two", ["a", ["6", "7", "8"], "c"]]');
         tailResultsPath = TP.apc('2[1,2]');
@@ -3066,6 +3070,11 @@ function() {
     this.it('middle results get', function(test, options) {
         var val;
 
+        tailResultsPath.executeSet(
+            tailResultsModel, TP.ac('4', '5', '6'), true);
+
+        //  ---
+
         val = middleResultsPath.executeGet(middleResultsModel);
 
         test.assert.isEqualTo(val, TP.ac('6', '6'));
@@ -3073,6 +3082,11 @@ function() {
 
     this.it('middle results set', function(test, options) {
         var val;
+
+        tailResultsPath.executeSet(
+            tailResultsModel, TP.ac('', '', ''), true);
+
+        //  ---
 
         middleResultsPath.executeSet(middleResultsModel, 'hi', true);
 
@@ -3095,7 +3109,7 @@ function() {
 
     var slicingResultsModel;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         slicingResultsModel =
             TP.json2js('["one", "two", ["a", ["6", "7", "8"], "c"], 37, "hi"]');
     });
@@ -3192,7 +3206,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
         singleLevelPath = TP.apc('foo.1');
 
@@ -3394,7 +3408,7 @@ function() {
         path1,
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.json2js('{"foo":{"hi":"there"}}');
         path1 = TP.apc('bar.moo');
         path2 = TP.apc('bar[moo,too].noo');
@@ -3433,7 +3447,14 @@ function() {
     this.it('multi level set without creation', function(test, options) {
         var val;
 
-        //  Shouldn't create - by default, we have creation turned off
+        path1.set('buildout', true);
+
+        //  Should create - we just turned it on
+        path1.executeSet(model1, 'goo', true);
+
+        //  ---
+
+        //  Shouldn't create - by default, we have creation turned off for path2
         path2.executeSet(model1, 'boo', true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
@@ -3481,7 +3502,7 @@ function() {
         path2,
         path3;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.json2js('["one", "two", ["a", "b", "c"]]');
         path1 = TP.apc('3.1');
         path2 = TP.apc('3.1[0,4]');
@@ -3521,7 +3542,14 @@ function() {
     this.it('multi level set without creation', function(test, options) {
         var val;
 
-        //  Shouldn't create - by default, we have creation turned off
+        path1.set('buildout', true);
+
+        //  Should create - we just turned it on
+        path1.executeSet(model1, 'four', true);
+
+        //  ---
+
+        //  Shouldn't create - by default, we have creation turned off for path2
         path2.executeSet(model1, 'stuff', true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
@@ -3562,7 +3590,14 @@ function() {
     this.it('slicing results set without creation', function(test, options) {
         var val;
 
-        //  Shouldn't create - by default, we have creation turned off
+        path2.set('buildout', true);
+
+        //  Should create - we just turned it on
+        path2.executeSet(model1, 'stuff', true);
+
+        //  ---
+
+        //  Shouldn't create - by default, we have creation turned off for path3
         path3.executeSet(model1, 'foofy', true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
@@ -3606,7 +3641,7 @@ function() {
         path1,
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
         path1 = TP.apc('foo.3.bar');
         path2 = TP.apc('foo.3[bar,moo,too].roo');
@@ -3645,7 +3680,14 @@ function() {
     this.it('multi level set without creation', function(test, options) {
         var val;
 
-        //  Shouldn't create - by default, we have creation turned off
+        path1.set('buildout', true);
+
+        //  Should create - we just turned it on
+        path1.executeSet(model1, 'goo', true);
+
+        //  ---
+
+        //  Shouldn't create - by default, we have creation turned off for path2
         path2.executeSet(model1, TP.ac(), true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
@@ -3702,7 +3744,7 @@ function() {
         path3,
         path4;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.json2js(
             '{"foo":["1st","2nd","3rd","4th",["A","B","C"],["X","Y","Z"]]}');
         path1 = TP.apc('foo.{{0}}');
@@ -3820,7 +3862,7 @@ function() {
         singleLevelValuePath,
         singleLevelOtherPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.hc('foo', TP.test.CustomAccessorType.construct());
         singleLevelValuePath = TP.apc('foo.value');
         singleLevelOtherPath = TP.apc('foo.moo');
@@ -3872,7 +3914,7 @@ function() {
         singleLevelValuePath,
         singleLevelOtherPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.hc('foo', TP.test.CustomAccessorType.construct());
         singleLevelValuePath = TP.apc('foo.boo.value');
         singleLevelOtherPath = TP.apc('foo.boo.moo');
@@ -3915,7 +3957,9 @@ function() {
     });
 });
 
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  TP.path.XPathPath
+//  ========================================================================
 
 TP.path.XPathPath.Inst.describe('TP.path.XPathPath Inst simple value XML traversal',
 function() {
@@ -3926,7 +3970,7 @@ function() {
         model2,
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname></emp>');
         path1 = TP.apc('/emp/lname').set('shouldCollapse', true);
 
@@ -4018,7 +4062,7 @@ function() {
         model2,
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname></emp>');
         path1 = TP.apc('/emp/lname').set('shouldCollapse', true);
 
@@ -4089,7 +4133,7 @@ function() {
 
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path1 = TP.apc('/emp/fname');
 
@@ -4151,12 +4195,19 @@ function() {
             result,
             val;
 
+        path1.set('buildout', true);
+
+        //  Should create - we just turned it on
+        path1.executeSet(model1, 'November', true);
+
+        //  ---
+
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
         oldLogLevel = TP.getLogLevel();
         TP.setLogLevel(TP.ERROR);
 
-        //  Shouldn't create - by default, we have creation turned off
+        //  Shouldn't create - by default, we have creation turned off for path2
         path2.executeSet(model1, 'Bill', true);
 
         //  Put log level back to what it was
@@ -4221,7 +4272,7 @@ function() {
 
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path1 = TP.apc('/emp/vitals');
 
@@ -4356,7 +4407,7 @@ function() {
         path1,
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname foo="bar">Jones</lname><age baz="goo">47</age></emp>');
         path1 = TP.apc('/emp/lname/@foo').set('shouldCollapse', true);
         path2 = TP.apc('/emp/lname/@foo|/emp/age/@baz').set('shouldCollapse', true);
@@ -4397,6 +4448,10 @@ function() {
     this.it('multiple value get', function(test, options) {
         var result,
             val;
+
+        path1.executeSet(model1, 'fluffy', true);
+
+        //  ---
 
         result = path2.executeGet(model1);
 
@@ -4448,7 +4503,7 @@ function() {
         model2,
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path1 = TP.apc('/emp/fname/@foo');
 
@@ -4589,7 +4644,7 @@ function() {
         model2,
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.tpdoc('<emp><lname>Jones</lname></emp>');
         path1 = TP.apc('/emp/{{0}}').set('shouldCollapse', true);
 
@@ -4636,6 +4691,11 @@ function() {
     this.it('multiple value set', function(test, options) {
         var val;
 
+        setPath.executeSet(model1, TP.elem('<fooname>Foodney</fooname>'),
+                            true, 'emp');
+
+        //  ---
+
         setPath.executeSet(
             model2,
             TP.frag('<barname>Bardney</barname><barage>470</barage>'),
@@ -4656,7 +4716,9 @@ function() {
     });
 });
 
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  TP.path.JSONPath
+//  ========================================================================
 
 TP.path.JSONPath.Inst.describe('TP.path.JSONPath Inst simple value Hash traversal',
 function() {
@@ -4667,7 +4729,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":"there"}}');
         singleLevelPath = TP.apc('$.foo.hi', TP.hc('shouldCollapse', true));
@@ -4729,7 +4791,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.core.JSONContent.construct(
             '{"value":["one", "two", ["a", "b", "c"]]}');
         singleLevelPath = TP.apc('$.value[2][1]', TP.hc('shouldCollapse', true));
@@ -4791,7 +4853,7 @@ function() {
         middleResultsModel,
         middleResultsPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         tailResultsModel = TP.core.JSONContent.construct(
             '{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
         tailResultsPath = TP.apc('$.foo.hi[\'boo\',\'moo\']', TP.hc('shouldCollapse', true));
@@ -4874,7 +4936,7 @@ function() {
         middleResultsModel,
         middleResultsPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         tailResultsModel = TP.core.JSONContent.construct(
             '{"value": ["one", "two", ["a", ["6", "7", "8"], "c"]]}');
         tailResultsPath = TP.apc('$.value[2][1,2]', TP.hc('shouldCollapse', true));
@@ -4911,6 +4973,11 @@ function() {
     this.it('middle results get', function(test, options) {
         var val;
 
+        tailResultsPath.executeSet(
+            tailResultsModel, TP.ac('4', '5', '6'), true);
+
+        //  ---
+
         val = middleResultsPath.executeGet(middleResultsModel);
 
         test.assert.isEqualTo(val, TP.ac('6', '6'));
@@ -4918,6 +4985,11 @@ function() {
 
     this.it('middle results set', function(test, options) {
         var val;
+
+        tailResultsPath.executeSet(
+            tailResultsModel, TP.ac('', '', ''), true);
+
+        //  ---
 
         middleResultsPath.executeSet(middleResultsModel, 'hi', true);
 
@@ -4940,7 +5012,7 @@ function() {
 
     var slicingResultsModel;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         slicingResultsModel = TP.core.JSONContent.construct(
         '{"value": ["one", "two", ["a", ["6", "7", "8"], "c"], 37, "hi"]}');
     });
@@ -5017,7 +5089,7 @@ function() {
         multiLevelModel,
         multiLevelPath;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         singleLevelModel = TP.core.JSONContent.construct(
                             '{"foo":["1st","2nd",{"hi":"there"}]}');
         singleLevelPath = TP.apc('$.foo[1]', TP.hc('shouldCollapse', true));
@@ -5221,7 +5293,7 @@ function() {
         path1,
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.core.JSONContent.construct('{"foo":{"hi":"there"}}');
         path1 = TP.apc('$.bar.moo', TP.hc('shouldCollapse', true));
         path2 = TP.apc('$.bar[\'moo\',\'too\'].noo', TP.hc('shouldCollapse', true));
@@ -5270,12 +5342,19 @@ function() {
         var oldLogLevel,
             val;
 
+        path1.set('buildout', true);
+
+        //  Should create - we just turned it on
+        path1.executeSet(model1, 'goo', true);
+
+        //  ---
+
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
         oldLogLevel = TP.getLogLevel();
         TP.setLogLevel(TP.ERROR);
 
-        //  Shouldn't create - by default, we have creation turned off
+        //  Shouldn't create - by default, we have creation turned off for path2
         path2.executeSet(model1, 'boo', true);
 
         //  Put log level back to what it was
@@ -5326,7 +5405,7 @@ function() {
         path2,
         path3;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.core.JSONContent.construct('{"value": ["one", "two", ["a", "b", "c"]]}');
         path1 = TP.apc('$.value[3][1]', TP.hc('shouldCollapse', true));
         path2 = TP.apc('$.value[3][1][0,4]', TP.hc('shouldCollapse', true));
@@ -5376,12 +5455,19 @@ function() {
         var oldLogLevel,
             val;
 
+        path1.set('buildout', true);
+
+        //  Should create - we just turned it on
+        path1.executeSet(model1, 'four', true);
+
+        //  ---
+
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
         oldLogLevel = TP.getLogLevel();
         TP.setLogLevel(TP.ERROR);
 
-        //  Shouldn't create - by default, we have creation turned off
+        //  Shouldn't create - by default, we have creation turned off for path2
         path2.executeSet(model1, 'stuff', true);
 
         //  Put log level back to what it was
@@ -5426,12 +5512,17 @@ function() {
         var oldLogLevel,
             val;
 
+        path2.set('buildout', true);
+
+        //  Should create - we just turned it on
+        path2.executeSet(model1, 'stuff', true);
+
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
         oldLogLevel = TP.getLogLevel();
         TP.setLogLevel(TP.ERROR);
 
-        //  Shouldn't create - by default, we have creation turned off
+        //  Shouldn't create - by default, we have creation turned off for path3
         path3.executeSet(model1, 'foofy', true);
 
         //  Put log level back to what it was
@@ -5484,7 +5575,7 @@ function() {
         path1,
         path2;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         model1 = TP.core.JSONContent.construct('{"foo":["1st","2nd",{"hi":"there"}]}');
         path1 = TP.apc('$.foo[3].bar', TP.hc('shouldCollapse', true));
         path2 = TP.apc('$.foo[3][\'bar\',\'moo\',\'too\'].roo', TP.hc('shouldCollapse', true));
@@ -5533,12 +5624,19 @@ function() {
         var oldLogLevel,
             val;
 
+        path1.set('buildout', true);
+
+        //  Should create - we just turned it on
+        path1.executeSet(model1, 'goo', true);
+
+        //  ---
+
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
         oldLogLevel = TP.getLogLevel();
         TP.setLogLevel(TP.ERROR);
 
-        //  Shouldn't create - by default, we have creation turned off
+        //  Shouldn't create - by default, we have creation turned off for path2
         path2.executeSet(model1, TP.ac(), true);
 
         //  Put log level back to what it was
@@ -5739,7 +5837,7 @@ function() {
 
     var jsonContent;
 
-    this.before(function(suite, options) {
+    this.beforeEach(function(suite, options) {
         jsonContent =
             TP.core.JSONContent.construct('{ "store": { "book": [ { "category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95 }, { "category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99 }, { "category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99 }, { "category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99 } ], "bicycle": { "color": "red", "price": 19.95 } } }');
     });
