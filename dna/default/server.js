@@ -208,10 +208,18 @@
         if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
             //  These happen due to port defaults below 1024 (which require perms)
             console.error('Possible permission error for server port: ' + port);
+            setTimeout(() => {
+                process.exit(1);
+            }, 10);
+            return;
         } else if (err.message && err.message.indexOf('EADDRINUSE') !== -1) {
             //  These happen because you forget you're already running one.
             console.error('Server start failed. Port ' + (err.port || port) +
                 ' is busy.');
+            setTimeout(() => {
+                process.exit(1);
+            }, 10);
+            return;
         } else if (app.get('env') === 'development') {
             stack = err.stack || '';
             TDS.logger.error('Uncaught: \n' + stack.replace(/\\n/g, '\n'), meta);
