@@ -1079,7 +1079,7 @@ function() {
         aspectObsFunction =
                 function(aSignal) {
                     aspectChangedResults.push(aSignal.at('aspect'));
-                    valueChangedResults.push(aSignal.getValue().first());
+                    valueChangedResults.push(aSignal.getValue());
                 };
 
         newEmployee = TP.test.JSONPathEmployee.construct(
@@ -1126,10 +1126,10 @@ function() {
         aspectChangedResults.setID('XPATH_TEST_VALUE_CHANGED_RESULTS');
 
         aspectObsFunction =
-            function(aSignal) {
-                aspectChangedResults.push(aSignal.at('aspect'));
-                valueChangedResults.push(TP.val(aSignal.getValue().first()));
-            };
+                function(aSignal) {
+                    aspectChangedResults.push(aSignal.at('aspect'));
+                    valueChangedResults.push(TP.val(aSignal.getValue()));
+                };
 
         newEmployee = TP.test.XPathPathEmployee.construct(
                         TP.doc('<emp><lname></lname><fname></fname></emp>'));

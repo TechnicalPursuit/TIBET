@@ -5754,6 +5754,12 @@ function(aPath, config) {
 
     this.callNextMethod(path, config);
 
+    if (TP.isHash(config)) {
+        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
+    } else {
+        this.set('shouldCollapse', true);
+    }
+
     return this;
 });
 
@@ -8625,8 +8631,10 @@ function(aPath, config) {
 
     if (TP.isHash(config)) {
         this.set('buildvals', config.atIfInvalid('buildvals', true));
+        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
     } else {
         this.set('buildvals', true);
+        this.set('shouldCollapse', true);
     }
 
     return this;

@@ -579,7 +579,8 @@ function() {
 
     //  Grab the 'result nodes' using the get call. If there were no
     //  results, return the empty Array.
-    if (TP.notValid(results = contextElem.get(TP.apc(query)))) {
+    if (TP.notValid(results = contextElem.get(
+                    TP.apc(query, TP.hc('shouldCollapse', false))))) {
         return TP.ac();
     }
 
