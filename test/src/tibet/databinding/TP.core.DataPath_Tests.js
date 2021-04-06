@@ -4251,12 +4251,12 @@ function() {
                     TP.unwrap(model1), '/emp/fname|/emp/nickname', null, true);
 
         //  This will return the text value for '/emp/fname'
-        val = TP.val(result.at(0));
+        val = TP.val(result);
 
         test.assert.isEqualTo(val, 'Bill');
 
         //  This will return the text value for '/emp/nickname'
-        val = TP.val(result.at(1));
+        val = TP.val(result);
 
         test.assert.isEqualTo(val, 'Bill');
     });
