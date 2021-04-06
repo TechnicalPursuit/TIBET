@@ -193,7 +193,13 @@ function(methodName) {
      */
 
     var methodInfo,
-        existingMethod;
+
+        owner,
+        track,
+
+        existingMethod,
+
+        spyMethod;
 
     if (!TP.isString(methodName)) {
         return this.raise('TP.sig.InvalidString');
@@ -201,9 +207,20 @@ function(methodName) {
 
     //  Get the method on the receiver by asking the reflection system.
     methodInfo = this.getMethodInfoFor(methodName);
-    existingMethod = methodInfo.at('owner').getMethod(methodName);
 
-    return existingMethod.asSpy();
+    //  Grab the method owner and track. This will allow us to obtain the method
+    //  and install its replacement.
+    owner = methodInfo.at('owner');
+    track = methodInfo.at('track');
+
+    //  Grab the existing method and convert it to being a spy.
+    existingMethod = owner.getMethod(methodName, track);
+    spyMethod = existingMethod.asSpy();
+
+    //  Install the spy in place of the existing method.
+    owner[track][methodName] = spyMethod;
+
+    return spyMethod;
 });
 
 //  ------------------------------------------------------------------------
@@ -222,7 +239,13 @@ function(methodName, altValue) {
      */
 
     var methodInfo,
-        existingMethod;
+
+        owner,
+        track,
+
+        existingMethod,
+
+        stubMethod;
 
     if (!TP.isString(methodName)) {
         return this.raise('TP.sig.InvalidString');
@@ -230,9 +253,20 @@ function(methodName, altValue) {
 
     //  Get the method on the receiver by asking the reflection system.
     methodInfo = this.getMethodInfoFor(methodName);
-    existingMethod = methodInfo.at('owner').getMethod(methodName);
 
-    return existingMethod.asStub(altValue);
+    //  Grab the method owner and track. This will allow us to obtain the method
+    //  and install its replacement.
+    owner = methodInfo.at('owner');
+    track = methodInfo.at('track');
+
+    //  Grab the existing method and convert it to being a stub.
+    existingMethod = owner.getMethod(methodName, track);
+    stubMethod = existingMethod.asStub(altValue);
+
+    //  Install the stub in place of the existing method.
+    owner[track][methodName] = stubMethod;
+
+    return stubMethod;
 });
 
 //  ------------------------------------------------------------------------
