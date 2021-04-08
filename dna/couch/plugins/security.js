@@ -14,26 +14,20 @@
      */
     module.exports = function(options) {
         var app,
-            TDS,
-
             helmet,
             noCache,
-
-            cspKeywords,
-            quoteValue,
-
-            reportUri,
-            reportOnly,
-            defaultSrc,
-            imgSrc,
-            scriptSrc,
-            styleSrc,
-            objectSrc,
-            frameSrc,
-            connectSrc;
+            uuid,
+            logger,
+            meta,
+            directives,
+            csp,
+            referrerPolicy,
+            hsts,
+            TDS;
 
         app = options.app;
         TDS = app.TDS;
+        logger = options.logger;
 
         //  ---
         //  Requires
@@ -41,89 +35,94 @@
 
         helmet = require('helmet');
         noCache = require('nocache');
+        uuid = require('uuid');
+
+        //  ---
+        //  Config data
+        //  ---
+
+        meta = {
+            type: 'TDS',
+            name: 'security'
+        };
+
+        //  Top-level CSP. This serves as our baseline config object.
+        csp = TDS.getcfg('tds.csp', {}, true);
+
+        //  Process CSP directives from config data. We use this as a starting
+        //  point but then process it for nonce addition.
+        directives = TDS.getCSPDirectives();
+        if (TDS.isEmpty(csp)) {
+            throw new Error('CSP directives invalid or empty.');
+        }
 
         //  ---
         //  Middleware
         //  ---
 
+        app.use(helmet.dnsPrefetchControl({
+            allow: true
+        }));
+        app.use(helmet.frameguard('sameorigin'));
         app.use(helmet.hidePoweredBy());
         app.use(helmet.ieNoOpen());
-        app.use(noCache());
         app.use(helmet.noSniff());
-        app.use(helmet.frameguard('sameorigin'));
-        app.use(helmet.xssFilter());
 
-        //  Set up CSP directives
-
-        //  Define a RegExp with all of the CSP keywords from the grammar
-        //  defined in the CSP specification.
-        cspKeywords = new RegExp(
-                        '^(' +
-                        'self' +
-                        '|unsafe-inline' +
-                        '|unsafe-eval' +
-                        '|strict-dynamic' +
-                        '|unsafe-hashes' +
-                        '|report-sample' +
-                        '|unsafe-allow-redirects' +
-                        ')$');
-
-        quoteValue = function(aValue) {
-            if (cspKeywords.test(aValue)) {
-                return TDS.quote(aValue, '\'');
-            }
-
-            return aValue;
-        };
-
-        reportUri = TDS.getcfg('tds.csp.reportUri', '/');
-        reportOnly = TDS.getcfg('tds.csp.reportOnly', true);
-
-        defaultSrc = TDS.getcfg('tds.csp.defaultSrc', ['self']);
-        defaultSrc = defaultSrc.map(quoteValue);
-
-        imgSrc = TDS.getcfg('tds.csp.imgSrc', ['self']);
-        imgSrc = imgSrc.map(quoteValue);
-
-        scriptSrc = TDS.getcfg('tds.csp.scriptSrc', ['self']);
-        scriptSrc = scriptSrc.map(quoteValue);
-
-        styleSrc = TDS.getcfg('tds.csp.styleSrc', ['self']);
-        styleSrc = styleSrc.map(quoteValue);
-
-        objectSrc = TDS.getcfg('tds.csp.objectSrc', ['none']);
-        objectSrc = objectSrc.map(quoteValue);
-
-        frameSrc = TDS.getcfg('tds.csp.frameSrc', ['none']);
-        frameSrc = frameSrc.map(quoteValue);
-
-        connectSrc = TDS.getcfg('tds.csp.connectSrc', ['none']);
-        connectSrc = connectSrc.map(quoteValue);
-
-        app.use(helmet.contentSecurityPolicy({
-            directives: {
-                reportUri: reportUri,
-                defaultSrc: defaultSrc,
-                imgSrc: imgSrc,
-                scriptSrc: scriptSrc,
-                styleSrc: styleSrc,
-                objectSrc: objectSrc,
-                frameSrc: frameSrc,
-                connectSrc: connectSrc
-            },
-            reportOnly: reportOnly
+        referrerPolicy = TDS.getcfg('tds.security.referrerPolicy',
+            'strict-origin-when-cross-origin');
+        app.use(helmet.referrerPolicy({
+            policy: referrerPolicy
         }));
 
-        //  Should be more configurable. These are disabled by default.
-        // app.use(helmet.hpkp());
-        // app.use(helmet.hsts());
+        app.use(noCache());
+        app.use(helmet.xssFilter());
 
-        //  TODO:   is this necessary or does helmet handle this?
-        // app.use(csurf());
+        //  Add a nonce to every request.
+        app.use((req, res, next) => {
+            res.locals.nonce = Buffer.from(uuid.v4()).toString('base64');
+            next();
+        });
 
-        /**
-         *
-         */
+        //  Process the CSP so it can blend in the nonce (and other locals).
+        app.use((req, res, next) => {
+            var obj,
+                nonce;
+
+            nonce = ['\'nonce-' + res.locals.nonce + '\''];
+
+            //  For localhost we don't want to upgrade requests.
+            if (req.hostname === 'localhost') {
+                csp.upgradeInsecureRequests = false;
+            }
+
+            //  For each directive key determine if nonce is added
+            obj = {};
+            csp.directives = obj;
+            Object.keys(directives).forEach(function(key) {
+                var val;
+
+                val = directives[key];
+                if (val.includes('\'none\'') ||
+                        val.includes('\'unsafe-inline\'')) {
+                    obj[key] = val;
+                } else {
+                    obj[key] = val.concat(nonce);
+                }
+            });
+
+            //  Apply the CSP
+            helmet.contentSecurityPolicy(csp);
+            next();
+        });
+
+        // Add HSTS Strict-Transport-Security ??
+        if (TDS.getcfg('tds.use_hsts')) {
+            logger.info('activating hsts middleware', meta);
+            hsts = TDS.getcfg('tds.hsts', {}, true);
+            app.use(helmet.hsts(hsts));
+        }
+
+        //  Force HTTPS / SSL ??
         options.forceHTTPS = function(req, res, next) {
 
             //  Express will try to set req.secure, but Heroku et. al. don't
@@ -136,15 +135,18 @@
             res.redirect('https://' + req.headers.host + req.url);
         };
 
+        //  Default to https for the site and require it to be forced off via
+        //  flag
+        if (TDS.getcfg('tds.https')) {
+            app.enable('trust proxy');
+
+            logger.info('forcing HTTPS/SSL via middleware', meta);
+            app.use(options.forceHTTPS);
+        }
+
         //  ---
         //  Sharing
         //  ---
-
-        //  Default to https for the site and require it to be forced off via flag.
-        if (TDS.getcfg('tds.https')) {
-            app.enable('trust proxy');
-            app.use(options.forceHTTPS);
-        }
 
         options.helmet = helmet;
 
