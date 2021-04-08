@@ -2,20 +2,35 @@
     "name": "tibet",
     "version": "5.2.5",
     "description": "The TIBET Low Code Development Platform.",
-    "keywords": ["Cloud Admin", "CouchDB", "Database Admin", "Desktop", "DevOps", "Electron", "Low Code", "No Code", "IDE", "Admin Tools", "Workflow"],
+    "keywords": [
+        "Cloud Admin",
+        "CouchDB",
+        "Database Admin",
+        "Desktop",
+        "DevOps",
+        "Electron",
+        "Low Code",
+        "No Code",
+        "IDE",
+        "Admin Tools",
+        "Workflow"
+    ],
     "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
         "email": "tibet@technicalpursuit.com",
         "url": "http://www.technicalpursuit.com"
     },
-    "contributors": [{
-        "name": "Scott Shattuck",
-        "email": "ss@technicalpursuit.com"
-    }, {
-        "name": "William J. Edney",
-        "email": "bedney@technicalpursuit.com"
-    }],
+    "contributors": [
+        {
+            "name": "Scott Shattuck",
+            "email": "ss@technicalpursuit.com"
+        },
+        {
+            "name": "William J. Edney",
+            "email": "bedney@technicalpursuit.com"
+        }
+    ],
     "repository": {
         "type": "git",
         "url": "http://github.com/TechnicalPursuit/TIBET"

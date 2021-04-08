@@ -31,6 +31,7 @@
 
 <br/>
 
+<a name="installation" href="#"></a>
 <img alt="Installation" src="./lib/media/disk.png" width="128px" height="128px"/>
 
 # Installation
