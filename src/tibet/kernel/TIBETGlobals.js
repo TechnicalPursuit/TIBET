@@ -3179,7 +3179,7 @@ TP.EMPTY_ARRAY = [];
 
 //  CSS classes used by the Lama to visually manipulate elements on its
 //  canvas.
-TP.regex.SHERPA_CSS_CLASS = /lama-[A-Za-z0-9-]+ ?/g;  //  needs reset
+TP.regex.LAMA_CSS_CLASS = /lama-[A-Za-z0-9-]+ ?/g;  //  needs reset
 
 //  ---
 //  data binding
