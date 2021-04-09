@@ -84,7 +84,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * so we give this a generous amount of time.
  * @type {Number}
  */
-Cmd.prototype.TIMEOUT = 1000 * 60 * 20;
+Cmd.prototype.TIMEOUT = 1000 * 60 * 60;
 
 /**
  * The command usage string.
@@ -484,6 +484,10 @@ Cmd.prototype.execute = async function() {
             '"nodockercache": true, ' +
             '"dockerfile": "Dockerfile_DEPLOY", ' +
 
+            //  The default command will tag 'latest' (per our project version),
+            //  but we want extra images tagged off of that, so that there are
+            //  images with our major, major.minor and major.minor.patch version
+            //  numbers.
             '"extra_tag_entries": [' +
                 '[' +
                     '"technicalpursuit/tibet:latest"' + ',' +
@@ -500,6 +504,9 @@ Cmd.prototype.execute = async function() {
                     '"technicalpursuit/tibet:' + meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch + '"' +
                 ']' +
             '],' +
+
+            //  The default command will push 'latest', but we want the extra
+            //  tagged images to be pushed as well.
             '"extra_push_entries": [' +
                 '"technicalpursuit/tibet:' + meta.source.major + '", ' +
                 '"technicalpursuit/tibet:' + meta.source.major + '.' + meta.source.minor + '", ' +
