@@ -17,8 +17,8 @@
             make.CLI.joinPaths('..', '..', '..', '..', 'deps', 'discovery', 'discovery.css'));
 
         make.sh.cp(
-            make.CLI.joinPaths('.', 'discovery.umd.js'),
-            make.CLI.joinPaths('..', '..', '..', '..', 'deps', 'discovery', 'discovery-umd-tpi.js'));
+            make.CLI.joinPaths('.', 'discovery.js'),
+            make.CLI.joinPaths('..', '..', '..', '..', 'deps', 'discovery', 'discovery-tpi.js'));
 
         resolve();
     };

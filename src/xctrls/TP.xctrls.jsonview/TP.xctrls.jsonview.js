@@ -81,7 +81,7 @@ function(aRequest) {
     if (TP.notValid(TP.extern.discovery)) {
 
         TP.sys.fetchScriptInto(
-            TP.uc('~lib_deps/discovery/discovery-umd-tpi.js'),
+            TP.uc('~lib_deps/discovery/discovery-tpi.js'),
             TP.doc(elem)
         ).then(function() {
                 var discoveryObj;
