@@ -2694,12 +2694,24 @@ function isnan (val) {
 
 
 
+/**
+ * Returns a Buffer with a sequence of random nBytes
+ * 
+ * @param {number} nBytes 
+ * @returns {Buffer} fixed-length sequence of random bytes
+ */
 
-var randomBytes = function randomBytes(nBytes) {
+function randomBytes(nBytes) {
   return __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(new __WEBPACK_IMPORTED_MODULE_5__utils_WordArray__["a" /* default */]().random(nBytes).toString(), 'hex');
-};
+}
 
+;
 
+/**
+ * Tests if a hex string has it most significant bit set (case-insensitive regex)
+ */
+
+var HEX_MSB_REGEX = /^[89a-f]/i;
 var initN = 'FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD1' + '29024E088A67CC74020BBEA63B139B22514A08798E3404DD' + 'EF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245' + 'E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7ED' + 'EE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3D' + 'C2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F' + '83655D23DCA3AD961C62F356208552BB9ED529077096966D' + '670C354E4ABC9804F1746C08CA18217C32905E462E36CE3B' + 'E39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9' + 'DE2BCBF6955817183995497CEA956AE515D2261898FA0510' + '15728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64' + 'ECFB850458DBEF0A8AEA71575D060C7DB3970F85A6E1E4C7' + 'ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6B' + 'F12FFA06D98A0864D87602733EC86A64521F2B18177B200C' + 'BBE117577A615D6C770988C0BAD946E208E24FA074E5AB31' + '43DB5BFCE0FD108E4B82D120A93AD2CAFFFFFFFFFFFFFFFF';
 var newPasswordRequiredChallengeUserAttributePrefix = 'userAttributes.';
 /** @class */
@@ -2712,7 +2724,7 @@ var AuthenticationHelper = /*#__PURE__*/function () {
   function AuthenticationHelper(PoolName) {
     this.N = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](initN, 16);
     this.g = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */]('2', 16);
-    this.k = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](this.hexHash("00" + this.N.toString(16) + "0" + this.g.toString(16)), 16);
+    this.k = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](this.hexHash("" + this.padHex(this.N) + this.padHex(this.g)), 16);
     this.smallAValue = this.generateRandomSmallA();
     this.getLargeAValue(function () {});
     this.infoBits = __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from('Caldera Derived Key', 'utf8');
@@ -2758,10 +2770,11 @@ var AuthenticationHelper = /*#__PURE__*/function () {
   ;
 
   _proto.generateRandomSmallA = function generateRandomSmallA() {
+    // This will be interpreted as a postive 128-bit integer
     var hexRandom = randomBytes(128).toString('hex');
-    var randomBigInt = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](hexRandom, 16);
-    var smallABigInt = randomBigInt.mod(this.N);
-    return smallABigInt;
+    var randomBigInt = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](hexRandom, 16); // There is no need to do randomBigInt.mod(this.N - 1) as N (3072-bit) is > 128 bytes (1024-bit)
+
+    return randomBigInt;
   }
   /**
    * helper function to generate a random string
@@ -2812,7 +2825,8 @@ var AuthenticationHelper = /*#__PURE__*/function () {
     this.randomPassword = this.generateRandomString();
     var combinedString = "" + deviceGroupKey + username + ":" + this.randomPassword;
     var hashedString = this.hash(combinedString);
-    var hexRandom = randomBytes(16).toString('hex');
+    var hexRandom = randomBytes(16).toString('hex'); // The random hex will be unambiguously represented as a postive integer
+
     this.SaltToHashDevices = this.padHex(new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](hexRandom, 16));
     this.g.modPow(new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](this.hexHash(this.SaltToHashDevices + hashedString), 16), this.N, function (err, verifierDevicesNotPadded) {
       if (err) {
@@ -2935,7 +2949,7 @@ var AuthenticationHelper = /*#__PURE__*/function () {
         callback(err, null);
       }
 
-      var hkdf = _this4.computehkdf(__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this4.padHex(sValue), 'hex'), __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this4.padHex(_this4.UValue.toString(16)), 'hex'));
+      var hkdf = _this4.computehkdf(__WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this4.padHex(sValue), 'hex'), __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(_this4.padHex(_this4.UValue), 'hex'));
 
       callback(null, hkdf);
     });
@@ -2977,22 +2991,72 @@ var AuthenticationHelper = /*#__PURE__*/function () {
     return newPasswordRequiredChallengeUserAttributePrefix;
   }
   /**
-   * Converts a BigInteger (or hex string) to hex format padded with zeroes for hashing
-   * @param {BigInteger|String} bigInt Number or string to pad.
-   * @returns {String} Padded hex string.
+   * Returns an unambiguous, even-length hex string of the two's complement encoding of an integer.
+   * 
+   * It is compatible with the hex encoding of Java's BigInteger's toByteArray(), wich returns a 
+   * byte array containing the two's-complement representation of a BigInteger. The array contains
+   * the minimum number of bytes required to represent the BigInteger, including at least one sign bit.
+   * 
+   * Examples showing how ambiguity is avoided by left padding with:
+   * 	"00" (for positive values where the most-significant-bit is set)
+   *  "FF" (for negative values where the most-significant-bit is set)
+   * 
+   * padHex(bigInteger.fromInt(-236))  === "FF14"
+   * padHex(bigInteger.fromInt(20))    === "14"
+   * 
+   * padHex(bigInteger.fromInt(-200))  === "FF38"
+   * padHex(bigInteger.fromInt(56))    === "38"
+   * 
+   * padHex(bigInteger.fromInt(-20))   === "EC"
+   * padHex(bigInteger.fromInt(236))   === "00EC"
+   * 
+   * padHex(bigInteger.fromInt(-56))   === "C8"
+   * padHex(bigInteger.fromInt(200))   === "00C8"
+   * 
+   * @param {BigInteger} bigInt Number to encode.
+   * @returns {String} even-length hex string of the two's complement encoding.
    */
   ;
 
   _proto.padHex = function padHex(bigInt) {
-    var hashStr = bigInt.toString(16);
-
-    if (hashStr.length % 2 === 1) {
-      hashStr = "0" + hashStr;
-    } else if ('89ABCDEFabcdef'.indexOf(hashStr[0]) !== -1) {
-      hashStr = "00" + hashStr;
+    if (!(bigInt instanceof __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */])) {
+      throw new Error('Not a BigInteger');
     }
 
-    return hashStr;
+    var isNegative = bigInt.compareTo(__WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */].ZERO) < 0;
+    /* Get a hex string for abs(bigInt) */
+
+    var hexStr = bigInt.abs().toString(16);
+    /* Pad hex to even length if needed */
+
+    hexStr = hexStr.length % 2 !== 0 ? "0" + hexStr : hexStr;
+    /* Prepend "00" if the most significant bit is set */
+
+    hexStr = HEX_MSB_REGEX.test(hexStr) ? "00" + hexStr : hexStr;
+
+    if (isNegative) {
+      /* Flip the bits of the representation */
+      var invertedNibbles = hexStr.split('').map(function (x) {
+        var invertedNibble = ~parseInt(x, 16) & 0xf;
+        return '0123456789ABCDEF'.charAt(invertedNibble);
+      }).join('');
+      /* After flipping the bits, add one to get the 2's complement representation */
+
+      var flippedBitsBI = new __WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */](invertedNibbles, 16).add(__WEBPACK_IMPORTED_MODULE_6__BigInteger__["a" /* default */].ONE);
+      hexStr = flippedBitsBI.toString(16);
+      /*
+      For hex strings starting with 'FF8', 'FF' can be dropped, e.g. 0xFFFF80=0xFF80=0x80=-128
+      	Any sequence of '1' bits on the left can always be substituted with a single '1' bit
+      without changing the represented value.
+      	This only happens in the case when the input is 80...00
+      */
+
+      if (hexStr.toUpperCase().startsWith('FF8')) {
+        hexStr = hexStr.substring(2);
+      }
+    }
+
+    return hexStr;
   };
 
   return AuthenticationHelper;
@@ -4220,7 +4284,9 @@ BigInteger.ONE = nbv(1);
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoAccessToken; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(9);
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 /*
  * Copyright 2016 Amazon.com,
@@ -4350,7 +4416,9 @@ var CognitoJwtToken = /*#__PURE__*/function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoIdToken; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(9);
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 /*!
  * Copyright 2016 Amazon.com,
@@ -4751,6 +4819,7 @@ var CognitoUser = /*#__PURE__*/function () {
 
         var challengeParameters = data.ChallengeParameters;
         _this2.username = challengeParameters.USER_ID_FOR_SRP;
+        _this2.userDataKey = _this2.keyPrefix + "." + _this2.username + ".userData";
         serverBValue = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SRP_B, 16);
         salt = new __WEBPACK_IMPORTED_MODULE_5__BigInteger__["a" /* default */](challengeParameters.SALT, 16);
 
@@ -5569,20 +5638,30 @@ var CognitoUser = /*#__PURE__*/function () {
    */
   ;
 
-  _proto.refreshSessionIfPossible = function refreshSessionIfPossible() {
+  _proto.refreshSessionIfPossible = function refreshSessionIfPossible(options) {
     var _this11 = this;
+
+    if (options === void 0) {
+      options = {};
+    }
 
     // best effort, if not possible
     return new Promise(function (resolve) {
       var refresh = _this11.signInUserSession.getRefreshToken();
 
       if (refresh && refresh.getToken()) {
-        _this11.refreshSession(refresh, resolve);
+        _this11.refreshSession(refresh, resolve, options.clientMetadata);
       } else {
         resolve();
       }
     });
   }
+  /**
+   * @typedef {Object} GetUserDataOptions
+   * @property {boolean} bypassCache - force getting data from Cognito service
+   * @property {Record<string, string>} clientMetadata - clientMetadata for getSession
+   */
+
   /**
    * This is used by an authenticated users to get the userData
    * @param {nodeCallback<UserData>} callback Called on success or error.
@@ -5610,7 +5689,7 @@ var CognitoUser = /*#__PURE__*/function () {
 
     if (this.isFetchUserDataAndTokenRequired(params)) {
       this.fetchUserData().then(function (data) {
-        return _this12.refreshSessionIfPossible().then(function () {
+        return _this12.refreshSessionIfPossible(params).then(function () {
           return data;
         });
       }).then(function (data) {
@@ -5717,15 +5796,25 @@ var CognitoUser = /*#__PURE__*/function () {
     });
   }
   /**
+   * @typedef {Object} GetSessionOptions
+   * @property {Record<string, string>} clientMetadata - clientMetadata for getSession
+   */
+
+  /**
    * This is used to get a session, either from the session object
    * or from  the local storage, or by using a refresh token
    *
    * @param {nodeCallback<CognitoUserSession>} callback Called on success or error.
+   * @param {GetSessionOptions} options
    * @returns {void}
    */
   ;
 
-  _proto.getSession = function getSession(callback) {
+  _proto.getSession = function getSession(callback, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
     if (this.username == null) {
       return callback(new Error('Username is null. Cannot retrieve a new session'), null);
     }
@@ -5768,7 +5857,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback(new Error('Cannot retrieve a new session. Please authenticate.'), null);
       }
 
-      this.refreshSession(refreshToken, callback);
+      this.refreshSession(refreshToken, callback, options.clientMetadata);
     } else {
       callback(new Error('Local storage is missing an ID Token, Please authenticate'), null);
     }
@@ -7925,13 +8014,13 @@ var CognitoUserPool = /*#__PURE__*/function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserAgent__ = __webpack_require__(18);
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
 
 function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
 
 function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
 
