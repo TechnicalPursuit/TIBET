@@ -51,7 +51,7 @@ RUN npm -g config set user root && npm install -g tibet
 
 # Run a script in TIBET's bin directory that will install of its
 # devDependencies.
-RUN $(npm root -g)/tibet/bin/tibet_develop_init.bash
+RUN $(npm root -g)/tibet/bin/tibet init
 
 # Switch to the non-root 'developer' user.
 USER developer
