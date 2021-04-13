@@ -48,7 +48,7 @@ Cmd.prototype = new Cmd.Parent();
  * The context viable for this command.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 
 /**
  * The command name for this type.
@@ -67,7 +67,7 @@ Cmd.NAME = 'init';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['freeze'],
+    boolean: ['force', 'freeze', 'tibet'],
     default: {
     }
 },
@@ -79,7 +79,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet init [--freeze] [--force]';
+Cmd.prototype.USAGE = 'tibet init [--freeze] [--force] [--tibet]';
 
 
 //  ---
@@ -111,6 +111,10 @@ Cmd.prototype.execute = function() {
 
     cmd = this;
 
+    if (!CLI.inProject()) {
+        return this.initTIBET();
+    }
+
     sh = require('shelljs');
     child = require('child_process');
 
@@ -123,7 +127,7 @@ Cmd.prototype.execute = function() {
     if (!sh.test('-f', CLI.NPM_FILE)) {
         this.error(
             'No ' + CLI.NPM_FILE +
-            ' in current directory. Are you in a project?');
+            ' in current directory. Are you in a project root?');
         return 1;
     }
 
@@ -367,6 +371,109 @@ Cmd.prototype.execute = function() {
 
     return 0;
 };
+
+
+/**
+ * A special-case process run when initially installing TIBET. This command
+ * implements the work-arounds necessary to have a global install that has
+ * devDependencies when using npm.
+ */
+Cmd.prototype.initTIBET = function() {
+    var path,
+        sh,
+        cwd,
+        cmd,
+        script,
+        result,
+        npmdir,
+        initFile,
+        rmpath;
+
+    sh = require('shelljs');
+    path = require('path');
+
+    cmd = this;
+
+    cmd.info('Initializing TIBET installation...');
+
+    //  Capture current directory so we can move without losing our place.
+    cwd = process.cwd();
+    cmd.debug('cwd: ' + cwd);
+
+    try {
+        //  Get the global npm installation location for TIBET
+        //  cd "$(npm root -g)/tibet"
+        script = 'npm root -global';
+        result = sh.exec(script, {silent: true});
+        if (sh.error()) {
+            cmd.error('Error determining global npm location:\n' +
+                result.stderr);
+            return 1;
+        }
+
+        npmdir = path.join(result.stdout.trim(), 'tibet');
+        cmd.debug('npmdir: ' + npmdir);
+        result = sh.test('-d', npmdir);
+        if (result) {
+            cmd.info('Found TIBET in: ' + npmdir);
+        } else {
+            cmd.error('Unable to locate TIBET installation.');
+            return 1;
+        }
+
+        //  Test for "have we done this already" indicator
+        initFile = path.join(npmdir, '.tibet_initialized');
+        if (!this.options.force) {
+            result = sh.test('-e', initFile);
+            if (result) {
+                cmd.info('TIBET installation already initialized.');
+                return 0;
+            }
+        }
+
+        process.chdir(npmdir);
+
+        //  Remove any nested git repository references which might be
+        //  lying about due to how some dependencies "manage" their repo
+        //  rm -rf ./node_modules/*/.git/
+        rmpath = path.join(npmdir, 'node_modules', '*', '.git');
+        cmd.debug('rmpath: ' + rmpath);
+
+        cmd.info('Preparing for initialization...');
+
+        result = sh.rm('-rf', rmpath);
+        if (sh.error()) {
+            cmd.error('Error preparing for dependency installation:\n' +
+                result.stderr);
+            return 1;
+        }
+
+        //  NOTE: we're not setting npm user here. If for any reason the next
+        //  step fails it's typically because the user has global installs set
+        //  such that they require root access. That's a config they should be
+        //  encouraged to change rather than us forcing root access.
+
+        //  Now run an 'npm install' to force devDependencies to install
+        //  npm install
+        script = 'npm install';
+        cmd.info('Installing dependencies. This may take a moment...');
+        result = sh.exec(script, {silent: true});
+        if (sh.error()) {
+            cmd.error('Error installing dependencies:\n' + result.stderr);
+            return 1;
+        }
+
+        //  "touch" a .initialized file to show we've done this
+        new sh.ShellString(Date.now().toString()).to(initFile);
+
+        cmd.info('TIBET initialization complete.');
+
+    } finally {
+        process.chdir(cwd);
+        cmd.debug('cwd: ' + process.cwd());
+    }
+};
+
 
 module.exports = Cmd;
 

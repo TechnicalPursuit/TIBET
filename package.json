@@ -1,8 +1,19 @@
 {
     "name": "tibet",
     "version": "5.2.6",
-    "description": "The TIBET Low Code Development Platform.",
-    "keywords": ["Cloud Admin", "CouchDB", "Database Admin", "Desktop", "DevOps", "Electron", "Low Code", "No Code", "IDE", "Admin Tools", "Workflow"],
+    "description": "TIBET Full-Stack Low-Code Platform.",
+    "keywords": [
+        "Electron",
+        "Express",
+        "Framework",
+        "Full-Stack",
+        "Single-Page",
+        "Low-Code",
+        "No-Code",
+        "IDE",
+        "Workflow",
+        "CouchDB"
+    ],
     "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
