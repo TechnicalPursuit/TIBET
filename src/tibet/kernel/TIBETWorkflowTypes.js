@@ -4416,6 +4416,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.User.Type.defineMethod('extractFullName',
+function(vcardXML) {
+
+    /**
+     * @method extractFullName
+     * @summary Extracts the full name for the user from the supplied vCard XML.
+     * @param {Element} vcardXML The XML to extract the full name.
+     * @returns {String} The full name extracted from the supplied vCard XML.
+     */
+
+    return TP.nodeEvaluateXPath(vcardXML, 'string(//$def:fn/$def:text/text())');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.User.Type.defineMethod('getEffectiveAccessKeys',
 function() {
 
