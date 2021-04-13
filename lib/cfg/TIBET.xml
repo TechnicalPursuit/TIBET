@@ -326,6 +326,8 @@
     <script src="~lib_build/lib_src-tibet-tools-lama-TP.lama.changes-TP.lama.changes.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-lama-TP.lama.changes-TP.lama.changes.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-lama-TP.lama.count-TP.lama.count.css.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-lama-TP.lama.lamabar-TP.lama.lamabar.xhtml.js"/>
+    <script src="~lib_build/lib_src-tibet-tools-lama-TP.lama.lamabar-TP.lama.lamabar.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-lama-TP.lama.sync-TP.lama.sync.css.js"/>
     <script src="~lib_build/lib_src-tibet-tools-lama-TP.lama.settings-TP.lama.settings.xhtml.js"/>
     <script src="~lib_build/lib_src-tibet-tools-lama-TP.lama.settings-TP.lama.settings.css.js"/>

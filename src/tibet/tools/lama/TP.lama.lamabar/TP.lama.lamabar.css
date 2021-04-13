@@ -1,0 +1,72 @@
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+
+/*
+#LamabarTile {
+
+    display: none;
+}
+*/
+
+#LamabarTile {
+
+    display: flex;
+
+    flex-direction: row;
+
+    min-width: 250px;
+    min-height: 32px;
+
+    border-radius: 0;
+}
+
+#LamabarTile > .body {
+
+    padding: 0;
+}
+
+#LamabarTile > .header {
+
+    position: static;
+
+    top: auto;
+    right: auto;
+    left: auto;
+
+    height: auto;
+
+    flex-basis: 26px;
+
+    background: gold;
+}
+
+#LamabarTile > .header > .header_text {
+
+    display: none;
+}
+
+#LamabarTile > .header > .minimize_mark {
+
+    display: none;
+}
+
+#LamabarTile > .header > .close_mark {
+
+    display: none;
+}
+
+#LamabarTile > .body {
+
+    position: static;
+
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+
+    flex: 1;
+}
+
+#LamabarTile > .footer {
+
+    display: none;
+}
