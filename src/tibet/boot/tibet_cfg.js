@@ -1682,6 +1682,9 @@
     //  lama processing
     //  ---
 
+    //  what mode should the lama be in - 'minimal' or 'full'?
+    TP.sys.setcfg('lama.mode', 'full');
+
     //  should the lama currently be active? default is true. if the code
     //  hasn't loaded it won't matter, and if it has then it'll activate.
     TP.sys.setcfg('lama.enabled', true);
