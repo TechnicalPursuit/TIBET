@@ -1,4 +1,4 @@
-# TIBET&#8482; -- Desktop-to-Cloud&#8482;
+## TIBET&#8482; -- The Desktop-to-Cloud Platform&#8482;
 
 
                                      ,`
@@ -22,8 +22,7 @@
 
 <br/>
 
-
-###### For full TIBET documentation see <a href="https://www.technicalpursuit.com/docs/">https://technicalpursuit.com</a>.
+###### For TIBET documentation see <a href="https://www.technicalpursuit.com/docs/">https://technicalpursuit.com</a>.
 
 <br/>
 
