@@ -91,10 +91,16 @@ configure = function() {
         plugins,
         json,
 
-        builddir,
-        defaultProfile,
         profile,
+        profileDefined,
+
+        builddir,
+        hasBuildDir,
+
         bootPkg,
+        bootCfg,
+
+        inDeveloperMode,
 
         scraping;
 
@@ -113,7 +119,8 @@ configure = function() {
         debug: argv.debug,
         verbose: argv.verbose,
         level: argv.level,
-        color: argv.color
+        color: argv.color,
+        lama: argv.lama
     };
 
     //  Support logging using standard TIBET logging infrastructure.
@@ -140,41 +147,84 @@ configure = function() {
 
     //  ---
 
-    //  Verify build directory and add a development profile if not
-    //  found.
+    //  Grab the profile specified in the 'tibet.json' file.
+    profile = pkg.getcfg('electron.boot.profile');
+    profileDefined = CLI.notEmpty(profile);
+
+    //  Verify build directory
     builddir = pkg.expandPath('~app_build');
-    if (!sh.test('-d', builddir)) {
+    hasBuildDir = sh.test('-d', builddir);
 
-        //  Can't load a production profile...nothing's built.
-        logger.warn(
-            'No build directory. Must use a development boot.profile.');
-        logger.warn(
-            'Run `tibet build` to create your app\'s production build.');
+    //  If there was no build directory we can't load a production profile...
+    //  nothing's built.
+    if (!hasBuildDir) {
 
-        //  No build directory - set the default to be
-        //  development@developer.
-        defaultProfile = 'development@developer';
+        logger.warn(
+            'No build directory; built application package not available.');
+        logger.warn(
+            'Run `tibet build` to create your app\'s production package.');
+
+        if (!profileDefined) {
+            logger.warn(
+                'No boot.profile set. Defaulting to \'development\'.');
+
+            //  No build directory and no defined profile - set the profile to
+            //  be 'development'.
+            profile = 'development';
+        }
+
     } else {
-        //  Found build directory - set the default to be main@base.
-        defaultProfile = 'main@base';
+
+        if (!profileDefined) {
+            logger.warn(
+                'No boot.profile set. Defaulting to \'main@base\'.');
+
+            //  Found build directory but no defined profile - set the profile
+            //  to be 'main@base'.
+            profile = 'main@base';
+        }
+    }
+
+    if (!profileDefined) {
+        pkg.setcfg('electron.boot.profile', profile);
     }
 
     //  ---
 
-    //  Don't replace existing...but ensure default profile as a base
-    //  default.
-    profile = pkg.getcfg('electron.boot.profile');
-    if (!profile) {
-        pkg.setcfg('electron.boot.profile', defaultProfile);
-        bootPkg = defaultProfile.split('@')[0];
+    bootPkg = profile.split('@')[0];
+    bootCfg = profile.split('@')[1];
 
-        logger.warn(
-            'No boot.profile. Forcing boot.profile ' + defaultProfile);
-    } else {
-        bootPkg = profile.split('@')[0];
+    //  ---
+
+    inDeveloperMode = /development/.test(bootPkg);
+    if (inDeveloperMode) {
+        if (bootCfg !== 'developer') {
+            if (!opts.lama) {
+                logger.warn(
+                    'Loading a \'development\' boot.profile.\nTo use the' +
+                    ' Lama specify \'--lama\'.');
+            } else {
+                //  The user specified '--lama', but they don't have a bootCfg
+                //  that supports that. So we force set it and reparse.
+                logger.warn(
+                    'Loading a \'development\' boot.profile with \'--lama\'.\n' +
+                    'Changing boot profile to: \`development@developer\`.');
+
+                profile = 'development@developer';
+                pkg.setcfg('electron.boot.profile', profile);
+
+                bootPkg = profile.split('@')[0];
+                bootCfg = profile.split('@')[1];
+            }
+        }
     }
 
+    //  ---
+
+    logger.system('Using boot profile: ' + profile);
+
     opts.bootPkg = bootPkg;
+    opts.bootCfg = bootCfg;
 
     //  ---
 

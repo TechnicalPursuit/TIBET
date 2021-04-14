@@ -315,6 +315,19 @@
                     //  corresponding element.
                 mainWindow = null;
             });
+
+            //  ---
+
+            /**
+             * Event emitted when the user clicks an external link. This will
+             * open the link in the user's default browser.
+             */
+            mainContents.on('new-window',
+            function(event, url) {
+                event.preventDefault();
+                electron.shell.openExternal(url);
+            });
+
         };
 
         //  ---

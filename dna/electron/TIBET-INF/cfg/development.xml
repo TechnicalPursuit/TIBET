@@ -28,7 +28,10 @@
 
     <property name="uri.source.watch_changes" value="true"/>
     <property name="uri.source.process_changes" value="true"/>
+</config>
 
+<config id="lama_properties" if="boot.phase_one">
+    <property name="lama.show_toggle" value="true"/>
     <property name="lama.enabled" value="true"/>
     <property name="lama.pp.function_comments" value="true"/>
 </config>
@@ -55,11 +58,13 @@
 
 <config id="developer">
     <config ref="properties"/>
+    <config ref="lama_properties"/>
     <package src="main.xml" config="developer"/>
 </config>
 
 <config id="contributor">
     <config ref="properties"/>
+    <config ref="lama_properties"/>
     <package src="main.xml" config="contributor"/>
 </config>
 
