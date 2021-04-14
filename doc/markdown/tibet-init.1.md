@@ -1,4 +1,4 @@
-{{topic}}({{section}}) -- initialize TIBET library or project
+{{topic}}({{section}}) -- init TIBET library or project
 =============================================
 
 ## SYNOPSIS
