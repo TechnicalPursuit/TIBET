@@ -1,16 +1,20 @@
 .TH "TIBET\-INIT" "1" "April 2021" "" ""
 .SH "NAME"
-\fBtibet-init\fR \- initialize a TIBET project
+\fBtibet-init\fR \- initialize TIBET library or project
 .SH SYNOPSIS
 .P
-\fBtibet init [\-\-freeze]\fP
+\fBtibet init [\-\-force] [\-\-freeze] [\-\-tibet]\fP
 .SH DESCRIPTION
 .P
-Initializes a TIBET project, linking and installing dependencies\.
+Initializes a TIBET project or installation, linking and installing
+dependencies\.
 .P
-This command must be run prior to most activity within a TIBET
-project\. Many of the TIBET cli commands will fail to run until
-you have run a \fBtibet init\fP command\.
+Upon initial library installation via \fBnpm\fP the \fBtibet init\fP command should be
+run to ensure the new TIBET installation is properly configured\.
+.P
+In a project context this command must be run prior to most activity\. Many of
+the TIBET cli commands will fail to run until you have run a \fBtibet init\fP
+command\.
 .P
 The optional \fB\-\-freeze\fP is effectively like running \fBtibet freeze\fP during
 initialization\. This parameter will cause TIBET to make a copy of
@@ -20,9 +24,17 @@ simply linked into position via \fBnpm link tibet\fP\|\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
+\fB\-\-force\fP :
+Causes any existing initialization or links to be replaced rather than
+exiting the command\.
+.IP \(bu 2
 \fB\-\-freeze\fP :
 Used to lock your project to a specific version of TIBET within the
 package\.json and node_modules locations\.
+.IP \(bu 2
+\fB\-\-tibet\fP :
+Used to specify that the focus of the command should be the TIBET library
+rather than any currently\-enclosing project\.
 
 .RE
 .SH CONFIGURATION SETTINGS
@@ -41,6 +53,15 @@ this value doesn't exist then \fBdefault\fP is the name used\.
 .P
 No process environment variables are required by this command\.
 .SH EXAMPLES
+.SS Install TIBET and initialize it
+.P
+.RS 2
+.nf
+$ npm install \-g tibet
+
+$ tibet init
+.fi
+.RE
 .SS Initialize a fresh project
 .P
 .RS 2
