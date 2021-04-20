@@ -82,7 +82,7 @@ Cmd.prototype.execute = function() {
 
 'The \'tibet clone\' command is your first step in creating a TIBET project.\n\n' +
 
-'Before using clone navigate to a directory to hold your new project content\n' +
+'Before using \'clone\', navigate to a directory to hold your project content\n' +
 'and select a name for your new project. The name will be used as a directory\n' +
 'name so it should be a valid directory name on your platform.\n\n' +
 'Type \'tibet clone {appname}\', replacing {appname} with your project name:\n\n' +
@@ -95,7 +95,7 @@ Cmd.prototype.execute = function() {
 'INITIALIZE THE PROJECT\n\n' +
 
 'With your new project in place you need to initialize it to install any code\n' +
-'dependencies specific to the template you cloned (we used the default here).\n' +
+'dependencies specific to the template you cloned (we used the default above).\n' +
 'Navigate to your project and then type \'tibet init\' to initialize it:\n\n' +
 
 '    $ cd hello\n' +
@@ -104,22 +104,23 @@ Cmd.prototype.execute = function() {
 '    project initialized successfully.\n' +
 '    ...\n\n' +
 
-'START THE SERVER\n\n' +
+'START THE APPLICATION\n\n' +
 
-'The \'default\' template used by clone includes a Node.js-based HTTP server\n' +
-'we call the TIBET Data Server or TDS. By default the TDS will use port 1407\n' +
-'so assuming that port isn\'t busy on your system you can start the server\n' +
-'using \'tibet start\' without any parameters:\n\n' +
+'All project DNA templates support using the \'tibet start\' command to run them.\n' +
+'Electron projects will launch directly. TIBET Data Server (TDS) projects will\n' +
+'start their Express-based NodeJS server (using HTTP on port 1407 by default):\n\n' +
 
 '    $ tibet start\n' +
-'    ...\n' +
-'    1498043782937 [7] TDS hello 0.1.0 @ http://127.0.0.1:1407#?boot.profile=development (dev)\n\n' +
+'    ...\n\n' +
 
-'Congratulations! Your new TIBET project is running. Open the web address\n' +
-'for your project in a supported HTML5 browser and you\'ll see text directing\n' +
-'you on how to take the next step in your TIBET journey.\n\n' +
+'Congratulations! Your new TIBET project is running.\n\n' +
 
-'For more info visit https://www.technicalpursuit.com/docs/index.html.\n';
+'For Electron projects your application is now running and ready for expansion.\n' +
+'For TDS-based projects open the web address output by \'tibet start\' for your\n' +
+'project in a supported HTML5 browser. All TIBET projects display launch text\n' +
+'directing you on how to take the next step in your TIBET journey.\n\n' +
+
+'For more info visit https://www.technicalpursuit.com\n';
 
     this.info(str);
 

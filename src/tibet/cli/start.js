@@ -139,9 +139,6 @@ Cmd.prototype.execute = function() {
 
     //  If we see electron.js delegate to the electron command....
     if (sh.test('-f', 'electron.js')) {
-        msg = 'Found electron.js...\nRunning \'tibet electron\'...';
-        cmd.system(msg);
-
         args = process.argv.slice(3);
         return CLI.runCommand('electron' +
             (args ? ' ' + args.join(' ') : ''),
