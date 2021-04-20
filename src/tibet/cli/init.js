@@ -411,7 +411,7 @@ Cmd.prototype.initTIBET = function() {
             return 1;
         }
 
-        npmdir = path.join(result.stdout.trim(), 'tibet');
+        npmdir = CLI.joinPaths(result.stdout.trim(), 'tibet');
         cmd.debug('npmdir: ' + npmdir);
         result = sh.test('-d', npmdir);
         if (result) {
@@ -422,7 +422,7 @@ Cmd.prototype.initTIBET = function() {
         }
 
         //  Test for "have we done this already" indicator
-        initFile = path.join(npmdir, '.tibet_initialized');
+        initFile = CLI.joinPaths(npmdir, '.tibet_initialized');
         if (!this.options.force) {
             result = sh.test('-e', initFile);
             if (result) {
@@ -436,7 +436,7 @@ Cmd.prototype.initTIBET = function() {
         //  Remove any nested git repository references which might be
         //  lying about due to how some dependencies "manage" their repo
         //  rm -rf ./node_modules/*/.git/
-        rmpath = path.join(npmdir, 'node_modules', '*', '.git');
+        rmpath = CLI.joinPaths(npmdir, 'node_modules', '*', '.git');
         cmd.debug('rmpath: ' + rmpath);
 
         cmd.info('Preparing for initialization...');
