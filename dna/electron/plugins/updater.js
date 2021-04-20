@@ -168,7 +168,8 @@
         ipcMain.handle('TP.sig.AppDidStart',
             function(event, payload) {
 
-                if (pkg.getcfg('electron.updater.onstart') === true) {
+                //  By default we do *not* check for updates on startup.
+                if (pkg.getcfg('electron.updater.onstart', false) === true) {
                     autoUpdater.checkForUpdates();
                 }
             });

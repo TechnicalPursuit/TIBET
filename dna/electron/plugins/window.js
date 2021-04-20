@@ -91,8 +91,8 @@
 
             //  ---
 
-            useLogin = pkg.getcfg('electron.boot.use_login');
-            parallel = pkg.getcfg('electron.boot.parallel');
+            useLogin = pkg.getcfg('electron.boot.use_login', false);
+            parallel = pkg.getcfg('electron.boot.parallel', true);
 
             launchUrl = 'file://' + appdir + '/';
             //  splashRoot = launchUrl;
@@ -366,7 +366,7 @@
         app.on('window-all-closed', function() {
             //  If the app is configure to exit when all windows are closed,
             //  then go ahead and do that.
-            if (pkg.getcfg('electron.exitOnAllClosed') === true) {
+            if (pkg.getcfg('electron.exit_on_last_window_close') === true) {
                 app.quit();
             }
         });

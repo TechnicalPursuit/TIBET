@@ -31,7 +31,7 @@
 
             bootPkg,
 
-            enableLamaMode,
+            enableLamaExtMode,
 
             inDeveloperMode,
             inDevelopingDeveloperMode,
@@ -87,12 +87,12 @@
         inDeveloperMode = /development/.test(bootPkg);
 
         if (inDeveloperMode) {
-            enableLamaMode = pkg.getcfg(
-                            'electron.enableLama');
+            enableLamaExtMode = pkg.getcfg(
+                            'electron.enableLamaExt', false);
             inDevelopingDeveloperMode = pkg.getcfg(
-                            'electron.developingDeveloper');
+                            'electron.developingDeveloper', false);
         } else {
-            enableLamaMode = false;
+            enableLamaExtMode = false;
             inDevelopingDeveloperMode = false;
         }
 
@@ -124,7 +124,7 @@
                 }
             }
 
-            if (inDeveloperMode && enableLamaMode) {
+            if (inDeveloperMode && enableLamaExtMode) {
                 if (inDevelopingDeveloperMode) {
                     await mainContents.session.clearCache();
                 }

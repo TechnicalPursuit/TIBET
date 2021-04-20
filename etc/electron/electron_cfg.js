@@ -29,7 +29,19 @@
      */
     Config = function(setcfg) {
 
-        setcfg('electron.updater.download', false);
+        //  The background color to use for windows.
+        setcfg('electron.bgcolor', '#171717');
+
+        //  Whether or not to load the Lama extension into DevTools
+        setcfg('electron.enableLamaExt', false);
+
+        //  Whether or not we should be in 'developing developer' mode.
+        setcfg('electron.developingDevelopr', false);
+
+        //  Whether or not to use a login-based startup sequence.
+        setcfg('electron.boot.use_login', false);
+
+        //  Whether or not to check for updates when the app first starts.
         setcfg('electron.updater.onstart', false);
 
         //  top-level dir used in the main Electron process to determine where
@@ -37,13 +49,14 @@
         //  ~app to ensure the watcher's set up to cover all app resources. Use
         //  uri.watch.include and uri.watch.exclude to include and exclude any
         //  specific subdirectories or files below the watch.root. NOTE that
-        //  uri.source.* parameters are shared client/server so they're in
-        //  tibet_cfg rather than this TDS-only config file.
+        //  uri.source.* parameters are shared main/renderer so they're in
+        //  tibet_cfg rather than this Electron-only config file.
         setcfg('electron.watch.root', '~app');
 
-        setcfg('electron.watch.heartbeat', 10000);   //  aka sse-heartbeat
-        setcfg('electron.watch.retry', 3000);        //  aka sse.retry cfg
+        //  the event to send over into TIBET when a watch target has changed.
+        setcfg('electron.watch.event', 'fileChange');
 
+        //  whether or not to exit when the last window has closed.
         setcfg('electron.exit_on_last_window_close', true);
     };
 

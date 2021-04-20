@@ -80,7 +80,7 @@
             //  Expand out the path we'll be watching. This should almost always
             //  be the application root.
             watchroot = path.resolve(pkg.expandPath(
-                pkg.getcfg('electron.watch.root') || '~app'));
+                pkg.getcfg('electron.watch.root', '~app')));
 
             logger.debug('Electron FileWatch interface rooted at: ' + watchroot);
 
