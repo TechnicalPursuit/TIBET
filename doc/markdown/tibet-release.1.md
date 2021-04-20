@@ -66,7 +66,7 @@ changes.
     The target branch name to use. Default is 'master'.
 
   * `cli.release.remote` :
-    The target branch name to use. Default is 'origin'.
+    The remote name to use. Default is 'origin'.
 
   * `cli.release.suffixes` :
     The list of default suffixes: [beta, dev, final, hotfix, pre, rc].
