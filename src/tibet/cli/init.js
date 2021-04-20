@@ -205,13 +205,13 @@ Cmd.prototype.execute = function() {
 
         cmd.log('TIBET development dependency linked.');
 
-        cmd.log('project initialized successfully.');
+        cmd.log('project initialized successfully.\n');
         cmd.info(
             'Use `tibet lint` to check for coding standard violations\n' +
             'Use `tibet test` to test your application\'s core features\n' +
             'Use `tibet build --minify` to build production packages for' +
             ' deployment\n' +
-            'Use `tibet start` to run your application.');
+            'Use `tibet start` to run your application.\n');
     };
 
     //  ---
