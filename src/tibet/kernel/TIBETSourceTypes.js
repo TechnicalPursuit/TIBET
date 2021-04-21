@@ -1732,8 +1732,10 @@ function(aSignal, varargs) {
      * @param {String} aSignal The signal name to send to the main process.
      * @param {arguments} varargs Optional additional arguments for the
      *     constructor.
-     * @returns {Promise} The Promise returned from sending the event to the
-     *     main process.
+     * @returns {Promise} A Promise returned from sending the event to
+     *     the main process. When this Promise is resolved its value will be
+     *     whatever value that method returned (limited by the rules of the
+     *     Structured Clone Algorithm).
      */
 
     var args,
