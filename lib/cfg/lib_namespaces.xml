@@ -17,6 +17,8 @@
     <config ref="tsh"/>
     <config ref="xml"/>
     <config ref="http"/>
+
+    <config ref="electron"/>
 </config>
 
 <config id="baseui">
@@ -56,6 +58,11 @@
     <script src="ev/TP.ev.info.js"/>
     <script src="ev/TP.ev.listener.js"/>
     <script src="ev/TP.ev.script.js"/>
+</config>
+
+<config id="electron">
+    <script src="electron/TP.electron.XMLNS.js"/>
+    <script src="electron/TP.electron.Application.js"/>
 </config>
 
 <config id="aws">
