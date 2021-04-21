@@ -591,6 +591,13 @@
                     process.stdout.write(msg);
                 }
             }
+
+            logger.system('Application Started',
+                {
+                    comp: 'TDS',
+                    type: 'tds',
+                    name: 'server'
+                });
         }
     };
 

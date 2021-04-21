@@ -342,6 +342,8 @@
         app.on('ready',
                 function() {
                     createAppWindow();
+
+                    logger.system('Application Started');
                 });
 
         //  ---
