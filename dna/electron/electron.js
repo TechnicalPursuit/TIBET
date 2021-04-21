@@ -120,7 +120,9 @@ configure = function() {
         verbose: argv.verbose,
         level: argv.level,
         color: argv.color,
-        lama: argv.lama
+        lama: argv.lama,
+        timestamp: true,
+        silent: false
     };
 
     //  Support logging using standard TIBET logging infrastructure.
@@ -162,7 +164,8 @@ configure = function() {
         logger.warn(
             'No build directory; built application package not available.');
         logger.warn(
-            'Run `tibet build` to create your app\'s production package.');
+            'Run `tibet build --minify` to create your app\'s production' +
+            ' package.');
 
         if (!profileDefined) {
             logger.warn(

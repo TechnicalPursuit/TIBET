@@ -38,11 +38,26 @@
         //  Whether or not we should be in 'developing developer' mode.
         setcfg('electron.developingDevelopr', false);
 
+        //  whether or not to exit when the last window has closed.
+        setcfg('electron.exit_on_last_window_close', true);
+
+        //  ---
+        //  BOOT
+        //  ---
+
         //  Whether or not to use a login-based startup sequence.
         setcfg('electron.boot.use_login', false);
 
+        //  ---
+        //  UPDATER
+        //  ---
+
         //  Whether or not to check for updates when the app first starts.
         setcfg('electron.updater.onstart', false);
+
+        //  ---
+        //  WATCHER
+        //  ---
 
         //  top-level dir used in the main Electron process to determine where
         //  to set cwd for the watcher. This should almost always be left as
@@ -56,8 +71,17 @@
         //  the event to send over into TIBET when a watch target has changed.
         setcfg('electron.watch.event', 'fileChange');
 
-        //  whether or not to exit when the last window has closed.
-        setcfg('electron.exit_on_last_window_close', true);
+        //  ---
+        //  LOGGING
+        //  ---
+
+        setcfg('electron.log.transports', ['file']);
+        setcfg('electron.log.color', true);
+        setcfg('electron.log.count', 5);
+        setcfg('electron.log.file', '~app_log/electron-{{env}}.log');
+        setcfg('electron.log.format', 'dev');
+        setcfg('electron.log.level', 'info');
+        setcfg('electron.log.size', 5242880); // 5MB
     };
 
     module.exports = Config;
