@@ -70,18 +70,6 @@
 
         //  the event to send over into TIBET when a watch target has changed.
         setcfg('electron.watch.event', 'fileChange');
-
-        //  ---
-        //  LOGGING
-        //  ---
-
-        setcfg('electron.log.transports', ['file']);
-        setcfg('electron.log.color', true);
-        setcfg('electron.log.count', 5);
-        setcfg('electron.log.file', '~app_log/electron-{{env}}.log');
-        setcfg('electron.log.format', 'dev');
-        setcfg('electron.log.level', 'info');
-        setcfg('electron.log.size', 5242880); // 5MB
     };
 
     module.exports = Config;
