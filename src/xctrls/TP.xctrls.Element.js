@@ -44,10 +44,6 @@ TP.xctrls.Element.Inst.resolveTraits(
 //  new instances of the tag.
 TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
 
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
 TP.xctrls.Element.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac(
             'TP.sig.DOMClick',
