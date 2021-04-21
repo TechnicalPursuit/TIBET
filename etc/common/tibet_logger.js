@@ -218,7 +218,6 @@
         return console[method](str);
     };
 
-
     Logger.prototype.trace = function(msg, spec) {
         var s;
 
