@@ -26,8 +26,6 @@
 
         logger = options.logger;
 
-        //  NOTE this plugin loads prior to the logger so our best option here
-        //  is to use the prelog function to queue logging output.
         meta = {
             type: 'plugin',
             name: 'preload'

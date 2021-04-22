@@ -53,6 +53,10 @@
 
         //  ---
 
+        /**
+         * Saves the supplied profile data to the project's 'tibet.json' file.
+         * @param {Object} profileData The data to save.
+         */
         saveProfile = function(profileData) {
             var file,
                 json,

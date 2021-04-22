@@ -71,6 +71,9 @@
 
         //  ---
 
+        /**
+         * Creates the main application window.
+         */
         createAppWindow = async function() {
             var appdir,
 
@@ -98,6 +101,8 @@
             useLogin = pkg.getcfg('electron.boot.use_login', false);
             parallel = pkg.getcfg('electron.boot.parallel', true);
 
+            //  Specifying a 'file://' URL will tell TIBET that we're launching
+            //  from a File URL (well, we are all about offline, aren't we? ;-))
             launchUrl = 'file://' + appdir + '/';
             //  splashRoot = launchUrl;
 
@@ -117,7 +122,7 @@
 
             //  ---
 
-            //  Loop over params and add them to the URL
+            //  Loop over params and add them to the launch URL.
             paramStr = '';
             electronOpts = pkg.getcfg('electron');
 
@@ -139,12 +144,17 @@
                 }
             });
 
+            //  Finalize the assembly of the launch URL.
             if (paramStr.length > 0) {
                 launchUrl += '#?' + paramStr.slice(0, -1);
             }
 
             //  ---
 
+            //  Grab any parameters for windows specified in the profile. These
+            //  will be things like window coordinates from the user's last
+            //  session so that we can be nice and restore them back to where
+            //  they were.
             windowsParams = pkg.getcfg('profile.windows', null, true);
             if (!windowsParams ||
                 !windowsParams.profile ||
@@ -159,11 +169,14 @@
 
             windowsKeys = Object.keys(windowsParams);
 
+            //  Make sure that we have a key for the 'main' window.
             if (windowsKeys.indexOf('main') === -1) {
                 windowsParams.main = {};
                 windowsKeys.push('main');
             }
 
+            //  Iterate over all of the window keys that we found (each
+            //  representing a window) and create a window for each one.
             for (i = 0; i < windowsKeys.length; i++) {
                 windowInfo = windowsParams[windowsKeys[i]];
 
@@ -174,7 +187,7 @@
                     continue;
                 }
 
-                //  Create the browser window.
+                //  Create a browser window.
                 newWindow = new BrowserWindow({
                     x: windowInfo.left || null,
                     y: windowInfo.top || null,
@@ -191,8 +204,13 @@
                     }
                 });
 
+                //  Set the new window's 'name' slot to the key so that we can
+                //  find it again when we need to save.
                 newWindow.name = windowsKeys[i];
 
+                //  If the window is 'main', then we grab it's 'webContents' for
+                //  ease of reference and store it's 'id' on the 'options'
+                //  object so that other plugins can find it.
                 if (newWindow.name === 'main') {
                     mainWindow = newWindow;
 
@@ -202,11 +220,16 @@
                     options.mainid = mainWindow.id;
                 }
 
+                /**
+                 * Event emitted when the window is moved.
+                 */
                 /* eslint-disable no-loop-func */
                 newWindow.on('moved', function(event) {
                     var movedWin,
                         winBounds;
 
+                    //  Grab the window boundary and signal TIBET with that
+                    //  information.
                     movedWin = event.sender;
                     winBounds = movedWin.getBounds();
 
@@ -220,6 +243,9 @@
                         });
                 });
 
+                /**
+                 * Event emitted when the window is resized.
+                 */
                 newWindow.on('resized', function(event) {
                     var movedWin,
                         winBounds;
@@ -227,6 +253,8 @@
                     movedWin = event.sender;
                     winBounds = movedWin.getBounds();
 
+                    //  Grab the window boundary and signal TIBET with that
+                    //  information.
                     mainContents.send('TP.sig.WindowResized',
                         {
                             name: movedWin.name,
@@ -255,6 +283,8 @@
 
             //  ---
 
+            //  Load the application using the launch URL and then emit a main
+            //  process event that the TIBET application has loaded.
             mainWindow.loadURL(launchUrl).then(
                 function() {
                     app.emit('TIBET-Main-Loaded');
@@ -418,7 +448,7 @@
             });
 
         /**
-         * Event emitted when TIBET wants to show a native notification.
+         * Event emitted by TIBET when it wants to show a native notification.
          */
         ipcMain.handle('TP.sig.ShowNativeNotification',
             function(event, notificationConfig) {
@@ -436,7 +466,7 @@
         //  ---
 
         /**
-         * Event emitted when TIBET wants to show a native dialog.
+         * Event emitted by TIBET when it wants to show a native dialog.
          */
         ipcMain.handle('TP.sig.ShowNativeDialog',
             async function(event, dialogConfig) {
@@ -462,10 +492,11 @@
         //  ---
 
         /**
-         * Event emitted when TIBET wants to show a native error dialog.
+         * Event emitted by TIBET when it wants to show a native error dialog.
          */
         ipcMain.handle('TP.sig.ShowNativeErrorDialog',
             function(event, dialogConfig) {
+                //  No return value here.
                 dialog.showErrorBox(dialogConfig.title, dialogConfig.message);
             });
 

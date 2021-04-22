@@ -70,6 +70,10 @@
 
         //  ---
 
+        /**
+         * Sets up the watcher configuration such as setting up the RegExp that
+         * will filter which files are ignored, etc.
+         */
         setupWatcherCfg = function() {
 
             var watchroot,
@@ -165,6 +169,15 @@
 
         //  ---
 
+        /**
+         * Activates the watcher. This invokes the 'chokidar module that will
+         * take the configuration that was computed by setupWatcherCfg and will
+         * watch for changes to files. If a file change occurs, the function
+         * supplied to chokidar will send the 'TP.sig.MessageReceived' signal to
+         * the TIBET instance running inside of the renderer process along with
+         * the event name that should correspond to a signal that it should
+         * fire.
+         */
         activateWatcher = function() {
 
             var mainContents;
@@ -253,6 +266,10 @@
 
         //  ---
 
+        /**
+         * Deactivates the watcher. This shuts down the chokidar instance that
+         * was activated in the activateWatcher method.
+         */
         deactivateWatcher = async function() {
 
             //  Close chokidar - this is an asynchronous method.

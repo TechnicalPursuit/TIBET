@@ -57,6 +57,9 @@
 
         //  ---
 
+        /**
+         * Sets up the app menu.
+         */
         setupAppMenu = function() {
 
             var appMenuTemplate,

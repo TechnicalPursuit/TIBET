@@ -103,7 +103,16 @@
 
         //  ---
 
-        openDevToolPanels = async function(devToolsOnDevTools, cb) {
+        /**
+         * Opens the Chrome Devtools on the main window (the window with the id
+         *      stored in 'options.id' slot).
+         * @param {Boolean} devToolsOnDevTools Whether or not to open another
+         *      instance of Chrome Devtools on the Devtools panel itself. Very
+         *      useful for debugging Devtools extensions ;-).
+         * @param {Function} cb A function that should be executed after the
+         *     Devtools panel is fully open.
+         */
+         openDevToolPanels = async function(devToolsOnDevTools, cb) {
 
             var mainContents,
                 dtOpenHandler,
@@ -212,8 +221,10 @@
                         dtOnDtWindowsParams = pkg.getcfg(
                             'profile.windows.devtoolsondevtools', null, true);
                         if (dtOnDtWindowsParams) {
-                            dtOnDtWindowInfo =
-                            dtOnDtWindowsParams.profile.windows.devtoolsondevtools;
+                            dtOnDtWindowInfo = dtOnDtWindowsParams.
+                                                    profile.
+                                                    windows.
+                                                    devtoolsondevtools;
                         } else {
                             dtOnDtWindowInfo = {};
                         }
@@ -318,6 +329,14 @@
 
         //  ---
 
+        /**
+         * Closes the Chrome Devtools on the main window (the window with the id
+         *      stored in 'options.id' slot). Note that if another Devtools
+         *      panel was opened on this Devtools panel, it will be closed as
+         *      well.
+         * @param {Function} cb A function that should be executed after the (or
+         *      both) Devtools panel(s) is/are fully closed.
+         */
         closeDevToolPanels = function(cb) {
 
             var mainContents,
@@ -386,6 +405,13 @@
 
         //  ---
 
+        /**
+         * Launches the Chrome Devtools on the main window (the window with the
+         *      id stored in 'options.id' slot).
+         * @param {Boolean} devToolsOnDevTools Whether or not to open another
+         *      instance of Chrome Devtools on the Devtools panel itself. Very
+         *      useful for debugging Devtools extensions ;-).
+         */
         launchDevTools = function(devToolsOnDevTools) {
 
             var shouldOpenDevOnDev;
@@ -425,8 +451,10 @@
         //  ---
 
         /**
+         * Event emitted by TIBET when it wants to show the Lama Devtools
+         * extension.
          */
-        ipcMain.handle('TP.sig.ShowLama',
+        ipcMain.handle('TP.sig.ShowLamaExtension',
             function(event, payload) {
                 launchDevTools(true);
             });
@@ -434,6 +462,8 @@
         //  ---
 
         /**
+         * Event emitted by TIBET when it wants to focus the Devtools DOM
+         * inspect on the element at the supplied coordinates.
          */
         ipcMain.handle('TP.sig.FocusRendererElement',
             function(event, elementCoords) {
@@ -464,6 +494,10 @@
         //  ---
 
         /**
+         * Event emitted by TIBET when it wants to load a TIBET project into a
+         * separate window.
+         * TODO: This method should share/reuse logic that is already written
+         * for robustness and clarity.
          */
         ipcMain.handle('TP.sig.LoadTIBETProject',
             function(event, payload) {
@@ -497,6 +531,8 @@
         //  ---
 
         /**
+         * Event emitted by TIBET when it wants to launch a debugger on the
+         * main process.
          */
         ipcMain.handle('TP.sig.ToggleMainDebugger',
             function(event, payload) {

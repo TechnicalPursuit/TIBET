@@ -37,6 +37,14 @@ var loadPlugins,
 //  Main Functions
 //  ---
 
+/**
+ * Performed upon startup to load all of the plugins defined in
+ * 'electron.plugins'
+ * @param {Object} rootpath The root path to find the plugins.
+ * @param {String[]} plugins The list of plugins to load.
+ * @param {Object} options An object that can be used by the plugins to place
+ *     object references that can be used by other parts of the system.
+ */
 loadPlugins = function(rootpath, plugins, options) {
 
     plugins.forEach(function(plugin) {
@@ -83,6 +91,7 @@ loadPlugins = function(rootpath, plugins, options) {
  * Primary function used to launch Electron. Marshals command line
  * arguments as well as any tibet.json "electron" options to configure
  * the main window and load the targeted URI.
+ * NOTE: This is the only function called globally for Electron applications.
  */
 configure = function() {
 
@@ -167,6 +176,9 @@ configure = function() {
             'Run `tibet build --minify` to create your app\'s production' +
             ' package.');
 
+        //  A profile wasn't defined either so we have to choose a sensible one.
+        //  Since there's no build directory, we have to load a 'development'
+        //  target of some sort. The base one named 'development' is sensible.
         if (!profileDefined) {
             logger.warn(
                 'No boot.profile set. Defaulting to \'development\'.');
@@ -178,6 +190,9 @@ configure = function() {
 
     } else {
 
+        //  There is a build directory, but no profile defined so we have to
+        //  choose a sensible one. In this case, since we have a built app, we
+        //  choose a production target. The most basic one is 'main@base'.
         if (!profileDefined) {
             logger.warn(
                 'No boot.profile set. Defaulting to \'main@base\'.');
@@ -188,6 +203,8 @@ configure = function() {
         }
     }
 
+    //  Make sure to set the boot profile for the rest of the system to the one
+    //  we computed above (which we did if the author didn't supply one).
     if (!profileDefined) {
         pkg.setcfg('electron.boot.profile', profile);
     }
@@ -199,8 +216,15 @@ configure = function() {
 
     //  ---
 
+    //  If we're running in developer mode...
     inDeveloperMode = /development/.test(bootPkg);
     if (inDeveloperMode) {
+
+        //  If the boot config is not 'developer', that means we won't be
+        //  loading the Lama. But an alternate way for the developer to load the
+        //  Lama is to specify `--lama` on the launch command line. So we check
+        //  for that here.
+
         if (bootCfg !== 'developer') {
             if (!opts.lama) {
                 logger.warn(
@@ -231,6 +255,9 @@ configure = function() {
 
     //  ---
 
+    //  If we're setting this app up to do 'web scraping', set that flag here.
+    //  This will affect other things like the command line switches that we
+    //  set.
     scraping = pkg.getcfg('electron.scraping');
     if (!scraping) {
         scraping = false;
