@@ -147,6 +147,9 @@
                 case 's3':
                     providerparamsname = 's3';
                     break;
+                case 'github':
+                    providerparamsname = 'github';
+                    break;
                 default:
                     cmd.error('No provider defined');
                     return 1;
@@ -168,27 +171,50 @@
             //  Parse provider parameters
             //  ---
 
-            if (provider === 's3') {
-                cmd.log('Provider is S3');
+            switch (provider) {
+                case 's3':
+                    cmd.log('Provider is S3');
 
-                providerparams = cfgparams[providerparamsname];
+                    providerparams = cfgparams[providerparamsname];
 
-                if (!providerparams) {
-                    providerparams = {};
-                }
+                    if (!providerparams) {
+                        providerparams = {};
+                    }
 
-                if (CLI.notValid(providerparams.region)) {
-                    cmd.warn('Missing parameter: region');
+                    if (CLI.notValid(providerparams.region)) {
+                        cmd.warn('Missing parameter: region');
+                        return 1;
+                    }
+
+                    if (CLI.notValid(providerparams.bucket)) {
+                        cmd.warn('Missing parameter: bucket');
+                        return 1;
+                    }
+
+                    publisherInfo.region = providerparams.region;
+                    publisherInfo.bucket = providerparams.bucket;
+
+                    break;
+                case 'github':
+                    cmd.log('Provider is GitHub');
+
+                    providerparams = cfgparams[providerparamsname];
+
+                    if (!providerparams) {
+                        providerparams = {};
+                    }
+
+                    if (CLI.notValid(providerparams.token)) {
+                        cmd.warn('Missing parameter: token');
+                        return 1;
+                    }
+
+                    publisherInfo.token = providerparams.token;
+
+                    break;
+                default:
+                    cmd.error('No provider supplied');
                     return 1;
-                }
-
-                if (CLI.notValid(providerparams.bucket)) {
-                    cmd.warn('Missing parameter: bucket');
-                    return 1;
-                }
-
-                publisherInfo.region = providerparams.region;
-                publisherInfo.bucket = providerparams.bucket;
             }
 
             packager = new Packager(options);
