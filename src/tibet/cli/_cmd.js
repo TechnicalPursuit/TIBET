@@ -313,10 +313,14 @@ Cmd.prototype.getArgv = function() {
  * If no property is provided the entire set of configuration values is
  * returned.
  * @param {string} property A specific property value to check.
+ * @param {Object} [aDefault] Optional value to default the lookup to.
+ * @param {Boolean} [asNestedObj=false] Optional flag to convert the result to a
+ *     multi-level structured Object instead of a single-level Object with
+ *     flattened keys.
  * @returns {Object} The property value, or the entire configuration object.
  */
-Cmd.prototype.getcfg = function(property) {
-    return CLI.getcfg(property);
+Cmd.prototype.getcfg = function(property, aDefault, asNestedObj) {
+    return CLI.getcfg(property, aDefault, asNestedObj);
 };
 
 
