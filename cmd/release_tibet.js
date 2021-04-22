@@ -149,7 +149,7 @@ Cmd.prototype.execute = async function() {
     };
 
     //  Pull apart the version string so we have the component parts.
-    meta.source = versioning.getVersionObject(version);
+    meta.source = versioning.getVersionObject(this.options);
 
     this.info('checking for git support...');
 
@@ -278,13 +278,13 @@ Cmd.prototype.execute = async function() {
 
     if (CLI.isTrue(this.options.major)) {
         execArgs.push('--major');
-        meta.source.major = (parseInt(meta.source.major, 10) + 1).toString();
+        meta.source.major = (parseInt(meta.source.major, 10)).toString();
     } else if (CLI.isTrue(this.options.minor)) {
         execArgs.push('--minor');
-        meta.source.minor = (parseInt(meta.source.minor, 10) + 1).toString();
+        meta.source.minor = (parseInt(meta.source.minor, 10)).toString();
     } else if (CLI.isTrue(this.options.patch)) {
         execArgs.push('--patch');
-        meta.source.patch = (parseInt(meta.source.patch, 10) + 1).toString();
+        meta.source.patch = (parseInt(meta.source.patch, 10)).toString();
     }
 
     execArgs.push('--suffix', 'final');
