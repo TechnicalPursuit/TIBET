@@ -379,8 +379,7 @@ Cmd.prototype.execute = function() {
  * devDependencies when using npm.
  */
 Cmd.prototype.initTIBET = function() {
-    var path,
-        sh,
+    var sh,
         cwd,
         cmd,
         script,
@@ -390,7 +389,6 @@ Cmd.prototype.initTIBET = function() {
         rmpath;
 
     sh = require('shelljs');
-    path = require('path');
 
     cmd = this;
 
