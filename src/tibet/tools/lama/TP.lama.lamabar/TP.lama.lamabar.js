@@ -127,7 +127,7 @@ function(aSignal) {
 
     pagePoint = haloTarget.getPagePoint();
 
-    TP.core.ElectronMain.signalMain(
+    TP.electron.ElectronMain.signalMain(
         'TP.sig.FocusRendererElement',
         TP.hc(
             'targetID', haloTarget.getLocalID(),

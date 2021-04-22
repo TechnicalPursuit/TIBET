@@ -61,6 +61,8 @@
 </config>
 
 <config id="electron">
+    <script src="electron/TP.electron.ElectronMain.js"/>
+
     <script src="electron/TP.electron.XMLNS.js"/>
     <script src="electron/TP.electron.Application.js"/>
 </config>

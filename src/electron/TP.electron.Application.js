@@ -42,7 +42,7 @@ function(aSignal) {
      * @returns {TP.electron.Application} The receiver.
      */
 
-    this.observe(TP.core.ElectronMain,
+    this.observe(TP.electron.ElectronMain,
                     TP.ac('ApplicationWillExit',
                             'ApplicationDidExit',
                             'CheckForUpdate',
@@ -58,14 +58,14 @@ function(aSignal) {
     this.set('updateDownloaded', false);
 
     //  Enable the menu item that allows the user to manually check for updates.
-    TP.core.ElectronMain.signalMain(
+    TP.electron.ElectronMain.signalMain(
         'TP.sig.ChangeUpdaterMenuItem',
         {
             enabled: true
         });
 
     //  Signal the main process that the TIBET application has started.
-    TP.core.ElectronMain.signalMain('TP.sig.AppDidStart');
+    TP.electron.ElectronMain.signalMain('TP.sig.AppDidStart');
 
     return this;
 });
@@ -98,7 +98,7 @@ function(aSignal) {
     delete profileData.getKeys;
 
     //  Signal the main process that TIBET wants to save profile data.
-    TP.core.ElectronMain.signalMain(
+    TP.electron.ElectronMain.signalMain(
                             'TP.sig.SaveProfile',
                             {
                                 data: profileData
@@ -146,7 +146,7 @@ function(aSignal) {
     //  signaled.
     shouldTerminate = TP.sys.terminate(null, false);
     if (shouldTerminate) {
-        TP.core.ElectronMain.signalMain('TP.sig.CompleteExit');
+        TP.electron.ElectronMain.signalMain('TP.sig.CompleteExit');
     }
 
     return this;
@@ -171,7 +171,7 @@ function(aSignal) {
 
     //  Disable the menu item that allows the user to manually check for updates
     //  - we're in the middle of checking for updates.
-    TP.core.ElectronMain.signalMain('TP.sig.ChangeUpdaterMenuItem',
+    TP.electron.ElectronMain.signalMain('TP.sig.ChangeUpdaterMenuItem',
         {
             //  label: 'Checking for updates...',
             enabled: false
@@ -180,7 +180,7 @@ function(aSignal) {
     //  If we have an update that has been downloaded, then just go ahead and
     //  ask the user whether they want us to install it or not.
     if (TP.isTrue(this.get('updateDownloaded'))) {
-        TP.core.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
+        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
             {
                 type: 'info',
                 title: 'Updates Available',
@@ -191,10 +191,10 @@ function(aSignal) {
             }).then(
             function(buttonIndex) {
                 if (buttonIndex === 0) {
-                    TP.core.ElectronMain.signalMain(
+                    TP.electron.ElectronMain.signalMain(
                             'TP.sig.InstallUpdateAndRestart');
                 } else {
-                    TP.core.ElectronMain.signalMain(
+                    TP.electron.ElectronMain.signalMain(
                         'TP.sig.ChangeUpdaterMenuItem',
                         {
                             //  label: 'Updates Available',
@@ -203,7 +203,7 @@ function(aSignal) {
                 }
             });
     } else {
-        TP.core.ElectronMain.signalMain('TP.sig.CheckForUpdates');
+        TP.electron.ElectronMain.signalMain('TP.sig.CheckForUpdates');
     }
 
     return this;
@@ -239,7 +239,7 @@ function(aSignal) {
     //  If we're not being 'silent', then prompt the user to the fact that an
     //  update is available and ask whether we should download it or not.
     if (!this.get('isSilent')) {
-        TP.core.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
+        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
             {
                 type: 'info',
                 title: 'Updates Available',
@@ -250,9 +250,9 @@ function(aSignal) {
             }).then(
             function(buttonIndex) {
                 if (buttonIndex === 0) {
-                    TP.core.ElectronMain.signalMain('TP.sig.DownloadUpdate');
+                    TP.electron.ElectronMain.signalMain('TP.sig.DownloadUpdate');
                 } else {
-                    TP.core.ElectronMain.signalMain(
+                    TP.electron.ElectronMain.signalMain(
                         'TP.sig.ChangeUpdaterMenuItem',
                         {
                             //  label: 'Check for updates',
@@ -261,7 +261,7 @@ function(aSignal) {
                 }
             });
     } else {
-        TP.core.ElectronMain.signalMain('TP.sig.DownloadUpdate');
+        TP.electron.ElectronMain.signalMain('TP.sig.DownloadUpdate');
     }
 
     return this;
@@ -283,7 +283,7 @@ function(aSignal) {
 
     //  Enable the menu item that allows the user to manually check for updates
     //  - we're no longer in the middle of checking for updates.
-    TP.core.ElectronMain.signalMain(
+    TP.electron.ElectronMain.signalMain(
         'TP.sig.ChangeUpdaterMenuItem',
         {
             //  label: 'Updates available',
@@ -294,7 +294,7 @@ function(aSignal) {
     //  update is ready to be installed and ask whether we should install it or
     //  not.
     if (!this.get('isSilent')) {
-        TP.core.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
+        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
             {
                 type: 'info',
                 title: 'Install Updates',
@@ -305,10 +305,10 @@ function(aSignal) {
             }).then(
             function(buttonIndex) {
                 if (buttonIndex === 0) {
-                    TP.core.ElectronMain.signalMain(
+                    TP.electron.ElectronMain.signalMain(
                                 'TP.sig.InstallUpdateAndRestart');
                 } else {
-                    TP.core.ElectronMain.signalMain(
+                    TP.electron.ElectronMain.signalMain(
                         'TP.sig.ChangeUpdaterMenuItem',
                         {
                             //  label: 'Updates Available',
@@ -337,7 +337,7 @@ function(aSignal) {
 
     //  Enable the menu item that allows the user to manually check for updates
     //  - we're no longer in the middle of checking for updates.
-    TP.core.ElectronMain.signalMain('TP.sig.ChangeUpdaterMenuItem',
+    TP.electron.ElectronMain.signalMain('TP.sig.ChangeUpdaterMenuItem',
         {
             //  label: 'Check for updates',
             enabled: true
@@ -348,7 +348,7 @@ function(aSignal) {
     if (!this.get('isSilent')) {
         errMsg = TP.str(aSignal.getPayload().at(0).message);
 
-        TP.core.ElectronMain.signalMain('TP.sig.ShowNativeErrorDialog',
+        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeErrorDialog',
             {
                 title: 'Error during the update',
                 message: 'Application couldn\'t be updated:\n' +
@@ -374,7 +374,7 @@ function(aSignal) {
 
     //  Enable the menu item that allows the user to manually check for updates
     //  - we're no longer in the middle of checking for updates.
-    TP.core.ElectronMain.signalMain(
+    TP.electron.ElectronMain.signalMain(
         'TP.sig.ChangeUpdaterMenuItem',
         {
             //  label: 'Check for updates',
@@ -384,7 +384,7 @@ function(aSignal) {
     //  If we're not being 'silent', then tell the user that there were no
     //  updates to be installed.
     if (!this.get('isSilent')) {
-        TP.core.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
+        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
             {
                 type: 'info',
                 title: 'No Updates Available',
