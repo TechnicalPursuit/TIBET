@@ -205,7 +205,7 @@ which allows you to run that specific test suite.
 
 ## TIBET SHELL
 
-This command has no client-side TSH peer command.
+The TIBET Shell ':test' command is activated by this command.
 
 ## TROUBLESHOOTING
 
