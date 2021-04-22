@@ -65,6 +65,10 @@
 
     <script src="electron/TP.electron.XMLNS.js"/>
     <script src="electron/TP.electron.Application.js"/>
+
+    <script src="electron/TP.electron.Element.js"/>
+    <script src="electron/TP.electron.dialog.js"/>
+    <script src="electron/TP.electron.notification.js"/>
 </config>
 
 <config id="aws">
