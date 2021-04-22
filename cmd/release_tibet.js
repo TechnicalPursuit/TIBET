@@ -110,9 +110,7 @@ GIT_COMMAND = 'git';
  */
 Cmd.prototype.execute = async function() {
 
-    var version,
-
-        meta,
+    var meta,
 
         gitpath,
         tibetpath,
@@ -140,15 +138,13 @@ Cmd.prototype.execute = async function() {
     if (CLI.inProject()) {
         this.error('Do not run this command in a project.');
         return 1;
-    } else {
-        version = CLI.getLibVersion();
     }
 
     meta = {
         source: null
     };
 
-    //  Pull apart the version string so we have the component parts.
+    //  Compute a version object so we have the component parts.
     meta.source = versioning.getVersionObject(this.options);
 
     this.info('checking for git support...');
@@ -276,6 +272,7 @@ Cmd.prototype.execute = async function() {
                     'version'
                 ];
 
+    /* eslint-disable no-extra-parens */
     if (CLI.isTrue(this.options.major)) {
         execArgs.push('--major');
         meta.source.major = (parseInt(meta.source.major, 10)).toString();
@@ -286,6 +283,7 @@ Cmd.prototype.execute = async function() {
         execArgs.push('--patch');
         meta.source.patch = (parseInt(meta.source.patch, 10)).toString();
     }
+    /* eslint-enable no-extra-parens */
 
     execArgs.push('--suffix', 'final');
 
