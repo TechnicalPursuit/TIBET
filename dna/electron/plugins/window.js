@@ -26,6 +26,7 @@
 
             BrowserWindow,
             dialog,
+            Notification,
             ipcMain,
 
             mainWindow,
@@ -61,6 +62,9 @@
 
         //  Module to create dialogs.
         dialog = electron.dialog;
+
+        //  Module to create notifications.
+        Notification = electron.Notification;
 
         //  Module to communicate with renderer processes over IPC.
         ipcMain = electron.ipcMain;
@@ -435,10 +439,13 @@
          * Event emitted when TIBET wants to show a native dialog.
          */
         ipcMain.handle('TP.sig.ShowNativeDialog',
-            function(event, dialogConfig) {
-                var choice;
+            async function(event, dialogConfig) {
+                var dialogResult;
 
-                choice = dialog.showMessageBoxSync(
+                //  dialogResult will be a POJO containing the following:
+                //  {Number} response
+                //  {Boolean} checkboxChecked
+                dialogResult = await dialog.showMessageBox(
                             mainWindow,
                             {
                                 type: dialogConfig.type,
@@ -449,7 +456,7 @@
                                 buttons: dialogConfig.buttons
                             });
 
-                return choice;
+                return dialogResult;
             });
 
         //  ---
@@ -460,6 +467,56 @@
         ipcMain.handle('TP.sig.ShowNativeErrorDialog',
             function(event, dialogConfig) {
                 dialog.showErrorBox(dialogConfig.title, dialogConfig.message);
+            });
+
+        //  ---
+
+        /**
+         * Event emitted by TIBET when it wants to show a native open dialog.
+         */
+        ipcMain.handle('TP.sig.ShowNativeOpenDialog',
+            async function(event, dialogConfig) {
+                var dialogResult;
+
+                //  dialogResult will be a POJO containing the following:
+                //  {Boolean} canceled
+                //  {String} filePath
+                dialogResult = await dialog.showOpenDialog(
+                            mainWindow,
+                            {
+                                title: dialogConfig.title,
+                                defaultPath: dialogConfig.defaultPath,
+                                buttonLabel: dialogConfig.buttonLabel,
+                                filters: dialogConfig.filters,
+                                properties: dialogConfig.properties
+                            });
+
+                return dialogResult;
+            });
+
+        //  ---
+
+        /**
+         * Event emitted by TIBET when it wants to show a native save dialog.
+         */
+        ipcMain.handle('TP.sig.ShowNativeSaveDialog',
+            async function(event, dialogConfig) {
+                var dialogResult;
+
+                //  dialogResult will be a POJO containing the following:
+                //  {Boolean} canceled
+                //  {String} filePath
+                dialogResult = await dialog.showSaveDialog(
+                            mainWindow,
+                            {
+                                title: dialogConfig.title,
+                                defaultPath: dialogConfig.defaultPath,
+                                buttonLabel: dialogConfig.buttonLabel,
+                                filters: dialogConfig.filters,
+                                properties: dialogConfig.properties
+                            });
+
+                return dialogResult;
             });
 
     };
