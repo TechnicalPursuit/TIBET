@@ -1210,9 +1210,13 @@
     //  define any additional (beyond the default values) extensions for js
     //  source, style (css, less, sass), and xml files. See the lint command
     //  docs for more details.
-    TP.sys.setcfg('cli.lint.cachefile', '~lib/.tibetlint.json');
+    TP.sys.setcfg('cli.lint.cachefile', '~/.tibetlint.json');
     TP.sys.setcfg('cli.lint.js_extensions', []);
+    TP.sys.setcfg('cli.lint.js_sources',
+        ['~/.eslintrc', '~/.eslintignore']);
     TP.sys.setcfg('cli.lint.style_extensions', []);
+    TP.sys.setcfg('cli.lint.style_sources',
+        ['~/.stylelintrc', './.stylelintignore']);
     TP.sys.setcfg('cli.lint.xml_extensions', []);
 
     //  couch command defaults
@@ -1678,9 +1682,11 @@
     //  lama processing
     //  ---
 
-    //  should the lama currently be active? default is true. if the code
-    //  hasn't loaded it won't matter, and if it has then it'll activate.
-    TP.sys.setcfg('lama.enabled', true);
+    //  what mode should the lama be in - 'minimal' or 'full'?
+    TP.sys.setcfg('lama.mode', 'full');
+
+    //  should the lama currently be active? default is false.
+    TP.sys.setcfg('lama.enabled', false);
 
     //  if the Lama is running, we use this flag to determine whether or not
     //  to autodefine tags that are not known by the system. NOTE: This flag is
@@ -1745,7 +1751,7 @@
     TP.sys.setcfg('lama.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
     //  should the TIBET icon which identifies the lama:toggle be visible?
-    TP.sys.setcfg('lama.show_toggle', true);
+    TP.sys.setcfg('lama.show_toggle', false);
 
     //  the output mode that the Lama will start with - 'none', 'one' or
     //  'all'.

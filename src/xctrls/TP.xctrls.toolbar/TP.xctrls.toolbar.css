@@ -1,0 +1,27 @@
+/*
+    CSS styles for 'xctrls:toolbar' controls.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+xctrls|toolbar {
+
+    user-select: none;
+}
+
+xctrls|toolbar xctrls|content {
+
+    display: flex;
+}
+
+xctrls|toolbar xctrls|content .templated {
+
+    /* We want to pretend that the span holding templated content doesn't exist
+     * (CSS-wise) */
+    display: contents;
+}
+
+xctrls|toolbar xctrls|content .templated:empty {
+
+    display: none;
+}

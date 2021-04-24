@@ -512,7 +512,7 @@ function() {
                         });
 
                     TP.boot.$getStageInfo('starting').head =
-                        'Launching TIBET Lama&#8482; IDE...';
+                        'Loading developer extensions...';
                 }
 
                 //  If we initialized without error move on to starting.
@@ -841,7 +841,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('terminate',
-function(aURI) {
+function(aURI, navigateToURI) {
 
     /**
      * @method terminate
@@ -854,7 +854,12 @@ function(aURI) {
      *     executed by the application*.
      * @param {String} aURI The URI to navigate to in order to terminate the
      *     application.
-     * @returns {TP.sys} The receiver.
+     * @param {Boolean} [navigateToURI=true] Whether or not we'll navigate to
+     *     the URI. If not, this method will just call TP.sys.finalizeShutdown
+     *     manually.
+     * @returns {Boolean} Whether or not we're really terminating. If one of the
+     *     handlers of TP.sig.AppWillShutdown has prevented the default action,
+     *     then we will *not* terminate.
      */
 
     var sig,
@@ -876,24 +881,7 @@ function(aURI) {
         //  exiting.
         TP.sys.isExiting(false);
 
-        return this;
-    }
-
-    if (TP.isValid(aURI)) {
-        url = TP.uc(aURI);
-    } else {
-        url = TP.uc(TP.sys.cfg('path.blank_page'));
-    }
-
-    str = url.getLocation();
-
-    //  Can't use a 'tibet://' URL here.
-    if (str.match(/tibet:/)) {
-        TP.ifWarn() ?
-            TP.warn('Invalid termination URI provided: ' + aURI) : 0;
-
-        //  didn't resolve properly, not a valid resource URI
-        url = TP.uc(TP.sys.cfg('path.blank_page'));
+        return false;
     }
 
     //  Make sure to remove the 'TIBET.boot.tibet_token' value from
@@ -917,13 +905,35 @@ function(aURI) {
                                 'true');
     }
 
-    //  put up the blank page at top, which blows away the app
+    //  If we are navigating to a new URL, then compute one and go there.
+    if (TP.notFalse(navigateToURI)) {
+        if (TP.isValid(aURI)) {
+            url = TP.uc(aURI);
+        } else {
+            url = TP.uc(TP.sys.cfg('path.blank_page'));
+        }
 
-    //  NB: This will eventually cause the 'finalizeShutdown' machinery above
-    //  through the 'unload' event handler.
-    window.location = url.getLocation();
+        str = url.getLocation();
 
-    return this;
+        //  Can't use a 'tibet://' URL here.
+        if (str.match(/tibet:/)) {
+            TP.ifWarn() ?
+                TP.warn('Invalid termination URI provided: ' + aURI) : 0;
+
+            //  didn't resolve properly, not a valid resource URI
+            url = TP.uc(TP.sys.cfg('path.blank_page'));
+        }
+
+        //  put up the blank page at top, which blows away the app
+
+        //  NB: This will eventually cause the 'finalizeShutdown' machinery
+        //  above through the 'unload' event handler.
+        window.location = url.getLocation();
+    } else {
+        TP.sys.finalizeShutdown();
+    }
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------

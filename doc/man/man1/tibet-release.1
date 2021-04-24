@@ -1,4 +1,4 @@
-.TH "TIBET\-RELEASE" "1" "March 2021" "" ""
+.TH "TIBET\-RELEASE" "1" "April 2021" "" ""
 .SH "NAME"
 \fBtibet-release\fR \- prep and tag a release
 .SH SYNOPSIS
@@ -64,6 +64,9 @@ The source branch name to use\. Default is 'develop'\.
 \fBcli\.release\.target\fP :
 The target branch name to use\. Default is 'master'\.
 .IP \(bu 2
+\fBcli\.release\.remote\fP :
+The remote name to use\. Default is 'origin'\.
+.IP \(bu 2
 \fBcli\.release\.suffixes\fP :
 The list of default suffixes: [beta, dev, final, hotfix, pre, rc]\.
 
@@ -110,7 +113,7 @@ executing git merge develop
 Updating 3d39c02\.\.76a0cc6
 Fast\-forward
  package\.json                             |  2 +\-
- public/TIBET\-INF/cfg/getsherpa\.xml       |  2 +\-
+ public/TIBET\-INF/cfg/getlama\.xml         |  2 +\-
  public/TIBET\-INF/cfg/main\.xml            |  2 +\-
  public/src/templates/version\.js          | 33 ++++++++++++++++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
  public/src/templates/version_template\.js | 33 ++++++++++++++++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-

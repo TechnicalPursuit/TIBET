@@ -48,6 +48,7 @@
     <script src="./TP.lama.computedTagContextMenuContent/TP.lama.computedTagContextMenuContent.js"/>
     <script src="./TP.lama.templatedTagContextMenuContent/TP.lama.templatedTagContextMenuContent.js"/>
     <script src="./TP.lama.hud/TP.lama.hud.js"/>
+    <script src="./TP.lama.lamabar/TP.lama.lamabar.js"/>
     <script src="./TP.lama.world/TP.lama.world.js"/>
     <script src="./TP.lama.screen/TP.lama.screen.js"/>
     <script src="./TP.lama.flex/TP.lama.flex.js"/>

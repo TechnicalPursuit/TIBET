@@ -213,6 +213,27 @@ Cmd.prototype.constructResults = function() {
     };
 };
 
+
+/**
+ * Returns the fully-expanded list of file extensions for each linter.
+ * @returns {Object} A dictionary of 'js', 'style', and 'xml' extensions.
+ */
+Cmd.prototype.getLinterExtensions = function() {
+    var exts;
+
+    exts = {
+        js: CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.js_extensions')),
+            this.JS_EXTENSIONS),
+        style: CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.style_extensions')),
+            this.STYLE_EXTENSIONS),
+        xml: CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.xml_extensions')),
+            this.XML_EXTENSIONS)
+    };
+
+    return exts;
+};
+
+
 /**
  * Performs lint processing, verifying TIBET's xml configuration files
  * first, then any assets listed as part of the project in its manifest(s).
@@ -371,6 +392,7 @@ Cmd.prototype.executeForEach = function(list) {
 
     var cmd,
         files,
+        exts,
         jsexts,
         styleexts,
         xmlexts;
@@ -383,12 +405,10 @@ Cmd.prototype.executeForEach = function(list) {
         xml: []
     };
 
-    jsexts = CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.js_extensions')),
-        cmd.JS_EXTENSIONS);
-    styleexts = CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.style_extensions')),
-        cmd.STYLE_EXTENSIONS);
-    xmlexts = CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.xml_extensions')),
-        cmd.XML_EXTENSIONS);
+    exts = this.getLinterExtensions();
+    jsexts = exts.js;
+    styleexts = exts.style;
+    xmlexts = exts.xml;
 
     try {
         list.forEach(function(item) {
@@ -598,6 +618,12 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
     var data,
         lastpath,
         lastrun,
+        exts,
+        sources,
+        extname,
+        extind,
+        oldjs,
+        oldstyle,
         cmd;
 
     if (this.options.clean) {
@@ -627,9 +653,30 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
                 lastrun = 0;
             }
         }
+
+        //  If we're going to be checking against a lastrun date recall
+        //  each linter has source files it depends on which determine
+        //  whether files for that type of lint pass should be rechecked.
+        sources = CLI.getcfg('cli.lint.js_sources', []);
+        oldjs = sources.some(function(source) {
+            return CLI.isFileNewer(source, lastpath);
+        });
+
+        sources = CLI.getcfg('cli.lint.style_sources', []);
+        oldstyle = sources.some(function(source) {
+            return CLI.isFileNewer(source, lastpath);
+        });
+
+        //  For file testing we'll need extensions that apply.
+        exts = this.getLinterExtensions();
     }
     lastrun = lastrun === void 0 ? 0 : lastrun;
     lastrun = new Date(lastrun);
+
+    cmd.verbose('last linter run: ' + lastrun);
+    cmd.verbose('js rule changes: ' + oldjs);
+    cmd.verbose('style rule changes: ' + oldstyle);
+    cmd.verbose('linter extensions:\n' + JSON.stringify(exts));
 
     return list.filter(function(item) {
         var src,
@@ -654,6 +701,28 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
         //  easy way to ensure each run reminds you what's broken/linty.
         if (data && data.recheck && data.recheck.indexOf(src) !== -1) {
             return true;
+        }
+
+        //  We might skip... but we need to verify the file isn't older than
+        //  source files for its linter type...
+        if (exts) {
+            if (oldjs) {
+                extname = path.extname(src).slice(1);
+                extind = exts.js.indexOf(extname);
+                if (extind !== -1) {
+                    cmd.verbose(src + ' # not filtered (oldjs)');
+                    return true;
+                }
+            }
+
+            if (oldstyle) {
+                extname = path.extname(src).slice(1);
+                extind = exts.style.indexOf(extname);
+                if (extind !== -1) {
+                    cmd.verbose(src + ' # not filtered (oldstyle)');
+                    return true;
+                }
+            }
         }
 
         newer = CLI.isFileNewer(src, lastrun);

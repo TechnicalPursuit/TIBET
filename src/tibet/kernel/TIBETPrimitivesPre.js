@@ -3362,14 +3362,28 @@ function(anObj) {
      *     wrapper for something else.
      */
 
+    //  If the supplied object is a bound Function, then this returns the
+    //  underlying Function (if bound by our override of
+    //  Function.prototype.bind).
     if (TP.isValid(anObj.$realFunc)) {
         return anObj.$realFunc;
     }
 
+    //  If the supplied object is a Function that dispatches into our multiple
+    //  inheritance system, then this will be the resolved Function (the
+    //  Function that was computed to be the method that should be used).
     if (TP.isValid(anObj.$resolutionMethod)) {
         return anObj.$resolutionMethod;
     }
 
+    //  If we're using the test harness and the supplied object is a spying
+    //  Function, then we want to return the Function that it is spying on.
+    if (TP.isValid(anObj.$spiedFunc)) {
+        return anObj.$spiedFunc;
+    }
+
+    //  The supplied Function object didn't have any of those slots - just
+    //  return it.
     return anObj;
 }, null, 'TP.getRealFunction');
 

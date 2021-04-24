@@ -5,6 +5,11 @@
  *     client-side changes back to the server. Additional middleware specific to
  *     working with CouchDB, including support for the CouchDB changes feed,
  *     lets you create powerful CouchDB-backed applications with minimal effort.
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     open source waivers to keep your derivative work source code private.
  */
 
 /* eslint-disable no-console, no-process-exit */
@@ -35,7 +40,8 @@
         port,               // Port to listen on.
         protocol,           // HTTP or HTTPS.
         TDS,                // TIBET Data Server baseline.
-        shutdown,           // Exit hook function.
+        shutdown,           // Shutdown hook function.
+        exitSoon,           // Exit hook function.
         called,             // Trap in shutdown to avoid running twice.
         useHttps;           // Should this be an HTTPS server.
 
@@ -86,6 +92,40 @@
     //  Ensure we update the HTTPS settings before we load any plugins.
     useHttps = TDS.isValid(argv.https) ? argv.https : TDS.getcfg('tds.https');
     TDS.setcfg('tds.https', useHttps);
+
+    protocol = useHttps ? 'https' : 'http';
+
+    //  Configure common error reporting metadata so we style properly.
+    meta = {
+        comp: 'TDS',
+        type: 'tds',
+        name: 'server',
+        style: 'error'
+    };
+
+    //  ---
+    //  Serious Shutdown Hook
+    //  ---
+
+    exitSoon = function(code, str, opts) {
+        setTimeout(() => {
+            var msg;
+
+            msg = str || 'shutdown complete';
+            TDS.logger.system(msg, meta);
+            if (!TDS.hasConsole()) {
+                process.stdout.write(TDS.colorize(msg, 'error') + '\n');
+            }
+
+            if (TDS.logger.flush) {
+                TDS.logger.flush(true);
+            }
+        }, TDS.getcfg('tds.shutdown_timeout'));
+
+        setTimeout(() => {
+            process.exit(code);
+        }, TDS.getcfg('tds.shutdown_timeout') + 100);
+    };
 
     //  ---
     //  Middleware
@@ -143,21 +183,15 @@
     //  Capture logger reference now that plugins have loaded.
     logger = options.logger;
     if (!logger) {
-        console.error('Missing logger middleware or export.');
-        process.exit(1);
+        console.error('missing critical logger middleware or export.');
+        console.error('shutting down server');
+        exitSoon(1);
+        return;
     }
 
     //  ---
     //  Backstop
     //  ---
-
-    //  Configure common error reporting metadata so we style properly.
-    meta = {
-        comp: 'TDS',
-        type: 'tds',
-        name: 'server',
-        style: 'error'
-    };
 
     //  Always maintain at least the uncaught exception handler. If the consumer
     //  puts one onto the shared options object use that, otherwise use default.
@@ -174,10 +208,18 @@
         if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
             //  These happen due to port defaults below 1024 (which require perms)
             console.error('Possible permission error for server port: ' + port);
+            setTimeout(() => {
+                process.exit(1);
+            }, 10);
+            return;
         } else if (err.message && err.message.indexOf('EADDRINUSE') !== -1) {
             //  These happen because you forget you're already running one.
             console.error('Server start failed. Port ' + (err.port || port) +
                 ' is busy.');
+            setTimeout(() => {
+                process.exit(1);
+            }, 10);
+            return;
         } else if (app.get('env') === 'development') {
             stack = err.stack || '';
             TDS.logger.error('Uncaught: \n' + stack.replace(/\\n/g, '\n'), meta);
@@ -190,7 +232,7 @@
         }
 
         if (TDS.cfg('tds.stop_onerror')) {
-            process.exit(1);
+            exitSoon(1);
         }
     });
 
@@ -200,7 +242,8 @@
 
     called = false;
     shutdown = function() {
-        var msg;
+        var msg,
+            code;
 
         if (called) {
             return;
@@ -215,69 +258,32 @@
             process.stdout.write(TDS.colorize(msg, 'error') + '\n');
         }
 
-        if (TDS.httpsServer) {
-
-            msg = 'shutting down HTTPS server';
-            TDS.logger.system(msg, meta);
-            if (!TDS.hasConsole()) {
-                process.stdout.write(TDS.colorize(msg, 'error') + '\n');
-            }
-
-            TDS.httpsServer.close(function(err) {
-                if (err) {
-                    msg = 'HTTPS server: ' + err.message;
-                    TDS.logger.error(msg, meta);
-                    if (!TDS.hasConsole()) {
-                        process.stderr.write(TDS.colorize(msg, 'error') + '\n');
-                    }
-                }
-                //  NOTE we don't exit process from here...we rely on the
-                //  httpServer to do that so they don't fight over it. We have
-                //  this close() operation just to get server to stop any new
-                //  connections from coming in.
-                return;
-            });
+        msg = 'shutting down ' + protocol.toUpperCase() + ' server';
+        TDS.logger.system(msg, meta);
+        if (!TDS.hasConsole()) {
+            process.stdout.write(TDS.colorize(msg, 'error') + '\n');
         }
 
-        if (TDS.httpServer) {
-            msg = 'shutting down HTTP server';
-            TDS.logger.system(msg, meta);
-            if (!TDS.hasConsole()) {
-                process.stdout.write(TDS.colorize(msg, 'error') + '\n');
-            }
+        //  This will get us a viable return code.
+        code = TDS.shutdown(null, meta);
 
-            TDS.httpServer.close(function(err) {
-                var code;
+        //  If we never really got going...
+        if (!TDS.httpServer && !TDS.httpsServer) {
+            exitSoon(1);
+            return;
+        }
 
-                if (err) {
-                    msg = 'HTTP server: ' + err.message;
-                    TDS.logger.error(msg, meta);
-                    if (!TDS.hasConsole()) {
-                        process.stderr.write(TDS.colorize(msg, 'error') + '\n');
-                    }
-                }
-
-                //  This will get us a viable return code.
-                code = TDS.shutdown(err, meta);
-
-                msg = 'shutdown complete';
-                TDS.logger.system(msg, meta);
+        TDS[protocol + 'Server'].close(function(err) {
+            if (err) {
+                msg = protocol.toUpperCase() + ' server: ' + err.message;
+                TDS.logger.error(msg, meta);
                 if (!TDS.hasConsole()) {
-                    process.stdout.write(TDS.colorize(msg, 'error') + '\n');
+                    process.stderr.write(TDS.colorize(msg, 'error') + '\n');
                 }
+            }
 
-                if (TDS.logger.flush) {
-                    TDS.logger.flush(true, function() {
-                        process.exit(code);
-                    });
-                } else {
-                    process.exit(code);
-                }
-            });
-        }
-
-        //  Force connections to become aware of a timeout so they drop.
-        TDS.timeoutConnections();
+            exitSoon(code, msg);
+        });
     };
 
     process.on('SIGINT', shutdown);
@@ -305,36 +311,33 @@
 
     //  Default to https for the site and require it to be forced off via flag.
     if (useHttps) {
-        protocol = 'https';
-
-        certPath = TDS.getcfg('tds.cert.path') || 'etc';
+        certPath = TDS.getcfg('tds.cert.path') || '~/etc';
         certKey = TDS.getcfg('tds.cert.key') || 'ssl.key';
         certFile = TDS.getcfg('tds.cert.file') || 'ssl.crt';
 
-        sslErrMsg =
-            'You can generate a self-signed certificate *which should be used' +
-            ' for development\n' +
-            'purposes only* by executing the following commands' +
-            '(assuming openssl\n' +
-            'is installed on your system):\n\n' +
+        sslErrMsg = `
+            You can generate a self-signed certificate for local development
+            by following the guidelines at:
 
-            'mkdir etc;' +
-            ' openssl req -nodes -new -x509' +
-            ' -keyout ./etc/ssl.key -out ./etc/ssl.crt\n\n' +
+            https://letsencrypt.org/docs/certificates-for-localhost/
 
-            'Note that the only required fields are \'Common Name\' (which' +
-            ' should be set to\n' +
-            '\'localhost\') and \'Email Address\'\n\n';
+            Place the resulting cert/key files in a directory in your TIBET
+            project such as ~/etc and set the TIBET configuration values for
+
+                'tds.cert.path' (defaults to '~/etc')
+                'tds.cert.key' (defaults to 'ssl.key')
+                'tds.cert.file' (defaults to 'ssl.crt')
+        `;
 
         try {
-            certKey = TDS.joinPaths(certPath, certKey);
+            certKey = TDS.expandPath(TDS.joinPaths(certPath, certKey));
             key = fs.readFileSync(certKey);
         } catch (e) {
             TDS.logger.error('Missing cert key for HTTPS: ' + certKey, meta);
         }
 
         try {
-            certFile = TDS.joinPaths(certPath, certFile);
+            certFile = TDS.expandPath(TDS.joinPaths(certPath, certFile));
             cert = fs.readFileSync(certFile);
         } catch (e) {
             TDS.logger.error('Missing cert file for HTTPS: ' + certFile, meta);
@@ -346,7 +349,9 @@
                 TDS.logger.flush(true);
             }
 
-            process.exit(1);
+            //  Trigger the shutdown hook function.
+            process.kill(process.pid, 'SIGTERM');
+            return;
         }
 
         httpsOpts = {
@@ -354,10 +359,7 @@
             cert: cert
         };
 
-        TDS.httpServer = http.createServer(app);
-        TDS.httpServer.listen(port);
-
-        port = argv.https_port || process.env.HTTPS_PORT ||
+        port = argv.https_port || argv.port || process.env.HTTPS_PORT ||
             TDS.cfg('tds.https_port') || TDS.cfg('https_port') ||
             443;   //  default https port
 
@@ -365,7 +367,6 @@
         TDS.httpsServer.listen(port);
 
     } else {
-        protocol = 'http';
         TDS.httpServer = http.createServer(app);
         TDS.httpServer.listen(port);
     }

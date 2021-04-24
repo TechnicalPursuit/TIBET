@@ -378,8 +378,6 @@ function() {
 
         loadHandler,
 
-        contentTPElem,
-
         consoleOutputTPElem,
 
         hudTPElem,
@@ -704,10 +702,6 @@ function() {
     //  Use the HUD's current value to set whether we are hidden or not.
     isHidden = TP.bc(hudTPElem.getAttribute('hidden'));
     this.setAttribute('hidden', isHidden);
-
-    //  Hide the Lama's busy message... getting ready for use.
-    contentTPElem = TP.byId('content', this.getNativeWindow());
-    TP.elementHideBusyMessage(contentTPElem.getNativeNode());
 
     //  Observe the HUD's south drawer for when it opens/closes
     consoleDrawerTPElem = TP.byId('south', this.getNativeDocument());

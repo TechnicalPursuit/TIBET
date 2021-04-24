@@ -210,9 +210,13 @@
         }
         str += this.colorize(msg, spec);
 
+        //  If the message has a trailing newline, strip it. This is to avoid
+        //  NodeJS buffering behavior when writing out to a local terminal. The
+        //  console.* methods will add one as automatic behavior.
+        str = str.replace(/\n$/, '');
+
         return console[method](str);
     };
-
 
     Logger.prototype.trace = function(msg, spec) {
         var s;

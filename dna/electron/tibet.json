@@ -22,12 +22,8 @@
         "boot": {
             "profile": "development"
         },
-        "updater": {
-            "download": false,
-            "onstart": false
-        },
-        "watch": {
-            "event": "fileChange"
+        "plugins": {
+            "core": ["profile", "window", "menu", "updater", "watch", "devtools"]
         }
     }
 }

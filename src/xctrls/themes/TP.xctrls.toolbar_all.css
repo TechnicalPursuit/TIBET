@@ -1,0 +1,26 @@
+/*
+    CSS styles common across 'xctrls:toolbar' controls for any theme.
+*/
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* All themed 'xctrls:toolbar' controls */
+*[data-theme] xctrls|toolbar {
+
+}
+
+*[data-theme] xctrls|toolbar[orientation="vertical"] xctrls|content {
+
+    flex-direction: column;
+}
+
+/* All themed, non-disabled 'xctrls:toolbar' controls */
+*[data-theme] xctrls|toolbar:not([pclass|disabled]) {
+
+}
+
+/* All themed, non-disabled 'xctrls:toolbar' control labels */
+*[data-theme] xctrls|toolbar:not([pclass|disabled]) > xctrls|label {
+
+}

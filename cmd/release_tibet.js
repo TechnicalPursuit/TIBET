@@ -84,7 +84,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * so we give this a generous amount of time.
  * @type {Number}
  */
-Cmd.prototype.TIMEOUT = 1000 * 60 * 20;
+Cmd.prototype.TIMEOUT = 1000 * 60 * 60;
 
 /**
  * The command usage string.
@@ -110,9 +110,7 @@ GIT_COMMAND = 'git';
  */
 Cmd.prototype.execute = async function() {
 
-    var version,
-
-        meta,
+    var meta,
 
         gitpath,
         tibetpath,
@@ -140,16 +138,14 @@ Cmd.prototype.execute = async function() {
     if (CLI.inProject()) {
         this.error('Do not run this command in a project.');
         return 1;
-    } else {
-        version = CLI.getLibVersion();
     }
 
     meta = {
         source: null
     };
 
-    //  Pull apart the version string so we have the component parts.
-    meta.source = versioning.getVersionObject(version);
+    //  Compute a version object so we have the component parts.
+    meta.source = versioning.getVersionObject(this.options);
 
     this.info('checking for git support...');
 
@@ -276,16 +272,18 @@ Cmd.prototype.execute = async function() {
                     'version'
                 ];
 
+    /* eslint-disable no-extra-parens */
     if (CLI.isTrue(this.options.major)) {
         execArgs.push('--major');
-        meta.source.major = (parseInt(meta.source.major, 10) + 1).toString();
+        meta.source.major = (parseInt(meta.source.major, 10)).toString();
     } else if (CLI.isTrue(this.options.minor)) {
         execArgs.push('--minor');
-        meta.source.minor = (parseInt(meta.source.minor, 10) + 1).toString();
+        meta.source.minor = (parseInt(meta.source.minor, 10)).toString();
     } else if (CLI.isTrue(this.options.patch)) {
         execArgs.push('--patch');
-        meta.source.patch = (parseInt(meta.source.patch, 10) + 1).toString();
+        meta.source.patch = (parseInt(meta.source.patch, 10)).toString();
     }
+    /* eslint-enable no-extra-parens */
 
     execArgs.push('--suffix', 'final');
 
@@ -484,6 +482,10 @@ Cmd.prototype.execute = async function() {
             '"nodockercache": true, ' +
             '"dockerfile": "Dockerfile_DEPLOY", ' +
 
+            //  The default command will tag 'latest' (per our project version),
+            //  but we want extra images tagged off of that, so that there are
+            //  images with our major, major.minor and major.minor.patch version
+            //  numbers.
             '"extra_tag_entries": [' +
                 '[' +
                     '"technicalpursuit/tibet:latest"' + ',' +
@@ -500,6 +502,9 @@ Cmd.prototype.execute = async function() {
                     '"technicalpursuit/tibet:' + meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch + '"' +
                 ']' +
             '],' +
+
+            //  The default command will push 'latest', but we want the extra
+            //  tagged images to be pushed as well.
             '"extra_push_entries": [' +
                 '"technicalpursuit/tibet:' + meta.source.major + '", ' +
                 '"technicalpursuit/tibet:' + meta.source.major + '.' + meta.source.minor + '", ' +

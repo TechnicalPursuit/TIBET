@@ -17,6 +17,8 @@
     <config ref="tsh"/>
     <config ref="xml"/>
     <config ref="http"/>
+
+    <config ref="electron"/>
 </config>
 
 <config id="baseui">
@@ -56,6 +58,17 @@
     <script src="ev/TP.ev.info.js"/>
     <script src="ev/TP.ev.listener.js"/>
     <script src="ev/TP.ev.script.js"/>
+</config>
+
+<config id="electron">
+    <script src="electron/TP.electron.ElectronMain.js"/>
+
+    <script src="electron/TP.electron.XMLNS.js"/>
+    <script src="electron/TP.electron.Application.js"/>
+
+    <script src="electron/TP.electron.Element.js"/>
+    <script src="electron/TP.electron.dialog.js"/>
+    <script src="electron/TP.electron.notification.js"/>
 </config>
 
 <config id="aws">
@@ -306,6 +319,7 @@
     <resource href="xctrls/themes/TP.xctrls.select_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.sticky_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.tabbar_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.toolbar_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.table_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.textitem_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.tooltip_all.css"/>
@@ -364,6 +378,7 @@
     <package src="xctrls/TP.xctrls.tabbar/TP.xctrls.tabbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.table/TP.xctrls.table.xml" config="base"/>
     <package src="xctrls/TP.xctrls.textitem/TP.xctrls.textitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.toolbar/TP.xctrls.toolbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.tooltip/TP.xctrls.tooltip.xml" config="base"/>
 
     <!-- BEGIN xctrls:codeeditor -->
@@ -393,7 +408,7 @@
 
     <!-- END xctrls:codeeditor -->
 
-    <resource href="~lib_deps/discovery/discovery-umd-tpi.js" no-inline="true"/>
+    <resource href="~lib_deps/discovery/discovery-tpi.js" no-inline="true"/>
     <resource href="~lib_deps/discovery/discovery.css" no-inline="true"/>
 
     <package src="xctrls/TP.xctrls.jsonview/TP.xctrls.jsonview.xml" config="base"/>

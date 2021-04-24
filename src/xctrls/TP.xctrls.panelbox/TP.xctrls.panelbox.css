@@ -13,8 +13,6 @@ xctrls|panelbox {
 
 xctrls|panelbox xctrls|panel {
 
-    order: 1;
-
     width: 100%;
     height: 100%;
 }
@@ -24,7 +22,7 @@ xctrls|panelbox xctrls|panel:not([pclass|selected]) {
     display: none;
 }
 
-xctrls|panelbox xctrls|panel xctrls|content {
+xctrls|panelbox xctrls|panel > xctrls|content {
 
     width: 100%;
     height: 100%;

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+    #toolbar1 {
+        top: 30px;
+    }
+    #toolbar2 {
+        top: 60px;
+    }
+    #toolbar3 {
+        top: 90px;
+    }
+    #toolbar4 {
+        top: 120px;
+    }
+    #toolbar5 {
+        top: 150px;
+    }
+    #toolbar6 {
+        top: 180px;
+    }
+    ]]>
+    </style>
+
+    <!-- As a one dimensional Array, the item labels and values will be the same -->
+    <tibet:data name="urn:tibet:one_dim_array" content="TP.core.Hash">
+        <![CDATA[
+            {
+            "names": [
+                "Smith",
+                "Johnson",
+                "Williams",
+                "Jones",
+                "Brown",
+                "Davis",
+                "Miller",
+                "Wilson",
+                "Moore",
+                "Taylor"]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- As a two dimensional Array, the item values will come from the values in the first 'column' and item labels will come from the values in the second 'column' -->
+    <tibet:data name="urn:tibet:two_dim_array" content="TP.core.Hash">
+        <![CDATA[
+            {
+            "names": [
+                ["smith","Smith"],
+                ["johnson","Johnson"],
+                ["williams","Williams"],
+                ["jones","Jones"],
+                ["brown","Brown"],
+                ["davis","Davis"],
+                ["miller","Miller"],
+                ["wilson","Wilson"],
+                ["moore","Moore"],
+                ["taylor","Taylor"]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- As a JS 'object' hash, the item values will come from the 'keys' in the hash and item labels will come from the values 'hash' -->
+    <tibet:data name="urn:tibet:object_hash" content="TP.core.Hash">
+        <![CDATA[
+            {
+            "names": {
+                "smith":"Smith",
+                "johnson":"Johnson",
+                "williams":"Williams",
+                "jones":"Jones",
+                "brown":"Brown",
+                "davis":"Davis",
+                "miller":"Miller",
+                "wilson":"Wilson",
+                "moore":"Moore",
+                "taylor":"Taylor"
+                }
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The selection scratch data -->
+    <tibet:data name="urn:tibet:selection_scratch_data" content="TP.core.Hash">
+        <![CDATA[
+            {
+            "data": "johnson"
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The test data for selection tests -->
+    <tibet:data name="urn:tibet:selection_test_data" content="TP.core.Hash">
+        <![CDATA[
+            {
+            "data": [
+                ["foo","foo"],
+                ["bar","bar"],
+                ["baz","baz"]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The test data for value bound selection tests -->
+    <tibet:data name="urn:tibet:bound_selection_test_data" content="TP.core.Hash">
+        <![CDATA[
+        {"selection_set_1": "bar", "selection_set_2": "foo"}
+        ]]>
+    </tibet:data>
+
+    <!-- The test data for static item selection tests -->
+    <tibet:data name="urn:tibet:static_selection_test_data" content="TP.core.Hash">
+        <![CDATA[
+        {"selection_set_1": "before"}
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body data-theme="tpi">
+    <br/>
+
+    <br/>
+    toolbar #1:
+    <br/>
+    A standard XControls toolbar showing dynamic content of a single dimensional Array:
+    <xctrls:toolbar id="toolbar1" bind:in="{data: urn:tibet:one_dim_array#tibet(names)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    toolbar #2:
+    <br/>
+    A standard XControls toolbar showing dynamic content of a two dimensional Array:
+    <xctrls:toolbar id="toolbar2" bind:io="{data: urn:tibet:two_dim_array#tibet(names), value: urn:tibet:selection_scratch_data#tibet(data)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    toolbar #3:
+    <br/>
+    A standard XControls toolbar showing dynamic content of an Object hash:
+    <xctrls:toolbar id="toolbar3" bind:in="{data: urn:tibet:object_hash#tibet(names)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    toolbar #4:
+    <br/>
+
+    A standard XControls toolbar enabled showing dynamic content:
+    <xctrls:toolbar id="toolbar4" bind:io="{data: urn:tibet:selection_test_data#tibet(data)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    toolbar #5:
+    <br/>
+
+    A standard XControls toolbar enabled showing dynamic content and value bound to a selection model:
+    <xctrls:toolbar id="toolbar5" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}"/>
+
+    <br/>
+    <br/>
+
+    <br/>
+    toolbar #6:
+    <br/>
+
+    A standard XControls toolbar enabled showing only static content:
+    <xctrls:toolbar id="toolbar6" bind:io="{value: urn:tibet:static_selection_test_data#tibet(selection_set_1)}">
+        <xctrls:textitem tabindex="0" on:click="TestClick">
+            <xctrls:label>Before Content</xctrls:label>
+            <xctrls:value>before</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem tabindex="0">
+            <xctrls:label>After Content</xctrls:label>
+            <xctrls:value>after</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:toolbar>
+
+    <br/>
+    <br/>
+
+    <br/>
+    toolbar #7:
+    <br/>
+
+    A standard XControls toolbar enabled showing static and templated content and value bound to a selection model:
+    <xctrls:toolbar id="toolbar7" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}">
+        <xctrls:textitem tabindex="0">
+            <xctrls:label>Before Content</xctrls:label>
+            <xctrls:value>before</xctrls:value>
+        </xctrls:textitem>
+        <tibet:template>
+            <xctrls:textitem>
+                <xctrls:label>[[value.1]]</xctrls:label>
+                <xctrls:value>[[value.0]]</xctrls:value>
+            </xctrls:textitem>
+        </tibet:template>
+        <xctrls:textitem tabindex="0">
+            <xctrls:label>After Content</xctrls:label>
+            <xctrls:value>after</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:toolbar>
+
+    <br/>
+    <br/>
+
+    <div class="controlBox">
+        <button onclick="TP.byId('toolbar1').signal('UIDisabled');">Disable toolbar #1</button>
+        <button onclick="TP.byId('toolbar1').signal('UIEnabled');">Enable toolbar #1</button>
+
+        <br/>
+
+        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
+        <button onclick="setTimeout(function() {TP.byId('toolbar1').signal('UIFocused');}, 100)">Focus toolbar #1</button>
+    </div>
+
+</body>
+</html>

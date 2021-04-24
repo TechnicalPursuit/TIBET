@@ -77,6 +77,68 @@
         setcfg('tibet.crypto.keylen', 32);      //  target key length
         setcfg('tibet.crypto.saltlen', 16);     //  target salt length
 
+        //  ---
+        //  SECURITY / CSP
+        //  ---
+
+        //  Default in security.js plugin is strict-origin-when-cross-origin
+        //  so this setting is slightly more typical for "normal operation".
+        setcfg('tds.security.referrerPolicy', 'same-origin');
+
+        //  Non-directive CSP configuration values.
+        setcfg('tds.csp.browserSniff', true);
+        setcfg('tds.csp.disableAndroid', false);
+        setcfg('tds.csp.loose', false);
+        setcfg('tds.csp.reportOnly', true);
+        setcfg('tds.csp.sandbox', ['allow-forms', 'allow-scripts']);
+        setcfg('tds.csp.setAllHeaders', false);
+        setcfg('tds.csp.upgradeInsecureRequests', true);
+
+        //  The list of directives which are valid in a CSP declaration.
+        //  NOTE the '_' here so directives are not part of tds.csp object.
+        setcfg('tds.csp_directives', {
+            reportUri: '/report-csp',
+
+            defaultSrc: ['self'],
+            imgSrc: ['self'],
+            scriptSrc: ['self'],
+            styleSrc: ['self'],
+            fontSrc: ['self'],
+            connectSrc: ['self'],
+
+            objectSrc: ['none'],
+            mediaSrc: ['none'],
+            frameSrc: ['none'],
+            childSrc: ['none'],
+
+            baseUri: ['none']
+        });
+
+        //  The list of keywords which must be treated specially (quoted) within
+        //  a CSP directive string.
+        //  NOTE the '_' here so keywords are not part of tds.csp object.
+        setcfg('tds.csp_keywords', [
+            'self',
+            'none',
+            'unsafe-inline',
+            'unsafe-eval',
+            'strict-dynamic',
+            'unsafe-hashes',
+            'report-sample',
+            'unsafe-allow-redirects'
+        ]);
+
+        // HSTS Strict-Transport-Security configuration block values.
+        setcfg('tds.use_hsts', false);
+        setcfg('tds.hsts.maxAge', 10886400);    // Google requires min 18 weeks
+        setcfg('tds.hsts.includeSubDomains', true); //  Google requirement
+        setcfg('tds.hsts.preload', true);
+        setcfg('tds.hsts.force', true);
+
+        //  ---
+        //  HTTP(S)
+        //  ---
+
         //  true will cause the server to start with HTTPS server/port info.
         setcfg('tds.https', false);
 
@@ -89,6 +151,15 @@
         //  can choose to map https TDS operations to a non-priviledged port
         setcfg('tds.https_port', null);
 
+        //  NOTE we do _not_ default this here so env.PORT etc can be used when
+        //  the parameter isn't being explicitly set. 1407 is hardcoded in
+        //  server.js.
+        setcfg('tds.port', null);
+
+        //  ---
+        //  LOGGING
+        //  ---
+
         setcfg('tds.log.transports', ['file']);
         setcfg('tds.log.color', true);
         setcfg('tds.log.count', 5);
@@ -100,16 +171,14 @@
 
         setcfg('tds.max_bodysize', '5mb');
 
-        //  NOTE we do _not_ default this here so env.PORT etc can be used when
-        //  the parameter isn't being explicitly set. 1407 is hardcoded in
-        //  server.js.
-        setcfg('tds.port', null);
-
         //  How long before connections normally time out (15 minutes)
         setcfg('tds.connection_timeout', 15 * 60 * 1000);
 
-        //  How long before connections time out after a shutdown request.
+        //  How long before process.exit after a shutdown request.
         setcfg('tds.shutdown_timeout', 3000);
+
+        //  For shutdown processing how long to timeout connections?
+        setcfg('tds.shutdown_connections', 100);
 
         setcfg('tds.session.store', 'memory');
 

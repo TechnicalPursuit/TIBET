@@ -365,12 +365,14 @@ Cmd.prototype.phaseThree = function(meta) {
         result,
         srcBranch,
         targetBranch,
+        remoteName,
         srcTag,
         targetTag,
         commands;
 
     srcBranch = this.getcfg('cli.release.source');
     targetBranch = this.getcfg('cli.release.target', 'master');
+    remoteName = this.getcfg('cli.release.remote', 'origin');
 
     // Build the proposed release tag so we can verify with user...
     if (meta && meta.source && meta.source.semver) {
@@ -396,8 +398,8 @@ Cmd.prototype.phaseThree = function(meta) {
         'git commit -am \'release ' + srcTag + '\'',
         // Tag the resulting commit, adding '-'{srcBranch} to the master tag.
         'git tag -a \'' + srcTag + '\' -m ' + '\'release ' + srcTag + '\'',
-        // Push the changes to source branch on origin along with tag.
-        'git push origin ' + srcBranch + ' --tags'
+        // Push the changes to source branch on the remote along with tag.
+        'git push ' + remoteName + ' ' + srcBranch + ' --tags'
     ];
 
     this.info('Preparing to: ');
@@ -447,7 +449,7 @@ Cmd.prototype.phaseThree = function(meta) {
         'git pull --ff',
         'git merge ' + srcBranch,
         'git tag -a \'' + targetTag + '\' -m ' + '\'Release ' + targetTag + '\'',
-        'git push origin ' + targetBranch + ' --tags',
+        'git push ' + remoteName + ' ' + targetBranch + ' --tags',
         'git checkout ' + srcBranch
     ];
 

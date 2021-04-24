@@ -318,6 +318,7 @@ function(data, aURI) {
 
     this.set('transactional', false, false);
 
+    //  NB: buildout has a setter defined in XPath paths.
     this.set('buildout', false, false);
 
     return this;
@@ -4117,25 +4118,32 @@ function(aPath, config) {
 
     this.callNextMethod();
 
-    this.set('srcPath', aPath);
+    this.$set('srcPath', aPath, false);
 
     //  We specifically set buildout to null because, when run
     //  against a content object, if the content object has a setting and that
     //  isn't 'overridden' by us, the path, then that setting will be used.
 
     if (TP.isHash(config)) {
-        this.set('buildout', config.atIfInvalid('buildout', null));
-        this.set('packageWith', config.atIfInvalid('packageWith', null));
-        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', false));
-        this.set('extractWith', config.atIfInvalid('extractWith', null));
-        this.set('fallbackWith', config.atIfInvalid('fallbackWith', null));
+        //  NB: buildout has a setter defined in XPath paths.
+        this.set('buildout', config.atIfInvalid('buildout', null), false);
+
+        this.$set('packageWith',
+                    config.atIfInvalid('packageWith', null), false);
+        this.$set('shouldCollapse',
+                    config.atIfInvalid('shouldCollapse', false));
+        this.$set('extractWith',
+                    config.atIfInvalid('extractWith', null), false);
+        this.$set('fallbackWith',
+                    config.atIfInvalid('fallbackWith', null), false);
     } else {
-        this.set('buildout', null);
-        this.set('shouldCollapse', false);
+        //  NB: buildout has a setter defined in XPath paths.
+        this.set('buildout', null, false);
+        this.$set('shouldCollapse', false, false);
     }
 
-    this.set('$invalidatedPaths', TP.ac());
-    this.set('$addressesToRemove', TP.ac());
+    this.$set('$invalidatedPaths', TP.ac(), false);
+    this.$set('$addressesToRemove', TP.ac(), false);
 
     return this;
 });
@@ -4154,14 +4162,14 @@ function() {
     var str,
         val;
 
-    str = TP.tname(this) + '.construct(\'' + this.get('srcPath') +
+    str = TP.tname(this) + '.construct(\'' + this.$get('srcPath') +
            '\')';
 
-    if ((val = this.get('buildout')) === true) {
+    if ((val = this.$get('buildout')) === true) {
         str += '.set(\'buildout\', ' + val + ')';
     }
 
-    if ((val = this.get('shouldCollapse')) === true) {
+    if ((val = this.$get('shouldCollapse')) === true) {
         str += '.set(\'shouldCollapse\', ' + val + ')';
     }
 
@@ -4274,7 +4282,7 @@ function() {
      * @returns {String} The String representation of the receiver.
      */
 
-    return this.get('srcPath');
+    return this.$get('srcPath');
 });
 
 //  ------------------------------------------------------------------------
@@ -4369,14 +4377,14 @@ function(deep, aFilterNameOrKeys, contentOnly) {
         newinst;
 
     config = TP.hc(
-                'buildout', this.get('buildout'),
-                'packageWith', this.get('packageWith'),
-                'shouldCollapse', this.get('shouldCollapse'),
-                'extractWith', this.get('extractWith'),
-                'fallbackWith', this.get('fallbackWith')
+                'buildout', this.$get('buildout'),
+                'packageWith', this.$get('packageWith'),
+                'shouldCollapse', this.$get('shouldCollapse'),
+                'extractWith', this.$get('extractWith'),
+                'fallbackWith', this.$get('fallbackWith')
                 );
 
-    newinst = this.getType().construct(this.get('srcPath'), config);
+    newinst = this.getType().construct(this.$get('srcPath'), config);
 
     return newinst;
 });
@@ -4633,7 +4641,7 @@ function(targetObj, filterOutSignalSupertypes) {
        //  'executed paths' and, more importantly, will register any addresses
        //  that this path references in the data object
         if (TP.notValid(executedPaths) ||
-            TP.notValid(executedPaths.at(this.get('srcPath')))) {
+            TP.notValid(executedPaths.at(this.$get('srcPath')))) {
             this.executeGet(target);
         }
     }
@@ -4902,10 +4910,10 @@ function(aReturnValue, targetObj) {
     return TP.processValueUsingConfig(
             aReturnValue,
             targetObj,
-            this.get('shouldCollapse'),
-            this.get('extractWith'),
-            this.get('packageWith'),
-            this.get('fallbackWith'));
+            this.$get('shouldCollapse'),
+            this.$get('extractWith'),
+            this.$get('packageWith'),
+            this.$get('fallbackWith'));
 });
 
 //  ------------------------------------------------------------------------
@@ -4939,7 +4947,7 @@ function(targetObj) {
         return this;
     }
 
-    addressesToRemove = this.get('$addressesToRemove');
+    addressesToRemove = this.$get('$addressesToRemove');
 
     //  Remove old addresses that are now no longer valid (since we signaled
     //  them with a TP.DELETE). If we created structure as well (i.e. replaced
@@ -4949,7 +4957,7 @@ function(targetObj) {
 
     executedPaths = TP.path.AccessPath.$getExecutedPaths().at(
                             TP.id(targetObj));
-    invalidatedPaths = this.get('$invalidatedPaths');
+    invalidatedPaths = this.$get('$invalidatedPaths');
 
     if (TP.notEmpty(invalidatedPaths)) {
         //  Remove the matching paths that were invalid from the executed paths.
@@ -5013,8 +5021,8 @@ function(targetObj) {
     //  entries in observedAddresses
     changedAddresses = TP.path.AccessPath.$getChangedAddresses();
 
-    invalidatedPaths = this.get('$invalidatedPaths');
-    addressesToRemove = this.get('$addressesToRemove');
+    invalidatedPaths = this.$get('$invalidatedPaths');
+    addressesToRemove = this.$get('$addressesToRemove');
 
     changedAddresses.perform(
             function(locAddrPair) {
@@ -5056,8 +5064,8 @@ function(targetObj) {
 
     invalidatedPaths = invalidatedPaths.unique();
 
-    this.set('$invalidatedPaths', invalidatedPaths);
-    this.set('$addressesToRemove', addressesToRemove);
+    this.$set('$invalidatedPaths', invalidatedPaths, false);
+    this.$set('$addressesToRemove', addressesToRemove, false);
 
     return this;
 });
@@ -5146,7 +5154,7 @@ function(targetObj) {
        //  'executed paths' and, more importantly, will register any addresses
        //  that this path references in the data object
         if (TP.notValid(executedPaths) ||
-            TP.notValid(executedPaths.at(this.get('srcPath')))) {
+            TP.notValid(executedPaths.at(this.$get('srcPath')))) {
             this.executeGet(targetObj);
         }
     }
@@ -5456,7 +5464,7 @@ function(aPath, config) {
 
     if (TP.isValid(config)) {
         //  Configure the 'last path' to honor the shouldCollapse flag.
-        paths.last().set('shouldCollapse', config.at('shouldCollapse'));
+        paths.last().$set('shouldCollapse', config.at('shouldCollapse'), false);
     }
 
     this.set('paths', paths);
@@ -5623,9 +5631,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  See if the path wants to build structures. If it doesn't have either
     //  true or false defined for that value, then set it to our value of
     //  whether we're building structures or not.
-    pathWantsToBuild = paths.last().get('buildout');
+    pathWantsToBuild = paths.last().$get('buildout');
     if (!TP.isDefined(pathWantsToBuild)) {
-        paths.last().set('buildout', this.get('buildout'));
+        paths.last().set('buildout', this.$get('buildout'), false);
     }
 
     //  Execute the 'set()' and reassign the return value.
@@ -5634,7 +5642,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  The path didn't originally have any value defined for whether it was
     //  building structures or not, so set it back to null.
     if (!TP.isDefined(pathWantsToBuild)) {
-        paths.last().set('buildout', null);
+        //  NB: buildout has a setter defined in XPath paths.
+        paths.last().set('buildout', null, false);
     }
 
     return retVal;
@@ -5754,6 +5763,14 @@ function(aPath, config) {
 
     this.callNextMethod(path, config);
 
+    if (TP.isHash(config)) {
+        this.$set('shouldCollapse',
+                    config.atIfInvalid('shouldCollapse', true),
+                    false);
+    } else {
+        this.$set('shouldCollapse', true, false);
+    }
+
     return this;
 });
 
@@ -5810,7 +5827,7 @@ function(targetObj, varargs) {
                 TP.tname(targetObj));
     }
 
-    srcPath = this.get('srcPath');
+    srcPath = this.$get('srcPath');
 
     //  If the path is empty or just '$', then that's the shortcut to just
     //  return the target object itself.
@@ -5964,7 +5981,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 TP.tname(targetObj));
     }
 
-    srcPath = this.get('srcPath');
+    srcPath = this.$get('srcPath');
     //  If the path is empty or just '$', then that's the shortcut to just
     //  return the target object itself.
     if (TP.isEmpty(srcPath) || srcPath === '$') {
@@ -6002,10 +6019,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     data = targetObj.get('data');
 
     //  Whether or not we build structures depends on whether we are configured
-    //  to build structures. If the we have no configuration one way or the other
-    //  (neither true or false), then however the source object is configured
-    //  will be used.
-    shouldBuild = TP.ifInvalid(this.get('buildout'), targetObj.get('buildout'));
+    //  to build structures. If the we have no configuration one way or the
+    //  other (neither true or false), then however the source object is
+    //  configured will be used.
+    shouldBuild = TP.ifInvalid(this.$get('buildout'),
+                                targetObj.$get('buildout'));
 
     ops = TP.ac();
     newStructs = TP.ac();
@@ -6323,7 +6341,7 @@ function() {
      * @returns {String[]} An Array of the receiver's parts.
      */
 
-    return TP.getAccessPathParts(this.get('srcPath'), 'jpath');
+    return TP.getAccessPathParts(this.$get('srcPath'), 'jpath');
 });
 
 //  ------------------------------------------------------------------------
@@ -6388,7 +6406,7 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    this.Type.set('$traversalLevel', 0);
+    this.Type.$set('$traversalLevel', 0, false);
     this.Type.set('$prefixParts', TP.ac());
 
     return;
@@ -6431,7 +6449,7 @@ function(theVal, observedAddressRecord) {
 
     var srcObj;
 
-    srcObj = TP.path.SimpleTIBETPath.get('$currentSource');
+    srcObj = TP.path.SimpleTIBETPath.$get('$currentSource');
     if (TP.owns(srcObj, '$$noPathTracking')) {
         return this;
     }
@@ -6514,7 +6532,7 @@ function(addressPart) {
 
         addressRecord;
 
-    srcObj = TP.path.SimpleTIBETPath.get('$currentSource');
+    srcObj = TP.path.SimpleTIBETPath.$get('$currentSource');
     if (TP.owns(srcObj, '$$noPathTracking')) {
         return this;
     }
@@ -6526,7 +6544,7 @@ function(addressPart) {
     //  Note here the conversion from 'foo.[1]' to 'foo[1]'
     address = prefixParts.join('.').replace(/\.\[/g, '[');
 
-    srcPath = TP.path.SimpleTIBETPath.get('$currentPath').get('srcPath');
+    srcPath = TP.path.SimpleTIBETPath.$get('$currentPath').$get('srcPath');
 
     //  Note here the conversion from 'foo.[1]' to 'foo[1]'
     srcPath = srcPath.replace(/\.\[/g, '[');
@@ -6574,9 +6592,11 @@ function(aPath, config) {
     this.callNextMethod(path, config);
 
     if (TP.isHash(config)) {
-        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
+        this.$set('shouldCollapse',
+                    config.atIfInvalid('shouldCollapse', true),
+                    false);
     } else {
-        this.set('shouldCollapse', true);
+        this.$set('shouldCollapse', true, false);
     }
 
     return this;
@@ -6627,7 +6647,7 @@ function(targetObj, varargs) {
 
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
-    srcPath = this.get('srcPath');
+    srcPath = this.$get('srcPath');
 
     //  If the path is empty or just '.', then that's the shortcut to just
     //  return the target object itself.
@@ -6730,16 +6750,17 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             'Target is native XML, but this path needs wrapped XML.');
     }
 
-    srcPath = this.get('srcPath');
+    srcPath = this.$get('srcPath');
     path = srcPath;
 
     thisType = this.getType();
 
     //  Whether or not we build structures depends on whether we are configured
-    //  to build structures. If the we have no configuration one way or the other
-    //  (neither true or false), then however the source object is configured
-    //  will be used.
-    shouldBuild = TP.ifInvalid(this.get('buildout'), targetObj.get('buildout'));
+    //  to build structures. If the we have no configuration one way or the
+    //  other (neither true or false), then however the source object is
+    //  configured will be used.
+    shouldBuild = TP.ifInvalid(this.$get('buildout'),
+                                targetObj.$get('buildout'));
 
     //  If an old value wasn't defined and the 'buildout' flag is
     //  false, then we don't do anything and just return here.
@@ -6757,7 +6778,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  Make sure to let this path know that we created structure - this
         //  makes a difference when signaling change if we're being used as part
         //  of an over 'complex' TIBET path.
-        this.set('$createdStructure', true);
+        this.$set('$createdStructure', true, false);
     }
 
     //  If the old value is equal to the value that we're setting, then there
@@ -6779,7 +6800,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         path = path.transform(args);
     }
 
-    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.$get('$traversalLevel');
     if (traversalLevel === 0) {
 
         //  Empty the changed addresses before we start another run.
@@ -6830,14 +6851,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  We're all done - acquire the traversal level again. We have to do this
     //  a second time, since the pre/post calls manipulate it.
-    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.$get('$traversalLevel');
 
     if (traversalLevel === 0) {
 
         //  If we 'created structure', that means that all of the previously
         //  executed paths need to be run, because they could now refer to new
         //  addresses.
-        if (this.get('$createdStructure')) {
+        if (this.$get('$createdStructure')) {
 
             //  Grab the Array of executed paths registered under the ID of the
             //  target object.
@@ -6919,7 +6940,7 @@ function() {
      */
 
     //  For simple paths, our whole path is the first simple path.
-    return this.get('srcPath');
+    return this.$get('srcPath');
 });
 
 //  ------------------------------------------------------------------------
@@ -6933,7 +6954,7 @@ function() {
      * @returns {String[]} An Array of the receiver's parts.
      */
 
-    return TP.getAccessPathParts(this.get('srcPath'), 'tibet');
+    return TP.getAccessPathParts(this.$get('srcPath'), 'tibet');
 });
 
 //  ------------------------------------------------------------------------
@@ -6981,20 +7002,23 @@ function(targetObj) {
                     TP.id(targetObj),
                     TP.hc());
 
-    executedPaths.atPut(this.get('srcPath'), this);
+    executedPaths.atPut(this.$get('srcPath'), this);
 
-    TP.path.SimpleTIBETPath.set(
+    TP.path.SimpleTIBETPath.$set(
         '$currentSource',
         TP.ifInvalid(
-            TP.path.SimpleTIBETPath.get('$currentSource'), targetObj));
-    TP.path.SimpleTIBETPath.set(
+            TP.path.SimpleTIBETPath.$get('$currentSource'), targetObj),
+        false);
+    TP.path.SimpleTIBETPath.$set(
         '$currentPath',
         TP.ifInvalid(
-            TP.path.SimpleTIBETPath.get('$currentPath'), this));
+            TP.path.SimpleTIBETPath.$get('$currentPath'), this),
+        false);
 
-    TP.path.SimpleTIBETPath.set(
+    TP.path.SimpleTIBETPath.$set(
         '$traversalLevel',
-        TP.path.SimpleTIBETPath.get('$traversalLevel') + 1);
+        TP.path.SimpleTIBETPath.get('$traversalLevel') + 1,
+        false);
 
     return this;
 });
@@ -7010,9 +7034,10 @@ function(targetObj) {
      * @returns {TP.path.SimpleTIBETPath} The receiver.
      */
 
-    TP.path.SimpleTIBETPath.set(
+    TP.path.SimpleTIBETPath.$set(
         '$traversalLevel',
-        TP.path.SimpleTIBETPath.get('$traversalLevel') + 1);
+        TP.path.SimpleTIBETPath.get('$traversalLevel') + 1,
+        false);
 
     return this;
 });
@@ -7030,13 +7055,13 @@ function(targetObj) {
 
     var traversalLevel;
 
-    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel') - 1;
+    traversalLevel = TP.path.SimpleTIBETPath.$get('$traversalLevel') - 1;
 
-    TP.path.SimpleTIBETPath.set('$traversalLevel', traversalLevel);
+    TP.path.SimpleTIBETPath.$set('$traversalLevel', traversalLevel, false);
 
     if (traversalLevel === 0) {
-        TP.path.SimpleTIBETPath.set('$currentSource', null);
-        TP.path.SimpleTIBETPath.set('$currentPath', null);
+        TP.path.SimpleTIBETPath.$set('$currentSource', null, false);
+        TP.path.SimpleTIBETPath.$set('$currentPath', null, false);
     }
 
     return this;
@@ -7055,9 +7080,9 @@ function(targetObj) {
 
     var traversalLevel;
 
-    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel') - 1;
+    traversalLevel = TP.path.SimpleTIBETPath.$get('$traversalLevel') - 1;
 
-    TP.path.SimpleTIBETPath.set('$traversalLevel', traversalLevel);
+    TP.path.SimpleTIBETPath.$set('$traversalLevel', traversalLevel, false);
 
     return this;
 });
@@ -7229,7 +7254,7 @@ function(targetObj, varargs) {
 
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
-    srcPath = this.get('srcPath');
+    srcPath = this.$get('srcPath');
 
     //  If the path is empty or just '.', then that's the shortcut to just
     //  return the target object itself.
@@ -7249,7 +7274,7 @@ function(targetObj, varargs) {
         //  Run the transform with the arguments after the 1st one.
         path = path.transform(args);
     }
-    this.set('$transformedPath', path);
+    this.$set('$transformedPath', path, false);
 
     if (TP.isString(targetObj)) {
         retVal = this.$executeStringGet(targetObj);
@@ -7317,7 +7342,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
-    srcPath = this.get('srcPath');
+    srcPath = this.$get('srcPath');
     path = srcPath;
 
     //  If the path has ACP expressions ('{{...}}') in it, then template them
@@ -7330,17 +7355,17 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  Run the transform with the arguments after the 3rd one.
         path = path.transform(args);
     }
-    this.set('$transformedPath', path);
+    this.$set('$transformedPath', path, false);
 
     //  Trigger the actual 'set' mechanism, tracking changed addresses as we
     //  go.
 
-    this.set('$createdStructure', false);
+    this.$set('$createdStructure', false, false);
 
     //  If our traversal level is 0, that means we're the top level path and we
     //  can check to see if the end result value is equal to the value we're
     //  setting. If so, we can just bail out here.
-    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.$get('$traversalLevel');
     if (traversalLevel === 0) {
 
         if (TP.regex.HAS_ACP.test(srcPath)) {
@@ -7382,7 +7407,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  We're all done - acquire the traversal level again. We have to do this
     //  a second time, since the pre/post calls manipulate it.
-    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.$get('$traversalLevel');
 
     //  Only signal change if we're the 'top level' TIBET path - we could've
     //  had more 'complex paths' buried under us.
@@ -7391,7 +7416,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  If we 'created structure', that means that all of the previously
         //  executed paths need to be run, because they could now refer to new
         //  addresses.
-        if (this.get('$createdStructure')) {
+        if (this.$get('$createdStructure')) {
 
             //  Grab the Array of executed paths registered under the ID of the
             //  target object.
@@ -7455,7 +7480,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         }
 
         //  Flip this back off for the next run.
-        this.set('$createdStructure', false);
+        this.$set('$createdStructure', false, false);
     }
 
     return retVal;
@@ -7498,7 +7523,7 @@ function(targetObj) {
 
         retVal;
 
-    path = this.get('$transformedPath');
+    path = this.$get('$transformedPath');
 
     //  See if we need to traverse down via a period ('.') or if this is a
     //  a complete range that we handle here.
@@ -7666,7 +7691,7 @@ function(targetObj) {
         mainAddressRecord = thisType.startObservedAddress(head);
 
         tailPath = TP.tpc(tail);
-        tailPath.set('shouldCollapse', this.get('shouldCollapse'));
+        tailPath.$set('shouldCollapse', this.$get('shouldCollapse'), false);
 
         retVal = val.get(tailPath);
 
@@ -7723,7 +7748,7 @@ function(targetObj) {
 
         retVal;
 
-    path = this.get('$transformedPath');
+    path = this.$get('$transformedPath');
 
     parts = this.$extractPathHeadAndTail(path);
     head = parts.at(0);
@@ -7817,7 +7842,7 @@ function(targetObj) {
         mainAddressRecord = thisType.startObservedAddress(head);
 
         tailPath = TP.tpc(tail);
-        tailPath.set('shouldCollapse', this.get('shouldCollapse'));
+        tailPath.$set('shouldCollapse', this.$get('shouldCollapse'), false);
 
         retVal = val.get(tailPath);
 
@@ -7867,7 +7892,7 @@ function(targetObj) {
         hadNaN,
         queryParts;
 
-    path = this.get('$transformedPath');
+    path = this.$get('$transformedPath');
 
     parts = this.$extractPathHeadAndTail(path);
     head = parts.at(0);
@@ -7973,7 +7998,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
         setPath;
 
-    path = this.get('$transformedPath');
+    path = this.$get('$transformedPath');
 
     parts = this.$extractPathHeadAndTail(path);
     head = parts.at(0);
@@ -7981,7 +8006,8 @@ function(targetObj, attributeValue, shouldSignal) {
 
     thisType = this.getType();
 
-    shouldBuild = TP.ifInvalid(this.get('buildout'), targetObj.get('buildout'));
+    shouldBuild = TP.ifInvalid(this.$get('buildout'),
+                                targetObj.$get('buildout'));
 
     if (/[,:]/.test(head)) {
 
@@ -8067,7 +8093,7 @@ function(targetObj, attributeValue, shouldSignal) {
                             //  Make sure to let this path know that we created
                             //  structure - this makes a difference when
                             //  signaling change.
-                            this.set('$createdStructure', true);
+                            this.$set('$createdStructure', true, false);
                         }
 
                         if (TP.notValid(indexVal) ||
@@ -8178,7 +8204,7 @@ function(targetObj, attributeValue, shouldSignal) {
                             //  Make sure to let this path know that we created
                             //  structure - this makes a difference when
                             //  signaling change.
-                            this.set('$createdStructure', true);
+                            this.$set('$createdStructure', true, false);
                         }
 
                         if (TP.notValid(itemVal) ||
@@ -8232,9 +8258,9 @@ function(targetObj, attributeValue, shouldSignal) {
         //  to 'true' to 'propagate it up' the setter chain and rest the setter
         //  path's value back to 'false' for future runs. Note that we only do
         //  this is the setter path's value is 'true'.
-        if (TP.isTrue(setPath.get('$createdStructure'))) {
-            this.set('$createdStructure', true);
-            setPath.set('$createdStructure', false);
+        if (TP.isTrue(setPath.$get('$createdStructure'))) {
+            this.$set('$createdStructure', true, false);
+            setPath.$set('$createdStructure', false, false);
         }
     }
 
@@ -8259,9 +8285,9 @@ function(targetObj, attributeValue, shouldSignal) {
         //  to 'true' to 'propagate it up' the setter chain and rest the setter
         //  path's value back to 'false' for future runs. Note that we only do
         //  this is the setter path's value is 'true'.
-        if (TP.isTrue(setPath.get('$createdStructure'))) {
-            this.set('$createdStructure', true);
-            setPath.set('$createdStructure', false);
+        if (TP.isTrue(setPath.$get('$createdStructure'))) {
+            this.$set('$createdStructure', true, false);
+            setPath.$set('$createdStructure', false, false);
         }
 
         thisType.endChangedAddress();
@@ -8310,7 +8336,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
         setPath;
 
-    path = this.get('$transformedPath');
+    path = this.$get('$transformedPath');
 
     parts = this.$extractPathHeadAndTail(path);
     head = parts.at(0);
@@ -8322,7 +8348,8 @@ function(targetObj, attributeValue, shouldSignal) {
     //  to build structures. If the we have no configuration one way or the
     //  other (neither true or false), then however the source object is
     //  configured will be used.
-    shouldBuild = TP.ifInvalid(this.get('buildout'), targetObj.get('buildout'));
+    shouldBuild = TP.ifInvalid(this.$get('buildout'),
+                                targetObj.$get('buildout'));
 
     if (/,/.test(head)) {
         //  Make sure to strip off the leading '[' and trailing ']'
@@ -8407,7 +8434,7 @@ function(targetObj, attributeValue, shouldSignal) {
                         //  Make sure to let this path know that we created
                         //  structure - this makes a difference when signaling
                         //  change.
-                        this.set('$createdStructure', true);
+                        this.$set('$createdStructure', true, false);
                     }
 
                     if (TP.notValid(itemVal) ||
@@ -8456,9 +8483,9 @@ function(targetObj, attributeValue, shouldSignal) {
                     head, TP.hc('buildout', shouldBuild));
         targetObj.set(setPath, val, false);
 
-        if (TP.isTrue(setPath.get('$createdStructure'))) {
-            this.set('$createdStructure', true);
-            setPath.set('$createdStructure', false);
+        if (TP.isTrue(setPath.$get('$createdStructure'))) {
+            this.$set('$createdStructure', true, false);
+            setPath.$set('$createdStructure', false, false);
         }
     }
 
@@ -8478,9 +8505,9 @@ function(targetObj, attributeValue, shouldSignal) {
         //  This 'set' call will take care of registering the changed address.
         val.set(setPath, attributeValue, false);
 
-        if (TP.isTrue(setPath.get('$createdStructure'))) {
-            this.set('$createdStructure', true);
-            setPath.set('$createdStructure', false);
+        if (TP.isTrue(setPath.$get('$createdStructure'))) {
+            this.$set('$createdStructure', true, false);
+            setPath.$set('$createdStructure', false, false);
         }
 
         thisType.endChangedAddress();
@@ -8554,7 +8581,7 @@ function() {
         paths,
         firstPath;
 
-    srcPath = this.get('srcPath');
+    srcPath = this.$get('srcPath');
 
     //  First, split by '.'
     paths = srcPath.split('.');
@@ -8625,8 +8652,12 @@ function(aPath, config) {
 
     if (TP.isHash(config)) {
         this.set('buildvals', config.atIfInvalid('buildvals', true));
+        this.$set('shouldCollapse',
+                    config.atIfInvalid('shouldCollapse', true),
+                    false);
     } else {
         this.set('buildvals', true);
+        this.$set('shouldCollapse', true, false);
     }
 
     return this;
@@ -8831,7 +8862,7 @@ function(targetObj, varargs) {
         }
     }
 
-    srcPath = this.get('srcPath');
+    srcPath = this.$get('srcPath');
 
     //  If the path is empty or just '.', then that's the shortcut to just
     //  return the target object itself.
@@ -8845,7 +8876,7 @@ function(targetObj, varargs) {
 
     executedPaths.atPut(srcPath, this);
 
-    path = this.get('srcPath');
+    path = this.$get('srcPath');
 
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
@@ -8856,7 +8887,7 @@ function(targetObj, varargs) {
 
         path = path.transform(args);
     }
-    this.set('$transformedPath', path);
+    this.$set('$transformedPath', path, false);
 
     //  Make sure the target object is unwrapped
     natTargetObj = TP.unwrap(target);
@@ -8956,7 +8987,7 @@ function(targetObj, varargs) {
     //  empty Array of result nodes and the caller has defined a property to
     //  extract a value with, then just return the result of doing that.
     if (TP.isEmptyArray(nodes)) {
-        extractWith = this.get('extractWith');
+        extractWith = this.$get('extractWith');
 
         if (TP.notEmpty(extractWith)) {
             return TP.ac();
@@ -9054,7 +9085,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         }
     }
 
-    if (TP.regex.HAS_ACP.test(this.get('srcPath'))) {
+    if (TP.regex.HAS_ACP.test(this.$get('srcPath'))) {
         //  Grab the arguments and slice the first three off (since they're
         //  target, attributeValue and shouldSignal which we already have).
         args = TP.args(arguments, 3);
@@ -9068,7 +9099,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     newVal = attributeValue;
 
     /* eslint-disable no-extra-parens */
-    if (this.get('shouldCollapse')) {
+    if (this.$get('shouldCollapse')) {
 
         //  By default, if newVal is an Array and is empty, collapsing it will
         //  set newVal to null, but we don't want that there. So we only do this
@@ -9109,7 +9140,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         signalChange = targetTPDoc.shouldSignalChange();
     }
 
-    path = this.get('srcPath');
+    path = this.$get('srcPath');
 
     //  If the path has ACP expressions ('{{...}}') in it, then template them
     //  out with the source object(s) from the 4th parameter onwards.
@@ -9121,9 +9152,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  Run the transform with the arguments after the 3rd one.
         path = path.transform(args);
     }
-    this.set('$transformedPath', path);
+    this.$set('$transformedPath', path, false);
 
-    traversalLevel = TP.path.SimpleTIBETPath.get('$traversalLevel');
+    traversalLevel = TP.path.SimpleTIBETPath.$get('$traversalLevel');
     if (traversalLevel === 0) {
 
         //  Empty the changed addresses before we start another run.
@@ -9555,7 +9586,7 @@ function() {
      * @returns {String[]} An Array of the receiver's parts.
      */
 
-    return TP.getAccessPathParts(this.get('srcPath'), 'xpointer');
+    return TP.getAccessPathParts(this.$get('srcPath'), 'xpointer');
 });
 
 //  ------------------------------------------------------------------------
@@ -9652,8 +9683,8 @@ function(aNode, flagChanges, targetObj) {
 
         retVal;
 
-    if (TP.notValid(path = this.get('$transformedPath'))) {
-        path = this.get('srcPath');
+    if (TP.notValid(path = this.$get('$transformedPath'))) {
+        path = this.$get('srcPath');
     }
 
     //  We can create an Attribute, if this is an attribute-only path (and
@@ -9666,8 +9697,8 @@ function(aNode, flagChanges, targetObj) {
             return TP.elementGetAttributeNode(aNode, attrName);
         }
 
-        shouldBuild = TP.ifInvalid(this.get('buildout'),
-                                targetObj.get('buildout'));
+        shouldBuild = TP.ifInvalid(this.$get('buildout'),
+                                    targetObj.$get('buildout'));
 
         if (shouldBuild) {
             TP.elementSetAttribute(aNode, attrName, '', true);
@@ -9708,8 +9739,8 @@ function(aNode, flagChanges, targetObj) {
     var path,
         content;
 
-    if (TP.notValid(path = this.get('$transformedPath'))) {
-        path = this.get('srcPath');
+    if (TP.notValid(path = this.$get('$transformedPath'))) {
+        path = this.$get('srcPath');
     }
 
     //  element schemes are fine as long as they reference an existing object.
@@ -9760,8 +9791,8 @@ function(aNode, flagChanges, targetObj) {
     var path,
         content;
 
-    if (TP.notValid(path = this.get('$transformedPath'))) {
-        path = this.get('srcPath');
+    if (TP.notValid(path = this.$get('$transformedPath'))) {
+        path = this.$get('srcPath');
     }
 
     //  Evaluate the XTension syntax.
@@ -9828,7 +9859,7 @@ function() {
      * @returns {String[]} An Array of the receiver's parts.
      */
 
-    return TP.getAccessPathParts(this.get('srcPath'), 'css');
+    return TP.getAccessPathParts(this.$get('srcPath'), 'css');
 });
 
 //  ------------------------------------------------------------------------
@@ -9875,11 +9906,12 @@ function(aNode, flagChanges, targetObj) {
         shouldBuild,
         content;
 
-    if (TP.notValid(path = this.get('$transformedPath'))) {
-        path = this.get('srcPath');
+    if (TP.notValid(path = this.$get('$transformedPath'))) {
+        path = this.$get('srcPath');
     }
 
-    shouldBuild = TP.ifInvalid(this.get('buildout'), targetObj.get('buildout'));
+    shouldBuild = TP.ifInvalid(this.$get('buildout'),
+                                targetObj.$get('buildout'));
 
     //  Note we return an Array if we didn't get one to keep the API
     //  consistent (we can get an Array of attributes here due to 'special
@@ -10349,10 +10381,11 @@ function(aPath, config, forceNative) {
 
     if (TP.regex.TEXT_NODE_ENDS.test(tnTestPath)) {
         if (TP.isHash(config)) {
-            this.set('shouldCollapse',
-                        config.atIfInvalid('shouldCollapse', true));
+            this.$set('shouldCollapse',
+                        config.atIfInvalid('shouldCollapse', true),
+                        false);
         } else {
-            this.set('shouldCollapse', true);
+            this.$set('shouldCollapse', true, false);
         }
     }
 
@@ -10405,11 +10438,11 @@ function() {
             '\', ' +
             this.get('isNative') + ')';
 
-    if ((val = this.get('buildout')) === true) {
+    if ((val = this.$get('buildout')) === true) {
         str += '.set(\'buildout\', ' + val + ')';
     }
 
-    if ((val = this.get('shouldCollapse')) === true) {
+    if ((val = this.$get('shouldCollapse')) === true) {
         str += '.set(\'shouldCollapse\', ' + val + ')';
     }
 
@@ -10481,12 +10514,14 @@ function(aNode, flagChanges) {
     //  NB: We're not interested in the content object's setting of
     //  'shouldBuild' here - only the path's (since we just capturing
     //  it to set it back).
-    oldbuild = this.get('buildout');
+    oldbuild = this.$get('buildout');
 
     //  Switch the path type to a non native path and the create nodes on
     //  execution to true.
     this.set('isNative', false);
-    this.set('buildout', true);
+
+    //  NB: buildout has a setter defined in XPath paths.
+    this.set('buildout', true, false);
 
     //  created. note that we pass the flagging state here so the path can flag
     //  anything it has to create when the node is flagging changes
@@ -10495,7 +10530,7 @@ function(aNode, flagChanges) {
     //  Set the path type and the create nodes on execution switches back to
     //  their previous value.
     this.set('isNative', wasNative);
-    this.set('buildout', oldbuild);
+    this.set('buildout', oldbuild, false);
 
     return results;
 });
@@ -10618,8 +10653,8 @@ function(aNode, resultType, logErrors, flagChanges) {
 
     flag = TP.ifEmpty(flagChanges, false);
 
-    if (TP.notValid(path = this.get('$transformedPath'))) {
-        path = this.get('srcPath');
+    if (TP.notValid(path = this.$get('$transformedPath'))) {
+        path = this.$get('srcPath');
     }
 
     //  One thing to note is that if you run an XPath against an HTML document
@@ -10725,13 +10760,16 @@ function(aTPNode, shouldSignal) {
     //  NB: We're not interested in the content object's setting of
     //  'shouldBuild' here - only the path's (since we just capturing
     //  it to set it back).
-    oldbuild = this.get('buildout');
-    this.set('buildout', false);
+    oldbuild = this.$get('buildout');
+
+    //  NB: buildout has a setter defined in XPath paths.
+    this.set('buildout', false, false);
 
     this.set('isNative', false);
     results = this.execOnNative(node, TP.NODESET, false);
 
-    this.set('buildout', oldbuild);
+    //  NB: buildout has a setter defined in XPath paths.
+    this.set('buildout', oldbuild, false);
 
     //  If there were no results, there probably wasn't a valid XPath.
     //  Exit here.
@@ -10835,10 +10873,11 @@ function(aNode, flagChanges, targetObj) {
     //  to build structures. If the we have no configuration one way or the other
     //  (neither true or false), then however the source object is configured
     //  will be used.
-    shouldBuild = TP.ifInvalid(this.get('buildout'), targetObj.get('buildout'));
+    shouldBuild = TP.ifInvalid(this.$get('buildout'),
+                                targetObj.$get('buildout'));
 
-    if (TP.notValid(path = this.get('$transformedPath'))) {
-        path = this.get('srcPath');
+    if (TP.notValid(path = this.$get('$transformedPath'))) {
+        path = this.$get('srcPath');
     }
 
     if (TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(path)) {
@@ -11253,7 +11292,7 @@ function(build) {
     }
 
     //  Note that we use $set() here to avoid endless recursion
-    this.$set('buildout', build);
+    this.$set('buildout', build, false);
 
     return this;
 });
@@ -11309,7 +11348,7 @@ function(aPath, forceNative) {
     //  Save the path itself, but NOTE that we do this last so that the
     //  $createNonNativeParserContext processing can test against the "current"
     //  path, not the new one to see if a new context needs to be created.
-    this.$set('srcPath', aPath);
+    this.$set('srcPath', aPath, false);
 
     return this;
 });

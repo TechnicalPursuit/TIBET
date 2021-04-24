@@ -38,6 +38,13 @@ TP.xctrls.item.Type.defineAttribute('opaqueCapturingSignalNames',
                 'TP.sig.DOMClick'));
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.item.Inst.defineAttribute('label',
+    TP.xpc('string(./xctrls:label)', TP.hc('shouldCollapse', true)));
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -113,6 +120,23 @@ function() {
     textValue = this.get('string(.//xctrls:value)');
 
     return textValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.item.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @method getValue
+     * @summary Returns the value of the receiver. This is overriding an
+     *     inherited method, which is why it is done as a method, rather than as
+     *     an attribute with a path alias.
+     * @returns {String} The value in string form.
+     */
+
+    return this.get(
+        TP.xpc('string(./xctrls:value)', TP.hc('shouldCollapse', true)));
 });
 
 //  ------------------------------------------------------------------------

@@ -591,6 +591,13 @@
                     process.stdout.write(msg);
                 }
             }
+
+            logger.system('Application Started',
+                {
+                    comp: 'TDS',
+                    type: 'tds',
+                    name: 'server'
+                });
         }
     };
 
@@ -702,6 +709,52 @@
      */
     TDS.cors = function(options) {
         return cors(options);
+    };
+
+    /**
+     * Processes TDS configuration flag data for CSP into a properly built
+     * directives block ala { defaultSrc: ..., scriptSrc: ...} etc.
+     * @returns {Object} A properly formatted CSP config block, or null.
+     */
+    TDS.getCSPDirectives = function() {
+        var keywords,
+            isKeyword,
+            directives,
+            quoteKeywords;
+
+        keywords = TDS.getcfg('tds.csp_keywords');
+
+        //  Define a RegExp with all of the CSP keywords from the grammar
+        //  defined in the CSP specification.
+        isKeyword = new RegExp('^(' + keywords.join('|') + ')$');
+
+        //  Helper function to quote any keyword within a directive.
+        quoteKeywords = function(word) {
+            if (isKeyword.test(word)) {
+                return TDS.quote(word, '\'');
+            }
+            return word;
+        };
+
+        //  Directive list should include object containing all known
+        //  directives for the CSP configuration block.
+        directives = TDS.getcfg('tds.csp_directives', null, true);
+        if (TDS.isEmpty(directives)) {
+            return;
+        }
+
+        //  Process config object values to turn values into properly
+        //  quoted CSP directive string(s).
+        Object.keys(directives).forEach(function(key) {
+            var val;
+
+            val = directives[key];
+            if (Array.isArray(val)) {
+                directives[key] = val.map(quoteKeywords);
+            }
+        });
+
+        return directives;
     };
 
     /**
@@ -818,12 +871,15 @@
      * @param {String} property A configuration property name.
      * @param {Object} [aDefault] An optional default value to return
      *     if the original key isn't found.
+     * @param {Boolean} [asNestedObj=false] Optional flag to convert the result
+     *     to a multi-level structured Object instead of a single-level Object
+     *     with flattened keys.
      * @returns {Object} The property value, if found.
      */
-    TDS.getcfg = function(property, aDefault) {
+    TDS.getcfg = function(property, aDefault, asNestedObj) {
         this.initPackage();
 
-        return TDS._package.getcfg(property, aDefault);
+        return TDS._package.getcfg(property, aDefault, asNestedObj);
     };
 
     //  Alias for same syntax found in TIBET client.
@@ -1047,7 +1103,7 @@
                     TDS.ifDebug() ? TDS.logger.debug(e.stack, meta) : 0;
                 } else {
                     console.error(e.message);
-                    console.error(e.stack);
+                    TDS.ifDebug() ? console.error(e.stack) : 0;
                 }
 
                 throw e;
@@ -1516,6 +1572,9 @@
         var hooks,
             code;
 
+        //  Force connections to become aware of a timeout so they drop.
+        TDS.timeoutConnections(meta);
+
         TDS.logger.system('shutting down TDS middleware', meta);
         if (!TDS.hasConsole()) {
             process.stdout.write(
@@ -1537,12 +1596,6 @@
             }
         });
 
-        TDS.logger.system('TDS middleware shut down', meta);
-        if (!TDS.hasConsole()) {
-            process.stdout.write(
-                TDS.colorize('TDS middleware shut down', 'error'));
-        }
-
         return code;
     };
 
@@ -1552,10 +1605,16 @@
      *     the tds.shutdown_timeout setting. This is only used during shutdown
      *     and can differ from any tds.connection_timeout value.
      */
-    TDS.timeoutConnections = function() {
+    TDS.timeoutConnections = function(meta) {
         var timeout;
 
-        timeout = TDS.getcfg('tds.shutdown_timeout');
+        timeout = TDS.getcfg('tds.shutdown_connections');
+
+        TDS.logger.system('closing active TDS connections', meta);
+        if (!TDS.hasConsole()) {
+            process.stdout.write(
+                TDS.colorize('closing active TDS connections', 'error'));
+        }
 
         Object.keys(TDS._connections).forEach(function(key) {
             var connection;

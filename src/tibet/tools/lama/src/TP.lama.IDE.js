@@ -474,13 +474,22 @@ function(finalizationFunc) {
      * @returns {TP.lama.IDE} The receiver.
      */
 
-    var viewDoc,
+    var mode,
+
+        viewDoc,
         thisref,
         worldTPElem;
 
-    //  Set up the HUD. NOTE: This *must* be set up first - other components
-    //  will rely on finding it when they awaken.
-    this.setupHUD();
+    mode = TP.sys.cfg('lama.mode');
+
+    if (mode === 'full') {
+        //  Set up the HUD. NOTE: This *must* be set up first - other components
+        //  will rely on finding it when they awaken.
+        this.setupHUD();
+    } else {
+        //  Set up the Lamabar
+        this.setupLamabar();
+    }
 
     //  The document that we were installed into.
     viewDoc = this.get('vWin').document;
@@ -493,8 +502,10 @@ function(finalizationFunc) {
     //  Set up any signal observations for Lama-wide handling.
     this.setupObservations();
 
-    //  Set up the console
-    this.setupConsole();
+    if (mode === 'full') {
+        //  Set up the console
+        this.setupConsole();
+    }
 
     //  Set up the context menu
     this.setupContextMenu();
@@ -507,14 +518,24 @@ function(finalizationFunc) {
     //  Set up the manipulators
     this.setupTools();
 
-    //  Set up the outliner
-    this.setupOutliner();
+    if (mode === 'full') {
 
-    //  Set up the workbench
-    this.setupWorkbench();
+        //  NB: For now, we only set up the outliner when in 'full' mode,
+        //  because it has console references in it. But we need to remove those
+        //  and make it work in 'minimal' mode as well.
 
-    //  Set up the inspector
-    this.setupInspector();
+        //  Set up the outliner
+        this.setupOutliner();
+
+        //  Set up the workbench
+        this.setupWorkbench();
+
+        //  Set up the inspector
+        this.setupInspector();
+    }
+
+    //  Set up connectors
+    this.setupConnectors();
 
     //  Set up the mutation observer that manages keeping all of the DOM and
     //  markup that we're managing in sync.
@@ -540,14 +561,16 @@ function(finalizationFunc) {
 
             stripElem;
 
-        tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
-        tpElem.setAttribute('tibet:no-mutations', false);
+        if (mode === 'full') {
+            tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
+            tpElem.setAttribute('tibet:no-mutations', false);
 
-        tpElem = TP.byCSSPath('#north > .drawer', viewDoc, true);
-        tpElem.setAttribute('tibet:no-mutations', false);
+            tpElem = TP.byCSSPath('#north > .drawer', viewDoc, true);
+            tpElem.setAttribute('tibet:no-mutations', false);
 
-        tpElem = TP.byId('center', viewDoc);
-        tpElem.setAttribute('tibet:no-mutations', true);
+            tpElem = TP.byId('center', viewDoc);
+            tpElem.setAttribute('tibet:no-mutations', true);
+        }
 
         //  Grab the current screen location entries. If they're empty, populate
         //  them with at least one entry: the home URL that we're going to put
@@ -562,21 +585,25 @@ function(finalizationFunc) {
                                         screenLocEntries,
                                         TP.hc('observeResource', true,
                                                 'signalChange', true));
-            TP.bySystemId('TSH').saveProfile();
+            if (mode === 'full') {
+                TP.bySystemId('TSH').saveProfile();
+            }
         }
 
-        consoleService = TP.bySystemId('LamaConsoleService');
+        if (mode === 'full') {
+            consoleService = TP.bySystemId('LamaConsoleService');
 
-        //  Now that all components have loaded (and possibly installed state
-        //  machine responders into the console service's state machine),
-        //  activate the console service's state machine.
-        consoleService.get('keyboardStateMachine').activate();
+            //  Now that all components have loaded (and possibly installed
+            //  state machine responders into the console service's state
+            //  machine), activate the console service's state machine.
+            consoleService.get('keyboardStateMachine').activate();
 
-        //  Also, set the variable that will represent the UI canvas. This will
-        //  switch as different screens are selected.
-        consoleService.get('model').setVariable(
-            'UICANVAS',
-            worldTPElem.get('selectedScreen').getContentWindow());
+            //  Also, set the variable that will represent the UI canvas. This
+            //  will switch as different screens are selected.
+            consoleService.get('model').setVariable(
+                'UICANVAS',
+                worldTPElem.get('selectedScreen').getContentWindow());
+        }
 
         hudElem = TP.byId('LamaHUD', viewDoc, false);
         contentElem = TP.byId('content', viewDoc, false);
@@ -586,9 +613,11 @@ function(finalizationFunc) {
         //  element.
         TP.nodeAppendChild(hudElem, contentElem, false);
 
-        //  Now that the content element has been moved and is available to be
-        //  the tools layer, set up the property adjuster
-        thisref.setupAdjuster();
+        if (mode === 'full') {
+            //  Now that the content element has been moved and is available to
+            //  be the tools layer, set up the property adjuster
+            thisref.setupAdjuster();
+        }
 
         //  Insert the 'tools closer' content as a sibling of the content (now
         //  tools) element and *before* it.
@@ -3561,27 +3590,18 @@ function(anElement, attributeName, attributeValue, shouldRefresh) {
 
 //  ----------------------------------------------------------------------------
 
-TP.lama.IDE.Inst.defineMethod('setup',
+TP.lama.IDE.Inst.defineMethod('setupFull',
 function() {
 
     /**
-     * @method setup
-     * @summary Perform the initial setup for the TP.lama.IDE object.
+     * @method setupFull
+     * @summary Perform the initial setup for the 'full version' of the
+     *     TP.lama.IDE object.
      * @returns {TP.lama.IDE} The receiver.
      */
 
     var win,
         thisref,
-
-        connectorCollectors,
-
-        drawerElement,
-        lamaFinishSetupFunc,
-
-        contentElem,
-
-        loadingImageLoc,
-        loadingImageReq,
 
         allDrawers,
 
@@ -3598,97 +3618,6 @@ function() {
 
     thisref = this;
 
-    //  Build a hash of two 'connector collector' Functions that will be used to
-    //  select elements that should be enabled for that particular connector
-    //  type.
-    connectorCollectors = TP.hc(
-        'bindingsource',
-            function(sourceTPElem) {
-                var uiDoc,
-                    elems;
-
-                //  For binding sources, if the source element is not in the
-                //  current UI canvas, then the context should be the UI canvas.
-                uiDoc = TP.sys.uidoc();
-                if (!uiDoc.contains(sourceTPElem)) {
-                    elems = TP.byCSSPath('html|body *', uiDoc, false, false);
-                } else {
-                    elems = TP.byCSSPath('*', sourceTPElem, false, false);
-                }
-
-                return elems;
-            },
-        'signalsource',
-            function(sourceTPElem) {
-
-                var result,
-                    uiDoc,
-                    node;
-
-                result = TP.ac();
-
-                //  For signal sources, if the source element is not in the
-                //  current UI canvas, then just return the empty Array.
-                uiDoc = TP.sys.uidoc();
-                if (!uiDoc.contains(sourceTPElem)) {
-                    return result;
-                }
-
-                //  Iterate up from the source element to it's document element,
-                //  collecting responders along the way.
-                node = sourceTPElem.getNativeNode();
-                while (TP.isElement(node)) {
-                    if (!TP.nodeIsResponder(node)) {
-                        node = node.parentNode;
-                        continue;
-                    }
-
-                    result.push(node);
-
-                    node = node.parentNode;
-                }
-
-                return result;
-            }
-    );
-    this.set('connectorCollectors', connectorCollectors);
-
-    drawerElement = TP.byId('south', win, false);
-
-    lamaFinishSetupFunc = function(aSignal) {
-
-        var hookElem,
-            logoFinishDisplayFunc;
-
-        //  Turn off any future notifications.
-        lamaFinishSetupFunc.ignore(
-            drawerElement, 'TP.sig.DOMTransitionEnd');
-
-        //  After the drawers have finished animating in, delay,
-        //  giving the animation a chance to finish cleanly before
-        //  proceeding.
-        hookElem = TP.byCSSPath('.right_hook', win, true, false);
-        logoFinishDisplayFunc = function() {
-
-            //  The basic Lama framing has been set up, but we complete
-            //  the setup here (after the drawers animate in). Note that
-            //  this will exit but want to service part of its code after
-            //  a short delay.
-            thisref.finishSetup(
-                    function() {
-                        thisref.lamaSetupComplete();
-                    });
-        };
-
-        //  NB: Because we're bringing in the SVG elements without IDs, we
-        //  need to make sure that the hook element has an ID before
-        //  observing it.
-        TP.lid(hookElem, true);
-
-        logoFinishDisplayFunc.observe(hookElem, 'TP.sig.DOMAnimationEnd');
-    };
-    lamaFinishSetupFunc.observe(drawerElement, 'TP.sig.DOMTransitionEnd');
-
     //  Show the center area and the drawers.
 
     //  First, we remove the 'fullscreen' class from the center element.
@@ -3697,35 +3626,20 @@ function() {
     TP.elementRemoveClass(TP.byId('center', win, false),
                             'fullscreen');
 
-    //  Grab the existing 'content' element, which is now unused since the
-    //  world element moved the screens out of it, and use it to show the
-    //  'loading' element. The HUD will use it later for a 'tools layer'.
-    contentElem = TP.byId('content', win, false);
+    //  Next, start showing the logo animation.
 
-    loadingImageLoc = TP.uc('~lib_media/tibet_logo.svg').getLocation();
-
-    loadingImageReq = TP.request('uri', loadingImageLoc);
-    loadingImageReq.defineHandler('IOCompleted',
-        function(aSignal) {
-            var loadingSVGElem;
-
-            loadingSVGElem = aSignal.getResult().documentElement;
-
-            (function() {
-
-                //  Show the content element, only so that we can size its
-                //  'busy' message layer properly.
-                TP.elementShow(contentElem);
-                TP.elementShowBusyMessage(
-                            contentElem,
-                            null,
-                            loadingSVGElem);
-                TP.elementHide(contentElem);
-
-            }).queueBeforeNextRepaint(TP.nodeGetWindow(contentElem));
+    //  NB: The logo animation is happening at the same time as the drawer
+    //  animation, but it is the logo animation that drives the setup
+    //  completion.
+    this.showLoadingImage(
+        function() {
+            //  The basic Lama framing has been set up, but we complete
+            //  the setup here
+            thisref.finishSetup(
+                    function() {
+                        thisref.lamaSetupFullComplete();
+                    });
         });
-
-    TP.httpGet(loadingImageLoc, loadingImageReq);
 
     //  Grab all of the drawer - north, south, east and west
     allDrawers = TP.byCSSPath('.north, .south, .east, .west',
@@ -3858,6 +3772,35 @@ function() {
                                 customPropertyName,
                                 val + 'px');
             }
+        });
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.lama.IDE.Inst.defineMethod('setupMinimal',
+function() {
+
+    /**
+     * @method setupMinimal
+     * @summary Perform the initial setup for the 'minimal version' of the
+     *     TP.lama.IDE object.
+     * @returns {TP.lama.IDE} The receiver.
+     */
+
+    var thisref;
+
+    thisref = this;
+
+    this.showLoadingImage(
+        function() {
+            //  The basic Lama framing has been set up, but we complete
+            //  the setup here
+            thisref.finishSetup(
+                    function() {
+                        thisref.lamaSetupMinimalComplete();
+                    });
         });
 
     return this;
@@ -4388,6 +4331,78 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.lama.IDE.Inst.defineMethod('setupConnectors',
+function() {
+
+    /**
+     * @method setupConnectors
+     * @summary Sets up the Lama's 'connectors'.
+     * @returns {TP.lama.IDE} The receiver.
+     */
+
+    var connectorCollectors;
+
+    //  Build a hash of two 'connector collector' Functions that will be used to
+    //  select elements that should be enabled for that particular connector
+    //  type.
+    connectorCollectors = TP.hc(
+        'bindingsource',
+            function(sourceTPElem) {
+                var uiDoc,
+                    elems;
+
+                //  For binding sources, if the source element is not in the
+                //  current UI canvas, then the context should be the UI canvas.
+                uiDoc = TP.sys.uidoc();
+                if (!uiDoc.contains(sourceTPElem)) {
+                    elems = TP.byCSSPath('html|body *', uiDoc, false, false);
+                } else {
+                    elems = TP.byCSSPath('*', sourceTPElem, false, false);
+                }
+
+                return elems;
+            },
+        'signalsource',
+            function(sourceTPElem) {
+
+                var result,
+                    uiDoc,
+                    node;
+
+                result = TP.ac();
+
+                //  For signal sources, if the source element is not in the
+                //  current UI canvas, then just return the empty Array.
+                uiDoc = TP.sys.uidoc();
+                if (!uiDoc.contains(sourceTPElem)) {
+                    return result;
+                }
+
+                //  Iterate up from the source element to it's document element,
+                //  collecting responders along the way.
+                node = sourceTPElem.getNativeNode();
+                while (TP.isElement(node)) {
+                    if (!TP.nodeIsResponder(node)) {
+                        node = node.parentNode;
+                        continue;
+                    }
+
+                    result.push(node);
+
+                    node = node.parentNode;
+                }
+
+                return result;
+            }
+    );
+
+    this.set('connectorCollectors', connectorCollectors);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.lama.IDE.Inst.defineMethod('setupConsole',
 function() {
 
@@ -4755,6 +4770,32 @@ function(aTargetNode) {
 
             this.removeEventListener('keydown', keydownHandler, false);
         });
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.lama.IDE.Inst.defineMethod('setupLamabar',
+function() {
+
+    /**
+     * @method setupLamabar
+     * @summary Sets up the Lama's 'Lamabar' component. The Lama's Lamabar
+     *     provides a GUI to manipulate which tools are seen on screen.
+     * @returns {TP.lama.IDE} The receiver.
+     */
+
+    var tileTPElem,
+        lamabarTPElem;
+
+    lamabarTPElem = TP.tpelem('<lama:lamabar id="Lamabar"/>');
+
+    tileTPElem = this.makeTile('LamabarTile');
+
+    tileTPElem.setContent(lamabarTPElem);
+
+    tileTPElem.setAttribute('hidden', false);
 
     return this;
 });
@@ -5240,14 +5281,91 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.lama.IDE.Inst.defineMethod('lamaSetupComplete',
+TP.lama.IDE.Inst.defineMethod('showLoadingImage',
+function(completionFunc) {
+
+    /**
+     * @method showLoadingImage
+     * @summary Shows the Lama's 'loading' image and invokes the completionFunc,
+     *     if supplied, when it is finished.
+     * @param {Function} [completionFunc] The Function to call when the loading
+     *     image finishes.
+     * @returns {TP.lama.IDE} The receiver.
+     */
+
+    var win,
+
+        contentElem,
+
+        loadingImageLoc,
+        loadingImageReq;
+
+    win = this.get('vWin');
+
+    //  Grab the existing 'content' element, which is now unused since the
+    //  world element moved the screens out of it, and use it to show the
+    //  'loading' element. The HUD will use it later for a 'tools layer'.
+    contentElem = TP.byId('content', win, false);
+
+    loadingImageLoc = TP.uc('~lib_media/tibet_logo.svg').getLocation();
+
+    loadingImageReq = TP.request('uri', loadingImageLoc);
+    loadingImageReq.defineHandler('IOCompleted',
+        function(aSignal) {
+            var loadingSVGElem,
+                hookElem,
+                animationFinishFunc;
+
+            loadingSVGElem = aSignal.getResult().documentElement;
+
+            //  After the drawers have finished animating in, delay,
+            //  giving the animation a chance to finish cleanly before
+            //  proceeding.
+            hookElem = TP.byCSSPath('.right_hook', win, true, false);
+            animationFinishFunc = function() {
+                //  Hide the Lama's busy message... getting ready for use.
+                TP.elementHideBusyMessage(contentElem);
+                if (TP.isCallable(completionFunc)) {
+                    completionFunc();
+                }
+            };
+
+            //  NB: Because we're bringing in the SVG elements without IDs, we
+            //  need to make sure that the hook element has an ID before
+            //  observing it.
+            TP.lid(hookElem, true);
+
+            animationFinishFunc.observe(hookElem, 'TP.sig.DOMAnimationEnd');
+
+            (function() {
+
+                //  Show the content element, only so that we can size its
+                //  'busy' message layer properly.
+                TP.elementShow(contentElem);
+                TP.elementShowBusyMessage(
+                            contentElem,
+                            null,
+                            loadingSVGElem);
+                TP.elementHide(contentElem);
+
+            }).queueBeforeNextRepaint(TP.nodeGetWindow(contentElem));
+        });
+
+    TP.httpGet(loadingImageLoc, loadingImageReq);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.lama.IDE.Inst.defineMethod('lamaSetupFullComplete',
 function() {
 
     /**
-     * @method lamaSetupComplete
+     * @method lamaSetupFullComplete
      * @summary Completes the setting up of the Lama. This is called once all
-     *     of the Lama's drawers have loaded with their content and have
-     *     animated in. It is called only once, however.
+     *     of the Lama's drawers have loaded with their content, have animated
+     *     in and the logo is done animating.
      * @returns {TP.lama.IDE} The receiver.
      */
 
@@ -5295,6 +5413,20 @@ function() {
     //  Toggle the east and west drawers to their 'maximum open' state.
     TP.byCSSPath('#west lama|opener', viewWin).at(0).signal('UIToggle');
     TP.byCSSPath('#east lama|opener', viewWin).at(0).signal('UIToggle');
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.lama.IDE.Inst.defineMethod('lamaSetupMinimalComplete',
+function() {
+
+    /**
+     * @method lamaSetupMinimalComplete
+     * @summary Completes the setting up of the Lama when in 'minimal' mode.
+     * @returns {TP.lama.IDE} The receiver.
+     */
 
     return this;
 });
@@ -5396,6 +5528,10 @@ function() {
      * @returns {TP.lama.IDE} The receiver.
      */
 
+    var mode;
+
+    mode = TP.sys.cfg('lama.mode');
+
     //  For now, we only run the Lama on Chrome
     if (!TP.sys.isUA('chrome')) {
         TP.alert(
@@ -5410,13 +5546,23 @@ function() {
 
     //  If the Lama's setup is complete, then we just toggle the HUD and exit.
     if (this.get('setupComplete')) {
-        TP.byId('LamaHUD', this.get('vWin')).toggle('closed');
+        if (mode === 'full') {
+            //  Hide the HUD
+            TP.byId('LamaHUD', this.get('vWin')).toggle('closed');
+        } else {
+            //  Hide the Lamabar
+            TP.byId('LamabarTile', this.get('vWin')).toggle('hidden');
+        }
 
         return this;
     }
 
     //  Otherwise, execute the setup process.
-    this.setup();
+    if (mode === 'full') {
+        this.setupFull();
+    } else {
+        this.setupMinimal();
+    }
 
     return this;
 });

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+<xctrls:toolbar
+        id="{{$SOURCE.(@id)}}"
+        tibet:no-mutations="true"
+        tibet:opaque="bind">
+    <span tibet:assembly="xctrls:toolbar">
+        <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
+            <xctrls:content tibet:pelem="choices" class="noselect">
+            {{$SOURCE.(./node())}}
+            </xctrls:content>
+        </tibet:group>
+    </span>
+</xctrls:toolbar>
+

@@ -1,4 +1,4 @@
-# TIBET&#8482; -- Drag, Drop, Deploy&#8482;
+## TIBET&#8482; -- The Desktop-to-Cloud Platform&#8482;
 
 
                                      ,`
@@ -22,8 +22,7 @@
 
 <br/>
 
-
-###### For full TIBET documentation see the <a href="https://github.com/TechnicalPursuit/TIBET">README</a> and <a href="https://www.technicalpursuit.com/docs/">https://technicalpursuit.com</a>.
+###### For TIBET documentation see <a href="https://www.technicalpursuit.com/docs/">https://technicalpursuit.com</a>.
 
 <br/>
 
@@ -31,19 +30,16 @@
 
 <br/>
 
+<a name="installation" href="#"></a>
 <img alt="Installation" src="./lib/media/disk.png" width="128px" height="128px"/>
 
 # Installation
 
-Before you install TIBET we recommend you check our <a href="#supported">supported platform chart</a> for your platforms/browsers.
-
-There are a number of ways to install TIBET...
-
-If you're doing Node/JS development on Mac or Linux <a href="#npminstall">install TIBET via `npm`</a>.
+For Node/JS development on Mac OS, Linux, or Windows <a href="#npminstall">install via `npm`</a>.
 
 See <a href="#dockerinstall">installing via Docker</a> to use one of our <a href="https://hub.docker.com/r/technicalpursuit/tibet">pre-built TIBET Docker images</a>.
 
-To install a Git fork on Mac/Linux see the <a href="#gitinstall">TIBET Git Installation</a> instructions.
+To install a Git fork see the <a href="#gitinstall">TIBET Git Installation</a> instructions.
 
 <br/>
 
@@ -61,18 +57,15 @@ TIBET is currently installed globally using `npm install -g`:
 
     npm install -g tibet
 
-<i>NOTE: Future versions will install the TIBET CLI globally and install the
-library locally.</i>
+<br/>
+Initial installation can take several minutes depending on the speed of your network connection and the particular version being installed. Be patient. TIBET includes a full client stack, a full server stack, and a full tool chain. It's worth the wait :).
 
-Initial installation can take several minutes depending on the speed of
-your network connection and the particular version being installed. Be patient
-:).
+Once the `npm install` process is complete, execute:
 
-Due to limitations in `npm`, complete the installation by running the following command to install TIBET's `devDependencies` in the newly-installed TIBET global package:
+    tibet init
 
-    $(npm root -g)/tibet/bin/tibet_develop_init.bash
-
-**Once your installation completes check out the <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a>.**
+<br/>
+Upon completion you'll be directed to the <a href="https://www.technicalpursuit.com/docs/quickstart.html">TIBET Quickstart Guide</a> to get started.
 
 <br/>
 
@@ -208,23 +201,22 @@ With TIBET cloned, initialized, linked, and built you're ready to rock.
 <a name="supported" href="#"></a>
 # Supported Platforms
 
-###### TIBET CLI / Server
+### TIBET CLI / Server
 
-The TIBET CLI, TIBET Data Server (TDS), TIBET Workflow System (TWS) and other server-side
-components are **fully-supported on Windows, MacOS and common Linux variants**.
+The TIBET CLI, TIBET Data Server (TDS), and TIBET Workflow System (TWS) are fully-supported on supported NodeJS platforms including Windows, Mac OS, and common Linux variants.
 
 
-###### TIBET Client / Sherpa
+### TIBET Client / Lama
 
-| Platform | TIBET Client Runtime | TIBET Live Patching |
-|:---------|:----------------------|:-------------------|
-| Google Chrome | Yes | Yes |
-| Microsoft Edge (Chromium) | Yes | Yes |
-| Mozilla Firefox | Yes | Yes |
-| Apple Safari | Yes | Yes |
-| Electron | Yes | Yes |
-| Microsoft Edge (EdgeHTML) | No | No |
-| Microsoft IE | No | No |
+| Platform | Runtime | Zero Reload | Lama
+|:---------|:--------|:--------------|:----|
+| Electron ^12.x | Yes | Yes | Preview
+| Google Chrome ^89 | Yes | Yes | Preview
+| Microsoft Edge (Chromium) ^89 | Yes | Yes | No
+| Mozilla Firefox ^87 | Yes | Yes | No
+| Apple Safari ^14 | Yes | Yes | No
+| Microsoft Edge (Legacy) | No | No | No
+| Microsoft IE | No | No | No
 
 <br/>
 
@@ -237,17 +229,17 @@ components are **fully-supported on Windows, MacOS and common Linux variants**.
 
 #### Install Node.js
 
-TIBET requires Node.js version 10+ for proper operation.
+TIBET requires Node.js version 12+ for proper operation.
 
 We also recommend using `npm` version `6.x` or higher.
 
 You can confirm your node, and npm versions using:
 
     node --version
-    v10.16.3
+    v12.18.1
 
     npm --version
-    6.9.0
+    6.14.5
 
 **We strongly recommend you use the Node Version Manager (`nvm`)** to manage
 your Node.js installation. Using `nvm` lets you install multiple versions of
@@ -276,4 +268,4 @@ href="https://github.com/npm/npm/wiki/Troubleshooting#try-the-latest-stable-vers
 
 <img alt="The Pup" src="./lib/media/thepup.jpg" width="92px" height="138px"/>
 
-<a href="https://www.technicalpursuit.com/contact.xhtml">Contact us</a> for more information, or to discuss how we can assist you.
+Visit <a href="https://www.technicalpursuit.com/">https://www.technicalpursuit.com</a> for more information.

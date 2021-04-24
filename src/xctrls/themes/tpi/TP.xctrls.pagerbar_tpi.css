@@ -12,6 +12,7 @@
 
 }
 
+/* Pagerbar items */
 *[data-theme~="tpi"] xctrls|pagerbar xctrls|pageritem {
 
     border-width: var(--xctrls-pageritem-border-width);

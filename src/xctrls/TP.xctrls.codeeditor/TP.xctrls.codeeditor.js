@@ -817,6 +817,12 @@ function() {
     editorObj.$blockScrolling = Infinity;
     /* eslint-enable new-cap */
 
+    //  Because ACE is not paying attention and will only import the main
+    //  stylesheet once *for the entire window* (whether we have multiple
+    //  iframes or not), we have to pretend that we're in ShadowDOM and call
+    //  this method to have it attach the main stylesheet for the editor.
+    editorObj.renderer.attachToShadowRoot();
+
     this.$set('$editorObj', editorObj);
 
     //  Make sure and flag the native node to not track mutations. This is a
@@ -838,6 +844,9 @@ function() {
         function(aSignal) {
             aSignal.stopPropagation();
         });
+
+    //  Set the editor to not show the print margin by default.
+    editorObj.setShowPrintMargin(false);
 
     //  Set the editor to use soft tabs and to navigate within them (i.e. allow
     //  backspace and arrowing over the spaces that got inserted with a soft

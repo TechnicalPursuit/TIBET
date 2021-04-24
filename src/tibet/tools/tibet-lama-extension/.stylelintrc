@@ -19,8 +19,10 @@
 
         "function-url-quotes": "always",
 
-        "no-descending-specificity": false,
-        "no-duplicate-selectors": false,
+        "max-empty-lines": [1, { "severity": "warning" }],
+
+        "no-descending-specificity": null,
+        "no-duplicate-selectors": null,
 
         "rule-empty-line-before": ["always", { ignore: "after-comment" }],
 
@@ -42,7 +44,7 @@
         "**/node_modules/**",
         "deps/**",
         "lib/src/**",
-        "**/sherpa/cm_theme/*",
+        "**/lama/cm_theme/*",
         "**/build/**",
         "**/*.__*__.*.js",
         "**/boot/styles/**"

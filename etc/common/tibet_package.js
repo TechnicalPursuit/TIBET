@@ -219,8 +219,8 @@
         this.setcfg = TP.sys.setcfg;
 
         //  For get requests we rely on the instance copy.
-        TP.sys.getcfg = function(property, aDefault) {
-            return pkg.getcfg(property, aDefault);
+        TP.sys.getcfg = function(property, aDefault, asNestedObj) {
+            return pkg.getcfg(property, aDefault, asNestedObj);
         };
         TP.sys.cfg = TP.sys.getcfg;
 

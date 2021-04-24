@@ -1,17 +1,21 @@
-{{topic}}({{section}}) -- initialize a TIBET project
+{{topic}}({{section}}) -- init TIBET library or project
 =============================================
 
 ## SYNOPSIS
 
-`tibet init [--freeze]`
+`tibet init [--force] [--freeze] [--tibet]`
 
 ## DESCRIPTION
 
-Initializes a TIBET project, linking and installing dependencies.
+Initializes a TIBET project or installation, linking and installing
+dependencies.
 
-This command must be run prior to most activity within a TIBET
-project. Many of the TIBET cli commands will fail to run until
-you have run a `tibet init` command.
+Upon initial library installation via `npm` the `tibet init` command should be
+run to ensure the new TIBET installation is properly configured.
+
+In a project context this command must be run prior to most activity. Many of
+the TIBET cli commands will fail to run until you have run a `tibet init`
+command.
 
 The optional `--freeze` is effectively like running `tibet freeze` during
 initialization. This parameter will cause TIBET to make a copy of
@@ -21,9 +25,17 @@ simply linked into position via `npm link tibet`.
 
 ## OPTIONS
 
+  * `--force` :
+    Causes any existing initialization or links to be replaced rather than
+exiting the command.
+
   * `--freeze` :
     Used to lock your project to a specific version of TIBET within the
 package.json and node_modules locations.
+
+  * `--tibet` :
+    Used to specify that the focus of the command should be the TIBET library
+rather than any currently-enclosing project.
 
 ## CONFIGURATION SETTINGS
 
@@ -40,6 +52,12 @@ this value doesn't exist then `default` is the name used.
 No process environment variables are required by this command.
 
 ## EXAMPLES
+
+### Install TIBET and initialize it
+
+    $ npm install -g tibet
+
+    $ tibet init
 
 ### Initialize a fresh project
 

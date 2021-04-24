@@ -1744,7 +1744,7 @@ function(updateSelection) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.SelectingUIElement Methods
+//  TP.core.SelectingUIElementNode Methods
 //  ------------------------------------------------------------------------
 
 TP.xctrls.table.Inst.defineMethod('deselect',

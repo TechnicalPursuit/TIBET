@@ -52,6 +52,32 @@ Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
  */
 Cmd.NAME = 'electron';
 
+/**
+ * The TIBET logo in ASCII-art form.
+ * @type {String}
+ */
+/* eslint-disable quotes */
+Cmd.LOGO = "\n" +
+    "                            ,`\n" +
+    "                     __,~//`\n" +
+    "  ,///,_       .~///////'`\n" +
+    "      '//,   ///'`\n" +
+    "         '/_/'\n" +
+    "           `\n" +
+    "   /////////////////     /////////////// ///\n" +
+    "   `//'````````///      `//'```````````  '''\n" +
+    "   ,/`          //      ,/'\n" +
+    "  ,/___          /'    ,/_____\n" +
+    " ///////;;,_     //   ,/////////;,_\n" +
+    "          `'//,  '/            `'///,_\n" +
+    "              `'/,/                '//,\n" +
+    "                 `/,                  `/,\n" +
+    "                   '                   `/\n" +
+    "                                        '/\n" +
+    "                                         /\n" +
+    "                                         '\n";
+/* eslint-enable: quotes, no-multi-str */
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -71,7 +97,6 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * @type {string}
  */
 Cmd.prototype.USAGE = 'tibet electron [<path>|--empty] [--debugger] [--devtools] [<electron options>]';
-
 
 //  ---
 //  Instance Methods
@@ -103,6 +128,8 @@ Cmd.prototype.execute = function() {
 
     // Make sure we work from the launch (and hence server.js) location.
     process.chdir(CLI.getAppHead());
+
+    cmd.system(Cmd.LOGO);
 
     //  Need our electron.js file
     if (!sh.test('-f', 'electron.js')) {

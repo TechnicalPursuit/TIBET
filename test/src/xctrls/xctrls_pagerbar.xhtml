@@ -99,6 +99,13 @@
         ]]>
     </tibet:data>
 
+    <!-- The test data for static item selection tests -->
+    <tibet:data name="urn:tibet:static_selection_test_data" content="TP.core.Hash">
+        <![CDATA[
+        {"selection_set_1": "before"}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body data-theme="tpi">
@@ -156,8 +163,27 @@
     pagerbar #6:
     <br/>
 
+    A standard XControls pagerbar enabled showing only static content:
+    <xctrls:pagerbar id="pagerbar6" bind:io="{value: urn:tibet:static_selection_test_data#tibet(selection_set_1)}">
+        <xctrls:pageritem tabindex="0" on:click="TestClick">
+            <xctrls:label>Before Content</xctrls:label>
+            <xctrls:value>before</xctrls:value>
+        </xctrls:pageritem>
+        <xctrls:pageritem tabindex="0">
+            <xctrls:label>After Content</xctrls:label>
+            <xctrls:value>after</xctrls:value>
+        </xctrls:pageritem>
+    </xctrls:pagerbar>
+
+    <br/>
+    <br/>
+
+    <br/>
+    pagerbar #7:
+    <br/>
+
     A standard XControls pagerbar enabled showing static and templated content and value bound to a selection model:
-    <xctrls:pagerbar id="pagerbar6" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}">
+    <xctrls:pagerbar id="pagerbar7" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}">
         <xctrls:pageritem tabindex="0">
             <xctrls:label>Before Content</xctrls:label>
             <xctrls:value>before</xctrls:value>
@@ -178,18 +204,18 @@
     <br/>
 
     <br/>
-    pagerbar #7:
-    <br/>
-
-    A standard XControls pagerbar enabled showing dynamic content, value bound to a selection model and inserted start/end and next/previous buttons:
-    <xctrls:pagerbar id="pagerbar7" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_3)}" startend="true" nextprevious="true"/>
-
-    <br/>
     pagerbar #8:
     <br/>
 
+    A standard XControls pagerbar enabled showing dynamic content, value bound to a selection model and inserted start/end and next/previous buttons:
+    <xctrls:pagerbar id="pagerbar8" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_3)}" startend="true" nextprevious="true"/>
+
+    <br/>
+    pagerbar #9:
+    <br/>
+
     A standard XControls pagerbar enabled showing dynamic content, value bound to a selection model and a page size greater than 1.
-    <xctrls:pagerbar id="pagerbar8" bind:in="{data: urn:tibet:object_hash#tibet(names)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_4)}" pagesize="5"/>
+    <xctrls:pagerbar id="pagerbar9" bind:in="{data: urn:tibet:object_hash#tibet(names)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_4)}" pagesize="5"/>
 
     <div class="controlBox">
         <button onclick="TP.byId('pagerbar1').signal('UIDisabled');">Disable pagerbar #1</button>

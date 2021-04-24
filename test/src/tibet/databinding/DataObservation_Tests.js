@@ -944,15 +944,48 @@ function() {
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
             'firstName', TP.apc('privateData.public_info.firstName'));
 
+        TP.test.ComplexPathEmployee.Inst.defineMethod(
+            'getLastName',
+            function(aValue) {
+                return this.callNextMethod();
+            });
+
+        TP.test.ComplexPathEmployee.Inst.defineMethod(
+            'setLastName',
+            function(aValue, shouldSignal) {
+                return this.callNextMethod();
+            });
+
+        //  Spy on these methods.
+        TP.test.ComplexPathEmployee.Inst.spyOn('getLastName');
+        TP.test.ComplexPathEmployee.Inst.spyOn('setLastName');
+
         //  ---
 
         TP.core.JSONContent.defineSubtype('test.JSONPathEmployee');
 
-        //  These paths assume a chunk of XML has been set on the native node.
+        //  These paths assume a chunk of JSON data has been set on the native
+        //  node.
         TP.test.JSONPathEmployee.Inst.defineAttribute(
             'lastName', TP.apc('$.emp.lastName'));
         TP.test.JSONPathEmployee.Inst.defineAttribute(
             'firstName', TP.apc('$.emp.firstName'));
+
+        TP.test.JSONPathEmployee.Inst.defineMethod(
+            'getLastName',
+            function(aValue) {
+                return this.callNextMethod();
+            });
+
+        TP.test.JSONPathEmployee.Inst.defineMethod(
+            'setLastName',
+            function(aValue, shouldSignal) {
+                return this.callNextMethod();
+            });
+
+        //  Spy on these methods.
+        TP.test.JSONPathEmployee.Inst.spyOn('getLastName');
+        TP.test.JSONPathEmployee.Inst.spyOn('setLastName');
 
         //  ---
 
@@ -963,7 +996,35 @@ function() {
             'lastName', TP.apc('//emp/lname'));
         TP.test.XPathPathEmployee.Inst.defineAttribute(
             'firstName', TP.apc('//emp/fname'));
+
+        TP.test.XPathPathEmployee.Inst.defineMethod(
+            'getLastName',
+            function(aValue) {
+                return this.callNextMethod();
+            });
+
+        TP.test.XPathPathEmployee.Inst.defineMethod(
+            'setLastName',
+            function(aValue, shouldSignal) {
+                return this.callNextMethod();
+            });
+
+        //  Spy on these methods.
+        TP.test.XPathPathEmployee.Inst.spyOn('getLastName');
+        TP.test.XPathPathEmployee.Inst.spyOn('setLastName');
     });
+
+    this.afterEach(
+        function(test, options) {
+            TP.test.ComplexPathEmployee.Inst.getLastName.resetHistory();
+            TP.test.ComplexPathEmployee.Inst.setLastName.resetHistory();
+
+            TP.test.JSONPathEmployee.Inst.getLastName.resetHistory();
+            TP.test.JSONPathEmployee.Inst.setLastName.resetHistory();
+
+            TP.test.XPathPathEmployee.Inst.getLastName.resetHistory();
+            TP.test.XPathPathEmployee.Inst.setLastName.resetHistory();
+        });
 
     this.it('Type defined aspect change notification', function(test, options) {
 
@@ -971,7 +1032,8 @@ function() {
             valueChangedResults,
             aspectObsFunction,
 
-            newEmployee;
+            newEmployee,
+            testVal;
 
         aspectChangedResults = TP.ac();
         aspectChangedResults.setID('TYPE_DEFINED_TEST_ASPECT_CHANGED_RESULTS');
@@ -1008,23 +1070,28 @@ function() {
         //  And the value should be 'Edney'
         test.assert.contains(valueChangedResults, 'Edney');
 
+        testVal = newEmployee.get('lastName');
+        test.assert.isEqualTo(testVal, 'Edney');
+
         aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');
     });
 
-    this.it('TP.path.ComplexTIBETPath path-enhanced aspect change notification', function(test, options) {
+    this.it('TP.path.ComplexTIBETPath path-enhanced aspect change notification - aspect name to path', function(test, options) {
 
         var aspectChangedResults,
             valueChangedResults,
             aspectObsFunction,
 
-            newEmployee;
+            newEmployee,
+
+            testVal;
 
         aspectChangedResults = TP.ac();
         aspectChangedResults.setID('TIBETPATH_TEST_ASPECT_CHANGED_RESULTS');
 
         valueChangedResults = TP.ac();
-        aspectChangedResults.setID('TIBETPATH_TEST_VALUE_CHANGED_RESULTS');
+        valueChangedResults.setID('TIBETPATH_TEST_VALUE_CHANGED_RESULTS');
 
         aspectObsFunction =
                 function(aSignal) {
@@ -1058,17 +1125,88 @@ function() {
         //  And the value should be 'Edney'
         test.assert.contains(valueChangedResults, 'Edney');
 
+        //  And the custom setter should've been called.
+        test.assert.isTrue(newEmployee.setLastName.called);
+
+        testVal = newEmployee.get('lastName');
+        test.assert.isEqualTo(testVal, 'Edney');
+
+        //  And now the custom getter should've been called.
+        test.assert.isTrue(newEmployee.getLastName.called);
+
         aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');
     });
 
-    this.it('TP.path.JSONPath path-enhanced aspect change notification', function(test, options) {
+    this.it('TP.path.ComplexTIBETPath path-enhanced aspect change notification - path to aspect name', function(test, options) {
 
         var aspectChangedResults,
             valueChangedResults,
             aspectObsFunction,
 
-            newEmployee;
+            newEmployee,
+
+            testVal;
+
+        aspectChangedResults = TP.ac();
+        aspectChangedResults.setID('TIBETPATH_TEST_ASPECT_CHANGED_RESULTS');
+
+        valueChangedResults = TP.ac();
+        valueChangedResults.setID('TIBETPATH_TEST_VALUE_CHANGED_RESULTS');
+
+        aspectObsFunction =
+                function(aSignal) {
+                    aspectChangedResults.push(aSignal.at('aspect'));
+                    valueChangedResults.push(aSignal.getValue());
+                };
+
+        newEmployee = TP.test.ComplexPathEmployee.construct();
+        newEmployee.set('privateData',
+                TP.json2js('{"public_info":{"lastName":"", "firstName":""}}'));
+
+        aspectObsFunction.observe(newEmployee, 'FirstNameChange');
+        aspectObsFunction.observe(newEmployee, 'LastNameChange');
+
+        newEmployee.set(TP.apc('privateData.public_info.firstName'), 'Bill');
+
+        //  This should contain firstName, because we just changed it.
+        test.assert.contains(aspectChangedResults, 'firstName');
+
+        //  And the value should be 'Bill'
+        test.assert.contains(valueChangedResults, 'Bill');
+
+        //  But not lastName, because we didn't change it.
+        test.refute.contains(aspectChangedResults, 'lastName');
+
+        newEmployee.set(TP.apc('privateData.public_info.lastName'), 'Edney');
+
+        //  And now it should contain lastName, because we just changed it.
+        test.assert.contains(aspectChangedResults, 'lastName');
+
+        //  And the value should be 'Edney'
+        test.assert.contains(valueChangedResults, 'Edney');
+
+        //  And the custom setters should've been called.
+        test.assert.isTrue(newEmployee.setLastName.called);
+
+        testVal = newEmployee.get('lastName');
+        test.assert.isEqualTo(testVal, 'Edney');
+
+        //  And now the custom getter should've been called.
+        test.assert.isTrue(newEmployee.getLastName.called);
+
+        aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
+        aspectObsFunction.ignore(newEmployee, 'LastNameChange');
+    });
+
+    this.it('TP.path.JSONPath path-enhanced aspect change notification - aspect name to path', function(test, options) {
+
+        var aspectChangedResults,
+            valueChangedResults,
+            aspectObsFunction,
+
+            newEmployee,
+            testVal;
 
         aspectChangedResults = TP.ac();
         aspectChangedResults.setID('JSONPATH_TEST_ASPECT_CHANGED_RESULTS');
@@ -1079,7 +1217,7 @@ function() {
         aspectObsFunction =
                 function(aSignal) {
                     aspectChangedResults.push(aSignal.at('aspect'));
-                    valueChangedResults.push(aSignal.getValue().first());
+                    valueChangedResults.push(aSignal.getValue());
                 };
 
         newEmployee = TP.test.JSONPathEmployee.construct(
@@ -1107,17 +1245,87 @@ function() {
         //  And the value should be 'Edney'
         test.assert.contains(valueChangedResults, 'Edney');
 
+        //  And the custom setter should've been called.
+        test.assert.isTrue(newEmployee.setLastName.called);
+
+        testVal = newEmployee.get('lastName');
+        test.assert.isEqualTo(testVal, 'Edney');
+
+        //  And now the custom getter should've been called.
+        test.assert.isTrue(newEmployee.getLastName.called);
+
         aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');
     });
 
-    this.it('TP.path.XPathPath path-enhanced aspect change notification', function(test, options) {
+    this.it('TP.path.JSONPath path-enhanced aspect change notification - path to aspect name', function(test, options) {
 
         var aspectChangedResults,
             valueChangedResults,
             aspectObsFunction,
 
-            newEmployee;
+            newEmployee,
+            testVal;
+
+        aspectChangedResults = TP.ac();
+        aspectChangedResults.setID('JSONPATH_TEST_ASPECT_CHANGED_RESULTS');
+
+        valueChangedResults = TP.ac();
+        aspectChangedResults.setID('JSONPATH_TEST_VALUE_CHANGED_RESULTS');
+
+        aspectObsFunction =
+                function(aSignal) {
+                    aspectChangedResults.push(aSignal.at('aspect'));
+                    valueChangedResults.push(aSignal.getValue());
+                };
+
+        newEmployee = TP.test.JSONPathEmployee.construct(
+                TP.json2js('{"emp":{"lastName":"", "firstName":""}}', false));
+
+        aspectObsFunction.observe(newEmployee, 'FirstNameChange');
+        aspectObsFunction.observe(newEmployee, 'LastNameChange');
+
+        newEmployee.set(TP.apc('$.emp.firstName'), 'Bill');
+
+        //  This should contain firstName, because we just changed it.
+        test.assert.contains(aspectChangedResults, 'firstName');
+
+        //  And the value should be 'Bill'
+        test.assert.contains(valueChangedResults, 'Bill');
+
+        //  But not lastName, because we didn't change it.
+        test.refute.contains(aspectChangedResults, 'lastName');
+
+        newEmployee.set(TP.apc('$.emp.lastName'), 'Edney');
+
+        //  And now it should contain lastName, because we just changed it.
+        test.assert.contains(aspectChangedResults, 'lastName');
+
+        //  And the value should be 'Edney'
+        test.assert.contains(valueChangedResults, 'Edney');
+
+        //  And the custom setters should've been called.
+        test.assert.isTrue(newEmployee.setLastName.called);
+
+        testVal = newEmployee.get('lastName');
+        test.assert.isEqualTo(testVal, 'Edney');
+
+        //  And now the custom getter should've been called.
+        test.assert.isTrue(newEmployee.getLastName.called);
+
+        aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
+        aspectObsFunction.ignore(newEmployee, 'LastNameChange');
+    });
+
+    this.it('TP.path.XPathPath path-enhanced aspect change notification - aspect name to path', function(test, options) {
+
+        var aspectChangedResults,
+            valueChangedResults,
+            aspectObsFunction,
+
+            newEmployee,
+
+            testVal;
 
         aspectChangedResults = TP.ac();
         aspectChangedResults.setID('XPATH_TEST_ASPECT_CHANGED_RESULTS');
@@ -1126,10 +1334,10 @@ function() {
         aspectChangedResults.setID('XPATH_TEST_VALUE_CHANGED_RESULTS');
 
         aspectObsFunction =
-            function(aSignal) {
-                aspectChangedResults.push(aSignal.at('aspect'));
-                valueChangedResults.push(TP.val(aSignal.getValue().first()));
-            };
+                function(aSignal) {
+                    aspectChangedResults.push(aSignal.at('aspect'));
+                    valueChangedResults.push(TP.val(aSignal.getValue()));
+                };
 
         newEmployee = TP.test.XPathPathEmployee.construct(
                         TP.doc('<emp><lname></lname><fname></fname></emp>'));
@@ -1155,6 +1363,77 @@ function() {
 
         //  And the value should be 'Edney'
         test.assert.contains(valueChangedResults, 'Edney');
+
+        //  And the custom setter should've been called.
+        test.assert.isTrue(newEmployee.setLastName.called);
+
+        testVal = TP.val(newEmployee.get('lastName'));
+        test.assert.isEqualTo(testVal, 'Edney');
+
+        //  And now the custom getter should've been called.
+        test.assert.isTrue(newEmployee.getLastName.called);
+
+        aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
+        aspectObsFunction.ignore(newEmployee, 'LastNameChange');
+    });
+
+    this.it('TP.path.XPathPath path-enhanced aspect change notification - path to aspect name', function(test, options) {
+
+        var aspectChangedResults,
+            valueChangedResults,
+            aspectObsFunction,
+
+            newEmployee,
+
+            testVal;
+
+        aspectChangedResults = TP.ac();
+        aspectChangedResults.setID('XPATH_TEST_ASPECT_CHANGED_RESULTS');
+
+        valueChangedResults = TP.ac();
+        aspectChangedResults.setID('XPATH_TEST_VALUE_CHANGED_RESULTS');
+
+        aspectObsFunction =
+                function(aSignal) {
+                    aspectChangedResults.push(aSignal.at('aspect'));
+                    valueChangedResults.push(TP.val(aSignal.getValue()));
+                };
+
+        newEmployee = TP.test.XPathPathEmployee.construct(
+                        TP.doc('<emp><lname></lname><fname></fname></emp>'));
+
+        aspectObsFunction.observe(newEmployee, 'FirstNameChange');
+        aspectObsFunction.observe(newEmployee, 'LastNameChange');
+
+        newEmployee.set(TP.apc('//emp/fname'), 'Bill');
+
+        console.log(TP.str(valueChangedResults));
+
+        //  This should contain firstName, because we just changed it.
+        test.assert.contains(aspectChangedResults, 'firstName');
+
+        //  And the value should be 'Bill'
+        test.assert.contains(valueChangedResults, 'Bill');
+
+        //  But not lastName, because we didn't change it.
+        test.refute.contains(aspectChangedResults, 'lastName');
+
+        newEmployee.set(TP.apc('//emp/lname'), 'Edney');
+
+        //  And now it should contain lastName, because we just changed it.
+        test.assert.contains(aspectChangedResults, 'lastName');
+
+        //  And the value should be 'Edney'
+        test.assert.contains(valueChangedResults, 'Edney');
+
+        //  And the custom setters should've been called.
+        test.assert.isTrue(newEmployee.setLastName.called);
+
+        testVal = TP.val(newEmployee.get('lastName'));
+        test.assert.isEqualTo(testVal, 'Edney');
+
+        //  And now the custom getter should've been called.
+        test.assert.isTrue(newEmployee.getLastName.called);
 
         aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
         aspectObsFunction.ignore(newEmployee, 'LastNameChange');

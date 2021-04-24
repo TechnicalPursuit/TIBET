@@ -7519,15 +7519,13 @@ TP.boot.$setStage = function(aStage, aReason) {
     //  time spent in the current (now prior) stage below.
     info.entered = new Date();
 
+    //  NOTE: we don't check for empty here... we want to clear prior text.
     head = info.head;
-    if (TP.boot.$notEmpty(head)) {
-        TP.boot.$displayStage(head);
-    }
+    TP.boot.$displayStage(head);
 
+    //  NOTE: we don't check for empty here... we want to clear prior text.
     sub = info.sub;
-    if (TP.boot.$notEmpty(sub)) {
-        TP.boot.$displayStatus(sub);
-    }
+    TP.boot.$displayStatus(sub);
 
     image = info.image;
     if (TP.boot.$notEmpty(image)) {

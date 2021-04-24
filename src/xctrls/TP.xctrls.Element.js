@@ -20,12 +20,6 @@ TP.dom.UIElementNode.defineSubtype('xctrls.Element');
 //  concrete types, so we don't allow instance creation
 TP.xctrls.Element.isAbstract(true);
 
-//  This type is used as a general type for 'xctrls' elements that might not
-//  have a concrete type since they are really just placeholders (like
-//  xctrls:value). Since xctrls doesn't have a fixed schema like some of the
-//  other markup language we support (XHTML, SVG, XMPP), this is ok. Therefore,
-//  we don't mark it as abstract.
-
 TP.xctrls.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.xctrls.Element.Type.resolveTrait(
@@ -43,10 +37,6 @@ TP.xctrls.Element.Inst.resolveTraits(
 //  A TP.core.Hash of 'required attributes' that should be populated on all
 //  new instances of the tag.
 TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
-
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
 
 TP.xctrls.Element.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac(
@@ -168,25 +158,6 @@ function(aRequest) {
     aRequest.complete(elem);
 
     return;
-});
-
-//  ------------------------------------------------------------------------
-//  Tag Phase Support
-//  ------------------------------------------------------------------------
-
-TP.xctrls.Element.Type.defineMethod('shouldWrapACPOutput',
-function() {
-
-    /**
-     * @method shouldWrapACPOutput
-     * @summary Whether or not we should wrap ACP expression output in an XHTML
-     *     span element. The default is true, but some subtypes that allow ACP
-     *     in their embedded templates might choose to not generate these
-     *     wrapper spans.
-     * @returns {Boolean} Whether or not to wrap it.
-     */
-
-    return false;
 });
 
 //  ------------------------------------------------------------------------

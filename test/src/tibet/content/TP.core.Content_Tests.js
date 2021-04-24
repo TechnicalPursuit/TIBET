@@ -1544,9 +1544,7 @@ function() {
 
         //  Ensure that the last name is correct
         results = xmlPath1.executeGet(modelObj);
-        test.assert.isArray(results);
-        test.assert.isSizeOf(results, 1);
-        test.assert.isElement(results.at(0));
+        test.assert.isElement(results);
     });
 
     //  ---
@@ -1623,8 +1621,7 @@ function() {
 
         //  Ensure that the last name is correct
         results = xmlPath7.executeGet(modelObj);
-        test.assert.isArray(results);
-        test.assert.isSizeOf(results, 0);
+        test.assert.isNull(results);
     });
 
     //  ---
@@ -1697,9 +1694,7 @@ function() {
 
         //  Ensure that the last name is correct
         results = jsonPath1.executeGet(modelObj);
-        test.assert.isArray(results);
-        test.assert.isSizeOf(results, 1);
-        test.assert.isString(results.at(0));
+        test.assert.isString(results);
     });
 
     //  ---
@@ -1776,8 +1771,7 @@ function() {
 
         //  Ensure that the last name is correct
         results = jsonPath7.executeGet(modelObj);
-        test.assert.isArray(results);
-        test.assert.isSizeOf(results, 0);
+        test.assert.isNull(results);
     });
 
     //  ---

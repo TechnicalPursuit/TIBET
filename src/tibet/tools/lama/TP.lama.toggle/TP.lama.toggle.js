@@ -25,7 +25,7 @@ function(aRequest) {
 
     var elem;
 
-    if (!TP.sys.cfg('lama.show_toggle')) {
+    if (!TP.sys.cfg('lama.show_toggle') || !TP.sys.cfg('lama.enabled')) {
 
         if (!TP.isElement(elem = aRequest.at('node'))) {
             return;
