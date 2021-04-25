@@ -111,6 +111,7 @@ configure = function() {
 
         inDeveloperMode,
 
+        crossorigin,
         scraping;
 
     //  Slice off first "arg" since it's the Electron executable.
@@ -255,21 +256,26 @@ configure = function() {
 
     //  ---
 
-    //  If we're setting this app up to do 'web scraping', set that flag here.
-    //  This will affect other things like the command line switches that we
-    //  set.
-    scraping = pkg.getcfg('electron.scraping');
-    if (!scraping) {
-        scraping = false;
-    }
+    //  Track whether we're 'going cross origin' on network requests. This will
+    //  affect other things like the command line switches that we set. This is
+    //  defaulted to 'true', since TIBET application that do not access the
+    //  Internet are rare.
+    crossorigin = pkg.getcfg('electron.crossorigin', true);
+    opts.crossorigin = crossorigin;
+
+    //  Also, track whether we're 'scraping' content across iframes from other
+    //  websites. This is rare, so we default this to 'false'.
+    scraping = pkg.getcfg('electron.scraping', false);
     opts.scraping = scraping;
 
-    /*
-     * If we're scraping, add a command line switch (to command line of the
-     * embedded Chrome engine) to bypass Chrome's site isolation testing.
-     */
-    if (scraping) {
+    //  If crossorigin OR scraping is true, add command line switches (to
+    //  command line of the embedded Chrome engine) to bypass Chrome's site
+    //  isolation testing and web security. For Chrome 78ish or above, you also
+    //  need to specify a temporary directory as the user data directory.
+    if (crossorigin || scraping) {
         app.commandLine.appendSwitch('disable-site-isolation-trials');
+        app.commandLine.appendSwitch('disable-web-security');
+        app.commandLine.appendSwitch('user-data-dir=' + sh.tempdir());
     }
 
     //  ---
