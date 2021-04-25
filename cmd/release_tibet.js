@@ -168,7 +168,7 @@ Cmd.prototype.execute = async function() {
      *      git commit -am "Update the version to: <newversion>"
      *      git push
      *      tibet release
-     *      tibet checkout <targetbranch>
+     *      git checkout <targetbranch>
      *      tibet deploy npm
      *      tibet deploy dockerhub '{
      *          "projectname":"tibet",
@@ -186,7 +186,7 @@ Cmd.prototype.execute = async function() {
      *              "technicalpursuit/tibet:" + meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch
      *          ]
      *          }'
-     *      tibet checkout <sourcebranch>
+     *      git checkout <sourcebranch>
     */
 
     if (!CLI.isTrue(this.options.major) &&
