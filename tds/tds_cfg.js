@@ -175,7 +175,7 @@
         setcfg('tds.connection_timeout', 15 * 60 * 1000);
 
         //  How long before process.exit after a shutdown request.
-        setcfg('tds.shutdown_timeout', 3000);
+        setcfg('tds.shutdown_timeout', 1000);
 
         //  For shutdown processing how long to timeout connections?
         setcfg('tds.shutdown_connections', 100);
