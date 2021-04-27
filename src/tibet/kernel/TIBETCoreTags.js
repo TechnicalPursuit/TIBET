@@ -1876,59 +1876,6 @@ function(aSignal) {
     return this;
 });
 
-//  ------------------------------------------------------------------------
-
-TP.tag.ActionTag.Inst.defineMethod('getOutermostAction',
-function() {
-
-    /**
-     * @method getOutermostAction
-     * @summary Returns the outermost action tag, either the receiver if it is
-     *     standalone or a '<tsh:script>' or other action element.
-     * @description In addition to tsh:script tags, we also allow action tags as
-     *     children of ev:listeners and in that case we also consider them
-     *     "nested" rather than top-most actions.
-     * @returns {TP.tag.ActionTag} The outermost action tag.
-     */
-
-    var elem,
-        retVal,
-
-        tpElem;
-
-    elem = this.getNativeNode();
-
-    /* eslint-disable consistent-this */
-    retVal = this;
-    /* eslint-enable consistent-this */
-
-    while (TP.isElement(elem = elem.parentNode)) {
-        tpElem = TP.wrap(elem);
-
-        if (!TP.isKindOf(tpElem, TP.tag.ActionTag)) {
-            break;
-        }
-
-        retVal = tpElem;
-    }
-
-    return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tag.ActionTag.Inst.defineMethod('isOutermostAction',
-function() {
-
-    /**
-     * @method isOutermostAction
-     * @summary Returns true if the receiver is the outermost action tag.
-     * @returns {Boolean} True if the receiver is the top-most action tag.
-     */
-
-    return this.getOutermostAction() === this;
-});
-
 //  ========================================================================
 //  TP.dom.PipeSegmentElementNode
 //  ========================================================================
