@@ -32,8 +32,6 @@
             menuTemplateFromMenu,
             menuTemplateFromAppMenu,
 
-            eventNameToHandlerMap,
-
             getDescriptorForId,
             getDescriptorIndexForId,
 
@@ -120,6 +118,7 @@
 
                 //  Copy over all of the slot names as defined above from the
                 //  menu item structure to the template.
+                /* eslint-disable no-loop-func */
                 menuTemplateSlotNames.forEach(
                     function(aSlotName) {
                         var val;
@@ -129,25 +128,24 @@
                             templateItem[aSlotName] = val;
                         }
                     });
+                /* eslint-enable no-loop-func */
 
                 //  If there is no role, then set up a 'click' handler that will
                 //  dispatch events, either into the main process side or the
                 //  TIBET side, depending on the entry prefix.
                 if (!menuItem.role) {
                     templateItem.click =
-                        function(menuItem, browserWindow, event) {
+                        function(targetItem, browserWindow, event) {
                             var eventName,
                                 eventArgs,
 
-                                mainContents,
-
-                                handler;
+                                mainContents;
 
                             //  eventInfo: ['main/TIBET-Show-Devtools']
                             //  eventInfo: ['TIBET/TP.sig.CheckForUpdate', false]
 
-                            eventName = menuItem.eventInfo[0];
-                            eventArgs = menuItem.eventInfo.slice(1);
+                            eventName = targetItem.eventInfo[0];
+                            eventArgs = targetItem.eventInfo.slice(1);
 
                             if (eventName.startsWith('main')) {
                                 //  Make sure to slice off the slash
@@ -207,8 +205,11 @@
             for (i = 0; i < mainMenu.items.length; i++) {
                 item = mainMenu.items[i];
                 menuTemplate = menuTemplateFromMenu(item.submenu);
-                mainMenuTemplate.push(
-                    {label: item.label, id: item.id, submenu: menuTemplate});
+                mainMenuTemplate.push({
+                    label: item.label,
+                    id: item.id,
+                    submenu: menuTemplate
+                });
             }
 
             return mainMenuTemplate;
@@ -231,7 +232,7 @@
                 val;
 
             for (i = 0; i < menuTemplate.length; i++) {
-                if (menuTemplate[i].id == id) {
+                if (menuTemplate[i].id === id) {
                     return menuTemplate[i];
                 }
                 if (menuTemplate[i].submenu) {
@@ -263,7 +264,7 @@
                 val;
 
             for (i = 0; i < menuTemplate.length; i++) {
-                if (menuTemplate[i].id == id) {
+                if (menuTemplate[i].id === id) {
                     return [menuTemplate, i];
                 }
                 if (menuTemplate[i].submenu) {
