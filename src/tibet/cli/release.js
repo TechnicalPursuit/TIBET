@@ -123,10 +123,7 @@ Cmd.prototype.prereqs = function() {
  */
 Cmd.prototype.execute = function() {
     // There are phases due to async breaks in the process. Kick off the first.
-    this.phaseOne();
-
-    //  Not the final status, but 0 keeps the process running.
-    return 0;
+    return this.phaseOne();
 };
 
 
@@ -239,7 +236,7 @@ Cmd.prototype.phaseOne = function() {
         if (source.ptag !== current.ptag) {
             this.warn('Version ptag not current. Use tibet version to set it.');
             this.log('Release cancelled.');
-            return;
+            return 1;
         }
 
         //  If there's at least one tag there'll be a count since that tag.
@@ -249,7 +246,7 @@ Cmd.prototype.phaseOne = function() {
                 this.warn(
                     'Version commit count off. Use tibet version to set it.');
                 this.log('Release cancelled.');
-                return;
+                return 1;
             }
         }
 
@@ -257,7 +254,7 @@ Cmd.prototype.phaseOne = function() {
         if (source.phash !== current.phash) {
             this.warn('Version phash not current. Use tibet version to set it.');
             this.log('Release cancelled.');
-            return;
+            return 1;
         }
     }
 
@@ -270,10 +267,10 @@ Cmd.prototype.phaseOne = function() {
 
     if (!/^y/i.test(result)) {
         this.log('Release cancelled.');
-        return;
+        return 0;
     }
 
-    this.phaseTwo(source);
+    return this.phaseTwo(source);
 };
 
 
@@ -285,7 +282,6 @@ Cmd.prototype.phaseOne = function() {
 Cmd.prototype.phaseTwo = function(source) {
     var cmd,
         release,
-        result,
         content;
 
     //  ---
@@ -300,16 +296,17 @@ Cmd.prototype.phaseTwo = function(source) {
         release = this;
 
         CLI.sh.exec(cmd, function(code, stdout) {
+            var answer;
 
             if (code !== 0) {
-                result = release.prompt.question(
+                answer = release.prompt.question(
                     'tibet lint detected errors. Continue anyway?' +
                     ' Enter \'yes\' after inspection: ');
-                if (!/^y/i.test(result)) {
+                if (!/^y/i.test(answer)) {
                     release.log(
                         'Release cancelled. Revert any uncommitted' +
                         ' changes.');
-                    return;
+                    return code;
                 }
             }
 
@@ -317,27 +314,29 @@ Cmd.prototype.phaseTwo = function(source) {
             //  Run 'tibet test' to test the resulting package.
             //  ---
 
-            cmd = 'tibet test';
-
             if (release.options.test && !release.options.quick) {
+                cmd = 'tibet test';
                 CLI.sh.exec(cmd, function(code2, stdout2) {
+                    var answer2;
+
                     if (code2 !== 0) {
                         release.error(stdout2.trim());
-                        result = release.prompt.question(
+                        answer2 = release.prompt.question(
                             'tibet test detected errors. Continue anyway?' +
                             ' Enter \'yes\' after inspection: ');
-                        if (!/^y/i.test(result)) {
+                        if (!/^y/i.test(answer2)) {
                             release.log(
                                 'Release cancelled. Revert any uncommitted' +
                                 ' changes.');
-                            return;
+                            return 0;
                         }
                     }
 
-                    release.phaseThree({content: content, source: source});
+                    return release.phaseThree(
+                                    {content: content, source: source});
                 });
             } else {
-                release.phaseThree({content: content, source: source});
+                return release.phaseThree({content: content, source: source});
             }
         });
 
@@ -348,7 +347,7 @@ Cmd.prototype.phaseTwo = function(source) {
             this.warn('dry-run. bypassing \'tibet test\'');
         }
 
-        this.phaseThree({content: content, source: source});
+        return this.phaseThree({content: content, source: source});
     }
 };
 
@@ -412,7 +411,7 @@ Cmd.prototype.phaseThree = function(meta) {
         '? Enter \'yes\' after inspection: ');
     if (!/^y/i.test(result)) {
         this.log('Release cancelled. Revert uncommitted branch changes.');
-        return;
+        return 0;
     }
 
     commands.forEach(function(cmd) {
@@ -463,7 +462,7 @@ Cmd.prototype.phaseThree = function(meta) {
         '? Enter \'yes\' after inspection: ');
     if (!/^y/i.test(result)) {
         this.log('Release cancelled. Revert any uncommitted changes.');
-        return;
+        return 0;
     }
 
     commands.forEach(function(cmd) {
@@ -485,6 +484,7 @@ Cmd.prototype.phaseThree = function(meta) {
     //  At this point the source branch is updated, tagged, and pushed and the
     //  changes there have been merged into target, tagged, and pushed.
     this.info('Release complete.');
+    return 0;
 };
 
 
