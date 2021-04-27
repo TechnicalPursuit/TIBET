@@ -65,7 +65,9 @@ function(aRequest) {
     type = TP.elementGetAttribute(elem, 'type', true);
 
     switch (type) {
+
         case 'open':
+
             attrList = TP.ac('title', 'defaultPath', 'buttonLabel', 'filters',
                                 'properties');
             configPOJO = this.buildConfigObjectFromAttributes(elem, attrList);
@@ -82,9 +84,11 @@ function(aRequest) {
                         tpElem.setBoundValueIfBound(filePaths);
                     }
                 });
+
             break;
 
         case 'save':
+
             attrList = TP.ac('title', 'defaultPath', 'buttonLabel', 'filters',
                                 'properties');
             configPOJO = this.buildConfigObjectFromAttributes(elem, attrList);
@@ -101,6 +105,7 @@ function(aRequest) {
                         tpElem.setBoundValueIfBound(filePath);
                     }
                 });
+
             break;
 
         case 'error':
@@ -122,9 +127,11 @@ function(aRequest) {
 
             TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeErrorDialog',
                 configPOJO);
+
             break;
 
         default:
+
             attrList = TP.ac('title', 'type', 'defaultId');
             configPOJO = this.buildConfigObjectFromAttributes(elem, attrList);
 
@@ -167,6 +174,7 @@ function(aRequest) {
                         tpElem.setBoundValueIfBound(buttonIndex);
                     }
                 });
+
             break;
     }
 
