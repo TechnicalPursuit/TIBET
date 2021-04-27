@@ -813,6 +813,36 @@ CLI.escapeWhitespace = function(aString) {
 
 
 /**
+ * Exits the process 'soon', after it is given a chance to flush any output it
+ * may have.
+ * @param {Number} code Any return code to log to the console.
+ * @param {String} str Any message string to log to the console.
+ * @param {Number} opts Any logging options for logging the exit. Not currently
+ *     used.
+ * @returns {Boolean} True if the file exists.
+ */
+CLI.exitSoon = function(code, str, opts) {
+    setTimeout(() => {
+
+        if (str) {
+            CLI.system(str);
+            process.stdout.write(CLI.colorize(str, 'error') + '\n');
+
+            if (CLI.logger.flush) {
+                CLI.logger.flush(true);
+            }
+        }
+    }, CLI.getcfg('cli.shutdown_timeout'));
+
+    setTimeout(() => {
+        process.exit(code);
+    }, CLI.getcfg('cli.shutdown_timeout') + 100);
+
+    return;
+};
+
+
+/**
  * Verifies whether a particular file path exists.
  * @param {String} aPath A file path to be tested. May be virtual.
  * @returns {Boolean} True if the file exists.
@@ -1466,7 +1496,7 @@ CLI.inProject = function(CmdType) {
     //  If the package is null here it's usually a bad config file (tibet.json)
     //  etc. and we can't continue.
     if (!this._package) {
-        process.exit(1);
+        return CLI.exitSoon(1);
     }
 
     return this._package.inProject(silent);
@@ -1632,7 +1662,7 @@ CLI.notInitialized = function() {
     npmdir = this.expandPath('~npm_dir');
     if (!sh.test('-d', npmdir)) {
         this.error('Project missing dependencies. Run `tibet init` and retry.');
-        process.exit(1);
+        return CLI.exitSoon(1);
     } else {
         //  Otherwise, what (probably) happened is that they ran 'npm install'
         //  inside of their project and it unlinked TIBET (sigh). Tell them that
@@ -1652,7 +1682,7 @@ CLI.notInitialized = function() {
             }
 
             this.warn('TIBET relinked. Try command again.');
-            process.exit(1);
+            return CLI.exitSoon(1);
         }.bind(this));
     }
 };
@@ -1830,7 +1860,7 @@ CLI.execAsync = function(cmd, commandpath, params, interactive, stdoutcb,
 
                     //  The subprocess exited with a non-0 code. Kill ourself
                     //  too.
-                    process.exit(code);
+                    return CLI.exitSoon(code);
                 } else {
                     resolver(code);
                 }
@@ -1986,7 +2016,8 @@ CLI.handleError = function(e, phase, command, exit) {
 
     } finally {
         if (exit !== false) {
-            process.exit(1);
+            //  NB: We don't 'return' here since this is in a 'finally' block.
+            CLI.exitSoon(1);
         }
     }
 };
@@ -2027,7 +2058,7 @@ CLI.run = function(config) {
                 '..', '..', '..',
                 'bin', 'tibetinit.sh'));
         /* eslint-enable no-console */
-        process.exit(0);
+        return CLI.exitSoon(0);
     }
 
     //  Get color instance configured to support colorizing.
@@ -2059,7 +2090,7 @@ CLI.run = function(config) {
     // Don't run commands that are prefixed, they're considered 'cli internals'.
     if (command.charAt(0) === '_' && !this.options.force) {
         this.error('Cannot directly run private command: ' + command);
-        process.exit(1);
+        return CLI.exitSoon(1);
     }
 
     //  ---
@@ -2177,9 +2208,7 @@ CLI.runCommand = function(command, cmdPath) {
         result = cmd.run(argv);
         if (typeof result === 'number') {
             if (result !== 0) {
-                /* eslint-disable no-process-exit */
-                process.exit(result);
-                /* eslint-enable no-process-exit */
+                return CLI.exitSoon(result);
             }
         // } else {
         // TODO:    reactivate this after reviewing all commands/promises.
@@ -2188,15 +2217,11 @@ CLI.runCommand = function(command, cmdPath) {
             result.then(
                 function(val) {
                     if (typeof val === 'number') {
-                        /* eslint-disable no-process-exit */
-                        process.exit(val);
-                        /* eslint-enable no-process-exit */
+                        return CLI.exitSoon(val);
                     }
                 }).catch(function(err) {
                     if (typeof err === 'number') {
-                        /* eslint-disable no-process-exit */
-                        process.exit(err);
-                        /* eslint-enable no-process-exit */
+                        return CLI.exitSoon(err);
                     }
 
                     //  It got bad - real bad
@@ -2275,7 +2300,7 @@ CLI.runComplete = function() {
 
     this.log(list.join('\n'));
 
-    process.exit(0);
+    return CLI.exitSoon(0);
 };
 
 
@@ -2288,7 +2313,7 @@ CLI.runFallback = function(command) {
 
     if (!this.inProject() && !this.inLibrary()) {
         this.error('Command not found: ' + command + '.');
-        process.exit(1);
+        return CLI.exitSoon(1);
     }
 
     // If there's no node_modules in place (and hence no tibet, grunt, or gulp
@@ -2316,7 +2341,7 @@ CLI.runFallback = function(command) {
     }
 
     this.error('Command not found: ' + command + '.');
-    process.exit(1);
+    return CLI.exitSoon(1);
 };
 
 
@@ -2369,7 +2394,7 @@ CLI.runViaGrunt = function(command) {
     });
 
     child.on('exit', function(code) {
-        process.exit(code);
+        return CLI.exitSoon(code);
     });
 
     return;
@@ -2416,7 +2441,7 @@ CLI.runViaGulp = function(command) {
     });
 
     child.on('exit', function(code) {
-        process.exit(code);
+        return CLI.exitSoon(code);
     });
 
     return;

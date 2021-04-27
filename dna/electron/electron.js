@@ -334,9 +334,7 @@ process.on('uncaughtException', function(err) {
     if (app) {
         app.exit(code);
     } else {
-        /* eslint-disable no-process-exit */
-        process.exit(code);
-        /* eslint-enable no-process-exit */
+        return CLI.exitSoon(code);
     }
 });
 
