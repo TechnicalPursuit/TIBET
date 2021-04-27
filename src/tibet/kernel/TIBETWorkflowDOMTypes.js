@@ -2563,8 +2563,6 @@ function(aNode) {
         return TP.ac();
     }
 
-    //  We're only interested in elements that have attributes in the 'on:'
-    //  namespace
     query = 'descendant-or-self::*' +
             '[' +
             'not(ancestor::*[@tibet:no-awaken])' +
@@ -2638,8 +2636,6 @@ function(aNode) {
         return TP.ac();
     }
 
-    //  We're only interested in elements that have attributes in the 'on:'
-    //  namespace
     query = 'descendant-or-self::*' +
             '[' +
             'not(ancestor::*[@tibet:no-awaken]) and ' +
@@ -2955,8 +2951,6 @@ function(aNode) {
         return TP.ac();
     }
 
-    //  We're only interested in elements that have attributes in the 'on:'
-    //  namespace
     query = 'descendant-or-self::*' +
             '[' +
             'not(ancestor::*[@tibet:no-awaken])' +
@@ -3030,8 +3024,6 @@ function(aNode) {
         return TP.ac();
     }
 
-    //  We're only interested in elements that have attributes in the 'on:'
-    //  namespace
     query = 'descendant-or-self::*' +
             '[' +
             'not(ancestor::*[@tibet:no-awaken])' +
@@ -3288,8 +3280,6 @@ function(aNode) {
         return TP.ac();
     }
 
-    //  We're only interested in elements that have attributes in the 'on:'
-    //  namespace
     query = 'descendant-or-self::*' +
             '[' +
             'not(ancestor::*[@tibet:no-awaken])' +
@@ -3604,8 +3594,6 @@ function(aNode) {
         return TP.ac();
     }
 
-    //  We're only interested in elements that have attributes in the 'on:'
-    //  namespace
     query = 'descendant-or-self::*' +
             '[' +
             'not(ancestor::*[@tibet:no-awaken])' +
@@ -3679,8 +3667,6 @@ function(aNode) {
         return TP.ac();
     }
 
-    //  We're only interested in elements that have attributes in the 'on:'
-    //  namespace
     query = 'descendant-or-self::*' +
             '[' +
             'not(ancestor::*[@tibet:no-awaken])' +
