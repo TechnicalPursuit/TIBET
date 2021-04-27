@@ -428,6 +428,8 @@ Cmd.prototype.phaseThree = function(meta) {
                 //  nothing to commit.
                 if (/nothing to commit/i.test(e.message)) {
                     release.info(e.message.trim());
+                } else {
+                    throw e;
                 }
             }
         }
