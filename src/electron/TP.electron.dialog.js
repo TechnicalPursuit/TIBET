@@ -16,6 +16,10 @@
 
 TP.electron.ActionTag.defineSubtype('electron.dialog');
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.electron.dialog.defineAttribute('styleURI', TP.NO_RESULT);
+TP.electron.dialog.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------

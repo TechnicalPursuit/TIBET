@@ -26,6 +26,10 @@ TP.electron.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.dom.UIElementNode);
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.electron.Element.defineAttribute('styleURI', TP.NO_RESULT);
+TP.electron.Element.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------

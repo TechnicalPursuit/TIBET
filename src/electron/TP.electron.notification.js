@@ -16,6 +16,10 @@
 
 TP.electron.ActionTag.defineSubtype('electron.notification');
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.electron.notification.defineAttribute('styleURI', TP.NO_RESULT);
+TP.electron.notification.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
