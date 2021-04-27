@@ -2050,15 +2050,6 @@ CLI.run = function(config) {
         // NB: don't change these to value tests, we just want existence.
         if (this.options.version) {
             command = 'version';
-        } else if (this.options.initpath) {
-            this.log(
-                this.joinPaths(__dirname,
-                    '..', '..', '..',
-                    'bin', 'tibetinit.sh'),
-                'no-color');    //  NOTE we turn off any colorizing since this
-                                //  is often invoked by the shell autocomplete
-                                //  configuration scripts which parse output.
-            process.exit(0);
         } else {
             this.runHelp('tibet');
             return;
