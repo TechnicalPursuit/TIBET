@@ -24,6 +24,78 @@
         },
         "plugins": {
             "core": ["profile", "window", "menu", "updater", "watch", "devtools"]
-        }
+        },
+        "menu": [{
+            "label": "MY_NAME",
+            "id": "about",
+            "submenu": [{
+                "role": "about"
+            }, {
+                "id": "version",
+                "label": "MY_VERSION",
+                "enabled": false
+            }, {
+                "id": "updater",
+                "label": "Check for updates",
+                "enabled": false,
+                "eventInfo": ["TIBET/TP.sig.CheckForUpdate", false]
+            }, {
+                "id": "devtools",
+                "label": "Launch DevTools",
+                "accelerator": "CommandOrControl+Alt+i",
+                "eventInfo": ["main/TIBET-Show-Devtools"]
+            }, {
+                "id": "lama",
+                "label": "Launch Devtools on Devtools",
+                "accelerator": "CommandOrControl+Alt+Shift+i",
+                "eventInfo": ["main/TIBET-Show-Devtools-On-Devtools"]
+            }, {
+                "type": "separator"
+            }, {
+                "role": "services"
+            }, {
+                "type": "separator"
+            }, {
+                "role": "hide"
+            }, {
+                "role": "hideothers"
+            }, {
+                "role": "unhide"
+            }, {
+                "type": "separator"
+            }, {
+                "role": "quit"
+            }]
+        }, {
+            "label": "Edit",
+            "id": "edit",
+            "submenu": [{
+                "label": "Undo",
+                "accelerator": "CmdOrCtrl+Z",
+                "selector": "undo:"
+            }, {
+                "label": "Redo",
+                "accelerator": "Shift+CmdOrCtrl+Z",
+                "selector": "redo:"
+            }, {
+                "type": "separator"
+            }, {
+                "label": "Cut",
+                "accelerator": "CmdOrCtrl+X",
+                "selector": "cut:"
+            }, {
+                "label": "Copy",
+                "accelerator": "CmdOrCtrl+C",
+                "selector": "copy:"
+            }, {
+                "label": "Paste",
+                "accelerator": "CmdOrCtrl+V",
+                "selector": "paste:"
+            }, {
+                "label": "Select All",
+                "accelerator": "CmdOrCtrl+A",
+                "selector": "selectAll:"
+            }]
+        }]
     }
 }
