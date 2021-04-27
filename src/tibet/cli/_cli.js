@@ -2198,11 +2198,13 @@ CLI.runCommand = function(command, cmdPath) {
                         process.exit(err);
                         /* eslint-enable no-process-exit */
                     }
+
                     //  It got bad - real bad
-                    process.exit(127);
+                    return CLI.handleError(err, 'processing', command);
                 });
         }
     } catch (e) {
+        //  It got bad - real bad
         return this.handleError(e, 'processing', command);
     }
 };
