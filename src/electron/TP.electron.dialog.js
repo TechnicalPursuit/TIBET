@@ -55,7 +55,11 @@ function(aRequest) {
         labelTPElem,
         buttonTPElems;
 
-    elem = aRequest.at('cmdNode');
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
     tpElem = TP.wrap(elem);
 
     type = TP.elementGetAttribute(elem, 'type', true);

@@ -45,7 +45,11 @@ function(aRequest) {
 
         bodyTPElem;
 
-    elem = aRequest.at('cmdNode');
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
     tpElem = TP.wrap(elem);
 
     attrList = TP.ac('title');
