@@ -228,47 +228,86 @@ function() {
             msg = 'Initializing user...';
 
             if (TP.sys.cfg('boot.use_login')) {
-                //  User should be logged in. We want to load/generate a vcard
-                //  for them if possible.
-                uri = TP.sys.cfg('tds.vcard.uri');
-                if (TP.isEmpty(uri)) {
-                    TP.core.User.getRealUser();
-                } else {
-                    uri = TP.uriExpandPath(uri);
-                    req = TP.request('uri', uri, 'async', true);
-                    req.defineHandler('IOSucceeded',
-                        function(aSignal) {
-                            var result;
+                if (TP.sys.cfg('boot.context') === 'electron') {
+                    /*
+                     * TODO: The Electron login process
+                     */
+                    /*
+                    return TP.extern.Promise.construct(
+                        function(resolver, rejector) {
+                            var success;
+                            success = function(aSignal) {
+                                var result;
 
-                            result = aSignal.getResult();
-                            if (TP.isDocument(result)) {
+                                success.ignore(
+                                    TP.core.ElectronMain,
+                                    'TP.sig.UserAuthenticationData');
+
+                                result = TP.doc(aSignal.at('data'));
                                 TP.ietf.vcard.initVCards(result);
                                 TP.core.User.construct(
-                                    TP.nodeEvaluateXPath(result,
-                                        'string(//$def:fn/$def:text/text())'));
-                            } else {
-                                TP.ifWarn() ?
-                                    TP.warn('Invalid or missing user' +
+                                    TP.core.User.extractFullName(result));
+
+                                resolver();
+                            };
+
+                            success.observe(
+                                    TP.core.ElectronMain,
+                                    'TP.sig.UserAuthenticationData');
+
+                            TP.electron.ElectronMain.signalMain(
+                                    'TP.sig.GetUserAuthenticationData');
+                        });
+                    */
+
+                    //  For now, we do the standard thing that we do for
+                    //  no-login applications.
+                    TP.core.User.getRealUser();
+                    TP.core.User.setupUserResources();
+                } else {
+                    //  User should be logged in. We want to load/generate a
+                    //  vcard for them if possible.
+                    uri = TP.sys.cfg('tds.vcard.uri');
+                    if (TP.isEmpty(uri)) {
+                        TP.core.User.getRealUser();
+                        TP.core.User.setupUserResources();
+                    } else {
+                        uri = TP.uriExpandPath(uri);
+                        req = TP.request('uri', uri, 'async', true);
+                        req.defineHandler('IOSucceeded',
+                            function(aSignal) {
+                                var result;
+
+                                result = aSignal.getResult();
+                                if (TP.isDocument(result)) {
+                                    TP.ietf.vcard.initVCards(result);
+                                    TP.core.User.construct(
+                                        TP.core.User.extractFullName(result));
+                                } else {
+                                    TP.ifWarn() ?
+                                        TP.warn('Invalid or missing user' +
                                                                 ' vcard.') : 0;
+                                    TP.core.User.getRealUser();
+                                }
+
+                                TP.core.User.setupUserResources();
+                            });
+                        req.defineHandler('IOFailed',
+                            function(aSignal) {
+                                TP.ifWarn() ?
+                                        TP.warn('Invalid or missing user' +
+                                                                ' vcard.') : 0;
+
                                 TP.core.User.getRealUser();
-                            }
+                                TP.core.User.setupUserResources();
+                            });
+                        TP.httpGet(uri, req);
 
-                            TP.core.User.setupUserResources();
-                        });
-                    req.defineHandler('IOFailed',
-                        function(aSignal) {
-                            TP.ifWarn() ?
-                                TP.warn('Invalid or missing user vcard.') : 0;
-
-                            TP.core.User.getRealUser();
-                            TP.core.User.setupUserResources();
-                        });
-                    TP.httpGet(uri, req);
-
-                    //  Return the request's response as a Promise. This will
-                    //  cause the request to succeed or fail before the rest of
-                    //  the Promise chain can proceed.
-                    return req.getResponse().asPromise();
+                        //  Return the request's response as a Promise. This
+                        //  will cause the request to succeed or fail before
+                        //  therest of the Promise chain can proceed.
+                        return req.getResponse().asPromise();
+                    }
                 }
             } else {
                 //  Not a login-restricted application. Force construction of
