@@ -1236,6 +1236,9 @@
     //  tws command defaults
     TP.sys.setcfg('cli.tws.confirm', true);         //  should tws confirm db?
 
+    //  How long before process.exit after a shutdown request.
+    TP.sys.setcfg('cli.shutdown_timeout', 1000);
+
     //  ---
     //  content mgmt
     //  ---

@@ -2220,6 +2220,44 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.Node.Inst.defineMethod('getOutermostOfSameKind',
+function(aType) {
+
+    /**
+     * @method getOutermostOfSameKind
+     * @summary Returns the outermost Node (from the receiver) whose type
+     *     matches the supplied type, either the receiver if it is standalone or
+     *     a parent node whose type matched the supplied type.
+     * @param {TP.meta.dom.Node} aType A type object.
+     * @returns {TP.dom.Node} The outermost Node matching the supplied type.
+     */
+
+    var node,
+        retVal,
+
+        tpElem;
+
+    node = this.getNativeNode();
+
+    /* eslint-disable consistent-this */
+    retVal = this;
+    /* eslint-enable consistent-this */
+
+    while (TP.isElement(node = node.parentNode)) {
+        tpElem = TP.wrap(node);
+
+        if (!TP.isKindOf(tpElem, aType)) {
+            break;
+        }
+
+        retVal = tpElem;
+    }
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.Node.Inst.defineMethod('getMIMEType',
 function() {
 
@@ -2622,6 +2660,22 @@ function() {
      */
 
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.Node.Inst.defineMethod('isOutermostOfSameKind',
+function() {
+
+    /**
+     * @method isOutermostOfSameKind
+     * @summary Returns true if the receiver is the outermost Node whose type
+     *     matches its own type.
+     * @returns {Boolean} True if the receiver is the top-most Node of the same
+     *     kind.
+     */
+
+    return this.getOutermostOfSameKind(this.getType()) === this;
 });
 
 //  ------------------------------------------------------------------------

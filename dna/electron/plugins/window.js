@@ -196,7 +196,7 @@
                     backgroundColor: pkg.getcfg('electron.bgcolor', '#171717'),
                     webPreferences: {
                         preload: CLI.joinPaths(appdir, './preload.js'),
-                        webSecurity: options.scraping ? false : true,
+                        webSecurity: true,
                         nodeIntegration: false,
                         enableRemoteModule: false,
                         contextIsolation: true,

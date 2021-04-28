@@ -1002,12 +1002,11 @@ Cmd.prototype.processXmlResource = function(options) {
  */
 Cmd.prototype.close = function(code, browser) {
 
-    /* eslint-disable no-process-exit */
     if (code !== undefined && code !== 0) {
         if (browser && browser.close) {
             browser.close();
         }
-        process.exit(code);
+        return CLI.exitSoon(code);
     }
 
     this.processResources().then(function(exit) {
@@ -1015,11 +1014,11 @@ Cmd.prototype.close = function(code, browser) {
             browser.close();
         }
         if (CLI.isValid(exit)) {
-            process.exit(exit);
+            return CLI.exitSoon(exit);
         }
-        process.exit(0);
+        return CLI.exitSoon(0);
     }).catch(function(err) {
-        process.exit(-1);
+        return CLI.exitSoon(-1);
     });
 };
 

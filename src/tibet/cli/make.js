@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/* eslint no-process-exit:0, no-unused-vars:0, indent:0, consistent-this:0 */
+/* eslint no-unused-vars:0, indent:0, consistent-this:0 */
 
 (function() {
 
@@ -463,7 +463,7 @@ Cmd.$prepTargets = function(cmd) {
                         'Error: Circular invocation of `' + name + '`');
                     // No easy way to clean up all the potential promises,
                     // timers, etc. so just exit directly.
-                    process.exit(1);
+                    return CLI.exitSoon(1);
                 } else {
                    task.$$active = true;
                 }
@@ -691,7 +691,7 @@ Cmd.prototype.execute = function() {
     targets = Cmd.getTargets();
     if (CLI.notValid(targets)) {
         // Errors are reported by the getTargets call, just exit.
-        process.exit(1);
+        return CLI.exitSoon(1);
     }
 
     if (this.options.list) {
@@ -727,7 +727,7 @@ Cmd.prototype.execute = function() {
 
     if (!Cmd.hasTarget(command)) {
         this.error('TIBET make target not found: ' + command);
-        process.exit(1);
+        return CLI.exitSoon(1);
     }
 
     //  Ensure targets are prepped so they're all promisified.
@@ -764,7 +764,7 @@ Cmd.prototype.execute = function() {
                 /* eslint-enable no-extra-parens */
                 cmd.system(msg);
 
-                process.exit(0);
+                return CLI.exitSoon(0);
             },
             function(err) {
                 var msg;
@@ -789,7 +789,7 @@ Cmd.prototype.execute = function() {
                     cmd.error(err.stack);
                 }
 
-                process.exit(1);
+                return CLI.exitSoon(1);
 
             }).catch(function(err) {
                 var msg;
@@ -804,7 +804,7 @@ Cmd.prototype.execute = function() {
                     cmd.error(err.stack);
                 }
 
-                process.exit(1);
+                return CLI.exitSoon(1);
             });
 
     } catch (e) {

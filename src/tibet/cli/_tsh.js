@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0, consistent-this:0, no-process-exit: 0, no-console: 0 */
+/* eslint indent:0, consistent-this:0, no-console: 0 */
 
 (function() {
 
@@ -363,17 +363,17 @@ Cmd.prototype.execute = function() {
 
         puppetPage.on('close', function(evt) {
             cmd.stdout(evt);
-            process.exit(0);
+            return CLI.exitSoon(0);
         });
 
         puppetPage.on('error', function(err) {
             cmd.stderr(err);
-            process.exit(1);
+            return CLI.exitSoon(1);
         });
 
         puppetPage.on('pageerror', function(err) {
             cmd.stderr(err);
-            process.exit(1);
+            return CLI.exitSoon(1);
         });
 
         puppetPage.on('console', function(msg) {
@@ -949,12 +949,10 @@ Cmd.prototype.prereqs = function() {
  * during the stdout call.
  */
 Cmd.prototype.close = function(code, browser) {
-    /* eslint-disable no-process-exit */
     if (CLI.isValid(browser) && browser.close) {
         browser.close();
     }
-    process.exit(code);
-    /* eslint-enable no-process-exit */
+    return CLI.exitSoon(code);
 };
 
 

@@ -221,9 +221,7 @@ Cmd.prototype.executeViaKarma = function() {
             cmd.error(msg);
         }
 
-        /* eslint-disable no-process-exit */
-        process.exit(code);
-        /* eslint-enable no-process-exit */
+        return CLI.exitSoon(code);
     });
 
     return 0;

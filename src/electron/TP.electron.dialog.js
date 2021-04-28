@@ -16,6 +16,10 @@
 
 TP.electron.ActionTag.defineSubtype('electron.dialog');
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.electron.dialog.defineAttribute('styleURI', TP.NO_RESULT);
+TP.electron.dialog.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
@@ -51,13 +55,19 @@ function(aRequest) {
         labelTPElem,
         buttonTPElems;
 
-    elem = aRequest.at('cmdNode');
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
     tpElem = TP.wrap(elem);
 
     type = TP.elementGetAttribute(elem, 'type', true);
 
     switch (type) {
+
         case 'open':
+
             attrList = TP.ac('title', 'defaultPath', 'buttonLabel', 'filters',
                                 'properties');
             configPOJO = this.buildConfigObjectFromAttributes(elem, attrList);
@@ -74,9 +84,11 @@ function(aRequest) {
                         tpElem.setBoundValueIfBound(filePaths);
                     }
                 });
+
             break;
 
         case 'save':
+
             attrList = TP.ac('title', 'defaultPath', 'buttonLabel', 'filters',
                                 'properties');
             configPOJO = this.buildConfigObjectFromAttributes(elem, attrList);
@@ -93,6 +105,7 @@ function(aRequest) {
                         tpElem.setBoundValueIfBound(filePath);
                     }
                 });
+
             break;
 
         case 'error':
@@ -114,9 +127,11 @@ function(aRequest) {
 
             TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeErrorDialog',
                 configPOJO);
+
             break;
 
         default:
+
             attrList = TP.ac('title', 'type', 'defaultId');
             configPOJO = this.buildConfigObjectFromAttributes(elem, attrList);
 
@@ -159,6 +174,7 @@ function(aRequest) {
                         tpElem.setBoundValueIfBound(buttonIndex);
                     }
                 });
+
             break;
     }
 

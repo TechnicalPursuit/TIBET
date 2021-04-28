@@ -134,7 +134,7 @@ function(aRequest) {
     //  Dispatch the signal
     //  ---
 
-    outermostAction = TP.wrap(elem).getOutermostAction();
+    outermostAction = TP.wrap(elem).getOutermostOfSameKind(TP.tag.ActionTag);
 
     //  If the firing policy is either TP.DOM_FIRING or TP.RESPONDER_FIRING,
     //  then we need to dispatch the signal *from it's parent* - otherwise, the
