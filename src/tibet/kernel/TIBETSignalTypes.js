@@ -1702,6 +1702,8 @@ TP.sig.ResponderSignal.defineSubtype('ApplicationSignal');
 TP.sig.ApplicationSignal.shouldUseSingleton(true);
 
 TP.sig.ApplicationSignal.defineSubtype('AppWillInitialize');
+TP.sig.AppWillInitialize.Type.defineAttribute('cancelable', true);
+
 TP.sig.ApplicationSignal.defineSubtype('AppInitialize');
 TP.sig.ApplicationSignal.defineSubtype('AppDidInitialize');
 

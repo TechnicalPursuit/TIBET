@@ -160,7 +160,9 @@ function() {
      * @returns {TP.sys} The receiver.
      */
 
-    var locale,
+    var sig,
+
+        locale,
         type,
         msg,
         name,
@@ -178,7 +180,16 @@ function() {
     }
 
     //  Final signal before UI begins processing.
-    TP.signal('TP.sys', 'AppWillInitialize');
+
+    //  If this signal is canceled, that means a handler didn't want to start
+    //  the system and so we'll call TP.sys.isExiting() and throw an Error.
+    sig = TP.signal('TP.sys', 'AppWillInitialize');
+    if (sig.shouldPrevent()) {
+
+        TP.sys.isExiting(true);
+
+        throw new Error('System abended');
+    }
 
     TP.boot.$setStage('initializing');
 
