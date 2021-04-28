@@ -115,6 +115,8 @@ Cmd.prototype.execute = async function() {
         gitpath,
         tibetpath,
 
+        code,
+
         result,
 
         branchCmd,
@@ -260,7 +262,10 @@ Cmd.prototype.execute = async function() {
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
     } else {
-        await CLI.execAsync(this, tibetpath, execArgs);
+        code = await CLI.execAsync(this, tibetpath, execArgs);
+        if (code !== 0) {
+            return CLI.exitSoon(code);
+        }
     }
 
 
@@ -292,7 +297,10 @@ Cmd.prototype.execute = async function() {
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
     } else {
-        await CLI.execAsync(this, tibetpath, execArgs);
+        code = await CLI.execAsync(this, tibetpath, execArgs);
+        if (code !== 0) {
+            return CLI.exitSoon(code);
+        }
     }
 
 
@@ -329,7 +337,10 @@ Cmd.prototype.execute = async function() {
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
     } else {
-        await CLI.execAsync(this, tibetpath, execArgs);
+        code = await CLI.execAsync(this, tibetpath, execArgs);
+        if (code !== 0) {
+            return CLI.exitSoon(code);
+        }
     }
 
 
@@ -364,7 +375,10 @@ Cmd.prototype.execute = async function() {
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
     } else {
-        await CLI.execAsync(this, gitpath, execArgs);
+        code = await CLI.execAsync(this, gitpath, execArgs);
+        if (code !== 0) {
+            return CLI.exitSoon(code);
+        }
     }
 
 
@@ -381,7 +395,10 @@ Cmd.prototype.execute = async function() {
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
     } else {
-        await CLI.execAsync(this, gitpath, execArgs);
+        code = await CLI.execAsync(this, gitpath, execArgs);
+        if (code !== 0) {
+            return CLI.exitSoon(code);
+        }
     }
 
 
@@ -398,7 +415,10 @@ Cmd.prototype.execute = async function() {
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
     } else {
-        await CLI.execAsync(this, tibetpath, execArgs);
+        code = await CLI.execAsync(this, tibetpath, execArgs);
+        if (code !== 0) {
+            return CLI.exitSoon(code);
+        }
     }
 
 
@@ -418,7 +438,10 @@ Cmd.prototype.execute = async function() {
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
     } else {
-        await CLI.execAsync(this, gitpath, execArgs);
+        code = await CLI.execAsync(this, gitpath, execArgs);
+        if (code !== 0) {
+            return CLI.exitSoon(code);
+        }
     }
 
 
@@ -451,7 +474,10 @@ Cmd.prototype.execute = async function() {
         execArgs.push('--dry-run');
     }
 
-    await CLI.execAsync(this, tibetpath, execArgs);
+    code = await CLI.execAsync(this, tibetpath, execArgs);
+    if (code !== 0) {
+        return CLI.exitSoon(code);
+    }
 
 
     //  ---
@@ -521,7 +547,9 @@ Cmd.prototype.execute = async function() {
         execArgs.push('--dry-run');
     }
 
-    await CLI.execAsync(this, tibetpath, execArgs);
+    code = await CLI.execAsync(this, tibetpath, execArgs);
+    if (code !== 0) {
+        return CLI.exitSoon(code);
 
 
     //  ---
@@ -536,7 +564,10 @@ Cmd.prototype.execute = async function() {
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + gitpath + ' ' + execArgs.join(' '));
     } else {
-        await CLI.execAsync(this, gitpath, execArgs);
+        code = await CLI.execAsync(this, gitpath, execArgs);
+        if (code !== 0) {
+            return CLI.exitSoon(code);
+        }
     }
 
 
