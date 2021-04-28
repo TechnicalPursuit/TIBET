@@ -34,6 +34,11 @@ lama|domhud_TP_http_serviceContent .dom_attributes label {
     padding-top: 5px;
 }
 
+lama|domhud_TP_http_serviceContent .dom_attributes label:hover {
+
+    outline: solid 1px black;
+}
+
 lama|domhud_TP_http_serviceContent .dom_attributes label > a {
 
     color: inherit;
