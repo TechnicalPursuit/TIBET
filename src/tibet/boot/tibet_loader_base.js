@@ -8667,7 +8667,7 @@ TP.boot.$configureProject = function() {
         //  Going to have problems. Without package data we have no home page
         //  name etc. so we'll have to default to something.
         TP.sys.setcfg('project.name', 'default');
-        TP.sys.setcfg('project.version', '0.0.1');
+        TP.sys.setcfg('project.version', '0.1.0');
     } else {
         //  project.* values track the name, controller type and version for the
         //  current project
@@ -8676,7 +8676,7 @@ TP.boot.$configureProject = function() {
         TP.sys.setcfg('project.controller',
             pkgElem.getAttribute('controller'));
         TP.sys.setcfg('project.version',
-            pkgElem.getAttribute('version') || '0.0.1');
+            pkgElem.getAttribute('version') || '0.1.0');
     }
 
     if (TP.boot.$notValid(TP.sys.cfg('project.root_page'))) {

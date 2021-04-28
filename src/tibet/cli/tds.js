@@ -205,10 +205,8 @@ Cmd.prototype.executeStart = function() {
     server.on('exit', function(code) {
         if (code !== 0) {
             cmd.error('Stopped with status: ' + code);
-            /* eslint-disable no-process-exit */
             // exit with status code so command line sees proper exit code.
-            process.exit(code);
-            /* eslint-enable no-process-exit */
+            return CLI.exitSoon(code);
         }
     });
 };

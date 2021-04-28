@@ -8,7 +8,7 @@
 
 ## DESCRIPTION
 
-Runs the TSH `:apropos` command to find methods related to one or more topics.
+Runs the `:apropos` command to find methods related to one or more topics.
 
 This is a good command to use when you know what you'd like to do conceptually
 but are unsure of what options TIBET may offer to support your goals.
@@ -164,14 +164,10 @@ No process environment variables are required by this command.
 This command invokes the client-side `:apropos` command, passing all flags and
 command line arguments to that command for processing.
 
-Command invocation is done via the `tibet tsh` command machinery, which is
-inherited by this command.
-
 ## TROUBLESHOOTING
 
 
 ## SEE ALSO
 
   * tibet-reflect(1)
-  * tibet-tsh(1)
 

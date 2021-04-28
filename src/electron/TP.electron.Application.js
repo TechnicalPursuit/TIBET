@@ -57,10 +57,27 @@ function(aSignal) {
     this.set('isSilent', true);
     this.set('updateDownloaded', false);
 
+    //  Enable the 'About' menu item with the app name
+    TP.electron.ElectronMain.signalMain(
+        'TP.sig.UpdateMenuItem',
+        {
+            id: 'about',
+            label: TP.sys.cfg('project.name')
+        });
+
+    //  Enable the 'version' menu item with the app version
+    TP.electron.ElectronMain.signalMain(
+        'TP.sig.UpdateMenuItem',
+        {
+            id: 'version',
+            label: 'Version ' + TP.sys.cfg('project.version')
+        });
+
     //  Enable the menu item that allows the user to manually check for updates.
     TP.electron.ElectronMain.signalMain(
-        'TP.sig.ChangeUpdaterMenuItem',
+        'TP.sig.UpdateMenuItem',
         {
+            id: 'updater',
             enabled: true
         });
 
@@ -171,9 +188,10 @@ function(aSignal) {
 
     //  Disable the menu item that allows the user to manually check for updates
     //  - we're in the middle of checking for updates.
-    TP.electron.ElectronMain.signalMain('TP.sig.ChangeUpdaterMenuItem',
+    TP.electron.ElectronMain.signalMain('TP.sig.UpdateMenuItem',
         {
-            //  label: 'Checking for updates...',
+            id: 'updater',
+            label: 'Checking for updates...',
             enabled: false
         });
 
@@ -195,9 +213,10 @@ function(aSignal) {
                             'TP.sig.InstallUpdateAndRestart');
                 } else {
                     TP.electron.ElectronMain.signalMain(
-                        'TP.sig.ChangeUpdaterMenuItem',
+                        'TP.sig.UpdateMenuItem',
                         {
-                            //  label: 'Updates Available',
+                            id: 'updater',
+                            label: 'Updates Available',
                             enabled: true
                         });
                 }
@@ -253,9 +272,10 @@ function(aSignal) {
                     TP.electron.ElectronMain.signalMain('TP.sig.DownloadUpdate');
                 } else {
                     TP.electron.ElectronMain.signalMain(
-                        'TP.sig.ChangeUpdaterMenuItem',
+                        'TP.sig.UpdateMenuItem',
                         {
-                            //  label: 'Check for updates',
+                            id: 'updater',
+                            label: 'Check for updates',
                             enabled: true
                         });
                 }
@@ -284,9 +304,10 @@ function(aSignal) {
     //  Enable the menu item that allows the user to manually check for updates
     //  - we're no longer in the middle of checking for updates.
     TP.electron.ElectronMain.signalMain(
-        'TP.sig.ChangeUpdaterMenuItem',
+        'TP.sig.UpdateMenuItem',
         {
-            //  label: 'Updates available',
+            id: 'updater',
+            label: 'Updates available',
             enabled: true
         });
 
@@ -309,9 +330,10 @@ function(aSignal) {
                                 'TP.sig.InstallUpdateAndRestart');
                 } else {
                     TP.electron.ElectronMain.signalMain(
-                        'TP.sig.ChangeUpdaterMenuItem',
+                        'TP.sig.UpdateMenuItem',
                         {
-                            //  label: 'Updates Available',
+                            id: 'updater',
+                            label: 'Updates Available',
                             enabled: true
                         });
                 }
@@ -337,9 +359,10 @@ function(aSignal) {
 
     //  Enable the menu item that allows the user to manually check for updates
     //  - we're no longer in the middle of checking for updates.
-    TP.electron.ElectronMain.signalMain('TP.sig.ChangeUpdaterMenuItem',
+    TP.electron.ElectronMain.signalMain('TP.sig.UpdateMenuItem',
         {
-            //  label: 'Check for updates',
+            id: 'updater',
+            label: 'Check for updates',
             enabled: true
         });
 
@@ -375,9 +398,10 @@ function(aSignal) {
     //  Enable the menu item that allows the user to manually check for updates
     //  - we're no longer in the middle of checking for updates.
     TP.electron.ElectronMain.signalMain(
-        'TP.sig.ChangeUpdaterMenuItem',
+        'TP.sig.UpdateMenuItem',
         {
-            //  label: 'Check for updates',
+            id: 'updater',
+            label: 'Check for updates',
             enabled: true
         });
 

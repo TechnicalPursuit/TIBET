@@ -125,6 +125,8 @@
         setTimeout(() => {
             process.exit(code);
         }, TDS.getcfg('tds.shutdown_timeout') + 100);
+
+        return;
     };
 
     //  ---
@@ -185,8 +187,7 @@
     if (!logger) {
         console.error('missing critical logger middleware or export.');
         console.error('shutting down server');
-        exitSoon(1);
-        return;
+        return exitSoon(1);
     }
 
     //  ---
@@ -208,6 +209,7 @@
         if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
             //  These happen due to port defaults below 1024 (which require perms)
             console.error('Possible permission error for server port: ' + port);
+            //  NOTE: Do *not* replace this with exitSoon.
             setTimeout(() => {
                 process.exit(1);
             }, 10);
@@ -216,6 +218,7 @@
             //  These happen because you forget you're already running one.
             console.error('Server start failed. Port ' + (err.port || port) +
                 ' is busy.');
+            //  NOTE: Do *not* replace this with exitSoon.
             setTimeout(() => {
                 process.exit(1);
             }, 10);
@@ -232,7 +235,7 @@
         }
 
         if (TDS.cfg('tds.stop_onerror')) {
-            exitSoon(1);
+            return exitSoon(1);
         }
     });
 
@@ -269,8 +272,7 @@
 
         //  If we never really got going...
         if (!TDS.httpServer && !TDS.httpsServer) {
-            exitSoon(1);
-            return;
+            return exitSoon(1);
         }
 
         TDS[protocol + 'Server'].close(function(err) {
@@ -282,7 +284,7 @@
                 }
             }
 
-            exitSoon(code, msg);
+            return exitSoon(code, msg);
         });
     };
 

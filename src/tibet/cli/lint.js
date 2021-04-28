@@ -647,6 +647,14 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
             data = data.toString();
             try {
                 data = JSON.parse(data);
+
+                //  If the last run 'stopped early', then we need to relint
+                //  everything. In this case, there will only be one file in the
+                //  'line cache file' and there very well may be more invalid
+                //  files.
+                if (data.stopped) {
+                    return list;
+                }
                 lastrun = data.lastrun;
             } catch (e) {
                 CLI.error('Unable to parse last run info: ' + e.message);
@@ -1091,6 +1099,9 @@ Cmd.prototype.summarize = function(results) {
         }
         this.log(msg);
     }
+
+    //  Track whether we stopped early
+    results.stopped = this.options.stop;
 
     results.lastrun = Date.now();
     lastpath = CLI.expandPath(CLI.getcfg('cli.lint.cachefile'));

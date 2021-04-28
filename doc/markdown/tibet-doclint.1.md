@@ -8,7 +8,7 @@
 
 ## DESCRIPTION
 
-Runs the TSH `:doclint` command to validate method comment content.
+Runs the `:doclint` command to validate method comment content.
 
 The doclint command uses TIBET reflection to find all methods in your
 application that match an optional `<target>` and/or `--filter`. Matched methods
@@ -80,7 +80,6 @@ so an initial test won't find any methods and hence will list no files:
     # Loading TIBET platform at 2019-11-09T17:43:17.668Z
     # TIBET reflection suite loaded and active in 5219ms
     # PASS: 0 errors in 0 of 0 files.
-    # Finished in 3710 ms w/TSH exec time of 77 ms.
 
 If we add a method but fail to add a proper comment we see different output:
 
@@ -89,7 +88,6 @@ If we add a method but fail to add a proper comment we see different output:
     not ok - ~app_src/APP.test1.Application.js
     # APP.test1.Application.TypeLocal.test (1) -> [missing comment]
     # FAIL: 1 errors in 1 of 1 files.
-    # Finished in 3985 ms w/TSH exec time of 75 ms.
 
 If we then comment our new method we'll see output to that effect:
 
@@ -97,8 +95,6 @@ If we then comment our new method we'll see output to that effect:
     # TIBET reflection suite loaded and active in 5219ms
     ok - ~app_src/APP.test1.Application.js
     # PASS: 0 errors in 0 of 1 files.
-
-    # Finished in 3698 ms w/TSH exec time of 76 ms.
 
 ### Checking your entire application for documentation lint
 
@@ -109,7 +105,6 @@ If we then comment our new method we'll see output to that effect:
     ok - ~app_src/APP.test1.Application.js
     ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 2 files.
-    # Finished in 10097 ms w/TSH exec time of 6299 ms.
 
 ### Checking a specific filtered set of targets for doclint
 
@@ -119,7 +114,6 @@ If we then comment our new method we'll see output to that effect:
     # TIBET reflection suite loaded and active in 5219ms
     ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 1 files.
-    # Finished in 10435 ms w/TSH exec time of 6723 ms.
 
 Note that you can also do case-insensitive filtering (with `i`) as follows:
 
@@ -130,15 +124,11 @@ Note that you can also do case-insensitive filtering (with `i`) as follows:
     ok - ~app_src/APP.test1.Application.js
     ok - ~app_tags/APP.test1.app/APP.test1.app.js
     # PASS: 0 errors in 0 of 2 files.
-    # Finished in 10556 ms w/TSH exec time of 6344 ms.
 
 ## TIBET SHELL
 
 This command invokes the client-side `:doclint` command, passing all flags and
 command line arguments to that command for processing.
-
-Command invocation is done via the `tibet tsh` command machinery, which is
-inherited by this command.
 
 ## TROUBLESHOOTING
 

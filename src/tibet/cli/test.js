@@ -5,9 +5,7 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The 'tibet test' command. Runs TIBET tests via the 'tibet tsh'
- *     command. The script run is typically the TSH script ':test' which
- *     will run the tsh:test command tag to invoke all test suites.
+ * @overview The 'tibet test' command. Runs TIBET tests.
  */
 //  ========================================================================
 
@@ -30,7 +28,7 @@ sh = require('shelljs');
 //  ---
 
 Cmd = function() { /* init */ };
-Cmd.Parent = require('./tsh');      // NOTE we inherit from 'tsh' command.
+Cmd.Parent = require('./_tsh');
 Cmd.prototype = new Cmd.Parent();
 
 
@@ -223,9 +221,7 @@ Cmd.prototype.executeViaKarma = function() {
             cmd.error(msg);
         }
 
-        /* eslint-disable no-process-exit */
-        process.exit(code);
-        /* eslint-enable no-process-exit */
+        return CLI.exitSoon(code);
     });
 
     return 0;
@@ -267,7 +263,7 @@ Cmd.prototype.getCompletionOptions = function() {
 
 
 /**
- * Computes and returns the proper profile to boot in support of the TSH.
+ * Computes and returns the proper profile to boot.
  * @returns {String} The profile to boot.
  */
 Cmd.prototype.getBootProfile = function() {
@@ -297,7 +293,7 @@ Cmd.prototype.getScript = function() {
         target = this.options.target;
     } else {
         // The options._ object holds non-qualified parameters. [0] is the
-        // command name (tsh in this case). [1] should be the "target" to run.
+        // command name. [1] should be the "target" to run.
         target = this.options._[1];
     }
 

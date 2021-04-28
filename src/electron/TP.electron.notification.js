@@ -16,6 +16,10 @@
 
 TP.electron.ActionTag.defineSubtype('electron.notification');
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.electron.notification.defineAttribute('styleURI', TP.NO_RESULT);
+TP.electron.notification.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -41,7 +45,11 @@ function(aRequest) {
 
         bodyTPElem;
 
-    elem = aRequest.at('cmdNode');
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
     tpElem = TP.wrap(elem);
 
     attrList = TP.ac('title');

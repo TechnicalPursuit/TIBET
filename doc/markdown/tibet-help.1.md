@@ -50,7 +50,7 @@ the `tibet help` command where to look for help files.
 
         apropos clone config context deploy doclint echo
         freeze help init lint make package quickstart reflect
-        release resources rollup start tag test thaw tsh user
+        release resources rollup start tag test thaw user
         version
 
     makefile.js targets include:
@@ -72,7 +72,7 @@ the `tibet help` command where to look for help files.
 
 ## TIBET SHELL
 
-This command has no client-side TSH peer command.
+This command has no client-side peer command.
 
 ## TROUBLESHOOTING
 

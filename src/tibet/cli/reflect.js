@@ -6,7 +6,7 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet reflect' command. Runs the client-side ':reflect'
- *     command via TIBET's headless tsh processing.
+ *     command via TIBET's headless processing.
  */
 //  ========================================================================
 
@@ -26,7 +26,7 @@ CLI = require('./_cli');
 //  ---
 
 Cmd = function() { /* init */ };
-Cmd.Parent = require('./tsh'); // NOTE we inherit from tsh command.
+Cmd.Parent = require('./_tsh');
 Cmd.prototype = new Cmd.Parent();
 
 
@@ -120,7 +120,7 @@ Cmd.prototype.getScript = function() {
         target = this.options.target;
     } else {
         // The options._ object holds non-qualified parameters. [0] is the
-        // command name (tsh in this case). [1] should be the "target" to run.
+        // command name. [1] should be the "target" to run.
         target = this.options._[1];
     }
 
