@@ -6,7 +6,7 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet apropos' command. Runs the client-side ':apropos'
- *     command via TIBET's headless tsh processing.
+ *     command via TIBET's headless processing.
  */
 //  ========================================================================
 
@@ -27,7 +27,7 @@ CLI = require('./_cli');
 //  ---
 
 Cmd = function() { /* init */ };
-Cmd.Parent = require('./tsh');      //  NOTE we inherit from 'tsh' command.
+Cmd.Parent = require('./_tsh');
 Cmd.prototype = new Cmd.Parent();
 
 
