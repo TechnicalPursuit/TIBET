@@ -279,6 +279,11 @@
             var parts,
                 str;
 
+            //  Mask off "hidden" docs.
+            if (params.topic.indexOf('_') === 0) {
+                return '';
+            }
+
             parts = params.firstline.split('--');
             str = '<dt><a class="toc" href="./' +
                 params.topic + '.' + params.section + '.html">' +

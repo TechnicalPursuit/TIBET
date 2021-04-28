@@ -44,7 +44,7 @@ mm = require('minimatch');
 //  ---
 
 Cmd = function() { /* init */ };
-Cmd.Parent = require('./tsh');      // NOTE we inherit from 'tsh' command.
+Cmd.Parent = require('./_tsh');
 Cmd.prototype = new Cmd.Parent();
 
 
@@ -107,7 +107,7 @@ Cmd.INLINED_RESOURCES = [
 //  ---
 
 /**
- * The list of resources to process as computed by the TSH :resource command.
+ * The list of resources to process as computed by the :resource command.
  * Entries in this list which are missing are usually ignored since the list is
  * based on algorithmic computations, not necessarily explicit references.
  * @type {Array.<string>}
@@ -189,8 +189,8 @@ Cmd.prototype.execute = function() {
     //  Get the list of resources from the package. These are explicit values.
     this.specified = this.generateResourceList();
 
-    //  To work with computed resources we have to run our script via TSH using
-    //  our parent's implementation. We'll then blend that with info from the
+    //  To work with computed resources we have to run our script using our
+    //  parent's implementation. We'll then blend that with info from the
     //  package metadata.
     Cmd.Parent.prototype.execute.call(this);
 

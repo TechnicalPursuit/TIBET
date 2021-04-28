@@ -30,7 +30,7 @@ minimist = require('minimist');
 
 /**
  * Command supertype. All individual commands inherit from this type or a
- * subtype of it such as 'tsh', 'couchdb', or 'multi'.
+ * subtype of it such as '_tsh', '_couchdb', or '_multi'.
  */
 Cmd = function() { /* init */ };
 

@@ -82,7 +82,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
- * The timeout used for command invocation. Processing TSH requires startup time
+ * The timeout used for command invocation. Processing requires startup time
  * etc. so default to 15 seconds here.
  * @type {Number}
  */
@@ -92,7 +92,7 @@ Cmd.prototype.TIMEOUT = 15000;
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet tsh [--script=]<command> [--break] [--debug] [--silent] [--verbose] [--package <package>] [--config <cfg>] [--profile <pkgcfg>] [--timeout <ms>] [--tap[=true|false]] [--no-tap] [<headless_args>]';
+Cmd.prototype.USAGE = 'tibet _tsh --force [--script=]<command> [--break] [--debug] [--silent] [--verbose] [--package <package>] [--config <cfg>] [--profile <pkgcfg>] [--timeout <ms>] [--tap[=true|false]] [--no-tap] [<headless_args>]';
 
 
 //  ---
@@ -136,7 +136,7 @@ Cmd.prototype.beforePageLoad = function(puppetBrowser, puppetPage) {
 };
 
 /**
- * Provides common colorization of output from TSH execution. This is often
+ * Provides common colorization of output from execution. This is often
  * content coming from the headless environment. Note that the message object
  * can take a variety of forms including an array (which is used to send
  * multi-line output). The return value here can be a string, array, or the
@@ -225,7 +225,7 @@ Cmd.prototype.execute = function() {
 
     //  Access the argument list. Subtypes can adjust how they assemble this to
     //  alter the default behavior. Note the slice() here removes the command
-    //  name from the list ('tsh').
+    //  name from the list.
     arglist = this.getArglist().slice(1);
     if (CLI.isEmpty(arglist)) {
         return 0;
@@ -357,8 +357,8 @@ Cmd.prototype.execute = function() {
 
     }).then(function() {
 
-        //  Set the timeout on Puppeteer so that it matches what we hand to the
-        //  TSH:
+        //  Set the timeout on Puppeteer so that it matches what we hand
+        //  to the command processor:
         puppetPage.setDefaultTimeout(finalTimeout);
 
         puppetPage.on('close', function(evt) {
@@ -505,7 +505,7 @@ Cmd.prototype.execute = function() {
         cmd.$$active = true;
         end = new Date();
 
-        //  Once TIBET boots run whatever TSH command we're being asked to
+        //  Once TIBET boots run whatever command we're being asked to
         //  execute for this process.
         if (!cmd.options.silent) {
             cmd.log('# ' + // (cmd.options.tap ? '# ' : '') +
@@ -616,7 +616,7 @@ Cmd.prototype.execute = function() {
                 }
 
                 TP.shellExec(TP.hc(
-                    'cmdSrc', tshInput,     //  the TSH input to run
+                    'cmdSrc', tshInput,     //  the command input to run
                     'cmdEcho', false,       //  don't echo the request
                     'cmdHistory', false,    //  don't create a history entry
                     'cmdSilent', false,     //  report output so we can capture
@@ -820,8 +820,8 @@ Cmd.prototype.getBootProfileConfig = function() {
 
 
 /**
- * Computes and returns the proper profile to boot in support of the TSH. This
- * is the name of the package file, minus any specific boot config ID.
+ * Computes and returns the proper profile to boot. This is the name of the
+ * package file, minus any specific boot config ID.
  * @returns {String} The profile root name.
  */
 Cmd.prototype.getBootProfileRoot = function() {
@@ -833,7 +833,7 @@ Cmd.prototype.getBootProfileRoot = function() {
         return this.options['boot.package'];
     }
 
-    //  NOTE that boot profiles for TSH execution must use a headless profile.
+    //  NOTE boot profiles for command execution must use a headless profile.
     if (CLI.inProject()) {
         profile = profile || '~app_cfg/headless';
     } else {
@@ -926,7 +926,7 @@ Cmd.prototype.getScript = function() {
         script = this.options.script;
     } else {
         // The options._ object holds non-qualified parameters. [0] is the
-        // command name (tsh in this case). [1] should be the "script" to run.
+        // command name. [1] should be the "script" to run.
         script = this.options._[1];
     }
 

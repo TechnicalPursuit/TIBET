@@ -429,7 +429,7 @@ Cmd.prototype.execute = function() {
             // TODO: come up with a better solution. For now the two files we
             // don't want to remove by default (if tibet_developer.min.js
             // exists) is tibet_developer.min.js.gz or tibet_developer.min.js.br
-            // since the various tsh-related commands use those
+            // since various cli commands use those
             if (/tibet_developer\.min\.js/.test(filename)) {
                 if (/\.gz$/.test(filename)) {
                     sh.rm('-f', CLI.joinPaths(srcroot, filename));
