@@ -132,7 +132,8 @@ Cmd.prototype.execute = async function() {
         execArgs,
 
         versionCmd,
-        versionResult;
+        versionResult,
+        versionObj;
 
     this.info('Options:');
     this.info(CLI.beautify(JSON.stringify(this.options)));
@@ -321,6 +322,9 @@ Cmd.prototype.execute = async function() {
         versionResult = CLI.clean(versionResult.stdout).trim();
     }
 
+    //  Grab the version object from the versionResult string.
+    versionObj = versioning.parseVersionComponents(versionResult);
+
     //  ---
     //  Rebuild the docs (using --force because of a bug around comparing
     //  freshness of the files with the current version stamp), now that we've
@@ -348,15 +352,13 @@ Cmd.prototype.execute = async function() {
     //  Make sure that we prompt the user to commit the version stamp.
     //  ---
 
-    if (!this.options['dry-run']) {
-        result = CLI.prompt.question(
-            'New version stamp computed as: ' + versionResult + '.' +
-            ' Commit this version stamp? ' +
-            '? Enter \'yes\' after inspection: ');
-        if (!/^y/i.test(result)) {
-            this.log('Version stamping cancelled.');
-            return;
-        }
+    result = CLI.prompt.question(
+        'New version stamp computed as: ' + versionResult + '.' +
+        ' Commit this version stamp? ' +
+        '? Enter \'yes\' after inspection: ');
+    if (!/^y/i.test(result)) {
+        this.log('Version stamping cancelled.');
+        return;
     }
 
 
@@ -449,15 +451,13 @@ Cmd.prototype.execute = async function() {
     //  Deploy to npm
     //  ---
 
-    if (!this.options['dry-run']) {
-        result = CLI.prompt.question(
-            'Upload release ' + versioning.getVersionString() +
-            ' to the npm repository? ' +
-            '? Enter \'yes\' after inspection: ');
-        if (!/^y/i.test(result)) {
-            this.log('npm publish cancelled.');
-            return;
-        }
+    result = CLI.prompt.question(
+        'Upload release ' + versioning.getVersionString(versionObj) +
+        ' to the npm repository? ' +
+        '? Enter \'yes\' after inspection: ');
+    if (!/^y/i.test(result)) {
+        this.log('npm publish cancelled.');
+        return;
     }
 
     execArgs = [
@@ -468,10 +468,13 @@ Cmd.prototype.execute = async function() {
     this.log('Deploy to npm');
 
     //  'tibet deploy npm' supports '--dry-run' natively, so we just push the
-    //  argument here and let it run for real.
+    //  the argument here and let it run for real. We also push '--force' here
+    //  so that `tibet deploy npm` doesn't try to check branches (since, in dry
+    //  run mode, we didn't actually change branches).
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
         execArgs.push('--dry-run');
+        execArgs.push('--force');
     }
 
     code = await CLI.execAsync(this, tibetpath, execArgs);
@@ -484,15 +487,14 @@ Cmd.prototype.execute = async function() {
     //  Deploy to DockerHub
     //  ---
 
-    if (!this.options['dry-run']) {
-        result = CLI.prompt.question(
-            'Build Docker image release ' + versioning.getVersionString() +
-            ' and upload to the DockerHub docker repository using those labels? ' +
-            '? Enter \'yes\' after inspection: ');
-        if (!/^y/i.test(result)) {
-            this.log('Docker build and upload cancelled.');
-            return;
-        }
+    result = CLI.prompt.question(
+        'Build Docker image release ' +
+        versioning.getVersionString(versionObj) +
+        ' and upload to the DockerHub docker repository using those labels? ' +
+        '? Enter \'yes\' after inspection: ');
+    if (!/^y/i.test(result)) {
+        this.log('Docker build and upload cancelled.');
+        return;
     }
 
     execArgs = [
@@ -541,15 +543,19 @@ Cmd.prototype.execute = async function() {
     this.log('Deploy to DockerHub');
 
     //  'tibet deploy dockerhub' supports '--dry-run' natively, so we just push
-    //  the argument here and let it run for real.
+    //  the argument here and let it run for real. We also push '--force' here
+    //  so that `tibet deploy dockerhub` doesn't try to check branches (since,
+    //  in dry run mode, we didn't actually change branches).
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
         execArgs.push('--dry-run');
+        execArgs.push('--force');
     }
 
     code = await CLI.execAsync(this, tibetpath, execArgs);
     if (code !== 0) {
         return CLI.exitSoon(code);
+    }
 
 
     //  ---
