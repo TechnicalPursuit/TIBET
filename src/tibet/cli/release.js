@@ -427,7 +427,7 @@ Cmd.prototype.phaseThree = function(meta) {
             } catch (e) {
                 //  one case is "failure" but actually success... when there's
                 //  nothing to commit.
-                if (/nothing to commit/i.test(e.message)) {
+                if (/nothing added to commit/i.test(e.message)) {
                     release.info(e.message.trim());
                 } else {
                     throw e;
