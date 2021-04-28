@@ -497,7 +497,7 @@ Cmd.prototype.shexec = function(cmd, silent) {
     });
 
     if (result.code !== 0 && !silent) {
-        throw new Error(result.stderr.trim());
+        throw new Error(result.toString().trim());
     }
 
     return result;
