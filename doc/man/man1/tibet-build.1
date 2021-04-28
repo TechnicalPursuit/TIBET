@@ -1,0 +1,101 @@
+.TH "TIBET\-BUILD" "1" "April 2021" "" ""
+.SH "NAME"
+\fBtibet-build\fR \- build the current project
+.SH SYNOPSIS
+.P
+\fBtibet build [\-\-release] [\-\-minify] [\-\-zip] [\-\-brotli] [\-\-clean]\fP
+.SH DESCRIPTION
+.P
+Performs the steps necessary to build the current project\.
+.P
+The \fBbuild\fP command is a \fBtibet make\fP target you can use as\-is or customize to
+meet the specific needs of your project\. The implementation of \fBbuild\fP can be
+found in \fB~app_cmd/make/build\.js\fP\|\.
+.P
+The default implementation runs a sequence of \fBtibet make\fP targets to:
+.P
+Lint the project
+Verify package integrity
+Build any inline resources
+Roll up (concat) the package
+Build project documentation
+.P
+These individual steps are also found in the \fB~app_cmd/make\fP directory\. Most
+build steps eventually make use of the \fBpackage\fP and \fBrollup\fP commands\.
+.P
+A default set of flags lets you control whether you want the build to be
+release\-ready, minified, zipped, or brotli'd\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-brotli\fP :
+Request a brotli\-compressed version of the final build resources\.
+.IP \(bu 2
+\fB\-\-clean\fP :
+Force the build to work from a clean starting point rather than building
+out just the changed resources\.
+.IP \(bu 2
+\fB\-\-minify\fP :
+Request minified versions of each file be built\. By default \fBbuild\fP creates
+packages which allow TIBET's reflection\-driven tools to read source code
+comments etc\. This flag will strip that content, minify arguments, etc\.
+.IP \(bu 2
+\fB\-\-release\fP :
+Build out all the necessary inline resources etc\. for a release package\.
+.IP \(bu 2
+\fB\-\-zip\fP :
+Build a zipped version of the final build assets\. During development the
+build assets are concatenated but no new zip (or brotli) versions are built\.
+
+.RE
+.SH CONFIGURATION SETTINGS
+.RS 0
+.IP \(bu 2
+\fBmake\.compression\.parse_options\fP :
+A set of default command argument values controlling file compression\.
+
+.RE
+.SH ENVIRONMENT VARIABLES
+.P
+No process environment variables are required by this command\.
+.SH EXAMPLES
+.SS Run a typical build
+.P
+.RS 2
+.nf
+$ tibet build
+Delegating to 'tibet make build'
+building app\.\.\.
+checking for lint\.\.\.
+
+checked 19 of 507 total files
+(59 filtered, 429 unchanged)
+0 errors, 0 warnings\. Clean!
+verifying packages\.\.\.
+verifying ~app_cfg/main\.xml@base
+scanning for unresolved/unlisted files\.\.\.
+no unresolved files found in project\.
+processing resources\.\.\.
+generating resources\.\.\.
+# Loading TIBET platform at 2021\-04\-28T19:42:34\.130Z
+# TIBET reflection suite loaded and active in 12863ms
+filtering 43 computed and 413 specified resources\.\.\.
+building 450 concrete resources\.\.\.
+writing package resource entries\.\.\.
+rolling up assets\.\.\.
+writing 328575 chars to ~app_build/app_base\.js
+linking build targets\.\.\.
+skipping link for missing file '~app_build/app_base\.min\.js'
+skipping link for missing file '~app_build/app_base\.min\.js\.gz'
+skipping link for missing file '~app_build/app_base\.min\.js\.br'
+build assets linked successfully\.
+building project documentation\.\.\.
+Task complete: 24045ms\.
+.fi
+.RE
+.SH TIBET SHELL
+.P
+This command has no client\-side TSH peer command\.
+.SH TROUBLESHOOTING
+.SH SEE ALSO
+

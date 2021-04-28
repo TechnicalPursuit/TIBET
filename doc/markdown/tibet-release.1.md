@@ -10,8 +10,8 @@
 Performs the steps necessary to tag a release-ready git codebase.
 
 The release process consists of several steps to sanity check the
-current repository followed by a number of steps which work to build
-a releasable version, tag it, commit it, and merge/push it to master.
+project followed by a number of steps which work to verify a releasable version,
+tag it, commit it, and merge/push it to the target release branch.
 
 Before proceeding this command will:
 

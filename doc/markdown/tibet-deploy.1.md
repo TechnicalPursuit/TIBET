@@ -16,6 +16,7 @@ There are several pre-built deploy helpers in `~lib_cmd/deploy` including:
     awselasticbeanstalk
     azurewebapps
     dockerhub
+    electron (in TIBET+Electron projects)
     shipit
 
 Each helper is free to process any additional command line arguments and flags

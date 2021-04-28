@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-build</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-build</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-build1----build-the-current-project">tibet-build(1) -- build the current project</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p><code>tibet build [--release] [--minify] [--zip] [--brotli] [--clean]</code></p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Performs the steps necessary to build the current project.</p>
+<p>The <code>build</code> command is a <code>tibet make</code> target you can use as-is or customize to
+meet the specific needs of your project. The implementation of <code>build</code> can be
+found in <code>~app_cmd/make/build.js</code>.</p>
+<p>The default implementation runs a sequence of <code>tibet make</code> targets to:</p>
+<p>Lint the project
+Verify package integrity
+Build any inline resources
+Roll up (concat) the package
+Build project documentation</p>
+<p>These individual steps are also found in the <code>~app_cmd/make</code> directory. Most
+build steps eventually make use of the <code>package</code> and <code>rollup</code> commands.</p>
+<p>A default set of flags lets you control whether you want the build to be
+release-ready, minified, zipped, or brotli&#39;d.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--brotli</code> :
+Request a brotli-compressed version of the final build resources.</p>
+</li>
+<li><p><code>--clean</code> :
+Force the build to work from a clean starting point rather than building
+out just the changed resources.</p>
+</li>
+<li><p><code>--minify</code> :
+Request minified versions of each file be built. By default <code>build</code> creates
+packages which allow TIBET&#39;s reflection-driven tools to read source code
+comments etc. This flag will strip that content, minify arguments, etc.</p>
+</li>
+<li><p><code>--release</code> :
+Build out all the necessary inline resources etc. for a release package.</p>
+</li>
+<li><p><code>--zip</code> :
+Build a zipped version of the final build assets. During development the
+build assets are concatenated but no new zip (or brotli) versions are built.</p>
+</li>
+</ul>
+<h2 id="configuration-settings">CONFIGURATION SETTINGS</h2>
+<ul>
+<li><code>make.compression.parse_options</code> :
+A set of default command argument values controlling file compression.</li>
+</ul>
+<h2 id="environment-variables">ENVIRONMENT VARIABLES</h2>
+<p>No process environment variables are required by this command.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="run-a-typical-build">Run a typical build</h3>
+<pre><code>$ tibet build
+Delegating to &#39;tibet make build&#39;
+building app...
+checking for lint...
+
+checked 19 of 507 total files
+(59 filtered, 429 unchanged)
+0 errors, 0 warnings. Clean!
+verifying packages...
+verifying ~app_cfg/main.xml@base
+scanning for unresolved/unlisted files...
+no unresolved files found in project.
+processing resources...
+generating resources...
+# Loading TIBET platform at 2021-04-28T19:42:34.130Z
+# TIBET reflection suite loaded and active in 12863ms
+filtering 43 computed and 413 specified resources...
+building 450 concrete resources...
+writing package resource entries...
+rolling up assets...
+writing 328575 chars to ~app_build/app_base.js
+linking build targets...
+skipping link for missing file &#39;~app_build/app_base.min.js&#39;
+skipping link for missing file &#39;~app_build/app_base.min.js.gz&#39;
+skipping link for missing file &#39;~app_build/app_base.min.js.br&#39;
+build assets linked successfully.
+building project documentation...
+Task complete: 24045ms.</code></pre><h2 id="tibet-shell">TIBET SHELL</h2>
+<p>This command has no client-side TSH peer command.</p>
+<h2 id="troubleshooting">TROUBLESHOOTING</h2>
+<h2 id="see-also">SEE ALSO</h2>
+
+</div>
+<div id="footer">
+    TIBET 5.3.4 - Copyright (C) 2021 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>
