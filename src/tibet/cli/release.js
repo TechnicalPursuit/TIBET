@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0, consistent-this:0, no-debugger:0 */
+/* eslint indent:0, consistent-this:0 */
 
 (function() {
 
@@ -421,7 +421,6 @@ Cmd.prototype.phaseThree = function(meta) {
             release.warn('dry-run. bypassing ' + cmd);
         } else {
             release.log('executing ' + cmd);
-            debugger;
             try {
                 res = release.shexec(cmd);
             } catch (e) {
