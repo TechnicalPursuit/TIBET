@@ -1108,6 +1108,17 @@ function() {
 
     //  ---
 
+    this.it('TIBETURN: Retrieve namespace object', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.uc('urn:tibet:TP.sig').getResource(params).get('result'),
+            TP.sig,
+            TP.sc('tibet:///urn:tibet:TP.sig should find the namespace' +
+                                                    ' TP.sig.'));
+    });
+
+    //  ---
+
     this.it('TIBETURN: Retrieve type object', function(test, options) {
 
         test.assert.isIdenticalTo(
