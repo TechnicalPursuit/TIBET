@@ -3729,7 +3729,7 @@ function() {
     //  Install a custom function on the TP.dnd.DragResponder type that can be
     //  referenced in the markup.
     TP.dnd.DragResponder.Type.defineConstant(
-        'ALTER_SHERPA_CUSTOM_PROPERTY',
+        'ALTER_LAMA_CUSTOM_PROPERTY',
         function(anElement, styleObj, computedVals, infoAttrs) {
 
             var customPropertyName,

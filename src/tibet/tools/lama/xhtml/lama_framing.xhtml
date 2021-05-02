@@ -73,7 +73,7 @@
 
         <div id="north" tibet:tag="lama:drawer" class="framing h-edge north center" pclass:closed="true" pclass:hidden="true">
             <lama:workbench id="LamaWorkbench"/>
-            <div id="northResizer" class="h-resizer" drag:resizer="true" drag:side="BOTTOM" drag:item="../.." drag:workers="ALTER_SHERPA_CUSTOM_PROPERTY" drag:property="--lama-drawer-north-open-height"/>
+            <div id="northResizer" class="h-resizer" drag:resizer="true" drag:side="BOTTOM" drag:item="../.." drag:workers="ALTER_LAMA_CUSTOM_PROPERTY" drag:property="--lama-drawer-north-open-height"/>
         </div>
 
         <div id="northeast" tibet:tag="lama:drawer" class="framing corner north east" pclass:closed="true" pclass:hidden="true">
@@ -120,7 +120,7 @@
         </div>
 
         <div id="south" tibet:tag="lama:drawer" class="framing h-edge south center" pclass:closed="true" pclass:hidden="true">
-            <div id="southResizer" class="h-resizer" drag:resizer="true" drag:side="TOP" drag:item="../.." drag:workers="ALTER_SHERPA_CUSTOM_PROPERTY" drag:property="--lama-drawer-south-open-height"/>
+            <div id="southResizer" class="h-resizer" drag:resizer="true" drag:side="TOP" drag:item="../.." drag:workers="ALTER_LAMA_CUSTOM_PROPERTY" drag:property="--lama-drawer-south-open-height"/>
             <xctrls:tabbar id="LamaConsoleTabbar" bind:io="{data: urn:tibet:lama_south_drawer_tabs, value: urn:tibet:lama_current_south_drawer_tab#tibet(selection)}" tibet:ctrl="LamaConsole" tooltips="true">
                 <tibet:template>
                     <xctrls:tabitem>
