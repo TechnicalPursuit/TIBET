@@ -529,8 +529,7 @@ function() {
                 //  We loaded with XML, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);
 
-                testPath = TP.xpc('/person/license_number',
-                                    TP.hc('shouldCollapse', true));
+                testPath = TP.xpc('/person/license_number');
 
                 dataResource.set(testPath, '404040');
 
@@ -572,8 +571,7 @@ function() {
                 //  We loaded with JSON, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
 
-                testPath = TP.jpc('$.person.license_number',
-                                    TP.hc('shouldCollapse', true));
+                testPath = TP.jpc('$.person.license_number');
 
                 dataResource.set(testPath, '404040');
 
@@ -619,8 +617,7 @@ function() {
                 //  We loaded with XML, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);
 
-                testPath = TP.xpc('/person/license_number',
-                                    TP.hc('shouldCollapse', true));
+                testPath = TP.xpc('/person/license_number');
 
                 dataResource.set(testPath, '808080');
 
@@ -666,8 +663,7 @@ function() {
                 //  We loaded with JSON, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
 
-                testPath = TP.jpc('$.person.license_number',
-                                    TP.hc('shouldCollapse', true));
+                testPath = TP.jpc('$.person.license_number');
 
                 dataResource.set(testPath, '808080');
 

@@ -577,8 +577,7 @@ TP.core.XMLContent.defineSubtype('test.SimpleXMLContentType');
 //  ------------------------------------------------------------------------
 
 TP.test.SimpleXMLContentType.Inst.defineAttribute('lastName',
-    TP.xpc('/emp/lastName',
-        TP.hc('shouldCollapse', true, 'extractWith', 'value')),
+    TP.xpc('/emp/lastName', TP.hc('extractWith', 'value')),
     {
         valid: {
             dataType: String
@@ -586,8 +585,7 @@ TP.test.SimpleXMLContentType.Inst.defineAttribute('lastName',
     });
 
 TP.test.SimpleXMLContentType.Inst.defineAttribute('firstName',
-    TP.xpc('/emp/firstName',
-        TP.hc('shouldCollapse', true, 'extractWith', 'value')),
+    TP.xpc('/emp/firstName', TP.hc('extractWith', 'value')),
     {
         valid: {
             dataType: String
@@ -595,8 +593,7 @@ TP.test.SimpleXMLContentType.Inst.defineAttribute('firstName',
     });
 
 TP.test.SimpleXMLContentType.Inst.defineAttribute('age',
-    TP.xpc('/emp/age',
-        TP.hc('shouldCollapse', true, 'extractWith', 'value')),
+    TP.xpc('/emp/age', TP.hc('extractWith', 'value')),
     {
         valid: {
             dataType: Number
@@ -604,9 +601,7 @@ TP.test.SimpleXMLContentType.Inst.defineAttribute('age',
     });
 
 TP.test.SimpleXMLContentType.Inst.defineAttribute('SSN',
-    TP.xpc('/emp/SSN',
-        TP.hc('shouldCollapse', true, 'extractWith', 'value',
-                'buildout', true)),
+    TP.xpc('/emp/SSN', TP.hc('extractWith', 'value', 'buildout', true)),
     {
         valid: {
             dataType: 'TP.test.SSN'

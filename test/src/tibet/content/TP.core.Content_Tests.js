@@ -24,7 +24,7 @@ function() {
 
         TP.sys.shouldUseContentCheckpoints(true);
 
-        xmlPath1 = TP.apc('/emp/lname').set('shouldCollapse', true);
+        xmlPath1 = TP.apc('/emp/lname');
     });
 
     //  ---
@@ -767,7 +767,7 @@ function() {
 
         TP.sys.shouldUseContentCheckpoints(true);
 
-        jsonPath1 = TP.apc('$.emp.lname').set('shouldCollapse', true);
+        jsonPath1 = TP.apc('$.emp.lname');
     });
 
     //  ---
