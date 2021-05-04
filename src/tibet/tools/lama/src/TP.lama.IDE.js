@@ -5323,6 +5323,7 @@ function(completionFunc) {
             //  proceeding.
             hookElem = TP.byCSSPath('.right_hook', win, true, false);
             animationFinishFunc = function() {
+                animationFinishFunc.ignore(hookElem, 'TP.sig.DOMAnimationEnd');
                 //  Hide the Lama's busy message... getting ready for use.
                 TP.elementHideBusyMessage(contentElem);
                 if (TP.isCallable(completionFunc)) {
