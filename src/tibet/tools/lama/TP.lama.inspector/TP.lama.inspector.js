@@ -2053,8 +2053,12 @@ function(anInfo) {
     if (TP.notValid(target) && TP.isEmpty(targetPath)) {
         info = TP.hc('targetObject', this,
                         'targetAspect', TP.NOT_FOUND,
-                        'bayIndex', currentBayIndex + 1,
                         'selectedAspect', targetAspect);
+        if (TP.isNumber(currentBayIndex)) {
+            info.atPut('bayIndex', currentBayIndex + 1);
+        } else {
+            info.atPut('bayIndex', 1);
+        }
 
         //  Note here how we pass false to avoid creating a history entry for
         //  this action.
