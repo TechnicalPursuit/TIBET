@@ -930,7 +930,9 @@ function(target, suiteName, suiteFunc) {
      * @returns {TP.test.Suite} The new test suite instance.
      */
 
-    if (TP.notValid(target) || TP.notValid(suiteName) || TP.notValid(suiteFunc)) {
+    if (TP.notValid(target) ||
+        TP.notValid(suiteName) ||
+        TP.notValid(suiteFunc)) {
         this.raise('TP.sig.InvalidParameter');
         return;
     }
@@ -950,9 +952,6 @@ function(target, suiteName, suiteFunc) {
 
     //  Install any GUI drivers we might need.
     this.$set('drivers', TP.hc());
-    if (TP.sys.getTypeByName('TP.test.GUIDriver')) {
-        this.$get('drivers').atPut('gui', TP.test.GUIDriver.construct());
-    }
 
     //  Track load information to support context/file test filtering.
     this.$set(TP.LOAD_PATH, TP.boot[TP.LOAD_PATH]);
@@ -1000,6 +999,11 @@ function(caseName, caseFunc) {
 
     var testCase,
         caseList;
+
+    if (TP.notValid(this.$get('drivers').at('gui')) &&
+        TP.sys.getTypeByName('TP.test.GUIDriver')) {
+        this.$get('drivers').atPut('gui', TP.test.GUIDriver.construct());
+    }
 
     testCase = TP.test.Case.construct(this, caseName, caseFunc);
     if (TP.notValid(testCase)) {
