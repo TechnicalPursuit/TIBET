@@ -11,34 +11,25 @@
 TP.lang.Object.defineSubtype('test.GUIDriver');
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
 /**
- * The Window context that this GUI driver is currently operating in. This is
- * the default context used to find elements, etc.
- * @type {TP.core.Window}
+ * Whether or not the keymaps that this type manages have been set up.
+ * @type {Boolean}
  */
-TP.test.GUIDriver.Inst.defineAttribute('windowContext');
-
-/**
- * An object that will provide an API to manage Promises for this driver. When
- * executing in the test harness, this will typically be the currently executing
- * test case.
- * @type {Object}
- */
-TP.test.GUIDriver.Inst.defineAttribute('promiseProvider');
+TP.test.GUIDriver.Type.defineAttribute('$mapsAreSetup');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.test.GUIDriver.Type.defineMethod('initialize',
+TP.test.GUIDriver.Type.defineMethod('setupKeymaps',
 function() {
 
     /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
+     * @method setupKeymaps
+     * @summary Sets up the keymaps that this type manages.
      */
 
     var newKeymap,
@@ -52,6 +43,11 @@ function() {
 
         keyCode,
         val;
+
+    //  If the maps are already set up, then exit.
+    if (TP.isTrue(this.get('$mapsAreSetup'))) {
+        return;
+    }
 
     //  We can't run Syn in a Chrome extension.
     if (TP.sys.inExtension()) {
@@ -104,7 +100,7 @@ function() {
         //  If the entry has a 'browser' qualification, make sure that it
         //  matches the browser we're currently on.
         if (TP.elementHasAttribute(entry, 'browser') &&
-                TP.elementGetAttribute(entry, 'browser') !== TP.sys.getBrowser()) {
+            TP.elementGetAttribute(entry, 'browser') !== TP.sys.getBrowser()) {
             continue;
         }
 
@@ -256,8 +252,29 @@ function() {
         '[Num9]': '[num9]'
     };
 
+    this.set('$mapsAreSetup', true);
+
     return;
 });
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * The Window context that this GUI driver is currently operating in. This is
+ * the default context used to find elements, etc.
+ * @type {TP.core.Window}
+ */
+TP.test.GUIDriver.Inst.defineAttribute('windowContext');
+
+/**
+ * An object that will provide an API to manage Promises for this driver. When
+ * executing in the test harness, this will typically be the currently executing
+ * test case.
+ * @type {Object}
+ */
+TP.test.GUIDriver.Inst.defineAttribute('promiseProvider');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -275,6 +292,8 @@ function(windowContext) {
      */
 
     this.callNextMethod();
+
+    this.getType().setupKeymaps();
 
     this.set('windowContext', windowContext);
 
