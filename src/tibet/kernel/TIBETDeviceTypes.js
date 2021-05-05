@@ -780,16 +780,13 @@ function() {
      * @returns {TP.meta.core.Keyboard} The receiver.
      */
 
-    var req,
-        response,
+    var response,
         fname,
         path,
+        thisref,
 
         url,
-        resp,
-        xml;
-
-    req = TP.hc('async', false);
+        resp;
 
     //  Note that we expand the paths here first before creating a URI. In
     //  this way, all of the 'metadata' URIs are uniformly concrete URIs
@@ -804,23 +801,37 @@ function() {
         path = TP.uriExpandPath('~lib_dat/' + fname + '.xml');
     }
 
+    thisref = this;
+
     url = TP.uc(path);
-    response = url.getContent();
-    if (TP.isValid(response)) {
-        xml = response.getData().getNativeNode();
-    }
+    response = url.getResource(TP.hc('async', true));
+    response.then(
+        function(result) {
+            if (TP.isValid(result)) {
+                return result.getData().getNativeNode();
+            }
+        }).then(
+        function(result) {
+            if (TP.notValid(result)) {
+                resp = url.getNativeNode(TP.hc('async', true));
+                resp.then(
+                    function(aResult) {
+                        if (TP.notValid(aResult)) {
+                            return thisref.raise('TP.sig.InvalidKeymap');
+                        }
 
-    if (!xml) {
-        resp = url.getNativeNode(req);
-        if (TP.notValid(xml = resp.get('result'))) {
-            return this.raise('TP.sig.InvalidKeymap');
-        }
-    }
+                        thisref.$set('mapuri', url);
 
-    this.$set('mapuri', url);
+                        //  cache the XML for speed in other lookups
+                        TP.core.Keyboard.$set('mapxml', aResult);
+                    });
+            } else {
+                thisref.$set('mapuri', url);
 
-    //  cache the XML for speed in other lookups
-    TP.core.Keyboard.$set('mapxml', xml);
+                //  cache the XML for speed in other lookups
+                TP.core.Keyboard.$set('mapxml', result);
+            }
+        });
 
     return this;
 });
