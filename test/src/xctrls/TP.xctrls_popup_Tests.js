@@ -74,14 +74,14 @@ function() {
         unloadURI,
         loadURI;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
     this.before(
         function(suite, options) {
+
+            driver = this.getDriver();
 
             windowContext = driver.get('windowContext');
 

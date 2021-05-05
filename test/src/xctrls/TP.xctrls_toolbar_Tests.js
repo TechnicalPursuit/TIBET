@@ -759,8 +759,6 @@ function() {
         unloadURI,
         loadURI;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
@@ -769,6 +767,8 @@ function() {
         function(suite, options) {
 
             var loc;
+
+            driver = this.getDriver();
 
             windowContext = driver.get('windowContext');
 
@@ -865,8 +865,6 @@ function() {
         unloadURI,
         loadURI;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
@@ -875,6 +873,8 @@ function() {
         function(suite, options) {
 
             var loc;
+
+            driver = this.getDriver();
 
             windowContext = driver.get('windowContext');
 
@@ -1017,8 +1017,6 @@ function() {
         unloadURI,
         loadURI;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
@@ -1027,6 +1025,8 @@ function() {
         function(suite, options) {
 
             var loc;
+
+            driver = this.getDriver();
 
             windowContext = driver.get('windowContext');
 

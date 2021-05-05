@@ -11,14 +11,14 @@ function() {
         unloadURI,
         loadURI;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
     this.before(
         function(suite, options) {
+
+            driver = this.getDriver();
 
             windowContext = driver.get('windowContext');
 
@@ -290,14 +290,14 @@ function() {
 
         testData;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
     this.before(
         function(suite, options) {
+
+            driver = this.getDriver();
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -467,14 +467,14 @@ function() {
 
         testData;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
     this.before(
         function(suite, options) {
+
+            driver = this.getDriver();
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
@@ -689,14 +689,14 @@ function() {
         unloadURI,
         loadURI;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
     this.before(
         function(suite, options) {
+
+            driver = this.getDriver();
 
             TP.$$setupCommonObjectValues();
 
@@ -815,8 +815,6 @@ function() {
 
         getSelectedIndices;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     getSelectedIndices = function() {
@@ -843,6 +841,8 @@ function() {
 
     this.before(
         function(suite, options) {
+
+            driver = this.getDriver();
 
             TP.$$setupCommonObjectValues();
 
@@ -1023,14 +1023,14 @@ function() {
         unloadURI,
         loadURI;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
     this.before(
         function(suite, options) {
+
+            driver = this.getDriver();
 
             windowContext = driver.get('windowContext');
 
@@ -1117,14 +1117,14 @@ function() {
         unloadURI,
         loadURI;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
     this.before(
         function(suite, options) {
+
+            driver = this.getDriver();
 
             windowContext = driver.get('windowContext');
 

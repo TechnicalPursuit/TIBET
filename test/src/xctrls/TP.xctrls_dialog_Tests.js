@@ -13,14 +13,14 @@ function() {
         unloadURI,
         loadURI;
 
-    driver = this.getDriver();
-
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
     this.before(
         function(suite, options) {
+
+            driver = this.getDriver();
 
             //  We 'snapshot' the current focus stack so that in case we're
             //  running this in the Sherpa, etc., any current items won't be
