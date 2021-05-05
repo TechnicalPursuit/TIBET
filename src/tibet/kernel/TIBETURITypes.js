@@ -4798,14 +4798,18 @@ function(aDataSource, aRequest) {
      *     content set as its result.
      */
 
-    var subrequest,
+    var request,
+
+        subrequest,
         async;
+
+    request = this.constructRequest(aRequest);
 
     //  If we're going to have to request the data then the key thing we
     //  want to avoid is having an incoming request complete() before the
     //  entire process is finished. That means ensuring we have a clean
     //  subrequest instance we can locally modify.
-    subrequest = this.constructSubrequest(aRequest);
+    subrequest = this.constructSubrequest(request);
     subrequest.atPut('async', false);
 
     subrequest.defineMethod(
@@ -4824,7 +4828,7 @@ function(aDataSource, aRequest) {
                 }
 
                 if (TP.canInvoke(resource, 'transform')) {
-                    result = resource.transform(aDataSource, aRequest);
+                    result = resource.transform(aDataSource, request);
 
                     //  rewrite the request result object so we hold on to
                     //  the processed content rather than the inbound
@@ -4834,14 +4838,14 @@ function(aDataSource, aRequest) {
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
-                if (TP.canInvoke(aRequest, 'complete')) {
+                if (TP.canInvoke(request, 'complete')) {
                     //  Note that this could be null if there's no result,
                     //  or if the transform call isn't supported, or if the
                     //  transform simply produces a null result.
                     if (TP.isValid(result)) {
-                        aRequest.complete(result);
+                        request.complete(result);
                     } else {
-                        aRequest.complete();
+                        request.complete();
                     }
                 }
 
@@ -4865,8 +4869,8 @@ function(aDataSource, aRequest) {
 
                 subrequest.$wrapupJob('Failed', TP.FAILED);
 
-                if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, info);
+                if (TP.canInvoke(request, 'fail')) {
+                    request.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -4879,13 +4883,13 @@ function(aDataSource, aRequest) {
     //  resource is async-only and potentially rewrote the value.
     async = this.rewriteRequestMode(subrequest);
     if (async) {
-        aRequest.andJoinChild(subrequest);
+        request.andJoinChild(subrequest);
 
         //  hand back the response object for the "outer" request, which
         //  will be either the originating request or our internally
         //  constructed one (which was also used as the subrequest)
-        if (TP.canInvoke(aRequest, 'getResponse')) {
-            return aRequest.getResponse();
+        if (TP.canInvoke(request, 'getResponse')) {
+            return request.getResponse();
         } else {
             return subrequest.getResponse();
         }
@@ -6019,10 +6023,13 @@ function(aRequest) {
      *     node content set as its result.
      */
 
-    var subrequest,
+    var request,
+        subrequest,
         async;
 
-    subrequest = this.constructSubrequest(aRequest);
+    request = this.constructRequest(aRequest);
+
+    subrequest = this.constructSubrequest(request);
 
     subrequest.defineMethod(
             'completeJob',
@@ -6036,8 +6043,8 @@ function(aRequest) {
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
-                if (TP.canInvoke(aRequest, 'complete')) {
-                    aRequest.complete(result);
+                if (TP.canInvoke(request, 'complete')) {
+                    request.complete(result);
                 }
             });
 
@@ -6058,8 +6065,8 @@ function(aRequest) {
 
                 subrequest.$wrapupJob('Failed', TP.FAILED);
 
-                if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, info);
+                if (TP.canInvoke(request, 'fail')) {
+                    request.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -6072,13 +6079,13 @@ function(aRequest) {
     //  resource is async-only and potentially rewrote the value.
     async = this.rewriteRequestMode(subrequest);
     if (async) {
-        aRequest.andJoinChild(subrequest);
+        request.andJoinChild(subrequest);
 
         //  hand back the response object for the "outer" request, which
         //  will be either the originating request or our internally
         //  constructed one (which was also used as the subrequest)
-        if (TP.canInvoke(aRequest, 'getResponse')) {
-            return aRequest.getResponse();
+        if (TP.canInvoke(request, 'getResponse')) {
+            return request.getResponse();
         } else {
             return subrequest.getResponse();
         }
@@ -6755,20 +6762,23 @@ function(aRequest) {
      */
 
     var request,
-        subrequest,
+        subrequest1,
+        subrequest2,
         thisref,
         async;
 
+    request = this.constructRequest(aRequest);
+
     //  This request will be used for transformation processing.
-    request = this.constructSubrequest(aRequest);
-    request.atPutIfAbsent('targetPhase', 'Finalize');
+    subrequest1 = this.constructSubrequest(request);
+    subrequest1.atPutIfAbsent('targetPhase', 'Finalize');
 
     //  The subrequest here is used for content acquisition.
-    subrequest = this.constructSubrequest(aRequest);
+    subrequest2 = this.constructSubrequest(request);
 
     thisref = this;
 
-    subrequest.defineMethod(
+    subrequest2.defineMethod(
             'completeJob',
             function(aResult) {
 
@@ -6784,14 +6794,14 @@ function(aRequest) {
                 if (TP.canInvoke(resource, 'transform')) {
 
                     /*
-                    //  Update the resource, passing subrequest so we keep the
+                    //  Update the resource, passing subrequest2 so we keep the
                     //  original request params (like operation) flowing through.
                     //  TODO: setting the resource here has a bad habit of
                     //  triggering a cyclic change series from processed to
                     //  unprocessed data. Not convinced we should set it at all
                     //  here since we're essentially responding _after_ a
                     //  getResource call to process the result data.
-                    thisref.$setPrimaryResource(resource, subrequest);
+                    thisref.$setPrimaryResource(resource, subrequest2);
                     */
 
                     //  Start out by configuring to use the processed result.
@@ -6811,7 +6821,7 @@ function(aRequest) {
                         returnProcessedResult = false;
                     }
 
-                    resp = TP.process(resource, request);
+                    resp = TP.process(resource, subrequest1);
                     result = resp.get('result');
 
                     //  If the flag is true, then use the processed result as
@@ -6820,20 +6830,20 @@ function(aRequest) {
                         returnResult = result;
                     }
 
-                    if (request.didFail()) {
-                        aRequest.fail(request.getFaultText(),
-                                      request.getFaultCode(),
-                                      request.getFaultInfo());
-                        subrequest.fail(request.getFaultText(),
-                                          request.getFaultCode(),
-                                          request.getFaultInfo());
+                    if (subrequest1.didFail()) {
+                        request.fail(subrequest1.getFaultText(),
+                                      subrequest1.getFaultCode(),
+                                      subrequest1.getFaultInfo());
+                        subrequest2.fail(subrequest1.getFaultText(),
+                                          subrequest1.getFaultCode(),
+                                          subrequest1.getFaultInfo());
                         return;
                     }
 
                     //  rewrite the request result object so we hold on to
                     //  the processed content rather than the inbound
                     //  content.
-                    subrequest.set('result', result);
+                    subrequest2.set('result', result);
 
                     //  the return result should become the new resource
                     thisref.set('resource',
@@ -6842,18 +6852,18 @@ function(aRequest) {
                                             'processedResult', true));
                 }
 
-                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
+                subrequest2.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
                 //  Inform any originally inbound request of our status.
-                if (TP.canInvoke(aRequest, 'complete')) {
+                if (TP.canInvoke(request, 'complete')) {
                     //  Note that this could be null if there's no result,
                     //  or if the transform call isn't supported, or if the
                     //  transform simply produces a null result.
-                    aRequest.complete(result);
+                    request.complete(result);
                 }
             });
 
-    subrequest.defineMethod('failJob',
+    subrequest2.defineMethod('failJob',
         function(aFaultString, aFaultCode, aFaultInfo) {
 
             var info,
@@ -6861,39 +6871,39 @@ function(aRequest) {
 
             info = TP.hc(aFaultInfo);
             if (TP.isValid(subrequests = info.at('subrequests'))) {
-                subrequests.push(subrequest);
+                subrequests.push(subrequest2);
             } else {
-                subrequests = TP.ac(subrequest);
+                subrequests = TP.ac(subrequest2);
                 info.atPut('subrequests', subrequests);
             }
 
-            subrequest.$wrapupJob('Failed', TP.FAILED);
+            subrequest2.$wrapupJob('Failed', TP.FAILED);
 
             //  Inform any originally inbound request of our status.
-            if (TP.canInvoke(aRequest, 'fail')) {
-                aRequest.fail(aFaultString, aFaultCode, info);
+            if (TP.canInvoke(request, 'fail')) {
+                request.fail(aFaultString, aFaultCode, info);
             }
         });
 
     //  trigger the invocation and rely on the handlers for the rest.
-    this.getResource(subrequest);
+    this.getResource(subrequest2);
 
-    //  re-read the request in case load() processing rewrote the
-    //  request mode on us.
-    async = this.rewriteRequestMode(subrequest);
+    //  re-read the request in case load() processing rewrote the request mode
+    //  on us.
+    async = this.rewriteRequestMode(subrequest2);
     if (async) {
-        aRequest.andJoinChild(subrequest);
+        request.andJoinChild(subrequest2);
 
-        //  if we're async then the data may not be ready, we need to return
-        //  a viable response object instead.
-        if (TP.canInvoke(aRequest, 'getResponse')) {
-            return aRequest.getResponse();
+        //  if we're async then the data may not be ready, we need to return a
+        //  viable response object instead.
+        if (TP.canInvoke(request, 'getResponse')) {
+            return request.getResponse();
         } else {
-            return subrequest.getResponse();
+            return subrequest2.getResponse();
         }
     }
 
-    return subrequest.getResponse();
+    return subrequest2.getResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -12021,28 +12031,31 @@ function(targetURI, aRequest) {
      * @returns {TP.sig.Response|undefined} The request's response object.
      */
 
-    var subrequest,
+    var request,
+        subrequest,
         targetLoc,
         response;
 
+    request = targetURI.constructRequest(aRequest);
+
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
-    subrequest = targetURI.constructSubrequest(aRequest);
+    subrequest = targetURI.constructSubrequest(request);
 
     //  most supported browsers can handle at least loading from the file
     //  system via an XMLHttpRequest if nothing else, but just in case....
     if (!TP.canInvoke(TP, '$fileLoad')) {
         this.raise('TP.sig.UnsupportedOperation');
-        if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail('Unsupported operation.');
+        if (TP.canInvoke(request, 'fail')) {
+            request.fail('Unsupported operation.');
         }
         return;
     }
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
-        if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail('Invalid URI: ' + targetURI);
+        if (TP.canInvoke(request, 'fail')) {
+            request.fail('Invalid URI: ' + targetURI);
         }
 
         return;
@@ -12080,12 +12093,12 @@ function(targetURI, aRequest) {
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
-                if (TP.canInvoke(aRequest, 'complete')) {
+                if (TP.canInvoke(request, 'complete')) {
                     //  Use the return value from cache update since it's
                     //  the "best form" the cache/result check could
                     //  produce. The data will be filtered higher up for
                     //  requests that care.
-                    aRequest.complete(result);
+                    request.complete(result);
                 }
             });
 
@@ -12115,8 +12128,8 @@ function(targetURI, aRequest) {
 
                 subrequest.$wrapupJob('Failed', TP.FAILED);
 
-                if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, info);
+                if (TP.canInvoke(request, 'fail')) {
+                    request.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -12127,8 +12140,8 @@ function(targetURI, aRequest) {
     //  Note: We do *not* set the result for these responses here.
     //  complete() already did that in the call above. If we do that again
     //  here, we'll undo any wrapping or filtering.
-    if (TP.canInvoke(aRequest, 'getResponse')) {
-        response = aRequest.getResponse();
+    if (TP.canInvoke(request, 'getResponse')) {
+        response = request.getResponse();
     } else {
         response = subrequest.getResponse();
     }
@@ -12154,28 +12167,31 @@ function(targetURI, aRequest) {
      * @returns {TP.sig.Response|undefined} The request's response object.
      */
 
-    var subrequest,
+    var request,
+        subrequest,
         targetLoc,
         response;
 
+    request = targetURI.constructRequest(aRequest);
+
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
-    subrequest = targetURI.constructSubrequest(aRequest);
+    subrequest = targetURI.constructSubrequest(request);
 
     //  only IE and Moz currently support file deletes so if we're down
     //  to this handler we're hopefully on one of those browsers :)
     if (!TP.canInvoke(TP, '$fileDelete')) {
         this.raise('TP.sig.UnsupportedOperation');
-        if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail('Unsupported operation.');
+        if (TP.canInvoke(request, 'fail')) {
+            request.fail('Unsupported operation.');
         }
         return;
     }
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
-        if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail('Invalid URI: ' + targetURI);
+        if (TP.canInvoke(request, 'fail')) {
+            request.fail('Invalid URI: ' + targetURI);
         }
         return;
     }
@@ -12190,14 +12206,14 @@ function(targetURI, aRequest) {
 
                     subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, aResult);
 
-                    if (TP.canInvoke(aRequest, 'complete')) {
-                        aRequest.complete(aResult);
+                    if (TP.canInvoke(request, 'complete')) {
+                        request.complete(aResult);
                     }
-                } else if (TP.canInvoke(aRequest, 'fail')) {
+                } else if (TP.canInvoke(request, 'fail')) {
 
                     subrequest.$wrapupJob('Failed', TP.FAILED);
 
-                    aRequest.fail();
+                    request.fail();
                 }
             });
 
@@ -12218,8 +12234,8 @@ function(targetURI, aRequest) {
 
                 subrequest.$wrapupJob('Failed', TP.FAILED);
 
-                if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, info);
+                if (TP.canInvoke(request, 'fail')) {
+                    request.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -12232,8 +12248,8 @@ function(targetURI, aRequest) {
     //  Note: We do *not* set the result for these responses here.
     //  complete() already did that in the call above. If we do that again
     //  here, we'll undo any wrapping or filtering.
-    if (TP.canInvoke(aRequest, 'getResponse')) {
-        response = aRequest.getResponse();
+    if (TP.canInvoke(request, 'getResponse')) {
+        response = request.getResponse();
     } else {
         response = subrequest.getResponse();
     }
@@ -12265,22 +12281,25 @@ function(targetURI, aRequest) {
      * @returns {TP.sig.Response|undefined} The request's response object.
      */
 
-    var subrequest,
+    var request,
+        subrequest,
         targetLoc,
         content,
         resp,
         response;
 
+    request = targetURI.constructRequest(aRequest);
+
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
-    subrequest = targetURI.constructSubrequest(aRequest);
+    subrequest = targetURI.constructSubrequest(request);
 
     //  only IE and Moz currently support file save access so if we're down
     //  to this handler we're hopefully on one of those browsers :)
     if (!TP.canInvoke(TP, '$fileSave')) {
         this.raise('TP.sig.UnsupportedOperation');
-        if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail('Unsupported operation.');
+        if (TP.canInvoke(request, 'fail')) {
+            request.fail('Unsupported operation.');
         }
 
         return;
@@ -12288,8 +12307,8 @@ function(targetURI, aRequest) {
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
-        if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail('Invalid URI: ' + targetURI);
+        if (TP.canInvoke(request, 'fail')) {
+            request.fail('Invalid URI: ' + targetURI);
         }
 
         return;
@@ -12332,14 +12351,14 @@ function(targetURI, aRequest) {
 
                     subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, aResult);
 
-                    if (TP.canInvoke(aRequest, 'complete')) {
-                        aRequest.complete(aResult);
+                    if (TP.canInvoke(request, 'complete')) {
+                        request.complete(aResult);
                     }
-                } else if (TP.canInvoke(aRequest, 'fail')) {
+                } else if (TP.canInvoke(request, 'fail')) {
 
                     subrequest.$wrapupJob('Failed', TP.FAILED);
 
-                    aRequest.fail();
+                    request.fail();
                 }
             });
 
@@ -12360,8 +12379,8 @@ function(targetURI, aRequest) {
 
                 subrequest.$wrapupJob('Failed', TP.FAILED);
 
-                if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, info);
+                if (TP.canInvoke(request, 'fail')) {
+                    request.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -12372,8 +12391,8 @@ function(targetURI, aRequest) {
     //  Note: We do *not* set the result for these responses here.
     //  complete() already did that in the call above. If we do that again
     //  here, we'll undo any wrapping or filtering.
-    if (TP.canInvoke(aRequest, 'getResponse')) {
-        response = aRequest.getResponse();
+    if (TP.canInvoke(request, 'getResponse')) {
+        response = request.getResponse();
     } else {
         response = subrequest.getResponse();
     }
