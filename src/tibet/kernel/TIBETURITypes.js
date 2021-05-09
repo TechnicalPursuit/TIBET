@@ -13128,14 +13128,14 @@ function(targetURI) {
         this.set('excludeRE', excludeRE);
     }
 
-    if (TP.isValid(excludeRE)) {
+    if (TP.isValid(excludeRE) && TP.notEmpty(excludes)) {
         TP.info('checking ' + targetLoc + ' not in: ' + excludes);
         if (excludeRE.test(targetVirtual)) {
             return false;
         }
     }
 
-    if (TP.isValid(includeRE)) {
+    if (TP.isValid(includeRE) && TP.notEmpty(includes)) {
         TP.info('checking ' + targetLoc + ' in: ' + includes);
         return includeRE.test(targetVirtual);
     }
