@@ -3849,15 +3849,14 @@ function(fromElement, toElement, shouldOverlay, nameRegExp, useElementNS) {
      *     from the fromElement are merged into the toElement.
      * @param {Element} fromElement The source element.
      * @param {Element} toElement The target element.
-     * @param {Boolean} shouldOverlay If the same attribute exists on the
-     *     toElement, should the new value be copied from the fromElement onto
-     *     the toElement? Defaults to false.
-     * @param {RegExp} nameRegExp If this RegExp is defined, then only
+     * @param {Boolean} [shouldOverlay=false] If the same attribute exists on
+     *     the toElement, should the new value be copied from the fromElement
+     *     onto the toElement?
+     * @param {RegExp} [nameRegExp] If this RegExp is defined, then only
      *     attributes whose name matches using this RegExp will be merged from
      *     the fromElement onto the toElement.
-     * @param {Boolean} useElementNS Whether or not to use the element's
-     *     namespace for attributes that aren't already in a namespace. Defaults
-     *     to false.
+     * @param {Boolean} [useElementNS=false] Whether or not to use the element's
+     *     namespace for attributes that aren't already in a namespace.
      * @example Merge attributes from one XML element to another (but not the
      *     overlaying the value of existing attributes)
      *     <code>
