@@ -6813,29 +6813,30 @@ function() {
                     notContainedElems,
 
                     aspectKey,
-                    tpElems,
+                    elems,
 
                     len,
                     i,
 
-                    tpElem;
+                    elem;
 
                 containedElems = TP.ac();
                 notContainedElems = TP.ac();
 
                 aspectKey = kvPair.first();
-                tpElems = kvPair.last();
+                elems = kvPair.last();
 
                 //  Iterate over all of the elements and sort them into two
                 //  Arrays, one for elements contained in the receiver and one
                 //  for elements that are not.
-                len = tpElems.getSize();
+                len = elems.getSize();
                 for (i = 0; i < len; i++) {
-                    tpElem = tpElems.at(i);
-                    if (this.contains(tpElem, TP.IDENTITY)) {
-                        containedElems.push(tpElem);
+                    elem = elems.at(i);
+                    if (this.contains(elem, TP.IDENTITY)) {
+                        containedElems.push(elem);
+                        elem[TP.BOUND_ATTR_PROCESSED_COUNT] = 0;
                     } else {
-                        notContainedElems.push(tpElem);
+                        notContainedElems.push(elem);
                     }
                 }
 
