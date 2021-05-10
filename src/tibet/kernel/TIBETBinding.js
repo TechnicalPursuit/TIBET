@@ -7204,7 +7204,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
      *     receiver is inside of a repeat context.
      * @param {Number} repeatIndex The index of the nearest scope within the
      *     nearest repeat if the receiver is inside of a repeat context.
-     * @returns {TP.dom.ElementNode} The receiver.
+     * @returns {Boolean} Whether or not the machinery invoked the set machinery
+     *     of the leaf to change the value it is displaying.
      */
 
     var elem,
@@ -7285,7 +7286,7 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
             //  receiver's native element, then we've already refreshed it in
             //  this 'pass'. Just return here.
             if (refreshedElemsByAspectAndFacet.indexOf(elem) !== TP.NOT_FOUND) {
-                return this;
+                return false;
             }
         }
     }
