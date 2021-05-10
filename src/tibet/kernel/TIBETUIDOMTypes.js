@@ -584,7 +584,7 @@ function(aSignal, anEvent) {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('populateCompilationAttrs',
-function(aRequest) {
+function(aRequest, anElement) {
 
     /**
      * @method populateCompilationAttrs
@@ -592,18 +592,17 @@ function(aRequest) {
      *     type when it is compiled.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @param {Element} anElement The element to populate the attributes onto.
      * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
-    var elem,
-
-        sources,
+    var sources,
         sourceElem,
 
         classes;
 
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
+    if (!TP.isElement(anElement)) {
         return null;
     }
 
@@ -621,7 +620,7 @@ function(aRequest) {
         classes.forEach(
                 function(aClassName) {
                     //  This will only add the class if it isn't already there.
-                    TP.elementAddClass(elem, aClassName);
+                    TP.elementAddClass(anElement, aClassName);
                 });
     }
 
@@ -1713,10 +1712,6 @@ function(aRequest) {
         return;
     }
 
-    //  Populate any 'compilation attributes' from the request onto the element
-    //  that we're producing.
-    this.populateCompilationAttrs(aRequest);
-
     //  We may have gotten here because the tag processing system was able to
     //  obtain a 'concrete type' for this node using the 'tibet:ctrl' attribute
     //  (which is really just defining a controller type) not a 'tibet:tag'
@@ -1729,8 +1724,15 @@ function(aRequest) {
     if (TP.notEmpty(ns = elem.namespaceURI) &&
         TP.w3.Xmlns.isNativeNS(ns) &&
         !TP.elementHasAttribute(elem, 'tibet:tag', true)) {
+
         elem = TP.nodeCloneNode(elem);
+
         TP.elementSetGenerator(elem);
+
+        //  Populate any 'compilation attributes' from the request onto the
+        //  element that we're producing.
+        this.populateCompilationAttrs(aRequest, elem);
+
         return elem;
     }
 
@@ -1740,8 +1742,15 @@ function(aRequest) {
     //  alone.
     if (TP.isValid(targetDoc = aRequest.at('doc'))) {
         if (!TP.isHTMLDocument(targetDoc)) {
+
             elem = TP.nodeCloneNode(elem);
+
             TP.elementSetGenerator(elem);
+
+            //  Populate any 'compilation attributes' from the request onto the
+            //  element that we're producing.
+            this.populateCompilationAttrs(aRequest, elem);
+
             return elem;
         }
     }

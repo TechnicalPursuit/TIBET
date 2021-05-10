@@ -32,7 +32,7 @@ TP.tibet.template.defineAttribute('themeURI', TP.NO_RESULT);
 //  ------------------------------------------------------------------------
 
 TP.tibet.template.Type.defineMethod('populateCompilationAttrs',
-function(aRequest) {
+function(aRequest, anElement) {
 
     /**
      * @method populateCompilationAttrs
@@ -40,16 +40,16 @@ function(aRequest) {
      *     type when it is processed.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @param {Element} anElement The element to populate the attributes onto.
+     * @returns {TP.meta.tibet.template} The receiver.
      */
 
-    var elem;
-
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
+    if (!TP.isElement(anElement)) {
         return null;
     }
 
-    TP.elementSetAttribute(elem, 'tibet:opaque', 'bind', true);
+    TP.elementSetAttribute(anElement, 'tibet:opaque', 'bind', true);
 
     return this.callNextMethod();
 });

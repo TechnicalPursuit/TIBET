@@ -109,8 +109,6 @@ function(aRequest) {
 
         reqAttrs;
 
-    elem = aRequest.at('node');
-
     //  If the type (but not inherited - just at the individual type level)
     //  has specified 'required attributes' that need to be populated on all
     //  new tag instances, then do that here.
@@ -118,11 +116,11 @@ function(aRequest) {
         TP.elementSetAttributes(elem, reqAttrs, true);
     }
 
+    elem = TP.nodeCloneNode(elem);
+
     //  Populate any 'compilation attributes' from the request onto the element
     //  that we're producing (since we don't call up to our supertype here).
-    this.populateCompilationAttrs(aRequest);
-
-    elem = TP.nodeCloneNode(elem);
+    this.populateCompilationAttrs(aRequest, elem);
 
     TP.elementSetGenerator(elem);
 
