@@ -43,6 +43,10 @@ TP.dom.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
 //  no states are toggleable.
 TP.dom.UIElementNode.Type.defineAttribute('toggleableStateNames', TP.ac());
 
+//  A TP.core.Hash of 'required attributes' that should be populated on all
+//  new instances of the tag.
+TP.dom.UIElementNode.Type.defineAttribute('requiredAttrs');
+
 //  Note how these properties are TYPE_LOCAL, by design.
 
 //  The TP.dom.UIElementNode that focus is moving to, based on TIBET
@@ -596,7 +600,9 @@ function(aRequest, anElement) {
      * @returns {TP.meta.dom.UIElementNode} The receiver.
      */
 
-    var sources,
+    var reqAttrs,
+
+        sources,
         sourceElem,
 
         classes;
@@ -604,6 +610,12 @@ function(aRequest, anElement) {
     //  Make sure that we have an element to work from.
     if (!TP.isElement(anElement)) {
         return null;
+    }
+
+    //  If the type has specified 'required attributes' that need to be
+    //  populated on all new tag instances, then do that here.
+    if (TP.notEmpty(reqAttrs = this.get('requiredAttrs'))) {
+        TP.elementSetAttributes(anElement, reqAttrs, true);
     }
 
     //  If we have source elements, grab the first one and get it's 'class name'

@@ -34,10 +34,6 @@ TP.xctrls.Element.Inst.resolveTraits(
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  A TP.core.Hash of 'required attributes' that should be populated on all
-//  new instances of the tag.
-TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
-
 TP.xctrls.Element.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac(
             'TP.sig.DOMClick',
@@ -105,16 +101,7 @@ function(aRequest) {
      * @returns {Element} The element.
      */
 
-    var elem,
-
-        reqAttrs;
-
-    //  If the type (but not inherited - just at the individual type level)
-    //  has specified 'required attributes' that need to be populated on all
-    //  new tag instances, then do that here.
-    if (TP.notEmpty(reqAttrs = this.get('requiredAttrs'))) {
-        TP.elementSetAttributes(elem, reqAttrs, true);
-    }
+    var elem;
 
     elem = TP.nodeCloneNode(elem);
 
