@@ -737,7 +737,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  Text node, capture that too.
     for (i = 0; i < scripts.getSize(); i++) {
 
-        scriptURLs.push(scripts.at(i).src);
+        //  Note here how we get the *attribute* value of 'src' - not the
+        //  property value. We want the original value the author entered and
+        //  not adjusted for pathing.
+        scriptURLs.push(scripts.at(i).getAttribute('src'));
 
         //  If the next sibling after the script node is a text node, we capture
         //  its contents and will put them back after we re-create the script
