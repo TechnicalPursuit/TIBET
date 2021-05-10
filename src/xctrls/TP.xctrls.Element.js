@@ -103,6 +103,11 @@ function(aRequest) {
 
     var elem;
 
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
     elem = TP.nodeCloneNode(elem);
 
     //  Populate any 'compilation attributes' from the request onto the element
