@@ -3446,8 +3446,8 @@ function(repeatElem) {
                             repeatIndex = TP.regex.SIMPLE_NUMERIC_PATH.exec(
                                                     attrVal).at(1).asNumber();
 
-                            //  Cache the repeat source and repeat index values on
-                            //  the binding scope.
+                            //  Cache the repeat source and repeat index values
+                            //  on the binding scope.
                             aNode[TP.REPEAT_SOURCE] = repeatSource;
                             aNode[TP.REPEAT_INDEX] = repeatIndex;
 
@@ -5416,7 +5416,8 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     if (/\{/g.test(attrVal)) {
                         //  Grab all of the binding values by parsing the
                         //  attribute value and making it into a Hash.
-                        attrInfo = TP.json2js(TP.reformatJSToJSON(attrVal, false));
+                        attrInfo = TP.json2js(
+                                    TP.reformatJSToJSON(attrVal, false));
 
                         //  Select only those UI aspects that match the
                         //  leafMatcher (and therefore have a reference to the
