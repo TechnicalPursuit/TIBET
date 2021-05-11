@@ -21,10 +21,6 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:codeeditor');
 //  Events:
 //      xctrls-codeeditor-selected
 
-//  ------------------------------------------------------------------------
-//  Type Constants
-//  ------------------------------------------------------------------------
-
 TP.xctrls.codeeditor.addTraits(TP.html.textUtilities);
 
 TP.xctrls.codeeditor.Type.resolveTrait('booleanAttrs', TP.html.textUtilities);
@@ -36,6 +32,18 @@ TP.xctrls.codeeditor.Inst.resolveTraits(
 TP.xctrls.codeeditor.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
+
+//  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+//  The maximum number of lines to use when autosizing to content. If this value
+//  is over 1000, performance of the ACE editor can suffer.
+TP.xctrls.codeeditor.defineAttribute('MAX_LINES', 1000);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.codeeditor.defineAttribute('themeURI', TP.NO_RESULT);
@@ -844,6 +852,11 @@ function() {
         function(aSignal) {
             aSignal.stopPropagation();
         });
+
+    //  If the user has configured the editor to 'auto size' to its content.
+    if (TP.bc(this.getAttribute('autosize'))) {
+        editorObj.setOption('maxLines', this.getType().MAX_LINES);
+    }
 
     //  Set the editor to not show the print margin by default.
     editorObj.setShowPrintMargin(false);
