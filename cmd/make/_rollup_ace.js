@@ -67,6 +67,11 @@
             make.CLI.joinPaths('.', 'src-min-noconflict', 'theme-dawn.js'),
             make.CLI.joinPaths('..', '..', 'deps', 'ace'));
 
+        make.sh.cp(
+            '-R',
+            make.CLI.joinPaths('.', 'src-min-noconflict', 'theme-tomorrow_night.js'),
+            make.CLI.joinPaths('..', '..', 'deps', 'ace'));
+
         resolve();
     };
 
