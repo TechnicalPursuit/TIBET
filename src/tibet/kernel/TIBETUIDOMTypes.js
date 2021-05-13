@@ -5901,6 +5901,7 @@ function(facetName, facetValue) {
             break;
 
         default:
+            signalName = 'TP.sig.ValueChange';
             break;
     }
 
