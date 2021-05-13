@@ -641,7 +641,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
         loadFunc,
 
-        scriptCount;
+        scriptCount,
+
+        totalCount;
 
     if (!TP.isXMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -826,6 +828,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  set its 'load' event handler to the load handler and then append the
     //  new script element to the head.
 
+    //  First, capture the total number of scripts and style links. We'll use
+    //  this number to count down so that we know when we're done.
+    totalCount = scriptURLs.getSize() + styleLinks.getSize();
+
     //  This ensures that each script is loaded in order and is completely
     //  finished loading before the next script is loaded.
     scriptCount = 0;
@@ -844,6 +850,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
         if (TP.isEvent(evt)) {
             TP.eventGetTarget(evt).removeEventListener('load', loadFunc, false);
+            //  Make sure to decrement the counter so that, when it reaches 0,
+            //  we know we're done.
+            totalCount--;
         }
 
         if (TP.notEmpty(styleLinks)) {
@@ -875,7 +884,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             } else {
                 //  The stylesheet we are processing was already loaded. Since
                 //  we've already removed it from our list of style links, we
-                //  just need to re-invoke the load function manually.
+                //  just need to re-invoke the load function manually (after
+                //  decrementing our counter, since we won't call back here).
+                totalCount--;
                 loadFunc();
             }
         } else if (TP.notEmpty(scriptURLs)) {
@@ -903,7 +914,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
             //  Make sure to increment the scriptCount for the next pass!
             scriptCount++;
-        } else {
+        } else if (totalCount === 0) {
+
+            //  If our total count is at 0, then we're done. Finish up.
 
             //  Make sure window listeners etc for content loaded are ready.
             TP.core.Window.installLoadUnloadHooks(TP.nodeGetWindow(aDocument));
