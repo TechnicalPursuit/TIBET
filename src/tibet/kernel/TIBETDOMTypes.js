@@ -17047,49 +17047,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.DocumentNode.Inst.defineHandler('ValueChange',
-function(aSignal) {
-
-    /**
-     * @method handleValueChange
-     * @summary Handles notification of a change.
-     * @description If the origin is the URI that the receiver is observing
-     *     for change (because it loaded that URI into itself), then this method
-     *     reloads the URI's remote resource into the receiver.
-     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
-     * @returns {TP.dom.DocumentNode} The receiver.
-     */
-
-    var req,
-        origin,
-        aspect;
-
-    //  Grab the signal origin - for changes to observed URI resources (see the
-    //  tagAttachDOM()/tagDetachDOM() methods) this should be the URI that
-    //  changed.
-    origin = aSignal.getSignalOrigin();
-
-    //  If it was a URL, then process it as a 'remote resource change'.
-    if (TP.isKindOf(origin, TP.uri.URI)) {
-
-        //  If the aspect is one of URI's 'special aspects', then we just return
-        //  here.
-        aspect = aSignal.at('aspect');
-        if (TP.uri.URI.SPECIAL_ASPECTS.contains(aspect)) {
-            return this;
-        }
-
-        req = TP.request();
-        this.setContent(origin, req);
-    } else {
-        return this.callNextMethod();
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.dom.DocumentNode.Inst.defineMethod('serializeForStorage',
 function(storageInfo) {
 
