@@ -604,40 +604,6 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.itemset.Inst.defineMethod('refresh',
-function(shouldRender, shouldRefreshBindings) {
-
-    /**
-     * @method refresh
-     * @summary Updates the receiver's content by refreshing all bound elements
-     *     in the document. For an HTML document this will refresh content under
-     *     the body, while in an XML document all elements including the
-     *     documentElement are refreshed.
-     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
-     *     re-rendering if the data source changes. If not supplied, this
-     *     parameter will default to true if the bound data changed and false if
-     *     it didn't.
-     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
-     *     bindings from the receiver down (in a 'sparse' fashion). If not
-     *     supplied, this parameter will default to true.
-     * @returns {Boolean} Whether or not the bound value was different than the
-     *     receiver already had and, therefore, truly changed.
-     */
-
-    var hasChanged;
-
-    //  Clear the selection.
-    this.setValue(null);
-
-    //  Now call the next most specific method, which will re-render the
-    //  receiver and the (now empty) selection.
-    hasChanged = this.callNextMethod();
-
-    return hasChanged;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.itemset.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
