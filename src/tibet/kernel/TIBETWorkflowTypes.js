@@ -7397,13 +7397,6 @@ function() {
     //  Show the UI root frame.
     TP.boot.showUIRoot();
 
-    //  Refresh the UI canvas frame's whole document to start things off. This
-    //  will update any data bindings that need it throughout the whole
-    //  document. Note that, in a non-Lama-loaded app, that the UI canvas
-    //  frame and the UI root frame are the same. In either case, what we want
-    //  to update is the *canvas* frame here.
-    TP.sys.getUICanvas().getDocument().refresh();
-
     return this;
 });
 

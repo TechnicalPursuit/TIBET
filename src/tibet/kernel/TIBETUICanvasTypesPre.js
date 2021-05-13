@@ -1717,19 +1717,51 @@ function(aContentObject, aRequest) {
      *     receiver.
      */
 
-    var req,
+    var request,
+
+        doc,
+
+        reqLoadFunc,
+        loadFunc,
+
         retval;
 
-    req = TP.request(aRequest);
+    request = TP.request(aRequest);
 
-    retval = this.getContentDocument().setContent(aContentObject, req);
+    doc = this.getContentDocument();
+
+    //  Refresh the UI canvas frame's whole document to start things  off. This
+    //  will update any data bindings that need it throughout the whole
+    //  document. Note that, in a non-Lama-loaded app, that the UI canvas frame
+    //  and the UI root frame are the same. In either case, what we want to
+    //  update is the *canvas* frame here.
+
+    //  NOTE: If the request already has a TP.ONLOAD function, we grab it and
+    //  invoke it first before refreshing our document.
+    if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
+        loadFunc =
+            function(targetNode, newNode) {
+                reqLoadFunc(targetNode, newNode);
+
+                doc.refresh();
+            };
+    } else {
+        loadFunc =
+            function(targetNode, newNode) {
+                doc.refresh();
+            };
+    }
+
+    request.atPut(TP.ONLOAD, loadFunc);
+
+    retval = doc.setContent(aContentObject, request);
 
     //  A couple of things can go wrong in the setContent chain. One is that the
     //  content may not be found if aContentObject is a URI for example, and
-    //  that URI ends up failing to load. In that case we need to check req.
-    if (req.didFail()) {
-        if (req.at(TP.ONFAIL)) {
-            req.at(TP.ONFAIL)(req);
+    //  that URI ends up failing to load. In that case we need to check request.
+    if (request.didFail()) {
+        if (request.at(TP.ONFAIL)) {
+            request.at(TP.ONFAIL)(request);
         }
     }
 
