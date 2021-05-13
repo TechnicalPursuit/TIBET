@@ -4971,38 +4971,54 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @param {Object} facetValue The value to set the facet to.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
-     * @returns {Object} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
-    var funcName;
+    var funcName,
+        currentFacetVal;
 
-    //  If the facet is 'value', then use the standard 'set' mechanism.
-    if (facetName === 'value') {
+    //  See if there is a specific Attribute setter on this element. If so, use
+    //  it to set any attribute named with the aspect name. This will be done in
+    //  addition to any internal value of the aspect on the receiver (i.e. both
+    //  attribute 'foo' and the internal 'foo' property will be set).
 
-        //  See if there is a specific Attribute setter on this element. If so,
-        //  use it to set any attribute named with the aspect name. This will be
-        //  done in addition to any internal value of the aspect on the
-        //  receiver (i.e. both attribute 'foo' and the internal 'foo' property
-        //  will be set).
+    funcName = this.computeAttrMethodName('getAttr', aspectName);
 
+    if (TP.canInvoke(this, funcName)) {
+        currentFacetVal = this[funcName]();
+    } else if (facetName === 'value') {
+        //  If the facet is 'value', then use the standard 'get' mechanism.
+        currentFacetVal = this.get(aspectName);
+    } else {
+        //  It didn't have a 'getAttr<aspectName>' and the name of the facet
+        //  that changed wasn't 'value', so we just signal that it changed and
+        //  return. This keeps compatibility with non-'value' facets.
+        this.signalUsingFacetAndValue(facetName, facetValue);
+        return true;
+    }
+
+    if (!TP.equal(currentFacetVal, facetValue)) {
         funcName = this.computeAttrMethodName('setAttr', aspectName);
 
         if (TP.canInvoke(this, funcName)) {
             this[funcName](facetValue);
-        } else {
+        } else if (facetName === 'value') {
+            //  If the facet is 'value', then use the standard 'set'
+            //  mechanism.
 
             //  NB: This will signal the standard TP.sig.ValueChange (where
             //  'value' is the facet that changed).
             this.set(aspectName, facetValue, shouldSignal);
         }
 
-        return this;
+        this.signalUsingFacetAndValue(facetName, facetValue);
+
+        //  Return true because the value of the facet changed.
+        return true;
     }
 
-    //  This will signal with the facet name as the facet that changed.
-    this.signalUsingFacetAndValue(facetName, facetValue);
-
-    return this;
+    return false;
 });
 
 //  ------------------------------------------------------------------------

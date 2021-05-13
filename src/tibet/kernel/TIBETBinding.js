@@ -7705,9 +7705,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
         TP.$$settingFromBindMachinery = false;
     } else {
         TP.$$settingFromBindMachinery = true;
-        this.setFacet(aspect, facet, finalVal);
+        didRefresh = this.setFacet(aspect, facet, finalVal);
         TP.$$settingFromBindMachinery = false;
-        didRefresh = true;
     }
 
     return didRefresh;

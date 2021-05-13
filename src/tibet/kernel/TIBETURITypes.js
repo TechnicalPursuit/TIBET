@@ -4068,40 +4068,60 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      *     signaling occurs. Note that we *ignore* this value for TP.uri.URIs
      *     and always let the resource decide whether it will broadcast change
      *     or not.
-     * @returns {Object} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
-    var resourceContent;
+    var resourceContent,
+        facetSlotName,
+        currentFacetVal;
 
     //  We have no notion of any other facet for URIs.
     if (facetName !== 'value') {
         return this;
     }
 
-    //  NOTE: We ignore the shouldSignal flag here on purpose - the resource
-    //  will decide if it wants to signal change.
+    //  The internal facet slot name will always be something like
+    //  '$SSN_required'.
+    facetSlotName = '$' + aspectName + '_' + facetName;
 
-    //  If this isn't a primary URI, then we won't use any supplied aspect, but
-    //  we'll use the fragment text instead.
-    if (!this.isPrimaryURI()) {
+    //  Grab the current value of the internal slot and compare it to the
+    //  supplied value. Only go through the act of setting it and signaling a
+    //  change if they're different.
 
-        //  NB: We assume 'async' of false here
-        this.getPrimaryURI().getResource().get('result').set(
-                    this.getFragmentExpr(), facetValue);
-    } else {
+    //  NB: Make sure to use $get() here. Otherwise, we end up doing path
+    //  lookups, etc. for private facet slot values.
+    currentFacetVal = this.$get(facetSlotName);
+    if (!TP.equal(currentFacetVal, facetValue)) {
 
-        //  Make sure we have a real content object - if not, stub it in.
-        //  NB: We assume 'async' of false here
-        if (TP.notValid(resourceContent = this.getResource().get('result'))) {
-            //  Stub out new content.
-            this.stubResourceContent();
-            //  Get that new content.
-            resourceContent = this.getResource().get('result');
+        //  NOTE: We ignore the shouldSignal flag here on purpose - the resource
+        //  will decide if it wants to signal change.
+
+        //  If this isn't a primary URI, then we won't use any supplied aspect, but
+        //  we'll use the fragment text instead.
+        if (!this.isPrimaryURI()) {
+
+            //  NB: We assume 'async' of false here
+            this.getPrimaryURI().getResource().get('result').set(
+                        this.getFragmentExpr(), facetValue);
+        } else {
+
+            //  Make sure we have a real content object - if not, stub it in.
+            //  NB: We assume 'async' of false here
+            if (TP.notValid(resourceContent = this.getResource().get('result'))) {
+                //  Stub out new content.
+                this.stubResourceContent();
+                //  Get that new content.
+                resourceContent = this.getResource().get('result');
+            }
+            resourceContent.set(aspectName, facetValue);
         }
-        resourceContent.set(aspectName, facetValue);
+
+        //  Return true because the value of the facet changed.
+        return true;
     }
 
-    return this;
+    return false;
 });
 
 //  ------------------------------------------------------------------------

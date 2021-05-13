@@ -9537,7 +9537,8 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @param {Boolean} facetValue The value to set the facet to.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
-     * @returns {Object} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var facetSlotName,
@@ -9561,7 +9562,7 @@ function(aspectName, facetName, facetValue, shouldSignal) {
     //  NB: Make sure to use $get() here. Otherwise, we end up doing path
     //  lookups, etc. for private facet slot values.
     currentFacetVal = this.$get(facetSlotName);
-    if (currentFacetVal !== facetValue) {
+    if (!TP.equal(currentFacetVal, facetValue)) {
 
         //  If the internal slot is not defined on the receiver, define it.
         //  Otherwise, TIBET's '$set' method will whine ;-).
@@ -9586,9 +9587,12 @@ function(aspectName, facetName, facetValue, shouldSignal) {
                                 TP.hc(TP.OLDVAL, currentFacetVal,
                                         TP.NEWVAL, facetValue));
         }
+
+        //  Return true because the value of the facet changed.
+        return true;
     }
 
-    return this;
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -9605,7 +9609,8 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @param {Boolean} facetValue The value to set the facet to.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
-     * @returns {Object} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     var funcName;
@@ -9622,13 +9627,11 @@ function(aspectName, facetName, facetValue, shouldSignal) {
                 TP.makeStartUpper(facetName);
 
     if (TP.canInvoke(this, funcName)) {
-        this[funcName](facetValue);
+        return this[funcName](facetValue);
     } else {
         //  No custom setter implemented - use the standard $setFacet() method.
-        this.$setFacet(aspectName, facetName, facetValue, shouldSignal);
+        return this.$setFacet(aspectName, facetName, facetValue, shouldSignal);
     }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------

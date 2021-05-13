@@ -2190,7 +2190,8 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @param {Boolean} facetValue The value to set the facet to.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
-     * @returns {TP.html.inputCheckable} The receiver.
+     * @returns {Boolean} Whether or not the value was changed from the value it
+     *     had before this method was called.
      */
 
     //  'checked' should be considered as 'value' in terms of an aspect for
