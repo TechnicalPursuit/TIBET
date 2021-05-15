@@ -112,6 +112,10 @@ Cmd.prototype.configure = function() {
     options.appname = options.appname ||
         inProj ? CLI.getTIBETProjectName() : '';
 
+    if (!this.validateTypeName(name)) {
+        throw new Error('Invalid type name: ' + name);
+    }
+
     parts = name.split(/[\.:]/g);
     switch (parts.length) {
         case 3:
@@ -131,8 +135,7 @@ Cmd.prototype.configure = function() {
             if (inProj) {
                 options.nsname = options.appname;
             } else {
-                this.error('Cannot default namespace for lib tag: ' + name);
-                return null;
+                throw new Error('Cannot default namespace for lib tag: ' + name);
             }
             options.name = parts[0];
             break;
@@ -204,6 +207,10 @@ Cmd.prototype.configureForDNA = function(config) {
             ns = ns || 'core';
         }
         options.supertype = root + '.' + ns + '.' + tail;
+    } else {
+        if (!this.validateTypeName(options.supertype)) {
+            throw new Error('Invalid supertype name: ' + options.supertype);
+        }
     }
 
     options.typename = root + '.' + ns + '.' + options.name;
@@ -906,6 +913,22 @@ Cmd.prototype.getTag = function(file) {
     }
 
     return tag;
+};
+
+
+/**
+ * Validates a type name to make sure it complies with TIBET naming rules.
+ * @param {String} aName The type name to validate.
+ */
+Cmd.prototype.validateTypeName = function(aName) {
+    var parts;
+
+    parts = aName.split(/[\.:]/g);
+    if (parts.length < 1 || parts.length > 3) {
+        return false;
+    }
+
+    return true;
 };
 
 
