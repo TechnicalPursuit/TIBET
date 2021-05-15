@@ -112,7 +112,8 @@ Cmd.prototype.getScript = function() {
         script,
         interf,
         count,
-        cwd;
+        cwd,
+        scope;
 
     cmd = this;
 
@@ -211,31 +212,39 @@ Cmd.prototype.getScript = function() {
         //  essentially assembling the target slot filter.
         interf = [];
 
+        //  Visibility
         if (this.options.hidden) {
             interf.push('hidden');
         } else if (this.options.known) {
             interf.push('known');
         }
 
+        //  Scope
         if (this.options.inherited) {
-            interf.push('inherited');
+            scope = 'inherited';
         } else if (this.options.introduced) {
-            interf.push('introduced');
+            scope = 'introduced';
         } else if (this.options.overridden) {
-            interf.push('overridden');
+            scope = 'overridden';
         } else if (this.options.local) {
-            interf.push('local');
+            scope = 'local';
         } else if (this.options.unique) {
-            interf.push('unique');
+            scope = 'unique';
         }
 
-        if (interf.length === 0) {
-            interf.push('unique');
+        if (scope) {
+            interf.push(scope);
         }
 
         if (this.options.methods) {
+            if (!scope) {
+                interf.push('unique');
+            }
             interf.push('methods');
         } else if (this.options.attributes) {
+            if (!scope) {
+                interf.push('unique');
+            }
             interf.push('attributes');
         }
 
