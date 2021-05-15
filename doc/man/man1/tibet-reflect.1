@@ -4,7 +4,7 @@
 .SH SYNOPSIS
 .P
 \fBtibet reflect [[\-\-target] <target>] [\-\-filter <filter>]
-    [\-\-owners] [\-\-types] [\-\-methods] [\-\-attributes]
+    [\-\-owners] [\-\-types] [\-\-subtypes] [\-\-methods] [\-\-attributes]
     [\-\-known] [\-\-hidden]
     [\-\-unique] [\-\-inherited] [\-\-introduced] [\-\-local] [\-\-overridden]
     [\-\-context=['app'|'lib'|'all']] [\-\-interface <interface>]
@@ -98,6 +98,9 @@ all known \fBowners\fP of methods in the system\.
 \fB\-\-types\fP :
 Normally used to list all types, or to filter types in conjunction with the
 \fB\-\-filter\fP option\.
+.IP \(bu 2
+\fB\-\-types\fP :
+List all subtypes of the target\. This will list \fIall\fR subtypes, recursively\.
 .IP \(bu 2
 \fB\-\-verbose\fP :
 Whether or not to log the script that has been generated to feed to the

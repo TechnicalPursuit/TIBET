@@ -22,7 +22,7 @@
 <h1 id="tibet-reflect1----reflects-on-tibet-objects-and-methods">tibet-reflect(1) -- reflects on TIBET objects and methods</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
 <p><code>tibet reflect [[--target] &lt;target&gt;] [--filter &lt;filter&gt;]
-    [--owners] [--types] [--methods] [--attributes]
+    [--owners] [--types] [--subtypes] [--methods] [--attributes]
     [--known] [--hidden]
     [--unique] [--inherited] [--introduced] [--local] [--overridden]
     [--context=[&#39;app&#39;|&#39;lib&#39;|&#39;all&#39;]] [--interface &lt;interface&gt;]
@@ -109,6 +109,9 @@ all known <code>owners</code> of methods in the system.</p>
 <li><p><code>--types</code> :
 Normally used to list all types, or to filter types in conjunction with the
 <code>--filter</code> option.</p>
+</li>
+<li><p><code>--types</code> :
+List all subtypes of the target. This will list <em>all</em> subtypes, recursively.</p>
 </li>
 <li><p><code>--verbose</code> :
 Whether or not to log the script that has been generated to feed to the

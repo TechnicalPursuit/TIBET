@@ -58,7 +58,7 @@ Cmd.NAME = 'reflect';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['owners', 'types', 'methods', 'attributes',
+    boolean: ['owners', 'types', 'subtypes', 'methods', 'attributes',
                 'known', 'hidden',
                 'unique', 'inherited', 'introduced', 'local', 'overridden',
                 'verbose'],
@@ -76,7 +76,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  */
 Cmd.prototype.USAGE =
     'tibet reflect [[--target] <target>] [--filter <filter>] ' +
-        '[--owners] [--types] [--methods] [--attributes]' +
+        '[--owners] [--types] [--subtypes] [--methods] [--attributes]' +
         '[--known] [--hidden]' +
         '[--unique] [--inherited] [--introduced] [--local] [--overridden]' +
         '[--context=[\'app\'|\'lib\'|\'all\']] [--interface <interface>]' +
@@ -139,9 +139,10 @@ Cmd.prototype.getScript = function() {
 
     if (this.options.owners &&
             (this.options.types ||
+             this.options.subtypes ||
              this.options.methods ||
              this.options.attributes)) {
-        this.error('Invalid options: --owners + --types|--methods|--attributes.');
+        this.error('Invalid options: --owners + --types|--subtypes|--methods|--attributes.');
         throw new Error();
     }
 
@@ -255,11 +256,12 @@ Cmd.prototype.getScript = function() {
 
     //  Add the baseline boolean flags the client-side command knows about.
     if (script.indexOf('--interface') === -1) {
-        ['owners', 'types', 'methods', 'attributes'].forEach(function(name) {
-            if (cmd.options[name]) {
-                script += ' --' + name;
-            }
-        });
+        ['owners', 'types', 'subtypes', 'methods', 'attributes'].forEach(
+            function(name) {
+                if (cmd.options[name]) {
+                    script += ' --' + name;
+                }
+            });
     }
 
     if (this.options.filter) {

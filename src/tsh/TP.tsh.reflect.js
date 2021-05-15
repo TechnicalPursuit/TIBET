@@ -65,6 +65,7 @@ function(aRequest) {
         path,
         keys,
         types,
+        subtypes,
         methods,
         owners,
         attributes,
@@ -169,6 +170,7 @@ function(aRequest) {
     }
 
     types = shell.getArgument(aRequest, 'tsh:types', false);
+    subtypes = shell.getArgument(aRequest, 'tsh:subtypes', false);
     methods = shell.getArgument(aRequest, 'tsh:methods', false);
     owners = shell.getArgument(aRequest, 'tsh:owners', false);
     attributes = shell.getArgument(aRequest, 'tsh:attributes', false);
@@ -303,6 +305,15 @@ function(aRequest) {
                 //  browser for things like >> etc.
                 names = TP.stnames(obj);
                 results.push('# Supertypes: ' + names.join(' '), '');
+
+                //  If we're getting the subtypes, then we get *all* of them,
+                //  recursively.
+                if (subtypes) {
+                    names = obj.getSubtypeNames(true);
+                    names.sort();
+                    results.push('# Subtypes: ', '');
+                    renderResults(names, results, aRequest);
+                }
 
                 interf = TP.ifEmpty(interf, TP.SLOT_FILTERS.introduced_methods);
 

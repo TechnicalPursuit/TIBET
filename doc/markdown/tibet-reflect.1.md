@@ -4,7 +4,7 @@
 ## SYNOPSIS
 
 `tibet reflect [[--target] <target>] [--filter <filter>]
-    [--owners] [--types] [--methods] [--attributes]
+    [--owners] [--types] [--subtypes] [--methods] [--attributes]
     [--known] [--hidden]
     [--unique] [--inherited] [--introduced] [--local] [--overridden]
     [--context=['app'|'lib'|'all']] [--interface <interface>]
@@ -106,6 +106,9 @@ all known `owners` of methods in the system.
   * `--types` :
     Normally used to list all types, or to filter types in conjunction with the
 `--filter` option.
+
+  * `--types` :
+    List all subtypes of the target. This will list *all* subtypes, recursively.
 
   * `--verbose` :
     Whether or not to log the script that has been generated to feed to the
