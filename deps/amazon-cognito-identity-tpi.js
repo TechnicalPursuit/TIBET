@@ -25,7 +25,7 @@
 		exports["AmazonCognitoIdentity"] = factory((function webpackLoadOptionalExternalModule() { try { return require("crypto"); } catch(e) {} }()));
 	else
 		root["AmazonCognitoIdentity"] = factory(root["crypto"]);
-})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_27__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_4__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -88,14 +88,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-;(function (root, factory) {
+/* WEBPACK VAR INJECTION */(function(global) {;(function (root, factory) {
 	if (true) {
 		// CommonJS
 		module.exports = exports = factory();
@@ -110,15 +110,68 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 }(this, function () {
 
+	/*globals window, global, require*/
+
 	/**
 	 * CryptoJS core components.
 	 */
 	var CryptoJS = CryptoJS || (function (Math, undefined) {
+
+	    var crypto;
+
+	    // Native crypto from window (Browser)
+	    if (typeof window !== 'undefined' && window.crypto) {
+	        crypto = window.crypto;
+	    }
+
+	    // Native (experimental IE 11) crypto from window (Browser)
+	    if (!crypto && typeof window !== 'undefined' && window.msCrypto) {
+	        crypto = window.msCrypto;
+	    }
+
+	    // Native crypto from global (NodeJS)
+	    if (!crypto && typeof global !== 'undefined' && global.crypto) {
+	        crypto = global.crypto;
+	    }
+
+	    // Native crypto import via require (NodeJS)
+	    if (!crypto && "function" === 'function') {
+	        try {
+	            crypto = __webpack_require__(4);
+	        } catch (err) {}
+	    }
+
 	    /*
-	     * Local polyfil of Object.create
+	     * Cryptographically secure pseudorandom number generator
+	     *
+	     * As Math.random() is cryptographically not safe to use
+	     */
+	    var cryptoSecureRandomInt = function () {
+	        if (crypto) {
+	            // Use getRandomValues method (Browser)
+	            if (typeof crypto.getRandomValues === 'function') {
+	                try {
+	                    return crypto.getRandomValues(new Uint32Array(1))[0];
+	                } catch (err) {}
+	            }
+
+	            // Use randomBytes method (NodeJS)
+	            if (typeof crypto.randomBytes === 'function') {
+	                try {
+	                    return crypto.randomBytes(4).readInt32LE();
+	                } catch (err) {}
+	            }
+	        }
+
+	        throw new Error('Native crypto module could not be used to get secure random number.');
+	    };
+
+	    /*
+	     * Local polyfill of Object.create
+
 	     */
 	    var create = Object.create || (function () {
-	        function F() {};
+	        function F() {}
 
 	        return function (obj) {
 	            var subtype;
@@ -401,26 +454,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        random: function (nBytes) {
 	            var words = [];
 
-	            var r = (function (m_w) {
-	                var m_w = m_w;
-	                var m_z = 0x3ade68b1;
-	                var mask = 0xffffffff;
-
-	                return function () {
-	                    m_z = (0x9069 * (m_z & 0xFFFF) + (m_z >> 0x10)) & mask;
-	                    m_w = (0x4650 * (m_w & 0xFFFF) + (m_w >> 0x10)) & mask;
-	                    var result = ((m_z << 0x10) + m_w) & mask;
-	                    result /= 0x100000000;
-	                    result += 0.5;
-	                    return result * (Math.random() > .5 ? 1 : -1);
-	                }
-	            });
-
-	            for (var i = 0, rcache; i < nBytes; i += 4) {
-	                var _r = r((rcache || Math.random()) * 0x100000000);
-
-	                rcache = _r() * 0x3ade67b7;
-	                words.push((_r() * 0x100000000) | 0);
+	            for (var i = 0; i < nBytes; i += 4) {
+	                words.push(cryptoSecureRandomInt());
 	            }
 
 	            return new WordArray.init(words, nBytes);
@@ -651,6 +686,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	         *     var processedData = bufferedBlockAlgorithm._process(!!'flush');
 	         */
 	        _process: function (doFlush) {
+	            var processedWords;
+
 	            // Shortcuts
 	            var data = this._data;
 	            var dataWords = data.words;
@@ -683,7 +720,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 
 	                // Remove processed words
-	                var processedWords = dataWords.splice(0, nWordsReady);
+	                processedWords = dataWords.splice(0, nWordsReady);
 	                data.sigBytes -= nBytesReady;
 	            }
 
@@ -855,6 +892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	return CryptoJS;
 
 }));
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 1 */
@@ -871,9 +909,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 
-var base64 = __webpack_require__(21)
-var ieee754 = __webpack_require__(22)
-var isArray = __webpack_require__(23)
+var base64 = __webpack_require__(23)
+var ieee754 = __webpack_require__(24)
+var isArray = __webpack_require__(25)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -2651,10 +2689,37 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2663,14 +2728,14 @@ function isnan (val) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_crypto_js_sha256__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_WordArray__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__BigInteger__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_WordArray__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__BigInteger__ = __webpack_require__(9);
 /*!
  * Copyright 2016 Amazon.com,
  * Inc. or its affiliates. All Rights Reserved.
@@ -2696,8 +2761,8 @@ function isnan (val) {
 
 /**
  * Returns a Buffer with a sequence of random nBytes
- * 
- * @param {number} nBytes 
+ *
+ * @param {number} nBytes
  * @returns {Buffer} fixed-length sequence of random bytes
  */
 
@@ -2705,7 +2770,6 @@ function randomBytes(nBytes) {
   return __WEBPACK_IMPORTED_MODULE_0_buffer__["Buffer"].from(new __WEBPACK_IMPORTED_MODULE_5__utils_WordArray__["a" /* default */]().random(nBytes).toString(), 'hex');
 }
 
-;
 
 /**
  * Tests if a hex string has it most significant bit set (case-insensitive regex)
@@ -2992,27 +3056,27 @@ var AuthenticationHelper = /*#__PURE__*/function () {
   }
   /**
    * Returns an unambiguous, even-length hex string of the two's complement encoding of an integer.
-   * 
-   * It is compatible with the hex encoding of Java's BigInteger's toByteArray(), wich returns a 
+   *
+   * It is compatible with the hex encoding of Java's BigInteger's toByteArray(), wich returns a
    * byte array containing the two's-complement representation of a BigInteger. The array contains
    * the minimum number of bytes required to represent the BigInteger, including at least one sign bit.
-   * 
+   *
    * Examples showing how ambiguity is avoided by left padding with:
    * 	"00" (for positive values where the most-significant-bit is set)
    *  "FF" (for negative values where the most-significant-bit is set)
-   * 
+   *
    * padHex(bigInteger.fromInt(-236))  === "FF14"
    * padHex(bigInteger.fromInt(20))    === "14"
-   * 
+   *
    * padHex(bigInteger.fromInt(-200))  === "FF38"
    * padHex(bigInteger.fromInt(56))    === "38"
-   * 
+   *
    * padHex(bigInteger.fromInt(-20))   === "EC"
    * padHex(bigInteger.fromInt(236))   === "00EC"
-   * 
+   *
    * padHex(bigInteger.fromInt(-56))   === "C8"
    * padHex(bigInteger.fromInt(200))   === "00C8"
-   * 
+   *
    * @param {BigInteger} bigInt Number to encode.
    * @returns {String} even-length hex string of the two's complement encoding.
    */
@@ -3046,9 +3110,9 @@ var AuthenticationHelper = /*#__PURE__*/function () {
       hexStr = flippedBitsBI.toString(16);
       /*
       For hex strings starting with 'FF8', 'FF' can be dropped, e.g. 0xFFFF80=0xFF80=0x80=-128
-      	Any sequence of '1' bits on the left can always be substituted with a single '1' bit
+      		Any sequence of '1' bits on the left can always be substituted with a single '1' bit
       without changing the represented value.
-      	This only happens in the case when the input is 80...00
+      		This only happens in the case when the input is 80...00
       */
 
       if (hexStr.toUpperCase().startsWith('FF8')) {
@@ -3065,34 +3129,14 @@ var AuthenticationHelper = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
+if(typeof __WEBPACK_EXTERNAL_MODULE_4__ === 'undefined') {var e = new Error("Cannot find module \"crypto\""); e.code = 'MODULE_NOT_FOUND'; throw e;}
+module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -3173,7 +3217,7 @@ module.exports = g;
 }));
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -3377,13 +3421,13 @@ module.exports = g;
 }));
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(0), __webpack_require__(5), __webpack_require__(24));
+		module.exports = exports = factory(__webpack_require__(0), __webpack_require__(6), __webpack_require__(26));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -3400,7 +3444,71 @@ module.exports = g;
 }));
 
 /***/ }),
-/* 7 */
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WordArray; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cryptoSecureRandomInt__ = __webpack_require__(27);
+
+/**
+ * Hex encoding strategy.
+ * Converts a word array to a hex string.
+ * @param {WordArray} wordArray The word array.
+ * @return {string} The hex string.
+ * @static
+ */
+
+function hexStringify(wordArray) {
+  // Shortcuts
+  var words = wordArray.words;
+  var sigBytes = wordArray.sigBytes; // Convert
+
+  var hexChars = [];
+
+  for (var i = 0; i < sigBytes; i++) {
+    var bite = words[i >>> 2] >>> 24 - i % 4 * 8 & 0xff;
+    hexChars.push((bite >>> 4).toString(16));
+    hexChars.push((bite & 0x0f).toString(16));
+  }
+
+  return hexChars.join('');
+}
+
+var WordArray = /*#__PURE__*/function () {
+  function WordArray(words, sigBytes) {
+    words = this.words = words || [];
+
+    if (sigBytes != undefined) {
+      this.sigBytes = sigBytes;
+    } else {
+      this.sigBytes = words.length * 4;
+    }
+  }
+
+  var _proto = WordArray.prototype;
+
+  _proto.random = function random(nBytes) {
+    var words = [];
+
+    for (var i = 0; i < nBytes; i += 4) {
+      words.push(Object(__WEBPACK_IMPORTED_MODULE_0__cryptoSecureRandomInt__["a" /* default */])());
+    }
+
+    return new WordArray(words, nBytes);
+  };
+
+  _proto.toString = function toString() {
+    return hexStringify(this);
+  };
+
+  return WordArray;
+}();
+
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4278,12 +4386,12 @@ BigInteger.ZERO = nbv(0);
 BigInteger.ONE = nbv(1);
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoAccessToken; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(11);
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
@@ -4327,7 +4435,7 @@ var CognitoAccessToken = /*#__PURE__*/function (_CognitoJwtToken) {
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4410,12 +4518,12 @@ var CognitoJwtToken = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoIdToken; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__CognitoJwtToken__ = __webpack_require__(11);
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
@@ -4459,7 +4567,7 @@ var CognitoIdToken = /*#__PURE__*/function (_CognitoJwtToken) {
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4511,7 +4619,7 @@ var CognitoRefreshToken = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4520,21 +4628,21 @@ var CognitoRefreshToken = /*#__PURE__*/function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_buffer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_buffer__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_crypto_js_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_crypto_js_core__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_crypto_js_lib_typedarrays__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_crypto_js_enc_base64__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_crypto_js_hmac_sha256__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__BigInteger__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoAccessToken__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoIdToken__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CognitoRefreshToken__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__CognitoUserSession__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__DateHelper__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__CognitoUserAttribute__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__StorageHelper__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__BigInteger__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__AuthenticationHelper__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoAccessToken__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoIdToken__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CognitoRefreshToken__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__CognitoUserSession__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__DateHelper__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__CognitoUserAttribute__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__StorageHelper__ = __webpack_require__(18);
 /*!
  * Copyright 2016 Amazon.com,
  * Inc. or its affiliates. All Rights Reserved.
@@ -5599,7 +5707,10 @@ var CognitoUser = /*#__PURE__*/function () {
     return undefined;
   }
   /**
-   * This is used by an authenticated user to get the MFAOptions
+   * This was previously used by an authenticated user to get MFAOptions,
+   * but no longer returns a meaningful response. Refer to the documentation for
+   * how to setup and use MFA: https://docs.amplify.aws/lib/auth/mfa/q/platform/js
+   * @deprecated
    * @param {nodeCallback<MFAOptions>} callback Called on success or error.
    * @returns {void}
    */
@@ -6433,7 +6544,7 @@ var CognitoUser = /*#__PURE__*/function () {
   }
   /**
    * This returns the user context data for advanced security feature.
-   * @returns {void}
+   * @returns {string} the user context data from CognitoUserPool
    */
   ;
 
@@ -6545,7 +6656,7 @@ var CognitoUser = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6655,7 +6766,7 @@ var CognitoUserSession = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6723,7 +6834,7 @@ var DateHelper = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6826,10 +6937,11 @@ var CognitoUserAttribute = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* unused harmony export MemoryStorage */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StorageHelper; });
 /*!
  * Copyright 2016 Amazon.com,
@@ -6877,7 +6989,7 @@ var MemoryStorage = /*#__PURE__*/function () {
   /**
    * This is used to remove an item from storage
    * @param {string} key - the key being set
-   * @returns {string} value - value that was deleted
+   * @returns {boolean} return true
    */
   ;
 
@@ -6898,7 +7010,6 @@ var MemoryStorage = /*#__PURE__*/function () {
   return MemoryStorage;
 }();
 /** @class */
-
 
 var StorageHelper = /*#__PURE__*/function () {
   /**
@@ -6932,7 +7043,7 @@ var StorageHelper = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6942,7 +7053,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6969,35 +7080,37 @@ var appendToCognitoUserAgent = function appendToCognitoUserAgent(content) {
 /* harmony default export */ __webpack_exports__["b"] = (UserAgent);
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AuthenticationDetails__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AuthenticationDetails__ = __webpack_require__(22);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "AuthenticationDetails", function() { return __WEBPACK_IMPORTED_MODULE_0__AuthenticationDetails__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AuthenticationHelper__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AuthenticationHelper__ = __webpack_require__(3);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "AuthenticationHelper", function() { return __WEBPACK_IMPORTED_MODULE_1__AuthenticationHelper__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CognitoAccessToken__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__CognitoAccessToken__ = __webpack_require__(10);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoAccessToken", function() { return __WEBPACK_IMPORTED_MODULE_2__CognitoAccessToken__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__CognitoIdToken__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__CognitoIdToken__ = __webpack_require__(12);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoIdToken", function() { return __WEBPACK_IMPORTED_MODULE_3__CognitoIdToken__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__CognitoRefreshToken__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__CognitoRefreshToken__ = __webpack_require__(13);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoRefreshToken", function() { return __WEBPACK_IMPORTED_MODULE_4__CognitoRefreshToken__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__CognitoUser__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__CognitoUser__ = __webpack_require__(14);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUser", function() { return __WEBPACK_IMPORTED_MODULE_5__CognitoUser__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__ = __webpack_require__(17);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserAttribute", function() { return __WEBPACK_IMPORTED_MODULE_6__CognitoUserAttribute__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__ = __webpack_require__(29);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserPool", function() { return __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__ = __webpack_require__(15);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserSession", function() { return __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CookieStorage__ = __webpack_require__(32);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CookieStorage", function() { return __WEBPACK_IMPORTED_MODULE_9__CookieStorage__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__DateHelper__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__DateHelper__ = __webpack_require__(16);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "DateHelper", function() { return __WEBPACK_IMPORTED_MODULE_10__DateHelper__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__UserAgent__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__UserAgent__ = __webpack_require__(20);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "appendToCognitoUserAgent", function() { return __WEBPACK_IMPORTED_MODULE_11__UserAgent__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__utils_WordArray__ = __webpack_require__(8);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "WordArray", function() { return __WEBPACK_IMPORTED_MODULE_12__utils_WordArray__["a"]; });
 /*!
  * Copyright 2016 Amazon.com,
  * Inc. or its affiliates. All Rights Reserved.
@@ -7027,8 +7140,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7123,7 +7237,7 @@ var AuthenticationDetails = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7280,7 +7394,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports) {
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
@@ -7371,7 +7485,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -7382,7 +7496,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -7530,71 +7644,7 @@ module.exports = Array.isArray || function (arr) {
 }));
 
 /***/ }),
-/* 25 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WordArray; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__cryptoSecureRandomInt__ = __webpack_require__(26);
-
-/**
- * Hex encoding strategy.
- * Converts a word array to a hex string.
- * @param {WordArray} wordArray The word array.
- * @return {string} The hex string.
- * @static
- */
-
-function hexStringify(wordArray) {
-  // Shortcuts
-  var words = wordArray.words;
-  var sigBytes = wordArray.sigBytes; // Convert
-
-  var hexChars = [];
-
-  for (var i = 0; i < sigBytes; i++) {
-    var bite = words[i >>> 2] >>> 24 - i % 4 * 8 & 0xff;
-    hexChars.push((bite >>> 4).toString(16));
-    hexChars.push((bite & 0x0f).toString(16));
-  }
-
-  return hexChars.join('');
-}
-
-var WordArray = /*#__PURE__*/function () {
-  function WordArray(words, sigBytes) {
-    words = this.words = words || [];
-
-    if (sigBytes != undefined) {
-      this.sigBytes = sigBytes;
-    } else {
-      this.sigBytes = words.length * 4;
-    }
-  }
-
-  var _proto = WordArray.prototype;
-
-  _proto.random = function random(nBytes) {
-    var words = [];
-
-    for (var i = 0; i < nBytes; i += 4) {
-      words.push(Object(__WEBPACK_IMPORTED_MODULE_0__cryptoSecureRandomInt__["a" /* default */])());
-    }
-
-    return new WordArray(words, nBytes);
-  };
-
-  _proto.toString = function toString() {
-    return hexStringify(this);
-  };
-
-  return WordArray;
-}();
-
-
-
-/***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7618,7 +7668,7 @@ if (!crypto && typeof global !== 'undefined' && global.crypto) {
 
 if (!crypto && "function" === 'function') {
   try {
-    crypto = __webpack_require__(27);
+    crypto = __webpack_require__(4);
   } catch (err) {}
 }
 /*
@@ -7646,14 +7696,7 @@ function cryptoSecureRandomInt() {
 
   throw new Error('Native crypto module could not be used to get secure random number.');
 }
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(3)))
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-if(typeof __WEBPACK_EXTERNAL_MODULE_27__ === 'undefined') {var e = new Error("Cannot find module \"crypto\""); e.code = 'MODULE_NOT_FOUND'; throw e;}
-module.exports = __WEBPACK_EXTERNAL_MODULE_27__;
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
 
 /***/ }),
 /* 28 */
@@ -7782,7 +7825,8 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_27__;
 	          if (i % 4) {
 	              var bits1 = reverseMap[base64Str.charCodeAt(i - 1)] << ((i % 4) * 2);
 	              var bits2 = reverseMap[base64Str.charCodeAt(i)] >>> (6 - (i % 4) * 2);
-	              words[nBytes >>> 2] |= (bits1 | bits2) << (24 - (nBytes % 4) * 8);
+	              var bitsCombined = bits1 | bits2;
+	              words[nBytes >>> 2] |= bitsCombined << (24 - (nBytes % 4) * 8);
 	              nBytes++;
 	          }
 	      }
@@ -7802,8 +7846,8 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_27__;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CognitoUserPool; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Client__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CognitoUser__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__StorageHelper__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__CognitoUser__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__StorageHelper__ = __webpack_require__(18);
 /*!
  * Copyright 2016 Amazon.com,
  * Inc. or its affiliates. All Rights Reserved.
@@ -8013,7 +8057,7 @@ var CognitoUserPool = /*#__PURE__*/function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Client; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserAgent__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserAgent__ = __webpack_require__(20);
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
 
 function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
@@ -8181,7 +8225,7 @@ var Client = /*#__PURE__*/function () {
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = self.fetch || (self.fetch = __webpack_require__(17).default || __webpack_require__(17));
+module.exports = self.fetch || (self.fetch = __webpack_require__(19).default || __webpack_require__(19));
 
 
 /***/ }),
@@ -8302,17 +8346,18 @@ var CookieStorage = /*#__PURE__*/function () {
     return __WEBPACK_IMPORTED_MODULE_0_js_cookie__["remove"](key, options);
   }
   /**
-   * This is used to clear the storage
-   * @returns {string} nothing
+   * This is used to clear the storage of optional
+   * items that were previously set
+   * @returns {} an empty object
    */
   ;
 
   _proto.clear = function clear() {
     var cookies = __WEBPACK_IMPORTED_MODULE_0_js_cookie__["get"]();
-    var index;
+    var numKeys = Object.keys(cookies).length;
 
-    for (index = 0; index < cookies.length; ++index) {
-      __WEBPACK_IMPORTED_MODULE_0_js_cookie__["remove"](cookies[index]);
+    for (var index = 0; index < numKeys; ++index) {
+      this.removeItem(Object.keys(cookies)[index]);
     }
 
     return {};
