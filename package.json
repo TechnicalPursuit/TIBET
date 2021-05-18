@@ -1,6 +1,6 @@
 {
     "name": "tibet",
-    "version": "5.3.5",
+    "version": "5.3.6",
     "description": "TIBET Full-Stack Low-Code Platform.",
     "keywords": ["Electron", "Express", "Framework", "Full-Stack", "Single-Page", "Low-Code", "No-Code", "IDE", "Workflow", "CouchDB"],
     "homepage": "http://www.technicalpursuit.com",
