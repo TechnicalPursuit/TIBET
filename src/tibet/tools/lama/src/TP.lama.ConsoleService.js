@@ -2177,7 +2177,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     var sigName,
@@ -2214,7 +2214,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     this.get('$consoleService')[TP.composeHandlerName('ConsoleInput')](aSignal);
@@ -2234,7 +2234,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     var consoleGUI;
@@ -2263,7 +2263,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     var consoleGUI;
@@ -2287,7 +2287,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     var consoleGUI;
@@ -2310,7 +2310,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     var consoleOutput,
@@ -2339,7 +2339,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     var consoleOutput,
@@ -2368,7 +2368,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     var consoleOutput,
@@ -2397,7 +2397,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     var consoleOutput,
@@ -2427,7 +2427,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     this.get('$consoleService')[TP.composeHandlerName('HistoryNext')](aSignal);
@@ -2448,7 +2448,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     this.get('$consoleService')[TP.composeHandlerName('HistoryPrev')](aSignal);
@@ -2468,7 +2468,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     this.get('$consoleService')[TP.composeHandlerName('ClearInput')](
@@ -2489,7 +2489,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     //  Clear the output
@@ -2510,7 +2510,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
+     * @returns {TP.lama.NormalKeyResponder} The receiver.
      */
 
     this.get('$consoleService')[TP.composeHandlerName('Cancel')](
