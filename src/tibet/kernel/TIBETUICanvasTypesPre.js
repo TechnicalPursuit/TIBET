@@ -432,6 +432,8 @@ TP.core.Window.Type.defineAttribute('windowRegistry', TP.hc());
 TP.core.Window.Type.defineAttribute('$isDocumentWriting');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
 
 TP.core.Window.Type.defineMethod('construct',
 function(aWindow, aName, aSpec) {
@@ -1257,6 +1259,40 @@ function(themeName) {
      */
 
     this.getDocument().setTheme(themeName);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Window.Inst.defineMethod('queueAfterNextReload',
+function(aFunction) {
+
+    /**
+     * @method queueAfterNextReload
+     * @summary Registers a function to be executed *after* the onload is fired
+     *     in the receiver.
+     * @param {Function} aFunction The function to register which will be run
+     *     when the 'onload' event is triggered for aWindow.
+     * @exception TP.sig.InvalidFunction
+     * @returns {TP.core.Window} The receiver.
+     */
+
+    if (!TP.isCallable(aFunction)) {
+        this.raise('TP.sig.InvalidFunction',
+                    'Supplied function must be runnable.');
+
+        return this;
+    }
+
+    this.getType().registerOnloadFunction(
+        this.getNativeWindow(),
+        function() {
+            setTimeout(
+                function() {
+                    aFunction();
+                }, 0);
+        });
 
     return this;
 });

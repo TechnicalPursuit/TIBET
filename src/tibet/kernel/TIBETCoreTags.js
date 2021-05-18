@@ -962,16 +962,11 @@ function(aRequest) {
                 });
 
     //  We load the URL associated with the home URL, but we only trigger this
-    //  *after* we've finished loading the document containing this tag *and* we
-    //  queue it as a task with setTimeout() (*not* using Promises).
-    TP.core.Window.registerOnloadFunction(
-        elemWin,
-        function() {
-            setTimeout(
+    //  *after* we've finished loading the document containing this tag.
+    TP.wrap(elemWin).queueAfterNextReload(
                 function() {
                     TP.wrap(elemWin).setContent(homeURL, request);
-                }, 0);
-        });
+                });
 
     return;
 });
