@@ -973,6 +973,7 @@ Cmd.prototype.processStylelintResult = function(result) {
     var cmd,
         file,
         messages,
+        parseErrors,
         summary;
 
     cmd = this;
@@ -985,12 +986,22 @@ Cmd.prototype.processStylelintResult = function(result) {
 
     file = result.source;
     messages = result.warnings; //  poorly named in stylelint
+    parseErrors = result.parseErrors;
 
-    if (messages.length === 0) {
+    if (messages.length === 0 && parseErrors.length === 0) {
         cmd.verbose('');
         cmd.verbose(file, 'lintpass');
         return summary;
     }
+
+    //  Add all of the parseErrors to the messages, setting their 'severity' to
+    //  'error' and the 'rule' (rule name) to 'parseError'
+    parseErrors.forEach(
+        function(errRecord) {
+            errRecord.severity = 'error';
+            errRecord.rule = 'parseError';
+            messages.push(errRecord);
+        });
 
     // Filter for errors vs. warnings.
     messages = messages.filter(function(message) {
