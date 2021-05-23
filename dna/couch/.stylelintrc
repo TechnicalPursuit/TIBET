@@ -29,7 +29,8 @@
         "selector-attribute-quotes": "always",
 
         "selector-type-no-unknown": [ true, {
-            "ignoreNamespaces": [ "tibet", "tsh", "lama", "xctrls", "{{appname}}" ],
+            "ignore": ["default-namespace"],
+            "ignoreNamespaces": [ "*", "svg", "tibet", "tsh", "xctrls", "{{appname}}"],
             "ignoreTypes": [ "/*/" ]
         }],
 
