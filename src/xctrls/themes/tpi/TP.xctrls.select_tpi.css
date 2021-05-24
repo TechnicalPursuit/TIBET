@@ -2,10 +2,10 @@
     CSS styles for 'xctrls:select' controls for the 'tpi' theme.
 */
 
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.select_all.css");
+
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
-
-@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.select_all.css");
 
 /* The select */
 *[data-theme~="tpi"] xctrls|select {

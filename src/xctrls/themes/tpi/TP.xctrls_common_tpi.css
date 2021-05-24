@@ -2,12 +2,12 @@
     CSS styles common across all 'xctrls:' controls for the 'tpi' theme.
 */
 
-@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
-@namespace pclass url("urn:tibet:pseudoclass");
-
 @import url("~TP.xctrls.XMLNS/themes/TP.xctrls_common_all.css");
 
 @import url("TP.xctrls_variables_tpi.css");
+
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 /* All controls - normal mode */
 *[data-theme~="tpi"] xctrls|* {

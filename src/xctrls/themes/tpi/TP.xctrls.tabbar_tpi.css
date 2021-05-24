@@ -2,10 +2,10 @@
     CSS styles for 'xctrls:tabbar' controls for the 'tpi' theme.
 */
 
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.tabbar_all.css");
+
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
-
-@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.tabbar_all.css");
 
 /* The tabbar */
 *[data-theme~="tpi"] xctrls|tabbar {

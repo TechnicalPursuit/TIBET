@@ -2,12 +2,12 @@
     CSS styles for the 'xctrls:checkitem' control.
 */
 
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.checkitem_all.css");
+
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 @namespace svg url("http://www.w3.org/2000/svg");
 @namespace pclass url("urn:tibet:pseudoclass");
-
-@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.checkitem_all.css");
 
 /* The checkitem */
 *[data-theme~="tpi"] xctrls|checkitem {

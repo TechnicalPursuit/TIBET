@@ -2,10 +2,10 @@
     CSS styles for the 'xctrls:buttonitem' control.
 */
 
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.buttonitem_all.css");
+
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
-
-@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.buttonitem_all.css");
 
 /* The buttonitem */
 *[data-theme~="tpi"] xctrls|buttonitem {

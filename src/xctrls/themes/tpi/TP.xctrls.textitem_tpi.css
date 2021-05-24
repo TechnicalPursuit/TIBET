@@ -2,11 +2,11 @@
     CSS styles for the 'xctrls:textitem' control.
 */
 
+@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.textitem_all.css");
+
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace svg url("http://www.w3.org/2000/svg");
 @namespace pclass url("urn:tibet:pseudoclass");
-
-@import url("~TP.xctrls.XMLNS/themes/TP.xctrls.textitem_all.css");
 
 /* The textitem */
 *[data-theme~="tpi"] xctrls|textitem {
