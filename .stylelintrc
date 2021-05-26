@@ -30,7 +30,7 @@
 
         "selector-type-no-unknown": [ true, {
             "ignore": ["default-namespace"],
-            "ignoreNamespaces": [ "*", "svg", "tibet", "tsh", "xctrls", "sherpa", "lama", "tibetlama"],
+            "ignoreNamespaces": [ "*", "svg", "tibet", "tsh", "xctrls", "sherpa", "lama", "tibetlama", "tmp"],
             "ignoreTypes": [ "/*/" ]
         }],
 
@@ -44,10 +44,11 @@
         "node_modules/**",
         "**/node_modules/**",
         "deps/**",
+        "**/deps/**",
         "lib/src/**",
+        :**/lib/src/**",
         "**/lama/cm_theme/*",
         "**/build/**",
-        "**/*.__*__.*.js",
-        "**/boot/styles/**"
+        "**/*.__*__.*.js"
     ]
 }

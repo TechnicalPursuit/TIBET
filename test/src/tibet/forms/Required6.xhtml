@@ -12,16 +12,13 @@
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
     <style type="text/css">
-    <![CDATA[
-    @namespace pclass url(urn:tibet:pseudoclass);
+    @namespace url("http://www.w3.org/1999/xhtml");
+    @namespace pclass url("urn:tibet:pseudoclass");
 
-    /*input[type=text]:required*/
-    input[type=text][pclass|required]
-    {
+    /* input[type="text"]:required */
+    input[type="text"][pclass|required] {
         background-color: yellow;
     }
-
-    ]]>
     </style>
 
     <tibet:data id="Required6Data" name="urn:tibet:Required6_data" buildout="true" content="TP.test.Required6Data"/>

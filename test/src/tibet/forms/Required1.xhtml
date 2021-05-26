@@ -12,15 +12,13 @@
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
     <style type="text/css">
-    <![CDATA[
-    @namespace pclass url(urn:tibet:pseudoclass);
+    @namespace url("http://www.w3.org/1999/xhtml");
+    @namespace pclass url("urn:tibet:pseudoclass");
 
-    /*input[type=text]:invalid*/
-    input[type=text][pclass|invalid]
-    {
+    /* input[type="text"]:invalid */
+    input[type="text"][pclass|invalid] {
         color: red;
     }
-    ]]>
     </style>
 
     <tibet:data id="Required1Data" name="urn:tibet:Required1_data" content="TP.test.SomeXMLCodeData">
