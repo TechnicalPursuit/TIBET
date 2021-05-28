@@ -67,12 +67,14 @@ Cmd.NPM_FILE = '~lib/package.json';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['dirty', 'dry-run', 'force', 'local'],
+        'boolean': ['dirty', 'dry-run', 'force', 'local', 'test', 'quick'],
         'default': {
             dirty: false,
             'dry-run': false,
             force: false,
-            local: false
+            local: false,
+            test: false,
+            quick: false
         }
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -83,7 +85,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet release --dirty --local --force --dry-run';
+Cmd.prototype.USAGE = 'tibet release --dirty --local --force --dry-run --test --quick';
 
 
 //  ---
@@ -288,7 +290,7 @@ Cmd.prototype.phaseTwo = function(source) {
     //  Run 'tibet lint' to verify clean code.
     //  ---
 
-    if (!this.options['dry-run']) {
+    if (!this.options['dry-run'] && !this.options.quick) {
 
         //  NOTE we pass --clean here to ensure we lint everything.
         cmd = 'tibet lint --clean';
@@ -314,7 +316,7 @@ Cmd.prototype.phaseTwo = function(source) {
             //  Run 'tibet test' to test the resulting package.
             //  ---
 
-            if (release.options.test && !release.options.quick) {
+            if (release.options.test) {
                 cmd = 'tibet test';
                 CLI.sh.exec(cmd, function(code2, stdout2) {
                     var answer2;
@@ -345,6 +347,9 @@ Cmd.prototype.phaseTwo = function(source) {
         if (this.options['dry-run']) {
             this.warn('dry-run. bypassing \'tibet lint --clean\'');
             this.warn('dry-run. bypassing \'tibet test\'');
+        } else if (this.options.quick) {
+            this.warn('quick. bypassing \'tibet lint --clean\'');
+            this.warn('quick. bypassing \'tibet test\'');
         }
 
         return this.phaseThree({content: content, source: source});
