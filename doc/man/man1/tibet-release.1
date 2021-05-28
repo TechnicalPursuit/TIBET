@@ -3,7 +3,7 @@
 \fBtibet-release\fR \- prep and tag a release
 .SH SYNOPSIS
 .P
-\fBtibet release [\-\-dirty] [\-\-dry\-run] [\-\-force] [\-\-local]\fP
+\fBtibet release [\-\-dirty] [\-\-dry\-run] [\-\-force] [\-\-local] [\-\-test] [\-\-quick]\fP
 .SH DESCRIPTION
 .P
 Performs the steps necessary to tag a release\-ready git codebase\.
@@ -53,6 +53,13 @@ changes\.
 .IP \(bu 2
 \fB\-\-force\fP :
 Force operation even when dirty or out of sync etc\.
+.IP \(bu 2
+\fB\-\-test\fP :
+Run the tests as part of the release process\.
+.IP \(bu 2
+\fB\-\-quick\fP :
+Perform a 'quick' release meaning that neither a lint or a test pass will be
+done\. This preempts the '\-\-test' flag\.
 
 .RE
 .SH CONFIGURATION SETTINGS

@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-`tibet release [--dirty] [--dry-run] [--force] [--local]`
+`tibet release [--dirty] [--dry-run] [--force] [--local] [--test] [--quick]`
 
 ## DESCRIPTION
 
@@ -55,6 +55,13 @@ changes.
 
   * `--force` :
     Force operation even when dirty or out of sync etc.
+
+  * `--test` :
+    Run the tests as part of the release process.
+
+  * `--quick` :
+    Perform a 'quick' release meaning that neither a lint or a test pass will be
+done. This preempts the '--test' flag.
 
 
 ## CONFIGURATION SETTINGS
