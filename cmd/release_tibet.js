@@ -170,7 +170,7 @@ Cmd.prototype.execute = async function() {
      *      tibet build_docs --force
      *      git commit -am "Update the version to: <newversion>"
      *      git push
-     *      tibet release
+     *      tibet release --quick
      *      git checkout <targetbranch>
      *      tibet deploy npm
      *      tibet deploy dockerhub '{
@@ -417,6 +417,7 @@ Cmd.prototype.execute = async function() {
     if (this.options['dry-run']) {
         this.log('DRY RUN: ' + tibetpath + ' ' + execArgs.join(' '));
     } else {
+        execArgs.push('--quick');
         code = await CLI.execAsync(this, tibetpath, execArgs);
         if (code !== 0) {
             return CLI.exitSoon(code);
