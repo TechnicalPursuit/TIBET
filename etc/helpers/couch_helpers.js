@@ -612,7 +612,7 @@ helpers.populateDesignDoc = function(doc, root, params) {
  *          console.log(JSON.stringify(json));
  *      });
  */
-helpers.server = function(url) {
+helpers.server = function(url, logger) {
     var nano,
         Promise,
         use;

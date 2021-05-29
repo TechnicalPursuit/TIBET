@@ -190,7 +190,7 @@
         //  CouchDB Helpers
         //  ---
 
-        server = couch.server(db_url);
+        server = couch.server(db_url, logger);
         db = server.use(db_name);
 
         /**

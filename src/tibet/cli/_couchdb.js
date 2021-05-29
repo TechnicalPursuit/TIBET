@@ -132,7 +132,7 @@ Cmd.prototype.dbGet = function(id, options, params) {
         return;
     }
 
-    server = couch.server(db_url);
+    server = couch.server(db_url, this);
     db = server.use(db_name);
 
     return db.getAsync(id, options).then(function(result) {
@@ -174,7 +174,7 @@ Cmd.prototype.dbIndex = function(index, options, params) {
         return;
     }
 
-    server = couch.server(db_url);
+    server = couch.server(db_url, this);
     db = server.use(db_name);
 
     return db.createIndex(index).then(function(result) {
@@ -215,7 +215,7 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
         return;
     }
 
-    server = couch.server(db_url);
+    server = couch.server(db_url, this);
     db = server.use(db_name);
 
     return db.insertAsync(doc, options).then(function(result) {
@@ -257,7 +257,7 @@ Cmd.prototype.dbQuery = function(query, options, params) {
         return;
     }
 
-    server = couch.server(db_url);
+    server = couch.server(db_url, this);
     db = server.use(db_name);
 
     return db.findAsync(query).then(function(result) {
@@ -298,7 +298,7 @@ Cmd.prototype.dbView = function(viewname, options, params) {
         return;
     }
 
-    server = couch.server(db_url);
+    server = couch.server(db_url, this);
     db = server.use(db_name);
 
     return db.viewAsyncRows(db_app, viewname, options);
@@ -428,7 +428,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
         return;
     }
 
-    server = couch.server(db_url);
+    server = couch.server(db_url, this);
     db = server.use(db_name);
 
     skip = false;
