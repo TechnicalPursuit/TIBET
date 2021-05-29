@@ -265,7 +265,7 @@
             }
 
             //  Pass back the promise in case the requestor wants to attach.
-            return db.insertAsync(job).then(function(result) {
+            return TDS.Promise.resolve(db.insert(job)).then(function(result) {
                 //  Once the insert is done we need to optionally register any
                 //  subscriber hook under the job id. When the job changes
                 //  status (i.e. first task start, task completion, etc.), the
