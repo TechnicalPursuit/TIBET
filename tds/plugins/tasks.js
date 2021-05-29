@@ -401,7 +401,11 @@
 
             //  Determine state. If we were provided one that's great but if not
             //  we need to scan the last task/step to see its state.
-            status = state || job.steps[job.steps.length - 1].state;
+            if (job.steps.length > 0) {
+                status = job.steps[job.steps.length - 1].state;
+            } else {
+                status = state;
+            }
 
             switch (status) {
                 case '$$timeout':
