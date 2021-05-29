@@ -99,7 +99,7 @@
             format = params.row_format || 'docs';
             format = format.charAt(0).toUpperCase() + format.slice(1);
 
-            if (typeof db['viewAsync' + format] !== 'function') {
+            if (typeof db['view' + format] !== 'function') {
                 res.status(400);    // Bad Request
                 res.send({
                     ok: false,
@@ -116,7 +116,7 @@
             //  Clear requestor, it's circular and will cause nano to choke.
             delete params.requestor;
 
-            db['viewAsync' + format](appname, viewname, params).then(
+            db['view' + format](appname, viewname, params).then(
             function(result) {
                 res.status(200).send(result);
             }).catch(function(err) {

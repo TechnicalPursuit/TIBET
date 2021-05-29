@@ -620,34 +620,53 @@ helpers.server = function(url, logger) {
     nano = require('nano')(url);
     Promise = require('bluebird');
 
-    Promise.promisifyAll(nano);     //  nano.uuids etc.
-    Promise.promisifyAll(nano.db);  //  nano.db.list etc.
-
-    //  Update use() to return a promisified db object.
+    //  Update use() to return an enhanced db object.
     use = nano.use;
     nano.use = function(name) {
         var db;
 
         db = use(name);
-        Promise.promisifyAll(db);
-        Promise.promisifyAll(db.multipart);
-        Promise.promisifyAll(db.attachment);
 
-        db.viewAsyncRows = function(appname, viewname, viewParams) {
+        //  Note that we Wrap the result Promises of these calls into Bluebird
+        //  Promises for consistency when calling from other CouchDB bits that
+        //  use Bluebird Promises.
 
-            return db.viewAsync(appname, viewname, viewParams).then(
+        db.upsert = function(doc, params) {
+            //  We wrap all Promise result values here Bluebird Promises for
+            //  better sharing across TIBET.
+            if (CLI.notEmpty(doc._id)) {
+                return Promise.resolve(db.get(doc._id)).then(
+                    function(result) {
+                        //  ensure we have the latest rev for update.
+                        doc._rev = result._rev;
+                        return Promise.resolve(db.insert(doc, params));
+                    }).catch(function(err) {
+                        logger.error('Document update error: ' + err.message);
+                        logger.debug(err);
+                    });
+            } else {
+                return Promise.resolve(db.insert(doc, params)).catch(
+                    function(err) {
+                        logger.error('Document insert error: ' + err.message);
+                        logger.debug(err);
+                    });
+            }
+        };
+
+        db.viewRows = function(appname, viewname, viewParams) {
+            return Promise.resolve(db.view(appname, viewname, viewParams)).then(
                 function(result) {
                     return result.rows;
                 });
         };
 
-        db.viewAsyncDocs = function(appname, viewname, viewParams) {
+        db.viewDocs = function(appname, viewname, viewParams) {
             var params;
 
             params = viewParams || {};
             params.include_docs = true;
 
-            return db.viewAsync(appname, viewname, params).then(
+            return Promise.resolve(db.view(appname, viewname, params)).then(
                 function(result) {
                     var docs;
 
@@ -659,9 +678,8 @@ helpers.server = function(url, logger) {
                 });
         };
 
-        db.viewAsyncKeys = function(appname, viewname, viewParams) {
-
-            return db.viewAsync(appname, viewname, viewParams).then(
+        db.viewKeys = function(appname, viewname, viewParams) {
+            return Promise.resolve(db.view(appname, viewname, viewParams)).then(
                 function(result) {
                     var keys;
 
@@ -673,9 +691,8 @@ helpers.server = function(url, logger) {
                 });
         };
 
-        db.viewAsyncValues = function(appname, viewname, viewParams) {
-
-            return db.viewAsync(appname, viewname, viewParams).then(
+        db.viewValues = function(appname, viewname, viewParams) {
+            return Promise.resolve(db.view(appname, viewname, viewParams)).then(
                 function(result) {
                     var values;
 

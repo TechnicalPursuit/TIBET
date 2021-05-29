@@ -1251,13 +1251,13 @@ Cmd.prototype.executeView = function() {
     appname = dbParams.db_app;
 
     if (this.options.keys) {
-        method = 'viewAsyncKeys';
+        method = 'viewKeys';
     } else if (this.options.values) {
-        method = 'viewAsyncValues';
+        method = 'viewValues';
     } else if (this.options.rows) {
-        method = 'viewAsyncRows';
+        method = 'viewRows';
     } else {
-        method = 'viewAsyncDocs';
+        method = 'viewDocs';
         viewParams.include_docs = true;
     }
 

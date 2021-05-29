@@ -135,7 +135,7 @@ Cmd.prototype.dbGet = function(id, options, params) {
     server = couch.server(db_url, this);
     db = server.use(db_name);
 
-    return db.getAsync(id, options).then(function(result) {
+    return db.get(id, options).then(function(result) {
         return result;
     });
 };
@@ -218,7 +218,7 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
     server = couch.server(db_url, this);
     db = server.use(db_name);
 
-    return db.insertAsync(doc, options).then(function(result) {
+    return db.insert(doc, options).then(function(result) {
         return result;
     });
 };
@@ -260,7 +260,7 @@ Cmd.prototype.dbQuery = function(query, options, params) {
     server = couch.server(db_url, this);
     db = server.use(db_name);
 
-    return db.findAsync(query).then(function(result) {
+    return db.find(query).then(function(result) {
         return result.docs;
     });
 };
@@ -301,7 +301,7 @@ Cmd.prototype.dbView = function(viewname, options, params) {
     server = couch.server(db_url, this);
     db = server.use(db_name);
 
-    return db.viewAsyncRows(db_app, viewname, options);
+    return db.viewRows(db_app, viewname, options);
 };
 
 
@@ -435,7 +435,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
 
     if (doc._id) {
         //  Have to fetch to get the proper _rev to update...
-        return db.getAsync(doc._id).then(function(response) {
+        return db.get(doc._id).then(function(response) {
             var rev;
 
             //  Set revs to match so we can compare actual 'value' other
@@ -469,7 +469,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
 
         }).then(function() {
             if (!skip) {
-                return db.insertAsync(doc);
+                return db.insert(doc);
             }
         }).then(function(response2) {
             if (!skip) {
@@ -489,7 +489,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, params) {
             throw err2;
         });
     } else {
-        return db.insertAsync(doc).then(function(response) {
+        return db.insert(doc).then(function(response) {
 
             cmd.log(fullpath + ' =>\n' + CLI.beautify(response));
 

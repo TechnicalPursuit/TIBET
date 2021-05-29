@@ -101,7 +101,7 @@
             TDS.ifDebug() ?
                 logger.debug('submitting job data: ' + TDS.beautify(job)) : 0;
 
-            db.insertAsync(job).then(
+            db.insert(job).then(
             function(result) {
                 //  Second block of result data includes the status code from
                 //  Couch so use that for status and send back id/rev block.
