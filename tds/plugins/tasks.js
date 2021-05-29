@@ -53,7 +53,6 @@
             canRetry,
             couch,
             db,
-            dbGet,
             dbSave,
             dbView,
             db_app,
@@ -217,58 +216,17 @@
         };
 
         /**
-         */
-        dbGet = Promise.promisify(db.get);
-
-        /**
          *
          */
         dbSave = function(doc, params) {
-            if (TDS.notEmpty(doc._id)) {
-                return dbGet(doc._id).then(function(result) {
-                    //  ensure we have the latest rev for update.
-                    doc._rev = result._rev;
-                    return db.insertAsync(doc, params);
-                }).catch(function(err) {
-                    logger.error('Document update error: ' + err.message);
-                    logger.debug(err);
-                });
-            } else {
-                return db.insertAsync(doc, params).catch(function(err) {
-                    logger.error('Document insert error: ' + err.message);
-                    logger.debug(err);
-                });
-            }
+            return db.upsert(doc, params);
         };
 
         /**
          *
          */
         dbView = function(appname, view, params) {
-            var promise,
-                opts;
-
-            opts = params || {};
-            opts.include_docs = true;
-
-            promise = new Promise(function(resolve, reject) {
-
-                db.view(appname, view, opts, function(err, body) {
-                    var docs;
-
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    docs = body.rows.map(function(row) {
-                        return row.doc;
-                    });
-                    return resolve(docs);
-                });
-
-            });
-
-            return promise;
+            return db.viewDocs(appname, view, params);
         };
 
         //  ---
@@ -277,14 +235,14 @@
 
         /*
          */
-        acceptNextTask = function(job) {
+        acceptNextTask = async function(job) {
             var tasks,
                 taskdef,
                 taskname,
                 fullname,
                 last;
 
-            tasks = getNextTasks(job);
+            tasks = await getNextTasks(job);
 
             taskdef = tasks[0];
             if (taskdef) {
@@ -293,38 +251,39 @@
                 //  NOTE we do NOT pass 'fullname' here, just task name. This
                 //  lets us search for default/shared implementations in
                 //  addition to any owner-specific task.
-                retrieveTask(job, taskname, job.owner).then(function(task) {
-                    var blended;
+                return retrieveTask(job, taskname, job.owner).then(
+                    function(task) {
+                        var blended;
 
-                    if (!task) {
+                        if (!task) {
+                            logger.error(job,
+                                'missing task: ' + fullname);
+                            return failJob(job, 'Missing task ' + fullname);
+                        }
+
+                        //  Create a properly configured task entry that uses
+                        //  the flow taskdef as the baseline and then anything
+                        //  new from the task instance (flow params etc.
+                        //  override task).
+                        blended = {};
+                        blended.task_index = tasks.task_index;
+                        blended = TDS.blend(blended, taskdef);
+                        blended = TDS.blend(blended, task);
+
+                        return acceptTask(job, blended);
+                    }).catch(function(err) {
                         logger.error(job,
-                            'missing task: ' + fullname);
-                        failJob(job, 'Missing task ' + fullname);
-                        return;
-                    }
-
-                    //  Create a properly configured task entry that uses the
-                    //  flow taskdef as the baseline and then anything new from
-                    //  the task instance (flow params etc. override task).
-                    blended = {};
-                    blended.task_index = tasks.task_index;
-                    blended = TDS.blend(blended, taskdef);
-                    blended = TDS.blend(blended, task);
-
-                    acceptTask(job, blended);
-                }).catch(function(err) {
-                    logger.error(job,
-                        'error: ' + err.message +
-                        ' fetching/accepting task: ' + fullname);
-                    logger.debug(err);
-                });
+                            'error: ' + err.message +
+                            ' fetching/accepting task: ' + fullname);
+                        logger.debug(err);
+                    });
             } else if (!isJobComplete(job)) {
 
                 if (!job.processingerror) {
                     //  No next task or last task failed so we have an empty
                     //  Array. If last task failed, the job will have already
                     //  been completed during cleanupTask processing.
-                    cleanupJob(job);
+                    return cleanupJob(job);
                 } else {
                     //  Grab the last step from the job. If we're both
                     //  'processing an error' and the last step is the error
@@ -339,7 +298,7 @@
 
                         //  job.processingerror = false;
                         last.state = '$$error';
-                        cleanupTask(job, last);
+                        return cleanupTask(job, last);
                     }
                 }
             }
@@ -423,7 +382,7 @@
             }
             job.steps.push(step);
 
-            dbSave(job);
+            return dbSave(job);
         };
 
         /*
@@ -470,29 +429,27 @@
                 job.processingerror = true;
 
                 //  NOTE job.error is a task reference.
-                retrieveTask(job, job.error.name, job.owner).then(function(errtask) {
-                    var blended;
+                return retrieveTask(job, job.error.name, job.owner).then(
+                    function(errtask) {
+                        var blended;
 
-                    if (!errtask) {
+                        if (!errtask) {
+                            logger.error(job,
+                                'missing task: ' + errname);
+                            return failJob(job, 'Missing task ' + errname);
+                        }
+
+                        blended = {
+                            params: job.error.params
+                        };
+                        blended = TDS.blend(blended, errtask);
+
+                        return acceptTask(job, blended);
+                    }).catch(function(err) {
                         logger.error(job,
-                            'missing task: ' + errname);
-                        failJob(job, 'Missing task ' + errname);
-                        return;
-                    }
-
-                    blended = {
-                        params: job.error.params
-                    };
-                    blended = TDS.blend(blended, errtask);
-
-                    acceptTask(job, blended);
-                }).catch(function(err) {
-                    logger.error(job,
-                        'error: ' + err.message +
-                        ' fetching task: ' + errname);
-                });
-
-                return;
+                            'error: ' + err.message +
+                            ' fetching task: ' + errname);
+                    });
             }
 
             //  No job-level error tasks. We're truly done. Need to update final
@@ -504,7 +461,7 @@
 
             logger.debug(job, TDS.beautify(job));
 
-            dbSave(job);
+            return dbSave(job);
         };
 
         /*
@@ -519,40 +476,44 @@
             //  cleanup/notification step.
             if (task.error) {
                 errname = task.error + '::' + job.owner;
-                retrieveTask(job, task.error, job.owner).then(function(errtask) {
-                    if (!errtask) {
-                        logger.error(job,
-                            'missing task: ' + errname);
-                        failJob(job, 'Missing task ' + errname);
-                        return;
-                    }
+                return retrieveTask(job, task.error, job.owner).then(
+                    function(errtask) {
+                        if (!errtask) {
+                            logger.error(
+                                job,
+                                'missing task: ' + errname);
+                            return failJob(
+                                job,
+                                'Missing task ' + errname);
+                        }
 
-                    //  NOTE since task.error is a task reference if we end up
-                    //  with the same task name and owner we're going to recurse
-                    if (errtask.name === task.name &&
-                            errtask.owner === task.owner) {
-                        logger.error(job,
-                            'recursive task error definition: ' + errname);
-                        failJob(job, 'Recursive task error definition ' +
-                            errname);
-                        return;
-                    }
+                        //  NOTE since task.error is a task reference if we end
+                        //  up with the same task name and owner we're going to
+                        //  recurse
+                        if (errtask.name === task.name &&
+                                errtask.owner === task.owner) {
+                            logger.error(
+                                job,
+                                'recursive task error definition: ' + errname);
+                            return failJob(
+                                job,
+                                'Recursive task error definition ' + errname);
+                        }
 
-                    acceptTask(job, errtask);
-                }).catch(function(err) {
-                    logger.error(job,
-                        'error: ' + err +
-                        ' fetching task: ' + errname);
-                });
-                return;
+                        return acceptTask(job, errtask);
+                    }).catch(function(err) {
+                        logger.error(
+                            job,
+                            'error: ' + err + ' fetching task: ' + errname);
+                    });
             }
 
             //  No task-level error handler so promote to job level.
             if (canRetry(job)) {
-                retryJob(job);
+                return retryJob(job);
             } else {
                 //  NOTE we pass task state here to simplify update of job.
-                cleanupJob(job, task.state);
+                return cleanupJob(job, task.state);
             }
         };
 
@@ -565,13 +526,14 @@
             job.result = reason;
             job.end = Date.now();
 
-            dbSave(job);
+            return dbSave(job);
         };
 
         /*
          */
         failTask = function(job, task, reason, taskMeta) {
-            logger.error(job,
+            logger.error(
+                job,
                 job.state + ' failed: ' + reason,
                 taskMeta);
 
@@ -579,7 +541,7 @@
             task.result = reason || 'Unspecified error';
             task.end = Date.now();
 
-            dbSave(job);
+            return dbSave(job);
         };
 
         /*
@@ -665,11 +627,10 @@
                             //  error step, a job retry step, a job error step,
                             //  or a propogation of failure to the job level.
                             if (canRetry(last)) {
-                                retryTask(job, last);
+                                return retryTask(job, last);
                             } else {
-                                cleanupTask(job, last);
+                                return cleanupTask(job, last);
                             }
-                            break;
 
                         case '$$error':
 
@@ -677,17 +638,15 @@
                             //  error step, a job retry step, a job error step,
                             //  or a propogation of failure to the job level.
                             if (canRetry(last)) {
-                                retryTask(job, last);
+                                return retryTask(job, last);
                             } else {
-                                cleanupTask(job, last);
+                                return cleanupTask(job, last);
                             }
-                            break;
 
                         case '$$failed':
 
                             //  NOTE no retry attempt here.
-                            cleanupTask(job, last);
-                            break;
+                            return cleanupTask(job, last);
 
                         case '$$skipped':
                             //  Fall through. Skipped at the task level is
@@ -760,52 +719,56 @@
 
             //  Get the job's flow document. We need to copy the current task
             //  definition for the flow into the job instance.
-            retrieveFlow(job, job.flow, job.owner).then(function(flow) {
+            return retrieveFlow(job, job.flow, job.owner).then(
+                function(flow) {
 
-                if (!flow) {
-                    logger.error(job,
-                        'references missing flow: ' +
-                        job.flow + '::' + job.owner);
-                    failJob(job, 'Missing flow ' + job.flow + '::' + job.owner);
-                    return;
-                }
-
-                if (flow.enabled === false) {
-                    logger.error(job,
-                        'references disabled flow: ' +
-                        job.flow + '::' + job.owner);
-                    failJob(job, 'Disabled flow ' + job.flow + '::' + job.owner);
-                    return;
-                }
-
-                //  Snapshot the flow properties. This ensures we don't allow
-                //  job submissions to alter the configured nature of the flow
-                //  except with respect to things in the params block.
-                job.tasks = flow.tasks;
-                job.error = flow.error;
-                job.retry = flow.retry;
-                job.timeout = flow.timeout;
-
-                //  Map any flow parameter defaults into the job. Additional
-                //  params processing will occur as steps are processed.
-                if (flow.params) {
-                    if (job.params) {
-                        TDS.blend(job.params, flow.params);
-                    } else {
-                        job.params = TDS.blend({}, flow.params);
+                    if (!flow) {
+                        logger.error(job,
+                            'references missing flow: ' +
+                            job.flow + '::' + job.owner);
+                        return failJob(
+                            job,
+                            'Missing flow ' + job.flow + '::' + job.owner);
                     }
-                }
 
-                job.state = '$$ready';
-                job.start = Date.now();
-                job.steps = [];
+                    if (flow.enabled === false) {
+                        logger.error(job,
+                            'references disabled flow: ' +
+                            job.flow + '::' + job.owner);
+                        return failJob(
+                            job,
+                            'Disabled flow ' + job.flow + '::' + job.owner);
+                    }
 
-                dbSave(job);
+                    //  Snapshot the flow properties. This ensures we don't
+                    //  allow job submissions to alter the configured nature of
+                    //  the flow except with respect to things in the params
+                    //  block.
+                    job.tasks = flow.tasks;
+                    job.error = flow.error;
+                    job.retry = flow.retry;
+                    job.timeout = flow.timeout;
 
-            }).catch(function(err) {
-                logger.error(job,
-                    'error: ' + err.message);
-            });
+                    //  Map any flow parameter defaults into the job. Additional
+                    //  params processing will occur as steps are processed.
+                    if (flow.params) {
+                        if (job.params) {
+                            TDS.blend(job.params, flow.params);
+                        } else {
+                            job.params = TDS.blend({}, flow.params);
+                        }
+                    }
+
+                    job.state = '$$ready';
+                    job.start = Date.now();
+                    job.steps = [];
+
+                    return dbSave(job);
+
+                }).catch(function(err) {
+                    logger.error(job,
+                        'error: ' + err.message);
+                });
         };
 
         isJobComplete = function(job) {
@@ -832,7 +795,8 @@
             //  task is potentially in the works, or errored out so an error
             //  task is potentially going to be run. In all cases we allow all
             //  processes to compete for whatever work comes next.
-            if (['$$ready', '$$timeout', '$$error', '$$failed'].indexOf(job.state) !== -1) {
+            if (['$$ready', '$$timeout', '$$error', '$$failed'].indexOf(
+                job.state) !== -1) {
                 return true;
             }
 
@@ -849,7 +813,8 @@
             //  Tasks don't proceed after being set to an error or timeout, they
             //  can retry but that creates a new task, it doesn't continue using
             //  the one that errored or timed out.
-            return ['$$skipped', '$$complete', '$$timeout', '$$error', '$$failed'].indexOf(
+            return ['$$skipped', '$$complete', '$$timeout', '$$error',
+                    '$$failed'].indexOf(
                 task.state) !== -1;
         };
 
@@ -859,7 +824,8 @@
             //  States like $$ready and $$active could wait forever, but other
             //  concrete states imply the task is finished in some form and can
             //  not be timed out (it might already be..but that's different).
-            if (['$$skipped', '$$complete', '$$error', '$$failed', '$$timeout'].indexOf(
+            if (['$$skipped', '$$complete', '$$error', '$$failed',
+                '$$timeout'].indexOf(
                     task.state) !== -1) {
                 return false;
             }
@@ -1003,7 +969,8 @@
             try {
                 params = JSON.parse(output);
             } catch (e) {
-                logger.error('Error parsing job parameter template:\n\n' + output);
+                logger.error('Error parsing job parameter template:\n\n' +
+                                output);
                 logger.error(e.message);
 
                 //  Having JSON.parse problems? Dump the string.
@@ -1027,8 +994,8 @@
         processDocumentChange = function(change) {
             logger.trace('CouchDB change:\n' + TDS.beautify(change));
 
-            process.nextTick(function() {
-                TDS.workflow(change.doc);
+            process.nextTick(async function() {
+                await TDS.workflow(change.doc);
             });
 
             return;
@@ -1070,9 +1037,11 @@
                 logger.error(job,
                     'process ' + process.pid +
                     ' unable to find runner for: ' + step.name, stepMeta);
-                failTask(job, step, 'Unable to locate task runner: ' +
-                    runner, stepMeta);
-                return;
+                return failTask(
+                    job,
+                    step,
+                    'Unable to locate task runner: ' + runner,
+                    stepMeta);
             }
 
             //  Ensure plugins know which DB params etc. to use.
@@ -1093,51 +1062,57 @@
             timeout = step.timeout || 15000;
 
             try {
-                runner(job, step, params).timeout(timeout).then(
-                function(result) {
-                    logger.debug(job,
-                        'step succeeded', stepMeta);
-                }).catch(
-                function(err) {
-                    logger.error(job,
-                        'step failed', stepMeta);
-                    throw err;
-                }).then(
-                function() {
+                //  Wrap this in a Bluebird Promise to make sure to get the
+                //  'timeout' method.
+                return Promise.resolve(runner(job, step, params)).timeout(
+                    timeout).then(
+                    function(result) {
+                        logger.debug(job,
+                            'step succeeded', stepMeta);
+                    }).catch(
+                    function(err) {
+                        logger.error(job,
+                            'step failed', stepMeta);
+                        throw err;
+                    }).then(
+                    function() {
 
-                    step.end = Date.now();
-                    step.state = '$$complete';
+                        step.end = Date.now();
+                        step.state = '$$complete';
 
-                    db.insert(job, function(err, body) {
-                        if (err) {
-                            logger.error(job,
-                                'db update failed: ' +
-                                err.message, stepMeta);
-                            logger.debug(job, 'step complete', stepMeta);
-                            return;
-                        }
-
-                        logger.debug(job, 'db update succeeded', stepMeta);
-                        logger.debug(job, 'step complete', stepMeta);
+                        return Promise.resolve(db.upsert(job)).then(
+                            function(body) {
+                                logger.debug(
+                                    job, 'db update succeeded', stepMeta);
+                                logger.debug(
+                                    job, 'step complete', stepMeta);
+                            },
+                            function(err) {
+                                logger.error(
+                                    job,
+                                    'db update failed: ' + err.message,
+                                    stepMeta);
+                                logger.debug(
+                                    job,
+                                    'step complete',
+                                    stepMeta);
+                            });
+                    }).catch(Promise.TimeoutError, function(err) {
+                        logger.warn(job, 'timed out', stepMeta);
+                        step.state = '$$timeout';
+                        return dbSave(job);
+                    }).catch(function(err) {
+                        return failTask(job, step, err.message, stepMeta);
                     });
-
-                }).catch(Promise.TimeoutError, function(err) {
-                    logger.warn(job,
-                        'timed out', stepMeta);
-                    step.state = '$$timeout';
-                    dbSave(job);
-                }).catch(function(err) {
-                    failTask(job, step, err.message, stepMeta);
-                });
             } catch (e) {
                 //  Invalid runner...likely failed to return a promise.
-                failTask(job, step, e.message, stepMeta);
+                return failTask(job, step, e.message, stepMeta);
             }
         };
 
         /*
          */
-        refreshTaskState = function(job) {
+        refreshTaskState = async function(job) {
             var steps;
 
             //  If we find tasks with incorrect state (they've timed out
@@ -1163,7 +1138,7 @@
                     step.state = '$$timeout';
                 });
 
-                dbSave(job);
+                await dbSave(job);
 
                 return true;
             }
@@ -1393,7 +1368,7 @@
 
             //  Saving the job with the new step in place should trigger a
             //  process to pick it up and try to run with it :)
-            dbSave(job);
+            return dbSave(job);
         };
 
         //  ---
@@ -1403,7 +1378,7 @@
         /**
          *
          */
-        TDS.workflow = function(json) {
+        TDS.workflow = async function(json) {
             var job;
 
             //  Only process objects representing 'jobs'
@@ -1419,24 +1394,21 @@
                 case '$$ready':
                     //  No tasks running yet but ready for first one. Competing
                     //  with other processes to accept next available task.
-                    acceptNextTask(job);
-                    break;
+                    return acceptNextTask(job);
                 case '$$timeout':
                     //  Job timed out. Retry if possible, else clean up.
                     if (canRetry(job)) {
-                        retryJob(job);
+                        return retryJob(job);
                     } else {
-                        cleanupJob(job, job.state);
+                        return cleanupJob(job, job.state);
                     }
-                    break;
                 case '$$error':
                     //  Job errored out. Retry if possible, else clean up.
                     if (canRetry(job)) {
-                        retryJob(job);
+                        return retryJob(job);
                     } else {
-                        cleanupJob(job, job.state);
+                        return cleanupJob(job, job.state);
                     }
-                    break;
                 case '$$cancelled':
                     //  No work to do, job cancelled.
                     logger.warn(job, 'cancelled');
@@ -1458,7 +1430,7 @@
                     //  fallthrough
                 case undefined:
                     if (!isJobInitialized(job)) {
-                        initializeJob(job);
+                        return initializeJob(job);
                     } else {
                         logger.error(job,
                             'undefined job state');
@@ -1470,7 +1442,7 @@
                     //  then consider the job to be on a task boundary. The
                     //  return value from this operation will tell us if any
                     //  were updated, and if so we just wait for next cycle.
-                    if (refreshTaskState(job)) {
+                    if (await refreshTaskState(job)) {
                         return;
                     }
 
@@ -1481,7 +1453,7 @@
                     }
 
                     //  Not on a boundary, do appropriate work for tasks we own.
-                    processOwnedTasks(job);
+                    return processOwnedTasks(job);
             }
 
             return;
@@ -1780,15 +1752,13 @@
                     break;
             }
 
-            dbSave(job).then(function(result) {
+            return dbSave(job).then(function(result) {
                 res.status(201).end();    //  created :)
             },
             function(err) {
                 //  TODO:   refine error code here based on actual error.
                 res.status(500).send(err);
             });
-
-            return;
         };
 
         //  ---
