@@ -73,7 +73,7 @@
         "minimatch": "^3.0.3",
         "minimist": "*",
         "moment": "^2.29.1",
-        "nano": "^8.2.3",
+        "nano": "^9.0.3",
         "node-forge": "^0.10.0",
         "npm": "^7.9.0",
         "open-editor": "^3.0.0",
@@ -107,7 +107,7 @@
         "mutation-summary": "github:TechnicalPursuit/mutation-summary",
         "node-sass": "^6.0.0",
         "puppeteer": "^9.1.1",
-        "sinon": "^10.0.0",
+        "sinon": "^11.1.1",
         "stylelint": "^13.12.0",
         "stylelint-config-standard": "^22.0.0",
         "syn": "github:TechnicalPursuit/syn"
