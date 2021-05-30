@@ -1102,7 +1102,7 @@ function(aRequest) {
         'InvalidDate',                          TP.IDENTITY,
         'NaN',                                  TP.IDENTITY,
         'Number',                               TP.IDENTITY,
-        'Object',                               TP.IDENTITY,
+        'Object',                               'Object',
         'RegExp',                               TP.IDENTITY,
         'String',                               TP.IDENTITY,
 

@@ -5226,6 +5226,28 @@ function(anObject) {
         return null;
     }
 
+    //  If it's a POJO, we need to convert it *here* before we try to test it
+    //  for being a String, Number or Boolean because testing machinery in those
+    //  types can cause an exception to be thrown.
+    if (TP.isPlainObject(anObject)) {
+        keys = TP.keys(anObject);
+
+        newObj = {};
+        len = keys.length;
+        for (i = 0; i < len; i++) {
+            newObj[keys.at(i)] = TP.unwrap(anObject[keys.at(i)]);
+        }
+
+        return newObj;
+    }
+
+    //  'Primitive'-ize any scalar 'wrappers' down to their values. Note that
+    if (TP.isString(anObject) ||
+        TP.isBoolean(anObject) ||
+        TP.isNumber(anObject)) {
+        return anObject.valueOf();
+    }
+
     //  The wrapped value of a Type is the Type (native or TIBET-made)
     if (TP.isType(anObject)) {
         return anObject;
