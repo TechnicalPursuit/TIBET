@@ -14032,6 +14032,11 @@ function(aspectName, aContentObject, aRequest) {
         value = this.callNextMethod();
     }
 
+    //  Get the 'unwrapped' value of the produced value. This insures that any
+    //  'boxed' scalars (i.e. Boolean vs. boolean) are converted to their most
+    //  primitive form.
+    value = TP.unwrap(value);
+
     return value;
 });
 
