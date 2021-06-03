@@ -3,6 +3,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 @namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace svg url("http://www.w3.org/2000/svg");
 
 /*
 SHERPA COLORS:
@@ -960,7 +961,7 @@ div[busyfor="content"] > .busyMessage {
     }
 }
 
-#tibet-logo .part {
+svg|*[class~="part"] {
 
     fill: #800000;
 
@@ -970,25 +971,25 @@ div[busyfor="content"] > .busyMessage {
     animation: trace_logo 1.7s linear forwards;
 }
 
-#tibet-logo .upper_flower {
+svg|*[class~="upper_flower"] {
 
     stroke-dashoffset: 1000;
     stroke-dasharray: 1000;
 }
 
-#tibet-logo .right_dot {
+svg|*[class~="right_dot"] {
 
     stroke-dashoffset: 500;
     stroke-dasharray: 500;
 }
 
-#tibet-logo .left_square {
+svg|*[class~="left_square"] {
 
     stroke-dashoffset: 1000;
     stroke-dasharray: 1000;
 }
 
-#tibet-logo .right_hook {
+svg|*[class~="right_hook"] {
 
     stroke-dashoffset: 1500;
     stroke-dasharray: 1500;
