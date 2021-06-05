@@ -44,6 +44,9 @@ TP.xctrls.panel.defineAttribute('themeURI', TP.NO_RESULT);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.panel.Inst.defineAttribute('valueElement',
+    TP.cpc('> xctrls|value', TP.hc('shouldCollapse', true)));
+
 TP.xctrls.panel.Inst.defineAttribute('contentElement',
     TP.cpc('> xctrls|content', TP.hc('shouldCollapse', true)));
 
