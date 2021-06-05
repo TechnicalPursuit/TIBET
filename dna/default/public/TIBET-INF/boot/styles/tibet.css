@@ -109,7 +109,7 @@ DESC: TIBET system-wide CSS styles
 
 /* if an element has 'hidefocus="true"' it should not get a focus rectangle.
   Focus styling will be handled through the :focus pseudo-class */
-*[hidefocus="true"]::-moz-focus-inner {
+*|*[hidefocus="true"]::-moz-focus-inner {
 
     /* Note the use of 'transparent' border here - if we use 'none', then
         things shift around */
