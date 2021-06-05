@@ -781,7 +781,7 @@ function(content) {
         infoDiv;
 
     tileTPElem = TP.byId('Adjuster_Tile', this.getNativeWindow());
-    infoDiv = tileTPElem.get(TP.cpc('> .footer > div.info')).first();
+    infoDiv = tileTPElem.get(TP.cpc('> .footer > div.info'));
 
     infoDiv.setTextContent(content, false);
 
