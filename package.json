@@ -2,20 +2,34 @@
     "name": "tibet",
     "version": "5.3.6",
     "description": "TIBET Full-Stack Low-Code Platform.",
-    "keywords": ["Electron", "Express", "Framework", "Full-Stack", "Single-Page", "Low-Code", "No-Code", "IDE", "Workflow", "CouchDB"],
+    "keywords": [
+        "Electron",
+        "Express",
+        "Framework",
+        "Full-Stack",
+        "Single-Page",
+        "Low-Code",
+        "No-Code",
+        "IDE",
+        "Workflow",
+        "CouchDB"
+    ],
     "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
         "email": "tibet@technicalpursuit.com",
         "url": "http://www.technicalpursuit.com"
     },
-    "contributors": [{
-        "name": "Scott Shattuck",
-        "email": "ss@technicalpursuit.com"
-    }, {
-        "name": "William J. Edney",
-        "email": "bedney@technicalpursuit.com"
-    }],
+    "contributors": [
+        {
+            "name": "Scott Shattuck",
+            "email": "ss@technicalpursuit.com"
+        },
+        {
+            "name": "William J. Edney",
+            "email": "bedney@technicalpursuit.com"
+        }
+    ],
     "repository": {
         "type": "git",
         "url": "http://github.com/TechnicalPursuit/TIBET"
@@ -101,14 +115,14 @@
         "@babel/preset-env": "^7.12.7",
         "babel-minify": "^0.5.1",
         "chai": "^4.2.0",
-        "eslint": "^7.15.0",
+        "eslint": "^7.28.0",
         "less": "^4.1.1",
         "mocha": "^8.2.1",
         "mutation-summary": "github:TechnicalPursuit/mutation-summary",
         "node-sass": "^6.0.0",
         "puppeteer": "^9.1.1",
         "sinon": "^11.1.1",
-        "stylelint": "^13.12.0",
+        "stylelint": "^13.13.1",
         "stylelint-config-standard": "^22.0.0",
         "syn": "github:TechnicalPursuit/syn"
     },
