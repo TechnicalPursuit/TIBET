@@ -267,7 +267,8 @@ function(aSignal) {
      */
 
     var targetElem,
-        triggerTPElem;
+        triggerTPElem,
+        triggerElem;
 
     targetElem = aSignal.getResolvedTarget();
 
@@ -283,6 +284,14 @@ function(aSignal) {
         }
     } else {
 
+        //  Since we're using the *resolved* target element here, it might be
+        //  opaque to the click and it might contain the actual trigger. In this
+        //  case, just make the trigger element *be* the target element.
+        triggerElem = TP.unwrap(triggerTPElem);
+        if (targetElem.contains(triggerElem)) {
+            triggerElem = targetElem;
+        }
+
         //  If the target element of the DOMClick isn't contained in ourself,
         //  then check to see if the triggering element contains the target
         //  element (or is the triggering element itself). Also, check to see if
@@ -290,8 +299,8 @@ function(aSignal) {
         //  then hide ourself.
         if (!this.contains(targetElem)) {
 
-            if (TP.unwrap(triggerTPElem) !== targetElem &&
-                !triggerTPElem.contains(targetElem)) {
+            if (triggerElem !== targetElem &&
+                !triggerElem.contains(targetElem)) {
                 this.setAttribute('closed', true);
                 this.setAttribute('hidden', true);
             } else if (!this.get('isTriggeringSignal')) {
