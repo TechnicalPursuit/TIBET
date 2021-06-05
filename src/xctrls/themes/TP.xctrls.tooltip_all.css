@@ -6,7 +6,7 @@
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
 /* All themed 'xctrls:tooltip' controls */
-*[data-theme] xctrls|tooltip {
+*|*[data-theme] xctrls|tooltip {
 
     text-align: center;
 

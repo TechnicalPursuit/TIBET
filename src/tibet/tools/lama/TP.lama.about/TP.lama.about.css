@@ -196,7 +196,7 @@ lama|about > .content > .copyright {
 
 /* Rules that trigger when the corner is closed */
 
-.framing.north.west.corner[pclass|closed] lama|about > .header > *:not(.trigger) {
+.framing.north.west.corner[pclass|closed] lama|about > .header > *|*:not(.trigger) {
 
     display: none;
 }

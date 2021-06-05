@@ -9,18 +9,18 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* The propertysheet */
-*[data-theme~="tpi"] xctrls|propertysheet {
+*|*[data-theme~="tpi"] xctrls|propertysheet {
 
     font-size: var(--xctrls-propertysheet-font-size);
 }
 
 /* The propertysheet is disabled */
-*[data-theme~="tpi"] xctrls|propertysheet[pclass|disabled] {
+*|*[data-theme~="tpi"] xctrls|propertysheet[pclass|disabled] {
 
 }
 
 /* The propertysheet fieldset */
-*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields {
+*|*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields {
 
     margin: 0;
     font-family: var(--xctrls-propertysheet-font-family);
@@ -32,11 +32,11 @@
     border-color: var(--xctrls-propertysheet-border-color-normal);
 }
 
-*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields span.propertyfield {
+*|*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields span.propertyfield {
 
 }
 
-*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields span.propertyfield *:nth-child(even) {
+*|*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields span.propertyfield *:nth-child(even) {
 
     position: sticky;
     left: 100px;
@@ -44,13 +44,13 @@
 }
 
 /* The save button */
-*[data-theme~="tpi"] xctrls|propertysheet > xctrls|button[class~="saveButton"] {
+*|*[data-theme~="tpi"] xctrls|propertysheet > xctrls|button[class~="saveButton"] {
 
     margin-top: 10px;
 }
 
 /* The propertysheet is disabled, so is the label */
-*[data-theme~="tpi"] xctrls|propertysheet[pclass|disabled] > fieldset {
+*|*[data-theme~="tpi"] xctrls|propertysheet[pclass|disabled] > fieldset {
 
     color: var(--xctrls-propertysheet-font-color-disabled);
     background-color: var(--xctrls-propertysheet-background-color-disabled);

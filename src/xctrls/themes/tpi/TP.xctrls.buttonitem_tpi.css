@@ -9,7 +9,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* The buttonitem */
-*[data-theme~="tpi"] xctrls|buttonitem {
+*|*[data-theme~="tpi"] xctrls|buttonitem {
 
     border-width: var(--xctrls-buttonitem-border-width);
     border-style: var(--xctrls-buttonitem-border-style);
@@ -21,44 +21,44 @@
 }
 
 /* Hovering over the buttonitem */
-*[data-theme~="tpi"] xctrls|buttonitem:hover {
+*|*[data-theme~="tpi"] xctrls|buttonitem:hover {
 
     background-color: var(--xctrls-buttonitem-background-color-hover);
 }
 
 /* Focusing on the buttonitem */
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] {
 
     background-color: var(--xctrls-buttonitem-background-color-focus);
 }
 
 /* Clicking down on the buttonitem */
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|active] {
 
     background-color: var(--xctrls-buttonitem-background-color-active);
 }
 
 /* The buttonitem is disabled */
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|disabled] {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|disabled] {
 
     background-color: var(--xctrls-buttonitem-background-color-disabled);
 }
 
 /* The buttonitem is selected */
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|selected] {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|selected] {
 
     background-color: var(--xctrls-buttonitem-background-color-selected);
 }
 
 /* Hovering over a selected buttonitem */
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|selected]:hover {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|selected]:hover {
 
     color: var(--xctrls-buttonitem-font-color-normal);
     background-color: var(--xctrls-buttonitem-background-color-selected);
 }
 
 /* The buttonitem label */
-*[data-theme~="tpi"] xctrls|buttonitem > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|buttonitem > xctrls|label {
 
     font-size: var(--xctrls-buttonitem-font-size);
     font-family: var(--xctrls-buttonitem-font-family);
@@ -67,45 +67,45 @@
 }
 
 /* Hovering over the buttonitem, label must highlight */
-*[data-theme~="tpi"] xctrls|buttonitem:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|buttonitem:hover > xctrls|label {
 
     color: var(--xctrls-buttonitem-font-color-hover);
 }
 
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|selected]:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|selected]:hover > xctrls|label {
 
 }
 
 /* Focusing on the buttonitem, label must highlight */
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] {
 
 }
 
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus] > xctrls|label {
 
     color: var(--xctrls-buttonitem-font-color-focus);
 }
 
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus][pclass|selected] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|focus][pclass|selected] > xctrls|label {
 
 }
 
 /* Clicking down on the buttonitem, label must highlight */
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|active] {
 
 }
 
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|active] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|active] > xctrls|label {
 
     color: var(--xctrls-buttonitem-font-color-active);
 }
 
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|active][pclass|selected] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|active][pclass|selected] > xctrls|label {
 
 }
 
 /* The buttonitem is disabled, so is the label */
-*[data-theme~="tpi"] xctrls|buttonitem[pclass|disabled] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|buttonitem[pclass|disabled] > xctrls|label {
 
     color: var(--xctrls-buttonitem-font-color-disabled);
 }

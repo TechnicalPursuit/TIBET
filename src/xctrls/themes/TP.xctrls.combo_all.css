@@ -7,7 +7,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* All themed 'xctrls:combo' controls */
-*[data-theme] xctrls|combo {
+*|*[data-theme] xctrls|combo {
 
     color: inherit;
 
@@ -19,23 +19,23 @@
 }
 
 /* All themed, 'xctrls:combo' control labels */
-*[data-theme] xctrls|combo > xctrls|label {
+*|*[data-theme] xctrls|combo > xctrls|label {
 
     margin-right: 0.25em;
 }
 
 /* All themed, non-disabled 'xctrls:combo' controls */
-*[data-theme] xctrls|combo:not([pclass|disabled]) {
+*|*[data-theme] xctrls|combo:not([pclass|disabled]) {
 
     text-decoration: none;
 }
 
 /* All themed, non-disabled 'xctrls:combo' control labels */
-*[data-theme] xctrls|combo:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|combo:not([pclass|disabled]) > xctrls|label {
 
 }
 
-*[data-theme] xctrls|combo > xctrls|button {
+*|*[data-theme] xctrls|combo > xctrls|button {
 
     margin: 0;
     padding: 0;

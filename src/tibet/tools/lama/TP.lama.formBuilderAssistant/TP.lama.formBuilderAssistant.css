@@ -58,7 +58,7 @@ lama|formBuilderAssistant > .body .insertionPointGroup label {
     margin-top: 5px;
 }
 
-lama|formBuilderAssistant > .body #formBuilderAssistant_InsertionBreadcrumb {
+lama|formBuilderAssistant > .body lama|breadcrumb#formBuilderAssistant_InsertionBreadcrumb {
 
     position: relative;
 
@@ -68,7 +68,7 @@ lama|formBuilderAssistant > .body #formBuilderAssistant_InsertionBreadcrumb {
     left: 5px;
 }
 
-lama|formBuilderAssistant > .body #formBuilderAssistant_InsertionBreadcrumb > .content div.item {
+lama|formBuilderAssistant > .body lama|breadcrumb#formBuilderAssistant_InsertionBreadcrumb > .content div.item {
 
     color: black;
 }

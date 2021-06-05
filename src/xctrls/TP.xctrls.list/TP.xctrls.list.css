@@ -22,23 +22,23 @@ xctrls|list > .scroller > tibet|group {
     width: 100%;
 }
 
-xctrls|list *[tibet|pelem="choices"] {
+xctrls|list xctrls|content[tibet|pelem="choices"] {
 
 }
 
-xctrls|list *[tibet|pelem="choices"] > xctrls|* {
+xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|* {
 
     display: flex;
     position: absolute;
 }
 
 /* The item label */
-xctrls|list *[tibet|pelem="choices"] > xctrls|* > xctrls|label {
+xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|* > xctrls|label {
 
     display: block;
 }
 
-xctrls|list *[tibet|pelem="choices"] > xctrls|*[spacer] * {
+xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|*[spacer] * {
 
     display: none;
 }

@@ -9,7 +9,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* The sticky */
-*[data-theme~="tpi"] xctrls|sticky {
+*|*[data-theme~="tpi"] xctrls|sticky {
 
     background-color: var(--xctrls-sticky-background-color);
 
@@ -20,7 +20,7 @@
 }
 
 /* When the sticky is active */
-*[data-theme~="tpi"] xctrls|sticky[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|sticky[pclass|active] {
 
     background-color: var(--xctrls-sticky-background-color-active);
     border-color: var(--xctrls-sticky-border-color-active);

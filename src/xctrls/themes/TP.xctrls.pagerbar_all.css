@@ -7,11 +7,11 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* All themed 'xctrls:pagerbar' controls */
-*[data-theme] xctrls|pagerbar {
+*|*[data-theme] xctrls|pagerbar {
 
 }
 
-*[data-theme] xctrls|pagerbar xctrls|pageritem {
+*|*[data-theme] xctrls|pagerbar xctrls|pageritem {
 
     display: flex;
 
@@ -26,17 +26,17 @@
     cursor: pointer;
 }
 
-*[data-theme] xctrls|pagerbar xctrls|pageritem:first-of-type {
+*|*[data-theme] xctrls|pagerbar xctrls|pageritem:first-of-type {
 
     margin-left: 0;
 }
 
 /* All themed, non-disabled 'xctrls:pagerbar' controls */
-*[data-theme] xctrls|pagerbar:not([pclass|disabled]) {
+*|*[data-theme] xctrls|pagerbar:not([pclass|disabled]) {
 
 }
 
 /* All themed, non-disabled 'xctrls:pagerbar' control labels */
-*[data-theme] xctrls|pagerbar:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|pagerbar:not([pclass|disabled]) > xctrls|label {
 
 }

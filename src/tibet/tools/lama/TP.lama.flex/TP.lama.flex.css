@@ -7,7 +7,7 @@ lama|flex {
     display: flex;
 }
 
-lama|flex > * {
+lama|flex > *|* {
 
     flex: 1;
 }

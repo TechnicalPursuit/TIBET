@@ -59,7 +59,7 @@ lama|screens > .header > .trigger.button:hover {
     color: #333;
 }
 
-lama|screens > .header > .content:hover > * {
+lama|screens > .header > .content:hover > *|* {
 
     background-color: white;
 }
@@ -115,7 +115,7 @@ lama|screens > .content > xctrls|panelbox {
     height: 100%;
 }
 
-lama|screens #LamaScreensPanelbox xctrls|content xctrls|list {
+lama|screens xctrls|panelbox#LamaScreensPanelbox xctrls|content xctrls|list {
 
     position: absolute;
 
@@ -135,17 +135,17 @@ lama|screens #LamaScreensPanelbox xctrls|content xctrls|list {
     border: 0;
 }
 
-lama|screens #LamaScreensPanelbox xctrls|list xctrls|textitem {
+lama|screens xctrls|panelbox#LamaScreensPanelbox xctrls|list xctrls|textitem {
 
     border-right: 0;
 }
 
-lama|screens #LamaScreensPanelbox xctrls|list xctrls|textitem:first-child {
+lama|screens xctrls|panelbox#LamaScreensPanelbox xctrls|list xctrls|textitem:first-child {
 
     border-top: #efefef;
 }
 
-lama|screens #LamaScreensPanelbox xctrls|list xctrls|textitem button {
+lama|screens xctrls|panelbox#LamaScreensPanelbox xctrls|list xctrls|textitem button {
 
     position: absolute;
     display: none;
@@ -165,7 +165,7 @@ lama|screens #LamaScreensPanelbox xctrls|list xctrls|textitem button {
     box-shadow: none;
 }
 
-lama|screens #LamaScreensPanelbox xctrls|list xctrls|textitem:hover button {
+lama|screens xctrls|panelbox#LamaScreensPanelbox xctrls|list xctrls|textitem:hover button {
 
     display: inline-block;
 }
@@ -199,7 +199,7 @@ lama|screens #AddLocationButton:hover {
 
 /* Rules that trigger when the corner is closed */
 
-#background:not(.edge-west-open) lama|screens > .header > *:not(.trigger) {
+#background:not(.edge-west-open) lama|screens > .header > *|*:not(.trigger) {
 
     display: none;
 }
@@ -209,7 +209,7 @@ lama|screens #AddLocationButton:hover {
     display: none;
 }
 
-#background:not(.edge-west-open) .framing.corner:not([pclass|closed]) lama|screens > .header > * {
+#background:not(.edge-west-open) .framing.corner:not([pclass|closed]) lama|screens > .header > *|* {
 
     display: block;
 }

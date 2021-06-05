@@ -6,7 +6,7 @@
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 
 /* All themed 'xctrls:sticky' controls */
-*[data-theme] xctrls|sticky {
+*|*[data-theme] xctrls|sticky {
 
     z-index: var(--tibet-STICKY-TIER);
 }

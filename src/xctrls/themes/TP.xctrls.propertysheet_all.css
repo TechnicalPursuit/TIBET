@@ -6,12 +6,12 @@
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 
-*[data-theme] {
+*|*[data-theme] {
 
 }
 
 /* All themed 'xctrls:propertysheet' controls */
-*[data-theme] xctrls|propertysheet {
+*|*[data-theme] xctrls|propertysheet {
 
     width: auto;
     height: auto;
@@ -20,24 +20,24 @@
 }
 
 /* All themed, non-disabled 'xctrls:propertysheet' controls */
-*[data-theme] xctrls|propertysheet:not([pclass|disabled]) {
+*|*[data-theme] xctrls|propertysheet:not([pclass|disabled]) {
 }
 
 /* All themed, non-disabled 'xctrls:propertysheet' control labels */
-*[data-theme] xctrls|propertysheet:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|propertysheet:not([pclass|disabled]) > xctrls|label {
 }
 
-*[data-theme] xctrls|propertysheet > span.propertyfields {
+*|*[data-theme] xctrls|propertysheet > span.propertyfields {
 
     display: block;
 }
 
-*[data-theme] xctrls|propertysheet > span.propertyfields span.propertyfield {
+*|*[data-theme] xctrls|propertysheet > span.propertyfields span.propertyfield {
 
     display: block;
 }
 
-*[data-theme] xctrls|propertysheet > span.propertyfields span.propertyfield label {
+*|*[data-theme] xctrls|propertysheet > span.propertyfields span.propertyfield label {
 
     white-space: nowrap;
 

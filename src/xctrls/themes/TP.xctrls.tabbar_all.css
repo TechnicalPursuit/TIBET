@@ -7,11 +7,11 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* All themed 'xctrls:tabbar' controls */
-*[data-theme] xctrls|tabbar {
+*|*[data-theme] xctrls|tabbar {
 
 }
 
-*[data-theme] xctrls|tabbar xctrls|tabitem {
+*|*[data-theme] xctrls|tabbar xctrls|tabitem {
 
     display: flex;
 
@@ -26,27 +26,27 @@
     cursor: pointer;
 }
 
-*[data-theme] xctrls|tabbar xctrls|tabitem:first-of-type {
+*|*[data-theme] xctrls|tabbar xctrls|tabitem:first-of-type {
 
     margin-left: 0;
 }
 
-*[data-theme] xctrls|tabbar xctrls|tabitem > .close_mark {
+*|*[data-theme] xctrls|tabbar xctrls|tabitem > .close_mark {
 
     margin-left: 0.25em;
 }
 
-*[data-theme] xctrls|tabbar xctrls|tabitem > .close_mark::after {
+*|*[data-theme] xctrls|tabbar xctrls|tabitem > .close_mark::after {
 
     text-align: center;
 }
 
 /* All themed, non-disabled 'xctrls:tabbar' controls */
-*[data-theme] xctrls|tabbar:not([pclass|disabled]) {
+*|*[data-theme] xctrls|tabbar:not([pclass|disabled]) {
 
 }
 
 /* All themed, non-disabled 'xctrls:tabbar' control labels */
-*[data-theme] xctrls|tabbar:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|tabbar:not([pclass|disabled]) > xctrls|label {
 
 }

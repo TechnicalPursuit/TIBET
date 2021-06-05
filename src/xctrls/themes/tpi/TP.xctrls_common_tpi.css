@@ -11,31 +11,31 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* All controls - normal mode */
-*[data-theme~="tpi"] xctrls|* {
+*|*[data-theme~="tpi"] xctrls|* {
 
     border-color: var(--xctrls-border-color-normal);
 }
 
 /* All controls - hover mode */
-*[data-theme~="tpi"] xctrls|*:hover {
+*|*[data-theme~="tpi"] xctrls|*:hover {
 
     border-color: var(--xctrls-border-color-hover);
 }
 
 /* All controls - focused mode */
-*[data-theme~="tpi"] xctrls|*[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|*[pclass|focus] {
 
     border-color: var(--xctrls-border-color-focus);
 }
 
 /* All controls - active mode */
-*[data-theme~="tpi"] xctrls|*[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|*[pclass|active] {
 
     border-color: var(--xctrls-border-color-active);
 }
 
 /* All controls - disabled mode */
-*[data-theme~="tpi"] xctrls|*[pclass|disabled] {
+*|*[data-theme~="tpi"] xctrls|*[pclass|disabled] {
 
     border-color: var(--xctrls-border-color-disabled);
 }

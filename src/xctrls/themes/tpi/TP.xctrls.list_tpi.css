@@ -10,7 +10,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* The list */
-*[data-theme~="tpi"] xctrls|list {
+*|*[data-theme~="tpi"] xctrls|list {
 
     border-width: var(--xctrls-list-border-width);
     border-style: var(--xctrls-list-border-style);
@@ -18,33 +18,33 @@
 }
 
 /* Hovering over the list */
-*[data-theme~="tpi"] xctrls|list:hover {
+*|*[data-theme~="tpi"] xctrls|list:hover {
 
 }
 
 /* Focusing on the list */
-*[data-theme~="tpi"] xctrls|list[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|list[pclass|focus] {
 
 }
 
 /* Clicking down on the list */
-*[data-theme~="tpi"] xctrls|list[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|list[pclass|active] {
 
 }
 
 /* The list is disabled */
-*[data-theme~="tpi"] xctrls|list[pclass|disabled] {
+*|*[data-theme~="tpi"] xctrls|list[pclass|disabled] {
 
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] {
 
     margin: 0;
     padding: 0;
     background-color: white;
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem {
 
     display: block;
 
@@ -54,12 +54,12 @@
     border-bottom: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-normal);
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|focus] {
 
 }
 
 /* The list label */
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem > xctrls|label {
 
     bottom: var(--xctrls-listitem-border-width);
     right: var(--xctrls-listitem-border-width);
@@ -75,28 +75,28 @@
 }
 
 /* Selected list item, label must highlight */
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|selected] {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|selected] {
 
     background-color: var(--xctrls-listitem-background-color-selected-normal);
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|selected] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|selected] > xctrls|label {
 
     background-color: var(--xctrls-listitem-background-color-selected-normal);
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|selected]:hover {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|selected]:hover {
 
     background-color: var(--xctrls-listitem-background-color-selected-normal);
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|selected]:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|selected]:hover > xctrls|label {
 
     background-color: var(--xctrls-listitem-background-color-selected-normal);
 }
 
 /* Hovering over the list, label must highlight */
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem:hover > xctrls|label {
 
     color: var(--xctrls-listitem-font-color-hover);
 
@@ -104,14 +104,14 @@
 }
 
 /* Focusing on the list, label must highlight */
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|focus] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|focus] > xctrls|label {
 
     color: var(--xctrls-listitem-font-color-focus);
     font-weight: var(--xctrls-listitem-font-weight-focus);
 }
 
 /* Clicking down on the list, label must highlight */
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|active] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|active] > xctrls|label {
 
     color: var(--xctrls-listitem-font-color-active);
 
@@ -119,14 +119,14 @@
 }
 
 /* The list is disabled, so is the label */
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[pclass|disabled] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|disabled] > xctrls|label {
 
     color: var(--xctrls-listitem-font-color-disabled);
 
     background-color: var(--xctrls-listitem-background-color-disabled);
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[grouping] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[grouping] > xctrls|label {
 
     font-family: var(--xctrls-listitem-font-family);
     font-weight: var(--xctrls-listitem-grouping-font-weight);
@@ -135,7 +135,7 @@
     background-color: var(--xctrls-listitem-grouping-background-color-normal);
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[grouping]:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[grouping]:hover > xctrls|label {
 
     font-family: var(--xctrls-listitem-font-family);
     font-weight: var(--xctrls-listitem-grouping-font-weight);
@@ -144,11 +144,11 @@
     background-color: var(--xctrls-listitem-grouping-background-color-hover);
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[spacer] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[spacer] > xctrls|label {
 
 }
 
-*[data-theme~="tpi"] xctrls|list *[tibet|pelem="choices"] > xctrls|textitem[spacer]:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[spacer]:hover > xctrls|label {
 
     background-color: initial;
 }

@@ -44,18 +44,18 @@ xctrls|dialog > xctrls|content[pclass|focus] {
 }
 
 /* The dialog header */
-xctrls|dialog > xctrls|content > *[tibet|pelem="header"] {
+xctrls|dialog > xctrls|content > div[tibet|pelem="header"] {
 
 }
 
 /* The dialog body */
-xctrls|dialog > xctrls|content > *[tibet|pelem="body"] {
+xctrls|dialog > xctrls|content > div[tibet|pelem="body"] {
 
     overflow: hidden;
 }
 
 /* The dialog footer */
-xctrls|dialog > xctrls|content > *[tibet|pelem="footer"] {
+xctrls|dialog > xctrls|content > div[tibet|pelem="footer"] {
 
 }
 

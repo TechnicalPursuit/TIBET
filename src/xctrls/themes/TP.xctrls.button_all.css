@@ -7,7 +7,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* All themed 'xctrls:button' controls */
-*[data-theme] xctrls|button {
+*|*[data-theme] xctrls|button {
 
     text-align: center;
 
@@ -24,12 +24,12 @@
 }
 
 /* All themed, non-disabled 'xctrls:button' controls */
-*[data-theme] xctrls|button:not([pclass|disabled]) {
+*|*[data-theme] xctrls|button:not([pclass|disabled]) {
 
     text-decoration: none;
 }
 
 /* All themed, non-disabled 'xctrls:button' control labels */
-*[data-theme] xctrls|button:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|button:not([pclass|disabled]) > xctrls|label {
 
 }

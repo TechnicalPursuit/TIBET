@@ -8,7 +8,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* All themed 'xctrls:buttonitem' controls */
-*[data-theme] xctrls|buttonitem {
+*|*[data-theme] xctrls|buttonitem {
 
     text-align: center;
 
@@ -25,16 +25,16 @@
 }
 
 /* All themed 'xctrls:buttonitem' controls ::value pseudo-element */
-*[data-theme] xctrls|buttonitem > *[tibet|pelem="value"] {
+*|*[data-theme] xctrls|buttonitem > *[tibet|pelem="value"] {
 
 }
 
 /* All themed, non-disabled 'xctrls:buttonitem' controls */
-*[data-theme] xctrls|buttonitem:not([pclass|disabled]) {
+*|*[data-theme] xctrls|buttonitem:not([pclass|disabled]) {
 
 }
 
 /* All themed, non-disabled 'xctrls:buttonitem' control labels */
-*[data-theme] xctrls|buttonitem:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|buttonitem:not([pclass|disabled]) > xctrls|label {
 
 }

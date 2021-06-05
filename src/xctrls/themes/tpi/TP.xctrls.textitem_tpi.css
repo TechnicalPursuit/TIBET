@@ -10,89 +10,89 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* The textitem */
-*[data-theme~="tpi"] xctrls|textitem {
+*|*[data-theme~="tpi"] xctrls|textitem {
 
     background-color: var(--xctrls-textitem-background-color-normal);
 }
 
 /* Hovering over the textitem */
-*[data-theme~="tpi"] xctrls|textitem:hover {
+*|*[data-theme~="tpi"] xctrls|textitem:hover {
 
     background-color: var(--xctrls-textitem-background-color-hover);
 }
 
 /* Focusing on the textitem */
-*[data-theme~="tpi"] xctrls|textitem[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|focus] {
 
     background-color: var(--xctrls-textitem-background-color-focus);
 }
 
 /* Clicking down on the textitem */
-*[data-theme~="tpi"] xctrls|textitem[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|active] {
 
     background-color: var(--xctrls-textitem-background-color-active);
 }
 
 /* The textitem is disabled */
-*[data-theme~="tpi"] xctrls|textitem[pclass|disabled] {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|disabled] {
 
     background-color: var(--xctrls-textitem-background-color-disabled);
 }
 
 /* The textitem is selected */
-*[data-theme~="tpi"] xctrls|textitem[pclass|selected] {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|selected] {
 
     background-color: var(--xctrls-textitem-background-color-selected);
 }
 
 /* The textitem label */
-*[data-theme~="tpi"] xctrls|textitem > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|textitem > xctrls|label {
 
     font-family: var(--xctrls-textitem-font-family);
     color: var(--xctrls-textitem-font-color-normal);
 }
 
 /* Hovering over the textitem, label must highlight */
-*[data-theme~="tpi"] xctrls|textitem:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|textitem:hover > xctrls|label {
 
     color: var(--xctrls-textitem-font-color-hover);
 }
 
-*[data-theme~="tpi"] xctrls|textitem[pclass|selected]:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|selected]:hover > xctrls|label {
 
     color: var(--xctrls-textitem-font-color-normal);
 }
 
 /* Focusing on the textitem, label must highlight */
-*[data-theme~="tpi"] xctrls|textitem[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|focus] {
 
 }
 
-*[data-theme~="tpi"] xctrls|textitem[pclass|focus] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|focus] > xctrls|label {
 
     color: var(--xctrls-textitem-font-color-focus);
 }
 
-*[data-theme~="tpi"] xctrls|textitem[pclass|focus][pclass|selected] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|focus][pclass|selected] > xctrls|label {
 
 }
 
 /* Clicking down on the textitem, label must highlight */
-*[data-theme~="tpi"] xctrls|textitem[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|active] {
 
 }
 
-*[data-theme~="tpi"] xctrls|textitem[pclass|active] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|active] > xctrls|label {
 
     color: var(--xctrls-textitem-font-color-active);
 }
 
-*[data-theme~="tpi"] xctrls|textitem[pclass|active][pclass|selected] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|active][pclass|selected] > xctrls|label {
 
 }
 
 /* The textitem is disabled, so is the label */
-*[data-theme~="tpi"] xctrls|textitem[pclass|disabled] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|textitem[pclass|disabled] > xctrls|label {
 
     color: var(--xctrls-textitem-font-color-disabled);
 }

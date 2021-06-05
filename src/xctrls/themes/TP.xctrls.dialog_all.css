@@ -8,20 +8,20 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* All themed 'xctrls:dialog' controls */
-*[data-theme] xctrls|dialog {
+*|*[data-theme] xctrls|dialog {
 
     text-align: center;
 
     z-index: var(--tibet-ALERT-TIER);
 }
 
-*[data-theme] xctrls|dialog > xctrls|content {
+*|*[data-theme] xctrls|dialog > xctrls|content {
 
     text-align: center;
 }
 
 /* The dialog header */
-*[data-theme] xctrls|dialog > xctrls|content > *[tibet|pelem="header"] {
+*|*[data-theme] xctrls|dialog > xctrls|content > *[tibet|pelem="header"] {
 
     left: 0;
     right: 0;
@@ -36,7 +36,7 @@
 }
 
 /* The dialog body */
-*[data-theme] xctrls|dialog > xctrls|content > *[tibet|pelem="body"] {
+*|*[data-theme] xctrls|dialog > xctrls|content > *[tibet|pelem="body"] {
 
     top: 27px;
     right: 0;
@@ -50,7 +50,7 @@
 }
 
 /* The dialog footer */
-*[data-theme] xctrls|dialog > xctrls|content > *[tibet|pelem="footer"] {
+*|*[data-theme] xctrls|dialog > xctrls|content > *[tibet|pelem="footer"] {
 
     right: 0;
     bottom: 0;
@@ -63,11 +63,11 @@
 }
 
 /* All themed, non-disabled 'xctrls:dialog' controls */
-*[data-theme] xctrls|dialog > xctrls|content:not([pclass|disabled]) {
+*|*[data-theme] xctrls|dialog > xctrls|content:not([pclass|disabled]) {
 
 }
 
 /* All themed, non-disabled 'xctrls:dialog' control labels */
-*[data-theme] xctrls|dialog > xctrls|content:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|dialog > xctrls|content:not([pclass|disabled]) > xctrls|label {
 
 }

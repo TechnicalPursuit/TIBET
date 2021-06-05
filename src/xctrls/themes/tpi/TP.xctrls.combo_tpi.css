@@ -9,7 +9,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* The combo */
-*[data-theme~="tpi"] xctrls|combo {
+*|*[data-theme~="tpi"] xctrls|combo {
 
     border-width: var(--xctrls-combo-border-width);
     border-style: var(--xctrls-combo-border-style);
@@ -19,65 +19,65 @@
 }
 
 /* Hovering over the combo */
-*[data-theme~="tpi"] xctrls|combo:hover * {
+*|*[data-theme~="tpi"] xctrls|combo:hover * {
 
     background-color: var(--xctrls-combo-background-color-hover);
 }
 
 /* Focusing on the combo */
-*[data-theme~="tpi"] xctrls|combo[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|combo[pclass|focus] {
 
     background-color: var(--xctrls-combo-background-color-focus);
 }
 
 /* Clicking down on the combo */
-*[data-theme~="tpi"] xctrls|combo[pclass|active] * {
+*|*[data-theme~="tpi"] xctrls|combo[pclass|active] * {
 
     background-color: var(--xctrls-combo-background-color-active);
 }
 
 /* The combo is disabled */
-*[data-theme~="tpi"] xctrls|combo[pclass|disabled] * {
+*|*[data-theme~="tpi"] xctrls|combo[pclass|disabled] * {
 
     background-color: var(--xctrls-combo-background-color-disabled);
 }
 
 /* The combo button */
-*[data-theme~="tpi"] xctrls|combo > xctrls|button {
+*|*[data-theme~="tpi"] xctrls|combo > xctrls|button {
 
 }
 
 /* The combo button's label */
-*[data-theme~="tpi"] xctrls|combo > xctrls|button > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|combo > xctrls|button > xctrls|label {
 
 }
 
 /* Hovering over the combo's button, label must highlight */
-*[data-theme~="tpi"] xctrls|combo > xctrls|button:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|combo > xctrls|button:hover > xctrls|label {
 
     color: var(--xctrls-combo-font-color-hover);
 }
 
 /* Focusing on the combo's button, label must highlight */
-*[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|focus] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|focus] > xctrls|label {
 
     color: var(--xctrls-combo-font-color-focus);
 }
 
 /* Clicking down on the combo's button, label must highlight */
-*[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|active] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|active] > xctrls|label {
 
     color: var(--xctrls-combo-font-color-active);
 }
 
 /* The combo's button is disabled, so is the label */
-*[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|disabled] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|combo > xctrls|button[pclass|disabled] > xctrls|label {
 
     color: var(--xctrls-combo-font-color-disabled);
 }
 
 /* The down arrow */
-*[data-theme~="tpi"] xctrls|combo > .icon {
+*|*[data-theme~="tpi"] xctrls|combo > .icon {
 
     border-left: var(--xctrls-combo-border-width) var(--xctrls-combo-border-style) var(--xctrls-border-color-normal);
 }

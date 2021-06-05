@@ -52,7 +52,7 @@ lama|tofuInsertionAssistant > .body .insertionPointGroup label {
     margin-top: 5px;
 }
 
-lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_InsertionBreadcrumb {
+lama|tofuInsertionAssistant > .body lama|breadcrumb#tofuInsertionAssistant_InsertionBreadcrumb {
 
     position: relative;
 
@@ -62,7 +62,7 @@ lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_InsertionBreadcrumb 
     left: 5px;
 }
 
-lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_InsertionBreadcrumb > .content div.item {
+lama|tofuInsertionAssistant > .body lama|breadcrumb#tofuInsertionAssistant_InsertionBreadcrumb > .content div.item {
 
     color: black;
 }

@@ -17,7 +17,7 @@ lama|splitbox {
     width: auto;
 }
 
-lama|splitbox > * > .title {
+lama|splitbox > *|* > .title {
 
     position: absolute;
 
@@ -43,7 +43,7 @@ lama|splitbox > * > .title {
     overflow: hidden;
 }
 
-lama|splitbox > *:first-child {
+lama|splitbox > *|*:first-child {
 
     position: absolute;
 
@@ -52,14 +52,14 @@ lama|splitbox > *:first-child {
     height: 50%;
 }
 
-lama|splitbox > *:first-child > .title {
+lama|splitbox > *|*:first-child > .title {
 
     bottom: 0;
 
     border-top: 1px solid #aaa;
 }
 
-lama|splitbox > *:last-child {
+lama|splitbox > *|*:last-child {
 
     position: absolute;
 
@@ -67,7 +67,7 @@ lama|splitbox > *:last-child {
     height: 50%;
 }
 
-lama|splitbox > *:last-child > .title {
+lama|splitbox > *|*:last-child > .title {
 
     top: 0;
 

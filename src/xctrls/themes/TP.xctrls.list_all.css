@@ -8,7 +8,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* All themed 'xctrls:list' controls */
-*[data-theme] xctrls|list {
+*|*[data-theme] xctrls|list {
 
     text-align: center;
     cursor: pointer;
@@ -28,13 +28,13 @@
     line-height: 1.2;
 }
 
-*[data-theme] xctrls|list *[tibet|pelem="choices"] {
+*|*[data-theme] xctrls|list xctrls|content[tibet|pelem="choices"] {
 
     margin: 0;
     padding: 0;
 }
 
-*[data-theme] xctrls|list *[tibet|pelem="choices"] > xctrls|* {
+*|*[data-theme] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|* {
 
     right: 0;
     left: 0;
@@ -54,24 +54,24 @@
     cursor: pointer;
 }
 
-*[data-theme] xctrls|list *[tibet|pelem="choices"] > xctrls|*[spacer] {
+*|*[data-theme] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|*[spacer] {
 
     cursor: default;
 }
 
-*[data-theme] xctrls|list *[tibet|pelem="choices"] > xctrls|*[grouping] {
+*|*[data-theme] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|*[grouping] {
 
     cursor: default;
 }
 
 /* All themed, non-disabled 'xctrls:list' controls */
-*[data-theme] xctrls|list:not([pclass|disabled]) {
+*|*[data-theme] xctrls|list:not([pclass|disabled]) {
 
     background: transparent;
     text-decoration: none;
 }
 
 /* All themed, non-disabled 'xctrls:list' control labels */
-*[data-theme] xctrls|list:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|list:not([pclass|disabled]) > xctrls|label {
 
 }

@@ -88,7 +88,7 @@ lama|changes > .content > xctrls|panelbox {
     height: 100%;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|content .title {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|content .title {
 
     position: absolute;
 
@@ -99,7 +99,7 @@ lama|changes #LamaChangesPanelbox xctrls|content .title {
     height: 1.5em;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|content #watchRemoteChanges {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|content #watchRemoteChanges {
 
     position: absolute;
 
@@ -108,7 +108,7 @@ lama|changes #LamaChangesPanelbox xctrls|content #watchRemoteChanges {
     height: 1.5em;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|content #processRemoteChanges {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|content #processRemoteChanges {
 
     position: absolute;
 
@@ -117,7 +117,7 @@ lama|changes #LamaChangesPanelbox xctrls|content #processRemoteChanges {
     height: 1.5em;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|content #PushAllButton {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|content #PushAllButton {
 
     position: absolute;
 
@@ -134,17 +134,17 @@ lama|changes #LamaChangesPanelbox xctrls|content #PushAllButton {
     text-decoration: underline;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|content #PushAllButton:focus {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|content #PushAllButton:focus {
 
     background: cornsilk;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|content #PushAllButton:hover {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|content #PushAllButton:hover {
 
     background: gold;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|content xctrls|list {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|content xctrls|list {
 
     position: absolute;
 
@@ -164,17 +164,17 @@ lama|changes #LamaChangesPanelbox xctrls|content xctrls|list {
     border: 0;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|list xctrls|textitem {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|list xctrls|textitem {
 
     border-right: 0;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|list xctrls|textitem:first-child {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|list xctrls|textitem:first-child {
 
     border-top: #efefef;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|list xctrls|textitem button {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|list xctrls|textitem button {
 
     position: absolute;
     display: none;
@@ -194,7 +194,7 @@ lama|changes #LamaChangesPanelbox xctrls|list xctrls|textitem button {
     box-shadow: none;
 }
 
-lama|changes #LamaChangesPanelbox xctrls|list xctrls|textitem:hover button {
+lama|changes xctrls|panelbox#LamaChangesPanelbox xctrls|list xctrls|textitem:hover button {
 
     display: inline-block;
 }

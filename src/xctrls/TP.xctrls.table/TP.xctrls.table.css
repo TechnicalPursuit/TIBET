@@ -22,19 +22,19 @@ xctrls|table > .scroller > tibet|group {
     width: 100%;
 }
 
-xctrls|table *[tibet|pelem="choices"] {
+xctrls|table xctrls|content[tibet|pelem="choices"] {
 
 }
 
 /* Grouping element for column groupings */
-xctrls|table *[tibet|pelem="choices"] .grouping {
+xctrls|table xctrls|content[tibet|pelem="choices"] .grouping {
 
     display: flex;
 
     flex-direction: row;
 }
 
-xctrls|table *[tibet|pelem="choices"] > .row {
+xctrls|table xctrls|content[tibet|pelem="choices"] > .row {
 
     display: flex;
     position: absolute;
@@ -45,7 +45,7 @@ xctrls|table *[tibet|pelem="choices"] > .row {
     box-sizing: border-box;
 }
 
-xctrls|table *[tibet|pelem="choices"] > .row > .cell {
+xctrls|table xctrls|content[tibet|pelem="choices"] > .row > .cell {
 
     flex-grow: 0;
     flex-shrink: 0;

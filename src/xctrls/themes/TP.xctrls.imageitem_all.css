@@ -8,55 +8,55 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* All themed 'xctrls:imageitem' controls */
-*[data-theme] xctrls|imageitem {
+*|*[data-theme] xctrls|imageitem {
 
     cursor: pointer;
 }
 
 /* The imageitem (image right aligned). The default. */
-*[data-theme] xctrls|imageitem {
+*|*[data-theme] xctrls|imageitem {
 
     /* Order: label before image */
     flex-direction: row;
 }
 
 /* The imageitem (image left aligned) */
-*[data-theme] xctrls|imageitem[alignment="left"] {
+*|*[data-theme] xctrls|imageitem[alignment="left"] {
 
     /* Order: image before label */
     flex-direction: row-reverse;
 }
 
 /* The imageitem (image top aligned) */
-*[data-theme] xctrls|imageitem[alignment="top"] {
+*|*[data-theme] xctrls|imageitem[alignment="top"] {
 
     /* Order: image before label */
     flex-direction: column-reverse;
 }
 
 /* The imageitem (image bottom aligned) */
-*[data-theme] xctrls|imageitem[alignment="bottom"] {
+*|*[data-theme] xctrls|imageitem[alignment="bottom"] {
 
     /* Order: label before image */
     flex-direction: column;
 }
 
 /* The imageitem label */
-*[data-theme] xctrls|imageitem > xctrls|label {
+*|*[data-theme] xctrls|imageitem > xctrls|label {
 
 }
 
 /* All themed 'xctrls:imageitem' controls ::value pseudo-element */
-*[data-theme] xctrls|imageitem > *[tibet|pelem="value"] {
+*|*[data-theme] xctrls|imageitem > *[tibet|pelem="value"] {
 
 }
 
 /* All themed, non-disabled 'xctrls:imageitem' controls */
-*[data-theme] xctrls|imageitem:not([pclass|disabled]) {
+*|*[data-theme] xctrls|imageitem:not([pclass|disabled]) {
 
 }
 
 /* All themed, non-disabled 'xctrls:imageitem' control labels */
-*[data-theme] xctrls|imageitem:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|imageitem:not([pclass|disabled]) > xctrls|label {
 
 }

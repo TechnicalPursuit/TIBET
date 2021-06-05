@@ -1,6 +1,7 @@
 @namespace url("http://www.w3.org/1999/xhtml");
-@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
 
 lama|bindingConnectionAssistant {
 
@@ -161,7 +162,7 @@ lama|bindingConnectionAssistant > .body .bindingExpressionGroup {
     left: 5px;
 }
 
-lama|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries {
+lama|bindingConnectionAssistant > .body tibet|group#bindingConnectionAssistant_ExpressionEntries {
 
     top: 0;
     right: 0;
@@ -173,19 +174,19 @@ lama|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEn
     overflow-y: auto;
 }
 
-lama|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries > span {
+lama|bindingConnectionAssistant > .body tibet|group#bindingConnectionAssistant_ExpressionEntries > span {
 
     display: flex;
 
     width: 100%;
 }
 
-lama|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries > span > *:not(.deleter) {
+lama|bindingConnectionAssistant > .body tibet|group#bindingConnectionAssistant_ExpressionEntries > span > *|*:not(.deleter) {
 
     flex: 1;
 }
 
-lama|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries > span input {
+lama|bindingConnectionAssistant > .body tibet|group#bindingConnectionAssistant_ExpressionEntries > span input {
 
     width: auto;
     height: 1em;
@@ -195,7 +196,7 @@ lama|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEn
     margin-top: 5px;
 }
 
-lama|bindingConnectionAssistant > .body #bindingConnectionAssistant_ExpressionEntries .deleter {
+lama|bindingConnectionAssistant > .body tibet|group#bindingConnectionAssistant_ExpressionEntries .deleter {
 
     width: 24px;
     height: 24px;

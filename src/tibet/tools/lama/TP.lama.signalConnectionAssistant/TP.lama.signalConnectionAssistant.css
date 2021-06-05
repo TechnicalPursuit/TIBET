@@ -1,6 +1,7 @@
 @namespace url("http://www.w3.org/1999/xhtml");
-@namespace lama url("http://www.technicalpursuit.com/2020/lama");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace lama url("http://www.technicalpursuit.com/2020/lama");
 
 lama|signalConnectionAssistant {
 
@@ -57,7 +58,7 @@ lama|signalConnectionAssistant > .body .sourceSignalFieldGroup > input {
     margin-right: 0;
 }
 
-lama|signalConnectionAssistant > .body #signalConnectionAssistant_SourceSignalList {
+lama|signalConnectionAssistant > .body xctrls|list#signalConnectionAssistant_SourceSignalList {
 
     grid-area: source_input_list;
 
@@ -94,7 +95,7 @@ lama|signalConnectionAssistant > .body .destinationSignalFieldGroup > input {
     margin-right: 0;
 }
 
-lama|signalConnectionAssistant > .body #signalConnectionAssistant_DestinationSignalList {
+lama|signalConnectionAssistant > .body xctrls|list#signalConnectionAssistant_DestinationSignalList {
 
     grid-area: destination_input_list;
 
@@ -203,7 +204,7 @@ lama|signalConnectionAssistant > .body .signalPayloadGroup {
     left: 5px;
 }
 
-lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries {
+lama|signalConnectionAssistant > .body tibet|group#signalConnectionAssistant_PayloadEntries {
 
     top: 0;
     right: 0;
@@ -215,14 +216,14 @@ lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries
     overflow-y: auto;
 }
 
-lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries > span {
+lama|signalConnectionAssistant > .body tibet|group#signalConnectionAssistant_PayloadEntries > span {
 
     display: flex;
 
     width: 100%;
 }
 
-lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries > span input {
+lama|signalConnectionAssistant > .body tibet|group#signalConnectionAssistant_PayloadEntries > span input {
 
     width: auto;
     height: 1em;
@@ -232,7 +233,7 @@ lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries
     margin-bottom: 2px;
 }
 
-lama|signalConnectionAssistant > .body #signalConnectionAssistant_PayloadEntries .deleter {
+lama|signalConnectionAssistant > .body tibet|group#signalConnectionAssistant_PayloadEntries .deleter {
 
     width: 24px;
     height: 24px;

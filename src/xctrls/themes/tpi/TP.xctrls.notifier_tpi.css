@@ -9,7 +9,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* The notifier */
-*[data-theme~="tpi"] xctrls|notifier {
+*|*[data-theme~="tpi"] xctrls|notifier {
 
     transition: opacity var(--xctrls-notifier-fadeout-duration) ease var(--xctrls-notifier-fadeout-delay);
 
@@ -22,14 +22,14 @@
 }
 
 /* Hovering over the notifier */
-*[data-theme~="tpi"] xctrls|notifier:hover {
+*|*[data-theme~="tpi"] xctrls|notifier:hover {
 
     background-color: var(--xctrls-notifier-background-color-hover);
     border-color: var(--xctrls-notifier-border-color-hover);
 }
 
 /* When the notifier is active */
-*[data-theme~="tpi"] xctrls|notifier[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|notifier[pclass|active] {
 
     background-color: var(--xctrls-notifier-background-color-active);
     border-color: var(--xctrls-notifier-border-color-active);

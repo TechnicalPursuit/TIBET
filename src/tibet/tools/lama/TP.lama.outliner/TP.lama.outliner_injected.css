@@ -20,7 +20,7 @@
     transform: rotateX(var(--lama-outliner-rotate-X)) rotateY(var(--lama-outliner-rotate-Y)) scale(var(--lama-outliner-scale));
 }
 
-.lama-outliner > * {
+.lama-outliner > *|* {
 
     /* Need to force opacity, or otherwise 'extrusion' won't work. See:
      * https://bugs.chromium.org/p/chromium/issues/detail?id=646993
@@ -28,7 +28,7 @@
     opacity: 1 !important;
 }
 
-.lama-outliner * {
+.lama-outliner *|* {
 
     transform-style: preserve-3d;
 
@@ -36,7 +36,7 @@
 }
 
 .lama-outliner *.lama-outliner-overflowed,
-.lama-outliner *[class~="lama-outliner-overflowed"] {
+.lama-outliner *|*[class~="lama-outliner-overflowed"] {
 
     overflow: visible !important;
 }
@@ -47,7 +47,7 @@
 }
 
 .lama-outliner::before,
-.lama-outliner *::before {
+.lama-outliner *|*::before {
 
     position: absolute;
 
@@ -67,8 +67,8 @@
 
 .lama-outliner:not(.lama-outliner-haloed),
 .lama-outliner:not([class~="lama-outliner-haloed"]),
-.lama-outliner *:not(.lama-outliner-haloed),
-.lama-outliner *:not([class~="lama-outliner-haloed"]) {
+.lama-outliner *|*:not(.lama-outliner-haloed),
+.lama-outliner *|*:not([class~="lama-outliner-haloed"]) {
 
     outline: dashed 1px lightgray;
 }
@@ -76,14 +76,14 @@
 .lama-outliner.lama-outliner-haloed,
 .lama-outliner[class~="lama-outliner-haloed"],
 .lama-outliner *.lama-outliner-haloed,
-.lama-outliner *[class~="lama-outliner-haloed"] {
+.lama-outliner *|*[class~="lama-outliner-haloed"] {
 
     outline: dashed 1px black;
 }
 
 .lama-outliner.lama-outliner-droptarget,
 .lama-outliner[class~="lama-outliner-droptarget"],
-.lama-outliner .lama-outliner-droptarget,
+.lama-outliner *.lama-outliner-droptarget,
 .lama-outliner *|*[class~="lama-outliner-droptarget"] {
 
     outline: solid 2px black;

@@ -49,7 +49,7 @@ lama|couchDocumentURIInsertionAssistant > .body .insertionPointGroup label {
     margin-top: 5px;
 }
 
-lama|couchDocumentURIInsertionAssistant > .body #couchDocumentURIInsertionAssistant_InsertionBreadcrumb {
+lama|couchDocumentURIInsertionAssistant > .body lama|breadcrumb#couchDocumentURIInsertionAssistant_InsertionBreadcrumb {
 
     position: relative;
 
@@ -59,7 +59,7 @@ lama|couchDocumentURIInsertionAssistant > .body #couchDocumentURIInsertionAssist
     left: 5px;
 }
 
-lama|couchDocumentURIInsertionAssistant > .body #couchDocumentURIInsertionAssistant_InsertionBreadcrumb > .content div.item {
+lama|couchDocumentURIInsertionAssistant > .body lama|breadcrumb#couchDocumentURIInsertionAssistant_InsertionBreadcrumb > .content div.item {
 
     color: black;
 }

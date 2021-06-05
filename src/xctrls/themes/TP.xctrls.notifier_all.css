@@ -7,7 +7,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* All themed 'xctrls:notifier' controls */
-*[data-theme] xctrls|notifier {
+*|*[data-theme] xctrls|notifier {
 
     top: 0;
     left: 0;
@@ -24,7 +24,7 @@
     z-index: var(--tibet-NOTIFIER-TIER);
 }
 
-*[data-theme] xctrls|notifier[pclass|active] {
+*|*[data-theme] xctrls|notifier[pclass|active] {
 
     opacity: 0;
 }

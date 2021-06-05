@@ -292,7 +292,7 @@ lama|consoleoutput .flex-item > .content {
     color: black;
 }
 
-lama|consoleoutput .flex-item > .content > * {
+lama|consoleoutput .flex-item > .content > *|* {
 
     line-height: 1em;
 

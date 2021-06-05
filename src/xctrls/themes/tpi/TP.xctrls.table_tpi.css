@@ -10,7 +10,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* The table */
-*[data-theme~="tpi"] xctrls|table {
+*|*[data-theme~="tpi"] xctrls|table {
 
     border-width: var(--xctrls-table-border-width);
     border-style: var(--xctrls-table-border-style);
@@ -18,26 +18,26 @@
 }
 
 /* Hovering over the table */
-*[data-theme~="tpi"] xctrls|table:hover {
+*|*[data-theme~="tpi"] xctrls|table:hover {
 
 }
 
 /* Focusing on the table */
-*[data-theme~="tpi"] xctrls|table[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|table[pclass|focus] {
 
 }
 
 /* Clicking down on the table */
-*[data-theme~="tpi"] xctrls|table[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|table[pclass|active] {
 
 }
 
 /* The table is disabled */
-*[data-theme~="tpi"] xctrls|table[pclass|disabled] {
+*|*[data-theme~="tpi"] xctrls|table[pclass|disabled] {
 
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] {
 
     margin: 0;
     padding: 0;
@@ -45,7 +45,7 @@
     background-color: white;
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row {
 
     /* We set the background-color of the row to be the normal border color - it
      * shows through to show the cell borders
@@ -55,7 +55,7 @@
 }
 
 /* Hovering over the table, label must highlight */
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row:hover xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row:hover xctrls|label {
 
     color: var(--xctrls-tableitem-font-color-hover);
 
@@ -63,18 +63,18 @@
 }
 
 /* Selected table item, label must highlight */
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|selected] {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[pclass|selected] {
 
     border-right: none;
     border-bottom: none;
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|selected] xctrls|textitem {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[pclass|selected] xctrls|textitem {
 
     background-color: var(--xctrls-textitem-background-color-selected);
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|selected] xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[pclass|selected] xctrls|label {
 
     background-color: var(--xctrls-tableitem-background-color-selected-normal);
 
@@ -87,14 +87,14 @@
 }
 
 /* Focusing on the table, label must highlight */
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|focus] xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[pclass|focus] xctrls|label {
 
     color: var(--xctrls-tableitem-font-color-focus);
     font-weight: var(--xctrls-tableitem-font-weight-focus);
 }
 
 /* Clicking down on the table, label must highlight */
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|active] xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[pclass|active] xctrls|label {
 
     color: var(--xctrls-tableitem-font-color-active);
 
@@ -102,7 +102,7 @@
 }
 
 /* The table is disabled, so is the label */
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[pclass|disabled] xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[pclass|disabled] xctrls|label {
 
     color: var(--xctrls-tableitem-font-color-disabled);
 
@@ -110,12 +110,12 @@
 }
 
 /* The table cell label */
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row > .cell {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row > .cell {
 
     position: relative;
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row xctrls|textitem {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row xctrls|textitem {
 
     display: block;
 
@@ -123,7 +123,7 @@
     height: 100%;
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row xctrls|textitem > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row xctrls|textitem > xctrls|label {
 
     position: absolute;
     display: block;
@@ -144,23 +144,23 @@
     background-color: var(--xctrls-tableitem-background-color-normal);
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[grouping] xctrls|textitem > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[grouping] xctrls|textitem > xctrls|label {
 
     background-color: var(--xctrls-tableitem-grouping-background-color-normal);
 
     font-weight: var(--xctrls-tableitem-grouping-font-weight);
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[grouping]:hover xctrls|textitem > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[grouping]:hover xctrls|textitem > xctrls|label {
 
     background-color: var(--xctrls-tableitem-grouping-background-color-hover);
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[spacer] xctrls|textitem > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[spacer] xctrls|textitem > xctrls|label {
 
 }
 
-*[data-theme~="tpi"] xctrls|table *[tibet|pelem="choices"] > .row[spacer]:hover xctrls|textitem > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[spacer]:hover xctrls|textitem > xctrls|label {
 
     background-color: initial;
 }

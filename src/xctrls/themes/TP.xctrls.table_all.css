@@ -8,7 +8,7 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* All themed 'xctrls:table' controls */
-*[data-theme] xctrls|table {
+*|*[data-theme] xctrls|table {
 
     text-align: center;
 
@@ -27,13 +27,13 @@
     line-height: 1.2;
 }
 
-*[data-theme] xctrls|table *[tibet|pelem="choices"] {
+*|*[data-theme] xctrls|table xctrls|content[tibet|pelem="choices"] {
 
     margin: 0;
     padding: 0;
 }
 
-*[data-theme] xctrls|table *[tibet|pelem="choices"] > .row {
+*|*[data-theme] xctrls|table xctrls|content[tibet|pelem="choices"] > .row {
 
     right: 0;
     left: 0;
@@ -43,7 +43,7 @@
     cursor: pointer;
 }
 
-*[data-theme] xctrls|table *[tibet|pelem="choices"] > .row > .cell {
+*|*[data-theme] xctrls|table xctrls|content[tibet|pelem="choices"] > .row > .cell {
 
     text-align: left;
 
@@ -54,18 +54,18 @@
     text-overflow: ellipsis;
 }
 
-*[data-theme] xctrls|table *[tibet|pelem="choices"] > .row[spacer] * {
+*|*[data-theme] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[spacer] * {
 
     cursor: default;
 }
 
-*[data-theme] xctrls|table *[tibet|pelem="choices"] > .row[grouping] * {
+*|*[data-theme] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[grouping] * {
 
     cursor: default;
 }
 
 /* All themed, non-disabled 'xctrls:table' controls */
-*[data-theme] xctrls|table:not([pclass|disabled]) {
+*|*[data-theme] xctrls|table:not([pclass|disabled]) {
 
     background: transparent;
 
@@ -73,6 +73,6 @@
 }
 
 /* All themed, non-disabled 'xctrls:table' control labels */
-*[data-theme] xctrls|table:not([pclass|disabled]) > xctrls|label {
+*|*[data-theme] xctrls|table:not([pclass|disabled]) > xctrls|label {
 
 }

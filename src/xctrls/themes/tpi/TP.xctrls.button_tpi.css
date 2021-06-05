@@ -9,7 +9,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* The button */
-*[data-theme~="tpi"] xctrls|button {
+*|*[data-theme~="tpi"] xctrls|button {
 
     border-width: var(--xctrls-button-border-width);
     border-style: var(--xctrls-button-border-style);
@@ -21,31 +21,31 @@
 }
 
 /* Hovering over the button */
-*[data-theme~="tpi"] xctrls|button:hover {
+*|*[data-theme~="tpi"] xctrls|button:hover {
 
     background-color: var(--xctrls-button-background-color-hover);
 }
 
 /* Focusing on the button */
-*[data-theme~="tpi"] xctrls|button[pclass|focus] {
+*|*[data-theme~="tpi"] xctrls|button[pclass|focus] {
 
     background-color: var(--xctrls-button-background-color-focus);
 }
 
 /* Clicking down on the button */
-*[data-theme~="tpi"] xctrls|button[pclass|active] {
+*|*[data-theme~="tpi"] xctrls|button[pclass|active] {
 
     background-color: var(--xctrls-button-background-color-active);
 }
 
 /* The button is disabled */
-*[data-theme~="tpi"] xctrls|button[pclass|disabled] {
+*|*[data-theme~="tpi"] xctrls|button[pclass|disabled] {
 
     background-color: var(--xctrls-button-background-color-disabled);
 }
 
 /* The button label */
-*[data-theme~="tpi"] xctrls|button > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|button > xctrls|label {
 
     font-family: var(--xctrls-button-font-family);
     font-size: var(--xctrls-button-font-size);
@@ -54,25 +54,25 @@
 }
 
 /* Hovering over the button, label must highlight */
-*[data-theme~="tpi"] xctrls|button:hover > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|button:hover > xctrls|label {
 
     color: var(--xctrls-button-font-color-hover);
 }
 
 /* Focusing on the button, label must highlight */
-*[data-theme~="tpi"] xctrls|button[pclass|focus] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|button[pclass|focus] > xctrls|label {
 
     color: var(--xctrls-button-font-color-focus);
 }
 
 /* Clicking down on the button, label must highlight */
-*[data-theme~="tpi"] xctrls|button[pclass|active] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|button[pclass|active] > xctrls|label {
 
     color: var(--xctrls-button-font-color-active);
 }
 
 /* The button is disabled, so is the label */
-*[data-theme~="tpi"] xctrls|button[pclass|disabled] > xctrls|label {
+*|*[data-theme~="tpi"] xctrls|button[pclass|disabled] > xctrls|label {
 
     color: var(--xctrls-button-font-color-disabled);
 }

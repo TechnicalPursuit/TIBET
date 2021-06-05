@@ -106,7 +106,7 @@ lama|quality > .header > .circle:hover {
 
 /* Rules that trigger when the corner is closed */
 
-.framing.south.east.corner[pclass|closed] lama|quality > .header > *:not(.trigger) {
+.framing.south.east.corner[pclass|closed] lama|quality > .header > *|*:not(.trigger) {
 
     display: none;
 }

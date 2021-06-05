@@ -4,12 +4,12 @@
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 .lama-halo .lama-halo-haloed,
-.lama-halo *[class~="lama-halo-haloed"] {
+.lama-halo *|*[class~="lama-halo-haloed"] {
 
 }
 
 .lama-halo .lama-halo-offset-parent,
-.lama-halo *[class~="lama-halo-offset-parent"] {
+.lama-halo *|*[class~="lama-halo-offset-parent"] {
 
     border: dashed 2px black;
 }

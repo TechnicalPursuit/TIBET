@@ -7,7 +7,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 /* All disabled controls */
-*[data-theme] xctrls|*[pclass|disabled] {
+*|*[data-theme] xctrls|*[pclass|disabled] {
 
     pointer-events: none;
     cursor: default;

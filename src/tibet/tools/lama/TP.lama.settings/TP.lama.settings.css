@@ -89,7 +89,7 @@ lama|settings > .content > div {
 
 /* Rules that trigger when the corner is closed */
 
-.framing.north.east.corner[pclass|closed] lama|settings > .header > *:not(.trigger) {
+.framing.north.east.corner[pclass|closed] lama|settings > .header > *|*:not(.trigger) {
 
     display: none;
 }
