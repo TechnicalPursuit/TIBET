@@ -3201,10 +3201,17 @@ function() {
     /**
      * @method getValue
      * @summary Returns the value of the URI, essentially the 'resource'.
-     * @returns {Object} The value of the receiver's resource.
+     * @returns {Object|null} The value of the receiver's resource.
      */
 
-    return this.$get('resource');
+    var resource;
+
+    resource = this.$get('resource');
+    if (TP.isValid(resource)) {
+        return resource.get('value');
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
