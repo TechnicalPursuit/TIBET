@@ -4696,18 +4696,41 @@ function(aRequest, aResult, aResource, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.uri.URI.Inst.defineMethod('setValue',
-function(aValue) {
+function(aValue, shouldSignal) {
 
     /**
      * @method setValue
      * @summary Sets the 'value' of the receiver. This method provides
      *     polymorphic behavior by calling the receiver's 'setContent' method.
      * @param {Object} aValue The value to set the value of the receiver to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to the value of the current
+     *     content object's (if it exists) shouldSignalChange().
      * @returns {Boolean} Whether or not the value was changed from the value it
      *     had before this method was called.
      */
 
-    this.setContent(aValue);
+    var existingContent,
+        req;
+
+    //  If the receiver is already loaded, then just try to set the value on the
+    //  existing content (if it's mutable - i.e. not a Boolean, Number or
+    //  String).
+    if (this.isLoaded()) {
+        existingContent = this.getContent();
+        if (TP.isMutable(existingContent)) {
+            return existingContent.setValue(aValue, shouldSignal);
+        }
+    }
+
+    //  If the shouldSignal parameter is actually defined here, then we want to
+    //  construct a request and pass it along. Otherwise, we'll let the
+    //  setContent machinery decide whether it wants to send changed or not.
+    if (TP.isValid(shouldSignal)) {
+        req = TP.request('signalChange', shouldSignal);
+    }
+
+    this.setContent(aValue, req);
 
     return true;
 });
