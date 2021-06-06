@@ -209,7 +209,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.uri.URI.Type.defineMethod('construct',
-function(aURI, aResource) {
+function(aURI, aResource, shouldRegister) {
 
     /**
      * @method construct
@@ -219,6 +219,8 @@ function(aURI, aResource) {
      * @param {String} aURI Ultimately an absolute path but normally a path
      *     starting with '.','/','-', or '~' which is expanded as needed.
      * @param {Object} [aResource] Optional value for the targeted resource.
+     * @param {Boolean} [shouldRegister=true] Whether or not to register the
+     *     URI.
      * @exception {TP.sig.NoConcreteType} When no concrete type can be found to
      *     construct an instance from.
      * @returns {TP.uri.URI|undefined} The new instance.
@@ -339,7 +341,7 @@ function(aURI, aResource) {
     }
 
     if (TP.isValid(inst)) {
-        if (built) {
+        if (built && TP.notFalse(shouldRegister)) {
             inst.register();
         }
 
@@ -355,7 +357,7 @@ function(aURI, aResource) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('uc',
-function(aURI, aResource) {
+function(aURI, aResource, shouldRegister) {
 
     /**
      * @method uc
@@ -363,10 +365,12 @@ function(aURI, aResource) {
      * @param {String} aURI Typically an absolute path but possibly a path
      *     starting with '.','/','-', or '~' which is adjusted as needed.
      * @param {Object} [aResource] Optional value for the targeted resource.
+     * @param {Boolean} [shouldRegister=true] Whether or not to register the
+     *     URI.
      * @returns {TP.uri.URI} The new instance.
      */
 
-    return TP.uri.URI.construct(aURI, aResource);
+    return TP.uri.URI.construct(aURI, aResource, shouldRegister);
 });
 
 //  ------------------------------------------------------------------------
