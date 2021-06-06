@@ -7696,12 +7696,17 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
         }
     }
 
-    //  NB: We will *always* call either setValue or setFacet, even if the value
-    //  is null or undefined. This way we can let the receiver decide how to
-    //  manage those values.
+    //  NB: We will *always* call either setValue, setAttribute or setFacet,
+    //  even if the value is null or undefined. This way we can let the receiver
+    //  decide how to manage those values.
     if (aspect === 'value' && facet === 'value') {
         TP.$$settingFromBindMachinery = true;
         didRefresh = this.setValue(finalVal);
+        TP.$$settingFromBindMachinery = false;
+    } else if (aspect[0] === '@') {
+        TP.$$settingFromBindMachinery = true;
+        this.setAttribute(aspect.slice(1), finalVal);
+        didRefresh = false;
         TP.$$settingFromBindMachinery = false;
     } else {
         TP.$$settingFromBindMachinery = true;
