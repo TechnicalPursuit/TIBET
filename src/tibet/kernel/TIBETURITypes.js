@@ -224,7 +224,7 @@ function(aURI, aResource) {
      * @returns {TP.uri.URI|undefined} The new instance.
      */
 
-    var url,
+    var uri,
         check,
         flag,
         inst,
@@ -251,52 +251,52 @@ function(aURI, aResource) {
         if (TP.notValid(inst)) {
 
             //  Assign so we can use a consistent name for input checks below.
-            url = aURI;
+            uri = aURI;
 
-            if (TP.regex.HAS_LINEBREAK.test(url)) {
+            if (TP.regex.HAS_LINEBREAK.test(uri)) {
                 return;
             }
 
             //  Deal with common shorthands and other formatting variations.
-            if (TP.regex.HAS_BACKSLASH.test(url)) {
-                url = TP.uriInWebFormat(url);
+            if (TP.regex.HAS_BACKSLASH.test(uri)) {
+                uri = TP.uriInWebFormat(uri);
             }
 
-            if (url.indexOf('~') === 0 || url.indexOf('tibet:') === 0) {
+            if (uri.indexOf('~') === 0 || uri.indexOf('tibet:') === 0) {
                 type = TP.uri.TIBETURL;
-                check = TP.uriResolveVirtualPath(url);
+                check = TP.uriResolveVirtualPath(uri);
 
                 inst = TP.uri.URI.getInstanceById(check);
-            } else if (url.indexOf('urn:') === 0) {
-                url = url.replace('urn::', 'urn:tibet:');
-                type = url.indexOf('urn:tibet:') === 0 ?
+            } else if (uri.indexOf('urn:') === 0) {
+                uri = uri.replace('urn::', 'urn:tibet:');
+                type = uri.indexOf('urn:tibet:') === 0 ?
                         TP.uri.TIBETURN :
                         TP.uri.URN;
 
-                inst = TP.uri.URI.getInstanceById(url);
-            } else if (url.indexOf('#') === 0) {
+                inst = TP.uri.URI.getInstanceById(uri);
+            } else if (uri.indexOf('#') === 0) {
                 type = TP.uri.TIBETURL;
-                url = 'tibet://uicanvas/' + url;
+                uri = 'tibet://uicanvas/' + uri;
 
-                inst = TP.uri.URI.getInstanceById(url);
-            } else if (!TP.regex.URI_LIKELY.test(url) ||
-                    TP.regex.REGEX_LITERAL_STRING.test(url)) {
+                inst = TP.uri.URI.getInstanceById(uri);
+            } else if (!TP.regex.URI_LIKELY.test(uri) ||
+                    TP.regex.REGEX_LITERAL_STRING.test(uri)) {
                 //  several areas in TIBET will try to resolve strings to URIs.
                 //  try to eliminate the non-starters early.
                 return;
             } else {
                 //  normalize if possible, removing embedded './', '..', etc.,
                 //  but we have to use a check here for ~ or tibet:///~ path
-                url = TP.uriCollapsePath(url);
-                inst = TP.uri.URI.getInstanceById(url);
+                uri = TP.uriCollapsePath(uri);
+                inst = TP.uri.URI.getInstanceById(uri);
             }
 
             if (TP.notValid(inst) && !TP.isType(type)) {
-                //  One last adjustment is when a developer uses a typical url
+                //  One last adjustment is when a developer uses a typical uri
                 //  of the form '/' or './' etc. In those cases we need to
-                //  update the url to include the current root.
-                url = TP.uriWithRoot(url);
-                inst = TP.uri.URI.getInstanceById(url);
+                //  update the uri to include the current root.
+                uri = TP.uriWithRoot(uri);
+                inst = TP.uri.URI.getInstanceById(uri);
             }
         }
 
@@ -316,22 +316,22 @@ function(aURI, aResource) {
         TP.sys.shouldLogRaise(false);
 
         try {
-            type = type || this.getConcreteType(url);
+            type = type || this.getConcreteType(uri);
             if (TP.isType(type)) {
                 //  NOTE we skip this method and go directly to alloc/init
                 //  version.
-                inst = type.$construct(url);
+                inst = type.$construct(uri);
                 built = true;
             } else {
                 //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
                 return this.raise(
                     'TP.sig.NoConcreteType',
-                    'Unable to locate concrete type for URI: ' + url);
+                    'Unable to locate concrete type for URI: ' + uri);
             }
         } catch (e) {
             err = TP.ec(
                     e,
-                    TP.join(TP.sc('URI construct produced error for: '), url));
+                    TP.join(TP.sc('URI construct produced error for: '), uri));
             return this.raise('TP.sig.URIException', err);
         } finally {
             TP.sys.shouldLogRaise(flag);
