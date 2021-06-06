@@ -120,7 +120,7 @@
         "mocha": "^8.2.1",
         "mutation-summary": "github:TechnicalPursuit/mutation-summary",
         "node-sass": "^6.0.0",
-        "puppeteer": "^9.1.1",
+        "puppeteer": "^10.0.0",
         "sinon": "^11.1.1",
         "stylelint": "^13.13.1",
         "stylelint-config-standard": "^22.0.0",
