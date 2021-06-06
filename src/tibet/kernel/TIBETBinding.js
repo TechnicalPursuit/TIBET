@@ -7374,7 +7374,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                     uriExpr = TP.uc(expr).getPrimaryLocation() + '#tibet(.)';
                 }
 
-                exprVal = TP.uc(uriExpr).getResource(getRequest).get('result');
+                exprVal = TP.uc(uriExpr, null, false).getResource(
+                                                    getRequest).get('result');
 
                 if (shouldCollapseVal) {
                     exprVal = TP.collapse(exprVal);
