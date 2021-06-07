@@ -194,9 +194,14 @@ function(aRequest) {
 
     async = TP.ifKeyInvalid(aRequest, 'async', null);
     refresh = TP.ifKeyInvalid(aRequest, 'refresh', null);
-    //  TODO: on the wrong object this will cause a nasty recursion and blow up.
-    //  Figure out why.
-    // uri = TP.ifKeyInvalid(aRequest, 'uri', TP.str(TP.uc(TP.str(this))));
+
+    //  If we are a URI, then try to extract our String value so that we can
+    //  report it below. Otherwise report it as 'unknown'.
+    if (TP.isKindOf(this, TP.uri.URI)) {
+        uri = TP.ifKeyInvalid(aRequest, 'uri', TP.str(TP.uc(TP.str(this))));
+    } else {
+        uri = 'unknown';
+    }
 
     if (TP.notValid(async)) {
         //  One special case is that when a resource isn't being refreshed
