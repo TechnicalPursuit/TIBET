@@ -148,6 +148,10 @@ Cmd.prototype.execute = function() {
         args[0] = 'electron';
     }
 
+    //  make sure there's at least a '.' on the command line for what to
+    //  launch or electron won't actually try to load a file.
+    args.splice(1, 0, '.');
+
     //  If our TIBET-style debugger flag is set push on inspection arguments.
     if (this.options.debugger) {
         args.push('--inspect-brk');
@@ -161,12 +165,9 @@ Cmd.prototype.execute = function() {
     //  NB: 'devtools' along with other Electron options will be passed along to
     //  Electron.
 
-    //  make sure there's at least a '.' on the command line for what to
-    //  launch or electron won't actually try to load a file.
-    if (!this.options.empty) {
-        if (!this.options._[1]) {
-            args.push('.');
-        }
+    //  If we want 'empty', then just launch a plain Electron window.
+    if (this.options.empty) {
+        args = ['electron'];
     }
 
     //  Tell nodecli we want to run async (and silent to avoid dup messages).
