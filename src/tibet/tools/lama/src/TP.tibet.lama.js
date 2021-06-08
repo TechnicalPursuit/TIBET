@@ -64,7 +64,9 @@ function(aRequest) {
             TP.sys.registerObject(newLama);
 
             //  Refresh controllers now that we have a registered Lama
-            //  instance.
+            //  instance. Note that the Lama is specially registered as a
+            //  controller by this method to avoid being put in a random
+            //  location in the application's controller stack.
             TP.sys.getApplication().refreshControllers();
 
             //  Register the new Lama instance to observe 'ToggleLama'. This
