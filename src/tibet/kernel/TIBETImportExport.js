@@ -178,8 +178,8 @@ async function(packageConfig, phase, useCache) {
     configName = packageParts.last();
 
     //  Default the packageName and configName to what can be extracted from the
-    //  packaging profile.
-    packageProfile = TP.sys.cfg('project.packaging.profile', 'main@base');
+    //  build profile.
+    packageProfile = TP.sys.cfg('build.profile', 'main@base');
     packageProfileParts = packageProfile.split('@');
 
     pkgName = TP.ifEmpty(packageName, packageProfileParts.first());
@@ -286,8 +286,8 @@ async function(packageConfig, phase, useCache) {
     configName = packageParts.last();
 
     //  Default the packageName and configName to what can be extracted from the
-    //  packaging profile.
-    packageProfile = TP.sys.cfg('project.packaging.profile', 'main@base');
+    //  build profile.
+    packageProfile = TP.sys.cfg('build.profile', 'main@base');
     packageProfileParts = packageProfile.split('@');
 
     pkgName = TP.ifEmpty(packageName, packageProfileParts.first());

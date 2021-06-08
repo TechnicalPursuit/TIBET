@@ -4,7 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var dir,
             options,
-            config;
+            config,
+            profile;
 
         make.log('rolling up assets...');
 
@@ -19,8 +20,12 @@
             make.cfg('cli.make.compression.parse_options'));
         options = make.reparse(options);
 
-        //  Check command line, task options, or just default to base.
-        config = options.config || this.options.config || 'base';
+        //  Check command line, or use value of build.profile
+        config = options.config;
+        if (!config) {
+            profile = make.cfg('build.profile', 'main@base');
+            config = profile.split('@')[1];
+        }
 
         //  Build both a development and deployment variation.
         make.helpers.rollup_app(make, {

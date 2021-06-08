@@ -83,7 +83,8 @@ function(aRequest) {
         return this.printUsage(aRequest);
     }
 
-    //  Are we looking for unlisted paths?
+    //  Are we looking for unlisted paths (i.e ones that can be determined due
+    //  to invocation data)?
     unlisted = shell.getArgument(aRequest, 'tsh:unlisted', null, false);
 
     //  NB: We don't default the value here, because we default it to different
@@ -93,7 +94,9 @@ function(aRequest) {
     if (TP.isString(profile)) {
         profile = profile.unquoted();
     } else if (unlisted) {
-        profile = TP.sys.cfg('project.packaging.profile', 'main@base');
+        //  In the case where we're looking for unlisted packages, the
+        //  boot.profile is probably not the target package profile.
+        profile = TP.sys.cfg('build.profile', 'main@base');
     } else {
         profile = TP.sys.cfg('boot.profile', 'main@base');
     }

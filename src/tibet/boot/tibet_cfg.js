@@ -237,6 +237,10 @@
     //  defines the config we should default to for each package.
     TP.sys.setcfg('boot.config', null);
 
+    //  What profile should we be build? The setting here can directly impact
+    //  which package file we use as a starting point for building.
+    TP.sys.setcfg('build.profile', null);
+
     //  Do we filter by asset type? Default is false so we let the boot logic
     //  itself worry about filtering. (This option is largely here due to
     //  sharing code between boot logic and command-line packaging tools).
@@ -763,11 +767,6 @@
     //  other data-theme is found.
     TP.sys.setcfg('project.theme.default', null);
     TP.sys.setcfg('project.theme.list', []);
-
-    //  the profile used for application packaging purposes. this profile will
-    //  be used to compare with project metadata to identify potentially missing
-    //  dependencies.
-    TP.sys.setcfg('project.packaging.profile', 'main@base');
 
     //  ---
     //  TDS shared values. This subset is required by the client and server.
