@@ -53,6 +53,7 @@
         "no-caller": 2,
         "no-catch-shadow": 2,
         "no-confusing-arrow": 1,
+        "no-debugger": 1,
         "no-delete-var": 2,
         "no-div-regex": 2,
         "no-duplicate-imports": 2,
