@@ -34,10 +34,6 @@
             'build_docs'
         ];
 
-        if (options.release) {
-            targets.push('build_electron');
-        }
-
         //  If we're going to clean just do it once via the clean target and
         //  then clear the flag so individual lint, rollup, etc. don't clean.
         if (make.getArgument('clean')) {
@@ -49,10 +45,6 @@
         make.options.building = true;
 
         make.chain(targets).then(resolve, reject);
-    };
-
-    module.exports.options = {
-        timeout: 1000 * 60 * 10
     };
 
 }());
