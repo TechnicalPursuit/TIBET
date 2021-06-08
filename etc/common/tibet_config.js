@@ -14,6 +14,8 @@
 
 (function() {
 
+    const ENDS_WITH_PERIOD = /\.$/;
+
     var path,
         sh,
         Config;
@@ -663,7 +665,14 @@
                 name = key;
             }
 
-            if (Object.prototype.toString.call(value) === '[object Object]') {
+            //  Keys with embedded dots are treated as "final keys" such that
+            //  their value is used "as is" without further descent. When the
+            //  key is a top-level key this can be signified with a trailing
+            //  "." which is stripped off before saving the value.
+            if (ENDS_WITH_PERIOD.test(key)) {
+                name = name.slice(0, -1);
+                my.setcfg(name, value);
+            } else if (Object.prototype.toString.call(value) === '[object Object]') {
                 my.overlayProperties(value, name);
             } else {
                 my.setcfg(name, value);

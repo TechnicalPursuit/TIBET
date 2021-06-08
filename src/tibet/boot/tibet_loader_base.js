@@ -8524,6 +8524,15 @@ TP.boot.$configureOptions = function(anObject, aPrefix) {
                 name = prefix + key;
                 value = anObject[key];
 
+                //  Keys ending with "period" are "final keys" meaning we do not
+                //  flatten them any further, we strip the final period and
+                //  save the value as-is.
+                if (/\.$/.test(key)) {
+                    name = name.slice(0, -1);
+                    TP.sys.setcfg(name, value);
+                    return;
+                }
+
                 //  If the value isn't a primitive we assume the key is a prefix
                 //  and that we need to nest the data appropriately.
                 if (Object.prototype.toString.call(value) ===
