@@ -98,8 +98,8 @@
 
             //  ---
 
-            useLogin = pkg.getcfg('electron.boot.use_login', false);
-            parallel = pkg.getcfg('electron.boot.parallel', true);
+            useLogin = pkg.getcfg('boot.use_login', false);
+            parallel = pkg.getcfg('boot.parallel', true);
 
             //  Specifying a 'file://' URL will tell TIBET that we're launching
             //  from a File URL (well, we are all about offline, aren't we? ;-))
@@ -112,7 +112,7 @@
                         'No boot.parallel or is set to false. TIBET ' +
                         'ElectronJS applications require this to be set to' +
                         ' true. Forcing boot.parallel to true');
-                    pkg.setcfg('electron.boot.parallel', true);
+                    pkg.setcfg('boot.parallel', true);
                 }
 
                 launchUrl += 'index_login_parallel.html';

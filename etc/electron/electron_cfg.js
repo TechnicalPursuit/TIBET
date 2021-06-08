@@ -46,7 +46,7 @@
         //  ---
 
         //  Whether or not to use a login-based startup sequence.
-        setcfg('electron.boot.use_login', false);
+        setcfg('boot.use_login', false);
 
         //  ---
         //  UPDATER

@@ -160,7 +160,7 @@ configure = function() {
     //  ---
 
     //  Grab the profile specified in the 'tibet.json' file.
-    profile = pkg.getcfg('electron.boot.profile');
+    profile = pkg.getcfg('boot.profile');
     profileDefined = CLI.notEmpty(profile);
 
     //  Verify build directory
@@ -207,7 +207,7 @@ configure = function() {
     //  Make sure to set the boot profile for the rest of the system to the one
     //  we computed above (which we did if the author didn't supply one).
     if (!profileDefined) {
-        pkg.setcfg('electron.boot.profile', profile);
+        pkg.setcfg('boot.profile', profile);
     }
 
     //  ---
@@ -239,7 +239,7 @@ configure = function() {
                     'Changing boot profile to: \`development@developer\`.');
 
                 profile = 'development@developer';
-                pkg.setcfg('electron.boot.profile', profile);
+                pkg.setcfg('boot.profile', profile);
 
                 bootPkg = profile.split('@')[0];
                 bootCfg = profile.split('@')[1];

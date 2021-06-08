@@ -17,11 +17,13 @@
         "dna": "{{dna}}",
         "xmlns": "{{xmlns}}"
     },
+    "boot": {
+        "profile": "development"
+    },
+    "build": {
+        "profile": "main@base"
+    },
     "electron": {
-        "//": "NOTE only boot.* params are used on startup URL",
-        "boot": {
-            "profile": "development"
-        },
         "plugins": {
             "core": ["profile", "window", "menu", "updater", "watch", "devtools"]
         },
