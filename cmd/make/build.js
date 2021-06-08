@@ -39,7 +39,7 @@
             targets.splice(targets.indexOf('build_tibet'), 0,
                             'build_boot', '_test');
 
-            config = make.cfg('make.compression.parse_options');
+            config = make.cfg('cli.make.compression.parse_options');
             config.default.minify = true;
             config.default.zip = true;
             config.default.brotli = true;

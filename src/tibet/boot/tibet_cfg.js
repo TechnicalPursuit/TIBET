@@ -1239,6 +1239,24 @@
     //  How long before process.exit after a shutdown request.
     TP.sys.setcfg('cli.shutdown_timeout', 1000);
 
+    //  What are the compression parse options?
+    TP.sys.setcfg('cli.make.compression.parse_options', {
+        boolean: ['brotli', 'list', 'minify', 'private', 'zip'],
+        number: ['timeout'],
+        default: {
+            brotli: false,
+            list: true,
+            minify: false,
+            private: false,
+            zip: false
+        }
+    });
+
+    //  What are the package parse options?
+    TP.sys.setcfg('cli.make.package.parse_options', {
+        string: ['package', 'config', 'profile']
+    });
+
     //  ---
     //  content mgmt
     //  ---

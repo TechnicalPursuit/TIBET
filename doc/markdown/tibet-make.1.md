@@ -47,11 +47,11 @@ must complete successfully. The default is 15 seconds (15000).
 
 ## CONFIGURATION SETTINGS
 
-  * `--make.compression.parse_options`:
+  * `--cli.make.compression.parse_options`:
     Set by this command to pass command line options along to any
 compression-related make operations.
 
-  * `--make.package.parse_options`:
+  * `--cli.make.package.parse_options`:
     Set by this command to pass command line options to any packaging-related
 operations.
 

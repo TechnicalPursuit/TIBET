@@ -51,7 +51,7 @@ build assets are concatenated but no new zip (or brotli) versions are built.
 
 ## CONFIGURATION SETTINGS
 
-  * `make.compression.parse_options` :
+  * `cli.make.compression.parse_options` :
     A set of default command argument values controlling file compression.
 
 ## ENVIRONMENT VARIABLES

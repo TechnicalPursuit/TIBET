@@ -5,7 +5,7 @@
         var options;
 
         //  Reparse to capture any zip/brotli configuration flags.
-        options = make.reparse(make.cfg('make.compression.parse_options'));
+        options = make.reparse(make.cfg('cli.make.compression.parse_options'));
 
         make.helpers.rollup_lib(make, {
             config: 'login',

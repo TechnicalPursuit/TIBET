@@ -14,7 +14,7 @@
         options = make.reparse({boolean: ['release']});
 
         if (options.release) {
-            config = make.cfg('make.compression.parse_options');
+            config = make.cfg('cli.make.compression.parse_options');
             config.default.minify = true;
             config.default.zip = true;
             config.default.brotli = true;

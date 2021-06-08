@@ -8,8 +8,8 @@
         make.log('linking build targets...');
 
         //  Parse command line for package and compression information.
-        options = make.blend(make.cfg('make.package.parse_options'),
-            make.cfg('make.compression.parse_options'));
+        options = make.blend(make.cfg('cli.make.package.parse_options'),
+            make.cfg('cli.make.compression.parse_options'));
         options = make.reparse(options);
 
         //  Check command line, task options, or just default to base.

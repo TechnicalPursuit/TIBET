@@ -94,29 +94,8 @@ Cmd.TIMEOUT = 1000 * 60;
  *     doesn't work (outside of TIBET ;)) and we to access the correct type.
  */
 Cmd.initialize = function(cmdType) {
-    var options;
-
-    //  Parse options for compression-related tasks in helpers.
-    options = {
-        boolean: ['brotli', 'list', 'minify', 'private', 'zip'],
-        number: ['timeout'],
-        default: {
-            brotli: false,
-            list: true,
-            minify: false,
-            private: false,
-            zip: false
-        }
-    };
-    Cmd.setcfg('make.compression.parse_options', options);
-
-    //  Parse options for package-related tasks in helpers.
-    options = {
-        //  TODO: do we need 'profile' in this list?
-        string: ['package', 'config']
-    };
-    Cmd.setcfg('make.package.parse_options', options);
-
+    //  Config for this command can be found in the main TIBET configuration
+    //  file.
     return;
 };
 

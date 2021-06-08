@@ -9,7 +9,7 @@
         make.log('verifying packages...');
 
         //  Parse command line for package parameters to get config value.
-        options = make.reparse(make.cfg('make.package.parse_options'));
+        options = make.reparse(make.cfg('cli.make.package.parse_options'));
 
         //  Check command line, task options, or just default to base.
         pkg = options.package || this.options.package || '~app_cfg/main.xml';
