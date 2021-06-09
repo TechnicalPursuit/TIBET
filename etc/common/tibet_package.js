@@ -290,6 +290,13 @@
 
 
     /**
+     * The default file to search for when checking electron project status.
+     * @type {String}
+     */
+    Package.ELECTRON_FILE = 'electron.js';
+
+
+    /**
      * A map of element attributes that will be copied down during expansion.
      * @type {Array.<string>}
      */
@@ -2062,6 +2069,32 @@
         }
 
         return !invalid;
+    };
+
+
+    /**
+     * Returns true if the current context is within an Electron-based project.
+     * @returns {Boolean} True if the current context is Electron.
+     */
+    Package.prototype.inElectron = function() {
+        var root,
+            file;
+
+        if (!this.inProject()) {
+            return false;
+        }
+
+        root = this.getAppRoot();
+
+        //  Since the CLI can be invoked from anywhere we need to be explicit
+        //  here relative to the cwd. If we find a project file, and it's
+        //  'tibet' we're truly inside the library.
+        file = Package.ELECTRON_FILE;
+        if (sh.test('-f', this.joinPaths(root, file))) {
+            return true;
+        }
+
+        return false;
     };
 
 

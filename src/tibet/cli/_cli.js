@@ -94,6 +94,7 @@ CLI.CHARS_PER_LINE = 55;
  */
 CLI.CONTEXTS = {
     ANY: 'any',
+    ELECTRON: 'electron',
     PROJECT: 'project',
     LIBRARY: 'library',
     NONLIB: 'nonlib',
@@ -1467,6 +1468,46 @@ CLI.initPackage = function(rebuild) {
         this._package.getcfg('cli.color.scheme') || 'ttychalk';
     this.options.theme = process.env.TIBET_CLI_THEME ||
         this._package.getcfg('cli.color.theme') || 'default';
+};
+
+
+/**
+ * Returns true if the command context matches the given context.
+ * @param {String} context The CLI.CONTEXTS constant to check against.
+ * @returns {Boolean} True if the current context matches the test value.
+ */
+CLI.inContext = function(context) {
+
+    // Simple case if the context is "anywhere".
+    if (context === CLI.CONTEXTS.ANY) {
+        return true;
+    }
+
+    switch (context) {
+        case CLI.CONTEXTS.ELECTRON:
+            return this._package.inElectron();
+        case CLI.CONTEXTS.PROJECT:
+            return this._package.inProject();
+        case CLI.CONTEXTS.LIBRARY:
+            return this.inLibrary();
+        case CLI.CONTEXTS.NONLIB:
+            return this.inProject() || !this.inLibrary();
+        case CLI.CONTEXTS.INSIDE:
+            return this.inProject() || this.inLibrary();
+        case CLI.CONTEXTS.OUTSIDE:
+            return !this.inProject() && !this.inLibrary();
+        default:
+            return false;
+    }
+};
+
+
+/**
+ * Returns true if the command context is an Electron project.
+ * @returns {Boolean} True if the current context is inside an Electron project.
+ */
+CLI.inElectron = function() {
+    return this._package.inElectron();
 };
 
 
