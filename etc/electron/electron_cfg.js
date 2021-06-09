@@ -41,6 +41,9 @@
         //  whether or not to exit when the last window has closed.
         setcfg('electron.exit_on_last_window_close', true);
 
+        //  whether uncaught exceptions cause the process to exit.
+        setcfg('electron.stop_onerror', true);
+
         //  ---
         //  BOOT
         //  ---
