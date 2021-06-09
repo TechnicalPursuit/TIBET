@@ -89,7 +89,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({
         json: true,
         xml: true,
         nodes: true,
-        scan: CLI.inLibrary()
+        scan: CLI.inLibrary() || CLI.inElectron()
     }
 },
 Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -652,7 +652,7 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
                 //  everything. In this case, there will only be one file in the
                 //  'line cache file' and there very well may be more invalid
                 //  files.
-                if (data.stopped) {
+                if (data.stopped || this.options.scan && !data.scanned) {
                     return list;
                 }
                 lastrun = data.lastrun;
@@ -1110,6 +1110,9 @@ Cmd.prototype.summarize = function(results) {
         }
         this.log(msg);
     }
+
+    //  Track whether we scanned or not
+    results.scanned = this.options.scan;
 
     //  Track whether we stopped early
     results.stopped = this.options.stop;
