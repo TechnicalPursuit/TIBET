@@ -1,5 +1,5 @@
 /**
- * @overview Plugin which sets up the app menu used by Electron apps.
+ * @overview Plugin which manages the profile data used by Electron apps.
  */
 
 /* eslint-disable no-console */
@@ -25,6 +25,7 @@
 
             ipcMain,
 
+            loadProfile,
             saveProfile;
 
         logger = options.logger;
@@ -54,7 +55,30 @@
         //  ---
 
         /**
-         * Saves the supplied profile data to the project's 'tibet.json' file.
+         * Loads the supplied profile data from the project's 'profile.json'
+         * file.
+         * @returns {Object} The data that was loaded.
+         */
+        loadProfile = function(profileData) {
+            var file,
+                json;
+
+            file = CLI.expandPath('~profile_file');
+            try {
+                json = require(file);
+            } catch (e) {
+                json = {};
+            }
+
+            if (!json) {
+                json = {};
+            }
+
+            return json;
+        };
+
+        /**
+         * Saves the supplied profile data to the project's 'profile.json' file.
          * @param {Object} profileData The data to save.
          */
         saveProfile = function(profileData) {
@@ -63,11 +87,15 @@
                 profile,
                 str;
 
-            file = CLI.expandPath('~tibet_file');
-            json = require(file);
+            file = CLI.expandPath('~profile_file');
+            try {
+                json = require(file);
+            } catch (e) {
+                json = {};
+            }
+
             if (!json) {
-                this.error('Unable to update profile in: ' + file);
-                return 1;
+                json = {};
             }
 
             profile = profileData.profile;
@@ -86,11 +114,21 @@
         /**
          * Event emitted when TIBET wants to save the user profile. The profile
          * is represented as a block of JSON under the 'profile' key in the
-         * tibet.json file.
+         * profile.json file.
          */
         ipcMain.handle('TP.sig.SaveProfile',
             function(event, profileInfo) {
                 saveProfile(profileInfo.data);
+            });
+
+        /**
+         * Event emitted when TIBET wants to load the user profile. The profile
+         * is represented as a block of JSON under the 'profile' key in the
+         * profile.json file.
+         */
+        ipcMain.handle('TP.sig.LoadProfile',
+            function(event) {
+                return loadProfile();
             });
 
     };

@@ -1,5 +1,5 @@
 /**
- * @overview Plugin which sets up the app menu used by Electron apps.
+ * @overview Plugin which sets up a file watcher used by Electron apps.
  */
 
 /* eslint-disable no-console */

@@ -82,6 +82,9 @@
 
                 launchUrl,
 
+                file,
+                json,
+
                 windowsParams,
                 windowsKeys,
                 i,
@@ -92,7 +95,7 @@
                 //  splashRoot,
                 //  splashUrl,
                 paramStr,
-                electronOpts;
+                bootOpts;
 
             appdir = pkg.expandPath('~app');
 
@@ -124,23 +127,24 @@
 
             //  Loop over params and add them to the launch URL.
             paramStr = '';
-            electronOpts = pkg.getcfg('electron');
+            bootOpts = options.boot;
 
-            Object.keys(electronOpts).forEach(function(item) {
-                let key;
+            Object.keys(bootOpts).forEach(function(item) {
+                let key,
+                    val;
 
-                //  Strip leading 'electron.' so we have the "pure config name".
-                key = item.replace('electron.', '');
+                val = bootOpts[item];
 
-                //  Only boot.* params go on the TIBET URL we launch from.
-                if (key.indexOf('boot.') !== 0) {
+                if (CLI.notValid(val)) {
                     return;
                 }
 
-                if (electronOpts[item] === true) {
+                key = 'boot.' + item;
+
+                if (val === true) {
                     paramStr += key + '&';
                 } else {
-                    paramStr += key + '=' + electronOpts[item] + '&';
+                    paramStr += key + '=' + val + '&';
                 }
             });
 
@@ -151,11 +155,23 @@
 
             //  ---
 
+            //  Grab the profile from the profile file.
+            file = CLI.expandPath('~profile_file');
+            try {
+                json = require(file);
+            } catch (e) {
+                json = {};
+            }
+
+            if (!json) {
+                json = {};
+            }
+
             //  Grab any parameters for windows specified in the profile. These
             //  will be things like window coordinates from the user's last
             //  session so that we can be nice and restore them back to where
             //  they were.
-            windowsParams = pkg.getcfg('profile.windows', null, true);
+            windowsParams = json;
             if (!windowsParams ||
                 !windowsParams.profile ||
                 !windowsParams.profile.windows) {

@@ -1,5 +1,5 @@
 /**
- * @overview Plugin which sets up the app menu used by Electron apps.
+ * @overview Plugin which manages integration with the Electron updater service.
  */
 
 /* eslint-disable no-console */

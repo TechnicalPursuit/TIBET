@@ -24,7 +24,13 @@ const electron = require('electron'),
     app = electron.app,                     //  Module to control application
     ipcMain = electron.ipcMain,             //  Module to communicate with
                                             //  renderer processes over IPC.
-    PARSE_OPTIONS = CLI.PARSE_OPTIONS;
+
+    /* eslint-disable quote-props */
+    PARSE_OPTIONS = CLI.blend({
+        string: ['package', 'profile', 'config']
+    },
+    CLI.PARSE_OPTIONS);
+    /* eslint-enable quote-props */
 
 //  Keep a global reference of the window object, if you don't, the window will
 //  be closed automatically when the JavaScript object is garbage collected.
@@ -115,7 +121,9 @@ configure = function() {
         scraping;
 
     //  Slice off first "arg" since it's the Electron executable.
-    argv = minimist(process.argv.slice(1), PARSE_OPTIONS) || {_: []};
+    argv = process.argv.slice(1);
+
+    argv = minimist(argv, PARSE_OPTIONS) || {_: []};
     pkg = new Package(argv);
 
     //  ---
@@ -131,6 +139,9 @@ configure = function() {
         level: argv.level,
         color: argv.color,
         lama: argv.lama,
+        package: argv.package,
+        profile: argv.profile,
+        config: argv.config,
         timestamp: true,
         silent: false
     };
@@ -159,13 +170,35 @@ configure = function() {
 
     //  ---
 
-    //  Grab the profile specified in the 'tibet.json' file.
-    profile = pkg.getcfg('boot.profile');
-    profileDefined = CLI.notEmpty(profile);
-
     //  Verify build directory
     builddir = pkg.expandPath('~app_build');
     hasBuildDir = sh.test('-d', builddir);
+
+    profileDefined = false;
+
+    //  Grab the profile specified from the command line or in the 'tibet.json'
+    //  file.
+    if (opts.profile || opts.package || opts.config) {
+        if (opts.profile) {
+            profile = opts.profile;
+        } else {
+            if (!hasBuildDir) {
+                profile = opts.package || 'development';
+                if (opts.config) {
+                    profile += '@' + opts.config;
+                }
+            } else {
+                profile = opts.package || 'main';
+                profile += '@' + opts.config || 'base';
+            }
+
+        }
+
+        profileDefined = true;
+    } else {
+        profile = pkg.getcfg('boot.profile');
+        profileDefined = CLI.notEmpty(profile);
+    }
 
     //  If there was no build directory we can't load a production profile...
     //  nothing's built.
@@ -251,8 +284,23 @@ configure = function() {
 
     logger.system('Using boot profile: ' + profile);
 
-    opts.bootPkg = bootPkg;
-    opts.bootCfg = bootCfg;
+    opts.boot = {
+        package: bootPkg,
+        config: bootCfg
+    };
+
+    //  Only construct a profile if both are supplied
+    if (CLI.notEmpty(bootPkg) && CLI.notEmpty(bootCfg)) {
+        opts.boot.profile = bootPkg + '@' + bootCfg;
+    }
+
+    //  Blend in any boot default overrides from command line
+    if (argv.boot) {
+        CLI.blend(opts.boot, argv.boot);
+    }
+
+    //  Blend in any boot default overrides from tibet.json
+    CLI.blend(opts.boot, json.boot);
 
     //  ---
 
@@ -331,10 +379,17 @@ process.on('uncaughtException', function(err) {
     }
 
     console.error(str);
-    if (app) {
-        app.exit(code);
-    } else {
-        return CLI.exitSoon(code);
+
+    if (err.stack && pkg.getcfg('stack')) {
+        console.error(err.stack);
+    }
+
+    if (pkg.getcfg('electron.stop_onerror')) {
+        if (app) {
+            app.exit(code);
+        } else {
+            return CLI.exitSoon(code);
+        }
     }
 });
 

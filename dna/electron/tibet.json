@@ -24,6 +24,12 @@
         "profile": "main@base"
     },
     "electron": {
+        "stack": true,
+        "stop_onerror": false,
+        "updater": {
+            "download": false,
+            "onstart": false
+        },
         "plugins": {
             "core": ["profile", "window", "menu", "updater", "watch", "devtools"]
         },

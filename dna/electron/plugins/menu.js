@@ -141,30 +141,37 @@
 
                                 mainContents;
 
-                            //  eventInfo: ['main/TIBET-Show-Devtools']
-                            //  eventInfo: ['TIBET/TP.sig.CheckForUpdate', false]
+                            //  If the menu item had mapped eventInfo, then
+                            //  process it.
+                            if (targetItem.eventInfo) {
 
-                            eventName = targetItem.eventInfo[0];
-                            eventArgs = targetItem.eventInfo.slice(1);
+                                //  eventInfo: ['main/TIBET-Show-Devtools']
+                                //  eventInfo: ['TIBET/TP.sig.CheckForUpdate',
+                                //                  false]
 
-                            if (eventName.startsWith('main')) {
-                                //  Make sure to slice off the slash
-                                eventName = eventName.slice(5);
-                                eventArgs.unshift(eventName);
+                                eventName = targetItem.eventInfo[0];
+                                eventArgs = targetItem.eventInfo.slice(1);
 
-                                //  Emit the event on the 'main side'.
-                                app.emit.apply(app, eventArgs);
-                            } else if (eventName.startsWith('TIBET')) {
+                                if (eventName.startsWith('main')) {
+                                    //  Make sure to slice off the slash
+                                    eventName = eventName.slice(5);
+                                    eventArgs.unshift(eventName);
 
-                                //  Make sure to slice off the slash
-                                eventName = eventName.slice(6);
-                                eventArgs.unshift(eventName);
+                                    //  Emit the event on the 'main side'.
+                                    app.emit.apply(app, eventArgs);
+                                } else if (eventName.startsWith('TIBET')) {
 
-                                mainContents = BrowserWindow.fromId(
-                                                    options.mainid).webContents;
+                                    //  Make sure to slice off the slash
+                                    eventName = eventName.slice(6);
+                                    eventArgs.unshift(eventName);
 
-                                //  Send the event over to TIBET.
-                                mainContents.send.apply(mainContents, eventArgs);
+                                    mainContents = BrowserWindow.fromId(
+                                                options.mainid).webContents;
+
+                                    //  Send the event over to TIBET.
+                                        mainContents.send.apply(mainContents,
+                                                                eventArgs);
+                                }
                             }
                         };
                 }
