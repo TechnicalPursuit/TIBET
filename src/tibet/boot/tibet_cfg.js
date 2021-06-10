@@ -203,6 +203,10 @@
     //  you don't want this loaded set boot.no_tibet_file to true.
     TP.sys.setcfg('boot.tibet_file', 'tibet.json');
 
+    //  Used for profile data on some platforms (i.e. Electron) to store user
+    //  profile data.
+    TP.sys.setcfg('boot.profile_file', 'profile.json');
+
     //  text pattern matching the load file used to check script tags during lib
     //  root computation if no other method is specified.
     TP.sys.setcfg('boot.tibet_loader', 'tibet_loader');
@@ -1066,6 +1070,7 @@
 
     TP.sys.setcfg('path.tibet_lib', 'tibet');   // npm install name here.
     TP.sys.setcfg('path.tibet_file', '~app/tibet.json');
+    TP.sys.setcfg('path.profile_file', '~app/profile.json');
     TP.sys.setcfg('path.tibet_inf', 'TIBET-INF');
 
     TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_inf'));

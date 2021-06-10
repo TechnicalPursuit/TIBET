@@ -105,7 +105,7 @@ function(aSignal) {
 
     //  Grab the profile. Note how we pass true as the last parameter to get a
     //  nested POJO back.
-    profileData = TP.sys.getcfg('profile', null, true);
+    profileData = TP.sys.getcfg('profile', {}, true);
 
     //  NB: We need to remove these keys before we send this data to Electron.
     //  They point to Function objects and the Structured Clone Algorithm has
@@ -120,6 +120,31 @@ function(aSignal) {
                             {
                                 data: profileData
                             });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.electron.Application.Inst.defineHandler('AppWillInitialize',
+function(aSignal) {
+
+    /**
+     * @method handleAppWillInitialize
+     * @param {TP.sig.AppWillInitialize} aSignal The signal that caused this
+     *     handler trip.
+     * @returns {TP.electron.Application} The receiver.
+     */
+
+    //  Signal the main process that TIBET wants to load profile data.
+    TP.electron.ElectronMain.signalMain('TP.sig.LoadProfile').then(
+        function(profileData) {
+            var data;
+
+            data = TP.ifInvalid(profileData, {});
+
+            TP.boot.$configureOptions(data);
+        });
 
     return this;
 });
