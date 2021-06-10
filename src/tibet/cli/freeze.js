@@ -498,7 +498,7 @@ Cmd.prototype.execute = function() {
     file = CLI.expandPath('~tibet_file');
     json = require(file);
     if (!json) {
-        this.error('Unable to update lib_root in: ' + file);
+        this.error('Unable to load and update lib_root in: ' + file);
         return 1;
     }
     if (!json.path) {
