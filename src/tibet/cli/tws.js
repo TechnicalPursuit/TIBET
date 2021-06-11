@@ -902,14 +902,14 @@ Cmd.prototype.executePush = function() {
         }
 
         if (sh.test('-d', fullpath)) {
-            return this.pushDir(fullpath);
+            return this.pushDir(fullpath, {cfg_root: 'tds.tws'});
         } else {
             //  Has to be a JSON document.
             if (path.extname(fullpath) !== '.json') {
                 this.error('Can only push JSON documents.');
                 return;
             }
-            return this.pushFile(fullpath);
+            return this.pushFile(fullpath, {cfg_root: 'tds.tws'});
         }
     }
 
@@ -985,7 +985,7 @@ Cmd.prototype.executePushFlows = function() {
         cfg_root: 'tds.tws'
     });
 
-    this.pushDir('~tws/flows');
+    this.pushDir('~tws/flows', {cfg_root: 'tds.tws'});
 };
 
 
@@ -1002,8 +1002,10 @@ Cmd.prototype.executePushMap = function() {
         cfg_root: 'tds.tws'
     });
 
-    this.pushDir('~tws/tasks');
-    this.pushDir('~tws/flows', {confirm: false});   //  only confirm once
+    this.pushDir('~tws/tasks', {cfg_root: 'tds.tws'});
+
+    //  only confirm once.
+    this.pushDir('~tws/flows', {cfg_root: 'tds.tws', confirm: false});
 };
 
 
@@ -1020,7 +1022,7 @@ Cmd.prototype.executePushTasks = function() {
         cfg_root: 'tds.tws'
     });
 
-    this.pushDir('~tws/tasks');
+    this.pushDir('~tws/tasks', {cfg_root: 'tds.tws'});
 };
 
 
