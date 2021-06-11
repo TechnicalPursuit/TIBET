@@ -383,7 +383,7 @@ This command has no client-side TSH peer command.
 ## TROUBLESHOOTING
 
 During any operation if you receive a message including output to the effect
-that `You are not a server admin.` either export the the proper environment
+that `You are not a server admin.` either export the proper environment
 variables or provide your credentials in your `CouchDB url` prompt response.
 
 ## SEE ALSO
