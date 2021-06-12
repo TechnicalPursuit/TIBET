@@ -101,6 +101,13 @@ Cmd.INLINED_RESOURCES = [
     /\.json/
 ];
 
+Cmd.INCLUDED_RESOURCES = [
+    /\.css$/,
+    /\.less$/,
+    /\.sass$/,
+    /\.scss$/
+];
+
 
 //  ---
 //  Instance Attributes
@@ -401,6 +408,80 @@ Cmd.prototype.generateResourceList = function() {
 
 
 /**
+ * Uses the supplied list of files to find embedded imported files that should
+ * be processed as resources. Note that this is called recursively to retrieve
+ * any nested imports.
+ * @param {Array.<String>} list The list of files to scan for import statements
+ * for
+ * @returns {Array.<string>} The list of imported files that are referenced by
+ * embedded import statements.
+ */
+Cmd.prototype.gatherImports = function(list) {
+    var possiblesList,
+        imports;
+
+    possiblesList = list.filter(function(resource) {
+        return Cmd.INCLUDED_RESOURCES.some(function(regex) {
+            return regex.test(resource);
+        });
+    });
+
+    imports = [];
+
+    possiblesList.forEach(
+        function(resource) {
+            var fullpath,
+                fullpathdir,
+                data;
+
+            //  Expand the path and grab it's full 'directory path'.
+            fullpath = CLI.expandPath(resource, true);
+            fullpathdir = path.dirname(fullpath);
+
+            if (!sh.test('-e', fullpath)) {
+                this.warn('Referenced import doesn\'t exist:', fullpath);
+                return;
+            }
+
+            //  Load the file content and scan for embedded CSS @import
+            //  statements.
+            data = sh.cat(fullpath).toString();
+            data.replace(Cmd.CSS_IMPORT_RULE,
+                            function(wholeMatch, leadingText, importLoc) {
+                                var loc;
+
+                                //  If the found import location isn't an
+                                //  absolute (or virtual) path, then join it
+                                //  together with the directory path for the
+                                //  file we're processing.
+                                if (!CLI.isAbsolutePath(importLoc)) {
+                                    loc = CLI.joinPaths(fullpathdir, importLoc);
+                                } else {
+                                    loc = importLoc;
+                                }
+
+                                //  Canonicalize the location as much as we can
+                                //  by turning it into a virtual path.
+                                loc = CLI.getVirtualPath(loc);
+
+                                imports.push(loc);
+
+                                return wholeMatch;
+                            });
+        });
+
+    //  If we obtained imports, then recursively call this method supplying that
+    //  list.
+    if (imports.length > 0) {
+        imports = imports.concat(this.gatherImports(imports));
+    }
+
+    //  Make sure to unique this list to avoid duplicates, possibly due to
+    //  different forms being used.
+    return CLI.unique(imports);
+};
+
+/**
  * Returns a list of options/flags/parameters suitable for command completion.
  * @returns {Array.<string>} The list of options for this command.
  */
@@ -476,7 +557,8 @@ Cmd.prototype.processResources = function() {
         buildpath,
         filter,
         helper,
-        packagePhase;
+        packagePhase,
+        embeddedImports;
 
     cmd = this;
 
@@ -579,14 +661,28 @@ Cmd.prototype.processResources = function() {
         return CLI.getVirtualPath(CLI.expandPath(uri));
     });
 
+    //  Now that we have the filtered list, some of these files may have various
+    //  includes and we need to capture those file names and add them to our
+    //  list. Note that this list of files will have been uniqued.
+    embeddedImports = this.gatherImports(this.filtered);
+
+    if (!this.options.raw) {
+        this.info(
+            'found ' + embeddedImports.length + ' imported resources...');
+    }
+
+    //  Concatenate the list of embedded imports onto the list of filtered
+    //  files.
+    this.expanded = this.filtered.concat(embeddedImports);
+
     if (!this.options.build) {
 
         if (!this.options.raw) {
             this.info(
-                'found ' + this.filtered.length + ' concrete resources...');
+                'found ' + this.expanded.length + ' concrete resources...');
         }
 
-        this.filtered.forEach(function(resource) {
+        this.expanded.forEach(function(resource) {
             var res,
                 base,
                 file;
@@ -620,12 +716,12 @@ Cmd.prototype.processResources = function() {
     }
 
     if (!this.options.raw) {
-        this.info('building ' + this.filtered.length + ' concrete resources...');
+        this.info('building ' + this.expanded.length + ' concrete resources...');
     }
 
-    //  We have a filtered list, the challenge now is to produce promises
+    //  We have a expanded list, the challenge now is to produce promises
     //  so we can manage async operations like compiling LESS files etc.
-    this.promises = this.filtered.map(function(resource) {
+    this.promises = this.expanded.map(function(resource) {
         var shouldInline,
             shouldProcess,
             fullpath;
