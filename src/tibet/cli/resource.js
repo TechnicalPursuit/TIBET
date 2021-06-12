@@ -417,8 +417,11 @@ Cmd.prototype.generateResourceList = function() {
  * embedded import statements.
  */
 Cmd.prototype.gatherImports = function(list) {
-    var possiblesList,
+    var cmd,
+        possiblesList,
         imports;
+
+    cmd = this;
 
     possiblesList = list.filter(function(resource) {
         return Cmd.INCLUDED_RESOURCES.some(function(regex) {
@@ -436,10 +439,17 @@ Cmd.prototype.gatherImports = function(list) {
 
             //  Expand the path and grab it's full 'directory path'.
             fullpath = CLI.expandPath(resource, true);
-            fullpathdir = path.dirname(fullpath);
+            try {
+                fullpathdir = path.dirname(fullpath);
+            } catch (e) {
+                cmd.warn('Cannot compute directory name for: ' +
+                            resource +
+                            '. Skipping.');
+                return;
+            }
 
             if (!sh.test('-e', fullpath)) {
-                this.warn('Referenced import doesn\'t exist:', fullpath);
+                cmd.warn('Referenced import doesn\'t exist:', fullpath);
                 return;
             }
 
