@@ -30,8 +30,8 @@
 
         "selector-type-no-unknown": [ true, {
             "ignore": ["default-namespace"],
-            "ignoreNamespaces": [ "*", "svg", "tibet", "tsh", "xctrls", "{{appname}}"],
-            "ignoreTypes": [ "/*/" ]
+            "ignoreNamespaces": [ "/.*/" ],
+            "ignoreTypes": [ "/.*/" ]
         }],
 
         "selector-type-case": null,

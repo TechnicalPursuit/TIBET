@@ -30,8 +30,8 @@
 
         "selector-type-no-unknown": [ true, {
             "ignore": ["default-namespace"],
-            "ignoreNamespaces": [ "*", "svg", "tibet", "tsh", "xctrls", "sherpa", "lama", "tibetlama", "tmp"],
-            "ignoreTypes": [ "/*/" ]
+            "ignoreNamespaces": [ "/.*/" ],
+            "ignoreTypes": [ "/.*/" ]
         }],
 
         "selector-type-case": null,
