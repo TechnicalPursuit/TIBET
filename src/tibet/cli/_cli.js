@@ -877,6 +877,18 @@ CLI.subtract = function(removals, sources) {
 };
 
 
+/**
+ * Returns a unique list of entries in the supplied list.
+ * @param {Array} entries The list of items to unique.
+ * @returns {Array} The unique items in entries.
+ */
+CLI.unique = function(entries) {
+    return entries.filter(function(value, index, self) {
+        return self.indexOf(value) === index;
+    });
+};
+
+
 //  ---
 //  Project Info
 //  ---
