@@ -12,6 +12,7 @@
  *          "dockerhub": {
  *              "username": "bedney",
  *              "account": "technicalpursuit",
+ *              "platform": "linux/arm64", (defaults to 'linux/amd64');
  *              "projectname": "myproject" (defaults to project.name),
  *              "projectversion": "0.1.0" (defaults to project.version),
  *              "nodockercache": "true" (defaults to false),
@@ -162,6 +163,8 @@
             params = CLI.blend({}, inlineparams);
             params = CLI.blend(params, cfgparams);
 
+            params.platform = params.platform || 'linux/amd64';
+
             params.projectname = params.projectname ||
                                     CLI.cfg('project.name');
             params.projectversion = params.projectversion ||
@@ -224,6 +227,10 @@
             execArgs = [
                             'build'
                         ];
+
+            if (CLI.notEmpty(params.platform)) {
+                execArgs.push('--platform', params.platform);
+            }
 
             if (CLI.isTrue(params.nodockercache)) {
                 execArgs.push('--no-cache');
