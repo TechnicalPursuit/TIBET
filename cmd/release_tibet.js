@@ -174,6 +174,7 @@ Cmd.prototype.execute = async function() {
      *      git checkout <targetbranch>
      *      tibet deploy npm
      *      tibet deploy dockerhub '{
+     *          "account":"technicalpursuit",
      *          "projectname":"tibet",
      *          "projectversion":"latest",
      *          "nodockercache": true,
@@ -181,11 +182,11 @@ Cmd.prototype.execute = async function() {
      *          "extra_tag_entries": [
      *              ["technicalpursuit/tibet:latest","technicalpursuit/tibet:<meta.source.major>"],
      *              ["technicalpursuit/tibet:latest","technicalpursuit/tibet:<meta.source.major>.<meta.source.minor>"],
-     *              ["technicalpursuit/tibet:latest","technicalpursuit/tibet:<meta.source.major>.<meta.source.minor>.<meta.source.patch>"],
+     *              ["technicalpursuit/tibet:latest","technicalpursuit/tibet:<meta.source.major>.<meta.source.minor>.<meta.source.patch>"]
      *          ],
      *          "extra_push_entries": [
-     *              "technicalpursuit/tibet:" + meta.source.major
-     *              "technicalpursuit/tibet:" + meta.source.major + '.' + meta.source.minor
+     *              "technicalpursuit/tibet:" + meta.source.major,
+     *              "technicalpursuit/tibet:" + meta.source.major + '.' + meta.source.minor,
      *              "technicalpursuit/tibet:" + meta.source.major + '.' + meta.source.minor + '.' + meta.source.patch
      *          ]
      *          }'
