@@ -5,6 +5,10 @@ FROM node:12-alpine
 # packages on Github.
 RUN apk add git
 
+# Fixes 'could not get uid/gid' error that Docker will sometimes produce when
+# switching uid/gid..
+RUN npm config set unsafe-perm true
+
 # Force npm to set the user to root and install TIBET *globally*. Note that
 # forcing the npm user to be root solves multiple issues when installing npm
 # packages as the root user, which is what we are until the USER command below.
