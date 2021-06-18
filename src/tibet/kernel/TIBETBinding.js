@@ -5549,7 +5549,8 @@ function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, changeSourc
      *     receiver is inside of a repeat context.
      * @param {Number} repeatIndex The index of the nearest scope within the
      *     nearest repeat if the receiver is inside of a repeat context.
-     * @returns {TP.dom.ElementNode} The receiver.
+     * @returns {Boolean} Whether or not the machinery invoked the set machinery
+     *     of the leaf to change the value it is displaying.
      */
 
     var bindingInfo,
