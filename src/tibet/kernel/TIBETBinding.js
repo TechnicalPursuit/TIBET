@@ -4651,7 +4651,9 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
     //  the rooted URI).
 
     //  Grab the primary location of the signal origin.
-    primaryLoc = sigOrigin.getPrimaryLocation();
+    if (TP.isValid(sigOrigin)) {
+        primaryLoc = sigOrigin.getPrimaryLocation();
+    }
 
     //  Grab the 'original location' info records that were computed by the
     //  'bind:' namespace object when the content containing these binds was
@@ -4675,7 +4677,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
             //  location obtained above. If they don't match, then we're not
             //  going to match here at all.
             concreteLocation = infoPair.last();
-            if (concreteLocation !== primaryLoc) {
+            if (TP.notEmpty(primaryLoc) && concreteLocation !== primaryLoc) {
                 return;
             }
 
