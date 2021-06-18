@@ -1080,15 +1080,19 @@ function(aSignal) {
                             //  element based on their standard data binding /
                             //  decoding methods (isSingleValued,
                             //  isScalarValued, etc.)
-                            ownerTPElem.$refreshLeaf(
-                                    facet,
-                                    originVal,
-                                    aspectNames,
-                                    boundAttrNodes[i],
-                                    null,
-                                    sigSource,
-                                    null,
-                                    NaN);
+                            ownerTPElem.refresh(
+                                false,
+                                true,
+                                TP.hc(
+                                    'facet', facet,
+                                    'initialVal', originVal,
+                                    'updatedAspects', aspectNames,
+                                    'bindingAttr', boundAttrNodes[i],
+                                    'pathType', null,
+                                    'changeSource', sigSource,
+                                    'repeatSource', null,
+                                    'repeatIndex', null
+                                ));
                         }
                     }
                 }
@@ -4244,7 +4248,7 @@ function(shouldRender) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('refresh',
-function(shouldRender, shouldRefreshBindings) {
+function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
     /**
      * @method refresh
@@ -4255,9 +4259,15 @@ function(shouldRender, shouldRefreshBindings) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
-     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
-     *     bindings from the receiver down (in a 'sparse' fashion). If not
-     *     supplied, this parameter will default to true.
+     * @param {Boolean} [shouldRefreshBindings=true] Whether or not to refresh
+     *     data bindings from the receiver down (in a 'sparse' fashion).
+     * @param {TP.core.Hash} [localRefreshInfo] Information about a local-only
+     *     refresh that can be used to specifically target binds that occur only
+     *     *locally* on the receiver (i.e. where the receiver itself has the
+     *     'bind:*' attribute). Note that if this is supplied, that a *local
+     *     only* refresh will be performed and it will be the responsibility of
+     *     the caller to refresh any descendant bindings, scoped to the receiver
+     *     or not..
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
@@ -4265,6 +4275,23 @@ function(shouldRender, shouldRefreshBindings) {
     var retVal,
 
         allRefreshedElements;
+
+    if (TP.isValid(localRefreshInfo)) {
+        retVal = this.$refreshLocalBindings(
+                    localRefreshInfo.at('facet'),
+                    localRefreshInfo.at('initialVal'),
+                    localRefreshInfo.at('updatedAspects'),
+                    localRefreshInfo.at('bindingAttr'),
+                    localRefreshInfo.at('pathType'),
+                    localRefreshInfo.at('changeSource'),
+                    localRefreshInfo.at('repeatSource'),
+                    localRefreshInfo.at('repeatIndex'));
+        if (TP.notFalse(shouldRender) && retVal) {
+            this.render();
+        }
+
+        return retVal;
+    }
 
     //  First, call refresh on all of the *direct children* of the receiver,
     //  specifying to *not* refresh data bindings. We'll do that in a more
@@ -4904,15 +4931,20 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                                                         boundAttr.name,
                                                         attrVal,
                                                         primaryLocMatcher);
-                        ownerTPElem.$refreshLeaf(
-                            aFacet,
-                            branchVal,
-                            aspectNames,
-                            boundAttr,
-                            pathType,
-                            changeSource,
-                            null,
-                            null);
+
+                        ownerTPElem.refresh(
+                            false,
+                            true,
+                            TP.hc(
+                                'facet', aFacet,
+                                'initialVal', branchVal,
+                                'updatedAspects', aspectNames,
+                                'bindingAttr', boundAttr,
+                                'pathType', pathType,
+                                'changeSource', changeSource,
+                                'repeatSource', null,
+                                'repeatIndex', null
+                            ));
 
                         //  Now, we must remove the ownerTPElem from the list of
                         //  bound elements, or we'll recurse endlessly.
@@ -4986,16 +5018,19 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     }
                 }
 
-                //  Go ahead and process this as a leaf.
-                ownerTPElem.$refreshLeaf(
-                    aFacet,
-                    theVal,
-                    aspectNames,
-                    boundAttr,
-                    aPathType,
-                    changeSource,
-                    repeatSource,
-                    repeatIndex);
+                ownerTPElem.refresh(
+                    false,
+                    true,
+                    TP.hc(
+                        'facet', aFacet,
+                        'initialVal', theVal,
+                        'updatedAspects', aspectNames,
+                        'bindingAttr', boundAttr,
+                        'pathType', aPathType,
+                        'changeSource', changeSource,
+                        'repeatSource', repeatSource,
+                        'repeatIndex', repeatIndex
+                    ));
             }
         }
 
@@ -5385,15 +5420,19 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                         }
                     }
 
-                    ownerTPElem.$refreshLeaf(
-                        aFacet,
-                        theVal,
-                        updatedUIAspects,
-                        boundAttr,
-                        aPathType,
-                        changeSource,
-                        repeatSource,
-                        repeatIndex);
+                    ownerTPElem.refresh(
+                        false,
+                        true,
+                        TP.hc(
+                            'facet', aFacet,
+                            'initialVal', theVal,
+                            'updatedAspects', updatedUIAspects,
+                            'bindingAttr', boundAttr,
+                            'pathType', aPathType,
+                            'changeSource', changeSource,
+                            'repeatSource', repeatSource,
+                            'repeatIndex', repeatIndex
+                        ));
 
                     didProcess = true;
                 }

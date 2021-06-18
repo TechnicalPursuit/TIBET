@@ -331,7 +331,7 @@ function(aspectName) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.Lattice.Inst.defineMethod('refresh',
-function(shouldRender, shouldRefreshBindings) {
+function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
     /**
      * @method refresh
@@ -343,14 +343,21 @@ function(shouldRender, shouldRefreshBindings) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
-     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
-     *     bindings from the receiver down (in a 'sparse' fashion). If not
-     *     supplied, this parameter will default to true.
+     * @param {Boolean} [shouldRefreshBindings=true] Whether or not to refresh
+     *     data bindings from the receiver down (in a 'sparse' fashion).
+     * @param {TP.core.Hash} [localRefreshInfo] Information about a local-only
+     *     refresh that can be used to specifically target binds that occur only
+     *     *locally* on the receiver (i.e. where the receiver itself has the
+     *     'bind:*' attribute). Note that if this is supplied, that a *local
+     *     only* refresh will be performed and it will be the responsibility of
+     *     the caller to refresh any descendant bindings, scoped to the receiver
+     *     or not.
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
 
-    var hasChanged;
+    var hasChanged,
+        updatedAspects;
 
     //  If rendering is forced, scroll to the top of the list.
     if (shouldRender) {
@@ -363,7 +370,21 @@ function(shouldRender, shouldRefreshBindings) {
 
     //  If the bound value truly changed, clear the selection.
     if (hasChanged) {
-        this.setValue(null);
+
+        //  If we're doing a local-only refresh, and the aspect that is being
+        //  updated is either 'data' or 'value', then reset the value to null.
+        //  Otherwise, leave it alone.
+        if (TP.isValid(localRefreshInfo)) {
+            updatedAspects = localRefreshInfo.at('updatadAspects');
+            if (TP.isArray(updatedAspects) &&
+                (updatedAspects.contains('data') ||
+                    updatedAspects.contains('value'))) {
+                this.setValue(null);
+            }
+        } else {
+            //  A 'general' refresh - reset the value to null.
+            this.setValue(null);
+        }
     }
 
     return hasChanged;
