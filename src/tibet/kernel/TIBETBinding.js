@@ -4584,41 +4584,8 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
     //  on those attributes here because the 'querySelectorAll' call has no
     //  namespace support :-(. It is, however, very fast. We'll filter for that
     //  later.
-    subscopes = TP.ac(elem.querySelectorAll('*[*|scope], *[*|repeat]'));
-
-    subscopes = subscopes.filter(
-            function(aSubscope) {
-
-                var l;
-
-                //  We don't want ourself in the list
-                if (aSubscope === elem) {
-                    return false;
-                }
-
-                if (!elem.contains(aSubscope)) {
-                    return false;
-                }
-
-                for (l = 0; l < subscopes.length; l++) {
-                    //  If:
-                    //  -   We're not checking ourself as a subscope
-                    //  -   The subscope we're checking is actually contained in
-                    //      the element
-                    //  -   The iterating subscope contains the target subscope
-                    //  -   We're at the end of checking all of the subscopes
-                    //  then return false to filter out the target subscope.
-                    if (subscopes[l] !== aSubscope &&
-                        elem.contains(subscopes[l]) &&
-                        subscopes[l].contains(aSubscope)) {
-                            if (l === subscopes.length - 1) {
-                                return false;
-                            }
-                    }
-                }
-
-                return true;
-            });
+    subscopes = TP.ac(elem.querySelectorAll(
+                        ':scope *[*|scope], :scope *[*|repeat]'));
 
     boundElems = needsRefreshElems;
 
@@ -6663,7 +6630,6 @@ function() {
      */
 
     var elem,
-        doc,
 
         nestedRepeatElems,
         nestedRepeatTPElems,
@@ -6692,18 +6658,12 @@ function() {
         return this;
     }
 
-    doc = TP.nodeGetDocument(elem);
-
     //  Cause any repeats that haven't registered their content to grab it
     //  before we start other processing.
     //  To do this, we need any repeats that are under us (but only the ones
     //  under us, which is we need to use the filter here).
     nestedRepeatElems =
-            TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
-    nestedRepeatElems = nestedRepeatElems.filter(
-                    function(anElem) {
-                        return elem !== anElem && elem.contains(anElem);
-                    });
+            TP.ac(elem.querySelectorAll(':scope *[*|repeat]'));
 
     //  To avoid mutation events as register the repeat content will cause DOM
     //  modifications, we wrap all of the found 'bind:repeat' Elements at once

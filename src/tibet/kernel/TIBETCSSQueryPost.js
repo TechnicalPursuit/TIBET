@@ -455,7 +455,7 @@ function(aNode, aSelector, autoCollapse) {
     //  call.
     if (!TP.regex.HAS_PIPE.test(aSelector) &&
         !TP.regex.CSS_CUSTOM_SCOPED_SELECTOR.test(aSelector)) {
-        matchResults = theNode.querySelectorAll(aSelector);
+        matchResults = theNode.querySelectorAll(':scope ' + aSelector);
     } else {
         //  Cache the number of namespaces we've installed so that we don't do
         //  this every time this method gets called.

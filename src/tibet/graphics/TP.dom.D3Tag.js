@@ -203,7 +203,8 @@ function(enterSelection) {
         //  Query the item element for elements with a '*:in' or '*:io' - we'll
         //  filter for the 'bind' namespace below.
         elems = TP.ac(
-                compiledTemplateContent.querySelectorAll('*[*|in], *[*|io]'));
+                    compiledTemplateContent.querySelectorAll(
+                        ':scope *[*|in], :scope *[*|io]'));
 
         //  Loop over all of the elements that were found.
         for (i = 0; i < elems.length; i++) {
@@ -1011,7 +1012,9 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
     //  Query the item element for elements with a '*:in' or '*:io' - we'll
     //  filter for the 'bind' namespace below.
-    elems = TP.ac(itemElement.querySelectorAll('*[*|in], *[*|io]'));
+    elems = TP.ac(
+                itemElement.querySelectorAll(
+                    ':scope *[*|in], :scope *[*|io]'));
 
     ind = this.adjustIterationIndex(index);
 

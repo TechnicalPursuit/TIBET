@@ -763,7 +763,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     docHead = TP.documentEnsureHeadElement(aDocument);
 
     //  Grab all of the 'style related' link elements.
-    styleLinks = TP.ac(docHead.querySelectorAll('link[type="text/css"]'));
+    styleLinks = TP.ac(docHead.querySelectorAll(
+                                ':scope link[type="text/css"]'));
 
     //  Since script elements, if we have them and they have a 'src'
     //  attribute, may be processed and fully realized in an asynchronous

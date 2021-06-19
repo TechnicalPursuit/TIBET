@@ -63,16 +63,15 @@ function(anElement) {
     //  call in most browsers. It is extremely fast, which is why we use it and
     //  then filter more later, but it's query capabilities around namespaces is
     //  quite pathetic.
-    query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
+    query =
+        ':scope *[*|io], :scope *[*|in], :scope *[*|scope], :scope *[*|repeat]';
 
     boundElements = TP.ac(anElement.querySelectorAll(query));
 
-    //  Additionally, if the supplied Element itself matches that query (tested
-    //  by either '.matches' or '.matchesSelector', depending on platform...),
-    //  then unshift it onto the result.
-    if (anElement.matches && anElement.matches(query)) {
-        boundElements.unshift(anElement);
-    } else if (anElement.matchesSelector && anElement.matchesSelector(query)) {
+    //  Additionally, if the supplied Element itself matches that query then
+    //  unshift it onto the result.
+    query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
+    if (anElement.matches(query)) {
         boundElements.unshift(anElement);
     }
 
@@ -310,11 +309,13 @@ function(anElement) {
 
     //  Cause any repeats that haven't registered their content to grab it
     //  before we start other processing.
-    repeatElems = TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
-    repeatElems = repeatElems.filter(
-                    function(anElem) {
-                        return anElement.contains(anElem);
-                    });
+    repeatElems = TP.ac(anElement.querySelectorAll(':scope *[*|repeat]'));
+
+    //  Additionally, if the supplied Element itself matches that query then
+    //  unshift it onto the result.
+    if (anElement.matches('*[*|repeat]')) {
+        repeatElems.unshift(anElement);
+    }
 
     //  IMPORTANT: To avoid mutation events as register the repeat content will
     //  cause DOM modifications, we wrap all of the found 'bind:repeat' Elements
