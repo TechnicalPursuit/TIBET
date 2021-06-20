@@ -1504,7 +1504,7 @@ function() {
 
         descendantRule = TP.styleSheetGetStyleRulesMatching(
                             TP.cssElementGetStyleSheet(styleElement),
-                            '.lama-outliner *');
+                            '.lama-outliner *|*');
 
         this.set('$hudOutlinerDescendantsRule', descendantRule.first());
     } else {

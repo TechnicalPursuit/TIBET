@@ -1,6 +1,7 @@
 @namespace url("http://www.w3.org/1999/xhtml");
 @namespace tsh url("http://www.technicalpursuit.com/1999/tshell");
 @namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 tsh|deploy_assistant {
 
@@ -114,7 +115,7 @@ tsh|deploy_assistant > .body .propertiesGroup {
     left: 5px;
 }
 
-tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries {
+tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries {
 
     position: absolute;
 
@@ -128,14 +129,14 @@ tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries {
     overflow-y: auto;
 }
 
-tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries > span {
+tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries > span {
 
     display: flex;
 
     width: 100%;
 }
 
-tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries > span input {
+tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries > span input {
 
     width: auto;
     height: 1em;
@@ -147,7 +148,7 @@ tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries > span input {
     flex: 1;
 }
 
-tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries .deleter {
+tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries .deleter {
 
     width: 24px;
     height: 24px;
