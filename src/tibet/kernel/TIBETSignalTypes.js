@@ -2628,6 +2628,11 @@ TP.sig.DOMScroll.Type.defineConstant('NATIVE_NAME', 'scroll');
 
 //  ---
 
+TP.sig.DOMUISignal.defineSubtype('DOMSelectionChange');
+TP.sig.DOMSelectionChange.Type.defineConstant('NATIVE_NAME', 'selectionchange');
+
+//  ---
+
 TP.sig.DOMUISignal.defineSubtype('DOMSubmit');
 TP.sig.DOMSubmit.Type.defineConstant('NATIVE_NAME', 'submit');
 

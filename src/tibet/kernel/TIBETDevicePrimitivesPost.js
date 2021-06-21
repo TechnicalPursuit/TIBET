@@ -94,6 +94,7 @@ function(anEvent) {
         case 'resize':
         case 'scroll':
         case 'select':
+        case 'selectionchange':
         case 'transitionend':
         case 'unload':
 
@@ -1510,6 +1511,20 @@ function(anEvent) {
     /**
      * @method $$handleScroll
      * @summary Document-level scroll handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$handleSelectionChange',
+function(anEvent) {
+
+    /**
+     * @method $$handleAnimationEnd
+     * @summary Document-level selectionchange handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
