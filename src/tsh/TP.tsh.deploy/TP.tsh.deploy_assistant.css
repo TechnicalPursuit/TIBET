@@ -5,14 +5,6 @@
 
 tsh|deploy_assistant {
 
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-
-    overflow: hidden;
 }
 
 tsh|deploy_assistant > .head {
@@ -20,7 +12,6 @@ tsh|deploy_assistant > .head {
 
 tsh|deploy_assistant > .body {
 
-    position: absolute;
     display: grid;
 
     grid-template-columns: 9em 1fr;
@@ -30,14 +21,9 @@ tsh|deploy_assistant > .body {
         "properties_control_group properties_control_group"
         "properties_group properties_group";
 
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 7em;
+    align-items: center;
 
     text-align: left;
-
-    align-items: center;
 }
 
 tsh|deploy_assistant > .body label {
@@ -70,12 +56,7 @@ tsh|deploy_assistant > .body .propertiesControlGroup {
 
     grid-area: properties_control_group;
 
-    position: absolute;
     display: flex;
-
-    top: 8px;
-    right: 5px;
-    left: 5px;
 
     align-items: center;
     justify-content: flex-start;
@@ -106,23 +87,9 @@ tsh|deploy_assistant > .body .propertiesControlGroup > .inserter {
 tsh|deploy_assistant > .body .propertiesGroup {
 
     grid-area: properties_group;
-
-    position: absolute;
-
-    top: 0;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
 }
 
 tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries {
-
-    position: absolute;
-
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
 
     border: dotted 1px gray;
 
@@ -164,14 +131,6 @@ tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries .delet
 
 tsh|deploy_assistant > .foot {
 
-    position: absolute;
-
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-
-    height: 7em;
 }
 
 tsh|deploy_assistant > .foot #generatedCmdLine {
