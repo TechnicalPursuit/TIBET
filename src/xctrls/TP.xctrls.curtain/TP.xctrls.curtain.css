@@ -27,6 +27,11 @@ xctrls|curtain:not([pclass|hidden]) {
     display: block;
 }
 
+body xctrls|curtain:not([pclass|hidden]) {
+
+    overflow: hidden;
+}
+
 /* When the curtain is acting as a drag layer */
 xctrls|curtain[tibet|isdraglayer] {
 
