@@ -195,7 +195,7 @@ TP.xctrls.itemset.Inst.defineAttribute('$dataKeys');
 TP.xctrls.itemset.Inst.defineAttribute('$convertedData');
 
 TP.xctrls.itemset.Inst.defineAttribute(
-    'content',
+    'contentElement',
     TP.cpc('> span tibet|group xctrls|content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.itemset.Inst.defineAttribute(
