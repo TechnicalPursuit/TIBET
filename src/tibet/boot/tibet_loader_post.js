@@ -1499,6 +1499,9 @@ TP.boot.$$documentSetup = function(aDocument) {
     TP.boot.$$addUIHandler(aDocument,
                             'focus',
                             TP.$$handleFocus);
+    TP.boot.$$addUIHandler(aDocument,
+                            'select',
+                            TP.$$handleSelect);
 
     TP.boot.$$addUIHandler(aDocument,
                             'keydown',
@@ -1647,6 +1650,7 @@ TP.boot.$$documentTeardown = function(aDocument) {
 
     TP.boot.$$removeUIHandler(aDocument, 'blur');
     TP.boot.$$removeUIHandler(aDocument, 'focus');
+    TP.boot.$$removeUIHandler(aDocument, 'select');
 
     TP.boot.$$removeUIHandler(aDocument, 'keydown');
     TP.boot.$$removeUIHandler(aDocument, 'keypress');

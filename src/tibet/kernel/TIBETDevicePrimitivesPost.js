@@ -1519,6 +1519,20 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$$handleSelect',
+function(anEvent) {
+
+    /**
+     * @method $$handleSelect
+     * @summary Document-level select handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$$handleSelectionChange',
 function(anEvent) {
 
