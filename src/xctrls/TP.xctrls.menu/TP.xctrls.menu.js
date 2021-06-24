@@ -72,7 +72,7 @@ function(aValue, anIndex, shouldSignal) {
 
     //  Call our next-most-specific version of this method which will return
     //  whether or not our selection changed.
-    retVal =  this.callNextMethod();
+    retVal = this.callNextMethod();
 
     this.deselectAll();
 
