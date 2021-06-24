@@ -1025,9 +1025,9 @@ function(aRequest) {
         '$REQUEST', aRequest,
         'TP', TP,
         'APP', APP,
+        '$SOURCE', TP.wrap(source),
         '$TAG', TP.wrap(parentNode),
         '$TARGET', aRequest.at('target'),
-        '$SOURCE', TP.wrap(source),
         '$SELECTION', selectionFunc,
         '$*', selectionFunc,            //  Alias for $SELECTION
         '$FOCUS', focusFunc,
