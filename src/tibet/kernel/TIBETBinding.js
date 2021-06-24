@@ -614,7 +614,8 @@ function(aSignal) {
      * @summary Handles when an object (usually a URI of some sort) changes and
      *     some components on the receiver surface (i.e. usually GUI widgets)
      *     need to be updated in response to that change.
-     * @param {Change} aSignal The signal instance which triggered this handler.
+     * @param {FacetChange} aSignal The signal instance which triggered this
+     *     handler.
      * @returns {TP.dom.DocumentNode} The receiver.
      */
 
