@@ -1982,8 +1982,9 @@ function(attributeName, attributeValue, valueMatcher) {
      *     the binding information from.
      * @param {String} attributeValue The value of the binding attribute to
      *     extract binding information from.
-     * @param {RegExp} valueMatcher The RegExp to use to match against aspect
-     *     values.
+     * @param {RegExp} [valueMatcher] The RegExp to use to match against aspect
+     *     values. If this is not supplied, then no aspects will be returned
+     *     unless they contain ACP variables.
      * @returns {String[]} An array of aspect names that matched using the
      *     criteria described above.
      */
@@ -2047,10 +2048,10 @@ function(attributeName, attributeValue, valueMatcher) {
                     break;
                 }
 
-                //  If the matcher matched the expression itself, which means
-                //  that the aspect is probably a 'whole URI' (since it failed
-                //  the test above), then add the aspect.
-                if (valueMatcher.test(theExpr)) {
+                //  If the matcher was real and matched the expression itself,
+                //  which means that the aspect is probably a 'whole URI' (since
+                //  it failed the test above), then add the aspect.
+                if (TP.isRegExp(valueMatcher) && valueMatcher.test(theExpr)) {
                     aspectNames.push(aspect);
                     break;
                 }
