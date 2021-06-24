@@ -45,5 +45,40 @@ TP.xctrls.menu.Type.defineAttribute('opaqueBubblingSignalNames',
 TP.xctrls.menu.Type.defineAttribute('defaultItemTagName', 'xctrls:textitem');
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.menu.Inst.defineMethod('select',
+function(aValue, anIndex, shouldSignal) {
+
+    /**
+     * @method select
+     * @summary Selects the element which has the provided value (if found) or
+     *     is at the provided index.
+     *     Note that this method is roughly identical to setDisplayValue() with
+     *     the exception that, if the receiver allows multiple selection, this
+     *     method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @param {Object} [aValue] The value to select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    var retVal;
+
+    //  Call our next-most-specific version of this method which will return
+    //  whether or not our selection changed.
+    retVal =  this.callNextMethod();
+
+    this.deselectAll();
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
