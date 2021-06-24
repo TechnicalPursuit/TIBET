@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<xctrls:menu
+        id="{{$SOURCE.(@id)}}"
+        tibet:no-mutations="true"
+        tibet:opaque="bind">
+    <span tibet:assembly="xctrls:menu">
+        <div class="header"/>
+        <div class="body">
+            <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
+                <xctrls:content tibet:pelem="choices" class="noselect"/>
+            </tibet:group>
+        </div>
+        <div class="footer"/>
+    </span>
+</xctrls:menu>
+

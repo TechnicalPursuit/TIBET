@@ -177,6 +177,8 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.list-TP.xctrls.list.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.list_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.list_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.menu-TP.xctrls.menu.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.menu-TP.xctrls.menu.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.notifier-TP.xctrls.notifier.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.notifier-TP.xctrls.notifier.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.notifier_all.css.js"/>

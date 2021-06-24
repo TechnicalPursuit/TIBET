@@ -1,0 +1,38 @@
+/*
+    CSS styles for 'xctrls:menu' controls.
+*/
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+xctrls|menu {
+
+    display: flex;
+    flex-direction: column;
+}
+
+xctrls|menu .header {
+
+    flex-basis: 25px;
+}
+
+xctrls|menu .body {
+
+    flex: 1;
+}
+
+xctrls|menu .body xctrls|content {
+
+    height: 100%;
+    width: 100%;
+}
+
+xctrls|menu .body xctrls|content xctrls|textitem {
+
+    display: list-item;
+}
+
+xctrls|menu .footer {
+
+    flex-basis: 25px;
+}
