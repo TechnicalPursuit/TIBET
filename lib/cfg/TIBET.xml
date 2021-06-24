@@ -118,6 +118,10 @@
     <config ref="lama-inlined"/>
     <config ref="test-inlined"/>
     <script src="~lib_build/ide_root-styles-lama_pp.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.signalmenucontent-TP.xctrls.signalmenucontent.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.signalmenucontent-TP.xctrls.signalmenucontent.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.signalmenucontent_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.signalmenucontent_all.css.js"/>
 </config>
 
 <config id="base-inlined" if="boot.phase_one boot.inlined">

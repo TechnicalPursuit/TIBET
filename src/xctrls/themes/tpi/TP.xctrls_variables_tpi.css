@@ -438,6 +438,35 @@ xctrls|propertysheet {
     --xctrls-propertysheet-border-color-normal: #666;
 }
 
+xctrls|signalmenucontent {
+
+    /* xctrls|signalmenucontent variables */
+
+    --xctrls-signalmenucontent-menu-border-width: 1px;
+    --xctrls-signalmenucontent-menu-border-style: solid;
+    --xctrls-signalmenucontent-menu-border-radius: 4px;
+
+    --xctrls-signalmenucontent-menu-border-color-normal: #eee;
+
+    --xctrls-signalmenucontent-menu-background-color: white;
+
+    --xctrls-signalmenucontent-menu-margin: 2px;
+    --xctrls-signalmenucontent-menu-line-height: 29px;
+
+    --xctrls-signalmenucontent-textitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-signalmenucontent-textitem-font-color-normal: black;
+
+    --xctrls-signalmenucontent-textitem-border-width: 1px;
+    --xctrls-signalmenucontent-textitem-border-style: solid;
+    --xctrls-signalmenucontent-textitem-border-color-normal: #999;
+
+    --xctrls-signalmenucontent-textitem-padding: 5px;
+
+    --xctrls-signalmenucontent-textitem-background-color-hover: cornsilk;
+    --xctrls-signalmenucontent-textitem-font-color-hover: #eee;
+    --xctrls-signalmenucontent-textitem-border-color-hover: #eee;
+}
+
 xctrls|sticky {
 
     /* xctrls|sticky variables */

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    basedir="~lib_src/xctrls/TP.xctrls.signalmenucontent"
+    name="xctrls.signalmenucontent" default="base">
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT BELOW AS NEEDED    -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="properties">
+    <!-- put tag-specific property tags here -->
+    <property name="path.TP.xctrls.signalmenucontent.style" value="~TP.xctrls.signalmenucontent/TP.xctrls.signalmenucontent.css"/>
+    <property name="path.TP.xctrls.signalmenucontent.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.signalmenucontent_tpi.css"/>
+</config>
+
+<config id="scripts">
+    <!-- tag-related source file references here -->
+    <script src="TP.xctrls.signalmenucontent.js"/>
+</config>
+
+<config id="resources">
+    <!-- tag-related resource entries here -->
+    <resource href="TP.xctrls.signalmenucontent.xhtml"/>
+</config>
+
+<config id="tests">
+    <!-- tag-related test scripts here -->
+</config>
+
+
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+<!-- EDIT WITH CAUTION BELOW -->
+<!-- xxxxxxxxxxxxxxxxxxxxxxx -->
+
+<config id="base">
+    <config ref="properties"/>
+    <config ref="scripts"/>
+    <config ref="resources"/>
+</config>
+
+<config id="developer">
+    <config ref="base"/>
+    <config ref="tests"/>
+</config>
+
+</package>
