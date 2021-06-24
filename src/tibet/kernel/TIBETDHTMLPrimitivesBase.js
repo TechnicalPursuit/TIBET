@@ -845,8 +845,8 @@ function(aDocument) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    //  Grab the current selection type. This returns
-    //  TP.SELECTION_NONE if the selection is null.
+    //  Grab the current selection type. This returns TP.SELECTION_NONE if the
+    //  selection is null.
     selectionType = TP.documentGetSelectionType(aDocument);
 
     //  If the selection type isn't a whole chunk of text, then bail out here by
