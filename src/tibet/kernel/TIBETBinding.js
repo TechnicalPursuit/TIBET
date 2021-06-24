@@ -649,12 +649,6 @@ function(aSignal) {
         keyToProcess,
 
         matcher,
-        len,
-
-        attrName,
-
-        ownerElem,
-        ownerTPElem,
 
         aspect,
         facet,
@@ -665,12 +659,6 @@ function(aSignal) {
         sigIndexes,
 
         pathPieces,
-
-        boundAttrNodes,
-        attrs,
-        attrVal,
-
-        aspectNames,
 
         originVal,
 
@@ -995,56 +983,11 @@ function(aSignal) {
             //  another GUI control within the page. Because we don't have
             //  'changed data paths' to go by, we update all 'direct GUI'
             //  bindings.
+
             /* eslint-disable no-extra-parens */
             if ((TP.isKindOf(sigOrigin, TP.uri.TIBETURL) &&
                 TP.notEmpty(sigOrigin.getCanvasName())) || !originWasURI) {
             /* eslint-enable no-extra-parens */
-
-                //  Gather up all of the bound attributes.
-
-                boundAttrNodes = TP.ac();
-
-                //  Loop over all of the elements that were found.
-                for (i = 0; i < boundElems.length; i++) {
-                    attrs = boundElems[i].attributes;
-
-                    //  Loop over all of the attributes of the found element.
-                    for (j = 0; j < attrs.length; j++) {
-
-                        attrVal = attrs[j].value;
-
-                        //  If the attribute was in the BIND namespace and
-                        //  either matched our matcher OR contained ACP
-                        //  variables, then add it to our list of bound
-                        //  attributes.
-                        if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
-                            (matcher.test(attrVal) ||
-                                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(
-                                                                    attrVal))) {
-
-                            boundAttrNodes.push(attrs[j]);
-                        }
-                    }
-                }
-
-                //  Sort the attribute nodes so that 'bind:in' attributes come
-                //  first. This is important when an element has both 'bind:in'
-                //  and 'bind:io' attributes, since we want the 'in' bindings to
-                //  be refreshed first to have that data available to the 'io'
-                //  bindings.
-                boundAttrNodes.sort(
-                    function(a, b) {
-
-                        if (a.nodeName === 'bind:in' &&
-                            b.nodeName !== 'bind:in') {
-                            return -1;
-                        } else if (a.nodeName !== 'bind:in' &&
-                                    b.nodeName === 'bind:in') {
-                            return 1;
-                        }
-
-                        return 0;
-                    });
 
                 if (originWasURI) {
                     originVal = sigOrigin.getContent();
@@ -1052,51 +995,19 @@ function(aSignal) {
                     originVal = sigOrigin;
                 }
 
-                len = boundAttrNodes.getSize();
-                for (i = 0; i < len; i++) {
-
-                    attrName = boundAttrNodes.at(i).localName;
-
-                    //  We only worry about updating 'bind:io' and 'bind:in'
-                    //  paths.
-                    if (attrName === 'io' || attrName === 'in') {
-
-                        attrVal = boundAttrNodes.at(i).value;
-
-                        if (matcher.test(attrVal)) {
-
-                            ownerElem = boundAttrNodes.at(i).ownerElement;
-                            ownerTPElem = TP.wrap(ownerElem);
-
-                            //  Grab all of the names of the aspects referencing
-                            //  the changed location, as given by the matcher.
-                            aspectNames = ownerTPElem.$computeMatchingAspects(
-                                                    boundAttrNodes.at(i).name,
-                                                    attrVal,
-                                                    matcher);
-
-                            //  Note that we use sigOrigin here as the
-                            //  primarySource and initialValue. We let the
-                            //  observers of this element decide how to use this
-                            //  element based on their standard data binding /
-                            //  decoding methods (isSingleValued,
-                            //  isScalarValued, etc.)
-                            ownerTPElem.refresh(
-                                false,
-                                true,
-                                TP.hc(
-                                    'facet', facet,
-                                    'initialVal', originVal,
-                                    'updatedAspects', aspectNames,
-                                    'bindingAttr', boundAttrNodes[i],
-                                    'pathType', null,
-                                    'changeSource', sigSource,
-                                    'repeatSource', null,
-                                    'repeatIndex', null
-                                ));
-                        }
-                    }
-                }
+                //  Refresh any bindings on descendant elements of ours that
+                //  pass the matcher's test.
+                this.$refreshBindingsMatching(
+                    originVal,
+                    boundElems,
+                    function(anAttrNode) {
+                        return anAttrNode.namespaceURI === TP.w3.Xmlns.BIND &&
+                            (matcher.test(anAttrNode.value) ||
+                                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(
+                                                            anAttrNode.value));
+                    },
+                    matcher,
+                    sigSource);
             } else {
                 tpDocElem.$refreshBranches(
                         primarySource,
@@ -1196,6 +1107,145 @@ function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
     }
 
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.DocumentNode.Inst.defineMethod('$refreshBindingsMatching',
+function(newValue, boundElems, matchingFunc, sourceMatcher, signalSource) {
+
+    /**
+     * @method $refreshBindingsMatching
+     * @summary Refreshes descendant bindings whose attribute values test
+     *     successfully against both the matching Function and potentially the
+     *     source matcher RegExp (if supplied).
+     * @param {Object} newValue The value that descendant bindings can use to
+     *     set their value.
+     * @param {Element[]} boundElems Descendant elements of the receiver that
+     *     have binding attributes.
+     * @param {Function} matchingFunc The expression to extract binding
+     *     information from to compute the transformation function and data
+     *     expressions.
+     * @param {RegExp} [sourceMatcher] An optional matcher that will further
+     *     filter the attributes based on whether they individually match the
+     *     source location that changed.
+     * @param {Object} [signalSource] The source of the change. If a signal
+     *     initiated the refreshing process, this will be the signal's 'source'.
+     * @returns {TP.dom.DocumentNode} The receiver.
+     */
+
+    var boundAttrNodes,
+        len,
+
+        i,
+        attrs,
+        j,
+
+        attrNode,
+        attrName,
+        attrVal,
+
+        refreshBinding,
+
+        ownerElem,
+        ownerTPElem,
+
+        aspectNames;
+
+    //  Gather up all of the bound attributes.
+
+    boundAttrNodes = TP.ac();
+
+    //  Loop over all of the elements that were found.
+    len = boundElems.getSize();
+    for (i = 0; i < len; i++) {
+        attrs = boundElems.at(i).attributes;
+
+        //  Loop over all of the attributes of the found element.
+        for (j = 0; j < attrs.length; j++) {
+            if (matchingFunc(attrs[j])) {
+                boundAttrNodes.push(attrs[j]);
+            }
+        }
+    }
+
+    if (TP.isEmpty(boundAttrNodes)) {
+        return this;
+    }
+
+    //  Sort the attribute nodes so that 'bind:in' attributes come first. This
+    //  is important when an element has both 'bind:in' and 'bind:io'
+    //  attributes, since we want the 'in' bindings to be refreshed first to
+    //  have that data available to the 'io' bindings.
+    boundAttrNodes.sort(
+        function(a, b) {
+
+            if (a.nodeName === 'bind:in' &&
+                b.nodeName !== 'bind:in') {
+                return -1;
+            } else if (a.nodeName !== 'bind:in' &&
+                        b.nodeName === 'bind:in') {
+                return 1;
+            }
+
+            return 0;
+        });
+
+    len = boundAttrNodes.getSize();
+    for (i = 0; i < len; i++) {
+
+        attrNode = boundAttrNodes.at(i);
+
+        attrName = attrNode.localName;
+
+        //  We only worry about updating 'bind:io' and 'bind:in'
+        //  paths.
+        if (attrName === 'io' || attrName === 'in') {
+
+            attrVal = attrNode.value;
+
+            //  If we weren't supplied with a source matcher - assume that we
+            //  need to refresh the binding.
+            if (TP.notValid(sourceMatcher)) {
+                refreshBinding = true;
+            } else if (sourceMatcher.test(attrVal)) {
+                refreshBinding = true;
+            } else {
+                refreshBinding = false;
+            }
+
+            if (refreshBinding) {
+                ownerElem = attrNode.ownerElement;
+                ownerTPElem = TP.wrap(ownerElem);
+
+                //  Grab all of the names of the aspects referencing the changed
+                //  location, as given by the sourceMatcher. If the
+                //  sourceMatcher wasn't supplied, then only bound aspects that
+                //  have ACP variables in them will be returned here and
+                //  refreshed.
+                aspectNames = ownerTPElem.$computeMatchingAspects(
+                                            attrNode.name,
+                                            attrVal,
+                                            sourceMatcher);
+
+                ownerTPElem.refresh(
+                    false,
+                    true,
+                    TP.hc(
+                        'facet', 'value',
+                        'initialVal', newValue,
+                        'updatedAspects', aspectNames,
+                        'bindingAttr', attrNode,
+                        'pathType', null,
+                        'changeSource', signalSource,
+                        'repeatSource', null,
+                        'repeatIndex', null
+                    ));
+            }
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
