@@ -1517,7 +1517,7 @@ function(anExpression, stdinIsSpecial) {
                                  repeatSource, index, isXMLResource) {
             var wrappedVal,
 
-                tpDoc,
+                targetTPDoc,
 
                 params,
 
@@ -1537,7 +1537,7 @@ function(anExpression, stdinIsSpecial) {
             }
 
             if (TP.isValid(targetTPElem)) {
-                tpDoc = targetTPElem.getDocument();
+                targetTPDoc = targetTPElem.getDocument();
             }
 
             //  Iterating context
@@ -3861,7 +3861,7 @@ function(indexes, aCollection) {
 
         wrapperElement,
 
-        tpDoc,
+        targetTPDoc,
 
         isXMLResource,
 
@@ -3941,7 +3941,7 @@ function(indexes, aCollection) {
         return this;
     }
 
-    tpDoc = this.getDocument();
+    targetTPDoc = this.getDocument();
 
     if (TP.canInvoke(aCollection, 'first')) {
         //  Detect whether we're drawing GUI for model which is a chunk of XML
@@ -5721,7 +5721,7 @@ function(regenerateIfNecessary) {
         templatedAttrs,
 
         elem,
-        tpDoc,
+        targetTPDoc,
 
         isXMLResource,
 
@@ -5877,7 +5877,7 @@ function(regenerateIfNecessary) {
 
             elem = this.getNativeNode();
 
-            tpDoc = this.getDocument();
+            targetTPDoc = this.getDocument();
 
             //  Grab any templated elements and refresh their values.
 
@@ -6359,7 +6359,7 @@ function(aCollection, elems) {
 
         startIndex,
 
-        tpDoc,
+        targetTPDoc,
 
         scopeIndex,
 
@@ -6462,8 +6462,8 @@ function(aCollection, elems) {
         return false;
     }
 
-    tpDoc = this.getDocument();
-    doc = tpDoc.getNativeNode();
+    targetTPDoc = this.getDocument();
+    doc = targetTPDoc.getNativeNode();
 
     bodyFragment = doc.createDocumentFragment();
 
