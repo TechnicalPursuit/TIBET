@@ -996,7 +996,7 @@ function(aSignal) {
                 }
 
                 //  Refresh any bindings on descendant elements of ours that
-                //  pass the matcher's test.
+                //  pass the filtering function.
                 this.$refreshBindingsMatching(
                     originVal,
                     boundElems,
@@ -1006,7 +1006,6 @@ function(aSignal) {
                                 TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(
                                                             anAttrNode.value));
                     },
-                    matcher,
                     sigSource);
             } else {
                 tpDocElem.$refreshBranches(
@@ -1112,7 +1111,7 @@ function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 //  ------------------------------------------------------------------------
 
 TP.dom.DocumentNode.Inst.defineMethod('$refreshBindingsMatching',
-function(newValue, boundElems, matchingFunc, sourceMatcher, signalSource) {
+function(newValue, boundElems, matchingFunc, signalSource) {
 
     /**
      * @method $refreshBindingsMatching
@@ -1126,9 +1125,6 @@ function(newValue, boundElems, matchingFunc, sourceMatcher, signalSource) {
      * @param {Function} matchingFunc The expression to extract binding
      *     information from to compute the transformation function and data
      *     expressions.
-     * @param {RegExp} [sourceMatcher] An optional matcher that will further
-     *     filter the attributes based on whether they individually match the
-     *     source location that changed.
      * @param {Object} [signalSource] The source of the change. If a signal
      *     initiated the refreshing process, this will be the signal's 'source'.
      * @returns {TP.dom.DocumentNode} The receiver.
@@ -1144,8 +1140,6 @@ function(newValue, boundElems, matchingFunc, sourceMatcher, signalSource) {
         attrNode,
         attrName,
         attrVal,
-
-        refreshBinding,
 
         ownerElem,
         ownerTPElem,
@@ -1204,44 +1198,31 @@ function(newValue, boundElems, matchingFunc, sourceMatcher, signalSource) {
 
             attrVal = attrNode.value;
 
-            //  If we weren't supplied with a source matcher - assume that we
-            //  need to refresh the binding.
-            if (TP.notValid(sourceMatcher)) {
-                refreshBinding = true;
-            } else if (sourceMatcher.test(attrVal)) {
-                refreshBinding = true;
-            } else {
-                refreshBinding = false;
-            }
+            ownerElem = attrNode.ownerElement;
+            ownerTPElem = TP.wrap(ownerElem);
 
-            if (refreshBinding) {
-                ownerElem = attrNode.ownerElement;
-                ownerTPElem = TP.wrap(ownerElem);
+            //  Grab all of the names of the aspects referencing the changed
+            //  location, as given by the sourceMatcher. If the
+            //  sourceMatcher wasn't supplied, then only bound aspects that
+            //  have ACP variables in them will be returned here and
+            //  refreshed.
+            aspectNames = ownerTPElem.$computeMatchingAspects(
+                                        attrNode.name,
+                                        attrVal);
 
-                //  Grab all of the names of the aspects referencing the changed
-                //  location, as given by the sourceMatcher. If the
-                //  sourceMatcher wasn't supplied, then only bound aspects that
-                //  have ACP variables in them will be returned here and
-                //  refreshed.
-                aspectNames = ownerTPElem.$computeMatchingAspects(
-                                            attrNode.name,
-                                            attrVal,
-                                            sourceMatcher);
-
-                ownerTPElem.refresh(
-                    false,
-                    true,
-                    TP.hc(
-                        'facet', 'value',
-                        'initialVal', newValue,
-                        'updatedAspects', aspectNames,
-                        'bindingAttr', attrNode,
-                        'pathType', null,
-                        'changeSource', signalSource,
-                        'repeatSource', null,
-                        'repeatIndex', null
-                    ));
-            }
+            ownerTPElem.refresh(
+                false,
+                true,
+                TP.hc(
+                    'facet', 'value',
+                    'initialVal', newValue,
+                    'updatedAspects', aspectNames,
+                    'bindingAttr', attrNode,
+                    'pathType', null,
+                    'changeSource', signalSource,
+                    'repeatSource', null,
+                    'repeatIndex', null
+                ));
         }
     }
 
