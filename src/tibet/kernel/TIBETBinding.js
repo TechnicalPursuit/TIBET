@@ -578,16 +578,6 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 //  MARKUP BINDING
 //  ========================================================================
 
-TP.totalSetupTime = 0;
-
-TP.totalBranchQueryTime = 0;
-TP.totalInlineQueryTime = 0;
-TP.totalTextQueryTime = 0;
-
-TP.totalUpdateTime = 0;
-
-TP.totalInitialGetTime = 0;
-
 //  ------------------------------------------------------------------------
 //  TP.dom.DocumentNode
 //  ------------------------------------------------------------------------
@@ -926,10 +916,6 @@ function(aSignal) {
                             sigIndexes);
                     }
                 });
-
-        //  TIMING: var endUpdate = Date.now();
-        //  TIMING: TP.totalUpdateTime += (endUpdate - startUpdate);
-
     } else {
 
         //  TIMING: var startSetup = Date.now();
@@ -1023,9 +1009,6 @@ function(aSignal) {
                         sigIndexes);
             }
         }
-
-        //  TIMING: var endSetup = Date.now();
-        //  TIMING: TP.totalSetupTime += (endSetup - startSetup);
     }
 
     //  Set the DOM content loaded signaling whatever it was when we entered
@@ -4831,9 +4814,6 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
 
             return 0;
         });
-
-    //  TIMING: var endQuery = Date.now();
-    //  TIMING: TP.totalBranchQueryTime += (endQuery - startQuery);
 
     if (TP.isPlainObject(initialVal)) {
         theVal = TP.hc(initialVal);
