@@ -476,7 +476,11 @@ function(anElement) {
                 //  Initialize the counter for this primary URI and tell our
                 //  TP.dom.Document to observe it for FacetChange.
                 observedLocations.atPut(concreteLoc, 1);
+
                 tpDoc.observe(TP.uc(concreteLoc), 'FacetChange');
+                tpDoc.observe(
+                        tpDoc,
+                        TP.ac('DOMFocus', 'DOMSelect', 'DOMSelectionChange'));
 
                 //  Push a pair that contains the original location and the
                 //  computed, concrete location.
@@ -569,8 +573,12 @@ function(anElement) {
                 //  If the counter is 0, then tell our TP.dom.Document to
                 //  ignore that location for FacetChange and remove that key.
                 if (uriCount === 0) {
-                    tpDoc.ignore(TP.uc(concreteLoc), 'FacetChange');
                     observedLocations.removeKey(concreteLoc);
+
+                    tpDoc.ignore(TP.uc(concreteLoc), 'FacetChange');
+                    tpDoc.ignore(
+                        tpDoc,
+                        TP.ac('DOMFocus', 'DOMSelect', 'DOMSelectionChange'));
                 } else {
                     //  Otherwise, just place the new value.
                     observedLocations.atPut(concreteLoc, uriCount);

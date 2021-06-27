@@ -596,6 +596,259 @@ TP.dom.DocumentNode.Inst.defineAttribute('$originalLocationInfos');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.dom.DocumentNode.Inst.defineHandler('DOMFocus',
+function(aSignal) {
+
+    /**
+     * @method DOMFocus
+     * @summary Handles when the focused element in the receiver changes and
+     *     some components on the receiver surface (i.e. usually GUI widgets)
+     *     need to be updated in response to that change.
+     * @param {DOMFocus} aSignal The signal instance which triggered this
+     *     handler.
+     * @returns {TP.dom.DocumentNode} The receiver.
+     */
+
+    var query,
+        docElem,
+        boundElems,
+
+        signalFlag,
+
+        doc,
+
+        value,
+
+        matcher,
+
+        sigSource,
+        allRefreshedElements;
+
+    //  Query for all elements containing the ACP variable '$FOCUS'. Since
+    //  this is a query from the document, we don't bother to include ':scope'.
+    query = '*[*|io*="$FOCUS"], *[*|in*="$FOCUS"]';
+
+    docElem = this.getNativeNode().documentElement;
+
+    boundElems = TP.ac(docElem.querySelectorAll(query));
+    if (TP.isEmpty(boundElems)) {
+        return this;
+    }
+
+    //  Turn off any kind of DOM loaded signaling. This just adds overhead and
+    //  is unnecessary - in this mode, dependent items are themselves
+    //  responsible for signaling that their content got replaced.
+    signalFlag = TP.sys.shouldSignalDOMLoaded();
+    TP.sys.shouldSignalDOMLoaded(false);
+
+    doc = TP.nodeGetDocument(docElem);
+
+    value = TP.val(TP.documentGetFocusedElement(doc));
+
+    matcher = /\$FOCUS/;
+
+    //  Refresh any bindings on descendant elements of ours that pass the
+    //  filtering function.
+    this.$refreshBindingsMatching(
+        value,
+        boundElems,
+        function(anAttrNode) {
+            return anAttrNode.namespaceURI === TP.w3.Xmlns.BIND &&
+                    matcher.test(anAttrNode.value);
+        },
+        sigSource);
+
+    //  Set the DOM content loaded signaling whatever it was when we entered
+    //  this method.
+    TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed.
+    allRefreshedElements = this.get('$refreshedElements');
+    if (TP.notEmpty(allRefreshedElements)) {
+        this.getBody().$sendNativeRefreshEvent();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.DocumentNode.Inst.defineHandler('DOMSelect',
+function(aSignal) {
+
+    /**
+     * @method DOMSelect
+     * @summary Handles when the selection in a input text field or text area in
+     *     the receiver changes and some components on the receiver surface
+     *     (i.e. usually GUI widgets) need to be updated in response to that
+     *     change.
+     * @description Note that this handler is called when a selection is made
+     *     anywhere *inside of input text fields and textareas*. For selections
+     *     that happen outside of these controls, the document has its own
+     *     signal that it throws ('selectionchange')and we handle that in
+     *     another handler.
+     * @param {DOMSelect} aSignal The signal instance which triggered this
+     *     handler.
+     * @returns {TP.dom.DocumentNode} The receiver.
+     */
+
+    var resolvedTarget,
+        val,
+
+        value,
+
+        query,
+        docElem,
+        boundElems,
+
+        signalFlag,
+
+        matcher,
+
+        sigSource,
+        allRefreshedElements;
+
+    resolvedTarget = aSignal.getResolvedTarget();
+
+    //  In (X)HTML, only 'input type="text"' and 'textarea' elements have this
+    //  property.
+    if (TP.isNumber(resolvedTarget.selectionStart)) {
+        val = TP.wrap(resolvedTarget).getValue();
+        value = val.substring(resolvedTarget.selectionStart,
+                                    resolvedTarget.selectionEnd);
+    } else {
+        return this;
+    }
+
+    //  Query for all elements containing the ACP variable '$SELECTION'. Since
+    //  this is a query from the document, we don't bother to include ':scope'.
+    query = '*[*|io*="$SELECTION"], *[*|in*="$SELECTION"]';
+
+    docElem = this.getNativeNode().documentElement;
+
+    boundElems = TP.ac(docElem.querySelectorAll(query));
+    if (TP.isEmpty(boundElems)) {
+        return this;
+    }
+
+    //  Turn off any kind of DOM loaded signaling. This just adds overhead and
+    //  is unnecessary - in this mode, dependent items are themselves
+    //  responsible for signaling that their content got replaced.
+    signalFlag = TP.sys.shouldSignalDOMLoaded();
+    TP.sys.shouldSignalDOMLoaded(false);
+
+    matcher = /\$SELECTION/;
+
+    //  Refresh any bindings on descendant elements of ours that pass the
+    //  filtering function.
+    this.$refreshBindingsMatching(
+        value,
+        boundElems,
+        function(anAttrNode) {
+            return anAttrNode.namespaceURI === TP.w3.Xmlns.BIND &&
+                    matcher.test(anAttrNode.value);
+        },
+        sigSource);
+
+    //  Set the DOM content loaded signaling whatever it was when we entered
+    //  this method.
+    TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed.
+    allRefreshedElements = this.get('$refreshedElements');
+    if (TP.notEmpty(allRefreshedElements)) {
+        this.getBody().$sendNativeRefreshEvent();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.DocumentNode.Inst.defineHandler('DOMSelectionChange',
+function(aSignal) {
+
+    /**
+     * @method DOMSelectionChange
+     * @summary Handles when the receiver's selection changes and some
+     *     components on the receiver surface (i.e. usually GUI widgets) need to
+     *     be updated in response to that change.
+     * @description Note that this handler is called when a selection is made
+     *     anywhere *outside of input text fields and textareas*. Those controls
+     *     have their own signal that they throw ('select') and we handle that
+     *     in another handler.
+     * @param {DOMSelectionChange} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.DocumentNode} The receiver.
+     */
+
+    var query,
+        docElem,
+        boundElems,
+
+        signalFlag,
+
+        doc,
+
+        value,
+
+        matcher,
+
+        sigSource,
+        allRefreshedElements;
+
+    //  Query for all elements containing the ACP variable '$SELECTION'. Since
+    //  this is a query from the document, we don't bother to include ':scope'.
+    query = '*[*|io*="$SELECTION"], *[*|in*="$SELECTION"]';
+
+    docElem = this.getNativeNode().documentElement;
+
+    boundElems = TP.ac(docElem.querySelectorAll(query));
+    if (TP.isEmpty(boundElems)) {
+        return this;
+    }
+
+    //  Turn off any kind of DOM loaded signaling. This just adds overhead and
+    //  is unnecessary - in this mode, dependent items are themselves
+    //  responsible for signaling that their content got replaced.
+    signalFlag = TP.sys.shouldSignalDOMLoaded();
+    TP.sys.shouldSignalDOMLoaded(false);
+
+    doc = TP.nodeGetDocument(docElem);
+
+    value = TP.documentGetSelectionText(doc);
+
+    matcher = /\$SELECTION/;
+
+    //  Refresh any bindings on descendant elements of ours that pass the
+    //  filtering function.
+    this.$refreshBindingsMatching(
+        value,
+        boundElems,
+        function(anAttrNode) {
+            return anAttrNode.namespaceURI === TP.w3.Xmlns.BIND &&
+                    matcher.test(anAttrNode.value);
+        },
+        sigSource);
+
+    //  Set the DOM content loaded signaling whatever it was when we entered
+    //  this method.
+    TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed.
+    allRefreshedElements = this.get('$refreshedElements');
+    if (TP.notEmpty(allRefreshedElements)) {
+        this.getBody().$sendNativeRefreshEvent();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.DocumentNode.Inst.defineHandler('FacetChange',
 function(aSignal) {
 
