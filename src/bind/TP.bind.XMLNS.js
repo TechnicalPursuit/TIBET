@@ -387,6 +387,9 @@ function(anElement) {
     //  the supplied Element. These are the locations that the owner
     //  TP.dom.Document of the supplied Element will observe for FacetChange.
     uriLocs = this.$gatherReferencedLocations(anElement);
+    if (TP.isEmpty(uriLocs)) {
+        return;
+    }
 
     //  Iterate over the gathered locations and register them with the
     //  'observedLocations' hash. Note that the first time a particular location

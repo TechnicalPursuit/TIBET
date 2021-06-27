@@ -6703,7 +6703,8 @@ function(regenerateIfNecessary) {
                             var jsonStr,
                                 attrData;
 
-                            jsonStr = TP.reformatJSToJSON(anAttr.nodeValue, false);
+                            jsonStr = TP.reformatJSToJSON(anAttr.nodeValue,
+                                                            false);
 
                             attrData = TP.json2js(jsonStr);
 
