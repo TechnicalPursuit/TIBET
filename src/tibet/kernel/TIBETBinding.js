@@ -1185,13 +1185,14 @@ function(newValue, boundElems, matchingFunc, signalSource) {
             ownerTPElem = TP.wrap(ownerElem);
 
             //  Grab all of the names of the aspects referencing the changed
-            //  location, as given by the sourceMatcher. If the
-            //  sourceMatcher wasn't supplied, then only bound aspects that
-            //  have ACP variables in them will be returned here and
-            //  refreshed.
+            //  location. Note here how we supply a RegExp matching all. We
+            //  assume that the caller of this method has already filtered out
+            //  any bound node attributes that didn't match what they wanted amd
+            //  we wamt all attributes that
             aspectNames = ownerTPElem.$computeMatchingAspects(
                                         attrNode.name,
-                                        attrVal);
+                                        attrVal,
+                                        /\.*/);
 
             ownerTPElem.refresh(
                 false,
