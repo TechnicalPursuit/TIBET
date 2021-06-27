@@ -1518,7 +1518,21 @@ function(anExpression, stdinIsSpecial) {
                                 'APP', APP,
                                 '$SOURCE', source,
                                 '$TAG', targetTPElem,
-                                '$TARGET', tpDoc,
+                                '$SELECTION', targetTPElem.
+                                                getCurrentSelectionValue.
+                                                bind(targetTPElem),
+                                //  Alias for $SELECTION
+                                '$*', targetTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(targetTPElem),
+                                '$FOCUS', targetTPElem.
+                                            getCurrentFocusedValue.
+                                            bind(targetTPElem),
+                                //  Alias for $FOCUS
+                                '$@', targetTPElem.
+                                            getCurrentFocusedValue.
+                                            bind(targetTPElem),
+                                '$TARGET', targetTPDoc,
                                 '$_', wrappedVal,
                                 '$INPUT', repeatSource,
                                 '$INDEX', index,
@@ -1538,7 +1552,21 @@ function(anExpression, stdinIsSpecial) {
                                 'APP', APP,
                                 '$SOURCE', source,
                                 '$TAG', targetTPElem,
-                                '$TARGET', tpDoc,
+                                '$SELECTION', targetTPElem.
+                                                getCurrentSelectionValue.
+                                                bind(targetTPElem),
+                                //  Alias for $SELECTION
+                                '$*', targetTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(targetTPElem),
+                                '$FOCUS', targetTPElem.
+                                            getCurrentFocusedValue.
+                                            bind(targetTPElem),
+                                //  Alias for $FOCUS
+                                '$@', targetTPElem.
+                                            getCurrentFocusedValue.
+                                            bind(targetTPElem),
+                                '$TARGET', targetTPDoc,
                                 '$_', wrappedVal,
                                 '$INPUT', repeatSource,
                                 '$INDEX', index,
@@ -1558,7 +1586,21 @@ function(anExpression, stdinIsSpecial) {
                             'APP', APP,
                             '$SOURCE', source,
                             '$TAG', targetTPElem,
-                            '$TARGET', tpDoc,
+                            '$SELECTION', targetTPElem.
+                                            getCurrentSelectionValue.
+                                            bind(targetTPElem),
+                            //  Alias for $SELECTION
+                            '$*', targetTPElem.
+                                    getCurrentSelectionValue.
+                                    bind(targetTPElem),
+                            '$FOCUS', targetTPElem.
+                                        getCurrentFocusedValue.
+                                        bind(targetTPElem),
+                            //  Alias for $FOCUS
+                            '$@', targetTPElem.
+                                        getCurrentFocusedValue.
+                                        bind(targetTPElem),
+                            '$TARGET', targetTPDoc,
                             '$_', wrappedVal,
                             '$INPUT', vals);
             }
@@ -3127,6 +3169,107 @@ function(branchExpr, initialVal, initialPathType) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getCurrentFocusedValue',
+function(exprParams) {
+
+    /**
+     * @method getCurrentFocusedValue
+     * @summary Returns the value of the currently focused element in the same
+     *     document as the receiver. This method is invoked from the binding
+     *     expression machinery when a '$FOCUS' ACP variable is encountered.
+     * @param {TP.core.Hash} exprParams The current set of expression params
+     *     that are being used to evaluate the expression.
+     * @returns {String} The value of the currently focused element in the
+     *     receiver's document.
+     */
+
+    var val;
+
+    //  If there is a value at '$_' in the expression params, return that. This
+    //  will contain any value of the currently focused element that was
+    //  computed by the handlers for DOMFocus and supplied to the binding
+    //  refresh machinery.
+    val = exprParams.at('$_');
+    if (TP.isValid(val)) {
+        return val;
+    }
+
+    //  Otherwise, the $TARGET is usually a TP.dom.DocumentNode. If it is, then
+    //  grab the value of the currently focused element using our primitive
+    //  call.
+    val = exprParams.at('$TARGET');
+    if (TP.isKindOf(val, TP.dom.DocumentNode)) {
+        //  Return the *value* of the currently focused element.
+        return TP.val(TP.documentGetFocusedElement(TP.unwrap(val)));
+    }
+
+    //  Otherwise, the $TAG is usually a TP.dom.ElementNode. If it is, then
+    //  grab its TP.dom.DocumentNode and grab the value of the currently focused
+    //  element using our primitive call.
+    val = exprParams.at('$TAG');
+    if (TP.isKindOf(val, TP.dom.ElementNode)) {
+        val = val.getDocument();
+        if (TP.isKindOf(val, TP.dom.DocumentNode)) {
+            //  Return the *value* of the currently focused element.
+            return TP.val(TP.documentGetFocusedElement(TP.unwrap(val)));
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getCurrentSelectionValue',
+function(exprParams) {
+
+    /**
+     * @method getCurrentSelectionValue
+     * @summary Returns the value of the current selection in the same
+     *     document as the receiver. This method is invoked from the binding
+     *     expression machinery when a '$SELECTION' ACP variable is encountered.
+     * @description This method will return a String if the current selection is
+     *     a piece of text in the document. Otherwise, it will return an Object
+     *     that represents the current selection of the focused GUI control.
+     * @param {TP.core.Hash} exprParams The current set of expression params
+     *     that are being used to evaluate the expression.
+     * @returns {Object} The current selection in the receiver's document.
+     */
+
+    var val;
+
+    //  If there is a value at '$_' in the expression params, return that. This
+    //  will contain any selection value that was computed by the handlers for
+    //  DOMSelect and DOMSelectionChange and supplied to the binding refresh
+    //  machinery.
+    val = exprParams.at('$_');
+    if (TP.isValid(val)) {
+        return val;
+    }
+
+    //  Otherwise, the $TARGET is usually a TP.dom.DocumentNode. If it is, then
+    //  grab the current selection using our primitive call.
+    val = exprParams.at('$TARGET');
+    if (TP.isKindOf(val, TP.dom.DocumentNode)) {
+        return TP.sys.getCurrentSelection(TP.unwrap(val));
+    }
+
+    //  Otherwise, the $TAG is usually a TP.dom.ElementNode. If it is, then
+    //  grab its TP.dom.DocumentNode and grab the current selection using our
+    //  primitive call.
+    val = exprParams.at('$TAG');
+    if (TP.isKindOf(val, TP.dom.ElementNode)) {
+        val = val.getDocument();
+        if (TP.isKindOf(val, TP.dom.DocumentNode)) {
+            return TP.sys.getCurrentSelection(TP.unwrap(val));
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getFullBindingPathFrom',
 function(pathTail) {
 
@@ -3947,7 +4090,21 @@ function(indexes, aCollection) {
                         'APP', APP,
                         '$SOURCE', this,
                         '$TAG', newTPElem,
-                        '$TARGET', tpDoc,
+                        '$SELECTION', newTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(newTPElem),
+                        //  Alias for $SELECTION
+                        '$*', newTPElem.
+                                getCurrentSelectionValue.
+                                bind(newTPElem),
+                        '$FOCUS', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        //  Alias for $FOCUS
+                        '$@', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        '$TARGET', targetTPDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
                         '$INDEX', scopeIndex,
@@ -3967,7 +4124,21 @@ function(indexes, aCollection) {
                         'APP', APP,
                         '$SOURCE', this,
                         '$TAG', newTPElem,
-                        '$TARGET', tpDoc,
+                        '$SELECTION', newTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(newTPElem),
+                        //  Alias for $SELECTION
+                        '$*', newTPElem.
+                                getCurrentSelectionValue.
+                                bind(newTPElem),
+                        '$FOCUS', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        //  Alias for $FOCUS
+                        '$@', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        '$TARGET', targetTPDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
                         '$INDEX', scopeIndex,
@@ -5951,7 +6122,21 @@ function(regenerateIfNecessary) {
                                         'APP', APP,
                                         '$SOURCE', this,
                                         '$TAG', nearestScopeTPElem,
-                                        '$TARGET', tpDoc,
+                                        '$SELECTION', nearestScopeTPElem.
+                                                        getCurrentSelectionValue.
+                                                        bind(nearestScopeTPElem),
+                                        //  Alias for $SELECTION
+                                        '$*', nearestScopeTPElem.
+                                                getCurrentSelectionValue.
+                                                bind(nearestScopeTPElem),
+                                        '$FOCUS', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        //  Alias for $FOCUS
+                                        '$@', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        '$TARGET', targetTPDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
                                         '$INDEX', dataIndex,
@@ -5969,7 +6154,21 @@ function(regenerateIfNecessary) {
                                         'APP', APP,
                                         '$SOURCE', this,
                                         '$TAG', nearestScopeTPElem,
-                                        '$TARGET', tpDoc,
+                                        '$SELECTION', nearestScopeTPElem.
+                                                        getCurrentSelectionValue.
+                                                        bind(nearestScopeTPElem),
+                                        //  Alias for $SELECTION
+                                        '$*', nearestScopeTPElem.
+                                                getCurrentSelectionValue.
+                                                bind(nearestScopeTPElem),
+                                        '$FOCUS', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        //  Alias for $FOCUS
+                                        '$@', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        '$TARGET', targetTPDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
                                         '$INDEX', dataIndex,
@@ -6142,7 +6341,21 @@ function(regenerateIfNecessary) {
                                         'APP', APP,
                                         '$SOURCE', this,
                                         '$TAG', nearestScopeTPElem,
-                                        '$TARGET', tpDoc,
+                                        '$SELECTION', nearestScopeTPElem.
+                                                        getCurrentSelectionValue.
+                                                        bind(nearestScopeTPElem),
+                                        //  Alias for $SELECTION
+                                        '$*', nearestScopeTPElem.
+                                                getCurrentSelectionValue.
+                                                bind(nearestScopeTPElem),
+                                        '$FOCUS', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        //  Alias for $FOCUS
+                                        '$@', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        '$TARGET', targetTPDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
                                         '$INDEX', dataIndex,
@@ -6160,7 +6373,21 @@ function(regenerateIfNecessary) {
                                         'APP', APP,
                                         '$SOURCE', this,
                                         '$TAG', nearestScopeTPElem,
-                                        '$TARGET', tpDoc,
+                                        '$SELECTION', nearestScopeTPElem.
+                                                        getCurrentSelectionValue.
+                                                        bind(nearestScopeTPElem),
+                                        //  Alias for $SELECTION
+                                        '$*', nearestScopeTPElem.
+                                                getCurrentSelectionValue.
+                                                bind(nearestScopeTPElem),
+                                        '$FOCUS', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        //  Alias for $FOCUS
+                                        '$@', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        '$TARGET', targetTPDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
                                         '$INDEX', dataIndex,
@@ -6458,7 +6685,21 @@ function(aCollection, elems) {
                         'APP', APP,
                         '$SOURCE', this,
                         '$TAG', newTPElem,
-                        '$TARGET', tpDoc,
+                        '$SELECTION', newTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(newTPElem),
+                        //  Alias for $SELECTION
+                        '$*', newTPElem.
+                                getCurrentSelectionValue.
+                                bind(newTPElem),
+                        '$FOCUS', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        //  Alias for $FOCUS
+                        '$@', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        '$TARGET', targetTPDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
                         '$INDEX', scopeIndex,
@@ -6478,7 +6719,21 @@ function(aCollection, elems) {
                         'APP', APP,
                         '$SOURCE', this,
                         '$TAG', newTPElem,
-                        '$TARGET', tpDoc,
+                        '$SELECTION', newTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(newTPElem),
+                        //  Alias for $SELECTION
+                        '$*', newTPElem.
+                                getCurrentSelectionValue.
+                                bind(newTPElem),
+                        '$FOCUS', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        //  Alias for $FOCUS
+                        '$@', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        '$TARGET', targetTPDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
                         '$INDEX', scopeIndex,
