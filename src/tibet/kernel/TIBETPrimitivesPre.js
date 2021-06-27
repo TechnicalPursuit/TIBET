@@ -6773,8 +6773,89 @@ function() {
 //  ------------------------------------------------------------------------
 
 //  context support variables
-TP.defineAttribute('$focus_stack', []);      //  stack of focused elements
-TP.defineAttribute('$signal_stack', []);     //  stack of signal instances
+
+//  stack of focused elements
+TP.defineAttribute('$focus_stack', []);
+
+//  stack of signal instances
+TP.defineAttribute('$signal_stack', []);
+
+//  currently selected data
+TP.defineAttribute('$current_selection', null);
+
+//  currently selected data index (if current selection is a selection on
+//  collection).
+TP.defineAttribute('$current_selection_index', null);
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getCurrentSelection',
+function(aDocument) {
+
+    /**
+     * @method getCurrentSelection
+     * @summary Returns the current selection.
+     * @example Get TIBET's current 'selection':
+     *     <code>
+     *          TP.sys.getCurrentSelection();
+     *          <samp>fluffy</samp>
+     *     </code>
+     * @param {Document} [aDocument] The document that contains the current text
+     *     selection. This defaults to the current UICANVAS if not supplied.
+     * @returns {String} The current selection value.
+     */
+
+    var selection,
+        doc;
+
+    selection = TP.get('$current_selection');
+    if (TP.isEmpty(selection)) {
+        doc = TP.ifInvalid(aDocument, TP.sys.uidoc(true));
+        selection = TP.documentGetSelectionText(doc);
+    }
+
+    if (TP.isEmpty(selection)) {
+        selection = null;
+    }
+
+    return selection;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('setCurrentSelection',
+function(aSelection) {
+
+    /**
+     * @method setCurrentSelection
+     * @summary Sets the current selection to the supplied object.
+     * @example Set TIBET's current 'selection':
+     *     <code>
+     *          TP.sys.setCurrentSelection(TP.ac('str1', 'str2'));
+     *     </code>
+     * @param {Object} aSelection The object to make the current selection.
+     */
+
+    TP.$current_selection = aSelection;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('setCurrentSelectionIndex',
+function(anIndex) {
+
+    /**
+     * @method setCurrentSelectionIndex
+     * @summary Sets the current selection index to the supplied index.
+     * @example Set TIBET's current 'selection index':
+     *     <code>
+     *          TP.sys.setCurrentSelectionIndex(2)
+     *     </code>
+     * @param {Number} index The number to set the index to.
+     */
+
+    TP.$current_selection_index = anIndex;
+});
 
 //  ------------------------------------------------------------------------
 //  CONVERSION
