@@ -78,12 +78,12 @@ function(aRequest) {
     //  set the server-side URIs list to an empty Array so that it draw an
     //  'empty full row' list.
     dataURI = TP.uc('urn:tibet:changedServerURIs');
-    dataURI.setResource(TP.ac());
+    dataURI.setResource(TP.ac(), TP.ac('signalChange', false));
 
     //  set the client-side URIs list to an empty Array so that it draw an
     //  'empty full row' list.
     dataURI = TP.uc('urn:tibet:changedClientURIs');
-    dataURI.setResource(TP.ac());
+    dataURI.setResource(TP.ac(), TP.ac('signalChange', false));
 
     shouldWatchURI = TP.uc('urn:tibet:watch_changes');
     shouldWatchValue = TP.sys.cfg('uri.source.watch_changes');
