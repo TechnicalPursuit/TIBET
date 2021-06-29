@@ -3212,6 +3212,10 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
                 TP.VISIBILITY_INTERSECTION_OBSERVER =
                     new IntersectionObserver(
                         function(entries) {
+                            if (!TP.sys.hasStarted()) {
+                                return;
+                            }
+
                             entries.forEach(
                                 function(anEntry) {
                                     var target;

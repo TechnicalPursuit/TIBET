@@ -1210,6 +1210,9 @@ function(anElement, aHandler, useTrackerElement) {
                 new ResizeObserver(
                 /* eslint-enable no-undef */
                     function(entries, observer) {
+                        if (!TP.sys.hasStarted()) {
+                            return;
+                        }
 
                         entries.forEach(
                             function(anEntry) {
