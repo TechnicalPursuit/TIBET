@@ -185,6 +185,9 @@ function() {
     }
 
     rowHeight = this.getRowHeight();
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
+    }
 
     //  If the current height is less than the row height (a single row height),
     //  then return that.
@@ -244,6 +247,9 @@ function() {
 
     //  The current row height.
     rowHeight = this.getRowHeight();
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
+    }
 
     this.$set('$hasBumpRows', false, false);
 
@@ -256,6 +262,9 @@ function() {
 
         //  Grab the border size
         borderSize = this.getRowBorderHeight();
+        if (!TP.isNumber(borderSize)) {
+            return this.raise('TP.sig.InvalidNumber');
+        }
 
         //  Double the border size to ensure enough overlap.
         borderSize *= 2;
@@ -338,6 +347,9 @@ function() {
         displayedRowCount;
 
     rowHeight = this.getRowHeight();
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
+    }
 
     //  And the number of rows we're currently displaying is our overall element
     //  divided by our row height.
@@ -384,6 +396,9 @@ function() {
     elem = this.getNativeNode();
 
     rowHeight = this.getRowHeight();
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
+    }
 
     //  The current starting row is whatever our current scrollTop setting is
     //  divided by our row height. Note here how we 'ceil()' the value to get
@@ -534,6 +549,9 @@ function() {
 
     //  The current row height.
     rowHeight = this.getRowHeight();
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
+    }
 
     //  Grab the virtual scroller object.
     virtualScroller = this.get('$virtualScroller');
