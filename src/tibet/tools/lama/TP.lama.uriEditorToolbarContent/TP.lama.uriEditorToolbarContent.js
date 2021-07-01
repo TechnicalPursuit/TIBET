@@ -36,6 +36,9 @@ TP.lama.uriEditorToolbarContent.Inst.defineAttribute('revertButton',
 TP.lama.uriEditorToolbarContent.Inst.defineAttribute('refreshButton',
     TP.cpc('> button[action="refresh"]', TP.hc('shouldCollapse', true)));
 
+TP.lama.uriEditorToolbarContent.Inst.defineAttribute('screenifyButton',
+    TP.cpc('> button[action="screenify"]', TP.hc('shouldCollapse', true)));
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -164,6 +167,12 @@ function() {
         this.get('panelToggleRadios').removeAttribute('disabled');
     } else {
         this.get('panelToggleRadios').setAttribute('disabled', true);
+    }
+
+    if (TP.isXMLString(editorTPElem.get('editor').get('value'))) {
+        this.get('screenifyButton').removeAttribute('disabled');
+    } else {
+        this.get('screenifyButton').setAttribute('disabled', true);
     }
 
     return this;
