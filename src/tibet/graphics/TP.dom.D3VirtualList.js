@@ -36,7 +36,7 @@ TP.dom.D3VirtualList.Type.set('shouldOrder', false);
 
 TP.dom.D3VirtualList.Inst.defineAttribute('$virtualScroller');
 
-TP.dom.D3VirtualList.Inst.defineAttribute('$hasBumpRows');
+TP.dom.D3VirtualList.Inst.defineAttribute('$bumpRowCount');
 
 TP.dom.D3VirtualList.Inst.defineAttribute('$startOffset');
 TP.dom.D3VirtualList.Inst.defineAttribute('$endOffset');
@@ -251,13 +251,12 @@ function() {
         return this.raise('TP.sig.InvalidNumber');
     }
 
-    this.$set('$hasBumpRows', false, false);
+    this.$set('$bumpRowCount', 0, false);
 
     //  Viewport height less than row height. Default to 1 row.
     if (viewportHeight < rowHeight) {
         computedRowCount = 1;
     } else {
-
         computedRowCount = (viewportHeight / rowHeight).round();
 
         //  Grab the border size
@@ -274,7 +273,7 @@ function() {
         //  to avoid 'blank' spaces.
         if ((viewportHeight - borderSize) % rowHeight !== 0) {
             computedRowCount += 1;
-            this.$set('$hasBumpRows', true, false);
+            this.$set('$bumpRowCount', 1, false);
         }
     }
 
@@ -711,12 +710,17 @@ TP.extern.d3.VirtualScroller = function() {
 
     scrollerFunc = function(container) {
 
-        var render,
+        var bumpRowCount,
+
+            render,
             scrollRenderFrame;
+
+        bumpRowCount = control.$get('$bumpRowCount');
 
         render = function() {
 
             var scrollTop,
+                finalRowCount,
                 lastPosition;
 
             if (TP.notValid(container.node()) ||
@@ -728,8 +732,13 @@ TP.extern.d3.VirtualScroller = function() {
 
             scrollTop = viewport.node().scrollTop;
 
+            finalRowCount = totalRows;
+            if (bumpRowCount > 0) {
+                finalRowCount -= bumpRowCount;
+            }
+
             /* eslint-disable no-extra-parens */
-            totalHeight = Math.max(minHeight, (totalRows * rowHeight));
+            totalHeight = Math.max(minHeight, (finalRowCount * rowHeight));
             /* eslint-enable no-extra-parens */
 
             //  both style and attr height values seem to be respected
@@ -763,7 +772,7 @@ TP.extern.d3.VirtualScroller = function() {
 
         scrollRenderFrame = function(scrollPosition) {
 
-            var hasBumpRows,
+            var finalRowCount,
 
                 startOffset,
                 endOffset,
@@ -774,20 +783,25 @@ TP.extern.d3.VirtualScroller = function() {
 
                 rowSelector;
 
-            hasBumpRows = control.$get('$hasBumpRows');
+            finalRowCount = totalRows;
 
-            //  Calculate the start offset (if there are 'bump rows', add 2 to
-            //  offset 0 position vs totalRow count diff)
-            if (hasBumpRows) {
+            //  Calculate the start offset (if there are 'bump rows', add them
+            //  and then 1 to offset 0 position vs totalRow count diff)
+            if (bumpRowCount > 0) {
+                finalRowCount -= 1;
                 startOffset = Math.max(
-                    0,
-                    Math.min(scrollPosition, totalRows - computedRowCount + 2));
+                0,
+                Math.min(
+                    scrollPosition,
+                    finalRowCount - computedRowCount + bumpRowCount + 1));
 
-                endOffset = startOffset + computedRowCount + 2;
+                endOffset = startOffset + computedRowCount + bumpRowCount + 1;
             } else {
                 startOffset = Math.max(
-                    0,
-                    Math.min(scrollPosition, totalRows - computedRowCount));
+                0,
+                Math.min(
+                    scrollPosition,
+                    finalRowCount - computedRowCount));
 
                 endOffset = startOffset + computedRowCount;
             }
@@ -812,7 +826,7 @@ TP.extern.d3.VirtualScroller = function() {
                         //  compute the new data slice
                         newData = allData.slice(
                                     startOffset,
-                                    Math.min(endOffset, totalRows));
+                                    Math.min(endOffset, finalRowCount));
 
                         //  Just update the individual datums for each row.
                         rowUpdateSelection.each(
@@ -864,7 +878,7 @@ TP.extern.d3.VirtualScroller = function() {
                         //  compute the new data slice
                         newData = allData.slice(
                                     startOffset,
-                                    Math.min(endOffset, totalRows));
+                                    Math.min(endOffset, finalRowCount));
 
                         rowSelection = container.selectAll(rowSelector).
                                         data(newData, dataid);
