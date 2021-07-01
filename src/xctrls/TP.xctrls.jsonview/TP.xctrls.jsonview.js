@@ -21,10 +21,6 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:jsonview');
 //  Events:
 //      xctrls-jsonview-selected
 
-//  ------------------------------------------------------------------------
-//  Type Constants
-//  ------------------------------------------------------------------------
-
 TP.xctrls.jsonview.addTraits(TP.html.textUtilities);
 
 TP.xctrls.jsonview.Type.resolveTrait('booleanAttrs', TP.html.textUtilities);
@@ -36,6 +32,10 @@ TP.xctrls.jsonview.Inst.resolveTraits(
 TP.xctrls.jsonview.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.jsonview.defineAttribute('themeURI', TP.NO_RESULT);
