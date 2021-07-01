@@ -1217,41 +1217,56 @@ function(anElement, aHandler, useTrackerElement) {
                         entries.forEach(
                             function(anEntry) {
                                 var target,
-                                    targetWin;
+
+                                    processFunc;
 
                                 //  The target will be the target Element that
                                 //  got resized. Make sure it's an Element and
                                 //  then run the callback functions defined on
                                 //  the Element.
                                 target = anEntry.target;
-                                targetWin = TP.nodeGetWindow(target);
 
                                 if (TP.isElement(target)) {
-                                    //  Note here how we put these into a
-                                    //  requestAnimationFrame. Otherwise, Chrome
-                                    //  (at least) has trouble with servicing
-                                    //  the ResizeObserver loop (it seems that
-                                    //  supposed recursion loop checks don't
-                                    //  work - or not with deep stacks, anyway).
-                                    targetWin.requestAnimationFrame(
-                                        function() {
-                                            var listeners;
 
-                                            listeners =
-                                                target[TP.RESIZE_LISTENERS];
-                                            if (TP.notValid(listeners)) {
-                                                TP.ifWarn() ?
-                                                    TP.warn('Can\'t find' +
-                                                            ' listeners for: ' +
-                                                            TP.str(target)) : 0;
-                                                return;
-                                            }
+                                    if (target.$$resizeTimeout) {
+                                        clearTimeout(target.$$resizeTimeout);
+                                        target.$$resizeTimeout = undefined;
+                                    }
 
-                                            listeners.forEach(
+                                    //  Define a Function that will be invoked
+                                    //  both directly and via a setTimeout.
+                                    processFunc = function() {
+                                        var listeners;
+
+                                        listeners =
+                                            target[TP.RESIZE_LISTENERS];
+                                        if (TP.notValid(listeners)) {
+                                            TP.ifWarn() ?
+                                                TP.warn('Can\'t find' +
+                                                        ' listeners for: ' +
+                                                        TP.str(target)) : 0;
+                                            return;
+                                        }
+
+                                        listeners.forEach(
                                             function(fn) {
                                                 fn.call(target);
                                             });
-                                        });
+
+                                        //  Define a setTimeout that will invoke
+                                        //  the handlers 250ms after the last
+                                        //  resize. This allows the GUI to
+                                        //  'catch up' with any last remaining
+                                        //  resizing.
+                                        target.$$resizeTimeout = setTimeout(
+                                            function() {
+                                                processFunc();
+                                                clearTimeout(
+                                                    target.$$resizeTimeout);
+                                            }, 250);
+                                    };
+
+                                    processFunc();
                                 }
                             });
                     });
