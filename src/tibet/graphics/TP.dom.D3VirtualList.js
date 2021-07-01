@@ -749,15 +749,11 @@ TP.extern.d3.VirtualScroller = function() {
                 //  Signal to observers that this control has rendered.
                 control.signal('TP.sig.DidRenderData');
             } else {
-                //  Otherwise, there was a change in scroll position. Make the
-                //  scrolling render function itself run after the next repaint
-                //  for less flicker.
-                (function() {
-                    scrollRenderFrame(position);
+                //  Otherwise, there was a change in scroll position.
+                scrollRenderFrame(position);
 
-                    //  Signal to observers that this control has rendered.
-                    control.signal('TP.sig.DidRenderData');
-                }).queueAfterNextRepaint();
+                //  Signal to observers that this control has rendered.
+                control.signal('TP.sig.DidRenderData');
             }
 
             lastScrollTop = scrollTop;
