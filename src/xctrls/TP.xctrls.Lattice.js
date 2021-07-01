@@ -153,6 +153,133 @@ TP.xctrls.Lattice.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Lattice.Inst.defineMethod('computeSelectionData',
+function() {
+
+    /**
+     * @method computeSelectionData
+     * @summary Returns the data that will actually be used for binding into the
+     *     d3.js selection.
+     * @description The selection data may very well be different than the bound
+     *     data that uses TIBET data binding to bind data to this control. This
+     *     method allows the receiver to transform it's 'data binding data' into
+     *     data appropriate for d3.js selections.
+     * @returns {Object} The selection data.
+     */
+
+    var selectionData,
+
+        containerHeight,
+        rowHeight,
+
+        visibleRowCount,
+
+        isEven,
+
+        currentNumSpacingRows,
+
+        selectionDataSize,
+
+        shouldAdd,
+
+        realDataSize,
+
+        bumpRowCount,
+        newSpacingRowCount,
+        i,
+
+        oldSpacingRowCount;
+
+    selectionData = this.get('$convertedData');
+
+    //  First, make sure the converted data is valid. If not, then convert it.
+    if (TP.notValid(selectionData)) {
+        return this;
+    }
+
+    if (TP.isValid(selectionData)) {
+
+        currentNumSpacingRows = this.get('$numSpacingRows');
+
+        containerHeight = this.computeHeight();
+        rowHeight = this.getRowHeight();
+
+        //  The number of currently displayed rows is computed by dividing the
+        //  containerHeight by the rowHeight. Note here that we 'round up' to
+        //  make sure that we err on the side of *more* spacing rows rather than
+        //  less for maximum visual crispness.
+        visibleRowCount = (containerHeight / rowHeight).ceil();
+
+        //  If this computation is not evenly divisible, then we subtract one
+        //  from the 'visibleRowCount', used for early acces, since we're not
+        //  exactly on a row boundary.
+        /* eslint-disable no-extra-parens */
+        isEven = (containerHeight % rowHeight) === 0;
+        /* eslint-enable no-extra-parens */
+        if (!isEven) {
+            visibleRowCount -= 1;
+        }
+
+        //  The number of rows of data in the current selection. These will
+        //  also include spacing rows if previously built by this call.
+        selectionDataSize = selectionData.getSize();
+
+        shouldAdd = true;
+        if (visibleRowCount === selectionDataSize) {
+            shouldAdd = false;
+        }
+
+        //  If the list is actually tall enough to display at least one row, go
+        //  for it.
+        if (visibleRowCount > 0) {
+
+            //  The "real" data size is the number of total rows minus the
+            //  current number of spacing rows.
+            realDataSize = selectionDataSize - currentNumSpacingRows;
+
+            if (visibleRowCount > realDataSize && shouldAdd) {
+
+                bumpRowCount = this.$get('$bumpRowCount');
+
+                /* eslint-disable no-extra-parens */
+                newSpacingRowCount =
+                    (visibleRowCount - realDataSize) + bumpRowCount + 1;
+                /* eslint-enable no-extra-parens */
+
+                for (i = realDataSize;
+                        i < realDataSize + newSpacingRowCount;
+                            i++) {
+                    selectionData.atPut(i, this.createBlankRowData(i));
+                }
+
+                //  NB: We never let this drop below 0
+                this.set('$numSpacingRows', newSpacingRowCount.max(0), false);
+            }
+
+            //  If there is more data in the selection than there is in the
+            //  'real' data set, that means we have 'blank filler' rows. Trim
+            //  off any unnecessary ones.
+            if (selectionDataSize > realDataSize) {
+
+                oldSpacingRowCount = realDataSize - visibleRowCount + 1;
+
+                for (i = selectionDataSize - 1;
+                        i >= selectionDataSize - oldSpacingRowCount;
+                        i--) {
+                    if (selectionData.at(i).last() !== 'BLANK') {
+                        break;
+                    }
+                    selectionData.pop();
+                }
+            }
+        }
+    }
+
+    return selectionData;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.Lattice.Inst.defineMethod('focus',
 function(moveAction) {
 

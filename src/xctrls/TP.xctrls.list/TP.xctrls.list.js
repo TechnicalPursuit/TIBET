@@ -1565,18 +1565,7 @@ function() {
      */
 
     var selectionData,
-        wholeData,
-
-        containerHeight,
-        rowHeight,
-
-        computedRowCount,
-        selectionDataSize,
-
-        realDataSize,
-
-        newSpacingRowCount,
-        i;
+        wholeData;
 
     selectionData = this.get('$convertedData');
 
@@ -1619,52 +1608,7 @@ function() {
         this.set('$numSpacingRows', 0, false);
     }
 
-    if (TP.isValid(selectionData)) {
-
-        containerHeight = this.computeHeight();
-        rowHeight = this.getRowHeight();
-
-        //  The number of currently displayed rows is computed by dividing the
-        //  containerHeight by the rowHeight. Note here that we 'round up' to
-        //  make sure that we err on the side of *more* spacing rows rather than
-        //  less for maximum visual crispness.
-        computedRowCount = (containerHeight / rowHeight).ceil();
-
-        //  The number of rows of data in the current selection. These will
-        //  also include spacing rows if previously built by this call.
-        selectionDataSize = selectionData.getSize();
-
-        if (computedRowCount === selectionDataSize) {
-            return selectionData;
-        }
-
-        //  If the list is actually tall enough to display at least one row, go
-        //  for it.
-        if (computedRowCount > 0) {
-
-            //  The "real" data size is the number of total rows minus the
-            //  number of spacing rows.
-            realDataSize = selectionDataSize - this.get('$numSpacingRows');
-
-            if (computedRowCount > realDataSize) {
-
-                /* eslint-disable no-extra-parens */
-                newSpacingRowCount = (computedRowCount - realDataSize) + 1;
-                /* eslint-enable no-extra-parens */
-
-                for (i = realDataSize;
-                        i < realDataSize + newSpacingRowCount;
-                            i++) {
-                    selectionData.atPut(i, this.createBlankRowData(i));
-                }
-
-                //  NB: We never let this drop below 0
-                this.set('$numSpacingRows', newSpacingRowCount.max(0), false);
-            }
-        }
-    }
-
-    return selectionData;
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
