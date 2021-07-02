@@ -2386,6 +2386,7 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
 
     var file,
         path,
+        i,
         str;
 
     try {
@@ -2393,6 +2394,14 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         //  ensure we report the proper origin.
         file = TP.boot.$$onerrorFile;
         path = TP.notValid(file) ? url : file;
+
+        if (msg) {
+            for (i = 0; i < TP.regex.DEBUGGER_IGNORED_MESSAGES.length; i++) {
+                if (TP.regex.DEBUGGER_IGNORED_MESSAGES[i].test(msg)) {
+                    return TP.sys.shouldCaptureErrors();
+                }
+            }
+        }
 
         str = msg || 'Error';
         str += ' in file: ' + path + ' line: ' + line + ' column: ' + column;
