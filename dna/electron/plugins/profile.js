@@ -15,7 +15,8 @@
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
-        var logger,
+        var pkg,
+            logger,
 
             meta,
 
@@ -28,6 +29,7 @@
             loadProfile,
             saveProfile;
 
+        pkg = options.pkg;
         logger = options.logger;
 
         //  NOTE this plugin loads prior to the logger so our best option here
@@ -128,7 +130,17 @@
          */
         ipcMain.handle('TP.sig.LoadProfile',
             function(event) {
-                return loadProfile();
+                var data;
+
+                //  Grab the data from the profile
+                data = loadProfile();
+
+                //  Set the profile data into the 'main process' side config.
+                pkg.overlayProperties(data.profile, 'profile');
+
+                //  Return the profile data to the 'renderer process'. Assumably
+                //  it will make it available to its config system.
+                return data;
             });
 
     };

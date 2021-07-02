@@ -59,10 +59,10 @@
         //  is to use the prelog function to queue logging output.
         meta = {
             type: 'plugin',
-            name: 'appmenu'
+            name: 'devtools'
         };
 
-        logger.system('loading appmenu', meta);
+        logger.system('loading devtools', meta);
 
         //  ---
         //  Requires
