@@ -412,17 +412,7 @@ function(aSignal) {
      * @returns {TP.xctrls.Lattice} The receiver.
      */
 
-    var currentRowCount,
-
-        newRowCount;
-
-    currentRowCount = this.$get('$endOffset') - this.$get('$startOffset');
-    newRowCount = this.computeGeneratedRowCount();
-
-    if (newRowCount !== currentRowCount) {
-        //  When the number of rows changed, we have to re-render.
-        this.render();
-    }
+    this.render();
 
     return this;
 });
