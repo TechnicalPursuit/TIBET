@@ -243,7 +243,7 @@ function() {
 
                 /* eslint-disable no-extra-parens */
                 newSpacingRowCount =
-                    (visibleRowCount - realDataSize) + bumpRowCount + 1;
+                    (visibleRowCount - realDataSize) + bumpRowCount;
                 /* eslint-enable no-extra-parens */
 
                 for (i = realDataSize;
@@ -261,7 +261,7 @@ function() {
             //  off any unnecessary ones.
             if (selectionDataSize > realDataSize) {
 
-                oldSpacingRowCount = realDataSize - visibleRowCount + 1;
+                oldSpacingRowCount = realDataSize - visibleRowCount;
 
                 for (i = selectionDataSize - 1;
                         i >= selectionDataSize - oldSpacingRowCount;
