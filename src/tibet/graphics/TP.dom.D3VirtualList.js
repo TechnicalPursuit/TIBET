@@ -540,6 +540,10 @@ function() {
         return this;
     }
 
+    //  Compute the number of rows we need to generate *before* we try to
+    //  compute the data that will be the d3 selection data.
+    this.computeGeneratedRowCount();
+
     //  The d3 selection data.
     selectionData = this.computeSelectionData();
 
