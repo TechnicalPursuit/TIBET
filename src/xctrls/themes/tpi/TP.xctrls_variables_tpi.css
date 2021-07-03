@@ -508,3 +508,18 @@ xctrls|toolbar {
 
     --xctrls-toolbar-background-color: white;
 }
+
+xctrls|wayfinder {
+
+    /* xctrls|wayfinder variables */
+
+    --xctrls-wayfinder-border-width: 1px;
+    --xctrls-wayfinder-border-style: solid;
+    --xctrls-wayfinder-border-radius: 4px;
+
+    --xctrls-wayfinder-border-color-normal: #eee;
+    --xctrls-wayfinder-border-color-hover: initial;
+    --xctrls-wayfinder-border-color-focus: initial;
+    --xctrls-wayfinder-border-color-active: initial;
+    --xctrls-wayfinder-border-color-disabled: initial;
+}
