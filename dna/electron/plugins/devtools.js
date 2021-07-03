@@ -88,7 +88,7 @@
 
         if (inDeveloperMode) {
             enableLamaExtMode = pkg.getcfg(
-                            'electron.enableLamaExt', false);
+                            'electron.enableLamaExtension', false);
             inDevelopingDeveloperMode = pkg.getcfg(
                             'electron.developingDeveloper', false);
         } else {
