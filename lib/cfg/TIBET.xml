@@ -230,6 +230,11 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.tooltip-TP.xctrls.tooltip.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.tooltip_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.tooltip_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.wayfinder-TP.xctrls.wayfinder.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.wayfinder-TP.xctrls.wayfinder.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.wayfinder_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.wayfinder_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.wayfinder-TP.xctrls.wayfinderitem.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.codeeditor-TP.xctrls.codeeditor.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.codeeditor-TP.xctrls.codeeditor.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls_variables.css.js"/>

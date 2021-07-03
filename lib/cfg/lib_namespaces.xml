@@ -324,6 +324,7 @@
     <resource href="xctrls/themes/TP.xctrls.table_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.textitem_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.tooltip_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.wayfinder_all.css"/>
 
     <!-- Individual theme files are brought in by their components based on a
             setting of a cfg parameter so we don't have to mention them here.
@@ -383,6 +384,7 @@
     <package src="xctrls/TP.xctrls.textitem/TP.xctrls.textitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.toolbar/TP.xctrls.toolbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.tooltip/TP.xctrls.tooltip.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.wayfinder/TP.xctrls.wayfinder.xml" config="base"/>
 
     <!-- BEGIN xctrls:codeeditor -->
 
