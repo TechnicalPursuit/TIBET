@@ -19,6 +19,11 @@
     border-color: var(--xctrls-signalmenucontent-menu-border-color-normal);
 }
 
+*|*[data-theme~="tpi"] xctrls|signalmenucontent > xctrls|menu:hover {
+
+    border: solid 1px transparent;
+}
+
 *|*[data-theme~="tpi"] xctrls|signalmenucontent > xctrls|menu .body {
 
     min-width: auto;

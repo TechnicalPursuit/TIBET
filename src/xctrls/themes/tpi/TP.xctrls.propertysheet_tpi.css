@@ -23,9 +23,12 @@
 *|*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields {
 
     margin: 0;
+
     font-family: var(--xctrls-propertysheet-font-family);
     color: var(--xctrls-propertysheet-font-color-normal);
+
     background-color: var(--xctrls-propertysheet-background-color-normal);
+
     border-width: var(--xctrls-propertysheet-border-width);
     border-style: var(--xctrls-propertysheet-border-style);
     border-radius: var(--xctrls-propertysheet-border-radius);
@@ -39,7 +42,9 @@
 *|*[data-theme~="tpi"] xctrls|propertysheet span.propertyfields span.propertyfield *:nth-child(even) {
 
     position: sticky;
+
     left: 100px;
+
     margin-top: 2px;
 }
 

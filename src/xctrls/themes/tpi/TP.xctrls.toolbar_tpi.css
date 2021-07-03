@@ -11,30 +11,22 @@
 /* The toolbar */
 *|*[data-theme~="tpi"] xctrls|toolbar {
 
+    background-color: var(--xctrls-toolbar-background-color);
+
+    border-width: var(--xctrls-toolbar-border-width);
+    border-style: var(--xctrls-toolbar-border-style);
+    border-radius: var(--xctrls-toolbar-border-radius);
+    border-color: var(--xctrls-toolbar-border-color-normal);
+}
+
+/* The toolbar is disabled */
+*|*[data-theme~="tpi"] xctrls|toolbar[pclass|disabled] {
+
+    border-color: var(--xctrls-toolbar-border-color-disabled);
 }
 
 /* Toolbar items */
 *|*[data-theme~="tpi"] xctrls|toolbar *|*[itemnum] {
-
-}
-
-/* Hovering over the toolbar */
-*|*[data-theme~="tpi"] xctrls|toolbar *|*[itemnum]:hover {
-
-}
-
-/* Focusing on the toolbar */
-*|*[data-theme~="tpi"] xctrls|toolbar *|*[itemnum][pclass|focus] {
-
-}
-
-/* Clicking down on the toolbar */
-*|*[data-theme~="tpi"] xctrls|toolbar *|*[itemnum][pclass|active] {
-
-}
-
-/* The toolbar is disabled */
-*|*[data-theme~="tpi"] xctrls|toolbar *|*[itemnum][pclass|disabled] {
 
 }
 
@@ -43,7 +35,7 @@
 
 }
 
-/* Hovering over the toolbar, item and label must highlight */
+/* Hovering over a toolbar item, item and label must highlight */
 *|*[data-theme~="tpi"] xctrls|toolbar *|*[itemnum]:hover {
 
 }
@@ -57,7 +49,7 @@
 
 }
 
-/* Focusing on the toolbar, item and label must highlight */
+/* Focusing on a toolbar item, item and label must highlight */
 *|*[data-theme~="tpi"] xctrls|toolbar *|*[itemnum][pclass|focus] {
 
 }
@@ -66,7 +58,7 @@
 
 }
 
-/* Clicking down on the toolbar, item and label must highlight */
+/* Clicking down on a toolbar item, item and label must highlight */
 *|*[data-theme~="tpi"] xctrls|toolbar *|*[itemnum][pclass|active] {
 
 }

@@ -211,18 +211,6 @@ xctrls|imageitem {
     --xctrls-imageitem-background-color-focus: white;
     --xctrls-imageitem-background-color-active: white;
     --xctrls-imageitem-background-color-disabled: white;
-
-    --xctrls-imageitem-check-border-color-normal: black;
-    --xctrls-imageitem-check-border-color-hover: black;
-    --xctrls-imageitem-check-border-color-focus: black;
-    --xctrls-imageitem-check-border-color-active: black;
-    --xctrls-imageitem-check-border-color-disabled: #eee;
-
-    --xctrls-imageitem-check-color-normal: black;
-    --xctrls-imageitem-check-color-hover: cornsilk;
-    --xctrls-imageitem-check-color-focus: gold;
-    --xctrls-imageitem-check-color-active: gold;
-    --xctrls-imageitem-check-color-disabled: #eee;
 }
 
 xctrls|list {
@@ -351,6 +339,7 @@ xctrls|table {
     --xctrls-tableitem-border-width: 1px;
     --xctrls-tableitem-border-style: solid;
 
+    --xctrls-tableitem-border-color-light: white;
     --xctrls-tableitem-border-color-normal: #eee;
     --xctrls-tableitem-border-color-hover: initial;
     --xctrls-tableitem-border-color-focus: black;
@@ -517,5 +506,5 @@ xctrls|toolbar {
     --xctrls-toolbar-border-color-normal: #333;
     --xctrls-toolbar-border-color-disabled: initial;
 
-    --xctrls-toolbar-background-color: gold;
+    --xctrls-toolbar-background-color: white;
 }
