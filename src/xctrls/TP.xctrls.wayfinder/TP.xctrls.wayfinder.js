@@ -2829,6 +2829,43 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.wayfinder.Inst.defineMethod('stylesheetReady',
+function(aStyleTPElem) {
+
+    /**
+     * @method stylesheetReady
+     * @summary A method that is invoked when the supplied stylesheet is
+     *     'ready', which means that it's attached to the receiver's Document
+     *     and all of it's style has been parsed and applied.
+     * @description Typically, the supplied stylesheet Element is the one that
+     *     the receiver is waiting for so that it can finalized style
+     *     computations. This could be either the receiver's 'core' stylesheet
+     *     or it's current 'theme' stylesheet, if the receiver is executing in a
+     *     themed environment.
+     * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
+     *     ready.
+     * @returns {TP.xctrls.wayfinder} The receiver.
+     */
+
+    //  If we're not awakening this tag, then exit - we want none of the
+    //  machinery here to execute.
+    if (this.hasAttribute('tibet:no-awaken')) {
+        return this;
+    }
+
+    //  Note how we put this in a Function to wait until the screen refreshes.
+    (function() {
+
+        //  Call render one-time to get things going.
+        this.render();
+
+    }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.wayfinder.Inst.defineMethod('traversePath',
 function(pathParts) {
 
