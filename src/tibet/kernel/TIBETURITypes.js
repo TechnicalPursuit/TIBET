@@ -189,6 +189,14 @@ TP.uri.URI.Type.defineAttribute(
 //  haven't been refreshed.
 TP.uri.URI.Type.defineAttribute('remoteChangeList', TP.hc());
 
+//  holder for URIs that will broadcast a change notification just after TIBET
+//  startup
+TP.uri.URI.Type.defineAttribute('startupURIs', TP.ac());
+
+//  whether or not to capture URIs that are being defined for the first time to
+//  broadcast a change notification just after TIBET startup.
+TP.uri.URI.Type.defineAttribute('captureStartupURIs', false);
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -596,6 +604,26 @@ function(anID) {
 
 //  ------------------------------------------------------------------------
 
+TP.uri.URI.Type.defineMethod('processStartupURIs',
+function() {
+
+    /**
+     * @method processStartupURIs
+     * @summary Processes any URIs that were registered at startup by invoking
+     *     their change machinery.
+     * @returns {TP.meta.uri.URI} The receiver.
+     */
+
+    TP.uri.URI.$get('startupURIs').forEach(
+        function(aURI) {
+            aURI.$changed();
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.uri.URI.Type.defineMethod('registerInstance',
 function(anInstance, aKey) {
 
@@ -631,6 +659,12 @@ function(anInstance, aKey) {
     //  Note here how we use the value of the 'uri' attribute - we want the
     //  original (but normalized) URI value - not the resolved 'location'.
     dict.atPut(key, anInstance);
+
+    //  If the system hasn't started yet, but we've been put into 'capture
+    //  startup URIs' mode, then capture them here.
+    if (!TP.sys.hasStarted() && this.$get('captureStartupURIs')) {
+        this.$get('startupURIs').push(anInstance);
+    }
 
     return this;
 });

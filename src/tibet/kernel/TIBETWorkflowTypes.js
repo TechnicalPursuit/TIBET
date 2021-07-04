@@ -7394,6 +7394,10 @@ function() {
      * @returns {TP.core.Application} The receiver.
      */
 
+    //  Tell the URI core type to process any 'startup URIs' that were
+    //  registered during the startup process.
+    TP.uri.URI.processStartupURIs();
+
     //  Show the UI root frame.
     TP.boot.showUIRoot();
 
