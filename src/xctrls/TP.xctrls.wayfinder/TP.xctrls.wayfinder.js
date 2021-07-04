@@ -1592,6 +1592,27 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.wayfinder.Inst.defineHandler('AppDidStart',
+function(aSignal) {
+
+    /**
+     * @method handleAppDidStart
+     * @summary Handles notifications of when the document containing the
+     *     receiver or one of its elements resizes.
+     * @param {TP.sig.DOMResize} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.xctrls.wayfinder} The receiver.
+     */
+
+    TP.sys.getApplication().removeController(this);
+
+    this.focusUsingInfo(TP.hc('targetObject', this));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.wayfinder.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
@@ -2787,23 +2808,6 @@ function(aDataObject, shouldSignal, isFiltered) {
             this.addEntry(resolver.getEntryLabel(aKey), resolver);
         }.bind(this));
 
-    if (this.isReadyToRender()) {
-
-        //  Set the scroll position back up to the top. Note that we do this
-        //  *before* the render() call to avoid rendering cells at the old
-        //  scroll position, then adjusting the scroll position, which just
-        //  calls another re-render and a flickering effect.
-        this.getNativeNode().scrollTop = 0;
-
-        //  When the data changes, we have to re-render.
-        this.render();
-
-        (function() {
-            //  Go ahead and 'focus' the wayfinder, which will show the roots.
-            this.focusUsingInfo(TP.hc('targetObject', this));
-        }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
-    }
-
     return this;
 });
 
@@ -2823,6 +2827,8 @@ function() {
 
     //  Selected items
     this.set('selectedItems', TP.ac());
+
+    TP.sys.getApplication().pushController(this);
 
     return this;
 });
