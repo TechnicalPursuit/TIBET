@@ -18,6 +18,14 @@ xctrls|imageitem {
     user-select: none;
 }
 
+xctrls|imageitem xctrls|image {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}
+
 /* The imageitem's value */
 xctrls|imageitem > *[tibet|pelem="value"] {
 
