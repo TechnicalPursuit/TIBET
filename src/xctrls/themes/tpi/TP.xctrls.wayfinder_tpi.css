@@ -11,6 +11,8 @@
 /* The wayfinder */
 *|*[data-theme~="tpi"] xctrls|wayfinder {
 
+    background-color: var(--xctrls-wayfinder-background-color);
+
     border-width: var(--xctrls-wayfinder-border-width);
     border-style: var(--xctrls-wayfinder-border-style);
     border-radius: var(--xctrls-wayfinder-border-radius);

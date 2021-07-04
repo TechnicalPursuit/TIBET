@@ -517,6 +517,8 @@ xctrls|wayfinder {
     --xctrls-wayfinder-border-style: solid;
     --xctrls-wayfinder-border-radius: 4px;
 
+    --xctrls-wayfinder-background-color: white;
+
     --xctrls-wayfinder-border-color-normal: #eee;
     --xctrls-wayfinder-border-color-hover: initial;
     --xctrls-wayfinder-border-color-focus: initial;
