@@ -6,6 +6,7 @@
 
 @namespace url("http://www.w3.org/1999/xhtml");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace svg url("http://www.w3.org/2000/svg");
 
 /* xctrls|* */
 
@@ -24,6 +25,12 @@ xctrls|label {
 /* xctrls|image */
 
 xctrls|image {
+}
+
+xctrls|image > svg|svg {
+
+    width: 100%;
+    height: auto;
 }
 
 /* xctrls|value, xctrls|hint */
