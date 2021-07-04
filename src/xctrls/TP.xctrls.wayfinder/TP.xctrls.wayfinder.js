@@ -1563,35 +1563,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.wayfinder.Inst.defineHandler('PclassClosedChange',
-function(aSignal) {
-
-    /**
-     * @method handlePclassClosedChangeFromLamaHUD
-     * @summary Handles notifications of HUD closed change signals.
-     * @param {TP.sig.PclassClosedChange} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.xctrls.wayfinder} The receiver.
-     */
-
-    var hudIsClosed;
-
-    //  Grab the HUD and see if it's currently open or closed.
-    hudIsClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
-
-    if (hudIsClosed) {
-        this.toggleObservations(false);
-    } else {
-        this.toggleObservations(true);
-    }
-
-    return this;
-}, {
-    origin: 'LamaHUD'
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.wayfinder.Inst.defineHandler('AppDidStart',
 function(aSignal) {
 
