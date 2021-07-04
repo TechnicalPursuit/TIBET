@@ -66,6 +66,21 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.wayfinderitem.Inst.defineMethod('render',
+function(moveAction) {
+
+    var firstChildTPElement;
+
+    firstChildTPElement = this.getFirstChildElement();
+    if (TP.canInvoke(firstChildTPElement, 'render')) {
+        return firstChildTPElement.render();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.wayfinderitem.Inst.defineMethod('getBayIndex',
 function() {
 
