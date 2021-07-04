@@ -9,7 +9,7 @@ xctrls|wayfinder {
     overflow: hidden;
 }
 
-xctrls|wayfinder > .content {
+xctrls|wayfinder > xctrls|content {
 
     display: flex;
 

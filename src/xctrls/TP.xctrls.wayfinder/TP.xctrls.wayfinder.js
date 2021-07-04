@@ -179,7 +179,7 @@ TP.xctrls.wayfinder.Inst.defineAttribute('pathStackIndex');
 TP.xctrls.wayfinder.Inst.defineAttribute('extraTargetInfo');
 
 TP.xctrls.wayfinder.Inst.defineAttribute('container',
-    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
+    TP.cpc('> xctrls|content', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
