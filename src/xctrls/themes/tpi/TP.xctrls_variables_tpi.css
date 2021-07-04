@@ -513,6 +513,10 @@ xctrls|wayfinder {
 
     /* xctrls|wayfinder variables */
 
+    --xctrls-wayfinder-font-family: "arial", "helvetica", "clean", sans-serif;
+    --xctrls-wayfinder-font-size: 131%;
+    --xctrls-wayfinder-font-color-normal: #999;
+
     --xctrls-wayfinder-border-width: 1px;
     --xctrls-wayfinder-border-style: solid;
     --xctrls-wayfinder-border-radius: 4px;

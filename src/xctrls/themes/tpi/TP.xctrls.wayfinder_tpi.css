@@ -42,3 +42,11 @@
 
     border-color: var(--xctrls-wayfinder-border-color-disabled);
 }
+
+/* The wayfinder's background user message */
+*|*[data-theme~="tpi"] xctrls|wayfinder > xctrls|content > div.usermessage {
+
+    font-size: var(--xctrls-wayfinder-font-size);
+    font-family: var(--xctrls-wayfinder-font-family);
+    color: var(--xctrls-wayfinder-font-color-normal);
+}

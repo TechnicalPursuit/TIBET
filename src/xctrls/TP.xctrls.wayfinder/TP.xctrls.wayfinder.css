@@ -24,15 +24,12 @@ xctrls|wayfinder > xctrls|content {
     justify-content: space-around;
 }
 
+/* The wayfinder's background user message */
 xctrls|wayfinder > xctrls|content > div.usermessage {
 
     display: flex;
 
     border: none;
-
-    font-size: 131%;
-    font-family: "arial", "helvetica", "clean", sans-serif;
-    color: #999;
 
     align-items: center;
     justify-content: center;
