@@ -16,6 +16,7 @@
      */
     module.exports = function(options) {
         var pkg,
+            app,
             logger,
 
             meta,
@@ -30,6 +31,7 @@
             saveProfile;
 
         pkg = options.pkg;
+        app = options.app;
         logger = options.logger;
 
         //  NOTE this plugin loads prior to the logger so our best option here
@@ -108,6 +110,33 @@
             str = CLI.beautify(JSON.stringify(json));
             new sh.ShellString(str).to(file);
         };
+
+        //  ---
+        //  Application event handlers
+        //  ---
+
+        /**
+         * Event emitted when Electron has finished initialization and is ready
+         * to create browser windows, etc.. Some APIs can only be used after
+         * this event occurs.
+         */
+        app.on('ready',
+                function() {
+                    var data;
+
+                    //  We go ahead load the profile data here because we may
+                    //  have other plugins (i.e. devtools) that need this data
+                    //  on startup (if opening when launching for window
+                    //  positioning, etc.)
+                    //  The fact that we will also load it later when TIBET asks
+                    //  for it from the renderer side is of no consequence.
+
+                    //  Grab the data from the profile
+                    data = loadProfile();
+
+                    //  Set the profile data into the 'main process' side config.
+                    pkg.overlayProperties(data.profile, 'profile');
+                });
 
         //  ---
         //  Profile event handlers.

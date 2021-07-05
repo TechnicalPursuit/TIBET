@@ -142,6 +142,7 @@ configure = function() {
         package: argv.package,
         profile: argv.profile,
         config: argv.config,
+        dev: argv.dev,
         timestamp: true,
         silent: false
     };

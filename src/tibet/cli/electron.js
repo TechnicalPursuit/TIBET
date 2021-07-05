@@ -162,8 +162,13 @@ Cmd.prototype.execute = function() {
         });
     }
 
-    //  NB: 'devtools' along with other Electron options will be passed along to
-    //  Electron.
+    //  NB: all other Electron options will be passed along to Electron except
+    //  for 'devtools'. Due to our desire to control spawing DevTools, we want
+    //  control. So we splice out the 'devtools' flag and substitute 'dev'.
+    if (this.options.devtools) {
+        args.splice(args.indexOf('--devtools'));
+        args.push('--dev');
+    }
 
     //  If we want 'empty', then just launch a plain Electron window.
     if (this.options.empty) {
