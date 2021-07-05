@@ -539,6 +539,44 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('getValueData',
+function() {
+
+    /**
+     * @method getValueValue
+     * @summary Returns the 'value data' of the receiver. This will be the data
+     *     'row' associated with the current value of the receiver.
+     * @returns {Object|null} The value data of the receiver.
+     */
+
+    var value,
+        item,
+        itemNum,
+
+        data;
+
+    value = this.get('value');
+    if (TP.isEmpty(value)) {
+        return null;
+    }
+
+    //  Grab the DOM 'item' associated with the current value
+    item = this.get('itemWithValue', value);
+    if (TP.notValid(item)) {
+        return null;
+    }
+
+    //  All DOM 'items' in an itemset have an item number. This will also be the
+    //  index into the data for that item.
+    itemNum = item.getAttribute('itemnum');
+
+    data = this.get('data');
+
+    return data.at(itemNum);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineHandler('DOMMouseOver',
 function(aSignal) {
 
@@ -1818,6 +1856,9 @@ function(selection) {
 
             return '0';
         }).attr(
+        'itemnum', function(d, i) {
+            return i;
+        }).attr(
         'tibet:group', function(d, i) {
             if (TP.regex.SPACING.test(d[0])) {
                 //  Returning null will cause d3.js to remove the
@@ -1934,6 +1975,9 @@ function(selection) {
                 }
 
                 return '0';
+            }).attr(
+            'itemnum', function(d, i) {
+                return i;
             }).attr(
             'tibet:group', function(d, i) {
                 if (TP.regex.SPACING.test(d[0])) {
