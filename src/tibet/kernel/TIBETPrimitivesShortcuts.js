@@ -663,13 +663,28 @@ function(elemOrId, attrName, nodeContext) {
      *     Default is the current canvas.
      */
 
-    var value;
+    var value,
 
-    value = TP.bc(TP.getAttr(elemOrId, nodeContext, attrName));
+        elem,
+        isBooleanAttr;
+
+    value = TP.bc(TP.getAttr(elemOrId, attrName, nodeContext));
 
     if (value) {
-        return TP.tpcall('elementSetAttribute',
-                            elemOrId, nodeContext, attrName, 'false');
+        elem = TP.isString(elemOrId) ?
+                    TP.byId(elemOrId, TP.context(nodeContext), true) :
+                    TP.elem(elemOrId);
+
+        isBooleanAttr =
+            TP.wrap(elem).getType().get('booleanAttrs').contains(attrName);
+
+        if (isBooleanAttr) {
+            return TP.tpcall('elementRemoveAttribute',
+                                elemOrId, nodeContext, attrName);
+        } else {
+            return TP.tpcall('elementSetAttribute',
+                                elemOrId, nodeContext, attrName, 'false');
+        }
     } else {
         return TP.tpcall('elementSetAttribute',
                             elemOrId, nodeContext, attrName, 'true');
