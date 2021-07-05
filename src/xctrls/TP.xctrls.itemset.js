@@ -1241,6 +1241,15 @@ function(enterSelection) {
                 }
             );
 
+            TP.extern.d3.select(this).attr(
+                'pclass:disabled', function(d, i) {
+                    if (thisref.getItemValue(d, index) === TP.DISABLED) {
+                        return 'disabled';
+                    }
+                    return null;
+                }
+            );
+
             if (shouldConstructCloseMarks) {
                 markContent = TP.extern.d3.select(this).insert('xhtml:div');
                 markContent.classed('close_mark', true);
@@ -1739,6 +1748,15 @@ function(updateSelection) {
                     }
 
                     return labelVal;
+                }
+            );
+
+            TP.extern.d3.select(this).attr(
+                'pclass:disabled', function(d, i) {
+                    if (thisref.getItemValue(d, index) === TP.DISABLED) {
+                        return 'disabled';
+                    }
+                    return null;
                 }
             );
 

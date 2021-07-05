@@ -1772,6 +1772,8 @@ TP.FOCUSABLE_QUERIES = [
     '*[tabindex]:not([tabindex="-1"]):not([disabled])'
 ];
 
+TP.DISABLED = 'disabled';
+
 //  ---
 //  encryption/security
 //  ---
