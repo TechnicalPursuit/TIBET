@@ -34,18 +34,29 @@ function(aSignal) {
      * @returns {TP.xctrls.signalmenucontent} The receiver.
      */
 
-    var value;
+    var origin,
+        sigName,
+        payload;
 
-    value = TP.wrap(aSignal.getSignalOrigin()).getValue();
+    //  Grab the signal origin and wrap it. This should be the menu itself.
+    origin = TP.wrap(aSignal.getSignalOrigin());
+    if (!TP.isKindOf(origin, TP.xctrls.menu)) {
+        return this;
+    }
 
-    if (TP.isEmpty(value)) {
+    //  Grab the value, which will be the name of the signal to broadcast, and
+    //  the value data, which will form the payload of the signal.
+    sigName = origin.getValue();
+    payload = origin.getValueData();
+
+    if (TP.isEmpty(sigName)) {
         return this;
     }
 
     //  Signal with the signal name that was the selected value.
-    this.signal(value);
+    this.signal(sigName, payload);
 
-    return false;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
