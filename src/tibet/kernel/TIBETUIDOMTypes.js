@@ -47,21 +47,12 @@ TP.dom.UIElementNode.Type.defineAttribute('toggleableStateNames', TP.ac());
 //  new instances of the tag.
 TP.dom.UIElementNode.Type.defineAttribute('requiredAttrs');
 
-TP.dom.UIElementNode.Type.defineAttribute('booleanAttrs',
-                                            TP.ac(
-                                                'pclass:active',
-                                                'pclass:busy',
-                                                'pclass:closed',
-                                                'pclass:collapsed',
-                                                'pclass:disabled',
-                                                'pclass:focused',
-                                                'pclass:hidden',
-                                                'pclass:invalid',
-                                                'pclass:out-of-range',
-                                                'pclass:readonly',
-                                                'pclass:required',
-                                                'pclass:selected'
-                                            ));
+TP.dom.UIElementNode.Type.set('booleanAttrs',
+        TP.dom.UIElementNode.Type.get('booleanAttrs').concat(
+            TP.ac('pclass:active', 'pclass:busy', 'pclass:closed',
+                    'pclass:collapsed', 'pclass:disabled', 'pclass:focused',
+                    'pclass:hidden', 'pclass:invalid', 'pclass:out-of-range',
+                    'pclass:readonly', 'pclass:required', 'pclass:selected')));
 
 //  Note how these properties are TYPE_LOCAL, by design.
 

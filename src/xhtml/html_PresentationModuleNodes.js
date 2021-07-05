@@ -92,7 +92,9 @@ function(aValue) {
 
 TP.html.Attrs.defineSubtype('details');
 
-TP.html.details.Type.set('booleanAttrs', TP.ac('open'));
+TP.html.details.Type.set('booleanAttrs',
+        TP.html.details.Type.get('booleanAttrs').concat(
+            TP.ac('open')));
 
 //  ========================================================================
 //  TP.html.dialog (HTML 5)
@@ -107,7 +109,9 @@ TP.html.details.Type.set('booleanAttrs', TP.ac('open'));
 
 TP.html.Attrs.defineSubtype('dialog');
 
-TP.html.dialog.Type.set('booleanAttrs', TP.ac('open'));
+TP.html.dialog.Type.set('booleanAttrs',
+        TP.html.dialog.Type.get('booleanAttrs').concat(
+            TP.ac('open')));
 
 //  ========================================================================
 //  TP.html.hr
@@ -122,7 +126,9 @@ TP.html.dialog.Type.set('booleanAttrs', TP.ac('open'));
 
 TP.html.Aligned.defineSubtype('hr');
 
-TP.html.hr.Type.set('booleanAttrs', TP.ac('noShade'));
+TP.html.hr.Type.set('booleanAttrs',
+        TP.html.hr.Type.get('booleanAttrs').concat(
+            TP.ac('noShade')));
 
 TP.html.hr.addTraits(TP.dom.EmptyElementNode);
 

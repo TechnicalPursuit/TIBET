@@ -17,7 +17,9 @@ TP.html.Attrs.defineSubtype('tcell');
 //  can't construct concrete instances of this
 TP.html.tcell.isAbstract(true);
 
-TP.html.tcell.Type.set('booleanAttrs', TP.ac('noWrap'));
+TP.html.tcell.Type.set('booleanAttrs',
+        TP.html.tcell.Type.get('booleanAttrs').concat(
+            TP.ac('noWrap')));
 
 //  ========================================================================
 //  TP.html.tcolumn
@@ -88,7 +90,9 @@ TP.html.tcolumn.defineSubtype('colgroup');
 
 TP.html.Attrs.defineSubtype('table');
 
-TP.html.table.Type.set('booleanAttrs', TP.ac('sortable'));
+TP.html.table.Type.set('booleanAttrs',
+        TP.html.table.Type.get('booleanAttrs').concat(
+            TP.ac('sortable')));
 
 //  ------------------------------------------------------------------------
 

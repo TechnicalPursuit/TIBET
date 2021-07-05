@@ -309,7 +309,8 @@ TP.html.Attrs.defineSubtype('object');
 TP.html.object.isAbstract(true);
 
 TP.html.object.Type.set('booleanAttrs',
-            TP.ac('declare', 'typeMustMatch', 'willValidate'));
+        TP.html.object.Type.get('booleanAttrs').concat(
+            TP.ac('declare', 'typeMustMatch', 'willValidate')));
 
 TP.html.object.Type.set('uriAttrs', TP.ac('classid', 'codebase', 'usemap', 'data'));
 
@@ -422,7 +423,9 @@ TP.html.source.Type.set('uriAttrs', TP.ac('src'));
 TP.html.Attrs.defineSubtype('track');
 
 TP.html.track.Type.set('uriAttrs', TP.ac('src'));
-TP.html.track.Type.set('booleanAttrs', TP.ac('default'));
+TP.html.track.Type.set('booleanAttrs',
+        TP.html.track.Type.get('booleanAttrs').concat(
+            TP.ac('default')));
 
 TP.html.track.addTraits(TP.dom.EmptyElementNode);
 

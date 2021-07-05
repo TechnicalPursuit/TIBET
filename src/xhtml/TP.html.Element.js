@@ -28,9 +28,10 @@ TP.html.Element.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.html.Element.Type.set('booleanAttrs',
-        TP.ac('translate', 'itemScope', 'hidden', 'draggable',
-                'isContentEditable', 'spellcheck',
-                'commandHidden', 'commandDisabled', 'commandChecked'));
+        TP.html.Element.Type.get('booleanAttrs').concat(
+            TP.ac('translate', 'itemScope', 'hidden', 'draggable',
+                    'isContentEditable', 'spellcheck',
+                    'commandHidden', 'commandDisabled', 'commandChecked')));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

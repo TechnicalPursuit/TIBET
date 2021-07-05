@@ -21,7 +21,9 @@
 
 TP.html.Attrs.defineSubtype('style');
 
-TP.html.style.Type.set('booleanAttrs', TP.ac('scoped'));
+TP.html.style.Type.set('booleanAttrs',
+        TP.html.style.Type.get('booleanAttrs').concat(
+            TP.ac('scoped')));
 TP.html.style.Type.set('reloadableUriAttrs', TP.ac('tibet:originalhref'));
 
 //  ------------------------------------------------------------------------
