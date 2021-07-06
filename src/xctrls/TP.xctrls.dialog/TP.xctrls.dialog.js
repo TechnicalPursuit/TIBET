@@ -114,14 +114,8 @@ function() {
     tpDoc = this.getDocument();
 
     curtainID = this.getAttribute('curtainID');
-    if (TP.notEmpty(curtainID)) {
-        curtainTPElem = tpDoc.get('//*[@id="' + curtainID + '"]');
-        if (TP.isKindOf(curtainTPElem, TP.dom.ElementNode)) {
-            return curtainTPElem;
-        }
-    }
 
-    return TP.xctrls.curtain.getSystemCurtainFor(tpDoc);
+    return TP.xctrls.curtain.getCurtainById(tpDoc, curtainID);
 });
 
 //  ------------------------------------------------------------------------

@@ -1556,7 +1556,7 @@ TP.lama.CSSDraggableSlotEditor.Inst.defineAttribute('curtain',
     TP.xpc('//*[@id="systemCurtain"]',
         TP.hc('shouldCollapse', true)
     ).set('fallbackWith', function(tpTarget) {
-        return TP.xctrls.curtain.getSystemCurtainFor(
+        return TP.xctrls.curtain.getCurtainById(
             tpTarget.getDocument(),
             'systemCurtain');
     }));
