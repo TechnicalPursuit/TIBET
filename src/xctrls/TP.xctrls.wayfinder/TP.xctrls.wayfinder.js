@@ -2763,18 +2763,19 @@ function(aDataObject, shouldSignal, isFiltered) {
 
     keys.forEach(
         function(aKey, anIndex) {
-            var type,
+            var sourceObj,
                 resolver;
 
-            type = filteringSource.at(anIndex);
+            sourceObj = filteringSource.at(anIndex);
 
-            type = TP.sys.getTypeByName(type);
-            if (!TP.isType(type)) {
-                //  TODO: Raise an exception - can't find type
-                return;
+            if (TP.isString(sourceObj)) {
+                resolver = TP.bySystemId(sourceObj);
+            } else {
+                resolver = sourceObj;
             }
 
-            resolver = type.construct();
+            //  TODO: Verify that resolver implements TP.xctrls.WayfinderAPI
+            //  Use canInvokeInterface(methodNameArray);
 
             this.addEntry(resolver.getEntryLabel(aKey), resolver);
         }.bind(this));
@@ -3136,29 +3137,6 @@ function(aSourceName) {
     }
 
     return target;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.wayfinder.Inst.defineMethod('resolveAspectForWayfinder',
-function(anAspect, options) {
-
-    /**
-     * @method resolveAspectForWayfinder
-     * @summary Returns the object that is produced when resolving the aspect
-     *     against the receiver.
-     * @param {String} anAspect The aspect to resolve against the receiver to
-     *     produce the return value.
-     * @param {TP.core.Hash} options A hash of data available to this source to
-     *     generate the configuration data. This will have the following keys,
-     *     amongst others:
-     *          'pathParts':        The Array of parts that make up the
-     *                              currently selected path.
-     * @returns {Object} The object produced when resolving the aspect against
-     *     the receiver.
-     */
-
-    return this.getEntryAt(anAspect);
 });
 
 //  ------------------------------------------------------------------------
