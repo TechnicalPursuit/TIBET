@@ -4458,14 +4458,15 @@ function(aPath, aValue, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.uri.URI.Inst.defineMethod('setResourceToResultOf',
-function(aURI, aRequest, shouldCopy) {
+function(aURI, aRequest, shouldCopy, conversionFunc) {
 
     /**
      * @method setResourceToResultOf
      * @summary Sets the receiver's resource object to the result of the
      *     resource pointed to by aURI. If the shouldCopy flag is true, then a
      *     copy of the result is made before setting it as the resource of the
-     *     receiver.
+     *     receiver. Note that this method will fetch and set its results
+     *     asynchronously unles 'async', 'false' is specified in the request.
      * @param {TP.uri.URI} aURI The URI of the resource object to use as the
      *     resource source.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
@@ -4473,6 +4474,9 @@ function(aURI, aRequest, shouldCopy) {
      * @param {Boolean} [shouldCopy=false] Whether or not to make a copy of the
      *     result before using it as the receiver's resource. Note that this
      *     will cause a *deep copy* of the receiver's resource to be made.
+     * @param {Function} [conversionFunc] A Function that will take the fetched
+     *     data and perform some sort of conversion on them. It should return
+     *     that result.
      * @returns {TP.sig.Response|null} A TP.sig.Response created with the newly
      *     set content set as its result or null if there was no content in the
      *     result.
@@ -4480,28 +4484,46 @@ function(aURI, aRequest, shouldCopy) {
 
     var req,
 
-        result,
-        newResult;
+        processResult,
+        wantsSync,
+
+        resp;
 
     //  Copy the request and make sure it's configured for an 'sync' fetch.
     req = TP.request(aRequest).copy();
-    req.atPut('async', false);
 
-    result = aURI.getResource(req).get('result');
-    if (TP.isValid(result)) {
+    processResult = function(aResult) {
+        var newResult;
 
-        if (TP.isTrue(shouldCopy)) {
-            newResult = TP.copy(result, true);
-        } else {
-            newResult = result;
+        if (TP.isValid(aResult)) {
+
+            if (TP.isTrue(shouldCopy)) {
+                newResult = TP.copy(aResult, true);
+            } else {
+                newResult = aResult;
+            }
+
+            if (TP.isCallable(conversionFunc)) {
+                newResult = conversionFunc(newResult);
+            }
+
+            this.set('shouldCreateContent', true);
+
+            this.setResource(newResult, aRequest);
         }
 
-        this.set('shouldCreateContent', true);
+        return newResult;
+    }.bind(this);
 
-        return this.setResource(newResult, aRequest);
+    wantsSync = req.at('async') === false;
+    if (wantsSync) {
+        return processResult(aURI.getResource(req).get('result'));
+    } else {
+        return aURI.getResource(req).then(
+            function(aResult) {
+                return processResult(aResult);
+            });
     }
-
-    return null;
 });
 
 //  ------------------------------------------------------------------------

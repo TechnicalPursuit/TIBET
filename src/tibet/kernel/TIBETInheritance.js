@@ -13606,7 +13606,7 @@ function(aSignal) {
 
     scopeURI.setResourceToResultOf(
         sourceURI,
-        TP.hc('signalChange', true),
+        TP.hc('signalChange', true, 'async', false),
         TP.bc(aSignal.at('copy')));
 
     return this;
