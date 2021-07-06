@@ -108,8 +108,7 @@ function() {
 
     var tpDoc,
 
-        curtainID,
-        curtainTPElem;
+        curtainID;
 
     tpDoc = this.getDocument();
 
@@ -346,9 +345,13 @@ function(info) {
 
                 dialogTPElem,
 
+                curtainID,
+
                 title,
 
                 dialogElem,
+
+                attrHash,
 
                 typeName,
 
@@ -397,11 +400,28 @@ function(info) {
 
             if (TP.notValid(dialogTPElem)) {
 
+                //  If the caller provided an attribute hash, then copy that.
+                //  Otherwise, create a new one. We'll populate it with the 'id'
+                //  and 'curtainID' below.
+                if (TP.isValid(info.at('attrs'))) {
+                    attrHash = TP.copy(info.at('attrs'));
+                } else {
+                    attrHash = TP.hc();
+                }
+
+                attrHash.atPut('id', dialogID);
+
+                //  The caller might have provided the ID of the curtain we're
+                //  supposed to use. Otherwise, we default to the shared system
+                //  curtain.
+                curtainID = TP.ifInvalid(info.at('curtainID'), 'systemCurtain');
+                attrHash.atPut('curtainID', curtainID);
+
                 //  Create a new 'xctrls:dialog' Element and set it's modal
                 //  attribute if appropriate.
                 dialogElem = TP.elem(
-                                '<xctrls:dialog id="' + dialogID + '"' +
-                                ' curtainID="systemCurtain"/>');
+                    '<xctrls:dialog ' + attrHash.asAttributeString() + '/>');
+
                 if (isModal) {
                     TP.elementSetAttribute(dialogElem, 'modal', 'true', true);
                 }
