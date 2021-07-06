@@ -5342,6 +5342,11 @@ function(anObject) {
         return null;
     }
 
+    //  We never wrap POJOs.
+    if (TP.isPlainObject(anObject)) {
+        return anObject;
+    }
+
     //  The wrapped value of a Type is the Type (native or TIBET-made)
     if (TP.isType(anObject) || TP.isNamespace(anObject)) {
         return anObject;
