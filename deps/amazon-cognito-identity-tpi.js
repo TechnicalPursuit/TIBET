@@ -6495,9 +6495,97 @@ var CognitoUser = /*#__PURE__*/function () {
    */
   ;
 
-  _proto.signOut = function signOut() {
+  _proto.signOut = function signOut(revokeTokenCallback) {
+    var _this17 = this;
+
+    // If tokens won't be revoked, we just clean the client data.
+    if (!revokeTokenCallback || typeof revokeTokenCallback !== "function") {
+      this.cleanClientData();
+      return;
+    }
+
+    this.getSession(function (error, _session) {
+      if (error) {
+        return revokeTokenCallback(error);
+      }
+
+      _this17.revokeTokens(function (err) {
+        _this17.cleanClientData();
+
+        revokeTokenCallback(err);
+      });
+    });
+  };
+
+  _proto.revokeTokens = function revokeTokens(revokeTokenCallback) {
+    if (revokeTokenCallback === void 0) {
+      revokeTokenCallback = function revokeTokenCallback() {};
+    }
+
+    if (typeof revokeTokenCallback !== 'function') {
+      throw new Error('Invalid revokeTokenCallback. It should be a function.');
+    }
+
+    var tokensToBeRevoked = [];
+
+    if (!this.signInUserSession) {
+      var error = new Error('User is not authenticated');
+      return revokeTokenCallback(error);
+    }
+
+    if (!this.signInUserSession.getAccessToken()) {
+      var _error = new Error('No Access token available');
+
+      return revokeTokenCallback(_error);
+    }
+
+    var refreshToken = this.signInUserSession.getRefreshToken().getToken();
+    var accessToken = this.signInUserSession.getAccessToken();
+
+    if (this.isSessionRevocable(accessToken)) {
+      if (refreshToken) {
+        return this.revokeToken({
+          token: refreshToken,
+          callback: revokeTokenCallback
+        });
+      }
+    }
+
+    revokeTokenCallback();
+  };
+
+  _proto.isSessionRevocable = function isSessionRevocable(token) {
+    if (token && typeof token.decodePayload === 'function') {
+      try {
+        var _token$decodePayload = token.decodePayload(),
+            origin_jti = _token$decodePayload.origin_jti;
+
+        return !!origin_jti;
+      } catch (err) {// Nothing to do, token doesnt have origin_jti claim
+      }
+    }
+
+    return false;
+  };
+
+  _proto.cleanClientData = function cleanClientData() {
     this.signInUserSession = null;
     this.clearCachedUser();
+  };
+
+  _proto.revokeToken = function revokeToken(_ref2) {
+    var token = _ref2.token,
+        callback = _ref2.callback;
+    this.client.requestWithRetry('RevokeToken', {
+      Token: token,
+      ClientId: this.pool.getClientId()
+    }, function (err) {
+      if (err) {
+        return callback(err);
+      }
+
+      callback();
+    });
   }
   /**
    * This is used by a user trying to select a given MFA
@@ -6508,7 +6596,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.sendMFASelectionAnswer = function sendMFASelectionAnswer(answerChallenge, callback) {
-    var _this17 = this;
+    var _this18 = this;
 
     var challengeResponses = {};
     challengeResponses.USERNAME = this.username;
@@ -6529,7 +6617,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback.onFailure(err);
       }
 
-      _this17.Session = data.Session;
+      _this18.Session = data.Session;
 
       if (answerChallenge === 'SMS_MFA') {
         return callback.mfaRequired(data.ChallengeName, data.ChallengeParameters);
@@ -6560,7 +6648,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.associateSoftwareToken = function associateSoftwareToken(callback) {
-    var _this18 = this;
+    var _this19 = this;
 
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       this.client.request('AssociateSoftwareToken', {
@@ -6570,7 +6658,7 @@ var CognitoUser = /*#__PURE__*/function () {
           return callback.onFailure(err);
         }
 
-        _this18.Session = data.Session;
+        _this19.Session = data.Session;
         return callback.associateSecretCode(data.SecretCode);
       });
     } else {
@@ -6595,7 +6683,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.verifySoftwareToken = function verifySoftwareToken(totpCode, friendlyDeviceName, callback) {
-    var _this19 = this;
+    var _this20 = this;
 
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       this.client.request('VerifySoftwareToken', {
@@ -6607,30 +6695,30 @@ var CognitoUser = /*#__PURE__*/function () {
           return callback.onFailure(err);
         }
 
-        _this19.Session = data.Session;
+        _this20.Session = data.Session;
         var challengeResponses = {};
-        challengeResponses.USERNAME = _this19.username;
+        challengeResponses.USERNAME = _this20.username;
         var jsonReq = {
           ChallengeName: 'MFA_SETUP',
-          ClientId: _this19.pool.getClientId(),
+          ClientId: _this20.pool.getClientId(),
           ChallengeResponses: challengeResponses,
-          Session: _this19.Session
+          Session: _this20.Session
         };
 
-        if (_this19.getUserContextData()) {
-          jsonReq.UserContextData = _this19.getUserContextData();
+        if (_this20.getUserContextData()) {
+          jsonReq.UserContextData = _this20.getUserContextData();
         }
 
-        _this19.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
+        _this20.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
           if (errRespond) {
             return callback.onFailure(errRespond);
           }
 
-          _this19.signInUserSession = _this19.getCognitoUserSession(dataRespond.AuthenticationResult);
+          _this20.signInUserSession = _this20.getCognitoUserSession(dataRespond.AuthenticationResult);
 
-          _this19.cacheTokens();
+          _this20.cacheTokens();
 
-          return callback.onSuccess(_this19.signInUserSession);
+          return callback.onSuccess(_this20.signInUserSession);
         });
 
         return undefined;
@@ -8058,6 +8146,10 @@ var CognitoUserPool = /*#__PURE__*/function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserAgent__ = __webpack_require__(20);
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
 
 function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
@@ -8132,6 +8224,27 @@ var Client = /*#__PURE__*/function () {
           resolve(data);
         }
       });
+    });
+  };
+
+  _proto.requestWithRetry = function requestWithRetry(operation, params, callback) {
+    var _this3 = this;
+
+    var MAX_DELAY_IN_MILLIS = 5 * 1000;
+    jitteredExponentialRetry(function (p) {
+      return new Promise(function (res, rej) {
+        _this3.request(operation, p, function (error, result) {
+          if (error) {
+            rej(error);
+          } else {
+            res(result);
+          }
+        });
+      });
+    }, [params], MAX_DELAY_IN_MILLIS).then(function (result) {
+      return callback(null, result);
+    })["catch"](function (error) {
+      return callback(error);
     });
   }
   /**
@@ -8220,6 +8333,131 @@ var Client = /*#__PURE__*/function () {
 }();
 
 
+var logger = {
+  debug: function debug() {// Intentionally blank. This package doesn't have logging
+  }
+};
+/**
+ * For now, all errors are retryable.
+ */
+
+var NonRetryableError = /*#__PURE__*/function (_Error2) {
+  _inheritsLoose(NonRetryableError, _Error2);
+
+  function NonRetryableError(message) {
+    var _this4;
+
+    _this4 = _Error2.call(this, message) || this;
+    _this4.nonRetryable = true;
+    return _this4;
+  }
+
+  return NonRetryableError;
+}( /*#__PURE__*/_wrapNativeSuper(Error));
+
+var isNonRetryableError = function isNonRetryableError(obj) {
+  var key = 'nonRetryable';
+  return obj && obj[key];
+};
+
+function retry(_x, _x2, _x3, _x4) {
+  return _retry.apply(this, arguments);
+}
+
+function _retry() {
+  _retry = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(functionToRetry, args, delayFn, attempt) {
+    var retryIn;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            if (attempt === void 0) {
+              attempt = 1;
+            }
+
+            if (!(typeof functionToRetry !== 'function')) {
+              _context.next = 3;
+              break;
+            }
+
+            throw Error('functionToRetry must be a function');
+
+          case 3:
+            logger.debug(functionToRetry.name + " attempt #" + attempt + " with args: " + JSON.stringify(args));
+            _context.prev = 4;
+            _context.next = 7;
+            return functionToRetry.apply(void 0, args);
+
+          case 7:
+            return _context.abrupt("return", _context.sent);
+
+          case 10:
+            _context.prev = 10;
+            _context.t0 = _context["catch"](4);
+            logger.debug("error on " + functionToRetry.name, _context.t0);
+
+            if (!isNonRetryableError(_context.t0)) {
+              _context.next = 16;
+              break;
+            }
+
+            logger.debug(functionToRetry.name + " non retryable error", _context.t0);
+            throw _context.t0;
+
+          case 16:
+            retryIn = delayFn(attempt, args, _context.t0);
+            logger.debug(functionToRetry.name + " retrying in " + retryIn + " ms");
+
+            if (!(retryIn !== false)) {
+              _context.next = 26;
+              break;
+            }
+
+            _context.next = 21;
+            return new Promise(function (res) {
+              return setTimeout(res, retryIn);
+            });
+
+          case 21:
+            _context.next = 23;
+            return retry(functionToRetry, args, delayFn, attempt + 1);
+
+          case 23:
+            return _context.abrupt("return", _context.sent);
+
+          case 26:
+            throw _context.t0;
+
+          case 27:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[4, 10]]);
+  }));
+  return _retry.apply(this, arguments);
+}
+
+function jitteredBackoff(maxDelayMs) {
+  var BASE_TIME_MS = 100;
+  var JITTER_FACTOR = 100;
+  return function (attempt) {
+    var delay = Math.pow(2, attempt) * BASE_TIME_MS + JITTER_FACTOR * Math.random();
+    return delay > maxDelayMs ? false : delay;
+  };
+}
+
+var MAX_DELAY_MS = 5 * 60 * 1000;
+
+function jitteredExponentialRetry(functionToRetry, args, maxDelayMs) {
+  if (maxDelayMs === void 0) {
+    maxDelayMs = MAX_DELAY_MS;
+  }
+
+  return retry(functionToRetry, args, jitteredBackoff(maxDelayMs));
+}
+
+;
 
 /***/ }),
 /* 31 */
