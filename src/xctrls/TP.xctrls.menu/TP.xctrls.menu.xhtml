@@ -8,7 +8,9 @@
         <div class="header"/>
         <div class="body">
             <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
-                <xctrls:content tibet:pelem="choices" class="noselect"/>
+                <xctrls:content tibet:pelem="choices" class="noselect">
+                    {{$SOURCE.(./node())}}
+                </xctrls:content>
             </tibet:group>
         </div>
         <div class="footer"/>

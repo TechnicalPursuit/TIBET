@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 
 <xctrls:signalmenucontent>
-    <xctrls:menu bind:in="{{$SOURCE.(@bind:in)}}"/>
+    <xctrls:menu bind:in="{{$SOURCE.(@bind:in)}}">
+        {{$SOURCE.(./node())}}
+    </xctrls:menu>
 </xctrls:signalmenucontent>
