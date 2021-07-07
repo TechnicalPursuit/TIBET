@@ -570,7 +570,7 @@ function(aSignal) {
 
         //  Grab the value element of the list item.
         valueTPElem = wrappedDOMTarget.get('xctrls|value');
-        if (TP.notValid(valueTPElem)) {
+        if (TP.notValid(valueTPElem) || !TP.canInvoke(valueTPElem, 'getTextContent')) {
             return this;
         }
 
