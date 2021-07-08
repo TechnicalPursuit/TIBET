@@ -121,6 +121,26 @@ xctrls|radioitem {
     --xctrls-radioitem-check-color-disabled: #eee;
 }
 
+xctrls|menuitem {
+
+    /* xctrls|menuitem variables */
+
+    --xctrls-menuitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-menuitem-font-color-normal: black;
+    --xctrls-menuitem-font-color-hover: #666;
+    --xctrls-menuitem-font-color-focus: #666;
+    --xctrls-menuitem-font-color-active: #666;
+    --xctrls-menuitem-font-color-disabled: #aaa;
+
+    --xctrls-menuitem-background-color-normal: transparent;
+    --xctrls-menuitem-background-color-hover: cornsilk;
+    --xctrls-menuitem-background-color-focus: gold;
+    --xctrls-menuitem-background-color-active: gold;
+    --xctrls-menuitem-background-color-disabled: #eee;
+
+    --xctrls-menuitem-background-color-selected: gold;
+}
+
 xctrls|textitem {
 
     /* xctrls|textitem variables */
@@ -441,6 +461,19 @@ xctrls|signalmenucontent {
 
     --xctrls-signalmenucontent-menu-margin: 2px;
     --xctrls-signalmenucontent-menu-line-height: 29px;
+
+    --xctrls-signalmenucontent-menuitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-signalmenucontent-menuitem-font-color-normal: #999;
+
+    --xctrls-signalmenucontent-menuitem-border-width: 1px;
+    --xctrls-signalmenucontent-menuitem-border-style: solid;
+    --xctrls-signalmenucontent-menuitem-border-color-normal: #999;
+
+    --xctrls-signalmenucontent-menuitem-padding: 5px;
+
+    --xctrls-signalmenucontent-menuitem-background-color-hover: cornsilk;
+    --xctrls-signalmenucontent-menuitem-font-color-hover: #eee;
+    --xctrls-signalmenucontent-menuitem-border-color-hover: #eee;
 
     --xctrls-signalmenucontent-textitem-font-family: arial, helvetica, clean, sans-serif;
     --xctrls-signalmenucontent-textitem-font-color-normal: black;
