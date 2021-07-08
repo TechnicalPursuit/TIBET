@@ -122,6 +122,10 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.signalmenucontent-TP.xctrls.signalmenucontent.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.signalmenucontent_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.signalmenucontent_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.menuitem-TP.xctrls.menuitem.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.menuitem-TP.xctrls.menuitem.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.menuitem_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.menuitem_all.css.js"/>
 </config>
 
 <config id="base-inlined" if="boot.phase_one boot.inlined">

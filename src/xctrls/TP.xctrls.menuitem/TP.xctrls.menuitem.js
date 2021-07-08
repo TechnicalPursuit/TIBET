@@ -14,7 +14,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.TemplatedTag.defineSubtype('TP.xctrls:menuitem');
+TP.xctrls.item.defineSubtype('xctrls:menuitem');
+
+TP.xctrls.menuitem.addTraits(TP.xctrls.TemplatedTag);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

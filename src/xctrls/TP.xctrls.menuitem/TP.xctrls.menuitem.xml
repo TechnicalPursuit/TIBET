@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    basedir="~app_tags/TP.xctrls.menuitem"
+    basedir="~lib_src/xctrls/TP.xctrls.menuitem"
     name="xctrls.menuitem" default="base">
 
 
@@ -11,6 +11,8 @@
 
 <config id="properties">
     <!-- put tag-specific property tags here -->
+    <property name="path.TP.xctrls.menuitem.style" value="~TP.xctrls.menuitem/TP.xctrls.menuitem.css"/>
+    <property name="path.TP.xctrls.menuitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.menuitem_tpi.css"/>
 </config>
 
 <config id="scripts">

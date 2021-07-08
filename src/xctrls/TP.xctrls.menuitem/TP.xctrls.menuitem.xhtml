@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 
-<xctrls:menuitem>
-{{:if TP.has.lama}}
-<a href="#" onclick="TP.bySystemId('LamaConsoleService').sendConsoleRequest('target = TP.elementGetGeneratingElement(TP.byId(\'' + event.target.id + '\', null, false)); :halo target ; :inspect $HALO --path=\'__TARGET__/Structure\''); return false;" tibet:no-rewrite="true">&lt;xctrls:menuitem/&gt;</a>
-{{:else}}
-<a href="#" onclick="alert('Edit TP.xctrls.menuitem.xhtml.')">&lt;xctrls:menuitem/&gt;</a>
-{{/:if}}
+<xctrls:menuitem class="item {{$SOURCE.(@class)}}">
+    <xctrls:image class="icon" name="{{$SOURCE.(@icon) .|| 'blank'}}"/>
+    {{$SOURCE.(./node())}}
+    <xctrls:image class="more" name="{{$SOURCE.(@more) .|| 'blank'}}"/>
 </xctrls:menuitem>

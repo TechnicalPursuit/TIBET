@@ -4,22 +4,84 @@
 
 @namespace url("http://www.w3.org/1999/xhtml");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
-@namespace xctrls url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
 
-/**
- * If your template/compute process transforms <xctrls:menuitem/> tags
- * from namespaced XML into XHTML with a tibet:tag attribute so they render
- * in the page similar to <div tibet:tag="xctrls:menuitem"/> place your
- * style in rules with the following root form:
- */
-*[tibet|tag="xctrls:menuitem"] {
-    /* style here for xhtml converted tags */
-}
-
-/**
- * If you don't transform from XML form (tags in the page remain in their
- * <xctrls:menuitem/> form) use rules of this form:
- */
 xctrls|menuitem {
-    /* style here for pure XML tags */
+    display: flex;
+    user-select: none;
 }
+
+/* Hovering over the menuitem */
+xctrls|menuitem:hover {
+
+}
+
+/* Focusing on the menuitem */
+xctrls|menuitem[pclass|focus] {
+
+}
+
+/* Clicking down on the menuitem */
+xctrls|menuitem[pclass|active] {
+
+}
+
+/* The menuitem is disabled */
+xctrls|menuitem[pclass|disabled] {
+
+}
+
+/* The menuitem is selected */
+xctrls|menuitem[pclass|selected] {
+
+}
+
+/* The menuitem label */
+xctrls|menuitem xctrls|label {
+    flex: 1;
+    white-space: nowrap;
+}
+
+/* Clicking down on the menuitem, label must highlight */
+xctrls|menuitem[pclass|active] {
+
+}
+
+xctrls|menuitem[pclass|active] > xctrls|label {
+}
+
+xctrls|menuitem[pclass|active][pclass|selected] > xctrls|label {
+
+}
+
+/* The menuitem is disabled, so is the label */
+xctrls|menuitem[pclass|disabled] > xctrls|label {
+
+}
+
+xctrls|menuitem > xctrls|image {
+}
+
+xctrls|menuitem:hover > xctrls|image {
+}
+
+xctrls|menuitem[pclass|active] > xctrls|image {
+}
+
+xctrls|menuitem[pclass|active][pclass|selected] > xctrls|image {
+}
+
+xctrls|menuitem[pclass|disabled] > xctrls|image {
+}
+
+xctrls|menuitem[pclass|focus] > xctrls|image {
+}
+
+xctrls|menuitem > xctrls|image[class="icon"] {
+}
+
+xctrls|menuitem > xctrls|image[class="more"] {
+}
+

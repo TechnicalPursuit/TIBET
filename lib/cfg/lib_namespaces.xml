@@ -370,6 +370,7 @@
     <package src="xctrls/TP.xctrls.imageitem/TP.xctrls.imageitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.list/TP.xctrls.list.xml" config="base"/>
     <package src="xctrls/TP.xctrls.menu/TP.xctrls.menu.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.menuitem/TP.xctrls.menuitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.notifier/TP.xctrls.notifier.xml" config="base"/>
     <package src="xctrls/TP.xctrls.pagerbar/TP.xctrls.pagerbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.xml" config="base"/>
