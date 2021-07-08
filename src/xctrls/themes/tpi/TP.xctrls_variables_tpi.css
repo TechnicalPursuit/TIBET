@@ -482,7 +482,8 @@ xctrls|signalmenucontent {
     --xctrls-signalmenucontent-textitem-border-style: solid;
     --xctrls-signalmenucontent-textitem-border-color-normal: #999;
 
-    --xctrls-signalmenucontent-textitem-padding: 5px;
+    --xctrls-signalmenucontent-textitem-margin: 0 0 1px 0;
+    --xctrls-signalmenucontent-textitem-padding: 1em;
 
     --xctrls-signalmenucontent-textitem-background-color-hover: cornsilk;
     --xctrls-signalmenucontent-textitem-font-color-hover: #eee;
