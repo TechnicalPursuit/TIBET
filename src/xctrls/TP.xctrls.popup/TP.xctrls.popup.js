@@ -99,7 +99,7 @@ function(aSignal) {
     var popupTPElem;
 
     popupTPElem = this.getOverlayElement(aSignal);
-    if (popupTPElem.isVisible()) {
+    if (popupTPElem.isDisplayed()) {
         return this;
     }
 
@@ -136,7 +136,7 @@ function(aSignal) {
         popupTPElem.set('isSticky', false, false);
     }
 
-    if (popupTPElem.isVisible()) {
+    if (popupTPElem.isDisplayed()) {
         popupTPElem.setAttribute('closed', true);
         popupTPElem.setAttribute('hidden', true);
     } else {
