@@ -15183,7 +15183,7 @@ function(attributeName, attributeValue) {
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
      * @returns {undefined} Undefined according to the spec for DOM
-     *     'setAttribute'.
+     *     setAttribute.
      */
 
     var suspendedAttrs,
@@ -15195,7 +15195,7 @@ function(attributeName, attributeValue) {
     suspendedAttrs = this.$get('$suspendedAttributes');
     if (TP.isValid(suspendedAttrs) &&
         suspendedAttrs.indexOf(attributeName) !== TP.NOT_FOUND) {
-        //  returns null according to the spec for DOM 'setAttribute'.
+        //  returns null according to the spec for DOM setAttribute.
         return;
     }
 
@@ -15944,7 +15944,7 @@ function(aValue, shouldSignal) {
     /**
      * @method setValue
      * @summary Sets the value of the receiver's node. For attribute nodes,
-     *     this calls 'setAttribute' with the attribute name on the owner
+     *     this calls setAttribute with the attribute name on the owner
      *     element.
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false

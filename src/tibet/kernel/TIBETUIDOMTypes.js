@@ -4783,7 +4783,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
      * @returns {undefined} Undefined according to the spec for DOM
-     *     'setAttribute'.
+     *     setAttribute.
      */
 
     var node,

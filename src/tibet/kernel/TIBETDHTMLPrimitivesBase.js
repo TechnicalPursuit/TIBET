@@ -2113,7 +2113,7 @@ function(anElement, aClassName) {
     if (TP.notValid(aClassName)) {
         TP.elementRemoveAttribute(anElement, 'class');
     } else {
-        //  NB: We use native 'setAttribute' call here, or we'll recurse
+        //  NB: We use native setAttribute call here, or we'll recurse
         //  into TP.elementSetAttribute()
         anElement.setAttribute('class', aClassName);
     }

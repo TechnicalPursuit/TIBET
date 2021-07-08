@@ -1,0 +1,25 @@
+/**
+ * @overview 'TP.xctrls.menuitem' styles.
+ */
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/1999/tibet");
+
+/**
+ * If your template/compute process transforms <xctrls:menuitem/> tags
+ * from namespaced XML into XHTML with a tibet:tag attribute so they render
+ * in the page similar to <div tibet:tag="xctrls:menuitem"/> place your
+ * style in rules with the following root form:
+ */
+*[tibet|tag="xctrls:menuitem"] {
+    /* style here for xhtml converted tags */
+}
+
+/**
+ * If you don't transform from XML form (tags in the page remain in their
+ * <xctrls:menuitem/> form) use rules of this form:
+ */
+xctrls|menuitem {
+    /* style here for pure XML tags */
+}
