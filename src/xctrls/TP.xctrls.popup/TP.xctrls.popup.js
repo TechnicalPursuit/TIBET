@@ -99,9 +99,13 @@ function(aSignal) {
     var popupTPElem;
 
     popupTPElem = this.getOverlayElement(aSignal);
+    /*
+     * TODO:    can't just assume if it's open it's fine, the content URI may
+     *          have changed because we reuse the element for different content.
     if (popupTPElem.isDisplayed()) {
         return this;
     }
+    */
 
     if (TP.isTrue(aSignal.at('sticky'))) {
         popupTPElem.set('isSticky', true, false);
