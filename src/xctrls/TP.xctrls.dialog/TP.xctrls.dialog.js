@@ -400,6 +400,9 @@ function(info) {
 
             if (TP.notValid(dialogTPElem)) {
 
+                //  Reset win to uiwin (not getUIRoot from lama-based search)
+                win = TP.sys.uiwin(true);
+
                 //  If the caller provided an attribute hash, then copy that.
                 //  Otherwise, create a new one. We'll populate it with the 'id'
                 //  and 'curtainID' below.
