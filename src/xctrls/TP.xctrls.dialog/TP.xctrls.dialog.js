@@ -810,7 +810,7 @@ function(aQuestion, aDefaultAnswer, info) {
 
                 answerPromise;
 
-            inputField = TP.byCSSPath(' .dialogContent input[type="text"]',
+            inputField = TP.byCSSPath(' .dialogPrompt',
                                         dialogTPElem,
                                         true);
 
@@ -1009,7 +1009,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
     }
 
     //  Make a node out of the built HTML - we'll inject this into the
-    //  'choiceContent' div below.
+    //  'dialogChoices' div below.
     choicesNode = TP.xhtmlnode(str);
 
     //  Call the TP.dialog() method with that data and specifying that the panel
@@ -1029,7 +1029,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
     return promise.then(
         function(dialogTPElem) {
 
-            var choiceContent,
+            var dialogChoices,
 
                 inputField,
                 openField,
@@ -1038,9 +1038,9 @@ function(aQuestion, choices, aDefaultAnswer, info) {
 
                 answerPromise;
 
-            //  Grab the choiceContent and inject the node that we built above.
-            choiceContent = TP.byCSSPath(' .choiceContent', dialogTPElem, true);
-            choiceContent.setContent(choicesNode);
+            //  Grab the dialogChoices and inject the node that we built above.
+            dialogChoices = TP.byCSSPath(' .dialogChoices', dialogTPElem, true);
+            dialogChoices.setContent(choicesNode);
 
             //  Grab the input field (which won't be a text field here - this is
             //  either the select or the group of checkboxes or radio buttons).

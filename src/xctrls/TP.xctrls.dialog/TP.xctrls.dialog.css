@@ -79,12 +79,12 @@ xctrls|dialog > xctrls|content .dialogMessage > * {
     overflow-wrap: break-word;
 }
 
-xctrls|dialog > xctrls|content .choiceContent {
+xctrls|dialog > xctrls|content .dialogChoices {
 
     text-align: left;
 }
 
-xctrls|dialog > xctrls|content .choiceContent > label {
+xctrls|dialog > xctrls|content .dialogChoices > label {
 
     display: inline-block;
     height: 1.35em;
@@ -94,18 +94,18 @@ xctrls|dialog > xctrls|content .choiceContent > label {
     vertical-align: text-bottom;
 }
 
-xctrls|dialog > xctrls|content .choiceContent > label[for="overrideField"] {
+xctrls|dialog > xctrls|content .dialogChoices > label[for="overrideField"] {
 
     height: 1.15em;
 }
 
-xctrls|dialog > xctrls|content .choiceContent > input[type="checkbox"],
-xctrls|dialog > xctrls|content .choiceContent > input[type="radio"] {
+xctrls|dialog > xctrls|content .dialogChoices > input[type="checkbox"],
+xctrls|dialog > xctrls|content .dialogChoices > input[type="radio"] {
 
     margin-left: 1.7em;
 }
 
-xctrls|dialog > xctrls|content .choiceContent > select[multiple] {
+xctrls|dialog > xctrls|content .dialogChoices > select[multiple] {
 
     height: 6.25em;
     line-height: 1.5em;
