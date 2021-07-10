@@ -1133,7 +1133,12 @@ function(contentInfo, overlayContent) {
             //  then position the overlay relative to the overlay point and the
             //  corner.
             if (TP.notTrue(contentInfo.at('noPosition'))) {
-                this.positionUsing(triggerPoint, mousePoint);
+                //  Queue the positioning of the overlay into a 'next repaint'
+                //  so that layout of the overlay's content happens and proper
+                //  sizing numbers can be computed.
+                (function() {
+                    this.positionUsing(triggerPoint, mousePoint);
+                }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
             }
         }.bind(this));
 
