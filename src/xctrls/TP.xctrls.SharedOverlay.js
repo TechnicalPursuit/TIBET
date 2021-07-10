@@ -456,6 +456,10 @@ function(contentInfo) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  The last content we displayed. The control using us can use this to
+//  determine whether or not it has to regenerate content, etc.
+TP.xctrls.SharedOverlay.Inst.defineAttribute('$lastContent');
+
 //  The ID of the current trigger that is trying to trigger the overlay
 TP.xctrls.SharedOverlay.Inst.defineAttribute('$currentTriggerID');
 
@@ -676,6 +680,45 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.xctrls.SharedOverlay.Inst.defineMethod('isContentDifferent',
+function(signalToCheck) {
+
+    /**
+     * @method isContentDifferent
+     * @summary Returns true if the content that was last used with the receiver
+     *     is *not* the same content (URI, ID or element content) that is
+     *     defined in the supplied signal.
+     * @param {TP.sig.OpenOverlay} signalToCheck The signal to check for content
+     *     to see if it matches what this overlay displayed last.
+     * @returns {Boolean} Whether or not the content in the supplied signal is
+     *     different than what the receiver displayed last.
+     */
+
+    var lastContent,
+        currentContent;
+
+    lastContent = this.$get('$lastContent');
+
+    currentContent = signalToCheck.at('contentURI');
+    if (TP.isDefined(currentContent)) {
+        return !TP.equal(currentContent, lastContent);
+    }
+
+    currentContent = signalToCheck.at('contentID');
+    if (TP.isDefined(currentContent)) {
+        return currentContent !== lastContent;
+    }
+
+    currentContent = signalToCheck.at('content');
+    if (TP.isDefined(currentContent)) {
+        return currentContent !== lastContent;
+    }
+
+    return false;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.xctrls.SharedOverlay.Inst.defineMethod('loadContent',
 function(contentInfo, overlayContent, afterLoadHandler) {
 
@@ -724,16 +767,22 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     contentURI = contentInfo.at('contentURI');
     if (TP.notEmpty(contentURI)) {
         contentURI = contentURI.unquoted();
+        this.set('$lastContent', contentURI, false);
     }
 
     contentID = contentInfo.at('contentID');
     if (TP.notEmpty(contentID)) {
         contentID = contentID.unquoted();
+        this.set('$lastContent', contentID, false);
     }
 
     //  If the signal has real content in its payload, then use that in
     //  preference to the other mechanisms.
     finalContent = contentInfo.at('content');
+    if (TP.notEmpty(finalContent)) {
+        this.set('$lastContent', finalContent, false);
+    }
+
 
     if (TP.isValid(overlayContent)) {
         //  see below for processing content
