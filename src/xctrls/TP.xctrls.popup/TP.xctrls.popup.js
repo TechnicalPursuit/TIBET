@@ -188,11 +188,11 @@ function(aRequest) {
 
 //  Whether or not the popup is 'sticky'... that is, showing without the mouse
 //  button being down or after a key up.
-TP.xctrls.popup.defineAttribute('isSticky');
+TP.xctrls.popup.Inst.defineAttribute('isSticky');
 
 //  Whether or not the currently processing DOMClick signal is the 'triggering'
 //  signal or is a subsequent DOMClick.
-TP.xctrls.popup.defineAttribute('isTriggeringSignal');
+TP.xctrls.popup.Inst.defineAttribute('isTriggeringSignal');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
