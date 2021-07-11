@@ -9430,7 +9430,9 @@ function(aRequest, replaceNode, alternateNode) {
 
         //  Allocate a tag processor and initialize it with the COMPILE_PHASES
         processor = TP.tag.TagProcessor.constructWithPhaseTypes(
-                                        TP.tag.TagProcessor.COMPILE_PHASES);
+                            request.atIfInvalid(
+                                'phases',
+                                TP.tag.TagProcessor.COMPILE_PHASES));
 
         //  Capture this before processing - the following steps will virtually
         //  detach this node.
