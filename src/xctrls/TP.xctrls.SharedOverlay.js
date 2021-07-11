@@ -35,9 +35,6 @@ TP.xctrls.SharedOverlay.Type.defineAttribute('opaqueCapturingSignalNames', null)
 //  SharedOverlay controls are initially hidden, so we ensure that here.
 TP.xctrls.SharedOverlay.set('requiredAttrs', TP.hc('pclass:hidden', true));
 
-//  The ID of the last trigger that triggered the overlay.
-TP.xctrls.SharedOverlay.Type.defineAttribute('$lastTriggerID');
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ----------------------------------------------------------------------------
@@ -210,7 +207,6 @@ function(aSignal) {
         triggerDoc,
         triggerSignal,
 
-        triggerID,
         triggerTPElem,
 
         hideOn,
@@ -250,15 +246,6 @@ function(aSignal) {
     }
 
     triggerTPElem = this.getTriggerElement(aSignal, triggerDoc);
-
-    //  If the signal has a triggerID, then use that. Otherwise, use the local
-    //  ID of the trigger element.
-    triggerID = aSignal.at('triggerID');
-    if (TP.notValid(triggerID)) {
-        triggerID = triggerTPElem.getLocalID(true);
-    }
-
-    overlayTPElem.set('$currentTriggerID', triggerID, false);
 
     //  NB: At this point, there might not be a triggerTPElem. That's ok, but in
     //  that case, we need to make sure that a trigger point has been supplied.
@@ -403,11 +390,11 @@ function(contentInfo) {
 
     /**
      * @method preload
-     * @summary Preloads an overlay of the receiving type given the combination
-     *     of supplied overlayID and triggerID. Note that, if this is a shared
-     *     overlay, any content preloaded with this step might very well be
-     *     replaced with new content if the first invocation to 'activate' this
-     *     overlay is not from the same trigger.
+     * @summary Preloads an overlay of the receiving type given the supplied
+     *     overlayID. Note that, if this is a shared overlay, any content
+     *     preloaded with this step might very well be replaced with new content
+     *     if the first invocation to 'activate' this overlay is not from the
+     *     same trigger.
      * @param {TP.core.Hash} contentInfo Information about the content, where to
      *     obtain it, how to render it, where to position it, etc.
      * @returns {TP.meta.xctrls.SharedOverlay} The receiver.
@@ -416,33 +403,14 @@ function(contentInfo) {
     var triggerDoc,
         overlayID,
 
-        triggerID,
-        triggerPath,
-        triggerTPElem,
-
         overlayTPElem;
 
     triggerDoc = contentInfo.at('triggerTPDocument');
     overlayID = contentInfo.at('overlayID');
 
-    //  Grab the triggerID from the supplied info. If it's not available, then
-    //  try to compute one from a triggerPath if it's supplied. If it's not
-    //  supplied, then use the body as the trigger element and obtain it's ID.
-    triggerID = contentInfo.at('triggerID');
-    if (TP.notValid(triggerID)) {
-        triggerPath = contentInfo.at('triggerPath');
-        if (TP.notEmpty(triggerPath)) {
-            triggerTPElem = TP.byPath(triggerPath, triggerDoc).first();
-        } else {
-            triggerTPElem = triggerDoc.getBody();
-        }
-        triggerID = triggerTPElem.getLocalID(true);
-    }
-
     //  Grab the (possibly shared) overlay element. This will cause whatever
     //  'type-level' setup of the content to take place.
     overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
-    overlayTPElem.set('$currentTriggerID', triggerID, false);
 
     //  Invoke loadContent with contentInfo. This should cause the
     //  'instance-level' setup of the content to take place (as far as it can,
@@ -459,9 +427,6 @@ function(contentInfo) {
 //  The last content we displayed. The control using us can use this to
 //  determine whether or not it has to regenerate content, etc.
 TP.xctrls.SharedOverlay.Inst.defineAttribute('$lastContent');
-
-//  The ID of the current trigger that is trying to trigger the overlay
-TP.xctrls.SharedOverlay.Inst.defineAttribute('$currentTriggerID');
 
 //  The last TP.dom.ElementNode that triggered the overlay
 TP.xctrls.SharedOverlay.Inst.defineAttribute('$triggerTPElement');
@@ -750,8 +715,6 @@ function(contentInfo, overlayContent, afterLoadHandler) {
 
         contentAttributes,
 
-        triggerID,
-
         tpContent,
         handler;
 
@@ -923,13 +886,6 @@ function(contentInfo, overlayContent, afterLoadHandler) {
                     content, kvPair.first(), kvPair.last(), true);
             });
     }
-
-    //  Capture the trigger ID in case that same trigger uses this overlay
-    //  before another trigger uses it - we can use this for comparison purposes
-    //  for content refresh, etc.
-
-    triggerID = this.get('$currentTriggerID');
-    this.getType().set('$lastTriggerID', triggerID, false);
 
     //  That will be the real element generated from the content that got placed
     //  into our 'content' div.

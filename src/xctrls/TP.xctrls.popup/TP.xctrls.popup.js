@@ -445,8 +445,7 @@ function(openSignal, popupContent) {
      *     receiver.
      */
 
-    var lastTriggerID,
-        currentTriggerID,
+    var overlayTPElem,
 
         firstContentChildTPElem,
 
@@ -461,14 +460,13 @@ function(openSignal, popupContent) {
 
         triggerTPElem;
 
-    lastTriggerID = this.getType().get('$lastTriggerID');
-    currentTriggerID = this.get('$currentTriggerID');
+    overlayTPElem = this.getType().getOverlayElement(openSignal);
 
     //  If there is a real last content local ID and it equals the local ID of
     //  the content we're trying to set, then we don't need to set the content
     //  at all - just refresh it, position ourself (again, in case the trigger
     //  moved since the last time we showed it) and show ourself..
-    if (currentTriggerID === lastTriggerID) {
+    if (!overlayTPElem.isContentDifferent(openSignal)) {
 
         //  We can only refresh it if it has real child content.
         firstContentChildTPElem =
