@@ -155,27 +155,20 @@ function(beHidden) {
 
     var focusedTPElem;
 
-    //  If we're about to show, we need to tell the system that we're switching
-    //  focus contexts in an async fashion. Otherwise, it can't properly track
-    //  previously focused elements.
-    if (!beHidden) {
-        this.asyncActivatingFocusContext();
-    }
-
-    //  If we're hiding, toggle the curtain to be hidden as well. Note that
-    //  toggling the curtain to show is done in the 'dialog' primitive defined
-    //  below.
-    if (beHidden) {
-        this.toggleCurtain(beHidden);
-    }
-
     if (beHidden) {
         //  Blur any focused element that is enclosed within us.
         this.blurFocusedDescendantElement();
 
         this.ignoreKeybindingsDirectly();
 
+        this.toggleCurtain(beHidden);
+
     } else {
+
+        //  If we're about to show, we need to tell the system that we're
+        //  switching focus contexts in an async fashion. Otherwise, it can't
+        //  properly track previously focused elements.
+        this.asyncActivatingFocusContext();
 
         this.observeKeybindingsDirectly();
 
