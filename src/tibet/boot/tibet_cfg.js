@@ -1547,6 +1547,9 @@
     //  should signals sent prior to signaling system installation be logged?
     TP.sys.setcfg('log.load_signals', false);
 
+    //  should we log warnings about isResponderFor misses during chain lookup?
+    TP.sys.setcfg('log.missing_isresponderfor', true);
+
     //  Turns on/off warnings regarding detached nodes in DOM traversal
     //  routines. The default is true since this implies a true bug.
     TP.sys.setcfg('log.node_detachment', true);
