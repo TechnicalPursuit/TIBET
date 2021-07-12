@@ -51,6 +51,10 @@ function(aRequest, anElement) {
 
     TP.elementSetAttribute(anElement, 'tibet:opaque', 'bind', true);
 
+    //  We do not want our descendant content to be compiled. By stamping this
+    //  attribute on ourself, we prevent compilation of that content.
+    TP.elementSetAttribute(anElement, 'tibet:no-compile', 'true', true);
+
     return this.callNextMethod();
 });
 
