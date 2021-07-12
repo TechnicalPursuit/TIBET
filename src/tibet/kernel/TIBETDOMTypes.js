@@ -877,65 +877,54 @@ function(aNode, aSignal) {
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
-    var signames,
-
+    var signame,
         fname,
-        len,
-        i,
-
         desc,
-        tpNode;
+        tpNode,
+        handler;
 
-    if (TP.isValid(aSignal)) {
-        signames = aSignal.getSignalNames();
-    } else {
-        signames = TP.ac('Signal');
+    if (!TP.isElement(aNode)) {
+        return false;
     }
 
-    //  Convert all the signal names to simple form (making sure they're
-    //  canonical).
-    signames = signames.map(
-                function(name) {
-                    //  Expand first to make sure signal name is prefixed, if
-                    //  necessary, but then contract that. This gives canonical
-                    //  results.
-                    return TP.contractSignalName(TP.expandSignalName(name));
-                });
+    if (!TP.isValid(aSignal)) {
+        return false;
+    }
 
-    //  Iterate over all of the signal names and check to see if they respond to
-    //  a type method of 'isResponderFor' + the signal name.
-    len = signames.getSize();
-    for (i = 0; i < len; i++) {
-        fname = 'isResponderFor' + signames.at(i);
-        if (TP.canInvoke(this, fname)) {
-            return this[fname](aNode, aSignal);
-        }
+    //  Expand first to make sure signal name is prefixed, if necessary, but
+    //  then contract that. This gives canonical results.
+    signame = TP.contractSignalName(TP.expandSignalName(name));
+
+    //  See if the receiving type implements a specific variant for the signal
+    fname = 'isResponderFor' + signame;
+    if (TP.canInvoke(this, fname)) {
+        return this[fname](aNode, aSignal);
     }
 
     //  If we couldn't find an 'isResponderFor' method, see if the target node
     //  has an instance handler method. If it does, then consider ourself to be
     //  a responder for that signal.
+    desc = {
+        signal: aSignal,
 
-    if (TP.isValid(aSignal)) {
-        desc = {
-            signal: aSignal,
-            //  TODO: determine why we thought this was a good idea. It's
-            //  commented out because it means many on: scenarios will fail.
-            // dontTraverseSpoofs: true,   //  We're not interested in spoofs
-            phase: '*'                  //  We want handler methods of any phase
-                                        //  since all we're doing is returning a
-                                        //  Boolean.
-        };
+        //  TODO: keep an eye on this. It SHOULD work since we're only looking
+        //  for real signals targeting native elements, not spoofed signals.
+        dontTraverseSpoofs: true,   //  We're not interested in spoofs
 
-        tpNode = TP.wrap(aNode);
+        phase: '*'                  //  We want handler methods of any phase
+                                    //  since all we're doing is returning a
+                                    //  Boolean.
+    };
 
-        if (TP.isCallable(tpNode.getBestHandler(aSignal, desc))) {
-            TP.ifWarn() && TP.sys.cfg('log.missing_isresponderfor') ?
-                TP.warn('For better performance implement missing',
-                    tpNode.getTypeName() + '.Type.isResponderFor' +
-                    aSignal.getSignalName()) : 0;
-            return true;
-        }
+    tpNode = TP.wrap(aNode);
+    handler = tpNode.getBestHandler(aSignal, desc);
+
+    if (TP.isCallable(handler)) {
+        TP.ifWarn() && TP.sys.cfg('log.missing_isresponderfor') ?
+            TP.warn('For better performance implement missing',
+                tpNode.getTypeName() + '.Type.isResponderFor' +
+                aSignal.getSignalName()) : 0;
+        return true;
     }
 
     return false;

@@ -6246,9 +6246,10 @@ function(aNode, aSignal) {
     /**
      * @method nodeGetResponderElement
      * @summary Finds the 'responder' element for aNode and returns it. A
-     *     responder element is an element with either tibet:ctrl or tibet:tag
-     *     or one whose type responds affirmatively to isResponderFor.
-     *     NOTE that this method will also traverse up through iframe containers
+     *     responder is an element with tibet:ctrl, tibet:tag or non-native
+     *     namespace (i.e. a "custom tag") or a native tag whose type responds
+     *     affirmatively to isResponderFor when provided the target signal.
+     *     NOTE that this method will traverse up through iframe containers
      *     to locate a potential component element.
      * @param {Node} aNode The DOM node to operate on.
      * @param {TP.sig.Signal} aSignal The signal instance being dispatched.

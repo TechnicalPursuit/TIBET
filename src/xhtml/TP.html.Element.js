@@ -64,6 +64,30 @@ function(resource, mimeType, fallback) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.html.Element.Type.defineMethod('isResponderFor',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderFor
+     * @summary Returns true if the type in question should be considered a
+     *     responder for the specific node/signal pair provided.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    if (aSignal.getSignalName().match(
+            /^(TP.sig.)*UI.*(Focus|Blur|Activate|Deactivate|Select)/)) {
+        return true;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
