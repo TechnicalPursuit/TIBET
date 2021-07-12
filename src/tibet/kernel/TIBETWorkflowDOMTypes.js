@@ -1759,7 +1759,39 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                 //  Otherwise, if the node had a generator and it *is* the same
                 //  as the one for our result node, we have no more outstanding
                 //  work to do. Continue on to the next node.
+
+                //  If the result element stamped 'tibet:no-compile' on itself,
+                //  then we need to clear out any following nodes from the 'to
+                //  be processed' list that are contained by the *original*
+                //  node.
+                if (TP.isElement(result) &&
+                    TP.elementGetAttribute(
+                            result, 'tibet:no-compile', true) === 'true') {
+                    /* eslint-disable no-loop-func */
+                    nodes = nodes.filter(
+                        function(possibleDescendant) {
+                            return node === possibleDescendant ||
+                                            !node.contains(possibleDescendant);
+                        });
+                    /* eslint-enable no-loop-func */
+                }
+
                 continue;
+            }
+
+            //  If the result element stamped 'tibet:no-compile' on itself, then
+            //  we need to clear out any following nodes from the 'to be
+            //  processed' list that are contained by the *original* node.
+            if (TP.isElement(result) &&
+                TP.elementGetAttribute(
+                        result, 'tibet:no-compile', true) === 'true') {
+                /* eslint-disable no-loop-func */
+                nodes = nodes.filter(
+                    function(possibleDescendant) {
+                        return node === possibleDescendant ||
+                                        !node.contains(possibleDescendant);
+                    });
+                /* eslint-enable no-loop-func */
             }
 
             producedEntries.push(TP.ac(result, node));
