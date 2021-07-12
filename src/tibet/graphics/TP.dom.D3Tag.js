@@ -251,7 +251,16 @@ function(enterSelection) {
                         allData,
                         registry);
 
-            return newElem;
+            //  Compile the element now that we've resolved the outer bindings.
+            return TP.elementCompile(
+                newElem,
+                TP.request(
+                    'phases', TP.ac(
+                                    'TP.tag.PrecompilePhase',
+                                    'TP.tag.CompilePhase',
+                                    'TP.tag.CompileCompletePhase'
+                                    )));
+
         }.bind(this)).attr(
             itemSelectionInfo.first(),
             itemSelectionInfo.last());
@@ -296,9 +305,6 @@ function() {
 
     //  Grab the first child Element under the template root.
     templateContentTPElem = this.getTemplate().getFirstChildElement();
-
-    //  Compile it.
-    templateContentTPElem.compile();
 
     //  Note here how we remove the 'id' attribute, since we're going to be
     //  using it as a template.
