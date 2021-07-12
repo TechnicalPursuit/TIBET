@@ -947,6 +947,7 @@ function() {
         function(item, index) {
             keys.push(item.get('value'));
             item.setAttribute('itemnum', index);
+            item.addClass('item');
         });
 
     this.set('$dataKeys', keys, false);
@@ -1638,6 +1639,7 @@ function(selection) {
     allItems.forEach(
         function(item, index) {
             item.setAttribute('itemnum', index);
+            item.addClass('item');
         });
 
     return this;
@@ -1732,6 +1734,7 @@ function(selection) {
     allItems.forEach(
         function(item, index) {
             item.setAttribute('itemnum', index);
+            item.addClass('item');
         });
 
     return this;
