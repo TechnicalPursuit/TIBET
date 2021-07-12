@@ -5304,7 +5304,7 @@ function(aNode) {
     if (TP.isElement(aNode)) {
         if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
             TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
-            !TP.w3.Xmlns.isNativeNS(TP.nodeGetNSURI(aNode))) {
+            !TP.w3.Xmlns.isNativeElement(aNode)) {
             return true;
         }
     }

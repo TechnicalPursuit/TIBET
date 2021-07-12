@@ -1720,7 +1720,6 @@ function(aRequest) {
      */
 
     var elem,
-        ns,
 
         targetDoc,
 
@@ -1740,10 +1739,8 @@ function(aRequest) {
     //  a 'native namespace' (i.e. this element is supported natively on the
     //  platform) and we don't have a 'tibet:tag' attribute we don't want to
     //  transform the tag, so we just exit here.
-    if (TP.notEmpty(ns = elem.namespaceURI) &&
-        TP.w3.Xmlns.isNativeNS(ns) &&
+    if (TP.w3.Xmlns.isNativeElement(elem) &&
         !TP.elementHasAttribute(elem, 'tibet:tag', true)) {
-
         elem = TP.nodeCloneNode(elem);
 
         TP.elementSetGenerator(elem);
