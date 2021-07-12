@@ -265,6 +265,9 @@ function(enterSelection) {
             itemSelectionInfo.first(),
             itemSelectionInfo.last());
 
+    //  Bubble any namespaces we find to reduce clutter on the DOM tree.
+    TP.elementBubbleXMLNSAttributesOnDescendants(newContent.node());
+
     return newContent;
 });
 
