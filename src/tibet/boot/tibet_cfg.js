@@ -1133,6 +1133,9 @@
     TP.sys.setcfg('path.app_tsh', '~app_inf/tsh');
     TP.sys.setcfg('path.lib_tsh', '~lib_lib/tsh');
 
+    TP.sys.setcfg('path.app_templates', '~app_src/templates');
+    TP.sys.setcfg('path.lib_templates', '~lib/templates');
+
     TP.sys.setcfg('path.app_test', '~app/test');
     TP.sys.setcfg('path.lib_test', '~lib/test');
 
@@ -1543,6 +1546,9 @@
 
     //  should signals sent prior to signaling system installation be logged?
     TP.sys.setcfg('log.load_signals', false);
+
+    //  should we log warnings about isResponderFor misses during chain lookup?
+    TP.sys.setcfg('log.missing_isresponderfor', true);
 
     //  Turns on/off warnings regarding detached nodes in DOM traversal
     //  routines. The default is true since this implies a true bug.

@@ -6220,17 +6220,19 @@ function(aNode, aSignal) {
      */
 
     var arr,
-        node;
+        node,
+        parent;
 
     arr = TP.ac();
 
     node = TP.nodeGetResponderElement(aNode, aSignal);
     while (TP.isValid(node)) {
         arr.push(node);
-        if (TP.notValid(node.parentNode)) {
+        parent = node.parentNode;
+        if (TP.notValid(parent)) {
             break;
         }
-        node = TP.nodeGetResponderElement(node.parentNode, aSignal);
+        node = TP.nodeGetResponderElement(parent, aSignal);
     }
 
     return arr;
@@ -6255,32 +6257,31 @@ function(aNode, aSignal) {
 
     var node,
         win,
-
         attrVal,
-
         type,
         frame;
 
     if (TP.notValid(aNode)) {
-        return this.raise('InvalidNode');
+        return;
     }
 
     if (!TP.isElement(aNode)) {
-
-        node = aNode.parentNode;
-        if (TP.isValid(node)) {
-            return TP.nodeGetResponderElement(node);
-        }
-
-        //  Check for a containing iframe element often used as a "screen".
-        win = TP.nodeGetWindow(aNode);
-        if (TP.isIFrameWindow(win)) {
-            frame = win.frameElement;
-            if (TP.isElement(frame)) {
-                return TP.nodeGetResponderElement(frame);
+        node = aNode ? aNode.parentNode : null;
+        if (TP.notValid(node)) {
+            //  Check for a containing iframe element often used as a "screen".
+            win = TP.nodeGetWindow(aNode);
+            if (TP.isIFrameWindow(win)) {
+                frame = win.frameElement;
+                if (TP.isElement(frame)) {
+                    node = frame;
+                }
             }
         }
+    } else {
+        node = aNode;
+    }
 
+    if (TP.notValid(node)) {
         return;
     }
 
@@ -6290,52 +6291,51 @@ function(aNode, aSignal) {
     //  object that is named here via this attribute (either a type of some sort
     //  or a registered object) can actually respond to the signal is determined
     //  later by the signaling system.
-    if (TP.elementHasAttribute(aNode, 'tibet:ctrl', true)) {
-        return aNode;
+    if (TP.elementHasAttribute(node, 'tibet:ctrl', true)) {
+        return node;
     }
 
     //  Next, check to see if a 'tibet:tag' attribute is defined. If so, then it
-    //  will point to a TIBET type of some sort. This mechanism allows the
-    //  author to override the TIBET type that this tag would normally resolve
-    //  to. Therefore, in the case of custom tags that have been processed into
-    //  platform native markup (i.e. XHTML or SVG), this attribute will probably
-    //  point to the custom TIBET type that the platform-native markup is
-    //  standing in for.
-    attrVal = TP.elementGetAttribute(aNode, 'tibet:tag', true);
-    if (TP.notEmpty(attrVal)) {
-        type = TP.sys.getTypeByName(attrVal);
+    //  will point to a type. The tibet:tag attribute is typically added during
+    //  tag processing from custom tag(s) into XHTML native tags while retaining
+    //  awareness of the originating tag type (for TP.wrap etc.).
+    if (TP.elementHasAttribute(node, 'tibet:tag', true)) {
+        return node;
     }
 
-    if (!TP.isType(type)) {
+    //  If the tag is non-native we assume it needs to be in the responder
+    //  chain. This applies to tags in any non-XHTML namespace effectively.
+    if (!TP.w3.Xmlns.isNativeElement(node)) {
+        return node;
+    }
 
-        //  Native types may be responders but not have a tibet:tag or
-        //  tibet:ctrl attribute so we need to query them by type.
+    //  If we're looking at a native tag we have to use reflection of sorts (if
+    //  we're going to pursue this any further...which is an open question).
 
-        //  NB: Many times the node will already have it's node type, so we
-        //  use a fast way to get that here.
-        type = aNode[TP.NODE_TYPE];
-        if (TP.notValid(type)) {
-            type = TP.nodeGetConcreteType(aNode);
-            aNode[TP.NODE_TYPE] = type;
-        }
+    //  NB: Many times the node will already have it's node type, so we
+    //  use a fast way to get that here.
+    type = node[TP.NODE_TYPE];
+    if (TP.notValid(type)) {
+        type = TP.nodeGetConcreteType(node);
+        node[TP.NODE_TYPE] = type;
     }
 
     if (TP.canInvoke(type, 'isResponderFor')) {
-        if (type.isResponderFor(aNode, aSignal)) {
-            return aNode;
+        if (type.isResponderFor(node, aSignal)) {
+            return node;
         }
     }
 
-    if (TP.isValid(aNode.parentNode)) {
-        return TP.nodeGetResponderElement(aNode.parentNode, aSignal);
+    if (TP.isValid(node.parentNode)) {
+        return TP.nodeGetResponderElement(node.parentNode, aSignal);
     }
 
     //  Check for a containing iframe element often used as a "screen".
-    win = TP.nodeGetWindow(aNode);
+    win = TP.nodeGetWindow(node);
     if (TP.isIFrameWindow(win)) {
         frame = win.frameElement;
         if (TP.isElement(frame)) {
-            return TP.nodeGetResponderElement(frame);
+            return TP.nodeGetResponderElement(frame, aSignal);
         }
     }
 
