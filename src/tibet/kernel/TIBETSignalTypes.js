@@ -1220,10 +1220,28 @@ TP.sig.BINDSelectionSignal.defineSubtype('UpdateSelection');
 TP.sig.BINDSelectionSignal.defineSubtype('DeleteSelection');
 
 //  ========================================================================
+//  CONTROLLER SIGNALS
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('ControllerSignal');
+
+TP.sig.ControllerSignal.Type.defineAttribute('defaultPolicy',
+    TP.CONTROLLER_FIRING);
+
+//  ControllerSignals should traverse the controller chain...but not
+//  ControllerSignal itself. NOTE that being a controller signal is inherited
+//  but acting as the root is a LOCAL assignment so it's not inherited.
+TP.sig.ControllerSignal.Type.isControllerSignal(true);
+TP.sig.ControllerSignal.isControllerRoot(true);
+
+TP.sig.ControllerSignal.Type.defineAttribute('bubbling', true);
+TP.sig.ControllerSignal.Type.defineAttribute('cancelable', true);
+
+//  ========================================================================
 //  APP SIGNALS
 //  ========================================================================
 
-TP.sig.ResponderSignal.defineSubtype('ApplicationSignal');
+TP.sig.ControllerSignal.defineSubtype('ApplicationSignal');
 
 TP.sig.ApplicationSignal.shouldUseSingleton(true);
 
