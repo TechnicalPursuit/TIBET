@@ -1003,6 +1003,8 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
         targetTPElem,
 
+        data,
+
         len,
 
         i,
@@ -1031,6 +1033,13 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
     ind = this.adjustIterationIndex(index);
 
     targetTPElem = TP.wrap(itemElement);
+
+    //  Allow Arrays of TP.core.Hash to be used.
+    if (TP.isHash(datum.last())) {
+        data = datum.last();
+    } else {
+        data = datum;
+    }
 
     //  Loop over all of the elements that were found.
     len = elems.getSize();
@@ -1076,11 +1085,11 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
                         //  Execute the transformation function and the return
                         //  value.
                         val = transformFunc(
-                                this, datum, targetTPElem, allData, ind, false);
+                                this, data, targetTPElem, allData, ind, false);
                     } else {
                         //  TODO: Support more than 1 expr
                         expr = record.at('dataExprs').at(0);
-                        val = TP.wrap(datum).get(TP.apc(expr));
+                        val = TP.wrap(data).get(TP.apc(expr));
                     }
 
                     //  If the key is 'value', set the text content of the owner
@@ -1088,7 +1097,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
                     //  facet on the owner using that value (it's up to the type
                     //  to decide whether to set an Attribute or not).
                     if (key === 'value') {
-                        TP.nodeSetTextContent(ownerElem, val);
+                        ownerTPElem.setValue(val);
                     } else {
                         //  The parameters here are:
                         //      aspect, facet (always 'value' here), value
