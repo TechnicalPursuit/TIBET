@@ -6106,6 +6106,90 @@ function(anOrigin, aSignal, aPayload, aType) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.SignalMap.defineMethod('CONTROLLER_FIRING',
+function(anOrigin, aSignal, aPayload, aType) {
+
+    /**
+     * @method CONTROLLER_FIRING
+     * @summary Fires signals across the controller stack only.
+     * @description The controller stack exists outside the DOM. This policy
+     *     is suitable for firing signals which have no DOM implications. The
+     *     lack of any check for DOM-based observers/responders is what makes
+     *     this policy unique as well as more efficient for application signals.
+     * @param {Object} anOrigin The originator of the signal.
+     * @param {String|TP.sig.Signal} aSignal The signal to fire.
+     * @param {Object} aPayload Optional argument object.
+     * @param {String|TP.sig.Signal} aType A default type to use when the signal
+     *     type itself isn't found and a new signal subtype must be created.
+     *     Defaults to TP.sig.Signal.
+     * @returns {TP.sig.Signal|undefined} The signal.
+     */
+
+    var sig,
+        target,
+        origin,
+
+        responders,
+
+        i,
+        len,
+        responder,
+
+        responderIsOrigin,
+        shouldContinue;
+
+    if (TP.notValid(aSignal)) {
+        return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
+    }
+
+    //  Must be able to create a signal instance or no point in continuing.
+    sig = TP.sig.SignalMap.$getSignalInstance(aSignal, aPayload, aType);
+    if (!TP.isKindOf(sig, TP.sig.Signal)) {
+        return;
+    }
+
+    //  Update any newly created signal to have the proper origin.
+    if (TP.notValid(sig.getOrigin())) {
+        sig.setOrigin(anOrigin);
+    }
+
+    //  Capture initial target and origin data. We use these to ensure we
+    //  message controllers properly during both capturing and bubbling.
+    target = sig.getTarget();
+    origin = sig.getOrigin();
+
+    //  ---
+    //  Capturing phase...controllers
+    //  ---
+
+    //  set the phase to capturing to get started
+    sig.setPhase(TP.CAPTURING);
+
+    TP.sig.SignalMap.notifyControllers(sig);
+
+    //  After processing make sure we should continue with the next phase.
+    if (sig.shouldStop() || sig.shouldStopImmediately()) {
+        return;
+    }
+
+    //  ---
+    //  Bubbling phase...controllers
+    //  ---
+
+    //  we're bubbling... we're bubbling...
+    sig.setPhase(TP.BUBBLING);
+
+    //  Restore the "entry" origin to whatever value we captured. This avoids
+    //  any issues due to notifications revolving the origin for signaling.
+    sig.setOrigin(origin);
+
+    TP.sig.SignalMap.notifyControllers(sig);
+
+    return sig;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.SignalMap.defineMethod('$notifyResponders',
 function(target, signal) {
 
