@@ -1904,6 +1904,42 @@ function(anElement, cleanDescendants) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementCompile',
+function(anElement, aRequest) {
+
+    /**
+     * @method elementCompile
+     * @summary Compiles the supplied element and returns the result..
+     *     'instance-specific' information from the supplied Element and any
+     *     Element descendants, if the flag is supplied.
+     * @param {Element} anElement The element to compile.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     * @returns {Element} A new element.
+     */
+
+    var tpElem,
+        newElem;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement',
+                                'Must provide a valid Element node.');
+    }
+
+    //  Wrap the element and compile it. The result will be placed *back in the
+    //  wrapper* (i.e. it's a mutator).
+    tpElem = TP.wrap(anElement);
+    tpElem.compile(aRequest);
+
+    //  Grab the new native Element back from the wrapper.
+    newElem = tpElem.getNativeNode();
+
+    return newElem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementCopyAttributes',
 function(fromElement, toElement) {
 
