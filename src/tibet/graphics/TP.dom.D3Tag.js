@@ -206,6 +206,12 @@ function(enterSelection) {
                     compiledTemplateContent.querySelectorAll(
                         ':scope *[*|in], :scope *[*|io]'));
 
+        //  Additionally, if the supplied Element itself matches that query then
+        //  unshift it onto the result.
+        if (compiledTemplateContent.matches('*[*|in], *[*|io]')) {
+            elems.unshift(compiledTemplateContent);
+        }
+
         //  Loop over all of the elements that were found.
         for (i = 0; i < elems.length; i++) {
             attrs = elems[i].attributes;
@@ -1015,6 +1021,12 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
     elems = TP.ac(
                 itemElement.querySelectorAll(
                     ':scope *[*|in], :scope *[*|io]'));
+
+    //  Additionally, if the supplied Element itself matches that query then
+    //  unshift it onto the result.
+    if (itemElement.matches('*[*|in], *[*|io]')) {
+        elems.unshift(itemElement);
+    }
 
     ind = this.adjustIterationIndex(index);
 
