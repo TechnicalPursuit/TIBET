@@ -930,6 +930,9 @@ function(aNode, aSignal) {
         tpNode = TP.wrap(aNode);
 
         if (TP.isCallable(tpNode.getBestHandler(aSignal, desc))) {
+            TP.warn('For better performance implement missing',
+                tpNode.getTypeName() + '.Type.isResponderFor' +
+                aSignal.getSignalName());
             return true;
         }
     }
