@@ -3811,7 +3811,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('getWindow',
+TP.sig.ResponderSignal.Inst.defineMethod('getWindow',
 function() {
 
     /**
@@ -3936,18 +3936,7 @@ function(aFlag) {
 //  Responder Notification Signals
 //  ------------------------------------------------------------------------
 
-TP.sig.DOMSignal.defineSubtype('NotResponderSignal');
-
-// TP.sig.NotResponderSignal.Type.defineAttribute('defaultPolicy', TP.DOM_FIRING);
-
-TP.sig.NotResponderSignal.isSignalingRoot(true);
-TP.sig.NotResponderSignal.isControllerRoot(true);
-TP.sig.NotResponderSignal.Type.isControllerSignal(true);
-
-TP.sig.NotResponderSignal.Type.defineAttribute('bubbling', true);
-TP.sig.NotResponderSignal.Type.defineAttribute('cancelable', true);
-
-TP.sig.NotResponderSignal.defineSubtype('ResponderNotificationSignal');
+TP.sig.ResponderSignal.defineSubtype('ResponderNotificationSignal');
 
 TP.sig.ResponderNotificationSignal.Type.defineAttribute('cancelable', false);
 
@@ -3982,7 +3971,7 @@ TP.sig.ResponderNotificationSignal.defineSubtype('UIDidShow');
 //  Responder Interaction Signals
 //  ------------------------------------------------------------------------
 
-TP.sig.NotResponderSignal.defineSubtype('ResponderInteractionSignal');
+TP.sig.ResponderSignal.defineSubtype('ResponderInteractionSignal');
 
 //  These are interaction signals, since they're cancelable.
 TP.sig.ResponderInteractionSignal.defineSubtype('UIActivate');
