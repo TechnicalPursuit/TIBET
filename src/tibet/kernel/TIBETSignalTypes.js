@@ -1220,484 +1220,28 @@ TP.sig.BINDSelectionSignal.defineSubtype('UpdateSelection');
 TP.sig.BINDSelectionSignal.defineSubtype('DeleteSelection');
 
 //  ========================================================================
-//  RESPONDER SIGNALS
+//  CONTROLLER SIGNALS
 //  ========================================================================
 
-TP.sig.Signal.defineSubtype('ResponderSignal');
-
-TP.sig.ResponderSignal.Type.defineAttribute('defaultPolicy',
-    TP.RESPONDER_FIRING);
-
-//  ResponderSignals should traverse the controller chain...but not
-//  ResponderSignal itself. NOTE that being a controller signal is inherited but
-//  acting as the root is a LOCAL assignment so it's not inherited.
-TP.sig.ResponderSignal.Type.isControllerSignal(true);
-TP.sig.ResponderSignal.isControllerRoot(true);
-
-TP.sig.ResponderSignal.Type.defineAttribute('bubbling', true);
-TP.sig.ResponderSignal.Type.defineAttribute('cancelable', true);
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.Type.defineMethod('defineSubtype',
-function() {
-
-    /**
-     * @method defineSubtype
-     * @summary Creates a new subtype. This particular override ensures that all
-     *     direct subtypes of TP.sig.ResponderSignal serve as signaling roots,
-     *     meaning that you never signal a raw TP.sig.ResponderSignal.
-     * @returns {TP.sig.Signal} A new signal-derived type object.
-     */
-
-    var type;
-
-    type = this.callNextMethod();
-
-    if (this === TP.sig.ResponderSignal) {
-        type.isSignalingRoot(true);
-    }
-
-    return type;
-});
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.Inst.defineMethod('getDocument',
-function() {
-
-    /**
-     * @method getDocument
-     * @summary Returns the document from which the signal originated. For
-     *     responder signals, this will be the document that it's trigger signal
-     *     occurred in.
-     * @returns {TP.dom.Document} The document that the signal originated in.
-     */
-
-    var trigger,
-        evt,
-
-        domSignal;
-
-    //  Responder signals are *not* DOM signals, but if they've been triggered
-    //  because of a DOM signal, they should have the low-level event in their
-    //  payload.
-    trigger = this.at('trigger');
-
-    if (TP.isValid(trigger)) {
-        evt = trigger.getEvent();
-        if (TP.isEvent(evt)) {
-
-            //  Wrap the event into a TIBET DOM signal of some type.
-            domSignal = TP.wrap(evt);
-
-            return domSignal.getDocument();
-        }
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.Inst.defineMethod('getDOMTarget',
-function() {
-
-    /**
-     * @method getDOMTarget
-     * @summary Returns the DOM target of the receiver. If the receiver was
-     *     triggered because of a DOM signal, this method will return the *DOM*
-     *     target of the signal.
-     * @description When triggered via a DOM signal, Responder signals set their
-     *     target to their origin so that responder chain semantics work
-     *     properly. This method allows access to the original *DOM* target of
-     *     the signal.
-     * @returns {TP.dom.UIElementNode} The DOM target of the receiver.
-     */
-
-    var trigger,
-        evt,
-
-        domSignal;
-
-    //  Responder signals are *not* DOM signals, but if they've been triggered
-    //  because of a DOM signal, they should have the low-level event in their
-    //  payload.
-    trigger = this.at('trigger');
-
-    if (TP.isValid(trigger)) {
-        evt = trigger.getEvent();
-        if (TP.isEvent(evt)) {
-
-            //  Wrap the event into a TIBET DOM signal of some type.
-            domSignal = TP.wrap(evt);
-
-            return domSignal.getTarget();
-        }
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.Inst.defineMethod('getResolvedDOMTarget',
-function() {
-
-    /**
-     * @method getResolvedDOMTarget
-     * @summary Returns the *resolved* DOM target of the receiver. If the
-     *     receiver was triggered because of a DOM signal, this method will
-     *     return the *resolved* *DOM* target of the signal. See DOM signals for
-     *     more information on the difference between targets and resolved
-     *     targets.
-     * @description When triggered via a DOM signal, Responder signals set their
-     *     target to their origin so that responder chain semantics work
-     *     properly. This method allows access to the original *resolved* *DOM*
-     *     target of the signal.
-     * @returns {TP.dom.UIElementNode} The resolved DOM target of the receiver.
-     */
-
-    var evt,
-        domSignal;
-
-    //  Responder signals are *not* DOM signals, but if they've been triggered
-    //  because of a DOM signal, they should have the low-level event in their
-    //  payload.
-    if (TP.isEvent(evt = this.at('trigger').getEvent())) {
-
-        //  Wrap the event into a TIBET DOM signal of some type.
-        domSignal = TP.wrap(evt);
-
-        return domSignal.getResolvedTarget();
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.Signal.Inst.defineMethod('getWindow',
-function() {
-
-    /**
-     * @method getWindow
-     * @summary Returns the window from which the signal originated. For
-     *     responder signals, this will be the document that it's trigger signal
-     *     occurred in.
-     * @returns {TP.core.Window} The window object that the receiver occurred
-     *     in.
-     */
-
-    var trigger,
-        evt,
-
-        domSignal;
-
-    //  Responder signals are *not* DOM signals, but if they've been triggered
-    //  because of a DOM signal, they should have the low-level event in their
-    //  payload.
-    trigger = this.at('trigger');
-
-    if (TP.isValid(trigger)) {
-        evt = trigger.getEvent();
-        if (TP.isEvent(evt)) {
-
-            //  Wrap the event into a TIBET DOM signal of some type.
-            domSignal = TP.wrap(evt);
-
-            return domSignal.getWindow();
-        }
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.Inst.defineMethod('shouldStop',
-function(aFlag) {
-
-    /**
-     * @method shouldStop
-     * @summary Returns true if the signal should stop propagating. If a flag
-     *     is provided this flag is used to set the propagation status.
-     * @description This method is overridden from its supertype to return true
-     *     if *either the signal itself OR its trigger has been configured to
-     *     stop propagating. Note that this method does not signal 'Change',
-     *     even if it's 'shouldSignalChange' attribute is true.
-     * @param {Boolean} aFlag Stop propagating: yes or no?
-     * @returns {Boolean} True if the signal should stop propagation.
-     */
-
-    var trigger;
-
-    //  if we're not cancelable this is a no-op
-    if (!this.isCancelable()) {
-        return false;
-    }
-
-    if (TP.isDefined(aFlag)) {
-        this.$shouldStop = aFlag;
-    }
-
-    //  Responder signals are *not* DOM signals, but if they've been triggered
-    //  because of a DOM signal, the trigger will be the DOM signal.
-    trigger = this.at('trigger');
-
-    if (TP.isValid(trigger)) {
-        //  NB: Note here how we're only interested in the return value of the
-        //  shouldStop of the trigger (which is why we don't pass the
-        //  parameter).
-        return this.$shouldStop || trigger.shouldStop();
-    }
-
-    return this.$shouldStop;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.Inst.defineMethod('shouldStopImmediately',
-function(aFlag) {
-
-    /**
-     * @method shouldStopImmediately
-     * @summary Returns true if the signal should stop propagating immediately.
-     *     If a flag is provided this flag is used to set the propagation state.
-     * @description This method is overridden from its supertype to return true
-     *     if *either the signal itself OR its trigger has been configured to
-     *     stop propagating immediately. Note that this method does not signal
-     *     'Change', even if it's 'shouldSignalChange' attribute is true.
-     * @param {Boolean} aFlag Stop propagating immediately: yes or no?
-     * @returns {Boolean} True if the signal should stop propagation
-     *     immediately.
-     */
-
-    var trigger;
-
-    //  if we're not cancelable this is a no-op
-    if (!this.isCancelable()) {
-        return false;
-    }
-
-    if (TP.isDefined(aFlag)) {
-        this.$shouldStopImmediately = aFlag;
-    }
-
-    //  Responder signals are *not* DOM signals, but if they've been triggered
-    //  because of a DOM signal, the trigger will be the DOM signal.
-    trigger = this.at('trigger');
-
-    if (TP.isValid(trigger)) {
-        //  NB: Note here how we're only interested in the return value of the
-        //  shouldStopImmediately of the trigger (which is why we don't pass the
-        //  parameter).
-        return this.$shouldStopImmediately || trigger.shouldStopImmediately();
-    }
-
-    return this.$shouldStopImmediately;
-});
-
-//  ------------------------------------------------------------------------
-//  Responder Notification Signals
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.defineSubtype('ResponderNotificationSignal');
-
-TP.sig.ResponderNotificationSignal.Type.defineAttribute('cancelable', false);
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidActivate');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidDeactivate');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidAlert');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidBlur');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidBusy');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidClose');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidCollapse');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidDelete');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidDeselect');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidDuplicate');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidEndEffect');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidExpand');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidFocus');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidPopFocus');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidPushFocus');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidIdle');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidHelp');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidHide');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidHint');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidInsert');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidOpen');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidScroll');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidSelect');
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDidShow');
-
-//  ------------------------------------------------------------------------
-//  Responder Interaction Signals
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.defineSubtype('ResponderInteractionSignal');
-
-//  These are interaction signals, since they're cancelable.
-TP.sig.ResponderInteractionSignal.defineSubtype('UIActivate');
-TP.sig.ResponderInteractionSignal.defineSubtype('UIDeactivate');
-
-//  ------------------------------------------------------------------------
-//  Responder Focus Interaction Signals
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIFocusChange');
-
-//  ------------------------------------------------------------------------
-
-TP.sig.UIFocusChange.defineSubtype('UIBlur');
-TP.sig.UIFocusChange.defineSubtype('UIFocus');
-TP.sig.UIFocusChange.defineSubtype('UIFocusAndSelect');
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIFocusComputation');
-
-//  ------------------------------------------------------------------------
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusFirst');
-TP.sig.UIFocusFirst.Type.defineAttribute(
-                        'moveAction', TP.FIRST);
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusLast');
-TP.sig.UIFocusLast.Type.defineAttribute(
-                        'moveAction', TP.LAST);
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusPrevious');
-TP.sig.UIFocusPrevious.Type.defineAttribute(
-                        'moveAction', TP.PREVIOUS);
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusNext');
-TP.sig.UIFocusNext.Type.defineAttribute(
-                        'moveAction', TP.NEXT);
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusFollowing');
-TP.sig.UIFocusFollowing.Type.defineAttribute(
-                        'moveAction', TP.FOLLOWING);
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusPreceding');
-TP.sig.UIFocusPreceding.Type.defineAttribute(
-                        'moveAction', TP.PRECEDING);
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusFirstInGroup');
-TP.sig.UIFocusFirstInGroup.Type.defineAttribute(
-                        'moveAction', TP.FIRST_IN_GROUP);
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusLastInGroup');
-TP.sig.UIFocusLastInGroup.Type.defineAttribute(
-                        'moveAction', TP.LAST_IN_GROUP);
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusFirstInNextGroup');
-TP.sig.UIFocusFirstInNextGroup.Type.defineAttribute(
-                        'moveAction', TP.FIRST_IN_NEXT_GROUP);
-
-TP.sig.UIFocusComputation.defineSubtype('UIFocusFirstInPreviousGroup');
-TP.sig.UIFocusFirstInPreviousGroup.Type.defineAttribute(
-                        'moveAction', TP.FIRST_IN_PREVIOUS_GROUP);
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIShow');
-TP.sig.ResponderInteractionSignal.defineSubtype('UIHide');
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIClose');
-TP.sig.ResponderInteractionSignal.defineSubtype('UIOpen');
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UICollapse');
-TP.sig.ResponderInteractionSignal.defineSubtype('UIExpand');
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIBusy');
-TP.sig.ResponderInteractionSignal.defineSubtype('UIIdle');
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIAlert');
-TP.sig.ResponderInteractionSignal.defineSubtype('UIHelp');     //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIHint');     //  XForms
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIRefresh');  //  XForms
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIEdit');
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIToggle');
-
-/*
-TP.sig.ResponderInteractionSignal.defineSubtype('UIRevalidate');   //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIRecalculate');  //  XForms
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIReset');   //  XForms
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIDataWillSend');
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderNotificationSignal.defineSubtype('UIDataSignal');
-
-TP.sig.UIDataSignal.defineSubtype('UIDataReceived');
-TP.sig.UIDataSignal.defineSubtype('UIDataFailed');
-TP.sig.UIDataSignal.defineSubtype('UIDataSent');
-TP.sig.UIDataSignal.defineSubtype('UIDataSerialize');
-
-TP.sig.UIDataSignal.defineSubtype('UIDataConstruct');
-TP.sig.UIDataSignal.defineSubtype('UIDataDestruct');
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIValueChange');   //  XForms
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UISelect');        //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIDeselect');      //  XForms
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIScroll');
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIInsert');        //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('UIDelete');        //  XForms
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIDuplicate');
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIPageEnd');
-TP.sig.ResponderInteractionSignal.defineSubtype('UIPageNext');
-TP.sig.ResponderInteractionSignal.defineSubtype('UIPagePrevious');
-TP.sig.ResponderInteractionSignal.defineSubtype('UIPageStart');
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIPageSet');
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderInteractionSignal.defineSubtype('UIStateChange');
-
-TP.sig.UIStateChange.defineSubtype('UIFocused');
-TP.sig.UIStateChange.defineSubtype('UIBlurred');
-
-TP.sig.UIStateChange.defineSubtype('UIValid');          //  XForms
-TP.sig.UIStateChange.defineSubtype('UIInvalid');        //  XForms
-
-TP.sig.UIStateChange.defineSubtype('UIReadonly');       //  XForms
-TP.sig.UIStateChange.defineSubtype('UIReadwrite');      //  XForms
-
-TP.sig.UIStateChange.defineSubtype('UIRequired');       //  XForms
-TP.sig.UIStateChange.defineSubtype('UIOptional');       //  XForms
-
-TP.sig.UIStateChange.defineSubtype('UIEnabled');        //  XForms
-TP.sig.UIStateChange.defineSubtype('UIDisabled');       //  XForms
-
-TP.sig.UIStateChange.defineSubtype('UIInRange');        //  XForms
-TP.sig.UIStateChange.defineSubtype('UIOutOfRange');     //  XForms
+TP.sig.Signal.defineSubtype('ControllerSignal');
+
+TP.sig.ControllerSignal.Type.defineAttribute('defaultPolicy',
+    TP.CONTROLLER_FIRING);
+
+//  ControllerSignals should traverse the controller chain...but not
+//  ControllerSignal itself. NOTE that being a controller signal is inherited
+//  but acting as the root is a LOCAL assignment so it's not inherited.
+TP.sig.ControllerSignal.Type.isControllerSignal(true);
+TP.sig.ControllerSignal.isControllerRoot(true);
+
+TP.sig.ControllerSignal.Type.defineAttribute('bubbling', true);
+TP.sig.ControllerSignal.Type.defineAttribute('cancelable', true);
 
 //  ========================================================================
 //  APP SIGNALS
 //  ========================================================================
 
-TP.sig.ResponderSignal.defineSubtype('ApplicationSignal');
+TP.sig.ControllerSignal.defineSubtype('ApplicationSignal');
 
 TP.sig.ApplicationSignal.shouldUseSingleton(true);
 
@@ -4106,6 +3650,480 @@ function() {
 
     return null;
 });
+
+//  ========================================================================
+//  RESPONDER SIGNALS
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('ResponderSignal');
+
+TP.sig.ResponderSignal.Type.defineAttribute('defaultPolicy',
+    TP.RESPONDER_FIRING);
+
+//  ResponderSignals should traverse the controller chain...but not
+//  ResponderSignal itself. NOTE that being a controller signal is inherited but
+//  acting as the root is a LOCAL assignment so it's not inherited.
+TP.sig.ResponderSignal.Type.isControllerSignal(true);
+TP.sig.ResponderSignal.isControllerRoot(true);
+
+TP.sig.ResponderSignal.Type.defineAttribute('bubbling', true);
+TP.sig.ResponderSignal.Type.defineAttribute('cancelable', true);
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Type.defineMethod('defineSubtype',
+function() {
+
+    /**
+     * @method defineSubtype
+     * @summary Creates a new subtype. This particular override ensures that all
+     *     direct subtypes of TP.sig.ResponderSignal serve as signaling roots,
+     *     meaning that you never signal a raw TP.sig.ResponderSignal.
+     * @returns {TP.sig.Signal} A new signal-derived type object.
+     */
+
+    var type;
+
+    type = this.callNextMethod();
+
+    if (this === TP.sig.ResponderSignal) {
+        type.isSignalingRoot(true);
+    }
+
+    return type;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('getDocument',
+function() {
+
+    /**
+     * @method getDocument
+     * @summary Returns the document from which the signal originated. For
+     *     responder signals, this will be the document that it's trigger signal
+     *     occurred in.
+     * @returns {TP.dom.Document} The document that the signal originated in.
+     */
+
+    var trigger,
+        evt,
+
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        evt = trigger.getEvent();
+        if (TP.isEvent(evt)) {
+
+            //  Wrap the event into a TIBET DOM signal of some type.
+            domSignal = TP.wrap(evt);
+
+            return domSignal.getDocument();
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('getDOMTarget',
+function() {
+
+    /**
+     * @method getDOMTarget
+     * @summary Returns the DOM target of the receiver. If the receiver was
+     *     triggered because of a DOM signal, this method will return the *DOM*
+     *     target of the signal.
+     * @description When triggered via a DOM signal, Responder signals set their
+     *     target to their origin so that responder chain semantics work
+     *     properly. This method allows access to the original *DOM* target of
+     *     the signal.
+     * @returns {TP.dom.UIElementNode} The DOM target of the receiver.
+     */
+
+    var trigger,
+        evt,
+
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        evt = trigger.getEvent();
+        if (TP.isEvent(evt)) {
+
+            //  Wrap the event into a TIBET DOM signal of some type.
+            domSignal = TP.wrap(evt);
+
+            return domSignal.getTarget();
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('getResolvedDOMTarget',
+function() {
+
+    /**
+     * @method getResolvedDOMTarget
+     * @summary Returns the *resolved* DOM target of the receiver. If the
+     *     receiver was triggered because of a DOM signal, this method will
+     *     return the *resolved* *DOM* target of the signal. See DOM signals for
+     *     more information on the difference between targets and resolved
+     *     targets.
+     * @description When triggered via a DOM signal, Responder signals set their
+     *     target to their origin so that responder chain semantics work
+     *     properly. This method allows access to the original *resolved* *DOM*
+     *     target of the signal.
+     * @returns {TP.dom.UIElementNode} The resolved DOM target of the receiver.
+     */
+
+    var evt,
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    if (TP.isEvent(evt = this.at('trigger').getEvent())) {
+
+        //  Wrap the event into a TIBET DOM signal of some type.
+        domSignal = TP.wrap(evt);
+
+        return domSignal.getResolvedTarget();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('getWindow',
+function() {
+
+    /**
+     * @method getWindow
+     * @summary Returns the window from which the signal originated. For
+     *     responder signals, this will be the document that it's trigger signal
+     *     occurred in.
+     * @returns {TP.core.Window} The window object that the receiver occurred
+     *     in.
+     */
+
+    var trigger,
+        evt,
+
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        evt = trigger.getEvent();
+        if (TP.isEvent(evt)) {
+
+            //  Wrap the event into a TIBET DOM signal of some type.
+            domSignal = TP.wrap(evt);
+
+            return domSignal.getWindow();
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('shouldStop',
+function(aFlag) {
+
+    /**
+     * @method shouldStop
+     * @summary Returns true if the signal should stop propagating. If a flag
+     *     is provided this flag is used to set the propagation status.
+     * @description This method is overridden from its supertype to return true
+     *     if *either the signal itself OR its trigger has been configured to
+     *     stop propagating. Note that this method does not signal 'Change',
+     *     even if it's 'shouldSignalChange' attribute is true.
+     * @param {Boolean} aFlag Stop propagating: yes or no?
+     * @returns {Boolean} True if the signal should stop propagation.
+     */
+
+    var trigger;
+
+    //  if we're not cancelable this is a no-op
+    if (!this.isCancelable()) {
+        return false;
+    }
+
+    if (TP.isDefined(aFlag)) {
+        this.$shouldStop = aFlag;
+    }
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, the trigger will be the DOM signal.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        //  NB: Note here how we're only interested in the return value of the
+        //  shouldStop of the trigger (which is why we don't pass the
+        //  parameter).
+        return this.$shouldStop || trigger.shouldStop();
+    }
+
+    return this.$shouldStop;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('shouldStopImmediately',
+function(aFlag) {
+
+    /**
+     * @method shouldStopImmediately
+     * @summary Returns true if the signal should stop propagating immediately.
+     *     If a flag is provided this flag is used to set the propagation state.
+     * @description This method is overridden from its supertype to return true
+     *     if *either the signal itself OR its trigger has been configured to
+     *     stop propagating immediately. Note that this method does not signal
+     *     'Change', even if it's 'shouldSignalChange' attribute is true.
+     * @param {Boolean} aFlag Stop propagating immediately: yes or no?
+     * @returns {Boolean} True if the signal should stop propagation
+     *     immediately.
+     */
+
+    var trigger;
+
+    //  if we're not cancelable this is a no-op
+    if (!this.isCancelable()) {
+        return false;
+    }
+
+    if (TP.isDefined(aFlag)) {
+        this.$shouldStopImmediately = aFlag;
+    }
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, the trigger will be the DOM signal.
+    trigger = this.at('trigger');
+
+    if (TP.isValid(trigger)) {
+        //  NB: Note here how we're only interested in the return value of the
+        //  shouldStopImmediately of the trigger (which is why we don't pass the
+        //  parameter).
+        return this.$shouldStopImmediately || trigger.shouldStopImmediately();
+    }
+
+    return this.$shouldStopImmediately;
+});
+
+//  ------------------------------------------------------------------------
+//  Responder Notification Signals
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.defineSubtype('ResponderNotificationSignal');
+
+TP.sig.ResponderNotificationSignal.Type.defineAttribute('cancelable', false);
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidActivate');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidDeactivate');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidAlert');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidBlur');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidBusy');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidClose');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidCollapse');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidDelete');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidDeselect');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidDuplicate');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidEndEffect');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidExpand');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidFocus');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidPopFocus');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidPushFocus');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidIdle');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidHelp');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidHide');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidHint');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidInsert');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidOpen');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidScroll');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidSelect');
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDidShow');
+
+//  ------------------------------------------------------------------------
+//  Responder Interaction Signals
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.defineSubtype('ResponderInteractionSignal');
+
+//  These are interaction signals, since they're cancelable.
+TP.sig.ResponderInteractionSignal.defineSubtype('UIActivate');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIDeactivate');
+
+//  ------------------------------------------------------------------------
+//  Responder Focus Interaction Signals
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIFocusChange');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.UIFocusChange.defineSubtype('UIBlur');
+TP.sig.UIFocusChange.defineSubtype('UIFocus');
+TP.sig.UIFocusChange.defineSubtype('UIFocusAndSelect');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIFocusComputation');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusFirst');
+TP.sig.UIFocusFirst.Type.defineAttribute(
+                        'moveAction', TP.FIRST);
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusLast');
+TP.sig.UIFocusLast.Type.defineAttribute(
+                        'moveAction', TP.LAST);
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusPrevious');
+TP.sig.UIFocusPrevious.Type.defineAttribute(
+                        'moveAction', TP.PREVIOUS);
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusNext');
+TP.sig.UIFocusNext.Type.defineAttribute(
+                        'moveAction', TP.NEXT);
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusFollowing');
+TP.sig.UIFocusFollowing.Type.defineAttribute(
+                        'moveAction', TP.FOLLOWING);
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusPreceding');
+TP.sig.UIFocusPreceding.Type.defineAttribute(
+                        'moveAction', TP.PRECEDING);
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusFirstInGroup');
+TP.sig.UIFocusFirstInGroup.Type.defineAttribute(
+                        'moveAction', TP.FIRST_IN_GROUP);
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusLastInGroup');
+TP.sig.UIFocusLastInGroup.Type.defineAttribute(
+                        'moveAction', TP.LAST_IN_GROUP);
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusFirstInNextGroup');
+TP.sig.UIFocusFirstInNextGroup.Type.defineAttribute(
+                        'moveAction', TP.FIRST_IN_NEXT_GROUP);
+
+TP.sig.UIFocusComputation.defineSubtype('UIFocusFirstInPreviousGroup');
+TP.sig.UIFocusFirstInPreviousGroup.Type.defineAttribute(
+                        'moveAction', TP.FIRST_IN_PREVIOUS_GROUP);
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIShow');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIHide');
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIClose');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIOpen');
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UICollapse');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIExpand');
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIBusy');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIIdle');
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIAlert');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIHelp');     //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIHint');     //  XForms
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIRefresh');  //  XForms
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIEdit');
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIToggle');
+
+/*
+TP.sig.ResponderInteractionSignal.defineSubtype('UIRevalidate');   //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIRecalculate');  //  XForms
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIReset');   //  XForms
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIDataWillSend');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderNotificationSignal.defineSubtype('UIDataSignal');
+
+TP.sig.UIDataSignal.defineSubtype('UIDataReceived');
+TP.sig.UIDataSignal.defineSubtype('UIDataFailed');
+TP.sig.UIDataSignal.defineSubtype('UIDataSent');
+TP.sig.UIDataSignal.defineSubtype('UIDataSerialize');
+
+TP.sig.UIDataSignal.defineSubtype('UIDataConstruct');
+TP.sig.UIDataSignal.defineSubtype('UIDataDestruct');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIValueChange');   //  XForms
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UISelect');        //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIDeselect');      //  XForms
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIScroll');
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIInsert');        //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIDelete');        //  XForms
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIDuplicate');
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPageEnd');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPageNext');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPagePrevious');
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPageStart');
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIPageSet');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderInteractionSignal.defineSubtype('UIStateChange');
+
+TP.sig.UIStateChange.defineSubtype('UIFocused');
+TP.sig.UIStateChange.defineSubtype('UIBlurred');
+
+TP.sig.UIStateChange.defineSubtype('UIValid');          //  XForms
+TP.sig.UIStateChange.defineSubtype('UIInvalid');        //  XForms
+
+TP.sig.UIStateChange.defineSubtype('UIReadonly');       //  XForms
+TP.sig.UIStateChange.defineSubtype('UIReadwrite');      //  XForms
+
+TP.sig.UIStateChange.defineSubtype('UIRequired');       //  XForms
+TP.sig.UIStateChange.defineSubtype('UIOptional');       //  XForms
+
+TP.sig.UIStateChange.defineSubtype('UIEnabled');        //  XForms
+TP.sig.UIStateChange.defineSubtype('UIDisabled');       //  XForms
+
+TP.sig.UIStateChange.defineSubtype('UIInRange');        //  XForms
+TP.sig.UIStateChange.defineSubtype('UIOutOfRange');     //  XForms
 
 //  ========================================================================
 //  GEOLOCATION SIGNALS
