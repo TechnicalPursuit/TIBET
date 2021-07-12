@@ -1133,6 +1133,9 @@
     TP.sys.setcfg('path.app_tsh', '~app_inf/tsh');
     TP.sys.setcfg('path.lib_tsh', '~lib_lib/tsh');
 
+    TP.sys.setcfg('path.app_templates', '~app_src/templates');
+    TP.sys.setcfg('path.lib_templates', '~lib/templates');
+
     TP.sys.setcfg('path.app_test', '~app/test');
     TP.sys.setcfg('path.lib_test', '~lib/test');
 
