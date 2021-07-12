@@ -57,6 +57,9 @@ function(resource, mimeType, fallback) {
      * @returns {TP.uri.URI} The computed resource URI.
      */
 
+    //  These are natively supported elements - they don't have templates,
+    //  styles or theming styles.
+
     return null;
 });
 
