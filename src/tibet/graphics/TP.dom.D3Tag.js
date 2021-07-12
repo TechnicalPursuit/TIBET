@@ -1104,6 +1104,8 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
                     //  to decide whether to set an Attribute or not).
                     if (key === 'value') {
                         ownerTPElem.setValue(val);
+                    } else if (key[0] === '@') {
+                        ownerTPElem.setAttribute(key.slice(1), val);
                     } else {
                         //  The parameters here are:
                         //      aspect, facet (always 'value' here), value
