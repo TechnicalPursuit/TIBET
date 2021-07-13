@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
-<xctrls:imageitem
-    class="item {{$SOURCE.(@class)}}">
+<xctrls:imageitem class="item {{$SOURCE.(@class)}}">
     {{$SOURCE.(./xctrls:label|./xctrls:value|./xctrls:hint)}}
     <span xmlns="http://www.w3.org/1999/xhtml" id="{{$SOURCE.(@id)}}_value" tibet:pelem="value">
     {{$SOURCE.(./xctrls:image)}}
