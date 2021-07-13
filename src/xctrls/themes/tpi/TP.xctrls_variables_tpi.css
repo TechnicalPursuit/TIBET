@@ -139,6 +139,14 @@ xctrls|menuitem {
     --xctrls-menuitem-background-color-disabled: #eee;
 
     --xctrls-menuitem-background-color-selected: gold;
+
+    --xctrls-menuitem-border-width: 1px;
+    --xctrls-menuitem-border-style: solid;
+    --xctrls-menuitem-border-radius: 3px;
+    --xctrls-menuitem-border-color-normal: #999;
+
+    --xctrls-menuitem-margin: 0 0 1px 0;
+    --xctrls-menuitem-padding: 1em;
 }
 
 xctrls|textitem {
