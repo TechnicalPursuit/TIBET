@@ -572,7 +572,8 @@ function(aSignal) {
 
         //  Grab the value element of the list item.
         valueTPElem = wrappedDOMTarget.get('xctrls|value');
-        if (TP.notValid(valueTPElem) || !TP.canInvoke(valueTPElem, 'getTextContent')) {
+        if (TP.notValid(valueTPElem) ||
+            !TP.canInvoke(valueTPElem, 'getTextContent')) {
             return this;
         }
 
@@ -890,6 +891,8 @@ function(aDataObject, shouldSignal) {
     //  Make sure to clear our converted data.
     this.set('$convertedData', null, false);
 
+    //  Compute the keys
+
     //  This object needs to see keys in 'Array of keys' format. Therefore, the
     //  following conversions are done:
 
@@ -905,7 +908,8 @@ function(aDataObject, shouldSignal) {
         if (TP.isHash(dataObj)) {
             keys = dataObj.getKeys();
         } else if (TP.isPlainObject(dataObj)) {
-            //  Make sure to convert a POJO into a TP.core.Hash
+            //  Make sure to convert a POJO into a TP.core.Hash and then convert
+            //  it into an Array of ordered pairs.
             keys = TP.hc(dataObj).getKeys();
         } else if (TP.isPair(dataObj.first())) {
             keys = dataObj.collect(
@@ -1394,10 +1398,10 @@ function() {
         //  This object needs to see data in 'key/value pair' format. Therefore,
         //  the following conversions are done:
 
+        //  POJO / Hash: {'foo':'bar','baz':'goo'}   ->
+        //                                      [['foo','bar'],['baz','goo']]
         //  Array of items: ['a','b','c']   ->  [[0,'a'],[1,'b'],[2,'c']]
         //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   ->  unchanged
-        //  POJO / Hash:    {'foo':'bar','baz':'goo'}   ->
-        //                                      [['foo','bar'],['baz','goo']]
 
         //  If we have a hash as our data, this will convert it into an Array of
         //  ordered pairs (i.e. an Array of Arrays) where the first item in each
@@ -1408,8 +1412,8 @@ function() {
             //  Make sure to convert a POJO into a TP.core.Hash
             selectionData = TP.hc(wholeData).getKVPairs();
         } else if (!TP.isPair(wholeData.first())) {
-            //  Massage the data Array into an Array of pairs (unless it already
-            //  is)
+            //  The first item is not a pair so it might be a regular Array or
+            //  another object. Massage the data object into an Array of pairs.
             selectionData = wholeData.getKVPairs();
         } else {
             //  If we didn't do any transformations to the data, we make sure to
