@@ -655,6 +655,55 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.itemset.Inst.defineMethod('prepareData',
+function(aDataObject) {
+
+    /**
+     * @method prepareData
+     * @summary Returns data that has been 'prepared' for usage by the receiver.
+     * @description This method takes a variety of object types and will produce
+     *     data suitable for use by the receiver. This usually will be an Array
+     *     of 'ordered pairs' (i.e. Arrays of Arrays of key/value pairs).
+     * @param {Object} aDataObject The original object supplied to the receiver
+     *     as it's 'data object'.
+     * @returns {Object} The data object 'massaged' into a data format suitable
+     *     for use by the receiver.
+     */
+
+    var firstObj,
+        dataObj;
+
+    //  Make sure to unwrap this from any TP.core.Content objects, etc.
+    dataObj = TP.val(aDataObject);
+
+    //  Now, obtain a set of key/value pairs no matter what kind of data object
+    //  we were handed.
+    if (TP.isArray(dataObj)) {
+        firstObj = dataObj.first();
+
+        //  If the data object is an Array and only has 1 item, which must be a
+        //  non-Array Collection (Hash, POJO, NodeList, NamedNodeMap), then we
+        //  use the entries collection as our data object.
+        if (dataObj.getSize() === 1 &&
+            TP.isCollection(firstObj) &&
+            !TP.isArray(firstObj)) {
+            dataObj = TP.entries(firstObj);
+        } else if (TP.isPair(firstObj)) {
+            dataObj = TP.copy(dataObj);
+        } else {
+            //  An Array - return entries (i.e. key/value pairs).
+            dataObj = TP.entries(dataObj);
+        }
+    } else {
+        //  Another kind of Object - return entries (i.e. key/value pairs).
+        dataObj = TP.entries(dataObj);
+    }
+
+    return dataObj;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.itemset.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
@@ -831,18 +880,10 @@ function(aDataObject, shouldSignal) {
         return this;
     }
 
-    //  Make sure to unwrap this from any TP.core.Content objects, etc.
-    dataObj = TP.val(aDataObject);
-
-    //  If the data object is an Array and only has 1 item, which must be a
-    //  non-Array Collection (Hash, POJO, NodeList, NamedNodeMap), then we use
-    //  the entries collection as our data object.
-    if (TP.isArray(dataObj) &&
-        dataObj.getSize() === 1 &&
-        TP.isCollection(dataObj.first()) &&
-        !TP.isArray(dataObj.first())) {
-        dataObj = TP.entries(dataObj.first());
-    }
+    //  Prepare the supplied data into the proper format so that keys can be
+    //  computed and it can be thought of as 'rows' of data. This normally means
+    //  making 'pairs' of the 'entries' of the data object.
+    dataObj = this.prepareData(aDataObject);
 
     this.$set('data', dataObj, false);
 
