@@ -733,6 +733,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.D3Tag.Inst.defineMethod('getTemplateRowDatum',
+function(aData) {
+
+    /**
+     * @method getTemplateRowDatum
+     * @summary Returns the 'row' datum given the supplied data.
+     * @description This is the value that will be bound to the author-visible
+     *     'value' slot in the template.
+     * @param {Object} aData The data item that is representing this 'row' of
+     *     data in the overall data set.
+     * @returns {Object} The object to use as a 'row' of data.
+     */
+
+    if (TP.isHash(aData.last())) {
+        return aData.last();
+    }
+
+    return aData;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.D3Tag.Inst.defineMethod('hasTemplate',
 function() {
 
@@ -1012,7 +1034,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
         targetTPElem,
 
-        data,
+        row,
 
         len,
 
@@ -1043,12 +1065,8 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
     targetTPElem = TP.wrap(itemElement);
 
-    //  Allow Arrays of TP.core.Hash to be used.
-    if (TP.isHash(datum.last())) {
-        data = datum.last();
-    } else {
-        data = datum;
-    }
+    //  Get the proper datum for this 'row' for this iteration.
+    row = this.getTemplateRowDatum(datum);
 
     //  Loop over all of the elements that were found.
     len = elems.getSize();
@@ -1094,11 +1112,11 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
                         //  Execute the transformation function and the return
                         //  value.
                         val = transformFunc(
-                                this, data, targetTPElem, allData, ind, false);
+                                this, row, targetTPElem, allData, ind, false);
                     } else {
                         //  TODO: Support more than 1 expr
                         expr = record.at('dataExprs').at(0);
-                        val = TP.wrap(data).get(TP.apc(expr));
+                        val = TP.wrap(row).get(TP.apc(expr));
                     }
 
                     //  If the key is 'value', set the text content of the owner
