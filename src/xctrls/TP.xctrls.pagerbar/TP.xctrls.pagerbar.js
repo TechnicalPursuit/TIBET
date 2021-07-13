@@ -327,41 +327,21 @@ function(aDataObject, shouldSignal) {
      * @returns {TP.xctrls.pagerbar} The receiver.
      */
 
-    var dataObj,
-
-        pageData,
+    var pageData,
         pageSize,
 
         groupedData,
         len,
-        i,
-
-        firstObj;
+        i;
 
     if (TP.notValid(aDataObject)) {
         return this;
     }
 
-    //  Make sure to unwrap this from any TP.core.Content objects, etc.
-    dataObj = TP.val(aDataObject);
-
-    //  Now, obtain a set of key/value pairs no matter what kind of data object
-    //  we were handed.
-    if (TP.isArray(dataObj)) {
-        firstObj = dataObj.first();
-
-        if (dataObj.getSize() === 1 &&
-            TP.isCollection(firstObj) &&
-            !TP.isArray(firstObj)) {
-            pageData = TP.entries(firstObj);
-        } else if (TP.isPair(firstObj)) {
-            pageData = TP.copy(dataObj);
-        } else {
-            pageData = TP.entries(dataObj);
-        }
-    } else {
-        pageData = TP.entries(dataObj);
-    }
+    //  Prepare the supplied data into the proper format so that keys can be
+    //  computed and it can be thought of as 'rows' of data. This normally means
+    //  making 'pairs' of the 'entries' of the data object.
+    pageData = this.prepareData(aDataObject);
 
     //  Grab the 'paging size' that we're going to page the data by. If it's a
     //  Number with a size greater than 1, we generate a new data set, taking
