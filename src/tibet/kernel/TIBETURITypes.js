@@ -4485,9 +4485,7 @@ function(aURI, aRequest, shouldCopy, conversionFunc) {
     var req,
 
         processResult,
-        wantsSync,
-
-        resp;
+        wantsSync;
 
     //  Copy the request and make sure it's configured for an 'sync' fetch.
     req = TP.request(aRequest).copy();

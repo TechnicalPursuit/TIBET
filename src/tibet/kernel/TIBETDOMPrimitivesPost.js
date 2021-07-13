@@ -6258,7 +6258,6 @@ function(aNode, aSignal) {
 
     var node,
         win,
-        attrVal,
         type,
         frame;
 

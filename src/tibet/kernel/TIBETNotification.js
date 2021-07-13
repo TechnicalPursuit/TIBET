@@ -6126,17 +6126,7 @@ function(anOrigin, aSignal, aPayload, aType) {
      */
 
     var sig,
-        target,
-        origin,
-
-        responders,
-
-        i,
-        len,
-        responder,
-
-        responderIsOrigin,
-        shouldContinue;
+        origin;
 
     if (TP.notValid(aSignal)) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
@@ -6155,7 +6145,6 @@ function(anOrigin, aSignal, aPayload, aType) {
 
     //  Capture initial target and origin data. We use these to ensure we
     //  message controllers properly during both capturing and bubbling.
-    target = sig.getTarget();
     origin = sig.getOrigin();
 
     //  ---
