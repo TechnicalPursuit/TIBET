@@ -708,7 +708,6 @@ function(contentInfo, overlayContent, afterLoadHandler) {
 
         finalContent,
 
-        extractElementFromResult,
         contentElem,
 
         content,
@@ -753,53 +752,19 @@ function(contentInfo, overlayContent, afterLoadHandler) {
 
         contentURI = TP.uc(contentURI);
 
-        extractElementFromResult = function(result) {
-
-            var elem;
-
-            //  If the URI pointed to a type and that type is a subtype
-            //  of TP.dom.ElementNode, then create an Element using the
-            //  canonical name.
-            if (TP.isType(result) &&
-                TP.isSubtypeOf(result, TP.dom.ElementNode)) {
-                elem = TP.elem('<' + result.getCanonicalName() + '/>');
-            } else if (TP.isKindOf(result, TP.dom.ElementNode)) {
-                elem = result.getNativeNode();
-            } else if (TP.isElement(result)) {
-                elem = result;
-            } else if (TP.isString(result)) {
-                elem = TP.elem(result);
-            } else {
-                elem = TP.elem(result.get('data'));
-            }
-
-            return elem;
-        };
-
         //  If we could create a real URI from the supplied URI, then fetch the
         //  content and recursively call this method with that content.
         if (TP.notEmpty(contentURI) && TP.isURI(contentURI)) {
 
-            if (contentURI.get('mode') === TP.core.SyncAsync.ASYNCHRONOUS) {
-                contentURI.getResource().then(
-                    function(result) {
+            TP.elementFromURI(contentURI).then(
+                function(resultElement) {
+                    //  Note the recursive call to this method, but this time
+                    //  with content.
+                    this.loadContent(
+                            contentInfo, resultElement, afterLoadHandler);
+                }.bind(this));
 
-                        var elem;
-
-                        elem = extractElementFromResult(result);
-
-                        //  Note the recursive call to this method, but this
-                        //  time with content.
-                        this.loadContent(contentInfo, elem, afterLoadHandler);
-
-                    }.bind(this));
-
-                //  Return here - we have the recursive call above.
-                return this;
-            } else {
-                finalContent = extractElementFromResult(
-                                contentURI.getResource().get('result'));
-            }
+            return this;
         }
     } else if (TP.isString(contentID)) {
 
