@@ -311,9 +311,7 @@ function(info) {
      *          {String} [dialogTypeName] A String that should be a typename
      *          matching a particular subtype of TP.xctrls.dialog that the
      *          caller wants to use on the created dialog.
-     * @returns {Promise} A Promise to be used as necessary. Since this is an
-     *     alert(), this Promise's resolver Function will be called with no
-     *     return value.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     var promise;
@@ -330,46 +328,172 @@ function(info) {
     promise = TP.extern.Promise.construct(
         function(resolver, rejector) {
 
-            var dialogID,
-                isModal,
-                template,
+            var displayHandler,
+                template;
 
-                win,
+            displayHandler = function(templateStr) {
+                var dialogID,
+                    isModal,
 
-                dialogTPElem,
+                    win,
 
-                curtainID,
+                    dialogTPElem,
 
-                title,
+                    curtainID,
 
-                dialogElem,
+                    title,
 
-                attrHash,
+                    dialogElem,
 
-                typeName,
+                    attrHash,
 
-                docBody,
+                    typeName,
 
-                templateData,
+                    docBody,
 
-                contentResource,
+                    templateData,
 
-                beforeShowCallback,
+                    contentResource,
 
-                isShowing;
+                    beforeShowCallback,
 
-            //  Default the dialog ID and whether we're displaying in a modal
-            //  fashion
-            dialogID = info.atIfInvalid('dialogID', 'systemDialog');
-            dialogID = dialogID.unquoted();
+                    isShowing;
 
-            isModal = info.atIfInvalid('isModal', true);
+                //  Default the dialog ID and whether we're displaying in a
+                //  modal fashion
+                dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+                dialogID = dialogID.unquoted();
+
+                isModal = info.atIfInvalid('isModal', true);
+
+                win = TP.sys.uiwin(true);
+
+                //  Grab the dialog and create one if one isn't present.
+                dialogTPElem = TP.byId(dialogID, win);
+
+                //  If we couldn't find the dialog element and we're running the
+                //  Lama, then we can try to find it in the UIROOT window.
+                if (TP.notValid(dialogTPElem) && TP.sys.hasFeature('lama')) {
+                    win = TP.sys.getUIRoot();
+                    dialogTPElem = TP.byId(dialogID, win);
+                }
+
+                if (TP.notValid(dialogTPElem)) {
+
+                    //  Reset win to uiwin (not getUIRoot from lama-based
+                    //  search).
+                    win = TP.sys.uiwin(true);
+
+                    //  If the caller provided an attribute hash, then copy
+                    //  that.Otherwise, create a new one. We'll populate it with
+                    //  the 'id' and 'curtainID' below.
+                    if (TP.isValid(info.at('attrs'))) {
+                        attrHash = TP.copy(info.at('attrs'));
+                    } else {
+                        attrHash = TP.hc();
+                    }
+
+                    attrHash.atPut('id', dialogID);
+
+                    //  The caller might have provided the ID of the curtain
+                    //  we're supposed to use. Otherwise, we default to the
+                    //  shared system curtain.
+                    curtainID = TP.ifInvalid(info.at('curtainID'),
+                                                'systemCurtain');
+                    attrHash.atPut('curtainID', curtainID);
+
+                    //  Create a new 'xctrls:dialog' Element and set it's modal
+                    //  attribute if appropriate.
+                    dialogElem = TP.elem('<xctrls:dialog ' +
+                                            attrHash.asAttributeString() +
+                                            '/>');
+
+                    if (isModal) {
+                        TP.elementSetAttribute(dialogElem,
+                                                'modal',
+                                                'true',
+                                                true);
+                    }
+
+                    typeName = info.at('dialogTypeName');
+                    if (TP.notEmpty(typeName)) {
+                        TP.elementSetAttribute(
+                                dialogElem, 'tibet:tag', typeName, true);
+                    }
+
+                    //  Grab the TP.html.body of the window's document and
+                    //  insert the content before it's end tag.
+                    docBody = TP.wrap(win).getDocument().getBody();
+
+                    //  Note the assignment here to capture the TP version of
+                    //  the element that got inserted.
+                    dialogTPElem = docBody.insertContent(dialogElem,
+                                                            TP.BEFORE_END);
+                }
+
+                //  If a title was defined, then set the dialog's title to it.
+                //  Otherwise, clear the dialog's title (in case it's shared and
+                //  it had a title from it's previous user).
+                title = info.at('title');
+                if (TP.notEmpty(title)) {
+                    dialogTPElem.setTitle(title);
+                } else {
+                    dialogTPElem.setTitle('');
+                }
+
+                //  Grab any template data and transform the supplied
+                //  templateStr with
+                //  it.
+                templateData = info.at('templateData');
+                if (TP.notEmpty(templateData)) {
+                    contentResource = templateStr.transform(templateData);
+                } else {
+                    contentResource = templateStr;
+                }
+
+                if (!TP.isString(templateStr) && TP.isURI(templateStr)) {
+                    //  Set that contentResource's result as the content of our
+                    //  dialog
+                    dialogTPElem.setContent(contentResource.get('result'),
+                                            info.at('setContentParams'));
+                } else {
+                    dialogTPElem.setContent(contentResource,
+                                            info.at('setContentParams'));
+                }
+
+                //  If a callback Function that should be executed before we
+                //  show the dialog was supplied, invoke it with the dialog
+                //  TP.dom.ElementNode as the only parameter.
+                beforeShowCallback = info.at('beforeShow');
+                if (TP.isCallable(beforeShowCallback)) {
+                    beforeShowCallback(dialogTPElem);
+                }
+
+                //  If the panel is modal, then we need to manage the curtain
+                //  appropriately.
+                if (dialogTPElem.getAttribute('modal') === 'true') {
+                    isShowing = dialogTPElem.getAttribute('hidden') === false;
+                    dialogTPElem.toggleCurtain(isShowing);
+                }
+
+                //  Show the dialog
+                dialogTPElem.setAttribute('hidden', false);
+
+                //  Call the Promise's resolver with the created
+                //  TP.xctrls.dialog object.
+                resolver(dialogTPElem);
+            };
 
             template = info.at('templateContent');
             if (TP.isString(template)) {
                 template = template.unquoted();
                 if (TP.isURIString(template)) {
                     template = TP.uc(template);
+                    //  This returns a Promise.
+                    return TP.elementFromURI(template).then(
+                            function(resultElement) {
+                                displayHandler(TP.str(resultElement));
+                            });
                 }
             } else if (TP.notValid(template)) {
                 template = info.at('templateURI');
@@ -377,116 +501,17 @@ function(info) {
                 if (!TP.isURI(template)) {
                     return TP.raise(TP, 'InvalidTemplate');
                 }
+
+                //  This returns a Promise.
+                return TP.elementFromURI(template).then(
+                        function(resultElement) {
+                            displayHandler(TP.str(resultElement));
+                        });
             }
 
-            win = TP.sys.uiwin(true);
-
-            //  Grab the dialog and create one if one isn't present.
-            dialogTPElem = TP.byId(dialogID, win);
-
-            //  If we couldn't find the dialog element and we're running the
-            //  Lama, then we can try to find it in the UIROOT window.
-            if (TP.notValid(dialogTPElem) && TP.sys.hasFeature('lama')) {
-                win = TP.sys.getUIRoot();
-                dialogTPElem = TP.byId(dialogID, win);
-            }
-
-            if (TP.notValid(dialogTPElem)) {
-
-                //  Reset win to uiwin (not getUIRoot from lama-based search)
-                win = TP.sys.uiwin(true);
-
-                //  If the caller provided an attribute hash, then copy that.
-                //  Otherwise, create a new one. We'll populate it with the 'id'
-                //  and 'curtainID' below.
-                if (TP.isValid(info.at('attrs'))) {
-                    attrHash = TP.copy(info.at('attrs'));
-                } else {
-                    attrHash = TP.hc();
-                }
-
-                attrHash.atPut('id', dialogID);
-
-                //  The caller might have provided the ID of the curtain we're
-                //  supposed to use. Otherwise, we default to the shared system
-                //  curtain.
-                curtainID = TP.ifInvalid(info.at('curtainID'), 'systemCurtain');
-                attrHash.atPut('curtainID', curtainID);
-
-                //  Create a new 'xctrls:dialog' Element and set it's modal
-                //  attribute if appropriate.
-                dialogElem = TP.elem(
-                    '<xctrls:dialog ' + attrHash.asAttributeString() + '/>');
-
-                if (isModal) {
-                    TP.elementSetAttribute(dialogElem, 'modal', 'true', true);
-                }
-
-                typeName = info.at('dialogTypeName');
-                if (TP.notEmpty(typeName)) {
-                    TP.elementSetAttribute(
-                            dialogElem, 'tibet:tag', typeName, true);
-                }
-
-                //  Grab the TP.html.body of the window's document and insert
-                //  the content before it's end tag.
-                docBody = TP.wrap(win).getDocument().getBody();
-
-                //  Note the assignment here to capture the TP version of the
-                //  element that got inserted.
-                dialogTPElem = docBody.insertContent(dialogElem, TP.BEFORE_END);
-            }
-
-            //  If a title was defined, then set the dialog's title to it.
-            //  Otherwise, clear the dialog's title (in case it's shared and it
-            //  had a title from it's previous user).
-            title = info.at('title');
-            if (TP.notEmpty(title)) {
-                dialogTPElem.setTitle(title);
-            } else {
-                dialogTPElem.setTitle('');
-            }
-
-            //  Grab any template data and transform the supplied template with
-            //  it.
-            templateData = info.at('templateData');
-            if (TP.notEmpty(templateData)) {
-                contentResource = template.transform(templateData);
-            } else {
-                contentResource = template;
-            }
-
-            if (!TP.isString(template) && TP.isURI(template)) {
-                //  Set that contentResource's result as the content of our
-                //  dialog
-                dialogTPElem.setContent(contentResource.get('result'),
-                                        info.at('setContentParams'));
-            } else {
-                dialogTPElem.setContent(contentResource,
-                                        info.at('setContentParams'));
-            }
-
-            //  If a callback Function that should be executed before we show
-            //  the dialog was supplied, invoke it with the dialog
-            //  TP.dom.ElementNode as the only parameter.
-            beforeShowCallback = info.at('beforeShow');
-            if (TP.isCallable(beforeShowCallback)) {
-                beforeShowCallback(dialogTPElem);
-            }
-
-            //  If the panel is modal, then we need to manage the curtain
-            //  appropriately.
-            if (dialogTPElem.getAttribute('modal') === 'true') {
-                isShowing = dialogTPElem.getAttribute('hidden') === false;
-                dialogTPElem.toggleCurtain(isShowing);
-            }
-
-            //  Show the dialog
-            dialogTPElem.setAttribute('hidden', false);
-
-            //  Call the Promise's resolver with the created
-            //  TP.xctrls.dialog object.
-            resolver(dialogTPElem);
+            //  A URI wasn't supplied, so there must've been a String in the
+            //  templateContent.
+            displayHandler(template);
         });
 
     return promise;

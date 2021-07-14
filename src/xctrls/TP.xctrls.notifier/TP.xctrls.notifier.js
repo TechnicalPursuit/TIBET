@@ -322,25 +322,10 @@ function(info) {
      *          this parameter will provide the dynamic data for that template.
      *          {Function} [beforeShow] A function to execute before showing the
      *          notifier.
-     * @returns {Promise} A Promise to be used as necessary. Since this is an
-     *     alert(), this Promise's resolver Function will be called with no
-     *     return value.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
-    var notifierID,
-        template,
-
-        templateData,
-
-        contentResource,
-        content,
-        contentElem,
-
-        notifierContentURI,
-
-        tpDoc,
-
-        beforeShowCallback;
+    var promise;
 
     if (TP.notValid(info)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
@@ -351,75 +336,118 @@ function(info) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    //  Default the notifier ID
-    notifierID = info.atIfInvalid('notifierID', 'systemNotifier');
-    notifierID = notifierID.unquoted();
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
 
-    template = info.at('templateContent');
-    if (TP.isString(template)) {
-        template = template.unquoted();
-        if (TP.isURIString(template)) {
-            template = TP.uc(template);
+        var displayHandler,
+            template;
+
+        displayHandler = function(templateStr) {
+
+            var notifierID,
+
+                templateData,
+
+                contentResource,
+                content,
+                contentElem,
+
+                notifierContentURI,
+
+                tpDoc,
+
+                beforeShowCallback;
+
+            //  Default the notifier ID
+            notifierID = info.atIfInvalid('notifierID', 'systemNotifier');
+            notifierID = notifierID.unquoted();
+
+            //  Grab any template data and transform the supplied template with
+            //  it.
+            templateData = info.at('templateData');
+            contentResource = template.transform(templateData);
+
+            //  Extract the result and build an XHTML span around it.
+
+            if (!TP.isString(template) && TP.isURI(template)) {
+                content = contentResource.get('result');
+            } else {
+                content = contentResource;
+            }
+
+            contentElem = TP.xhtmlnode('<span>' + content + '</span>');
+
+            //  Since the signal below wants content in a URI, we create one to
+            //  hold the content and set its resource to the content element that
+            //  we created.
+            notifierContentURI = TP.uc('urn:tibet:notifiercontent');
+            notifierContentURI.setResource(contentElem);
+
+            if (TP.sys.hasFeature('lama')) {
+                tpDoc = TP.sys.getUIRoot().getDocument();
+            } else {
+                tpDoc = TP.sys.getUICanvas().getDocument();
+            }
+
+            //  If a callback Function that should be executed before we show
+            //  the notifier was supplied, invoke it with the notifier
+            //  TP.dom.ElementNode as the only parameter.
+            beforeShowCallback = info.at('beforeShow');
+            if (TP.isCallable(beforeShowCallback)) {
+                beforeShowCallback(TP.byId(notifierID, tpDoc));
+            }
+
+            TP.xctrls.notifier.set('$afterHide',
+                function(aNotifierTPElem) {
+                    notifierContentURI.setResource('');
+                });
+
+            this.signal(
+                null,
+                'OpenNotifier',
+                TP.hc(
+                    'overlayID', notifierID,
+                    'contentURI', notifierContentURI.getLocation(),
+                    'noPosition', true,
+                    'triggerTPDocument', tpDoc,
+                    'fadeoutDuration', info.at('fadeoutDuration'),
+                    'fadeoutDelay', info.at('fadeoutDelay')));
+
+            //  Call the Promise's resolver.
+            resolver();
+        };
+
+        template = info.at('templateContent');
+        if (TP.isString(template)) {
+            template = template.unquoted();
+            if (TP.isURIString(template)) {
+                template = TP.uc(template);
+                //  This returns a Promise.
+                return TP.elementFromURI(template).then(
+                        function(resultElement) {
+                            displayHandler(TP.str(resultElement));
+                        });
+            }
+        } else if (TP.notValid(template)) {
+            template = info.at('templateURI');
+
+            if (!TP.isURI(template)) {
+                return TP.raise(TP, 'InvalidTemplate');
+            }
+
+            //  This returns a Promise.
+            return TP.elementFromURI(template).then(
+                    function(resultElement) {
+                        displayHandler(TP.str(resultElement));
+                    });
         }
-    } else if (TP.notValid(template)) {
-        template = info.at('templateURI');
 
-        if (!TP.isURI(template)) {
-            return TP.raise(TP, 'InvalidTemplate');
-        }
-    }
+        //  A URI wasn't supplied, so there must've been a String in the
+        //  templateContent.
+        displayHandler(template);
+    });
 
-    //  Grab any template data and transform the supplied template with
-    //  it.
-    templateData = info.at('templateData');
-    contentResource = template.transform(templateData);
-
-    //  Extract the result and build an XHTML span around it.
-
-    if (!TP.isString(template) && TP.isURI(template)) {
-        content = contentResource.get('result');
-    } else {
-        content = contentResource;
-    }
-
-    contentElem = TP.xhtmlnode('<span>' + content + '</span>');
-
-    //  Since the signal below wants content in a URI, we create one to hold the
-    //  content and set its resource to the content element that we created.
-    notifierContentURI = TP.uc('urn:tibet:notifiercontent');
-    notifierContentURI.setResource(contentElem);
-
-    if (TP.sys.hasFeature('lama')) {
-        tpDoc = TP.sys.getUIRoot().getDocument();
-    } else {
-        tpDoc = TP.sys.getUICanvas().getDocument();
-    }
-
-    //  If a callback Function that should be executed before we show
-    //  the notifier was supplied, invoke it with the notifier
-    //  TP.dom.ElementNode as the only parameter.
-    beforeShowCallback = info.at('beforeShow');
-    if (TP.isCallable(beforeShowCallback)) {
-        beforeShowCallback(TP.byId(notifierID, tpDoc));
-    }
-
-    TP.xctrls.notifier.set('$afterHide',
-        function(aNotifierTPElem) {
-            notifierContentURI.setResource('');
-        });
-
-    this.signal(
-        null,
-        'OpenNotifier',
-        TP.hc(
-            'overlayID', notifierID,
-            'contentURI', notifierContentURI.getLocation(),
-            'noPosition', true,
-            'triggerTPDocument', tpDoc,
-            'fadeoutDuration', info.at('fadeoutDuration'),
-            'fadeoutDelay', info.at('fadeoutDelay')));
-
-    return this;
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
