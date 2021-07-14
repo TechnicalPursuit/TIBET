@@ -26,9 +26,12 @@ xctrls|wayfinderitem {
     height: 100%;
 }
 
-xctrls|wayfinderitem > div {
+xctrls|wayfinderitem > *|* {
 
     position: absolute;
+}
+
+xctrls|wayfinderitem > div {
 
     top: 0;
     right: 0;
