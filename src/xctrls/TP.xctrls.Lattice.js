@@ -85,7 +85,7 @@ function(aRequest) {
     //  Observe ourself for when we're resized
     tpElem.observe(tpElem, TP.ac('TP.sig.DOMResize', 'TP.sig.DOMVisible'));
 
-    tpElem.set('$numSpacingRows', 0, false);
+    tpElem.set('$numSpacerRows', 0, false);
 
     //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
     //  then just return. When our stylesheet loads, it will trigger the
@@ -137,7 +137,7 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Lattice.Inst.defineAttribute('$numSpacingRows');
+TP.xctrls.Lattice.Inst.defineAttribute('$numSpacerRows');
 
 //  The data as massaged into what this control needs. This is reset whenever
 //  the control's whole data set is reset.
@@ -152,6 +152,8 @@ TP.xctrls.Lattice.Inst.defineAttribute(
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
+
+TP.fluffy = false;
 
 TP.xctrls.Lattice.Inst.defineMethod('computeSelectionData',
 function() {
@@ -169,23 +171,25 @@ function() {
 
     var selectionData,
 
+        currentSpacerRowCount,
+
         containerHeight,
         rowHeight,
 
+        bumpRowCount,
+
         visibleRowCount,
 
-        isEven,
-
-        currentNumSpacingRows,
-
         selectionDataSize,
+
+        lowerBumpRowBounds,
+        upperBumpRowBounds,
 
         shouldAdd,
 
         realDataSize,
 
-        bumpRowCount,
-        newSpacingRowCount,
+        additionalSpacerRowCount,
         i,
 
         oldSpacingRowCount;
@@ -199,30 +203,33 @@ function() {
 
     if (TP.isValid(selectionData)) {
 
-        currentNumSpacingRows = this.get('$numSpacingRows');
+        currentSpacerRowCount = this.get('$numSpacerRows');
 
         containerHeight = this.computeHeight();
         rowHeight = this.getRowHeight();
+
+        bumpRowCount = this.$get('$bumpRowCount');
+
+        //  The number of rows of data in the current selection. These will
+        //  also include spacing rows if previously built by this call.
+        selectionDataSize = selectionData.getSize();
+
+        //  See if the height falls within the 'bump row' (i.e. greater than the
+        //  height of the real amount of data (spacer or otherwise) we have, but
+        //  less than the bump row bottom edge.
+        lowerBumpRowBounds = selectionDataSize * rowHeight;
+        upperBumpRowBounds = (selectionDataSize + bumpRowCount) * rowHeight;
+
+        if (containerHeight > lowerBumpRowBounds &&
+            containerHeight < upperBumpRowBounds) {
+            return selectionData;
+        }
 
         //  The number of currently displayed rows is computed by dividing the
         //  containerHeight by the rowHeight. Note here that we 'round up' to
         //  make sure that we err on the side of *more* spacing rows rather than
         //  less for maximum visual crispness.
         visibleRowCount = (containerHeight / rowHeight).ceil();
-
-        //  If this computation is not evenly divisible, then we subtract one
-        //  from the 'visibleRowCount', used for early acces, since we're not
-        //  exactly on a row boundary.
-        /* eslint-disable no-extra-parens */
-        isEven = (containerHeight % rowHeight) === 0;
-        /* eslint-enable no-extra-parens */
-        if (!isEven) {
-            visibleRowCount -= 1;
-        }
-
-        //  The number of rows of data in the current selection. These will
-        //  also include spacing rows if previously built by this call.
-        selectionDataSize = selectionData.getSize();
 
         shouldAdd = true;
         if (visibleRowCount === selectionDataSize) {
@@ -235,25 +242,23 @@ function() {
 
             //  The "real" data size is the number of total rows minus the
             //  current number of spacing rows.
-            realDataSize = selectionDataSize - currentNumSpacingRows;
+            realDataSize = selectionDataSize - currentSpacerRowCount;
 
             if (visibleRowCount > realDataSize && shouldAdd) {
 
-                bumpRowCount = this.$get('$bumpRowCount');
-
                 /* eslint-disable no-extra-parens */
-                newSpacingRowCount =
-                    (visibleRowCount - realDataSize) + bumpRowCount;
+                additionalSpacerRowCount =
+                    (visibleRowCount - selectionDataSize) + bumpRowCount;
                 /* eslint-enable no-extra-parens */
 
                 for (i = realDataSize;
-                        i < realDataSize + newSpacingRowCount;
+                        i < realDataSize + additionalSpacerRowCount;
                             i++) {
-                    selectionData.atPut(i, this.createBlankRowData(i));
+                    selectionData.push(
+                        this.createBlankRowData(selectionData.getSize()));
+                    currentSpacerRowCount++;
                 }
 
-                //  NB: We never let this drop below 0
-                this.set('$numSpacingRows', newSpacingRowCount.max(0), false);
             }
 
             //  If there is more data in the selection than there is in the
@@ -261,7 +266,7 @@ function() {
             //  off any unnecessary ones.
             if (selectionDataSize > realDataSize) {
 
-                oldSpacingRowCount = realDataSize - visibleRowCount;
+                oldSpacingRowCount = selectionDataSize - visibleRowCount;
 
                 for (i = selectionDataSize - 1;
                         i >= selectionDataSize - oldSpacingRowCount;
@@ -270,8 +275,12 @@ function() {
                         break;
                     }
                     selectionData.pop();
+                    currentSpacerRowCount--;
                 }
             }
+
+            //  NB: We never let this drop below 0
+            this.set('$numSpacerRows', currentSpacerRowCount.max(0), false);
         }
     }
 
