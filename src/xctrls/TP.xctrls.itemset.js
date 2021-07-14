@@ -485,6 +485,14 @@ function() {
         return null;
     }
 
+    //  If the call returned an Array, then it has more than 1 of the same
+    //  value. In this case, we warn and just use the first item.
+    if (TP.isArray(item)) {
+        TP.ifWarn() ?
+            TP.warn('More than 1 item has the same value of: ' + value) : 0;
+        item = item.first();
+    }
+
     //  All DOM 'items' in an itemset have an item number. This will also be the
     //  index into the data for that item.
     itemNum = item.getAttribute('itemnum');
