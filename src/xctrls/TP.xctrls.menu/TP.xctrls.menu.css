@@ -27,7 +27,7 @@ xctrls|menu .body xctrls|content {
     width: 100%;
 }
 
-xctrls|menu .body xctrls|content xctrls|textitem {
+xctrls|menu .body xctrls|content *|*[class~="item"] {
 
     display: list-item;
 }
