@@ -221,6 +221,10 @@ xctrls|dialog {
     --xctrls-dialog-body-background-color: white;
 
     --xctrls-dialog-footer-background-color: #eee;
+
+    --xctrls-dialog-header-close-fill-color: black;
+    --xctrls-dialog-header-close-stroke-color: black;
+    --xctrls-dialog-header-close-stroke-width: 1px;
 }
 
 xctrls|imageitem {

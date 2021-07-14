@@ -3,6 +3,7 @@
 */
 
 @namespace url("http://www.w3.org/1999/xhtml");
+@namespace svg url("http://www.w3.org/2000/svg");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
@@ -44,6 +45,18 @@ xctrls|dialog > xctrls|content[pclass|focus] {
 
 /* The dialog header */
 xctrls|dialog > xctrls|content > div[tibet|pelem="header"] {
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+}
+
+xctrls|dialog > xctrls|content > div[tibet|pelem="header"] svg|svg {
+
+}
+
+xctrls|dialog > xctrls|content > div[tibet|pelem="header"] svg|svg svg|path[class~="main"] {
 
 }
 

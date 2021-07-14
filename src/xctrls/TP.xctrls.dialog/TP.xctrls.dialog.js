@@ -84,6 +84,9 @@ TP.xctrls.dialog.Inst.defineAttribute('body',
 TP.xctrls.dialog.Inst.defineAttribute('header',
     TP.cpc('> xctrls|content > *[tibet|pelem="header"]', TP.hc('shouldCollapse', true)));
 
+TP.xctrls.dialog.Inst.defineAttribute('headerText',
+    TP.cpc('> xctrls|content > *[tibet|pelem="header"] > span.msg', TP.hc('shouldCollapse', true)));
+
 TP.xctrls.dialog.Inst.defineAttribute('contentElement',
     TP.cpc('> xctrls|content > *[tibet|pelem="body"] > tibet|group > xctrls|content',
         TP.hc('shouldCollapse', true)));
@@ -267,7 +270,7 @@ function(aTitle) {
      * @returns {TP.xctrls.dialog} The receiver.
      */
 
-    this.get('header').setTextContent(aTitle);
+    this.get('headerText').setTextContent(aTitle);
 
     return this;
 });
