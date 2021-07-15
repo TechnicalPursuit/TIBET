@@ -5605,7 +5605,7 @@ function(aValue, anIndex, shouldSignal) {
     dirty = this.removeSelection(aValue, 'value');
 
     if (dirty && TP.notFalse(shouldSignal)) {
-        this.dispatch('TP.sig.UIDeselect');
+        this.dispatch('TP.sig.UIDeselect', null, TP.hc('index', anIndex));
     }
 
     return dirty;
@@ -5950,7 +5950,7 @@ function(aValue, anIndex, shouldSignal) {
     dirty = this.addSelection(aValue, 'value');
 
     if (dirty && TP.notFalse(shouldSignal)) {
-        this.dispatch('TP.sig.UISelect');
+        this.dispatch('TP.sig.UISelect', null, TP.hc('index', anIndex));
     }
 
     return dirty;

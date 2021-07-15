@@ -1775,7 +1775,7 @@ function(aValue, anIndex, shouldSignal) {
     if (dirty) {
 
         if (TP.notFalse(shouldSignal)) {
-            this.dispatch('TP.sig.UIDeselect');
+            this.dispatch('TP.sig.UIDeselect', null, TP.hc('index', anIndex));
         }
 
         this.$updateSelectionIndices();
@@ -1836,7 +1836,7 @@ function(aValue, anIndex, shouldSignal) {
     if (dirty) {
 
         if (TP.notFalse(shouldSignal)) {
-            this.dispatch('TP.sig.UISelect');
+            this.dispatch('TP.sig.UISelect', null, TP.hc('index', anIndex));
         }
 
         this.$updateSelectionIndices();
