@@ -23,12 +23,10 @@
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.menuitem.xhtml"/>
-    <resource href="TP.xctrls.menuitem.css"/>
 </config>
 
 <config id="tests">
     <!-- tag-related test scripts here -->
-    <script src="TP.xctrls.menuitem_test.js"/>
 </config>
 
 
