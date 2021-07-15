@@ -9,6 +9,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 
 xctrls|menuitem {
+
     display: flex;
     user-select: none;
 }
@@ -40,6 +41,7 @@ xctrls|menuitem[pclass|selected] {
 
 /* The menuitem label */
 xctrls|menuitem xctrls|label {
+
     flex: 1;
     white-space: nowrap;
 }

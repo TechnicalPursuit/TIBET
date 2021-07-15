@@ -887,10 +887,10 @@ function(styleTPElem) {
     //  Grab all of the existing instances in that document and then iterate
     //  and notify them.
     notReadyToRenderInstances = TP.byCSSPath(
-                            this.getQueryPath(true, true),
-                            styleTPElem.getNativeDocument(),
-                            false,
-                            true);
+                                    this.getQueryPath(true, true),
+                                    styleTPElem.getNativeDocument(),
+                                    false,
+                                    true);
 
     //  Filter out any instances that are already ready to render. No sense in
     //  sending them a method that might do things like cause extra rendering.
