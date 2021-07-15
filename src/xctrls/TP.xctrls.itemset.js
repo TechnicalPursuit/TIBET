@@ -549,11 +549,16 @@ function(aSignal) {
         newValue,
         oldValue,
 
+        dataIndex,
+
         alwaysSignalChange,
 
         wasSignalingChange,
 
-        toggleItems;
+        toggleItems,
+
+        precedingStaticContent,
+        precedingSize;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -591,6 +596,9 @@ function(aSignal) {
         //  Grab the old value before we set it.
         oldValue = this.getValue();
 
+        //  Grab the itemnum as a Number - this is an index into our data.
+        dataIndex = wrappedDOMTarget.getAttribute('itemnum').asNumber();
+
         //  If we always signal change, then even if the values are equal,
         //  we will not exit here. If an attribute is defined, then it takes
         //  precedence over whatever the item control returns.
@@ -622,10 +630,28 @@ function(aSignal) {
             toggleItems = true;
         }
 
-        if (TP.isTrue(wrappedDOMTarget.isSelected()) && toggleItems) {
-            this.deselect(newValue);
+        precedingStaticContent = this.get('precedingStaticItemContent');
+        precedingSize = precedingStaticContent.getSize();
+
+        //  If the data index is greater than or equal to the number of entries
+        //  in our data plus the size of the 'preceding static content', then
+        //  its a selection in the 'following static content' and the index
+        //  should be TP.NOT_FOUND
+        if (dataIndex >= this.get('data').getSize() + precedingSize) {
+            dataIndex = TP.NOT_FOUND;
         } else {
-            this.select(newValue);
+            //  Otherwise, the index into our data that this item represents is
+            //  its itemnum minus the number of items in the 'preceding static
+            //  content'.
+            if (!TP.isEmptyArray(precedingStaticContent)) {
+                dataIndex -= precedingSize;
+            }
+        }
+
+        if (TP.isTrue(wrappedDOMTarget.isSelected()) && toggleItems) {
+            this.deselect(newValue, dataIndex);
+        } else {
+            this.select(newValue, dataIndex);
         }
 
         this.changed('value', TP.UPDATE,
