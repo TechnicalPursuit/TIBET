@@ -36,6 +36,7 @@ function(aSignal) {
 
     var origin,
         sigName,
+        dataIndex,
         payload;
 
     //  Grab the signal origin and wrap it. This should be the menu itself.
@@ -47,10 +48,13 @@ function(aSignal) {
     //  Grab the value, which will be the name of the signal to broadcast, and
     //  the value data, which will form the payload of the signal.
     sigName = origin.getValue();
-    payload = origin.getValueData();
-
     if (TP.isEmpty(sigName)) {
         return this;
+    }
+
+    dataIndex = aSignal.at('index');
+    if (TP.notEmpty(dataIndex) && dataIndex >= 0) {
+        payload = this.get('data').at(dataIndex);
     }
 
     //  Signal with the signal name that was the selected value.
