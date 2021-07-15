@@ -153,8 +153,6 @@ TP.xctrls.Lattice.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.fluffy = false;
-
 TP.xctrls.Lattice.Inst.defineMethod('computeSelectionData',
 function() {
 
