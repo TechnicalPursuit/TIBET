@@ -37,6 +37,10 @@ function(aSignal) {
     var origin,
         sigName,
         dataIndex,
+
+        itemValue,
+        item,
+
         payload;
 
     //  Grab the signal origin and wrap it. This should be the menu itself.
@@ -55,6 +59,10 @@ function(aSignal) {
     dataIndex = aSignal.at('index');
     if (TP.notEmpty(dataIndex) && dataIndex >= 0) {
         payload = this.get('data').at(dataIndex);
+    } else {
+        itemValue = origin.get('value');
+        item = origin.get('itemWithValue', itemValue);
+        payload = TP.hc('signal', itemValue, 'label', item.getLabelText());
     }
 
     //  Signal with the signal name that was the selected value.
