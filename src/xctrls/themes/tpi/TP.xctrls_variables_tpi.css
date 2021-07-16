@@ -216,15 +216,18 @@ xctrls|dialog {
     --xctrls-dialog-header-background-color: #f9f9f9;
     --xctrls-dialog-header-color: black;
     --xctrls-dialog-header-font-size: 116%;
+    --xctrls-dialog-header-height: 2em;
     --xctrls-dialog-header-line-height: 1.5;
-
-    --xctrls-dialog-body-background-color: white;
-
-    --xctrls-dialog-footer-background-color: #eee;
+    --xctrls-dialog-header-margin: 1px;
+    --xctrls-dialog-header-padding: 0 0.5em;
 
     --xctrls-dialog-header-close-fill-color: black;
     --xctrls-dialog-header-close-stroke-color: black;
     --xctrls-dialog-header-close-stroke-width: 1px;
+
+    --xctrls-dialog-body-background-color: white;
+
+    --xctrls-dialog-footer-background-color: #eee;
 }
 
 xctrls|imageitem {

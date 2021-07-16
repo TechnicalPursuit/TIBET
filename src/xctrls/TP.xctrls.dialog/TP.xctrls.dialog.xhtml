@@ -16,7 +16,7 @@
                 <xctrls:content/>
             </tibet:group>
         </div>
-        <div tibet:pelem="footer" drag:resizer="true" drag:item=".."/>
+        <div tibet:pelem="footer" drag:resizer="{{$SOURCE.(@resizeable) .|| false}}" drag:item=".."/>
     </xctrls:content>
 </xctrls:dialog>
 

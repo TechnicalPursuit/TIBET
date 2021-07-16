@@ -26,11 +26,8 @@ xctrls|dialog {
 
 /* The dialog content (visible dialog content) */
 xctrls|dialog > xctrls|content {
-
-    display: grid;
-    position: absolute;
-
-    grid-template-rows: auto 1fr auto;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Hovering over the dialog */
@@ -45,15 +42,19 @@ xctrls|dialog > xctrls|content[pclass|focus] {
 
 /* The dialog header */
 xctrls|dialog > xctrls|content > div[tibet|pelem="header"] {
-
     display: flex;
+    height: var(--xctrls-dialog-header-height);
 
     justify-content: center;
     align-items: center;
 }
 
-xctrls|dialog > xctrls|content > div[tibet|pelem="header"] svg|svg {
+xctrls|dialog > xctrls|content > div[tibet|pelem="header"] span.msg {
+    flex: 1;
+}
 
+xctrls|dialog > xctrls|content > div[tibet|pelem="header"] svg|svg {
+    height: var(--xctrls-dialog-header-height);
 }
 
 xctrls|dialog > xctrls|content > div[tibet|pelem="header"] svg|svg svg|path[class~="main"] {
@@ -62,13 +63,13 @@ xctrls|dialog > xctrls|content > div[tibet|pelem="header"] svg|svg svg|path[clas
 
 /* The dialog body */
 xctrls|dialog > xctrls|content > div[tibet|pelem="body"] {
-
+    flex: 1;
     overflow: hidden;
 }
 
 /* The dialog footer */
 xctrls|dialog > xctrls|content > div[tibet|pelem="footer"] {
-
+    height: var(--xctrls-dialog-footer-height);
 }
 
 xctrls|dialog > xctrls|content .dialogContent {
