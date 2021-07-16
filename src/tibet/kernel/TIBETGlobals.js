@@ -1756,7 +1756,6 @@ TP.NEVER_SERIALIZED_TIBET_ATTRS = [
     'tibet:single',
     'tibet:flagchanges',
     'tibet:templateid',
-    'tibet:templateexpr',
     'tibet:textbinding'
 ];
 

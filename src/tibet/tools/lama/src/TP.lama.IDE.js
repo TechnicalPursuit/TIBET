@@ -5894,8 +5894,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
             for (i = 0; i < len; i++) {
                 if (TP.isElement(templateTestNode) &&
-                    TP.elementHasAttribute(
-                            templateTestNode, 'tibet:templateexpr', true)) {
+                    TP.name(templateTestNode) === 'tibet:acp') {
                     //  empty
                 } else {
                     testAddressParts.push(visualAddressParts.at(i));

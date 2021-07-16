@@ -329,7 +329,7 @@ TP.shell.Shell.Type.defineConstant('INVALID_ARGUMENT_MATCHER',
             '|tag' +
             '|tsh:argv' +
             '|argv' +
-            '|tibet:attrtemplateexprs)'));
+            '|tibet:attr-acp-exprs)'));
 
 //  'starter' snippet list used for new accounts. a list of pairs:
 //  ([[command, user text], ...])

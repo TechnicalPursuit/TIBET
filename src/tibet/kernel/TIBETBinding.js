@@ -6266,12 +6266,7 @@ function(regenerateIfNecessary) {
             targetTPDoc = this.getDocument();
 
             //  Grab any templated elements and refresh their values.
-
-            templatedElems =
-                TP.byCSSPath('*[tibet|templateexpr]',
-                                elem,
-                                false,
-                                true);
+            templatedElems = TP.byCSSPath('tibet|acp', elem, false, true);
 
             if (TP.notEmpty(templatedElems)) {
 
@@ -6437,8 +6432,7 @@ function(regenerateIfNecessary) {
                             //  Grab the templating expression and wrap it in
                             //  ACP brackets. This allows the transform
                             //  machinery to treat it properly.
-                            template = templatedElem.getAttribute(
-                                                        'tibet:templateexpr');
+                            template = templatedElem.getAttribute('expr');
                             template = '{{' + template + '}}';
 
                             //  Run the the transform machinery and use the
