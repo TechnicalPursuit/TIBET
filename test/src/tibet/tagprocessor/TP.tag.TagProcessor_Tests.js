@@ -246,12 +246,15 @@ function() {
 
     this.it('\'all nodes\' - no mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#nochange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
                 var processor,
 
                     beforeStr,
@@ -277,12 +280,15 @@ function() {
 
     this.it('\'all nodes\' - attribute mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#attrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
@@ -299,12 +305,15 @@ function() {
 
     this.it('\'all nodes\' - more attribute mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#moreattrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
@@ -322,12 +331,15 @@ function() {
 
     this.it('\'all nodes\' - content mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#contentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
@@ -344,12 +356,14 @@ function() {
 
     this.it('\'all nodes\' - more content mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#morecontentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+        promise.chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
