@@ -26,9 +26,10 @@ function() {
 
     if (!TP.isType(tagType = TP.sys.getTypeByName('TP.test.nochange'))) {
         tagType = TP.dom.ElementNode.defineSubtype('test.nochange');
-        tagType.Type.defineMethod('allNodesTransform', function(aRequest) {
-            //  This method does nothing on this tag type
-        });
+        tagType.Type.defineMethod('allNodesTransform',
+            function(aRequest) {
+                //  This method does nothing on this tag type
+            });
     }
 
     return tagType;
@@ -340,13 +341,16 @@ function() {
                                     loadURI, TP.hc('resultType', TP.DOM));
 
         promise.chain(function(result) {
-                var processor;
+                var processor,
+                    testElem;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
                 processor.processTree(result);
 
-                test.assert.isXMLNode(result.firstElementChild);
+                testElem = result.firstElementChild;
+
+                test.assert.isXMLNode(testElem);
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -364,16 +368,19 @@ function() {
         promise = test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
         promise.chain(function(result) {
-                var processor;
+                var processor,
+                    testElem;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
                 processor.processTree(result);
 
+                testElem = result.firstElementChild;
+
                 test.assert.hasAttribute(result, 'allnodesmark');
 
-                test.assert.isXMLNode(result.firstElementChild);
-                test.assert.hasAttribute(result.firstElementChild, 'allnodesmark2');
+                test.assert.isXMLNode(testElem);
+                test.assert.hasAttribute(testElem, 'allnodesmark2');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
