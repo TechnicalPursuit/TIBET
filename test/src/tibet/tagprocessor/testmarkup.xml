@@ -9,5 +9,10 @@
     <div id="contentchange" tibet:tag="test:contentchange">A tag that gets new child content (that doesn't need further transformation)</div>
     <div id="morecontentchange" tibet:tag="test:morecontentchange">A tag that gets new child content (that needs further transformation)</div>
 
+    <div id="acpcontentchange" tibet:tag="test:acpcontentchange">A tag that includes new child content via an ACP expression: {{$SOURCE.(./node())}}</div>
+    <div id="selectacpcontentchange" tibet:tag="test:selectacpcontentchange">A tag that includes select new child content via an ACP expression {{$SOURCE.(./foo)}}</div>
+    <div id="attracpcontentchange" tibet:tag="test:attracpcontentchange"><div foo="{{$SOURCE.(@bar)}}">A tag that includes attribute content via an ACP expression</div></div>
+    <div id="attrnoexistacpcontentchange" tibet:tag="test:attrnoexistacpcontentchange"><div foo="{{$SOURCE.(@baz)}}">A tag that doesn't include attribute content via an ACP expression because it doesn't exist</div></div>
+
 </div>
 
