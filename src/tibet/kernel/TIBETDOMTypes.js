@@ -1115,6 +1115,9 @@ function(aRequest) {
     info.atPut('shouldEcho', false);
     info.atPut('annotateMarkup', this.shouldWrapACPOutput());
 
+    //  We want to remove attributes if their values are empty.
+    info.atPut('removeAttrIfEmpty', true);
+
     //  Make sure that any required data (i.e. 'id' attributes and others) are
     //  defined. id attributes, in particular, because they can be dynamically
     //  assigned by TIBET, are assumed to 'always exist'. This insures that they
@@ -15390,8 +15393,16 @@ function(attrNode, info) {
     if (TP.regex.HAS_ACP.test(str)) {
         //  Run a transform on it.
         result = str.transform(this, info);
-        if (result !== str) {
-            TP.nodeSetTextContent(attrNode, result);
+
+        if (TP.isEmpty(result) && TP.isTrue(info.at('removeAttrIfEmpty'))) {
+            TP.elementRemoveAttribute(
+                TP.attributeGetOwnerElement(attrNode),
+                TP.attributeGetLocalName(attrNode),
+                true);
+        } else {
+            if (result !== str) {
+                TP.nodeSetTextContent(attrNode, result);
+            }
         }
     }
 
