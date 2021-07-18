@@ -767,16 +767,16 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('isResponderForUIFocusChange',
-function(aNode, aSignal) {
+function(aSignal, aNode) {
 
     /**
      * @method isResponderForUIFocusChange
      * @summary Returns true if the node has a 'tabindex' attribute (but not if
      *     it has a 'disabled' attribute) to match (X)HTML semantics.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
      * @param {TP.sig.Signal} aSignal The signal that responders are being
      *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
@@ -787,16 +787,16 @@ function(aNode, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('isResponderForUIFocusComputation',
-function(aNode, aSignal) {
+function(aSignal, aNode) {
 
     /**
      * @method isResponderForUIFocusComputation
      * @summary Returns true if the node has a 'tabindex' attribute (but not if
      *     it has a 'disabled' attribute) to match (X)HTML semantics.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
      * @param {TP.sig.Signal} aSignal The signal that responders are being
      *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
@@ -8035,7 +8035,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
 
         if (this.getType().isResponderForUIFocusChange(
-                                    this.getNativeNode(), aSignal)) {
+                aSignal, this.getNativeNode())) {
             this.blur();
         }
 
@@ -8493,7 +8493,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
 
         if (this.getType().isResponderForUIFocusChange(
-                                    this.getNativeNode(), aSignal)) {
+                aSignal, this.getNativeNode())) {
             this.focus();
         }
 

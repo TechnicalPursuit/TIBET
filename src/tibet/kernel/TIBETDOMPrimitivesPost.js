@@ -6303,16 +6303,12 @@ function(aNode, aSignal) {
         return node;
     }
 
-    //  If the tag is non-native we assume it needs to be in the responder
-    //  chain. This applies to tags in any non-XHTML namespace effectively.
-    if (!TP.w3.Xmlns.isNativeElement(node)) {
-        return node;
-    }
+    //  All other tags (native and non-native) must actively implement
+    //  isResponderFor variations to successfully be added to the computed
+    //  responder chain. The goal is to default to a sparse list, not the same
+    //  one the DOM uses, hence the requirement tags "opt-in" as responders.
 
-    //  If we're looking at a native tag we have to use reflection of sorts (if
-    //  we're going to pursue this any further...which is an open question).
-
-    //  NB: Many times the node will already have it's node type, so we
+    //  NB: Many times the node will already have its node type, so we
     //  use a fast way to get that here.
     type = node[TP.NODE_TYPE];
     if (TP.notValid(type)) {
@@ -6320,8 +6316,9 @@ function(aNode, aSignal) {
         node[TP.NODE_TYPE] = type;
     }
 
+    //  Tags must opt-in via the isResponderFor mechanism or be passed over.
     if (TP.canInvoke(type, 'isResponderFor')) {
-        if (type.isResponderFor(node, aSignal)) {
+        if (type.isResponderFor(aSignal, node)) {
             return node;
         }
     }

@@ -149,16 +149,16 @@ TP.html.iframe.Type.set('uriAttrs', TP.ac('src', 'longdesc'));
 //  ------------------------------------------------------------------------
 
 TP.html.iframe.Type.defineMethod('isResponderForUIFocusChange',
-function(aNode, aSignal) {
+function(aSignal, aNode) {
 
     /**
      * @method isResponderForUIFocusChange
      * @summary Returns true if the node does not have a 'disabled' attribute to
      *     match (X)HTML semantics.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
      * @param {TP.sig.Signal} aSignal The signal that responders are being
      *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
@@ -168,16 +168,16 @@ function(aNode, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.html.iframe.Type.defineMethod('isResponderForUIFocusComputation',
-function(aNode, aSignal) {
+function(aSignal, aNode) {
 
     /**
      * @method isResponderForUIFocusComputation
      * @summary Returns true if the node does not have a 'disabled' attribute to
      *     match (X)HTML semantics.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
      * @param {TP.sig.Signal} aSignal The signal that responders are being
      *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
