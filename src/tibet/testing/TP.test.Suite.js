@@ -148,7 +148,7 @@ function() {
     logger.addAppender(appender);
 
     //  Don't inherit so we skip the ConsoleAppender when in headless mode.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         logger.inheritsAppenders(false);
     }
 
@@ -158,7 +158,7 @@ function() {
     logger.addAppender(appender);
 
     //  Don't inherit so we skip the ConsoleAppender when in headless mode.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         logger.inheritsAppenders(false);
     }
 
@@ -1271,7 +1271,7 @@ function(options) {
 
     TP.sys.logTest('#', TP.DEBUG);
 
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         TP.sys.logTest('# ' + 'tibet test ' +
                         id +
                         (isAppTarget ? ' ' : ' --context=\'all\' ') +

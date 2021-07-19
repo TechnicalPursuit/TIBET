@@ -308,8 +308,8 @@ function(aDocument, shouldFocusPrevious) {
         //  For headless systems, we just return here - otherwise we get
         //  multiple pops off of the stack below.
 
-        //  TODO: Investigate why this is the case.
-        if (TP.sys.cfg('boot.context') === 'headless') {
+        //  TODO: Investigate why this is necessary.
+        if (TP.sys.isHeadless()) {
             return;
         }
     }
@@ -8763,7 +8763,7 @@ function(aWindow) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
-    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'headless') {
+    if (TP.sys.cfg('log.hook') && !TP.sys.isHeadless()) {
         msg = 'Processing document loaded for: ' + TP.gid(aWindow) + '.';
         TP.boot.$stdout(msg, TP.DEBUG);
     }

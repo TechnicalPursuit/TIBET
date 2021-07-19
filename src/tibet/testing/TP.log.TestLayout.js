@@ -52,7 +52,7 @@ function(anEntry) {
     }
 
     //  Don't output entities...and do a little (error...) display cleanup.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         str = str.replace(/&#(\d+);/g, '').replace(/\) \)\.$/, ')).');
     }
 

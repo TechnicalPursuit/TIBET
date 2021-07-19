@@ -336,7 +336,7 @@ function() {
             //  *not* check to see if the application is configured to require
             //  login here. When in a headless mode, the 'boot.use_login' cfg
             //  parameter will always be false.
-            if (TP.sys.cfg('boot.context') === 'headless') {
+            if (TP.sys.isHeadless()) {
 
                 tibetToken = TP.global.sessionStorage.getItem(
                                             'TIBET.boot.tibet_token');
@@ -696,7 +696,7 @@ function() {
         bootTPFrameElem,
         bootdoc;
 
-    inHeadless = TP.sys.cfg('boot.context') === 'headless';
+    inHeadless = TP.sys.isHeadless();
 
     rootLoc = TP.uriJoinPaths('~boot_xhtml', TP.sys.cfg('project.root_page'));
 

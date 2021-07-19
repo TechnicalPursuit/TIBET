@@ -987,7 +987,7 @@ function(aRequest) {
                     ' of ' + totalFiles + ' files.');
 
     //  Headless/CLI support requires output line-by-line.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
 
         results.forEach(
                 function(result) {
