@@ -1043,6 +1043,14 @@ Cmd.prototype.stringifyForStdio = function(obj) {
     arr = arr.map(function(item) {
         var val;
 
+        if (item === undefined) {
+            return '';
+        }
+
+        if (item === null) {
+            return '';
+        }
+
         if (Array.isArray(item)) {
 
             val = item.map(function(it) {
