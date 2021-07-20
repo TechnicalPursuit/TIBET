@@ -71,11 +71,12 @@ Cmd.NO_VALUE = '__TSH__NO_VALUE__TSH__';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['break', 'debug', 'silent', 'tap', 'verbose'],
+    boolean: ['break', 'debug', 'debugger', 'silent', 'tap', 'verbose'],
     string: ['package', 'profile', 'config', 'script'],
     number: ['timeout'],
     default: {
-        color: true
+        color: true,
+        debugger: false
     }
 },
 Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -202,6 +203,8 @@ Cmd.prototype.execute = function() {
     var ignoreMessage,
         ignoreChromeOutput,
         ignoreStartupOutput,
+        devtoolsPref,
+        headlessPref,
         puppetBrowser,
         puppetPage,
         start,
@@ -326,6 +329,14 @@ Cmd.prototype.execute = function() {
         }
     };
 
+    if (this.options.debugger) {
+        devtoolsPref = true;
+        headlessPref = false;
+    } else {
+        devtoolsPref = CLI.getcfg('puppeteer.devtools', false);
+        headlessPref = CLI.getcfg('puppeteer.headless', true);
+    }
+
     //  Let us access file urls so we don't have to launch a server. Also, don't
     //  specify a sandbox in case we're running as root.
     puppeteerArgs = {
@@ -333,8 +344,8 @@ Cmd.prototype.execute = function() {
                         '--disable-web-security',
                         '--allow-file-access-from-files',
                         '--no-sandbox']),
-        devtools: CLI.getcfg('puppeteer.devtools', false),
-        headless: CLI.getcfg('puppeteer.headless', true),
+        devtools: devtoolsPref,
+        headless: headlessPref,
         slowMo: CLI.getcfg('puppeteer.slowMo', false)
     };
 
@@ -1031,6 +1042,14 @@ Cmd.prototype.stringifyForStdio = function(obj) {
 
     arr = arr.map(function(item) {
         var val;
+
+        if (item === undefined) {
+            return '';
+        }
+
+        if (item === null) {
+            return '';
+        }
 
         if (Array.isArray(item)) {
 
