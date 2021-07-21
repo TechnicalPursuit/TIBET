@@ -222,6 +222,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.popup.Inst.defineMethod('getOverlayCorner',
+function() {
+
+    /**
+     * @method getOverlayCorner
+     * @summary Returns a constant responding to one of 8 compass points that
+     *     the overlay will be positioned at relative to the overlay's
+     *     container.
+     * @returns {Number} A Number matching the constant corresponding to the
+     *     compass corner.
+     */
+
+    return TP.SOUTHWEST;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.popup.Inst.defineMethod('getOverlayOffset',
 function() {
 
@@ -503,7 +520,7 @@ function(openSignal, popupContent) {
                 //  signal.
                 popupCorner = openSignal.at('corner');
                 if (TP.isEmpty(popupCorner)) {
-                    popupCorner = TP.SOUTHWEST;
+                    popupCorner = this.getOverlayCorner();
                 }
 
                 //  The point that the popup should appear at is the 'edge
@@ -533,7 +550,7 @@ function(openSignal, popupContent) {
 
     //  By default, popup overlays should be positioned southwest of their
     //  triggering element.
-    openSignal.atPutIfAbsent('corner', TP.SOUTHWEST);
+    openSignal.atPutIfAbsent('corner', popupCorner);
 
     this.callNextMethod();
 
