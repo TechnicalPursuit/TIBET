@@ -468,11 +468,8 @@ function(openSignal, popupContent) {
 
         popupCorner,
 
-        triggerRect,
         triggerPoint,
 
-        lastMoveEvent,
-        lastMoveSignal,
         mousePoint,
 
         triggerTPElem;
@@ -498,9 +495,7 @@ function(openSignal, popupContent) {
             //  First, see if the open signal provided a popup point.
             triggerPoint = openSignal.at('triggerPoint');
 
-            lastMoveEvent = TP.core.Mouse.$get('lastMove');
-            lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
-            mousePoint = lastMoveSignal.getGlobalPoint();
+            mousePoint = TP.core.Mouse.getLastMovePoint();
 
             //  If no popup point was given, compute one from the triggering
             //  element.
@@ -513,9 +508,6 @@ function(openSignal, popupContent) {
                     return this;
                 }
 
-                //  Grab the global rect from the supplied element.
-                triggerRect = triggerTPElem.getGlobalRect();
-
                 //  Compute the corner if its not supplied in the trigger
                 //  signal.
                 popupCorner = openSignal.at('corner');
@@ -523,9 +515,6 @@ function(openSignal, popupContent) {
                     popupCorner = this.getOverlayCorner();
                 }
 
-                //  The point that the popup should appear at is the 'edge
-                //  point' for that compass edge of the trigger rectangle.
-                triggerPoint = triggerRect.getEdgePoint(popupCorner);
             } else if (triggerPoint === TP.MOUSE) {
                 triggerPoint = mousePoint;
             }
@@ -537,11 +526,43 @@ function(openSignal, popupContent) {
             this.setAttribute('closed', false);
             this.setAttribute('hidden', false);
 
+            //  Initially set the overlay to hide (by supplying true we flip the
+            //  'visibility' property).
+            this.hide(true);
+
             //  If the signal doesn't have a flag to not position the popup,
             //  then position the popup relative to the popup point and the
             //  corner.
             if (TP.notTrue(openSignal.at('noPosition'))) {
-                this.positionUsing(triggerPoint, mousePoint);
+                //  Queue the positioning of the overlay into a 'next repaint'
+                //  so that layout of the overlay's content happens and proper
+                //  sizing numbers can be computed.
+                (function() {
+                    if (triggerPoint) {
+                        this.setPositionRelativeTo(
+                                            triggerPoint,
+                                            TP.NORTHWEST,
+                                            popupCorner,
+                                            triggerTPElem,
+                                            TP.ac(this.getDocument().getBody()),
+                                            TP.ac(mousePoint),
+                                            this.getOverlayOffset(),
+                                            this.getOverlayOffset());
+                    } else {
+                        this.positionUsingCompassPoints(
+                                            TP.NORTHWEST,
+                                            popupCorner,
+                                            triggerTPElem,
+                                            TP.ac(this.getDocument().getBody()),
+                                            TP.ac(mousePoint),
+                                            this.getOverlayOffset(),
+                                            this.getOverlayOffset());
+                    }
+
+                    //  Now set the overlay to show (by flipping the
+                    //  'visibility' property back).
+                    this.show();
+                }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
             }
 
             return this;
