@@ -467,14 +467,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.SharedOverlay.Inst.defineMethod('getOverlayCorner',
+TP.xctrls.SharedOverlay.Inst.defineMethod('getAlignmentCompassCorner',
 function() {
 
     /**
-     * @method getOverlayCorner
+     * @method getAlignmentCompassCorner
      * @summary Returns a constant responding to one of 8 compass points that
-     *     the overlay will be positioned at relative to the overlay's
-     *     container.
+     *     the overlay will be positioned at relative to the element that it is
+     *     trying to align to. This is the point that the overlay wants to be
+     *     positioned *to* relative to it's aligning element.
      * @returns {Number} A Number matching the constant corresponding to the
      *     compass corner.
      */
@@ -496,6 +497,23 @@ function() {
      */
 
     return 0;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Inst.defineMethod('getPositionCompassCorner',
+function() {
+
+    /**
+     * @method getPositionCompassCorner
+     * @summary Returns a constant responding to one of 8 compass points that
+     *     the overlay will be positioned at relative to the itself. This is the
+     *     point that the overlay wants to be positioned *from* on itself.
+     * @returns {Number} A Number matching the constant corresponding to the
+     *     compass corner.
+     */
+
+    return TP.NORTHWEST;
 });
 
 //  ----------------------------------------------------------------------------
@@ -828,11 +846,20 @@ function(contentInfo, overlayContent) {
         overlayContent,
         function(tpContent) {
 
-            var overlayCorner,
+            var positionCC,
 
                 triggerPoint,
                 mousePoint,
-                triggerTPElem;
+                triggerTPElem,
+
+                alignmentCC;
+
+            //  Compute the position compass corner if its not supplied in the
+            //  trigger signal.
+            positionCC = contentInfo.at('positionCompassCorner');
+            if (TP.isEmpty(positionCC)) {
+                positionCC = this.getPositionCompassCorner();
+            }
 
             //  First, see if the open signal provided a overlay point.
             triggerPoint = contentInfo.at('triggerPoint');
@@ -850,11 +877,11 @@ function(contentInfo, overlayContent) {
                     return this;
                 }
 
-                //  Compute the corner if its not supplied in the trigger
-                //  signal.
-                overlayCorner = contentInfo.at('corner');
-                if (TP.isEmpty(overlayCorner)) {
-                    overlayCorner = this.getOverlayCorner();
+                //  Compute the alignment compass corner if its not supplied in
+                //  the trigger signal.
+                alignmentCC = contentInfo.at('alignmentCompassCorner');
+                if (TP.isEmpty(alignmentCC)) {
+                    alignmentCC = this.getAlignmentCompassCorner();
                 }
 
             } else if (triggerPoint === TP.MOUSE) {
@@ -873,7 +900,7 @@ function(contentInfo, overlayContent) {
 
             //  If the signal doesn't have a flag to not position the overlay,
             //  then position the overlay relative to the overlay point and the
-            //  corner.
+            //  corners.
             if (TP.notTrue(contentInfo.at('noPosition'))) {
                 //  Queue the positioning of the overlay into a 'next repaint'
                 //  so that layout of the overlay's content happens and proper
@@ -882,8 +909,8 @@ function(contentInfo, overlayContent) {
                     if (triggerPoint) {
                         this.setPositionRelativeTo(
                                             triggerPoint,
-                                            TP.NORTHWEST,
-                                            overlayCorner,
+                                            positionCC,
+                                            alignmentCC,
                                             triggerTPElem,
                                             TP.ac(this.getDocument().getBody()),
                                             TP.ac(mousePoint),
@@ -891,8 +918,8 @@ function(contentInfo, overlayContent) {
                                             this.getOverlayOffset());
                     } else {
                         this.positionUsingCompassPoints(
-                                            TP.NORTHWEST,
-                                            overlayCorner,
+                                            positionCC,
+                                            alignmentCC,
                                             triggerTPElem,
                                             TP.ac(this.getDocument().getBody()),
                                             TP.ac(mousePoint),

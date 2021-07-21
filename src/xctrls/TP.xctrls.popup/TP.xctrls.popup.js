@@ -222,14 +222,15 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.popup.Inst.defineMethod('getOverlayCorner',
+TP.xctrls.popup.Inst.defineMethod('getAlignmentCompassCorner',
 function() {
 
     /**
-     * @method getOverlayCorner
+     * @method getAlignmentCompassCorner
      * @summary Returns a constant responding to one of 8 compass points that
-     *     the overlay will be positioned at relative to the overlay's
-     *     container.
+     *     the overlay will be positioned at relative to the element that it is
+     *     trying to align to. This is the point that the overlay wants to be
+     *     positioned *to* relative to it's aligning element.
      * @returns {Number} A Number matching the constant corresponding to the
      *     compass corner.
      */
@@ -462,11 +463,13 @@ function(openSignal, popupContent) {
      *     receiver.
      */
 
-    var overlayTPElem,
+    var positionCC,
+
+        overlayTPElem,
 
         firstContentChildTPElem,
 
-        popupCorner,
+        alignmentCC,
 
         triggerPoint,
 
@@ -492,6 +495,13 @@ function(openSignal, popupContent) {
             //  data has changed, the content will re-render.
             firstContentChildTPElem.refresh();
 
+            //  Compute the position compass corner if its not supplied in the
+            //  trigger signal.
+            positionCC = openSignal.at('positionCompassCorner');
+            if (TP.isEmpty(positionCC)) {
+                positionCC = this.getPositionCompassCorner();
+            }
+
             //  First, see if the open signal provided a popup point.
             triggerPoint = openSignal.at('triggerPoint');
 
@@ -508,11 +518,11 @@ function(openSignal, popupContent) {
                     return this;
                 }
 
-                //  Compute the corner if its not supplied in the trigger
-                //  signal.
-                popupCorner = openSignal.at('corner');
-                if (TP.isEmpty(popupCorner)) {
-                    popupCorner = this.getOverlayCorner();
+                //  Compute the alignment compass corner if its not supplied in
+                //  the trigger signal.
+                alignmentCC = openSignal.at('alignmentCompassCorner');
+                if (TP.isEmpty(alignmentCC)) {
+                    alignmentCC = this.getAlignmentCompassCorner();
                 }
 
             } else if (triggerPoint === TP.MOUSE) {
@@ -541,8 +551,8 @@ function(openSignal, popupContent) {
                     if (triggerPoint) {
                         this.setPositionRelativeTo(
                                             triggerPoint,
-                                            TP.NORTHWEST,
-                                            popupCorner,
+                                            positionCC,
+                                            alignmentCC,
                                             triggerTPElem,
                                             TP.ac(this.getDocument().getBody()),
                                             TP.ac(mousePoint),
@@ -550,8 +560,8 @@ function(openSignal, popupContent) {
                                             this.getOverlayOffset());
                     } else {
                         this.positionUsingCompassPoints(
-                                            TP.NORTHWEST,
-                                            popupCorner,
+                                            positionCC,
+                                            alignmentCC,
                                             triggerTPElem,
                                             TP.ac(this.getDocument().getBody()),
                                             TP.ac(mousePoint),
@@ -569,9 +579,8 @@ function(openSignal, popupContent) {
         }
     }
 
-    //  By default, popup overlays should be positioned southwest of their
-    //  triggering element.
-    openSignal.atPutIfAbsent('corner', popupCorner);
+    openSignal.atPutIfAbsent('positionCompassCorner', positionCC);
+    openSignal.atPutIfAbsent('alignmentCompassCorner', alignmentCC);
 
     this.callNextMethod();
 
