@@ -845,14 +845,16 @@ function(contentInfo, overlayContent) {
         contentInfo,
         overlayContent,
         function(tpContent) {
-
             var positionCC,
 
                 triggerPoint,
                 mousePoint,
                 triggerTPElem,
 
-                alignmentCC;
+                alignmentCC,
+
+                offsetX,
+                offsetY;
 
             //  Compute the position compass corner if its not supplied in the
             //  trigger signal.
@@ -902,6 +904,11 @@ function(contentInfo, overlayContent) {
             //  then position the overlay relative to the overlay point and the
             //  corners.
             if (TP.notTrue(contentInfo.at('noPosition'))) {
+                offsetX = contentInfo.atIfInvalid('offsetX',
+                                                    this.getOverlayOffset());
+                offsetY = contentInfo.atIfInvalid('offsetY',
+                                                    this.getOverlayOffset());
+
                 //  Queue the positioning of the overlay into a 'next repaint'
                 //  so that layout of the overlay's content happens and proper
                 //  sizing numbers can be computed.
@@ -914,8 +921,8 @@ function(contentInfo, overlayContent) {
                                             triggerTPElem,
                                             TP.ac(this.getDocument().getBody()),
                                             TP.ac(mousePoint),
-                                            this.getOverlayOffset(),
-                                            this.getOverlayOffset());
+                                            offsetX,
+                                            offsetY);
                     } else {
                         this.positionUsingCompassPoints(
                                             positionCC,
@@ -923,8 +930,8 @@ function(contentInfo, overlayContent) {
                                             triggerTPElem,
                                             TP.ac(this.getDocument().getBody()),
                                             TP.ac(mousePoint),
-                                            this.getOverlayOffset(),
-                                            this.getOverlayOffset());
+                                            offsetX,
+                                            offsetY);
                     }
 
                     //  Now set the overlay to show (by flipping the
