@@ -1511,12 +1511,22 @@ function(aRect) {
     }
 
     /* eslint-disable no-extra-parens */
-    diffX = ((rectData.x + rectData.width) - (data.x + data.width)).max(0);
-    diffY = ((rectData.y + rectData.height) - (data.y + data.height)).max(0);
-    /* eslint-enable no-extra-parens */
+    if (rectData.x < data.x) {
+        diffX = data.x - rectData.x;
+        rectData.x += diffX;
+    } else {
+        diffX = ((rectData.x + rectData.width) - (data.x + data.width)).max(0);
+        rectData.x -= diffX;
+    }
 
-    rectData.x -= diffX;
-    rectData.y -= diffY;
+    if (rectData.y < data.y) {
+        diffY = data.y - rectData.y;
+        rectData.y += diffY;
+    } else {
+        diffY = ((rectData.y + rectData.height) - (data.y + data.height)).max(0);
+        rectData.y -= diffY;
+    }
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
