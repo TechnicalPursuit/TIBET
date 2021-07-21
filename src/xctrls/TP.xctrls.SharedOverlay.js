@@ -1001,20 +1001,14 @@ function(contentInfo, overlayContent) {
 
             var overlayCorner,
 
-                triggerRect,
                 triggerPoint,
                 mousePoint,
-                triggerTPElem,
-
-                lastMoveEvent,
-                lastMoveSignal;
+                triggerTPElem;
 
             //  First, see if the open signal provided a overlay point.
             triggerPoint = contentInfo.at('triggerPoint');
 
-            lastMoveEvent = TP.core.Mouse.$get('lastMove');
-            lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
-            mousePoint = lastMoveSignal.getGlobalPoint();
+            mousePoint = TP.core.Mouse.getLastMovePoint();
 
             //  If no overlay point was given, compute one from the triggering
             //  element.
@@ -1027,9 +1021,6 @@ function(contentInfo, overlayContent) {
                     return this;
                 }
 
-                //  Grab the global rect from the supplied element.
-                triggerRect = triggerTPElem.getGlobalRect();
-
                 //  Compute the corner if its not supplied in the trigger
                 //  signal.
                 overlayCorner = contentInfo.at('corner');
@@ -1037,9 +1028,6 @@ function(contentInfo, overlayContent) {
                     overlayCorner = this.getOverlayCorner();
                 }
 
-                //  The point that the overlay should appear at is the 'edge
-                //  point' for that compass edge of the trigger rectangle.
-                triggerPoint = triggerRect.getEdgePoint(overlayCorner);
             } else if (triggerPoint === TP.MOUSE) {
                 triggerPoint = mousePoint;
             }
@@ -1050,6 +1038,10 @@ function(contentInfo, overlayContent) {
             //  Show the overlay and set up signal handlers.
             this.setAttribute('hidden', false);
 
+            //  Initially set the overlay to hide (by supplying true we flip the
+            //  'visibility' property).
+            this.hide(true);
+
             //  If the signal doesn't have a flag to not position the overlay,
             //  then position the overlay relative to the overlay point and the
             //  corner.
@@ -1058,7 +1050,30 @@ function(contentInfo, overlayContent) {
                 //  so that layout of the overlay's content happens and proper
                 //  sizing numbers can be computed.
                 (function() {
-                    this.positionUsing(triggerPoint, mousePoint);
+                    if (triggerPoint) {
+                        this.setPositionRelativeTo(
+                                            triggerPoint,
+                                            TP.NORTHWEST,
+                                            overlayCorner,
+                                            triggerTPElem,
+                                            TP.ac(this.getDocument().getBody()),
+                                            TP.ac(mousePoint),
+                                            this.getOverlayOffset(),
+                                            this.getOverlayOffset());
+                    } else {
+                        this.positionUsingCompassPoints(
+                                            TP.NORTHWEST,
+                                            overlayCorner,
+                                            triggerTPElem,
+                                            TP.ac(this.getDocument().getBody()),
+                                            TP.ac(mousePoint),
+                                            this.getOverlayOffset(),
+                                            this.getOverlayOffset());
+                    }
+
+                    //  Now set the overlay to show (by flipping the
+                    //  'visibility' property back).
+                    this.show();
                 }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
             }
         }.bind(this));
