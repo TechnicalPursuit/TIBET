@@ -4262,6 +4262,66 @@ function(moveAction, fromFocusedElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('positionUsingCompassPoints',
+function(receiverCompassPoint, alignmentCompassPoint, alignmentTPElement,
+            constrainingTPElements, avoidPoints, offsetX, offsetY) {
+
+    /**
+     * @method positionUsingCompassPoints
+     * @summary Positions the receiver according to the supplied compass points
+     *     and element to align to.
+     * @param {Number} receiverCompassPoint The compass point of the *receiver*
+     *     to use to position the receiver. This should be a constant value
+     *     corresponding to one of TIBET's compass values.
+     * @param {Number} alignmentCompassPoint The compass point of the element
+     *     that the receiver is aligning to. This should be a constant value
+     *     corresponding to one of TIBET's compass values.
+     * @param {TP.dom.UIElementNode} alignmentTPElement The element that the
+     *     receiver is aligning to.
+     * @param {TP.dom.UIElementNode[]} [constrainingTPElements] An Array of
+     *     elements that will use their own global rectangle to 'constrain' the
+     *     position of the receiver so that the receiver is completely contained
+     *     within them, as best as possible.
+     * @param {TP.gui.Point[]} [avoidPoints] An Array of TP.gui.Points that the
+     *     positioning machinery will try to 'avoid' when positioning the
+     *     receiver.
+     * @param {Number} [offsetX=0] Any offset that should be added to computed X
+     *     position value before the constraining process takes place.
+     * @param {Number} [offsetY=0] Any offset that should be added to computed Y
+     *     position value before the constraining process takes place.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var alignmentCP,
+
+        alignmentRect,
+        alignmentPoint;
+
+    //  We default a compass value here that would place the receiver to the
+    //  right and top of the alignment element.
+    alignmentCP = TP.ifInvalid(alignmentCompassPoint, TP.NORTHEAST);
+
+    //  Compute the global rect of the alignment element and get the 'edge
+    //  point' corresponding to the compass point on the alignment element that
+    //  we're aligning to.
+    alignmentRect = alignmentTPElement.getGlobalRect();
+    alignmentPoint = alignmentRect.getEdgePoint(alignmentCP);
+
+    //  Set our position using the computed alignment point.
+    this.setPositionRelativeTo(alignmentPoint,
+                                receiverCompassPoint,
+                                alignmentCP,
+                                alignmentTPElement,
+                                constrainingTPElements,
+                                avoidPoints,
+                                offsetX,
+                                offsetY);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('removeAttrActive',
 function() {
 
@@ -5755,6 +5815,229 @@ function(aPointOrObject) {
     /* eslint-enable no-extra-parens */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('setPositionRelativeTo',
+function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
+            alignmentTPElement, constrainingTPElements,
+            avoidPoints, anOffsetX, anOffsetY) {
+
+    /**
+     * @method setPositionRelativeTo
+     * @summary Sets the positions of the receiver according to the supplied
+     *     point, compass points and element to align to.
+     * @param {TP.gui.Point} initialPoint The initial point to position the
+     *     receiver at. This will very likely be modified by the various compass
+     *     points and constraining elements and points (if supplied).
+     * @param {Number} receiverCompassPoint The compass point of the *receiver*
+     *     to use to position the receiver. This should be a constant value
+     *     corresponding to one of TIBET's compass values.
+     * @param {Number} alignmentCompassPoint The compass point of the element
+     *     that the receiver is aligning to. This should be a constant value
+     *     corresponding to one of TIBET's compass values.
+     * @param {TP.dom.UIElementNode} alignmentTPElement The element that the
+     *     receiver is aligning to.
+     * @param {TP.dom.UIElementNode[]} [constrainingTPElements] An Array of
+     *     elements that will use their own global rectangle to 'constrain' the
+     *     position of the receiver so that the receiver is completely contained
+     *     within them, as best as possible.
+     * @param {TP.gui.Point[]} [avoidPoints] An Array of TP.gui.Points that the
+     *     positioning machinery will try to 'avoid' when positioning the
+     *     receiver.
+     * @param {Number} [offsetX=0] Any offset that should be added to computed X
+     *     position value before the constraining process takes place.
+     * @param {Number} [offsetY=0] Any offset that should be added to computed Y
+     *     position value before the constraining process takes place.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var offsetX,
+        offsetY,
+
+        receiverCP,
+
+        adjustedPoint,
+
+        positioningRect,
+
+        scrollOffsets,
+
+        diffX,
+        diffY,
+
+        positionPoint;
+
+    offsetX = TP.ifInvalid(anOffsetX, 0);
+    offsetY = TP.ifInvalid(anOffsetY, 0);
+
+    //  We default corner values here that would place the receiver to the right
+    //  and top of the alignment element.
+    receiverCP = TP.ifInvalid(receiverCompassPoint, TP.NORTHWEST);
+
+    //  Based on the compass point that the receiver wants to use to position
+    //  itself, we compute an point that is adjusted using that compass point.
+    //  For instance, if the receiver's compass point is TP.SOUTHEAST, then the
+    //  compass point will be rightward and downward from the receiver (by the
+    //  values of width and height).
+    adjustedPoint = initialPoint.getComputedPointUsingCompassCorner(
+                        receiverCP,
+                        this.getWidth() + offsetX,
+                        this.getHeight() + offsetY);
+
+    //  Compute rectangle, supplying it the inital point and the receiver's
+    //  width and height. This is important to do the calculation below where we
+    //  try to 'fit' the rectangle within the constraining elements (so that it
+    //  doesn't clip against a window boundary or something).
+    positioningRect = TP.rtc(
+                        adjustedPoint.getX(),
+                        adjustedPoint.getY(),
+                        this.getWidth() + offsetX,
+                        this.getHeight() + offsetY);
+
+    //  Constrain the overlay rectangle to inside of each 'constraining
+    //  elements' rectangle. This will make sure that the receiver's content
+    //  isn't clipped against the constraining element.
+    if (TP.isArray(constrainingTPElements)) {
+        constrainingTPElements.forEach(
+            function(aTPElem) {
+                var elemRect;
+
+                elemRect = aTPElem.getGlobalRect();
+                elemRect.constrainRect(positioningRect);
+            });
+    }
+
+    //  Now, adjust the rectangle further
+
+    //  Add in the scrolling offsets.
+    scrollOffsets = this.getScrollOffsetFromAncestor();
+
+    positioningRect.addToX(scrollOffsets.getX());
+    positioningRect.addToY(scrollOffsets.getY());
+
+    //  Add in any caller-supplied offsets.
+    positioningRect.addToX(offsetX);
+    positioningRect.addToY(offsetY);
+
+    //  If the caller supplied 'avoid points', do our best to avoid them :-).
+
+    if (TP.isArray(avoidPoints)) {
+
+        avoidPoints.forEach(
+            function(avoidPoint) {
+                var testPoint;
+
+                testPoint = TP.copy(avoidPoint);
+
+                //  Adjust the testing point based on our alignment compass
+                //  point. The intent is to adjust the testing point by a pixel
+                //  in both the X and Y directions to not have it be part of the
+                //  test itself.
+                switch (alignmentCompassPoint) {
+                    case TP.NORTH:
+                        testPoint.subtractFromY(1);
+                        break;
+                    case TP.NORTHEAST:
+                        testPoint.addToX(1);
+                        testPoint.subtractFromY(1);
+                        break;
+                    case TP.EAST:
+                        testPoint.addToX(1);
+                        break;
+                    case TP.SOUTHEAST:
+                        testPoint.addToX(1);
+                        testPoint.addToY(1);
+                        break;
+                    case TP.SOUTH:
+                        testPoint.addToY(1);
+                        break;
+                    case TP.SOUTHWEST:
+                        testPoint.subtractFromX(1);
+                        testPoint.addToY(1);
+                        break;
+                    case TP.WEST:
+                        testPoint.subtractFromX(1);
+                        break;
+                    case TP.NORTHWEST:
+                        testPoint.subtractFromX(1);
+                        testPoint.subtractFromY(1);
+                        break;
+                    default:
+                        break;
+                }
+
+                if (positioningRect.containsPoint(testPoint)) {
+                    if (positioningRect.containsPointX(testPoint)) {
+
+                        diffX = positioningRect.getX() +
+                                positioningRect.getWidth() -
+                                testPoint.getX();
+
+                        //  If by subtracting the difference, we're still greater
+                        //  than 0, then do that (shifting the positioning
+                        //  rectangle towards the left).
+                        if (positioningRect.getX() - diffX > 0) {
+                            positioningRect.subtractFromX(diffX);
+                        } else {
+                            //  Otherwise, if by adding the difference, we're
+                            //  still less than one of the constraining element's
+                            //  rectangle, then shift the positioning rectangle
+                            //  towards the right by 1px)
+                            constrainingTPElements.forEach(
+                                function(aTPElem) {
+                                    var elemRect;
+
+                                    elemRect = aTPElem.getGlobalRect();
+
+                                    if (positioningRect.getX() + diffX <
+                                                        elemRect.getWidth()) {
+                                        positioningRect.addToX(1);
+                                    }
+                                });
+                        }
+                    }
+
+                    if (positioningRect.containsPointY(testPoint)) {
+
+                        diffY = positioningRect.getY() +
+                                positioningRect.getHeight() -
+                                testPoint.getY();
+
+                        //  If by subtracting the difference, we're still greater
+                        //  than 0, then do that (shifting the overlay towards
+                        //  the top).
+                        if (positioningRect.getY() - diffY > 0) {
+                            positioningRect.subtractFromY(diffY);
+                        } else {
+
+                            //  Otherwise, if by adding the difference, we're
+                            //  still less than one of the constraining element's
+                            //  rectangle, then shift the positioning rectangle
+                            //  towards the bottom by 1px)
+                            constrainingTPElements.forEach(
+                                function(aTPElem) {
+                                    var elemRect;
+
+                                    elemRect = aTPElem.getGlobalRect();
+
+                                    if (positioningRect.getY() + diffY <
+                                                        elemRect.getHeight()) {
+                                        positioningRect.addToY(1);
+                                    }
+                                });
+                        }
+                    }
+                }
+        });
+    }
+
+    //  Grab the final point.
+    positionPoint = positioningRect.getXYPoint();
+
+    //  Set our global position to be that point
+    this.setGlobalPosition(positionPoint);
 });
 
 //  ------------------------------------------------------------------------
