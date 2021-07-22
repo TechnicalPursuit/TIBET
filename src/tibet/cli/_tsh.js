@@ -959,6 +959,10 @@ Cmd.prototype.close = function(code, browser) {
     if (CLI.isValid(browser) && browser.close) {
         browser.close();
     }
+
+    //  Tweak the shutdown timeout to be 250ms rather than the default of
+    //  1000ms. We're wrapping up anyway.
+    CLI.setcfg('cli.shutdown_timeout', 250);
     return CLI.exitSoon(code);
 };
 
