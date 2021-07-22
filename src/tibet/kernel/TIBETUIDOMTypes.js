@@ -4264,7 +4264,7 @@ function(moveAction, fromFocusedElement) {
 
 TP.dom.UIElementNode.Inst.defineMethod('positionUsingCompassPoints',
 function(receiverCompassPoint, alignmentCompassPoint, alignmentTPElement,
-            constrainingTPElements, avoidPoints, offsetX, offsetY) {
+            constrainingRects, avoidPoints, offsetX, offsetY) {
 
     /**
      * @method positionUsingCompassPoints
@@ -4278,10 +4278,11 @@ function(receiverCompassPoint, alignmentCompassPoint, alignmentTPElement,
      *     corresponding to one of TIBET's compass values.
      * @param {TP.dom.UIElementNode} alignmentTPElement The element that the
      *     receiver is aligning to.
-     * @param {TP.dom.UIElementNode[]} [constrainingTPElements] An Array of
-     *     elements that will use their own global rectangle to 'constrain' the
-     *     position of the receiver so that the receiver is completely contained
-     *     within them, as best as possible.
+     * @param {TP.gui.Rect[]} [constrainingRects] An Array of TP.gui.Rects that
+     *     will be used to 'constrain' the position of the receiver so that the
+     *     receiver is completely contained within them, as best as possible.
+     *     Note that these rectangles should be expressed in terms of *global*
+     *     coordinates of the GUI.
      * @param {TP.gui.Point[]} [avoidPoints] An Array of TP.gui.Points that the
      *     positioning machinery will try to 'avoid' when positioning the
      *     receiver.
@@ -4312,7 +4313,7 @@ function(receiverCompassPoint, alignmentCompassPoint, alignmentTPElement,
                                 receiverCompassPoint,
                                 alignmentCP,
                                 alignmentTPElement,
-                                constrainingTPElements,
+                                constrainingRects,
                                 avoidPoints,
                                 offsetX,
                                 offsetY);
@@ -5821,8 +5822,8 @@ function(aPointOrObject) {
 
 TP.dom.UIElementNode.Inst.defineMethod('setPositionRelativeTo',
 function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
-            alignmentTPElement, constrainingTPElements,
-            avoidPoints, anOffsetX, anOffsetY) {
+            alignmentTPElement, constrainingRects, avoidPoints,
+            anOffsetX, anOffsetY) {
 
     /**
      * @method setPositionRelativeTo
@@ -5839,10 +5840,11 @@ function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
      *     corresponding to one of TIBET's compass values.
      * @param {TP.dom.UIElementNode} alignmentTPElement The element that the
      *     receiver is aligning to.
-     * @param {TP.dom.UIElementNode[]} [constrainingTPElements] An Array of
-     *     elements that will use their own global rectangle to 'constrain' the
-     *     position of the receiver so that the receiver is completely contained
-     *     within them, as best as possible.
+     * @param {TP.gui.Rect[]} [constrainingRects] An Array of TP.gui.Rects that
+     *     will be used to 'constrain' the position of the receiver so that the
+     *     receiver is completely contained within them, as best as possible.
+     *     Note that these rectangles should be expressed in terms of *global*
+     *     coordinates of the GUI.
      * @param {TP.gui.Point[]} [avoidPoints] An Array of TP.gui.Points that the
      *     positioning machinery will try to 'avoid' when positioning the
      *     receiver.
@@ -5897,15 +5899,12 @@ function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
                         this.getHeight() + offsetY);
 
     //  Constrain the overlay rectangle to inside of each 'constraining
-    //  elements' rectangle. This will make sure that the receiver's content
-    //  isn't clipped against the constraining element.
-    if (TP.isArray(constrainingTPElements)) {
-        constrainingTPElements.forEach(
-            function(aTPElem) {
-                var elemRect;
-
-                elemRect = aTPElem.getGlobalRect();
-                elemRect.constrainRect(positioningRect);
+    //  rectangle'. This will make sure that the receiver's content isn't
+    //  clipped against the constraining rectangles.
+    if (TP.isArray(constrainingRects)) {
+        constrainingRects.forEach(
+            function(aRect) {
+                aRect.constrainRect(positioningRect);
             });
     }
 
@@ -5922,7 +5921,6 @@ function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
     positioningRect.addToY(offsetY);
 
     //  If the caller supplied 'avoid points', do our best to avoid them :-).
-
     if (TP.isArray(avoidPoints)) {
 
         avoidPoints.forEach(
@@ -5975,24 +5973,20 @@ function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
                                 positioningRect.getWidth() -
                                 testPoint.getX();
 
-                        //  If by subtracting the difference, we're still greater
-                        //  than 0, then do that (shifting the positioning
-                        //  rectangle towards the left).
+                        //  If by subtracting the difference, we're still
+                        //  greater than 0, then do that (shifting the
+                        //  positioning rectangle towards the left).
                         if (positioningRect.getX() - diffX > 0) {
                             positioningRect.subtractFromX(diffX);
                         } else {
                             //  Otherwise, if by adding the difference, we're
-                            //  still less than one of the constraining element's
-                            //  rectangle, then shift the positioning rectangle
-                            //  towards the right by 1px)
-                            constrainingTPElements.forEach(
-                                function(aTPElem) {
-                                    var elemRect;
-
-                                    elemRect = aTPElem.getGlobalRect();
-
+                            //  still less than one of the constraining
+                            //  rectangles, then shift the positioning rectangle
+                            //  towards the right by 1px.
+                            constrainingRects.forEach(
+                                function(aRect) {
                                     if (positioningRect.getX() + diffX <
-                                                        elemRect.getWidth()) {
+                                                        aRect.getWidth()) {
                                         positioningRect.addToX(1);
                                     }
                                 });
@@ -6005,25 +5999,20 @@ function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
                                 positioningRect.getHeight() -
                                 testPoint.getY();
 
-                        //  If by subtracting the difference, we're still greater
-                        //  than 0, then do that (shifting the overlay towards
-                        //  the top).
+                        //  If by subtracting the difference, we're still
+                        //  greater than 0, then do that (shifting the
+                        //  positioning rectangle towards the top).
                         if (positioningRect.getY() - diffY > 0) {
                             positioningRect.subtractFromY(diffY);
                         } else {
-
                             //  Otherwise, if by adding the difference, we're
-                            //  still less than one of the constraining element's
-                            //  rectangle, then shift the positioning rectangle
-                            //  towards the bottom by 1px)
-                            constrainingTPElements.forEach(
-                                function(aTPElem) {
-                                    var elemRect;
-
-                                    elemRect = aTPElem.getGlobalRect();
-
+                            //  still less than one of the constraining
+                            //  rectangles, then shift the positioning rectangle
+                            //  towards the bottom by 1px.
+                            constrainingRects.forEach(
+                                function(aRect) {
                                     if (positioningRect.getY() + diffY <
-                                                        elemRect.getHeight()) {
+                                                        aRect.getHeight()) {
                                         positioningRect.addToY(1);
                                     }
                                 });
