@@ -2284,14 +2284,11 @@ function(aSignal, flags) {
      *     be (or was) invoked.
      */
 
-    var handlerNames,
-        handlerFlags;
-
-    handlerFlags = flags || {};
+    var handlerNames;
 
     //  NOTE this is a string or number (NOT_FOUND) value, not an array. Also
     //  note it's already filtered by canInvoke, no additional tests needed.
-    handlerNames = this.getBestHandlerNames(aSignal, handlerFlags);
+    handlerNames = this.getBestHandlerNames(aSignal, flags);
 
     if (handlerNames === TP.NOT_FOUND) {
         return;
@@ -2339,6 +2336,10 @@ function(aSignal, flags) {
      */
 
     var orgid,
+        noSpoofs,
+        noSupers,
+        startSignal,
+        skipName,
         signalNames,
         phase,
         states,
@@ -2354,21 +2355,32 @@ function(aSignal, flags) {
         return;
     }
 
+    noSpoofs = flags ? flags.dontTraverseSpoofs : false;
+    noSupers = flags ? flags.dontTraverseHierarchy : false;
+    startSignal = flags ? flags.startSignal : null;
+    skipName = flags ? flags.skipName : null;
+    phase = flags ? flags.phase : aSignal.getPhase();
+
     expression = 'handle';
 
     //  ---
     //  Signal
     //  ---
 
-    //  TODO: ensure we collect the right list when spoofing is in place.
-    //  getSignalNames usually masks the actual signal with spoofs.
-
     //  If we're not traversing or the signal is spoofing its name and we're
     //  not traversing for spoofed instances it's a single signal check.
-    if (TP.isTrue(flags.dontTraverseHierarchy) ||
-        TP.isTrue(flags.dontTraverseSpoofs) && aSignal.isSpoofed()) {
+    if (noSpoofs && aSignal.isSpoofed()) {
         //  NOTE we do _NOT_ create an array here, just set single string.
         signalNames = aSignal.getSignalName();
+    } else if (noSupers) {
+        if (aSignal.isSpoofed()) {
+            //  spoofed and traversal of spoofs allowed? but no hierarchy
+            //  per se, hence we only use spoofed name and signal type name.
+            signalNames = TP.ac(aSignal.getSignalName(), aSignal.getTypeName());
+        } else {
+            //  Not spoofed and no hierarchy, just the one signal then.
+            signalNames = aSignal.getSignalName();
+        }
     } else {
         signalNames = aSignal.getTypeSignalNames();
         if (aSignal.isSpoofed()) {
@@ -2378,8 +2390,8 @@ function(aSignal, flags) {
 
         //  We're going to be checking a list of one or more signals. The list
         //  has to take into account the startSignal and any skipName.
-        if (TP.notEmpty(flags.startSignal) &&
-            (index = signalNames.indexOf(flags.startSignal)) !== TP.NOT_FOUND) {
+        if (TP.notEmpty(startSignal) &&
+            (index = signalNames.indexOf(startSignal)) !== TP.NOT_FOUND) {
             signalNames = signalNames.slice(index);
         }
     }
@@ -2390,8 +2402,8 @@ function(aSignal, flags) {
                             return TP.contractSignalName(name);
                         });
 
-        if (TP.notEmpty(flags.skipName)) {
-            signalNames.removeValue(TP.contractSignalName(flags.skipName));
+        if (TP.notEmpty(skipName)) {
+            signalNames.removeValue(TP.contractSignalName(skipName));
         }
 
         expression += '(' + signalNames.join('|') + ')';
@@ -2405,11 +2417,6 @@ function(aSignal, flags) {
     //  ---
     //  Phase
     //  ---
-
-    phase = flags.phase;
-    if (TP.notValid(phase)) {
-        phase = aSignal.getPhase();
-    }
 
     switch (phase) {
         case '*':
