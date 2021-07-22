@@ -677,12 +677,13 @@ Cmd.prototype.execute = function() {
 
                             return context.evaluate(
                                 tshEvaluate, cmdLineInput, shouldBreak).then(
-                                function(results) {
-                                    //  Print out results then return a Promise
-                                    //  that will prompt the user again.
-                                    cmd.stdout(results);
-                                    return promptUser();
-                                });
+                                    function(results) {
+                                        //  Print out results then return a
+                                        //  Promise that will prompt the user
+                                        //  again.
+                                        cmd.stdout(results);
+                                        return promptUser();
+                                    });
                         });
                 });
             };
