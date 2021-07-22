@@ -16,12 +16,9 @@
 'use strict';
 
 var CLI,
-    Cmd,
-    sh;
+    Cmd;
 
 CLI = require('./_cli');
-
-sh = require('shelljs');
 
 //  ---
 //  Type Construction
