@@ -5893,8 +5893,8 @@ function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
     //  try to 'fit' the rectangle within the constraining elements (so that it
     //  doesn't clip against a window boundary or something).
     positioningRect = TP.rtc(
-                        adjustedPoint.getX(),
-                        adjustedPoint.getY(),
+                        adjustedPoint.getX() + offsetX,
+                        adjustedPoint.getY() + offsetY,
                         this.getWidth() + offsetX,
                         this.getHeight() + offsetY);
 
@@ -5915,10 +5915,6 @@ function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
 
     positioningRect.addToX(scrollOffsets.getX());
     positioningRect.addToY(scrollOffsets.getY());
-
-    //  Add in any caller-supplied offsets.
-    positioningRect.addToX(offsetX);
-    positioningRect.addToY(offsetY);
 
     //  If the caller supplied 'avoid points', do our best to avoid them :-).
     if (TP.isArray(avoidPoints)) {
