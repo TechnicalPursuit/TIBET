@@ -5342,7 +5342,7 @@ function(anObject) {
         return null;
     }
 
-    if (TP.owns(anObject, TP.WRAPPER)) {
+    if (TP.owns(anObject, TP.WRAPPER) && TP.isValid(anObject[TP.WRAPPER])) {
         return anObject[TP.WRAPPER];
     }
 

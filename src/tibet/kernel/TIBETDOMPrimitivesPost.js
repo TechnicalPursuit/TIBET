@@ -6241,7 +6241,7 @@ function(aNode, aSignal) {
     //  or we'll never find suitable handlers.
     signame = aSignal.getSignalName();
     if (TP.regex.CHANGE_SIGNAL.test(signame)) {
-        flags.dontTraverseSpoofs = false;
+        handlerFlags.dontTraverseSpoofs = false;
     }
 
     node = TP.nodeGetResponderElement(aNode, aSignal, handlerFlags);
@@ -6281,6 +6281,8 @@ function(aNode, aSignal, handlerFlags) {
         signame,
         answer,
         message,
+        fname,
+        handler,
         win,
         type,
         frame;
