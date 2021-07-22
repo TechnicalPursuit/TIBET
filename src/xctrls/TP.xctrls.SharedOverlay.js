@@ -853,6 +853,10 @@ function(contentInfo, overlayContent) {
 
                 alignmentCC,
 
+                tpDocBody,
+                constrainingRects,
+                constrainingTPElements,
+
                 offsetX,
                 offsetY;
 
@@ -890,6 +894,33 @@ function(contentInfo, overlayContent) {
                 triggerPoint = mousePoint;
             }
 
+            tpDocBody = this.getDocument().getBody();
+
+            //  Grab the list 'constraining rectangles' from the overlay info.
+            //  These *must* be in 'global coordinates'. Note that we'll make a
+            //  copy of the array, since we're going to modify.
+            if (TP.isEmpty(constrainingRects =
+                            contentInfo.at('constrainingRects'))) {
+                constrainingRects = TP.ac();
+            } else {
+                constrainingRects = TP.copy(constrainingRects);
+            }
+
+            constrainingRects.push(tpDocBody.getGlobalRect());
+
+            if (TP.notEmpty(constrainingTPElements =
+                            contentInfo.at('constrainingTPElements'))) {
+                constrainingTPElements.forEach(
+                    function(aTPElem) {
+                        //  We already added the body above so we skip it here.
+                        if (aTPElem !== tpDocBody) {
+                            return;
+                        }
+
+                        constrainingRects.push(aTPElem.getGlobalRect());
+                    });
+            }
+
             //  The overlay is not closed.
             this.setAttribute('closed', false);
 
@@ -919,7 +950,7 @@ function(contentInfo, overlayContent) {
                                             positionCC,
                                             alignmentCC,
                                             triggerTPElem,
-                                            TP.ac(this.getDocument().getBody()),
+                                            constrainingRects,
                                             TP.ac(mousePoint),
                                             offsetX,
                                             offsetY);
@@ -928,7 +959,7 @@ function(contentInfo, overlayContent) {
                                             positionCC,
                                             alignmentCC,
                                             triggerTPElem,
-                                            TP.ac(this.getDocument().getBody()),
+                                            constrainingRects,
                                             TP.ac(mousePoint),
                                             offsetX,
                                             offsetY);

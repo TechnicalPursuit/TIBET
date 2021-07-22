@@ -600,7 +600,7 @@ function() {
             TP.SOUTHEAST,
             TP.SOUTHWEST,
             alignmentTPElem,
-            TP.ac(bodyTPElem),
+            TP.ac(bodyTPElem.getGlobalRect()),
             null,
             null,
             null);

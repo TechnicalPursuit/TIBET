@@ -474,6 +474,10 @@ function(openSignal, popupContent) {
 
         alignmentCC,
 
+        tpDocBody,
+        constrainingRects,
+        constrainingTPElements,
+
         offsetX,
         offsetY;
 
@@ -529,6 +533,33 @@ function(openSignal, popupContent) {
                 triggerPoint = mousePoint;
             }
 
+            tpDocBody = this.getDocument().getBody();
+
+            //  Grab the list 'constraining rectangles' from the overlay info.
+            //  These *must* be in 'global coordinates'. Note that we'll make a
+            //  copy of the array, since we're going to modify.
+            if (TP.isEmpty(constrainingRects =
+                            openSignal.at('constrainingRects'))) {
+                constrainingRects = TP.ac();
+            } else {
+                constrainingRects = TP.copy(constrainingRects);
+            }
+
+            constrainingRects.push(tpDocBody.getGlobalRect());
+
+            if (TP.notEmpty(constrainingTPElements =
+                            openSignal.at('constrainingTPElements'))) {
+                constrainingTPElements.forEach(
+                    function(aTPElem) {
+                        //  We already added the body above so we skip it here.
+                        if (aTPElem !== tpDocBody) {
+                            return;
+                        }
+
+                        constrainingRects.push(aTPElem.getGlobalRect());
+                    });
+            }
+
             //  Show the popup and set up signal handlers.
             //  NOTE: We make sure to do this *before* we position - otherwise,
             //  our width and height will not be set properly and 'edge
@@ -559,7 +590,7 @@ function(openSignal, popupContent) {
                                             positionCC,
                                             alignmentCC,
                                             triggerTPElem,
-                                            TP.ac(this.getDocument().getBody()),
+                                            constrainingRects,
                                             TP.ac(mousePoint),
                                             offsetX,
                                             offsetY);
@@ -568,7 +599,7 @@ function(openSignal, popupContent) {
                                             positionCC,
                                             alignmentCC,
                                             triggerTPElem,
-                                            TP.ac(this.getDocument().getBody()),
+                                            constrainingRects,
                                             TP.ac(mousePoint),
                                             offsetX,
                                             offsetY);
