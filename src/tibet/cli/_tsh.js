@@ -536,7 +536,11 @@ Cmd.prototype.execute = function() {
             tshEvaluate,
 
             readlineLib,
-            promptUser;
+            promptUser,
+
+            histPath,
+            histJSON,
+            histEntries;
 
         input = cmd.options.script;
         shouldBreak = cmd.options.break;
@@ -643,9 +647,20 @@ Cmd.prototype.execute = function() {
         };
 
         if (cmd.options.interactive) {
+            histPath = CLI.expandPath('~lib/.tshHistory');
+            if (CLI.sh.test('-e', histPath)) {
+                histJSON = CLI.sh.cat(histPath).toString();
+                histEntries = JSON.parse(histJSON);
+            } else {
+                histEntries = [];
+            }
+
             readlineLib = readline.createInterface({
                 input: process.stdin,
-                output: process.stdout
+                output: process.stdout,
+                terminal: true,
+                history: histEntries    //  This Array is modified by the
+                                        //  readline library as history is added
             });
 
             promptUser = function() {
@@ -675,14 +690,18 @@ Cmd.prototype.execute = function() {
                                 return;
                             }
 
+                            histJSON = JSON.stringify(histEntries);
+                            new CLI.sh.ShellString(histJSON).to(histPath);
+
                             return context.evaluate(
                                 tshEvaluate, cmdLineInput, shouldBreak).then(
-                                function(results) {
-                                    //  Print out results then return a Promise
-                                    //  that will prompt the user again.
-                                    cmd.stdout(results);
-                                    return promptUser();
-                                });
+                                    function(results) {
+                                        //  Print out results then return a
+                                        //  Promise that will prompt the user
+                                        //  again.
+                                        cmd.stdout(results);
+                                        return promptUser();
+                                    });
                         });
                 });
             };
