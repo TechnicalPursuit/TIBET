@@ -4654,8 +4654,8 @@ function(anElement, preserveSpace) {
      *     method adjusts the CSS 'visibility' property of the supplied element.
      *     Otherwise, it adjusts both the 'display' and the visibility.
      * @param {HTMLElement} anElement The element to hide.
-     * @param {Boolean} preserveSpace Whether or not to 'preserve the space'
-     *     taken up by the element in its document. The default is false.
+     * @param {Boolean} [preserveSpace=false] Whether or not to 'preserve the
+     *     space' taken up by the element in its document.
      * @exception TP.sig.InvalidElement
      */
 

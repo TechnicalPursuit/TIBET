@@ -1401,7 +1401,9 @@ function(enterSelection) {
                 hintElement = hintContent.node();
 
                 TP.xctrls.hint.setupHintOn(
-                    this, hintElement, TP.hc('corner', TP.SOUTHEAST));
+                    this,
+                    hintElement,
+                    TP.hc('alignmentCompassCorner', TP.SOUTHEAST));
             }
         });
 

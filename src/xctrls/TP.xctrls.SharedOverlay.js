@@ -467,159 +467,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.SharedOverlay.Inst.defineMethod('getPositioningPoint',
-function(anOverlayPoint, anAvoidPoint) {
-
-    /**
-     * @method getPositioningPoint
-     * @summary Computes and returns the point used to position the overlay
-     *     using the supplied point (which should be the initial point).
-     * @param {TP.gui.Point} anOverlayPoint The initial point to use to
-     *     position the overlay. NOTE: This point should be in *global*
-     *     coordinates.
-     * @param {TP.gui.Point} [anAvoidPoint] A point to 'avoid' when computing
-     *     the positioning point. The system will shift the overlay around,
-     *     trying to avoid this point.
-     * @returns {TP.gui.Point} The point (in global coordinates) to position
-     *     the overlay at.
-     */
-
-    var offset,
-
-        overlayPoint,
-        overlayRect,
-
-        bodyTPElem,
-        bodyRect,
-
-        scrollOffsets,
-
-        testPoint,
-        overlayCorner,
-
-        diffX,
-        diffY;
-
-    offset = this.getOverlayOffset();
-
-    //  Compute rectangle, supplying it the overlay origin point and the
-    //  overlay's width and height. This is important to do the calculation
-    //  below where we try to 'fit' the rectangle within the body (so that it
-    //  doesn't clip against a window boundary or something).
-
-    //  Note here that we have to double the margin to account for the original
-    //  margin as defined in the initial CSS.
-    overlayRect = TP.rtc(
-                    anOverlayPoint.getX().max(offset),
-                    anOverlayPoint.getY().max(offset),
-                    this.getWidth() + offset,
-                    this.getHeight() + offset);
-
-    //  Grab the body's rectangle and constrain the overlay rectangle against
-    //  it.
-
-    bodyTPElem = this.getDocument().getBody();
-
-    bodyRect = bodyTPElem.getGlobalRect();
-
-    //  Constrain the overlay rectangle to inside of the body element rectangle.
-    //  This will make sure that the overlay's content isn't clipped against the
-    //  body of its document.
-    bodyRect.constrainRect(overlayRect);
-
-    //  Make sure to add in the scrolling offsets.
-    scrollOffsets = this.getScrollOffsetFromAncestor();
-
-    overlayRect.addToX(scrollOffsets.getX());
-    overlayRect.addToY(scrollOffsets.getY());
-
-    //  If the computed overlay rectangle includes the 'avoid point' (in many
-    //  cases, this is the current mouse location), then try to adjust its X and
-    //  Y to avoid that point
-    if (TP.isValid(anAvoidPoint)) {
-
-        testPoint = TP.copy(anAvoidPoint);
-
-        overlayCorner = this.getOverlayCorner();
-
-        //  Adjust the testing point based on our overlay corner. The intent is
-        //  to adjust the testing point by a pixel in both the X and Y
-        //  directions to not have it be part of the test itself.
-        switch (overlayCorner) {
-
-            case TP.NORTHEAST:
-                testPoint.addToX(1);
-                testPoint.subtractFromY(1);
-                break;
-            case TP.NORTHWEST:
-                testPoint.subtractFromX(1);
-                testPoint.subtractFromY(1);
-                break;
-            case TP.SOUTHEAST:
-                testPoint.addToX(1);
-                testPoint.addToY(1);
-                break;
-            case TP.SOUTHWEST:
-                testPoint.subtractFromX(1);
-                testPoint.addToY(1);
-                break;
-            default:
-                break;
-        }
-
-        if (overlayRect.containsPoint(testPoint)) {
-            if (overlayRect.containsPointX(testPoint)) {
-
-                diffX = overlayRect.getX() + overlayRect.getWidth() -
-                        testPoint.getX();
-
-                //  If by subtracting the difference, we're still greater than 0,
-                //  then do that (shifting the overlay towards the left).
-                if (overlayRect.getX() - diffX > 0) {
-                    overlayRect.subtractFromX(diffX);
-                } else if (overlayRect.getX() + diffX < bodyRect.getWidth()) {
-                    //  Otherwise, if by adding the difference, we're still less
-                    //  than the body's rectangle, then do that (shifting the
-                    //  overlay towards the right by 1px)
-                    overlayRect.addToX(1);
-                }
-            }
-
-            if (overlayRect.containsPointY(testPoint)) {
-
-                diffY = overlayRect.getY() + overlayRect.getHeight() -
-                        testPoint.getY();
-
-                //  If by subtracting the difference, we're still greater than 0,
-                //  then do that (shifting the overlay towards the top).
-                if (overlayRect.getY() - diffY > 0) {
-                    overlayRect.subtractFromY(diffY);
-                } else if (overlayRect.getY() + diffY < bodyRect.getHeight()) {
-                    //  Otherwise, if by adding the difference, we're still less
-                    //  than the body's rectangle, then do that (shifting the
-                    //  overlay towards the bottom by 1px)
-                    overlayRect.addToY(1);
-                }
-            }
-        }
-    }
-
-    //  Now, get the 'top left' corner point of the computed overlay rectangle.
-    overlayPoint = overlayRect.getXYPoint();
-
-    return overlayPoint;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.SharedOverlay.Inst.defineMethod('getOverlayCorner',
+TP.xctrls.SharedOverlay.Inst.defineMethod('getAlignmentCompassCorner',
 function() {
 
     /**
-     * @method getOverlayCorner
+     * @method getAlignmentCompassCorner
      * @summary Returns a constant responding to one of 8 compass points that
-     *     the overlay will be positioned at relative to the overlay's
-     *     container.
+     *     the overlay will be positioned at relative to the element that it is
+     *     trying to align to. This is the point that the overlay wants to be
+     *     positioned *to* relative to it's aligning element.
      * @returns {Number} A Number matching the constant corresponding to the
      *     compass corner.
      */
@@ -641,6 +497,23 @@ function() {
      */
 
     return 0;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Inst.defineMethod('getPositionCompassCorner',
+function() {
+
+    /**
+     * @method getPositionCompassCorner
+     * @summary Returns a constant responding to one of 8 compass points that
+     *     the overlay will be positioned at relative to the itself. This is the
+     *     point that the overlay wants to be positioned *from* on itself.
+     * @returns {Number} A Number matching the constant corresponding to the
+     *     compass corner.
+     */
+
+    return TP.NORTHWEST;
 });
 
 //  ----------------------------------------------------------------------------
@@ -891,32 +764,6 @@ function(contentInfo, overlayContent, afterLoadHandler) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.SharedOverlay.Inst.defineMethod('positionUsing',
-function(anOverlayPoint, anAvoidPoint) {
-
-    /**
-     * @method positionUsing
-     * @summary Positions the overlay using the supplied point.
-     * @param {TP.gui.Point} anOverlayPoint The point to use to position the
-     *     overlay. NOTE: This point should be in *global* coordinates.
-     * @param {TP.gui.Point} [anAvoidPoint] A point to 'avoid' when computing
-     *     the positioning point. The system will shift the overlay around,
-     *     trying to avoid this point.
-     * @returns {TP.xctrls.SharedOverlay} The receiver.
-     */
-
-    var overlayPoint;
-
-    overlayPoint = this.getPositioningPoint(anOverlayPoint, anAvoidPoint);
-
-    //  Set our global position to be that point
-    this.setGlobalPosition(overlayPoint);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.SharedOverlay.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
@@ -998,23 +845,32 @@ function(contentInfo, overlayContent) {
         contentInfo,
         overlayContent,
         function(tpContent) {
+            var positionCC,
 
-            var overlayCorner,
-
-                triggerRect,
                 triggerPoint,
                 mousePoint,
                 triggerTPElem,
 
-                lastMoveEvent,
-                lastMoveSignal;
+                alignmentCC,
+
+                tpDocBody,
+                constrainingRects,
+                constrainingTPElements,
+
+                offsetX,
+                offsetY;
+
+            //  Compute the position compass corner if its not supplied in the
+            //  trigger signal.
+            positionCC = contentInfo.at('positionCompassCorner');
+            if (TP.isEmpty(positionCC)) {
+                positionCC = this.getPositionCompassCorner();
+            }
 
             //  First, see if the open signal provided a overlay point.
             triggerPoint = contentInfo.at('triggerPoint');
 
-            lastMoveEvent = TP.core.Mouse.$get('lastMove');
-            lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
-            mousePoint = lastMoveSignal.getGlobalPoint();
+            mousePoint = TP.core.Mouse.getLastMovePoint();
 
             //  If no overlay point was given, compute one from the triggering
             //  element.
@@ -1027,21 +883,42 @@ function(contentInfo, overlayContent) {
                     return this;
                 }
 
-                //  Grab the global rect from the supplied element.
-                triggerRect = triggerTPElem.getGlobalRect();
-
-                //  Compute the corner if its not supplied in the trigger
-                //  signal.
-                overlayCorner = contentInfo.at('corner');
-                if (TP.isEmpty(overlayCorner)) {
-                    overlayCorner = this.getOverlayCorner();
+                //  Compute the alignment compass corner if its not supplied in
+                //  the trigger signal.
+                alignmentCC = contentInfo.at('alignmentCompassCorner');
+                if (TP.isEmpty(alignmentCC)) {
+                    alignmentCC = this.getAlignmentCompassCorner();
                 }
 
-                //  The point that the overlay should appear at is the 'edge
-                //  point' for that compass edge of the trigger rectangle.
-                triggerPoint = triggerRect.getEdgePoint(overlayCorner);
             } else if (triggerPoint === TP.MOUSE) {
                 triggerPoint = mousePoint;
+            }
+
+            tpDocBody = this.getDocument().getBody();
+
+            //  Grab the list 'constraining rectangles' from the overlay info.
+            //  These *must* be in 'global coordinates'. Note that we'll make a
+            //  copy of the array, since we're going to modify.
+            if (TP.isEmpty(constrainingRects =
+                            contentInfo.at('constrainingRects'))) {
+                constrainingRects = TP.ac();
+            } else {
+                constrainingRects = TP.copy(constrainingRects);
+            }
+
+            constrainingRects.push(tpDocBody.getGlobalRect());
+
+            if (TP.notEmpty(constrainingTPElements =
+                            contentInfo.at('constrainingTPElements'))) {
+                constrainingTPElements.forEach(
+                    function(aTPElem) {
+                        //  We already added the body above so we skip it here.
+                        if (aTPElem !== tpDocBody) {
+                            return;
+                        }
+
+                        constrainingRects.push(aTPElem.getGlobalRect());
+                    });
             }
 
             //  The overlay is not closed.
@@ -1050,15 +927,47 @@ function(contentInfo, overlayContent) {
             //  Show the overlay and set up signal handlers.
             this.setAttribute('hidden', false);
 
+            //  Initially set the overlay to hide (by supplying true we flip the
+            //  'visibility' property).
+            this.hide(true);
+
             //  If the signal doesn't have a flag to not position the overlay,
             //  then position the overlay relative to the overlay point and the
-            //  corner.
+            //  corners.
             if (TP.notTrue(contentInfo.at('noPosition'))) {
+                offsetX = contentInfo.atIfInvalid('offsetX',
+                                                    this.getOverlayOffset());
+                offsetY = contentInfo.atIfInvalid('offsetY',
+                                                    this.getOverlayOffset());
+
                 //  Queue the positioning of the overlay into a 'next repaint'
                 //  so that layout of the overlay's content happens and proper
                 //  sizing numbers can be computed.
                 (function() {
-                    this.positionUsing(triggerPoint, mousePoint);
+                    if (triggerPoint) {
+                        this.setPositionRelativeTo(
+                                            triggerPoint,
+                                            positionCC,
+                                            alignmentCC,
+                                            triggerTPElem,
+                                            constrainingRects,
+                                            TP.ac(mousePoint),
+                                            offsetX,
+                                            offsetY);
+                    } else {
+                        this.positionUsingCompassPoints(
+                                            positionCC,
+                                            alignmentCC,
+                                            triggerTPElem,
+                                            constrainingRects,
+                                            TP.ac(mousePoint),
+                                            offsetX,
+                                            offsetY);
+                    }
+
+                    //  Now set the overlay to show (by flipping the
+                    //  'visibility' property back).
+                    this.show();
                 }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
             }
         }.bind(this));

@@ -2903,6 +2903,31 @@ function(aWindow, otherWindow) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Mouse.Type.defineMethod('getLastMovePoint',
+function() {
+
+    /**
+     * @method getLastMovePoint
+     * @summary Returns a TP.gui.Point that represents the position of the last
+     *     'mouse moved' event.
+     * @returns {TP.gui.Point} The point the mouse last moved to in global
+     *     coordinates.
+     */
+
+    var lastMove,
+        lastMoveSignal,
+        mousePoint;
+
+    lastMove = TP.core.Mouse.$get('lastMove');
+
+    lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMove);
+    mousePoint = lastMoveSignal.getGlobalPoint();
+
+    return mousePoint;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Mouse.Type.defineMethod('isDragging',
 function() {
 

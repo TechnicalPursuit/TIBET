@@ -570,7 +570,8 @@ function() {
 
         results;
 
-    //  No query? Use the standard 'all child elements'
+    //  No query? Use the standard 'all descendant elements except those under a
+    //  nested group'.
     if (TP.isEmpty(query = this.getAttribute('query'))) {
         queryWasDefined = false;
 
@@ -614,7 +615,7 @@ function() {
                     return TP.isKindOf(aTPNode, TP.dom.ElementNode);
                 });
 
-    //  This will wrap all of the elements found in the results
+    //  This will wrap all of the elements found in the results.
     results = TP.wrap(results);
 
     return results;
@@ -627,7 +628,7 @@ function() {
 
     /**
      * @method getMemberGroups
-     * @summary Returns the members of the group that are themselves groups
+     * @summary Returns the members of the group that are themselves groups.
      * @returns {TP.tibet.group[]} The Array of member 'tibet:group'
      *     TP.dom.ElementNodes.
      */

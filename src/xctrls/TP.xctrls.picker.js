@@ -234,7 +234,7 @@ function(aSignal) {
 
     payload = TP.hc('overlayID', 'XCtrlsPickerPopup',
                     'contentURI', 'urn:tibet:' + id + '_content',
-                    'corner', TP.SOUTHWEST,
+                    'alignmentCompassCorner', TP.SOUTHWEST,
                     'trigger', triggerSignal,
                     'triggerPath', '#' + id,
                     'triggerTPDocument', this.getDocument(),
