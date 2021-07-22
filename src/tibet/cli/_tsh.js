@@ -18,13 +18,16 @@
 'use strict';
 
 var CLI,
-    Cmd,
     Promise,
-    puppeteer;
+    puppeteer,
+    readline,
+
+    Cmd;
 
 CLI = require('./_cli');
-puppeteer = require('puppeteer');
 Promise = require('bluebird');
+puppeteer = require('puppeteer');
+readline = require('readline');
 
 
 //  ---
@@ -71,12 +74,13 @@ Cmd.NO_VALUE = '__TSH__NO_VALUE__TSH__';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['break', 'debug', 'debugger', 'silent', 'tap', 'verbose'],
+    boolean: ['break', 'debug', 'debugger', 'interactive', 'silent', 'tap', 'verbose'],
     string: ['package', 'profile', 'config', 'script'],
     number: ['timeout'],
     default: {
         color: true,
-        debugger: false
+        debugger: false,
+        interactive: false
     }
 },
 Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -527,7 +531,12 @@ Cmd.prototype.execute = function() {
     }).then(function(context) {
 
         var input,
-            shouldBreak;
+            shouldBreak,
+
+            tshEvaluate,
+
+            readlineLib,
+            promptUser;
 
         input = cmd.options.script;
         shouldBreak = cmd.options.break;
@@ -536,7 +545,7 @@ Cmd.prototype.execute = function() {
             cmd.stdout(input);
         }
 
-        return context.evaluate(function(tshInput, breakBeforeExec) {
+        tshEvaluate = function(tshInput, breakBeforeExec) {
 
             return new Promise(function(resolve, reject) {
                 var handler;
@@ -631,27 +640,79 @@ Cmd.prototype.execute = function() {
                     'onsuccess', handler,   //  success handler (same handler)
                     'onfail', handler));    //  failure handler (same handler)
             });
-        }, input, shouldBreak);
+        };
+
+        if (cmd.options.interactive) {
+            readlineLib = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+
+            promptUser = function() {
+                var prompt;
+
+                prompt = 'tsh>> ';
+
+                return new Promise((resolve, reject) => {
+                    readlineLib.question(
+                        prompt,
+                        function(cmdLineInput) {
+                            var closePromise;
+
+                            if (cmdLineInput === 'exit') {
+                                closePromise = cmd.beforeBrowserClose(
+                                                puppetBrowser, puppetPage);
+
+                                if (closePromise) {
+                                    closePromise.then(
+                                        function() {
+                                            cmd.close(0, puppetBrowser);
+                                        });
+                                } else {
+                                    cmd.close(0, puppetBrowser);
+                                }
+
+                                return;
+                            }
+
+                            return context.evaluate(
+                                tshEvaluate, cmdLineInput, shouldBreak).then(
+                                function(results) {
+                                    //  Print out results then return a Promise
+                                    //  that will prompt the user again.
+                                    cmd.stdout(results);
+                                    return promptUser();
+                                });
+                        });
+                });
+            };
+
+            return promptUser();
+        } else {
+            return context.evaluate(tshEvaluate, input, shouldBreak);
+        }
 
     }).then(function(results) {
 
         var closePromise;
 
-        cmd.stdout(results);
+        if (!cmd.options.interactive) {
+            cmd.stdout(results);
 
-        //  Call beforeBrowserClose. Its return value is either a Promise or
-        //  null. If it hands back a Promise, wait until that is fulfilled
-        //  before closing.
+            //  Call beforeBrowserClose. Its return value is either a Promise or
+            //  null. If it hands back a Promise, wait until that is fulfilled
+            //  before closing.
 
-        closePromise = cmd.beforeBrowserClose(puppetBrowser, puppetPage);
+            closePromise = cmd.beforeBrowserClose(puppetBrowser, puppetPage);
 
-        if (closePromise) {
-            closePromise.then(
-                function() {
-                    cmd.close(0, puppetBrowser);
-                });
-        } else {
-            cmd.close(0, puppetBrowser);
+            if (closePromise) {
+                closePromise.then(
+                    function() {
+                        cmd.close(0, puppetBrowser);
+                    });
+            } else {
+                cmd.close(0, puppetBrowser);
+            }
         }
 
     }).catch(function(err) {
@@ -959,6 +1020,10 @@ Cmd.prototype.close = function(code, browser) {
     if (CLI.isValid(browser) && browser.close) {
         browser.close();
     }
+
+    //  Tweak the shutdown timeout to be 250ms rather than the default of
+    //  1000ms. We're wrapping up anyway.
+    CLI.setcfg('cli.shutdown_timeout', 250);
     return CLI.exitSoon(code);
 };
 
