@@ -297,31 +297,6 @@ TP.sig.Signal.Type.defineAttribute('signalRoot', null);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Type.defineMethod('defineSubtype',
-function() {
-
-    /**
-     * @method defineSubtype
-     * @summary Creates a new subtype. This particular override ensures that all
-     *     direct subtypes of TP.sig.Signal serve as signaling roots, meaning
-     *     that you never signal a raw TP.sig.Signal without a spoofed signal
-     *     name.
-     * @returns {TP.sig.Signal} A new signal-derived type object.
-     */
-
-    var type;
-
-    type = this.callNextMethod();
-
-    if (this === TP.sig.Signal) {
-        type.isSignalingRoot(true);
-    }
-
-    return type;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Signal.Type.defineMethod('fire',
 function(anOrigin, aPayload, aPolicy) {
 
@@ -416,8 +391,10 @@ function() {
 
     while (type) {
         names.push(type.getSignalName());
-        if (type === TP.sig.Signal) {
-            break;
+        if (TP.canInvoke(type, 'isSignalingRoot')) {
+            if (type.isSignalingRoot()) {
+                break;
+            }
         }
         type = type.getSupertype();
     }
@@ -1657,12 +1634,17 @@ function() {
      * @returns {String[]} An Array of signal names.
      */
 
-    var names;
+    var names,
+        name;
 
     names = this.getTypeSignalNames();
+    name = this.getSignalName();
 
-    if (!names.contains(this.getSignalName())) {
-        names.unshift(this.getSignalName());
+    //  IF signal name and type name differ this is a spoof so ensure we put
+    //  the spoofed name on the front of the list. NOTE the type signal name
+    //  list is a copy so we can mutate it without any problem.
+    if (name !== this.getTypeName()) {
+        names.unshift(name);
     }
 
     return names;

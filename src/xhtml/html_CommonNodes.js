@@ -95,46 +95,6 @@ TP.html.Focused.Type.defineAttribute('opaqueCapturingSignalNames',
             'TP.sig.DOMBlur'
         ));
 
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.html.Focused.Type.defineMethod('isResponderForUIFocusChange',
-function(aSignal, aNode) {
-
-    /**
-     * @method isResponderForUIFocusChange
-     * @summary Returns true if the node does not have a 'disabled' attribute to
-     *     match (X)HTML semantics.
-     * @param {TP.sig.Signal} aSignal The signal that responders are being
-     *     computed for.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
-     * @returns {Boolean} True when the receiver should respond to aSignal.
-     */
-
-    return !TP.elementHasAttribute(aNode, 'disabled', true);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.Focused.Type.defineMethod('isResponderForUIFocusComputation',
-function(aSignal, aNode) {
-
-    /**
-     * @method isResponderForUIFocusComputation
-     * @summary Returns true if the node does not have a 'disabled' attribute to
-     *     match (X)HTML semantics.
-     * @param {TP.sig.Signal} aSignal The signal that responders are being
-     *     computed for.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
-     * @returns {Boolean} True when the receiver should respond to aSignal.
-     */
-
-    return !TP.elementHasAttribute(aNode, 'disabled', true);
-});
-
 //  ========================================================================
 //  TP.html.Citation
 //  ========================================================================

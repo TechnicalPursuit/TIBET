@@ -2678,13 +2678,13 @@ function(aSignalName, aTriggerSignal) {
 
     originElem = this.getNativeNode();
 
-    //  First, try the full signal name.
-    sigName = 'on:' + TP.expandSignalName(aSignalName);
+    //  First, try the shortened version of that name, that's the 90% case.
+    sigName = 'on:' + TP.contractSignalName(aSignalName);
     if (TP.elementHasAttribute(originElem, sigName, true)) {
         sigData = TP.elementGetAttribute(originElem, sigName, true);
     } else {
-        //  Next, try the shortened version of that name.
-        sigName = 'on:' + TP.contractSignalName(aSignalName);
+        //  Next, try the full signal name, only used to avoid conflicts.
+        sigName = 'on:' + TP.expandSignalName(aSignalName);
         sigData = TP.elementGetAttribute(originElem, sigName, true);
     }
 

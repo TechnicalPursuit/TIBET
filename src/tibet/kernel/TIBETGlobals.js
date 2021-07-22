@@ -985,6 +985,8 @@ TP.BUSY_RESIZE_FUNC = 'tp_busy_resize_function';
 TP.REPEAT_SOURCE = 'tp_repeat_source';
 TP.REPEAT_INDEX = 'tp_repeat_index';
 TP.PSEUDO_INLINE_STYLE = 'tp_pseudo_inline_style';
+TP.RESPONDER_EXPRESSION = 'tp_responder_expr';
+TP.RESPONDER_REGEX = 'tp_responder_regex';
 
 TP.BOUND_ATTR_COUNT = 'tp_bound_attr_count';
 TP.BOUND_ATTR_PROCESSED_COUNT = 'tp_bound_attr_processed_count';
@@ -3229,6 +3231,18 @@ TP.regex.MOUSE_EVENT = /^mouse|DOMMouse|DOMClick|DOMDblClick/;
 
 TP.regex.SIGNAL_PREFIX = /^(TP|APP)\.sig\./;
 TP.regex.HANDLER_NAME = /^handle([-_a-zA-Z0-9]+)$/;
+
+TP.regex.CHANGE_SIGNAL = /^((TP|APP)\.sig\.)?(\w)*Change(d)?$/;
+TP.regex.DOM_SIGNAL = /^((TP|APP)\.sig\.)?DOM[A-Z](\w)*$/;
+TP.regex.UI_SIGNAL = /^((TP|APP)\.sig\.)?UI[A-Z](\w)*$/;
+
+TP.regex.UI_ABLED_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(abled).*$/;
+TP.regex.UI_VALID_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(valid).*$/;
+TP.regex.UI_VALIDATION_SIGNAL = /^((TP|APP)\.sig\.)?.*(Optional|Readonly|Readwrite|Relevant|Required).*$/;
+
+TP.regex.UI_ACTIVATION_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(activate).*$/i;
+TP.regex.UI_FOCUSBLUR_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(Focus|Blur).*$/;
+TP.regex.UI_SELECTABLE_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(elect).*$/;
 
 /* eslint-disable max-len */
 TP.regex.SPLIT_HANDLER_NAME =

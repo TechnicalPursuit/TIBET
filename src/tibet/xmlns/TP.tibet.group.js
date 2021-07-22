@@ -83,8 +83,19 @@ function(aSignal, aNode) {
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
-    if (aSignal.getSignalName().match(
-            /^(TP.sig.)*UI.*(Focus|Blur|Activate|Deactivate|Optional|Required|Valid|Invalid)/)) {
+    var signame;
+
+    signame = aSignal.getSignalName();
+
+    if (TP.regex.UI_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    if (TP.regex.DOM_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    if (TP.regex.CHANGE_SIGNAL.test(signame)) {
         return true;
     }
 

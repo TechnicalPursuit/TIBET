@@ -1470,8 +1470,6 @@ TP.sig.DOMErrorIndicationSignal.defineSubtype('DOMServiceError');
 
 TP.sig.DOMSignal.defineSubtype('DOMUISignal');
 
-TP.sig.DOMUISignal.isSignalingRoot(true);
-
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
@@ -3668,30 +3666,6 @@ TP.sig.ResponderSignal.isControllerRoot(true);
 
 TP.sig.ResponderSignal.Type.defineAttribute('bubbling', true);
 TP.sig.ResponderSignal.Type.defineAttribute('cancelable', true);
-
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.Type.defineMethod('defineSubtype',
-function() {
-
-    /**
-     * @method defineSubtype
-     * @summary Creates a new subtype. This particular override ensures that all
-     *     direct subtypes of TP.sig.ResponderSignal serve as signaling roots,
-     *     meaning that you never signal a raw TP.sig.ResponderSignal.
-     * @returns {TP.sig.Signal} A new signal-derived type object.
-     */
-
-    var type;
-
-    type = this.callNextMethod();
-
-    if (this === TP.sig.ResponderSignal) {
-        type.isSignalingRoot(true);
-    }
-
-    return type;
-});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

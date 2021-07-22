@@ -79,12 +79,35 @@ function(aSignal, aNode) {
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
-    if (aSignal.getSignalName().match(
-            /^(TP.sig.)*UI.*(Focus|Blur|Activate|Deactivate|Select)/)) {
+    var signame;
+
+    signame = aSignal.getSignalName();
+
+    //  NOTE: it's not useful to ignore Enabled/Disabled calls when disabled...
+    //  or you'll always stay that way ;)
+    if (TP.regex.UI_ABLED_SIGNAL.test(signame)) {
         return true;
     }
 
-    return this.callNextMethod();
+    //  Check the disabled state... if we're disabled all other signals should
+    //  effectively be ignored.
+    if (TP.elementHasAttribute(aNode, 'disabled', true)) {
+        return false;
+    }
+
+    if (TP.regex.UI_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    if (TP.regex.DOM_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    if (TP.regex.CHANGE_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
