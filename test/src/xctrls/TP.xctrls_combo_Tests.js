@@ -855,6 +855,20 @@ function() {
 
     //  ---
 
+    this.afterEach(
+        function(test, suite) {
+            test.chain(
+                function() {
+                    //  'Click away' from the currently selected popup to get it
+                    //  to close.
+                    test.getDriver().constructSequence().
+                        click(windowContext.getDocument().getBody()).
+                        run();
+                });
+        });
+
+    //  ---
+
     this.after(
         function(suite, options) {
 
