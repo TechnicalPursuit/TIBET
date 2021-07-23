@@ -276,7 +276,7 @@ function() {
         //  If the viewport, minus the border height, doesn't fall on an even
         //  boundary, then increment the count by 1, so that we get an overlap
         //  to avoid 'blank' spaces.
-        if ((viewportHeight - borderSize) % rowHeight !== 0) {
+        if ((viewportHeight - borderSize) / rowHeight > computedRowCount) {
             computedRowCount += 1;
             this.$set('$bumpRowCount', 1, false);
         }
