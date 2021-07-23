@@ -174,6 +174,11 @@ function() {
     //  Get the current, computed height
     currentHeight = this.getHeight();
 
+    //  We need to subtract *our own* (vertical) border
+    currentHeight -=
+        this.getComputedStyleProperty('border-top-width').asNumber() +
+        this.getComputedStyleProperty('border-bottom-width').asNumber();
+
     //  If we have a direct 'height' value set on the '.style' property, then
     //  that overrides everything - return it.
 
