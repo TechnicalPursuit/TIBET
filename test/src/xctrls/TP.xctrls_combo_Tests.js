@@ -849,7 +849,7 @@ function() {
             var combo;
 
             //  Make sure that each test starts with a freshly reset item
-            combo = TP.byId('combo4', windowContext);
+            combo = TP.byId('combo5', windowContext);
             combo.deselectAll();
         });
 
@@ -872,7 +872,7 @@ function() {
         var combo,
             firstComboItem;
 
-        combo = TP.byId('combo4', windowContext);
+        combo = TP.byId('combo5', windowContext);
 
         //  ---
 

@@ -845,7 +845,7 @@ function() {
             var select;
 
             //  Make sure that each test starts with a freshly reset item
-            select = TP.byId('select4', windowContext);
+            select = TP.byId('select5', windowContext);
             select.deselectAll();
         });
 
@@ -868,7 +868,7 @@ function() {
         var select,
             firstSelectItem;
 
-        select = TP.byId('select4', windowContext);
+        select = TP.byId('select5', windowContext);
 
         //  ---
 
