@@ -719,8 +719,6 @@ TP.extern.d3.VirtualScroller = function() {
             render,
             scrollRenderFrame;
 
-        bumpRowCount = control.$get('$bumpRowCount');
-
         render = function() {
 
             var scrollTop,
@@ -733,6 +731,8 @@ TP.extern.d3.VirtualScroller = function() {
             }
 
             computedRowCount = control.computeGeneratedRowCount();
+
+            bumpRowCount = control.$get('$bumpRowCount');
 
             scrollTop = viewport.node().scrollTop;
 
