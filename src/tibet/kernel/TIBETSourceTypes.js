@@ -2921,7 +2921,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     //  If we're running in headless mode, just return false to tell the
     //  signaling system to *not* add the observation to the main
     //  notification engine.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         return false;
     }
 
@@ -3033,7 +3033,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     //  If we're running in headless mode, just return false to tell the
     //  signaling system to *not* remove the observation from the main
     //  notification engine.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         return false;
     }
 

@@ -58,6 +58,25 @@ TP.xctrls.Element.Type.defineAttribute('opaqueCapturingSignalNames',
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Element.Type.defineMethod('isResponderFor',
+function(aSignal, aNode) {
+
+    /**
+     * @method isResponderFor
+     * @summary Returns true if the type in question should be considered a
+     *     responder for the specific node/signal pair provided.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.Element.Type.defineMethod('tagAttachStyle',
 function(aRequest) {
 
@@ -291,6 +310,27 @@ TP.xctrls.content.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  This type captures no signals - it lets all signals pass through.
 TP.xctrls.content.Type.defineAttribute('opaqueCapturingSignalNames', null);
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.content.Type.defineMethod('isResponderFor',
+function(aSignal, aNode) {
+
+    /**
+     * @method isResponderFor
+     * @summary Returns true if the type in question should be considered a
+     *     responder for the specific node/signal pair provided.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return false;
+});
 
 //  ------------------------------------------------------------------------
 //  end

@@ -2284,14 +2284,11 @@ function(aSignal, flags) {
      *     be (or was) invoked.
      */
 
-    var handlerNames,
-        handlerFlags;
-
-    handlerFlags = flags || {};
+    var handlerNames;
 
     //  NOTE this is a string or number (NOT_FOUND) value, not an array. Also
     //  note it's already filtered by canInvoke, no additional tests needed.
-    handlerNames = this.getBestHandlerNames(aSignal, handlerFlags);
+    handlerNames = this.getBestHandlerNames(aSignal, flags);
 
     if (handlerNames === TP.NOT_FOUND) {
         return;
@@ -2338,10 +2335,12 @@ function(aSignal, flags) {
      *     by '|'.
      */
 
-    var orgid,
-        signalNames,
+    var noSpoofs,
+        noSupers,
+        startSignal,
+        skipName,
         phase,
-        states,
+        signalNames,
         expression,
         index,
         regex,
@@ -2354,133 +2353,61 @@ function(aSignal, flags) {
         return;
     }
 
-    expression = 'handle';
+    noSpoofs = flags ? flags.dontTraverseSpoofs : false;
+    noSupers = flags ? flags.dontTraverseHierarchy : false;
+    startSignal = flags ? flags.startSignal : null;
+    skipName = flags ? flags.skipName : null;
+    phase = flags ? flags.phase : aSignal.getPhase();
 
     //  ---
     //  Signal
     //  ---
 
-    //  TODO: ensure we collect the right list when spoofing is in place.
-    //  getSignalNames usually masks the actual signal with spoofs.
-
     //  If we're not traversing or the signal is spoofing its name and we're
     //  not traversing for spoofed instances it's a single signal check.
-    if (TP.isTrue(flags.dontTraverseHierarchy) ||
-        TP.isTrue(flags.dontTraverseSpoofs) && aSignal.isSpoofed()) {
+    if (noSpoofs && aSignal.isSpoofed()) {
         //  NOTE we do _NOT_ create an array here, just set single string.
         signalNames = aSignal.getSignalName();
-    } else {
-        signalNames = aSignal.getTypeSignalNames();
+    } else if (noSupers) {
         if (aSignal.isSpoofed()) {
-            //  Type signal name list is most-to-least-specific.
-            signalNames.unshift(aSignal.getSignalName());
+            //  spoofed and traversal of spoofs allowed? but no hierarchy
+            //  per se, hence we only use spoofed name and signal type name.
+            signalNames = TP.ac(aSignal.getSignalName(), aSignal.getTypeName());
+        } else {
+            //  Not spoofed and no hierarchy, just the one signal then.
+            signalNames = aSignal.getSignalName();
         }
+    } else {
+        //  Note this will automatically include spoofs and hierarchy.
+        signalNames = aSignal.getSignalNames();
 
         //  We're going to be checking a list of one or more signals. The list
         //  has to take into account the startSignal and any skipName.
-        if (TP.notEmpty(flags.startSignal) &&
-            (index = signalNames.indexOf(flags.startSignal)) !== TP.NOT_FOUND) {
+        if (TP.notEmpty(startSignal) &&
+            (index = signalNames.indexOf(startSignal)) !== TP.NOT_FOUND) {
             signalNames = signalNames.slice(index);
         }
     }
 
+    //  Post-process signal name list for compact/filtered signal names.
     if (TP.isArray(signalNames)) {
         signalNames = signalNames.map(
                         function(name) {
                             return TP.contractSignalName(name);
                         });
 
-        if (TP.notEmpty(flags.skipName)) {
-            signalNames.removeValue(TP.contractSignalName(flags.skipName));
+        if (TP.notEmpty(skipName)) {
+            signalNames.removeValue(TP.contractSignalName(skipName));
         }
-
-        expression += '(' + signalNames.join('|') + ')';
     } else {
-
         signalNames = TP.contractSignalName(signalNames);
-
-        expression += '(' + signalNames + ')';
     }
 
     //  ---
-    //  Phase
+    //  Expression
     //  ---
 
-    phase = flags.phase;
-    if (TP.notValid(phase)) {
-        phase = aSignal.getPhase();
-    }
-
-    switch (phase) {
-        case '*':
-            //  The expression here should match TP.CAPTURING OR TP.AT_TARGET OR
-            //  *no* characters (for bubbling, we don't put in *any* text).
-            expression += '(' +
-                            TP.CAPTURING +
-                            '|' +
-                            TP.AT_TARGET +
-                            '|(\\b\\B)*?)'; //  Matches no characters
-            break;
-        case TP.CAPTURING:
-            expression += TP.CAPTURING;
-            break;
-        case TP.AT_TARGET:
-            expression += TP.AT_TARGET;
-            break;
-        case TP.BUBBLING:
-            break;
-        default:
-            break;
-    }
-
-    //  ---
-    //  Origin
-    //  ---
-
-    //  Process the origin.
-    orgid = TP.ifInvalid(aSignal.getOrigin(), '');
-    if (orgid !== TP.ANY) {
-        orgid = TP.gid(orgid).split('#').last();
-
-        //  Origins that are "generated" such as TIBET DOM paths aren't
-        //  observable so they're not relevant for handler name scans. They'd
-        //  also cause our name caches to essentially leak since we'd get
-        //  an ever evolving list of keys.
-        if (TP.regex.HAS_SLASH.test(orgid) ||
-                TP.regex.HAS_OID_SUFFIX.test(orgid)) {
-            orgid = '';
-        }
-
-        if (TP.isEmpty(orgid)) {
-            expression += 'From(' + TP.ANY + ')';
-        } else {
-            expression += 'From(' + RegExp.escapeMetachars(TP.gid(orgid)) + '|' +
-                            TP.ANY + ')';
-        }
-    } else {
-        expression += 'From(' + TP.ANY + ')';
-    }
-
-    //  ---
-    //  State
-    //  ---
-
-    //  Get the state list from either the receiver or the application (with
-    //  preference given to the receiver).
-    if (TP.canInvoke(this, 'getCurrentStates')) {
-        states = this.getCurrentStates();
-    } else {
-        states = TP.sys.getApplication().getCurrentStates();
-    }
-
-    if (TP.isEmpty(states)) {
-        expression += 'When(' + TP.ANY + ')';
-    } else {
-        states = states.map(function(state) {
-            return state.asTitleCase();
-        });
-        expression += 'When(' + states.join('|') + '|' + TP.ANY + ')';
-    }
+    expression = this.getBestHandlerExpression(aSignal, signalNames, phase);
 
     //  ---
     //  Check Cache
@@ -2604,6 +2531,116 @@ function(aSignal, flags) {
     cache[TP.REVISED] = Date.now();
 
     return names;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getBestHandlerExpression',
+function(aSignal, signalNames, phase) {
+
+    /**
+     * @method getBestHandlerExpression
+     * @summary Returns an expression built to help search handler names using
+     * the data in aSignal and the related options.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     * @param {Array} signalNames The signal name list (with traversals etc).
+     * @param {Boolean} phase '*', TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING).
+     *     The default is whatever phase the supplied signal is in.
+     * @returns {String} The composed expression string.
+     */
+
+    var orgid,
+        states,
+        expression;
+
+    if (TP.notValid(aSignal)) {
+        return;
+    }
+
+    expression = 'handle';
+
+    if (TP.isArray(signalNames)) {
+        expression += '(' + signalNames.join('|') + ')';
+    } else {
+        expression += '(' + signalNames + ')';
+    }
+
+    //  ---
+    //  Phase
+    //  ---
+
+    switch (phase || aSignal.getPhase()) {
+        case '*':
+            //  The expression here should match TP.CAPTURING OR TP.AT_TARGET OR
+            //  *no* characters (for bubbling, we don't put in *any* text).
+            expression += '(' +
+                            TP.CAPTURING +
+                            '|' +
+                            TP.AT_TARGET +
+                            '|(\\b\\B)*?)'; //  Matches no characters
+            break;
+        case TP.CAPTURING:
+            expression += TP.CAPTURING;
+            break;
+        case TP.AT_TARGET:
+            expression += TP.AT_TARGET;
+            break;
+        case TP.BUBBLING:
+            break;
+        default:
+            break;
+    }
+
+    //  ---
+    //  Origin
+    //  ---
+
+    //  Process the origin.
+    orgid = TP.ifInvalid(aSignal.getOrigin(), '');
+    if (orgid !== TP.ANY) {
+        orgid = TP.gid(orgid).split('#').last();
+
+        //  Origins that are "generated" such as TIBET DOM paths aren't
+        //  observable so they're not relevant for handler name scans. They'd
+        //  also cause our name caches to essentially leak since we'd get
+        //  an ever evolving list of keys.
+        if (TP.regex.HAS_SLASH.test(orgid) ||
+                TP.regex.HAS_OID_SUFFIX.test(orgid)) {
+            orgid = '';
+        }
+
+        if (TP.isEmpty(orgid)) {
+            expression += 'From(' + TP.ANY + ')';
+        } else {
+            expression += 'From(' + RegExp.escapeMetachars(TP.gid(orgid)) + '|' +
+                            TP.ANY + ')';
+        }
+    } else {
+        expression += 'From(' + TP.ANY + ')';
+    }
+
+    //  ---
+    //  State
+    //  ---
+
+    //  Get the state list from either the receiver or the application (with
+    //  preference given to the receiver).
+    if (TP.canInvoke(this, 'getCurrentStates')) {
+        states = this.getCurrentStates();
+    } else {
+        states = TP.sys.getApplication().getCurrentStates();
+    }
+
+    if (TP.isEmpty(states)) {
+        expression += 'When(' + TP.ANY + ')';
+    } else {
+        states = states.map(function(state) {
+            return state.asTitleCase();
+        });
+        expression += 'When(' + states.join('|') + '|' + TP.ANY + ')';
+    }
+
+    return expression;
 });
 
 //  ------------------------------------------------------------------------

@@ -5342,6 +5342,10 @@ function(anObject) {
         return null;
     }
 
+    if (TP.owns(anObject, TP.WRAPPER) && TP.isValid(anObject[TP.WRAPPER])) {
+        return anObject[TP.WRAPPER];
+    }
+
     //  We never wrap POJOs.
     if (TP.isPlainObject(anObject)) {
         return anObject;
@@ -5355,11 +5359,6 @@ function(anObject) {
     //  90% case or better is that we're trying to wrap an element node from
     //  the UI
     if (TP.isElement(anObject)) {
-        if (TP.isValid(anObject[TP.WRAPPER])) {
-            //  Make sure the wrapper has this node as its native node.
-            anObject[TP.WRAPPER].$set('node', anObject, false);
-            return anObject[TP.WRAPPER];
-        }
         return TP.dom.ElementNode.construct(anObject);
     } else if (TP.isDocument(anObject)) {
         return TP.dom.DocumentNode.construct(anObject);

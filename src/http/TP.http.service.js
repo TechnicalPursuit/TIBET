@@ -166,7 +166,7 @@ function() {
 
     //  If we're running in headless mode (we're probably testing), then we need
     //  to rewrite the URL to have an HTTP resource.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         href = TP.elementGetAttribute(this.getNativeNode(), 'href', true);
 
         if (href.startsWith('file:///')) {

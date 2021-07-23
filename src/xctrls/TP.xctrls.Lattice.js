@@ -751,7 +751,7 @@ function() {
     //  Headless doesn't load the stylesheet that contains the
     //  'xctrls-item-height' variable in a timely fashion, so we just hardcode a
     //  Number here.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         return 20;
     }
 

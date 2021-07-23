@@ -836,7 +836,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (binding)', function(test, options) {
 
         var pagerbar,
 
@@ -977,7 +977,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (static)', function(test, options) {
 
         var pagerbar,
 
@@ -1132,7 +1132,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (mixed)', function(test, options) {
 
         var pagerbar,
 
@@ -1272,7 +1272,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (extra buttons)', function(test, options) {
 
         var pagerbar,
 
@@ -1625,7 +1625,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (paging)', function(test, options) {
 
         var pagerbar,
 

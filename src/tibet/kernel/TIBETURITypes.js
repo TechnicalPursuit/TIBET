@@ -12872,8 +12872,7 @@ function() {
 
     //  Don't watch if running in headless or karma (both are test environments
     //  that will cause issues).
-    if (TP.sys.cfg('boot.context') === 'headless' ||
-        TP.sys.hasFeature('karma')) {
+    if (TP.sys.isHeadless() || TP.sys.hasFeature('karma')) {
         return this;
     }
 

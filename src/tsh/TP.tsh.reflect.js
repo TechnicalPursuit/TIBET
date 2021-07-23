@@ -118,7 +118,7 @@ function(aRequest) {
 
     renderResults = function(inputKeys, inputResults, inputRequest) {
 
-        if (TP.sys.cfg('boot.context') === 'headless') {
+        if (TP.sys.isHeadless()) {
             inputResults.addAll(inputKeys);
         } else {
             inputRequest.atPut('cmdAsIs', true);
@@ -408,7 +408,7 @@ function(aRequest) {
                     //  If we're running in a Headless/CLI environment, then
                     //  try to use reflection the best we can to find some
                     //  printable information about the function/method
-                    if (TP.sys.cfg('boot.context') === 'headless') {
+                    if (TP.sys.isHeadless()) {
                         getTIBETMethodInfoOrNull(obj, results);
                     } else {
                         //  We're running in a browser, so we try to use
@@ -531,7 +531,7 @@ function(aRequest) {
         }
 
         //  Headles/CLI support requires output line-by-line.
-        if (TP.sys.cfg('boot.context') === 'headless') {
+        if (TP.sys.isHeadless()) {
             results.forEach(
                     function(result) {
                         aRequest.stdout(result);
@@ -543,7 +543,7 @@ function(aRequest) {
 
         aRequest.complete(results.join('\n'));
     } else {
-        if (TP.sys.cfg('boot.context') === 'headless') {
+        if (TP.sys.isHeadless()) {
             return aRequest.complete('');
         }
         aRequest.complete(TP.TSH_NO_VALUE);
@@ -575,7 +575,7 @@ function(anObj, anInputStr) {
 
     //  If we're running in a Headless/CLI environment, then we always return
     //  null here since we can't go get Web-based docs.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         return null;
     }
 

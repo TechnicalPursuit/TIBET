@@ -70,25 +70,36 @@ function(wantsDeep, wantsCompiled, wantsDisabled) {
 //  ------------------------------------------------------------------------
 
 TP.tibet.group.Type.defineMethod('isResponderFor',
-function(aNode, aSignal) {
+function(aSignal, aNode) {
 
     /**
      * @method isResponderFor
      * @summary Returns true if the type in question should be considered a
      *     responder for the specific node/signal pair provided.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
      * @param {TP.sig.Signal} aSignal The signal that responders are being
      *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
-    if (aSignal.getSignalName().match(
-            /^(TP.sig.)*UI.*(Focus|Blur|Activate|Deactivate)/)) {
+    var signame;
+
+    signame = aSignal.getSignalName();
+
+    if (TP.regex.UI_SIGNAL.test(signame)) {
         return true;
     }
 
-    return this.callNextMethod();
+    if (TP.regex.DOM_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    if (TP.regex.CHANGE_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------

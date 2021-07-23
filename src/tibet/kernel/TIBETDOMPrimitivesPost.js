@@ -6220,19 +6220,38 @@ function(aNode, aSignal) {
      */
 
     var arr,
+        signame,
+        handlerFlags,
         node,
         parent;
 
+
     arr = TP.ac();
 
-    node = TP.nodeGetResponderElement(aNode, aSignal);
+    //  Create a reusable descriptor so we don't create too many objects during
+    //  the loop we'll run below.
+    handlerFlags = {
+        dontTraverseHierarchy: true,
+        dontTraverseSpoofs: true,
+        phase: '*'
+    };
+
+    //  Change signals are special in that they're _always_ spoofed to some
+    //  degree. As a result we have to override any flag saying to ignore them
+    //  or we'll never find suitable handlers.
+    signame = aSignal.getSignalName();
+    if (TP.regex.CHANGE_SIGNAL.test(signame)) {
+        handlerFlags.dontTraverseSpoofs = false;
+    }
+
+    node = TP.nodeGetResponderElement(aNode, aSignal, handlerFlags);
     while (TP.isValid(node)) {
         arr.push(node);
         parent = node.parentNode;
         if (TP.notValid(parent)) {
             break;
         }
-        node = TP.nodeGetResponderElement(parent, aSignal);
+        node = TP.nodeGetResponderElement(parent, aSignal, handlerFlags);
     }
 
     return arr;
@@ -6241,22 +6260,29 @@ function(aNode, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetResponderElement',
-function(aNode, aSignal) {
+function(aNode, aSignal, handlerFlags) {
 
     /**
      * @method nodeGetResponderElement
      * @summary Finds the 'responder' element for aNode and returns it. A
      *     responder is an element with tibet:ctrl, tibet:tag or non-native
      *     namespace (i.e. a "custom tag") or a native tag whose type responds
-     *     affirmatively to isResponderFor when provided the target signal.
+     *     affirmatively to isResponderFor* when provided the target signal.
      *     NOTE that this method will traverse up through iframe containers
      *     to locate a potential component element.
      * @param {Node} aNode The DOM node to operate on.
      * @param {TP.sig.Signal} aSignal The signal instance being dispatched.
+     * @param {Object} handlerFlags A set of optional flags ultimately passed to
+     *     getBestHandler which refine how handler searches should be done.
      * @returns {Element} A valid element or null.
      */
 
     var node,
+        signame,
+        answer,
+        message,
+        fname,
+        handler,
         win,
         type,
         frame;
@@ -6303,16 +6329,12 @@ function(aNode, aSignal) {
         return node;
     }
 
-    //  If the tag is non-native we assume it needs to be in the responder
-    //  chain. This applies to tags in any non-XHTML namespace effectively.
-    if (!TP.w3.Xmlns.isNativeElement(node)) {
-        return node;
-    }
+    //  All other tags (native and non-native) must actively implement
+    //  isResponderFor variations to successfully be added to the computed
+    //  responder chain. The goal is to default to a sparse list, not the same
+    //  one the DOM uses, hence the requirement tags "opt-in" as responders.
 
-    //  If we're looking at a native tag we have to use reflection of sorts (if
-    //  we're going to pursue this any further...which is an open question).
-
-    //  NB: Many times the node will already have it's node type, so we
+    //  NB: Many times the node will already have its node type, so we
     //  use a fast way to get that here.
     type = node[TP.NODE_TYPE];
     if (TP.notValid(type)) {
@@ -6320,12 +6342,54 @@ function(aNode, aSignal) {
         node[TP.NODE_TYPE] = type;
     }
 
-    if (TP.canInvoke(type, 'isResponderFor')) {
-        if (type.isResponderFor(node, aSignal)) {
+    //  See if the receiving type implements a specific variant for the signal
+    //  or, failing that, if it has a more general isResponderFor method.
+    signame = TP.contractSignalName(TP.expandSignalName(aSignal.getSignalName()));
+
+    fname = 'isResponderFor' + signame;
+    if (TP.canInvoke(type, fname)) {
+        answer = type[fname](aSignal, node);
+        if (TP.isTrue(answer)) {
             return node;
         }
     }
 
+    //  If specific method returned explicit true or false we shouldn't run the
+    //  generic one, we should skip it (and next test below as well).
+    if (TP.notValid(answer)) {
+        if (TP.canInvoke(type, 'isResponderFor')) {
+            //  A specific yes/no answer for any signal provided.
+            answer = type.isResponderFor(aSignal, node);
+            if (TP.isTrue(answer)) {
+                return node;
+            }
+        }
+    }
+
+    //  If either prior check returned explicit true or false we shouldn't be
+    //  using reflection test, we've been told "Node is not a responder".
+    handler = TP.wrap(node).getBestHandler(aSignal, handlerFlags);
+
+    if (TP.isCallable(handler)) {
+        if (TP.notValid(answer)) {
+            if (TP.ifWarn() && TP.sys.cfg('log.missing_isresponderfor')) {
+                message = 'For better performance implement missing' +
+                    type.getTypeName() + '.Type.isResponderFor' + signame;
+                TP.sys.isHeadless() ? console.log(message) : TP.warn(message);
+            }
+            return node;
+        } else {
+            //  Got explicit false but there's a callable handler...
+            //  that should be warned so we know about "unreachable handler"
+            if (TP.ifWarn() && TP.sys.cfg('log.missing_isresponderfor')) {
+                message = 'Overlooked callable handler: ' + type.getTypeName() +
+                    '.Inst.' + TP.name(handler);
+                TP.sys.isHeadless() ? console.log(message) : TP.warn(message);
+            }
+        }
+    }
+
+    //  If node isn't a responder work our way up the tree
     if (TP.isValid(node.parentNode)) {
         return TP.nodeGetResponderElement(node.parentNode, aSignal);
     }
