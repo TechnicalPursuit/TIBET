@@ -560,16 +560,16 @@ function(openSignal, popupContent) {
                     });
             }
 
+            //  Initially set the overlay to hide (by supplying true we flip the
+            //  'visibility' property).
+            this.hide(true);
+
             //  Show the popup and set up signal handlers.
             //  NOTE: We make sure to do this *before* we position - otherwise,
             //  our width and height will not be set properly and 'edge
             //  avoidance' code will not work.
-            this.setAttribute('closed', false);
             this.setAttribute('hidden', false);
-
-            //  Initially set the overlay to hide (by supplying true we flip the
-            //  'visibility' property).
-            this.hide(true);
+            this.setAttribute('closed', false);
 
             //  If the signal doesn't have a flag to not position the popup,
             //  then position the popup relative to the popup point and the

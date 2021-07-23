@@ -921,15 +921,15 @@ function(contentInfo, overlayContent) {
                     });
             }
 
-            //  The overlay is not closed.
-            this.setAttribute('closed', false);
+            //  Initially set the overlay to hide (by supplying true we flip the
+            //  'visibility' property).
+            this.hide(true);
 
             //  Show the overlay and set up signal handlers.
             this.setAttribute('hidden', false);
 
-            //  Initially set the overlay to hide (by supplying true we flip the
-            //  'visibility' property).
-            this.hide(true);
+            //  The overlay is not closed.
+            this.setAttribute('closed', false);
 
             //  If the signal doesn't have a flag to not position the overlay,
             //  then position the overlay relative to the overlay point and the
