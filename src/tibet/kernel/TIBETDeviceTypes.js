@@ -3423,7 +3423,7 @@ function(normalizedEvent) {
     }
 
     //  Use a timer that can be cancelled by dblclick events so we don't cause
-    //  event-level confusion. the semantics should be maintained by the
+    //  event-level confusion. The semantics should be maintained by the
     //  application however that dblclick is "more click".
     theEvent = normalizedEvent;
 
