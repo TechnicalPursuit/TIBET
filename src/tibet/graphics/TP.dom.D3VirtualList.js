@@ -513,7 +513,9 @@ function() {
      * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
-    var selectionData,
+    var containerSelection,
+
+        selectionData,
 
         rowHeight,
         totalRows,
@@ -537,10 +539,13 @@ function() {
     //  root itself intact for future updates).
     if (TP.notValid(this.get('data'))) {
 
-        this.get('containerSelection').selectAll('*').remove();
+        containerSelection = this.get('containerSelection');
+        if (TP.isValid(containerSelection)) {
+            containerSelection.selectAll('*').remove();
 
-        //  Signal to observers that this control has rendered.
-        this.signal('TP.sig.DidRender');
+            //  Signal to observers that this control has rendered.
+            this.signal('TP.sig.DidRender');
+        }
 
         return this;
     }
