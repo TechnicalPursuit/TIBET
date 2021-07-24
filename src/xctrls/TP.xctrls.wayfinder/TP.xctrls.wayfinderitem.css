@@ -18,8 +18,7 @@ xctrls|wayfinderitem {
 
     --xctrls-wayfinder-item-flex-basis: var(--xctrls-wayfinder-item-minwidth);
 
-    flex-grow: var(--xctrls-wayfinder-width);
-    flex-basis: calc(var(--xctrls-wayfinder-item-flex-basis) * var(--xctrls-wayfinder-width));
+    flex: 1 0 calc(var(--xctrls-wayfinder-item-flex-basis) * var(--xctrls-wayfinder-width));
 
     max-width: calc(var(--xctrls-wayfinder-item-maxwidth) * var(--xctrls-wayfinder-width));
 
