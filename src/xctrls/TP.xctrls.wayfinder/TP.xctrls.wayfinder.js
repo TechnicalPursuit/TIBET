@@ -340,6 +340,25 @@ function(bayContent, bayConfig, process) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.wayfinder.Inst.defineMethod('bayFillerContentAdded',
+function() {
+
+    /**
+     * @method bayFillerContentAdded
+     * @summary This method is called after the bay filler content is added to
+     *     the receiver, allowing it to trigger any post-addition setup it may
+     *     need to.
+     * @returns {TP.xctrls.wayfinder} The receiver.
+     */
+
+    //  Trigger a 'change' here so that the content redraws.
+    TP.uc('urn:tibet:empty_array').$changed();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.wayfinder.Inst.defineMethod('buildRootBayData',
 function() {
 
@@ -631,12 +650,8 @@ function(info) {
                                 'targetAspect', null,
                                 'targetObject', null));
 
-            //  Create new 'filler' bay content bound to a common (blank data)
-            //  URI..
-            newTPElem = TP.tpelem(
-                '<xctrls:list filter="true"' +
-                ' alwayschange="true" itemtoggle="false"' +
-                ' bind:in="{data: urn:tibet:empty_array}"/>');
+            //  Generate a new element to be used as the bay filler.
+            newTPElem = this.generateBayFillerContent();
 
             //  Iterate and add filler bays.
             for (i = 0; i < numToAdd; i++) {
@@ -644,8 +659,9 @@ function(info) {
                 this.addBay(newTPElem.clone(), bayConfig, true);
             }
 
-            //  Trigger a 'change' here so that the content redraws.
-            TP.uc('urn:tibet:empty_array').$changed();
+            //  Do whatever post-addition is necessary to make those bays
+            //  'live'.
+            this.bayFillerContentAdded();
         }
     }
 
@@ -1228,6 +1244,28 @@ function(anInfo) {
     this.signal('WayfinderDidFocus');
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.wayfinder.Inst.defineMethod('generateBayFillerContent',
+function() {
+
+    /**
+     * @method generateBayFillerContent
+     * @summary Returns an element that will be used to clone 'bay filler'
+     *     content for any empty bays that have no content.
+     * @returns {TP.dom.ElementNode} The element to be used for 'bay filler'.
+     */
+
+    var newTPElem;
+
+    //  Create new 'filler' bay content bound to a common (blank data)
+    //  URI..
+    newTPElem = TP.tpelem(
+        '<xctrls:list bind:in="{data: urn:tibet:empty_array}"/>');
+
+    return newTPElem;
 });
 
 //  ------------------------------------------------------------------------
