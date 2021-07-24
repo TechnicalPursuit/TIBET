@@ -631,14 +631,21 @@ function(info) {
                                 'targetAspect', null,
                                 'targetObject', null));
 
-            //  Create new 'filler' bay content.
-            newTPElem = TP.wrap(TP.xhtmlnode('<div class="filler"/>'));
+            //  Create new 'filler' bay content bound to a common (blank data)
+            //  URI..
+            newTPElem = TP.tpelem(
+                '<xctrls:list filter="true"' +
+                ' alwayschange="true" itemtoggle="false"' +
+                ' bind:in="{data: urn:tibet:empty_array}"/>');
 
             //  Iterate and add filler bays.
             for (i = 0; i < numToAdd; i++) {
                 bayConfig.atPut('pathParts', TP.ac('FILLER_' + i));
-                this.addBay(newTPElem.clone(), bayConfig, false);
+                this.addBay(newTPElem.clone(), bayConfig, true);
             }
+
+            //  Trigger a 'change' here so that the content redraws.
+            TP.uc('urn:tibet:empty_array').$changed();
         }
     }
 
