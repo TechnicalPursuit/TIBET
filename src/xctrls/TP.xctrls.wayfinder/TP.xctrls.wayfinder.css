@@ -21,7 +21,6 @@ xctrls|wayfinder > xctrls|content {
     gap: 1px;
 
     flex-wrap: wrap;
-    justify-content: space-around;
 }
 
 /* The wayfinder's background user message */
