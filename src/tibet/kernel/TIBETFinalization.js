@@ -322,6 +322,12 @@ function() {
 
             var tibetToken;
 
+            //  Set up common URIs for use as binding targets throughout the
+            //  system.
+            TP.uc('urn:tibet:empty_array', TP.ac());
+            TP.uc('urn:tibet:empty_hash', TP.hc());
+            TP.uc('urn:tibet:empty_string', '');
+
             //  Set up common URIs for the user object, the raw user vCard data
             //  and the host data.
             TP.uc('urn:tibet:hosturi').setResource(
