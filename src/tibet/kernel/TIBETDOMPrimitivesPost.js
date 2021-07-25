@@ -6373,18 +6373,18 @@ function(aNode, aSignal, handlerFlags) {
     if (TP.isCallable(handler)) {
         if (TP.notValid(answer)) {
             if (TP.ifWarn() && TP.sys.cfg('log.missing_isresponderfor')) {
-                message = 'For better performance implement missing' +
-                    type.getTypeName() + '.Type.isResponderFor' + signame;
+                message = 'For better performance implement missing ' +
+                    type.getName() + '.Type.isResponderFor' + signame;
                 TP.sys.isHeadless() ? console.log(message) : TP.warn(message);
             }
             return node;
         } else {
             //  Got explicit false but there's a callable handler...
             //  that should be warned so we know about "unreachable handler"
-            if (TP.ifWarn() && TP.sys.cfg('log.missing_isresponderfor')) {
-                message = 'Overlooked callable handler: ' + type.getTypeName() +
+            if (TP.ifDebug() && TP.sys.cfg('log.missing_isresponderfor')) {
+                message = 'Overlooked callable handler: ' + type.getName() +
                     '.Inst.' + TP.name(handler);
-                TP.sys.isHeadless() ? console.log(message) : TP.warn(message);
+                TP.sys.isHeadless() ? console.log(message) : TP.debug(message);
             }
         }
     }

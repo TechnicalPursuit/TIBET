@@ -1971,8 +1971,8 @@ function(anElement, aHandler) {
     //  Grab the Array of resize listeners from the target Element.
     listeners = anElement[TP.RESIZE_LISTENERS];
     if (TP.isEmpty(listeners)) {
-        TP.ifWarn() ?
-            TP.warn('Can\'t find listeners for: ' + TP.str(anElement)) : 0;
+        TP.ifDebug() ?
+            TP.debug('Can\'t find listeners for: ' + TP.str(anElement)) : 0;
 
         return;
     }
