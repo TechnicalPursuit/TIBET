@@ -40,7 +40,7 @@ TP.xctrls.SharedOverlay.set('requiredAttrs', TP.hc('pclass:hidden', true));
 //  ----------------------------------------------------------------------------
 
 TP.xctrls.SharedOverlay.Type.defineMethod('constructOverlay',
-function(anOverlayID, aTPDocument) {
+function(anOverlayID, aTPDocument, overlayAttrs) {
 
     /**
      * @method constructOverlay
@@ -50,6 +50,8 @@ function(anOverlayID, aTPDocument) {
      * @param {TP.dom.Document} aTPDocument The document to create the overlay
      *     in, if it can't be found. Note that, in this case, the overlay will
      *     be created as the last child of the document's 'body' element.
+     * @param {TP.core.Hash} [overlayAttrs] A hash of attributes to add to a
+     *     newly created overlay element.
      * @returns {TP.xctrls.SharedOverlay} The matching overlay on the supplied
      *     TP.dom.Document.
      */
@@ -57,6 +59,8 @@ function(anOverlayID, aTPDocument) {
     var overlayTPElem,
 
         tpDocBody,
+
+        attrHash,
         overlayElem;
 
     if (TP.isEmpty(anOverlayID)) {
@@ -71,8 +75,19 @@ function(anOverlayID, aTPDocument) {
 
     if (TP.isValid(tpDocBody)) {
 
+        //  If the caller provided an attribute hash, then copy that. Otherwise,
+        //  create a new one. We'll populate it with the 'id' below.
+        if (TP.isValid(overlayAttrs)) {
+            attrHash = TP.copy(overlayAttrs);
+        } else {
+            attrHash = TP.hc();
+        }
+
+        attrHash.atPut('id', anOverlayID);
+
         overlayElem = TP.elem(
-            '<' + this.getCanonicalName() + ' id="' + anOverlayID + '"/>');
+            '<' + this.getCanonicalName() + ' ' +
+            attrHash.asAttributeString() + '/>');
 
         overlayTPElem = tpDocBody.insertContent(
                                 overlayElem,
@@ -86,7 +101,7 @@ function(anOverlayID, aTPDocument) {
 //  ----------------------------------------------------------------------------
 
 TP.xctrls.SharedOverlay.Type.defineMethod('getOverlayWithID',
-function(aTPDocument, anOverlayID) {
+function(aTPDocument, anOverlayID, overlayAttrs) {
 
     /**
      * @method getOverlayWithID
@@ -98,6 +113,8 @@ function(aTPDocument, anOverlayID) {
      * @param {String} [anOverlayID] The ID to use to query for the system
      *     overlay. If this isn't supplied, the receiver is messaged for it's
      *     'sharedOverlayID'.
+     * @param {TP.core.Hash} [overlayAttrs] A hash of attributes to add to a
+     *     newly created overlay element.
      * @returns {TP.xctrls.SharedOverlay} The system overlay on the supplied
      *     TP.dom.Document.
      */
@@ -117,7 +134,8 @@ function(aTPDocument, anOverlayID) {
     //  Array. Otherwise it will hand back the TP.dom.ElementNode that
     //  represents the overlay.
     if (TP.isEmpty(overlayTPElem)) {
-        overlayTPElem = this.constructOverlay(overlayID, aTPDocument);
+        overlayTPElem = this.constructOverlay(
+                                    overlayID, aTPDocument, overlayAttrs);
     }
 
     return overlayTPElem;
@@ -202,8 +220,6 @@ function(aSignal) {
 
     var overlayTPElem,
 
-        overlayCSSClass,
-
         triggerDoc,
         triggerSignal,
 
@@ -218,13 +234,6 @@ function(aSignal) {
         originTPElem;
 
     overlayTPElem = this.getOverlayElement(aSignal);
-
-    //  See if the OpenOverlay signal contains a class that we should put on
-    //  the overlay element itself.
-    overlayCSSClass = aSignal.at('overlayCSSClass');
-    if (TP.notEmpty(overlayCSSClass)) {
-        overlayTPElem.addClass(overlayCSSClass);
-    }
 
     triggerDoc = aSignal.at('triggerTPDocument');
     if (TP.notValid(triggerDoc)) {
@@ -350,6 +359,7 @@ function(aSignal) {
         triggerDoc,
 
         overlayID,
+        overlayAttrs,
 
         overlayTPElem;
 
@@ -377,8 +387,9 @@ function(aSignal) {
     if (TP.notEmpty(overlayID)) {
         overlayID = overlayID.unquoted();
     }
+    overlayAttrs = aSignal.at('overlayAttrs');
 
-    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
+    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID, overlayAttrs);
 
     return overlayTPElem;
 });
@@ -402,15 +413,21 @@ function(contentInfo) {
 
     var triggerDoc,
         overlayID,
+        overlayAttrs,
 
         overlayTPElem;
 
     triggerDoc = contentInfo.at('triggerTPDocument');
+
     overlayID = contentInfo.at('overlayID');
+    if (TP.notEmpty(overlayID)) {
+        overlayID = overlayID.unquoted();
+    }
+    overlayAttrs = contentInfo.at('overlayAttrs');
 
     //  Grab the (possibly shared) overlay element. This will cause whatever
     //  'type-level' setup of the content to take place.
-    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
+    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID, overlayAttrs);
 
     //  Invoke loadContent with contentInfo. This should cause the
     //  'instance-level' setup of the content to take place (as far as it can,

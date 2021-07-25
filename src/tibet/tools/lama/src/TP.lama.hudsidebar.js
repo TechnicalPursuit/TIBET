@@ -344,7 +344,7 @@ function(aSignal) {
         'TogglePopup',
         TP.hc(
             'overlayID', 'LamaContextMenuPopup',
-            'overlayCSSClass', 'lamahudcontextmenu',
+            'overlayAttrs', TP.hc('class', 'lamahudcontextmenu'),
             'contentID', 'LamaHudContextMenu',
             'contentAttributes',
                 TP.hc(
