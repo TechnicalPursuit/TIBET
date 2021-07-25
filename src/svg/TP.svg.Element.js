@@ -51,6 +51,30 @@ function(resource, mimeType, fallback) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.svg.Element.Type.defineMethod('isResponderFor',
+function(aSignal, aNode) {
+
+    /**
+     * @method isResponderFor
+     * @summary Returns true if the type in question should be considered a
+     *     responder for the specific node/signal pair provided.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    var signame;
+
+    signame = aSignal.getSignalName();
+
+    return TP.regex.UI_SIGNAL.test(signame) ||
+        TP.regex.DOM_SIGNAL.test(signame);
+});
+
+//  ------------------------------------------------------------------------
 //  TSH Execution Support
 //  ------------------------------------------------------------------------
 
