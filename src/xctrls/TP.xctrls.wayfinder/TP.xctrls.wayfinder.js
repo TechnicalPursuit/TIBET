@@ -656,7 +656,7 @@ function(info) {
             //  Iterate and add filler bays.
             for (i = 0; i < numToAdd; i++) {
                 bayConfig.atPut('pathParts', TP.ac('FILLER_' + i));
-                this.addBay(newTPElem.clone(), bayConfig, true);
+                this.addBay(newTPElem.clone(), bayConfig, false);
             }
 
             //  Do whatever post-addition is necessary to make those bays
@@ -1262,8 +1262,10 @@ function() {
 
     //  Create new 'filler' bay content bound to a common (blank data)
     //  URI..
-    newTPElem = TP.tpelem(
-        '<xctrls:list bind:in="{data: urn:tibet:empty_array}"/>');
+    newTPElem = TP.tpelem('<xctrls:list id="fillerContent"' +
+                            ' bind:in="{data: urn:tibet:empty_array}"/>');
+
+    newTPElem.compile();
 
     return newTPElem;
 });
