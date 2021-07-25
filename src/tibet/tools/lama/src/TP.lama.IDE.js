@@ -185,15 +185,7 @@ function() {
      * @returns {TP.lama.IDE} The receiver.
      */
 
-    var uiBootIFrameElem,
-        win;
-
-    //  Manually 'display: none' the boot iframe. It's already
-    //  'visibility:hidden', but we need to get it out of the way.
-    uiBootIFrameElem = TP.byId('UIBOOT', TP.topWindow, false);
-    if (TP.isValid(uiBootIFrameElem)) {
-        TP.elementHide(uiBootIFrameElem);
-    }
+    var win;
 
     //  Set up our window. By default, the Lama exists in the UIROOT window.
 
