@@ -388,8 +388,8 @@ function(info) {
                     win = TP.sys.uiwin(true);
 
                     //  If the caller provided an attribute hash, then copy
-                    //  that.Otherwise, create a new one. We'll populate it with
-                    //  the 'id' and 'curtainID' below.
+                    //  that. Otherwise, create a new one. We'll populate it
+                    //  with the 'id' and 'curtainID' below.
                     if (TP.isValid(info.at('attrs'))) {
                         attrHash = TP.copy(info.at('attrs'));
                     } else {
