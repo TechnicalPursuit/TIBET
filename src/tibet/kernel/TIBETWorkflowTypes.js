@@ -7398,9 +7398,6 @@ function() {
     //  registered during the startup process.
     TP.uri.URI.processStartupURIs();
 
-    //  Show the UI root frame.
-    TP.boot.showUIRoot();
-
     return this;
 });
 
@@ -7871,6 +7868,9 @@ function(aSignal) {
 
         //  Signal that everything is ready and that the application did start.
         this.signal('TP.sig.AppDidStart');
+
+        //  Show the UI root frame.
+        TP.boot.showUIRoot();
     }.bind(this)).queueAfterNextRepaint(TP.sys.uiwin(true));
 
     return this;
