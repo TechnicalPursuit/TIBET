@@ -2183,6 +2183,8 @@ function(info, createHistoryEntry) {
                         'wayfinder',
                         params);
 
+        bayContent = TP.unwrap(bayContent);
+
         if (!TP.isElement(bayContent)) {
             return this;
         }
