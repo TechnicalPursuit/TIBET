@@ -13126,6 +13126,9 @@ function(aFlag, shouldSignal) {
     /**
      * @method $$shouldUseInferencing
      * @summary Controls and returns the state of TIBET's 'inferencing' flag.
+     * @description This flag tells TIBET whether inferences should be made.
+     *     Note that the overall TIBET backstop processing must be active for
+     *     this flag to change actual runtime behavior.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling for this call.
@@ -13137,9 +13140,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET should use its inferencer when
      *     methods cannot be found.
-     * @discusson This flag tells TIBET whether inferences should be made. Note
-     *     that the overall TIBET backstop processing must be active for this
-     *     flag to change actual runtime behavior.
      */
 
     if (TP.isBoolean(aFlag)) {

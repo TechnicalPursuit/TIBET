@@ -786,7 +786,7 @@ function(uniqueID, dataRecord) {
      * @method updateOutputItem
      * @summary Updates the output item specified by the supplied unique ID with
      *     the data contained in the supplied data record.
-     * @discussion The supplied unique ID will be used to look up an existing
+     * @description The supplied unique ID will be used to look up an existing
      *     output item. If an output item does not exist with this ID, this
      *     method will try to create one using the createOutputItem(). If one
      *     still cannot be created, this method will raise an error.
