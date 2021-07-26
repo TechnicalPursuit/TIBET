@@ -24,6 +24,37 @@ TP.xctrls.Element.defineSubtype('wayfinderitem');
 TP.xctrls.wayfinderitem.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.wayfinderitem.Type.defineMethod('isOpaqueCapturerFor',
+function(anElement, aSignal, signalNames) {
+
+    /**
+     * @method isOpaqueCapturerFor
+     * @summary Returns whether the elements of this type are considered to be
+     *     an 'opaque capturer' for the supplied signal (i.e. it won't let the
+     *     signal 'descend' further into its descendant hierarchy). This means
+     *     that they will handle the signal themselves and not allow targeted
+     *     descendants underneath them to handle it.
+     * @description At this level, the supplied element is checked to see if it
+     *     can handle a particular key signal. If so, it is considered to be an
+     *     opaque capturer.
+     * @param {Element} anElem The element to check for the
+     *     'tibet:opaque-capturing' attribute.
+     * @param {String} aSignalName The signal to check.
+     * @param {String[]} [signalNames] The list of signal names to use when
+     *     computing opacity for the signal. This is an optional parameter. If
+     *     this method needs the list of signal names and this parameter is not
+     *     provided, it can be derived from the supplied signal itself.
+     * @returns {Boolean} Whether or not the receiver is opaque during the
+     *     capture phase for the signal.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
