@@ -231,27 +231,29 @@ function(anID, regOnly, nodeContext) {
     //  resolve those cases.
     if (TP.regex.TIBET_URL_SPLITTER.test(id)) {
         parts = TP.regex.TIBET_URL_SPLITTER.match(id);
-        inst = TP.sys.getWindowById(parts.at(3));
-        if (TP.isWindow(inst)) {
-            if (parts.at(4) === 'document') {
-                return TP.tpdoc(inst.document);
-            } else if (TP.notEmpty(parts.at(6))) {
-
-                if (parts.at(6) === '#document') {
+        winid = parts.at(3);
+        if (TP.notEmpty(winid)) {
+            inst = TP.sys.getWindowById(winid);
+            if (TP.isWindow(inst)) {
+                if (parts.at(4) === 'document') {
                     return TP.tpdoc(inst.document);
-                }
+                } else if (TP.notEmpty(parts.at(6))) {
 
-                inst = TP.nodeGetElementById(inst.document,
-                                                parts.at(6).slice(1));
-                if (TP.isNode(inst)) {
-                    return TP.tpnode(inst);
-                }
+                    if (parts.at(6) === '#document') {
+                        return TP.tpdoc(inst.document);
+                    }
 
-                //  We're definitely a tibet:// URL, but we couldn't resolve to
-                //  a Node of some sort. No sense in continuing - exit with
-                //  null.
-                return null;
+                    inst = TP.nodeGetElementById(inst.document,
+                                                    parts.at(6).slice(1));
+                    if (TP.isNode(inst)) {
+                        return TP.tpnode(inst);
+                    }
+                }
             }
+
+            //  We're definitely a tibet:// URL, but we couldn't resolve to a
+            //  Node of some sort. No sense in continuing - exit with null.
+            return null;
         }
     }
 
