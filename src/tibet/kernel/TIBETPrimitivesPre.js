@@ -5403,6 +5403,12 @@ function() {
      * @returns {String}
      */
 
+    var name;
+
+    if (TP.owns(this, 'name') && TP.notEmpty(name = this.$get('name'))) {
+        return name;
+    }
+
     if (TP.owns(this, TP.NAME)) {
         return this[TP.NAME];
     }
@@ -5421,6 +5427,10 @@ function() {
      *     receiver's ID as the 'Name'.
      * @returns {String}
      */
+
+    if (TP.owns(this, 'name') && TP.notEmpty(name = this.$get('name'))) {
+        return name;
+    }
 
     if (TP.owns(this, TP.NAME)) {
         return this[TP.NAME];

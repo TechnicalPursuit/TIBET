@@ -10866,8 +10866,8 @@ function() {
 
     var name;
 
-    if (TP.owns(this, 'name')) {
-        return this.name;
+    if (TP.owns(this, 'name') && TP.notEmpty(name = this.$get('name'))) {
+        return name;
     }
 
     if (TP.notValid(name = this[TP.NAME])) {
