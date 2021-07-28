@@ -4953,7 +4953,7 @@ function() {
     //  Put both the root and the current canvas document into an Array and
     //  configure that Array to be an origin set.
     docs = TP.ac(rootDoc, currentCanvasDoc);
-    docs.isOriginSet(true);
+    docs.useAsCollection(true);
 
     //  Observe both documents for DOMDragDown and DOMMouseDown in a *capturing*
     //  fashion (to avoid having issues with the standard platform's

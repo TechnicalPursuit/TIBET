@@ -2924,19 +2924,23 @@ function() {
  * Since the signaling system can take lists of origins and signals it's
  * necessary to provide a way to distinguish arrays passed as the actual origin
  * from arrays passed as a set of origins. The default is that any array passed
- * is assumed to be the actual origin. You must use the isOriginSet() method to
+ * is assumed to be the actual origin. You must use useAsCollection() to
  * flag any array containing a list of origins prior to signaling with it.
  */
 
 //  ------------------------------------------------------------------------
 
-Array.Inst.defineMethod('isOriginSet',
+Array.Inst.defineMethod('useAsCollection',
 function(aFlag) {
 
     /**
-     * @method isOriginSet
-     * @summary Returns true if the receiver has been flagged as a signal
-     *     origin set. If aFlag is provided it will set this value.
+     * @method useAsCollection
+     * @summary Returns whether receiver has been flagged specifically for
+     *     use as a collection (or not). This method is used extensively by
+     *     the signaling system where Array instances can be origins on their
+     *     own or as a way of providing an "origin set". It's also used in the
+     *     binding logic for certain controls to force use as a collection of
+     *     row data rather than allowing drill-down logic to determine entries.
      * @param {Boolean} aFlag True if the receiver should be treated as a list
      *     of origins and not the actual origin itself.
      * @returns {Boolean} Whether or not the receiving Array has been set to be
@@ -2944,10 +2948,10 @@ function(aFlag) {
      */
 
     if (TP.isDefined(aFlag)) {
-        this.$isOriginSet = aFlag;
+        this.$$useAsCollection = aFlag;
     }
 
-    return this.$isOriginSet;
+    return this.$$useAsCollection;
 });
 
 //  ------------------------------------------------------------------------

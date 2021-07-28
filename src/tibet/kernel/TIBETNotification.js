@@ -5360,7 +5360,7 @@ function(anOrigin, signalSet, aPayload, aType) {
 
     //  deal with possibility that origin IS an array
     /* eslint-disable no-extra-parens */
-    if ((TP.isArray(anOrigin) && !anOrigin.isOriginSet()) ||
+    if ((TP.isArray(anOrigin) && !anOrigin.useAsCollection()) ||
         (!TP.isArray(anOrigin))) {
     /* eslint-enable no-extra-parens */
 
@@ -7005,13 +7005,13 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (!TP.isArray(origins = anOrigin)) {
         origins = TP.ac(anOrigin);
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     //  NB: Note the direct comparison to false here - this is by design if the
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
-    if (origins.isOriginSet() === false) {
+    if (origins.useAsCollection() === false) {
         return this;
     }
 
@@ -7058,7 +7058,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (!TP.isArray(typenames = aSignal)) {
         typenames = TP.ac(aSignal);
-        typenames.isOriginSet(true);
+        typenames.useAsCollection(true);
     }
 
     len = typenames.getSize();
@@ -7183,7 +7183,7 @@ TP.sig.SignalMap.$invokePolicy = function(origins, signals, handler, policy) {
 
     //  deal with possibility that origin IS an array
     /* eslint-disable no-extra-parens */
-    if ((TP.isArray(origins) && !origins.isOriginSet()) ||
+    if ((TP.isArray(origins) && !origins.useAsCollection()) ||
         !TP.isArray(origins)) {
     /* eslint-enable no-extra-parens */
         //  only one origin
@@ -7260,13 +7260,13 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (!TP.isArray(origins = anOrigin)) {
         origins = TP.ac(anOrigin);
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     //  NB: Note the direct comparison to false here - this is by design if the
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
-    if (origins.isOriginSet() === false) {
+    if (origins.useAsCollection() === false) {
         return this;
     }
 
@@ -7453,13 +7453,13 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
 
     if (!TP.isArray(origins = anOrigin)) {
         origins = TP.ac(anOrigin);
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     //  NB: Note the direct comparison to false here - this is by design if the
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
-    if (origins.isOriginSet() === false) {
+    if (origins.useAsCollection() === false) {
         return this;
     }
 
@@ -7610,13 +7610,13 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
 
     if (!TP.isArray(origins = anOrigin)) {
         origins = TP.ac(anOrigin);
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     //  NB: Note the direct comparison to false here - this is by design if the
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
-    if (origins.isOriginSet() === false) {
+    if (origins.useAsCollection() === false) {
         return this;
     }
 
@@ -7651,7 +7651,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
 
     if (!TP.isArray(typenames = aSignal)) {
         typenames = TP.ac(aSignal);
-        typenames.isOriginSet(true);
+        typenames.useAsCollection(true);
     }
 
     len = typenames.getSize();
@@ -7940,7 +7940,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
         if (loggable) {
             //  compute an origin string
             if (anOrigin) {
-                if (TP.isArray(anOrigin) && anOrigin.isOriginSet()) {
+                if (TP.isArray(anOrigin) && anOrigin.useAsCollection()) {
                     if (TP.$$VERBOSE) {
                         orgstr = '[' + anOrigin.collect(
                                     function(item) {

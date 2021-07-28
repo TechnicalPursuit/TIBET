@@ -72,7 +72,7 @@ function(options) {
         data;
 
     customTypeNames = TP.sys.getCustomTypeNames().sort();
-    customTypeNames.isOriginSet(false);
+    customTypeNames.useAsCollection(false);
 
     sourceEntries = customTypeNames;
 

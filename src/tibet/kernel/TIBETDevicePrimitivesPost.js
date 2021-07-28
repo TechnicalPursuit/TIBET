@@ -1683,7 +1683,7 @@ function(anElement, invalidateIdCache) {
         eventIdArray.reverse();
 
         //  Make sure to configure it as an origin set.
-        eventIdArray.isOriginSet(true);
+        eventIdArray.useAsCollection(true);
 
         //  Cache the eventIdArray on anElement
         anElement[TP.EVENT_IDS] = eventIdArray;
@@ -1797,7 +1797,7 @@ function(anElement, anEvent) {
     originArray.reverse();
 
     //  Make sure to configure it as an origin set.
-    originArray.isOriginSet(true);
+    originArray.useAsCollection(true);
 
     return originArray;
 });

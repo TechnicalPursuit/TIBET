@@ -8561,7 +8561,7 @@ function(aTarget, propertyName, aTransitionParams) {
 
                                 return TP.gid(target);
                             });
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     sig = origins.signal('TP.sig.PropertyWillTransition',

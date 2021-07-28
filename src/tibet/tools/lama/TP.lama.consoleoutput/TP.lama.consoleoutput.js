@@ -84,7 +84,7 @@ function() {
     origins = TP.ac(TP.byId('north', this.getNativeDocument()),
                     TP.byId('south', this.getNativeDocument()));
 
-    origins.isOriginSet(true);
+    origins.useAsCollection(true);
 
     (function(aSignal) {
 
