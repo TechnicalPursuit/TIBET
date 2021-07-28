@@ -5428,6 +5428,8 @@ function() {
      * @returns {String}
      */
 
+    var name;
+
     if (TP.owns(this, 'name') && TP.notEmpty(name = this.$get('name'))) {
         return name;
     }
