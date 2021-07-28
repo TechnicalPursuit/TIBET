@@ -719,20 +719,28 @@ function(aDataObject) {
     //  Now, obtain a set of key/value pairs no matter what kind of data object
     //  we were handed.
     if (TP.isArray(dataObj)) {
-        firstObj = dataObj.first();
-
-        //  If the data object is an Array and only has 1 item, which must be a
-        //  non-Array Collection (Hash, POJO, NodeList, NamedNodeMap), then we
-        //  use the entries collection as our data object.
-        if (dataObj.getSize() === 1 &&
-            TP.isCollection(firstObj) &&
-            !TP.isArray(firstObj)) {
-            dataObj = TP.entries(firstObj);
-        } else if (TP.isPair(firstObj)) {
-            dataObj = TP.copy(dataObj);
-        } else {
-            //  An Array - return entries (i.e. key/value pairs).
+        //  If the array is specifically a "row set" just convert to entries
+        //  form and don't worry about count, content, etc.
+        if (dataObj.useAsCollection()) {
             dataObj = TP.entries(dataObj);
+        } else {
+            firstObj = dataObj.first();
+
+            //  If the data object is an Array and only has 1 item, which must
+            //  be a non-Array Collection (Hash, POJO, NodeList, NamedNodeMap),
+            //  then we use the entries collection as our data object.
+            if (dataObj.getSize() === 1 &&
+                TP.isCollection(firstObj) &&
+                !TP.isArray(firstObj)) {
+
+                dataObj = TP.entries(firstObj);
+
+            } else if (TP.isPair(firstObj)) {
+                dataObj = TP.copy(dataObj);
+            } else {
+                //  An Array - return entries (i.e. key/value pairs).
+                dataObj = TP.entries(dataObj);
+            }
         }
     } else {
         //  Another kind of Object - return entries (i.e. key/value pairs).
