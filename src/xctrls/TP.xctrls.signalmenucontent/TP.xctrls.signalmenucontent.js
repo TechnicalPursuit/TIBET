@@ -20,6 +20,45 @@ TP.xctrls.TemplatedTag.defineSubtype('TP.xctrls:signalmenucontent');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.signalmenucontent.Type.defineMethod('populateCompilationAttrs',
+function(aRequest, anElement) {
+
+    /**
+     * @method populateCompilationAttrs
+     * @summary Populates attributes on the element that is produced by this
+     *     type when it is processed.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @param {Element} anElement The element to populate the attributes onto.
+     * @returns {TP.meta.xctrls.signalmenucontent} The receiver.
+     */
+
+    var retVal,
+        elem,
+
+        menuElement;
+
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(anElement)) {
+        return null;
+    }
+
+    retVal = this.callNextMethod();
+
+    elem = aRequest.at('node');
+
+    //  Query under the element in the node to see if the xctrls:menu has been
+    //  produced yet (the tag processor is multi-cycle, so this may not be true
+    //  during the first pass.
+    //  If so, merge the attributes starting with 'item' onto the menu.
+    menuElement = TP.byCSSPath('xctrls|menu', elem, true, false);
+    if (TP.isElement(menuElement)) {
+        TP.elementMergeAttributes(elem, menuElement, true, /^item/, false);
+    }
+
+    return retVal;
+});
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
