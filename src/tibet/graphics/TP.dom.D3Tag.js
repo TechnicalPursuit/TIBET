@@ -243,7 +243,7 @@ function(enterSelection) {
 
             newElem = TP.nodeCloneNode(compiledTemplateContent);
 
-            this.updateRepeatingItemContent(
+            this.updateTemplatedItemContent(
                         newElem,
                         datum,
                         index,
@@ -253,13 +253,13 @@ function(enterSelection) {
 
             //  Compile the element now that we've resolved the outer bindings.
             return TP.elementCompile(
-                newElem,
-                TP.request(
-                    'phases', TP.ac(
-                                    'TP.tag.PrecompilePhase',
-                                    'TP.tag.CompilePhase',
-                                    'TP.tag.CompileCompletePhase'
-                                    )));
+                        newElem,
+                        TP.request(
+                            'phases', TP.ac(
+                                            'TP.tag.PrecompilePhase',
+                                            'TP.tag.CompilePhase',
+                                            'TP.tag.CompileCompletePhase'
+                                            )));
 
         }.bind(this)).attr(
             itemSelectionInfo.first(),
@@ -515,8 +515,8 @@ function() {
 
     /**
      * @method d3SelectContainer
-     * @summary Using the receiver's 'selectionContainer', this method performs a
-     *     d3.js 'select' to select the root Element under which all of the
+     * @summary Using the receiver's 'selectionContainer', this method performs
+     *     a d3.js 'select' to select the root Element under which all of the
      *     receiver's content that will be redrawn with d3.js can be found.
      * @returns {TP.dom.D3Tag} The receiver.
      */
@@ -785,8 +785,8 @@ function() {
     }
 
     //  Note how we pass 'false' here to not trigger change notification for the
-    //  set() calls in this method. Commonly, subtypes of this type will be bound
-    //  objects, so change notification will be on by default.
+    //  set() calls in this method. Commonly, subtypes of this type will be
+    //  bound objects, so change notification will be on by default.
 
     //  Grab the template. If we cannot get a valid template element, then set
     //  our flag to false and return false.
@@ -989,7 +989,7 @@ function(updateSelection) {
             //  by d3.js (this, datum, index & groupIndex) and the ones provided
             //  by us (allData & registry) that we wanted to cache and not
             //  re-obtain through each iteration.
-            thisref.updateRepeatingItemContent(
+            thisref.updateTemplatedItemContent(
                     this,
                     datum,
                     index,
@@ -1003,11 +1003,11 @@ function(updateSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.D3Tag.Inst.defineMethod('updateRepeatingItemContent',
+TP.dom.D3Tag.Inst.defineMethod('updateTemplatedItemContent',
 function(itemElement, datum, index, groupIndex, allData, registry) {
 
     /**
-     * @method updateRepeatingItemContent
+     * @method updateTemplatedItemContent
      * @summary Updates the supplied element, which may contain data binding
      *     expressions in it, using the supplied data.
      * @param {Element} itemElement The top-level element to update. Either this
