@@ -257,11 +257,14 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     //  If the resource is a URI and we can obtain the resource result value of
     //  it, make sure that it is configured to signal Change notifications.
+    //  Also, we specifically tell the URI to *not* signal change if it has to
+    //  fetch new content.
 
     //  NB: We assume 'async' of false here.
     if (TP.isURI(resource) &&
         TP.isValid(resourceValue =
-            resource.getResource(TP.hc('resultType', TP.WRAP)).get('result'))) {
+            resource.getContent(
+                TP.request('resultType', TP.WRAP, 'signalChange', false)))) {
         resourceValue.shouldSignalChange(true);
     }
 
@@ -968,7 +971,9 @@ function(aSignal) {
         //  The changed data source is a URI
 
         //  The primary source is the overall 'whole data' object that changed.
-        primarySource = sigOrigin.getResource().get('result');
+        //  Note here how we specifically tell the URI to *not* signal change if
+        //  it has to fetch new content.
+        primarySource = sigOrigin.getContent(TP.request('signalChange', false));
         changedPrimaryLoc = sigOrigin.getPrimaryLocation();
 
         //  Compute a RegExp that will be used to match 'top level' (i.e. not
@@ -1229,7 +1234,10 @@ function(aSignal) {
             /* eslint-enable no-extra-parens */
 
                 if (originWasURI) {
-                    originVal = sigOrigin.getContent();
+                    //  Note here how we specifically tell the URI to *not*
+                    //  signal change if it has to fetch new content.
+                    originVal = sigOrigin.getContent(
+                                    TP.request('signalChange', false));
                 } else {
                     originVal = sigOrigin;
                 }
@@ -2255,7 +2263,9 @@ function(bindInfo, scopeValues) {
         }
 
         //  Grab the result from the computed URI.
-        result = wholeURI.getResource().get('result');
+        //  Note here how we specifically tell the URI to *not* signal change if
+        //  it has to fetch new content.
+        result = wholeURI.getContent(TP.request('signalChange', false));
 
         //  If we have a valid result, then either set the finalResult to it or
         //  append it onto the finalResult if that already exists (this will
@@ -3336,19 +3346,22 @@ function(branchExpr, initialVal, initialPathType) {
 
     theVal = initialVal;
 
-    //  If the attribute value is a whole URI, then just grab the
-    //  result of the URI and use that as the branch value to
-    //  process 'the next level down' in the branching.
+    //  If the attribute value is a whole URI, then just grab the result of the
+    //  URI and use that as the branch value to process 'the next level down' in
+    //  the branching.
+    //  Note here how we specifically tell the URI to *not* collapse its results
+    //  and to *not* signal change if it has to fetch new content.
     if (TP.isURIString(branchExpr)) {
         branchURI = TP.uc(branchExpr);
-        branchValReq = TP.request('shouldCollapse', false);
+        branchValReq =
+            TP.request('shouldCollapse', false, 'signalChange', false);
 
         if (branchURI.hasFragment()) {
-            branchVal = branchURI.getResource(branchValReq).get('result');
+            branchVal = branchURI.getContent(branchValReq);
         } else if (TP.isValid(theVal)) {
             branchVal = theVal;
         } else {
-            branchVal = branchURI.getResource(branchValReq).get('result');
+            branchVal = branchURI.getContent(branchValReq);
         }
 
         //  Try to detect the type of path based on tasting the
@@ -4622,8 +4635,7 @@ function(shouldRender) {
         //  specifically tell the URI to *not* signal change if it has to fetch
         //  new content.
         scopedURI = TP.uc(scopedValExpr);
-        scopedVal = scopedURI.getResource(
-                            TP.request('signalChange', false)).get('result');
+        scopedVal = scopedURI.getContent(TP.request('signalChange', false));
 
         //  Obtain the branching value and path type, given the scoped value
         //  expression and the value as we've computed it so far.
@@ -5627,8 +5639,11 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                         if (TP.isURIString(attrVal)) {
                             branchURI = TP.uc(attrVal);
                             if (branchURI.hasFragment()) {
-                                branchVal =
-                                    branchURI.getResource().get('result');
+                                //  Note here how we specifically tell the URI to
+                                //  *not* signal change if it has to fetch new
+                                //  content.
+                                branchVal = branchURI.getContent(
+                                            TP.request('signalChange', false));
                             } else {
                                 branchVal = theVal;
                             }
@@ -6160,12 +6175,13 @@ function(regenerateIfNecessary) {
 
     //  Grab the results of both URIs.
 
-    //  NB: Note how we do *not* want the getResource() call to collapse
-    //  it's results here - we always want a collection.
-    repeatResult = repeatURI.getResource(
-                    TP.request('shouldCollapse', false)).get('result');
-    repeatWholeResult = repeatWholeURI.getResource(
-                    TP.request('shouldCollapse', false)).get('result');
+    //  NB: Note how we do *not* want the getContent() call to collapse it's
+    //  results here - we always want a collection. We also tell it to *not*
+    //  signal change if it has to fetch new content.
+    repeatResult = repeatURI.getContent(
+                    TP.request('shouldCollapse', false, 'signalChange', false));
+    repeatWholeResult = repeatWholeURI.getContent(
+                    TP.request('shouldCollapse', false, 'signalChange', false));
 
     if (TP.notValid(repeatResult)) {
         return this;
@@ -7563,8 +7579,10 @@ ignoreBidiInfo) {
                 //  set it's 'value' value to the value that we're trying to
                 //  set. Then set that as the 'whole resource' of the primary
                 //  URI.
-                if (TP.notValid(
-                        result = primaryURI.getResource().get('result'))) {
+                //  Note here how we specifically tell the URI to *not* signal
+                //  change if it has to fetch new content.
+                if (TP.notValid(result = primaryURI.getContent(
+                                        TP.request('signalChange', false)))) {
 
                     newValue = TP.lang.ValueHolder.construct(aValue);
 
@@ -7588,8 +7606,11 @@ ignoreBidiInfo) {
                         //  primary URI, then we're a 'direct to GUI' binding.
                         //  Use the *whole* URI to get a reference to the
                         //  (wrapped) element and set its value.
+                        //  Note here how we specifically tell the URI to *not*
+                        //  signal change if it has to fetch new content.
                         if (TP.isKindOf(result, TP.core.Window)) {
-                            result = wholeURI.getResource().get('result');
+                            result = wholeURI.getContent(
+                                        TP.request('signalChange', false));
                             result.set('value', aValue);
                         } else {
                             result.set(TP.apc(frag), aValue);
@@ -7810,7 +7831,8 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
             pathOptions.atPut('shouldCollapse', true);
         }
 
-        getRequest = TP.request('shouldCollapse', false);
+        getRequest = TP.request('signalChange', false,
+                                'shouldCollapse', shouldCollapseVal);
 
         initialScopedValue = TP.collapse(outerScopeValue);
 
@@ -7854,17 +7876,21 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                 //  '#tibet(.)' fragment expression onto the URI, which will
                 //  just return whatever object is considered the 'whole value'
                 //  of the resource's result.
+                //  Note here how we specifically tell the URI to *not* signal
+                //  change if it has to fetch new content.
                 if (TP.regex.URI_FRAGMENT.test(expr)) {
                     uriExpr = expr;
+                    exprVal = TP.uc(uriExpr, null, false).getContent(
+                                                            getRequest);
                 } else {
-                    uriExpr = TP.uc(expr).getPrimaryLocation() + '#tibet(.)';
-                }
-
-                exprVal = TP.uc(uriExpr, null, false).getResource(
-                                                    getRequest).get('result');
-
-                if (shouldCollapseVal) {
-                    exprVal = TP.collapse(exprVal);
+                    if (TP.isValid(scopedVal)) {
+                        exprVal = scopedVal;
+                    } else {
+                        uriExpr =
+                            TP.uc(expr).getPrimaryLocation() + '#tibet(.)';
+                        exprVal = TP.uc(uriExpr, null, false).getContent(
+                                                            getRequest);
+                    }
                 }
 
                 //  If there is no transformation function defined, and if the
