@@ -15650,8 +15650,8 @@ function(aValue, formats) {
     }
 
     //  Formatters can sometimes consist of chain separated (for compatibility
-    //  with TSH) with '.|'. We split these and process each one individually in
-    //  the chain.
+    //  with TSH) with '.|'). We split these and process each one individually
+    //  in the chain.
 
     elemFmts = formats.split(TP.regex.ACP_FORMAT_SEPARATOR);
     len = elemFmts.getSize();

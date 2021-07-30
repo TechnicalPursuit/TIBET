@@ -3191,6 +3191,8 @@ function(anObject, includeNonenumerables, includePrototypeProps) {
     if (!includeNonenumerables && !includePrototypeProps) {
 
         //  native Map and Set instances can be processed by native Array.from.
+        //  Note that we don't invoke Array's version of this to avoid getting
+        //  'INTERNAL_SLOT' keys.
         if (TP.canInvoke(anObject, 'entries') && !TP.isArray(anObject)) {
             return Array.ECMAfrom(anObject);
         }
