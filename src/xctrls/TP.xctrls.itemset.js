@@ -187,9 +187,11 @@ function(aRequest) {
         TP.nodeAppendChild(templateParentElem, templateStandinElem);
     }
 
-    //  Update any internal data structures that we can derive from static item
-    //  content.
-    tpElem.updateDataFromStaticContent();
+    //  Finalize content so that static items get keys, etc. If this is a bound
+    //  element, this will be called from the setData method.
+    if (!tpElem.isBoundElement()) {
+        tpElem.finalizeContent();
+    }
 
     return;
 });
@@ -199,10 +201,6 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.itemset.Inst.defineAttribute('$dataKeys');
-
-//  The data as massaged into what this control needs. This is reset whenever
-//  the control's whole data set is reset.
-TP.xctrls.itemset.Inst.defineAttribute('$convertedData');
 
 TP.xctrls.itemset.Inst.defineAttribute(
     'contentElement',
@@ -386,6 +384,25 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.itemset.Inst.defineMethod('getItemTagType',
+function() {
+
+    /**
+     * @method getItemTagType
+     * @summary Returns the item tag type.
+     * @returns {TP.meta.xctrls.item} The item tag type.
+     */
+
+    var itemTagName;
+
+    itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
+                                this.getType().get('defaultItemTagName'));
+
+    return TP.sys.getTypeByName(itemTagName);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.itemset.Inst.defineMethod('getPrecedingStaticItemContent',
 function() {
 
@@ -500,11 +517,53 @@ function() {
 
     //  All DOM 'items' in an itemset have an item number. This will also be the
     //  index into the data for that item.
-    itemNum = item.getAttribute('itemnum');
+    itemNum = item.getAttribute(TP.ITEM_NUM);
 
     data = this.get('data');
 
     return data.at(itemNum);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('finalizeContent',
+function() {
+
+    /**
+     * @method finalizeContent
+     * @summary Updates an internal data structures from static item content
+     *     that the author might have put into the receiver.
+     * @description This method is called when the receiver is first awakened
+     *     in order to set up any data structures that are required to treat
+     *     static content as we would dynamically generated content.
+     * @returns {TP.xctrls.itemset} The receiver.
+     */
+
+    var keys,
+        allItems;
+
+    keys = TP.ac();
+
+    //  Stamp all of the items in the item content with an index.
+    allItems = this.get('allItemContent');
+    allItems.forEach(
+        function(item, index) {
+            var key;
+
+            key = item.getAttribute(TP.DATA_KEY);
+            if (TP.isEmpty(key)) {
+                key = TP.genID();
+                item.setAttribute(TP.DATA_KEY, key);
+            }
+            keys.push(key);
+
+            item.setAttribute(TP.ITEM_NUM, index);
+            item.addClass('item');
+        });
+
+    this.set('$dataKeys', keys, false);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -602,7 +661,7 @@ function(aSignal) {
         oldValue = this.getValue();
 
         //  Grab the itemnum as a Number - this is an index into our data.
-        dataIndex = wrappedDOMTarget.getAttribute('itemnum').asNumber();
+        dataIndex = wrappedDOMTarget.getAttribute(TP.ITEM_NUM).asNumber();
 
         //  If we always signal change, then even if the values are equal,
         //  we will not exit here. If an attribute is defined, then it takes
@@ -701,50 +760,25 @@ function(aDataObject) {
     /**
      * @method prepareData
      * @summary Returns data that has been 'prepared' for usage by the receiver.
-     * @description This method takes a variety of object types and will produce
-     *     data suitable for use by the receiver. This usually will be an Array
-     *     of 'ordered pairs' (i.e. Arrays of Arrays of key/value pairs).
      * @param {Object} aDataObject The original object supplied to the receiver
      *     as it's 'data object'.
      * @returns {Object} The data object 'massaged' into a data format suitable
      *     for use by the receiver.
      */
 
-    var firstObj,
-        dataObj;
+    var dataObj;
 
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
 
-    //  Now, obtain a set of key/value pairs no matter what kind of data object
+    //  Now, make sure that we have an Array no matter what kind of data object
     //  we were handed.
-    if (TP.isArray(dataObj)) {
-        //  If the array is specifically a "row set" just convert to entries
-        //  form and don't worry about count, content, etc.
-        if (dataObj.useAsCollection()) {
-            dataObj = TP.entries(dataObj);
+    if (!TP.isArray(dataObj)) {
+        if (TP.canInvoke(dataObj, 'asArray')) {
+            dataObj = dataObj.asArray();
         } else {
-            firstObj = dataObj.first();
-
-            //  If the data object is an Array and only has 1 item, which must
-            //  be a non-Array Collection (Hash, POJO, NodeList, NamedNodeMap),
-            //  then we use the entries collection as our data object.
-            if (dataObj.getSize() === 1 &&
-                TP.isCollection(firstObj) &&
-                !TP.isArray(firstObj)) {
-
-                dataObj = TP.entries(firstObj);
-
-            } else if (TP.isPair(firstObj)) {
-                dataObj = TP.copy(dataObj);
-            } else {
-                //  An Array - return entries (i.e. key/value pairs).
-                dataObj = TP.entries(dataObj);
-            }
+            dataObj = Array.from(dataObj);
         }
-    } else {
-        //  Another kind of Object - return entries (i.e. key/value pairs).
-        dataObj = TP.entries(dataObj);
     }
 
     return dataObj;
@@ -771,7 +805,7 @@ function(anAspect) {
 
         aspect,
 
-        data;
+        keys;
 
     //  Grab the selection model.
     selectionModel = this.$getSelectionModel();
@@ -791,13 +825,13 @@ function(anAspect) {
         //  individual items registered under the 'value' aspect.
         selectionModel.empty();
 
-        data = this.get('$dataKeys');
+        keys = this.get('$dataKeys');
 
-        if (TP.isEmpty(data)) {
+        if (TP.isEmpty(keys)) {
             return this;
         }
 
-        selectionModel.atPut(aspect, data);
+        selectionModel.atPut(aspect, keys);
     }
 
     return this;
@@ -806,12 +840,12 @@ function(anAspect) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.itemset.Inst.defineMethod('removeItem',
-function(itemValue) {
+function(itemKey) {
 
     /**
      * @method removeItem
      * @summary Removes the item that has a value matching the supplied value.
-     * @param {String} itemValue The value of the item to remove. This will be
+     * @param {String} itemKey The value of the item to remove. This will be
      *     used to match the first item with that value, and so it should be
      *     unique.
      * @returns {TP.xctrls.itemset} The receiver.
@@ -826,7 +860,7 @@ function(itemValue) {
 
     //  Grab our keys and find the index of the supplied value in them.
     keys = this.get('$dataKeys');
-    dataIndex = keys.indexOf(itemValue);
+    dataIndex = keys.indexOf(itemKey);
 
     if (dataIndex === TP.NOT_FOUND) {
         return this;
@@ -916,13 +950,7 @@ function(aDataObject, shouldSignal) {
      * @returns {TP.xctrls.itemset} The receiver.
      */
 
-    var dataObj,
-        keys,
-
-        precedingStaticContent,
-        followingStaticContent,
-
-        staticKeys;
+    var dataObj;
 
     if (TP.notValid(aDataObject)) {
         return this;
@@ -935,71 +963,6 @@ function(aDataObject, shouldSignal) {
 
     this.$set('data', dataObj, false);
 
-    //  Make sure to clear our converted data.
-    this.set('$convertedData', null, false);
-
-    //  Compute the keys
-
-    //  This object needs to see keys in 'Array of keys' format. Therefore, the
-    //  following conversions are done:
-
-    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
-    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
-    //  Array of items: ['a','b','c']               -> [0, 1, 2]
-
-    if (TP.isValid(dataObj)) {
-
-        //  If we have a hash as our data, this will convert it into an Array of
-        //  ordered pairs (i.e. an Array of Arrays) where the first item in each
-        //  Array is the key and the second item is the value.
-        if (TP.isHash(dataObj)) {
-            keys = dataObj.getKeys();
-        } else if (TP.isPlainObject(dataObj)) {
-            //  Make sure to convert a POJO into a TP.core.Hash and then convert
-            //  it into an Array of ordered pairs.
-            keys = TP.hc(dataObj).getKeys();
-        } else if (TP.isPair(dataObj.first())) {
-            keys = dataObj.collect(
-                    function(item) {
-                        //  Note that we want a String here.
-                        return item.first().toString();
-                    });
-        } else if (TP.isArray(dataObj)) {
-            keys = dataObj.getIndices().collect(
-                    function(item) {
-                        //  Note that we want a String here.
-                        return item.toString();
-                    });
-        }
-
-        //  Grab any static content that precedes the templated, dynamic content
-        //  and add its values to our Array of data keys.
-        precedingStaticContent = this.get('precedingStaticItemContent');
-        if (!TP.isEmptyArray(precedingStaticContent)) {
-            staticKeys = precedingStaticContent.collect(
-                            function(anItem) {
-                                return anItem.get('value');
-                            });
-            Array.prototype.unshift.apply(keys, staticKeys);
-        }
-
-        //  Grab any static content that follows the templated, dynamic content
-        //  and add its values to our Array of data keys.
-        followingStaticContent = this.get('followingStaticItemContent');
-        if (!TP.isEmptyArray(followingStaticContent)) {
-            staticKeys = followingStaticContent.collect(
-                            function(anItem) {
-                                return anItem.get('value');
-                            });
-            Array.prototype.push.apply(keys, staticKeys);
-        }
-
-        this.set('$dataKeys', keys, false);
-
-    } else {
-        this.set('$dataKeys', null, false);
-    }
-
     //  Clear the selection model, since we're setting a whole new data set for
     //  the receiver.
     this.$getSelectionModel().empty();
@@ -1008,41 +971,11 @@ function(aDataObject, shouldSignal) {
 
         //  When the data changes, we have to re-render.
         this.render();
+
+        //  And we have to finalize the content again since we're not a
+        //  static-only itemset.
+        this.finalizeContent();
     }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.itemset.Inst.defineMethod('updateDataFromStaticContent',
-function() {
-
-    /**
-     * @method updateDataFromStaticContent
-     * @summary Updates an internal data structures from static item content
-     *     that the author might have put into the receiver.
-     * @description This method is called when the receiver is first awakened
-     *     in order to set up any data structures that are required to treat
-     *     static content as we would dynamically generated content.
-     * @returns {TP.xctrls.itemset} The receiver.
-     */
-
-    var keys,
-        allItems;
-
-    keys = TP.ac();
-
-    //  Stamp all of the items in the item content with an index.
-    allItems = this.get('allItemContent');
-    allItems.forEach(
-        function(item, index) {
-            keys.push(item.get('value'));
-            item.setAttribute('itemnum', index);
-            item.addClass('item');
-        });
-
-    this.set('$dataKeys', keys, false);
 
     return this;
 });
@@ -1068,7 +1001,7 @@ function(aValue) {
     var separator,
         value,
 
-        data,
+        keys,
 
         selectionEntry,
 
@@ -1137,13 +1070,13 @@ function(aValue) {
 
     selectionEntry = TP.ac();
 
-    data = this.get('$dataKeys');
+    keys = this.get('$dataKeys');
 
-    if (TP.isEmpty(data)) {
+    if (TP.isEmpty(keys)) {
         return this;
     }
 
-    leni = data.getSize();
+    leni = keys.getSize();
 
     if (TP.isArray(value)) {
 
@@ -1151,7 +1084,7 @@ function(aValue) {
 
             lenj = value.getSize();
             for (j = 0; j < lenj; j++) {
-                if (data.at(i) === value.at(j)) {
+                if (keys.at(i) === value.at(j)) {
                     selectionEntry.push(value.at(j));
                     break;
                 }
@@ -1166,7 +1099,7 @@ function(aValue) {
 
         for (i = 0; i < leni; i++) {
 
-            if (data.at(i) === value) {
+            if (keys.at(i) === value) {
                 selectionEntry.push(value);
                 break;
             }
@@ -1316,14 +1249,20 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var itemTagName,
+    var labelFunc,
+        valueFunc,
+        keyFunc,
+
+        itemTagName,
 
         newContent,
 
         shouldConstructCloseMarks,
-        shouldConstructTooltips,
+        shouldConstructTooltips;
 
-        thisref;
+    labelFunc = this.getLabelFunction();
+    valueFunc = this.getValueFunction();
+    keyFunc = this.getKeyFunction();
 
     itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
                                 this.getType().get('defaultItemTagName'));
@@ -1333,16 +1272,18 @@ function(enterSelection) {
     shouldConstructCloseMarks = this.getType().get('wantsCloseMarks');
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
 
-    thisref = this;
-
     newContent.each(
         function(data, index) {
-            var labelContent,
+            var key,
+                labelContent,
                 markContent,
                 valueContent,
                 hintContent,
 
                 hintElement;
+
+            key = keyFunc(data, index);
+            TP.elementSetAttribute(this, TP.DATA_KEY, key, true);
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
@@ -1353,7 +1294,9 @@ function(enterSelection) {
                         preIndex,
                         postIndex;
 
-                    labelVal = thisref.getItemLabel(d, index);
+                    labelVal = TP.str(labelFunc(d, index));
+
+                    //  TODO: Pass 'labelVal' through 'ui:display' attribute
 
                     if (/match_result">/g.test(labelVal)) {
                         preIndex = labelVal.indexOf('<span');
@@ -1376,7 +1319,7 @@ function(enterSelection) {
 
             TP.extern.d3.select(this).attr(
                 'pclass:disabled', function(d, i) {
-                    if (thisref.getItemValue(d, index) === TP.DISABLED) {
+                    if (valueFunc(d, index) === TP.DISABLED) {
                         return 'disabled';
                     }
                     return null;
@@ -1391,7 +1334,7 @@ function(enterSelection) {
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(
                 function(d, i) {
-                    return thisref.getItemValue(d, index);
+                    return valueFunc(d, index);
                 }
             );
 
@@ -1401,7 +1344,7 @@ function(enterSelection) {
                     function(d, i) {
                         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '">' +
                                 TP.xmlLiteralsToEntities(
-                                    thisref.getItemValue(d, index)) +
+                                    valueFunc(d, index)) +
                                 '</span>';
                     }
                 );
@@ -1427,100 +1370,72 @@ function(enterSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.itemset.Inst.defineMethod('computeSelectionData',
+TP.xctrls.itemset.Inst.defineMethod('d3KeyFunction',
 function() {
 
     /**
-     * @method computeSelectionData
-     * @summary Returns the data that will actually be used for binding into the
-     *     d3.js selection.
-     * @description The selection data may very well be different than the bound
-     *     data that uses TIBET data binding to bind data to this control. This
-     *     method allows the receiver to transform it's 'data binding data' into
-     *     data appropriate for d3.js selections.
-     * @returns {Object} The selection data.
+     * @method d3KeyFunction
+     * @summary Returns the Function that should be used to generate keys into
+     *     the receiver's data set. By default this method returns a null key
+     *     function, thereby causing d3 to use each datum in the data set as the
+     *     key.
+     * @description This Function should take two arguments, an individual item
+     *     from the receiver's data set and it's index in the overall data set,
+     *     and return a value that will act as that item's key in the overall
+     *     data set.
+     * @returns {Function} A Function that provides a key for the supplied data
+     *     item.
      */
 
-    var selectionData,
-        wholeData;
+    var adaptor,
+        adaptorType;
 
-    selectionData = this.get('$convertedData');
-
-    //  First, make sure the converted data is valid. If not, then convert it.
-    if (TP.notValid(selectionData)) {
-
-        wholeData = this.get('data');
-
-        //  This object needs to see data in 'key/value pair' format. Therefore,
-        //  the following conversions are done:
-
-        //  POJO / Hash: {'foo':'bar','baz':'goo'}   ->
-        //                                      [['foo','bar'],['baz','goo']]
-        //  Array of items: ['a','b','c']   ->  [[0,'a'],[1,'b'],[2,'c']]
-        //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   ->  unchanged
-
-        //  If we have a hash as our data, this will convert it into an Array of
-        //  ordered pairs (i.e. an Array of Arrays) where the first item in each
-        //  Array is the key and the second item is the value.
-        if (TP.isHash(wholeData)) {
-            selectionData = wholeData.getKVPairs();
-        } else if (TP.isPlainObject(wholeData)) {
-            //  Make sure to convert a POJO into a TP.core.Hash
-            selectionData = TP.hc(wholeData).getKVPairs();
-        } else if (!TP.isPair(wholeData.first())) {
-            //  The first item is not a pair so it might be a regular Array or
-            //  another object. Massage the data object into an Array of pairs.
-            selectionData = wholeData.getKVPairs();
-        } else {
-            //  If we didn't do any transformations to the data, we make sure to
-            //  clone it here, since we end up putting 'TP.SPACING's in etc, and
-            //  we don't want to pollute the original data source.
-            selectionData = TP.copy(wholeData);
-        }
-
-        //  Cache our converted data.
-        this.set('$convertedData', selectionData, false);
+    adaptor = this.getAttribute('ui:adaptor');
+    if (TP.notEmpty(adaptor)) {
+        adaptorType = TP.sys.getTypeByName(adaptor);
+    } else {
+        adaptorType = this.getItemTagType();
     }
 
-    return selectionData;
+    if (!TP.isType(adaptorType)) {
+        return this.callNextMethod();
+    }
+
+    return adaptorType.getKeyFunction(this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.itemset.Inst.defineMethod('getItemLabel',
-function(aDataValue, anIndex) {
+TP.xctrls.itemset.Inst.defineMethod('getLabelFunction',
+function() {
 
     /**
-     * @method getItemLabel
-     * @summary Returns the value that an individual item should use as it's
-     *     'label' when rendering.
-     * @param {Object[]} aDataValue The d3 datum at the current point of item
-     *     rendering iteration.
-     * @param {Number} anIndex The index of the supplied datum in its overall
-     *     data set.
-     * @returns {String} The value to use as the item's 'label'.
+     * @method getLabelFunction
+     * @summary Returns a Function that will be used to extract the label from
+     *     the data.
+     * @description If the receiver defines a 'ui:adaptor' attribute, it should
+     *     be naming a type. That type should respond to 'getLabelFunction' and
+     *     return the Function to be used. Otherwise, the item tag type should
+     *     implement 'getLabelFunction'.
+     * @returns {Function} The Function that will be used to extract the label
+     *     from the data.
      */
 
-    return aDataValue[1];
-});
+    var adaptor,
+        adaptorType;
 
-//  ------------------------------------------------------------------------
+    adaptor = this.getAttribute('ui:adaptor');
+    if (TP.notEmpty(adaptor)) {
+        adaptorType = TP.sys.getTypeByName(adaptor);
+    } else {
+        adaptorType = this.getItemTagType();
+    }
 
-TP.xctrls.itemset.Inst.defineMethod('getItemValue',
-function(aDataValue, anIndex) {
+    if (!TP.isType(adaptorType)) {
+        return this.callNextMethod();
+    }
 
-    /**
-     * @method getItemValue
-     * @summary Returns the value that an individual item should use as it's
-     *     'value' when rendering.
-     * @param {Object[]} aDataValue The d3 datum at the current point of item
-     *     rendering iteration.
-     * @param {Number} anIndex The index of the supplied datum in its overall
-     *     data set.
-     * @returns {String} The value to use as the item's 'value'.
-     */
-
-    return aDataValue[0];
+    return adaptorType.getLabelFunction(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -1640,6 +1555,40 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.itemset.Inst.defineMethod('getValueFunction',
+function() {
+
+    /**
+     * @method getValueFunction
+     * @summary Returns a Function that will be used to extract the value from
+     *     the data.
+     * @description If the receiver defines a 'ui:adaptor' attribute, it should
+     *     be naming a type. That type should respond to 'getValueFunction' and
+     *     return the Function to be used. Otherwise, the item tag type should
+     *     implement 'getValueFunction'.
+     * @returns {Function} The Function that will be used to extract the value
+     *     from the data.
+     */
+
+    var adaptor,
+        adaptorType;
+
+    adaptor = this.getAttribute('ui:adaptor');
+    if (TP.notEmpty(adaptor)) {
+        adaptorType = TP.sys.getTypeByName(adaptor);
+    } else {
+        adaptorType = this.getItemTagType();
+    }
+
+    if (!TP.isType(adaptorType)) {
+        return this.callNextMethod();
+    }
+
+    return adaptorType.getValueFunction(this);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.itemset.Inst.defineMethod('finishBuildingNewContent',
 function(selection) {
 
@@ -1653,16 +1602,18 @@ function(selection) {
      * @returns {TP.xctrls.itemset} The receiver.
      */
 
-    var selectedValues,
+    var valueFunc,
+
+        selectedValues,
 
         groupID,
 
         precedingStaticContent,
         followingStaticContent,
 
-        thisref,
-
         allItems;
+
+    valueFunc = this.getValueFunction();
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1670,8 +1621,6 @@ function(selection) {
     }
 
     groupID = this.getLocalID() + '_group';
-
-    thisref = this;
 
     selection.each(
         function(d, i) {
@@ -1684,7 +1633,7 @@ function(selection) {
 
             wrappedElem = TP.wrap(this);
 
-            val = thisref.getItemValue(d, i).toString();
+            val = TP.str(valueFunc(d, i));
 
             //  Then, set the visual toggle based on whether the value is
             //  selected or not. Note that we convert to a String to make sure
@@ -1739,7 +1688,7 @@ function(selection) {
     allItems = this.get('allItemContent');
     allItems.forEach(
         function(item, index) {
-            item.setAttribute('itemnum', index);
+            item.setAttribute(TP.ITEM_NUM, index);
             item.addClass('item');
         });
 
@@ -1762,21 +1711,21 @@ function(selection) {
      * @returns {TP.xctrls.itemset} The receiver.
      */
 
-    var selectedValues,
+    var valueFunc,
+
+        selectedValues,
 
         precedingStaticContent,
         followingStaticContent,
 
-        thisref,
-
         allItems;
+
+    valueFunc = this.getValueFunction();
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
         selectedValues = TP.ac();
     }
-
-    thisref = this;
 
     selection.each(
         function(d, i) {
@@ -1786,7 +1735,7 @@ function(selection) {
 
             wrappedElem = TP.wrap(this);
 
-            val = thisref.getItemValue(d, i).toString();
+            val = TP.str(valueFunc(d, i));
 
             //  Then, set the visual toggle based on whether the value is
             //  selected or not. Note that we convert to a String to make
@@ -1834,11 +1783,45 @@ function(selection) {
     allItems = this.get('allItemContent');
     allItems.forEach(
         function(item, index) {
-            item.setAttribute('itemnum', index);
+            item.setAttribute(TP.ITEM_NUM, index);
             item.addClass('item');
         });
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('removeOldContent',
+function(exitSelection) {
+
+    /**
+     * @method removeOldContent
+     * @summary Removes any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'exit selection'.
+     * @param {TP.extern.d3.selection} exitSelection The d3.js exit selection
+     *     that existing content should be altered in.
+     * @returns {TP.dom.D3Tag} The receiver.
+     */
+
+    var keys,
+        keyFunc;
+
+    //  Make sure to remove the keys of any 'exit selection' elements that are
+    //  going away from the '$dataKeys' Array to avoid pollution.
+
+    keys = this.get('$dataKeys');
+    keyFunc = this.d3KeyFunction();
+
+    exitSelection.each(
+        function(data, index) {
+            var key;
+
+            key = keyFunc(data);
+            keys.remove(key);
+        });
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -1855,9 +1838,11 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    var thisref;
+    var labelFunc,
+        valueFunc;
 
-    thisref = this;
+    labelFunc = this.getLabelFunction();
+    valueFunc = this.getValueFunction();
 
     updateSelection.each(
         function(data, index) {
@@ -1874,7 +1859,9 @@ function(updateSelection) {
                         preIndex,
                         postIndex;
 
-                    labelVal = thisref.getItemLabel(d, index);
+                    labelVal = TP.str(labelFunc(d, index));
+
+                    //  TODO: Pass 'labelVal' through 'ui:display' attribute
 
                     if (/match_result">/g.test(labelVal)) {
                         preIndex = labelVal.indexOf('<span');
@@ -1897,7 +1884,7 @@ function(updateSelection) {
 
             TP.extern.d3.select(this).attr(
                 'pclass:disabled', function(d, i) {
-                    if (thisref.getItemValue(d, index) === TP.DISABLED) {
+                    if (valueFunc(d, index) === TP.DISABLED) {
                         return 'disabled';
                     }
                     return null;
@@ -1908,13 +1895,73 @@ function(updateSelection) {
                                     TP.nodeGetChildElementAt(this, 2));
             valueContent.text(
                 function(d, i) {
-
-                    return thisref.getItemValue(data, index);
+                    return valueFunc(data, index);
                 }
             );
         });
 
     return updateSelection;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('updateTemplatedItemContent',
+function(itemElement, datum, index, groupIndex, allData, registry) {
+
+    /**
+     * @method updateTemplatedItemContent
+     * @summary Updates the supplied element, which may contain data binding
+     *     expressions in it, using the supplied data.
+     * @param {Element} itemElement The top-level element to update. Either this
+     *     element or its descendants will contain data binding expressions.
+     * @param {Object} datum The individual data item out of the receiver's
+     *     entire set that is currently being processed.
+     * @param {Number} index The 0-based index of the supplied datum in the
+     *     overall data set that is currently being processed.
+     * @param {Number} groupIndex The index of the current group. This is useful
+     *     when processing nested selections.
+     * @param {Object[]} allData The receiver's entire data set, provided here
+     *     as a convenience.
+     * @param {TP.core.Hash} registry The registry of data binding expressions
+     *     that was built the first time buildNewContentFromTemplate was called.
+     *     This will contain keys of the whole attribute value containing the
+     *     whole expression mapped to an Array of the individual data
+     *     expressions inside and to a transformation Function that would've
+     *     been generated if necessary.
+     * @returns {TP.dom.D3Tag} The receiver.
+     */
+
+    var key,
+        adaptor,
+        adaptorType,
+        keyFunc;
+
+    this.callNextMethod();
+
+    //  Make sure that the supplied element has a data key. If it doesn't, then
+    //  we use similar logic to when items are generated from dynamic data where
+    //  a template does not get used.
+
+    key = itemElement.getAttribute(TP.DATA_KEY);
+    if (TP.isEmpty(key)) {
+        adaptor = this.getAttribute('ui:adaptor');
+        if (TP.notEmpty(adaptor)) {
+            adaptorType = TP.sys.getTypeByName(adaptor);
+        } else {
+            adaptorType = TP.wrap(itemElement).getType();
+        }
+
+        if (!TP.isType(adaptorType)) {
+            keyFunc = TP.RETURN_ARG0;
+        } else {
+            keyFunc = adaptorType.getKeyFunction(this);
+        }
+
+        key = keyFunc(datum, index);
+        TP.elementSetAttribute(itemElement, TP.DATA_KEY, key, true);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1938,7 +1985,7 @@ function(aValue, anIndex, shouldSignal) {
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
-    var data,
+    var keys,
 
         matches,
 
@@ -1949,7 +1996,7 @@ function(aValue, anIndex, shouldSignal) {
 
         selectVal;
 
-    data = this.get('$dataKeys');
+    keys = this.get('$dataKeys');
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
@@ -1958,10 +2005,10 @@ function(aValue, anIndex, shouldSignal) {
 
         matches = TP.ac();
 
-        len = data.getSize();
+        len = keys.getSize();
         for (i = 0; i < len; i++) {
 
-            value = data.at(i);
+            value = keys.at(i);
 
             if (aValue.test(value)) {
                 matches.push(value);
@@ -2006,7 +2053,7 @@ function(aValue, anIndex, shouldSignal) {
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
-    var data,
+    var keys,
 
         matches,
 
@@ -2017,7 +2064,7 @@ function(aValue, anIndex, shouldSignal) {
 
         selectVal;
 
-    data = this.get('$dataKeys');
+    keys = this.get('$dataKeys');
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
@@ -2026,10 +2073,10 @@ function(aValue, anIndex, shouldSignal) {
 
         matches = TP.ac();
 
-        len = data.getSize();
+        len = keys.getSize();
         for (i = 0; i < len; i++) {
 
-            value = data.at(i);
+            value = keys.at(i);
 
             if (aValue.test(value)) {
                 matches.push(value);

@@ -996,6 +996,9 @@ TP.OLD_LEFT = 'tp_left';
 TP.OLD_HEIGHT = 'tp_oldheight';
 TP.OLD_WIDTH = 'tp_oldwidth';
 
+TP.DATA_KEY = 'datakey';
+TP.ITEM_NUM = 'itemnum';
+
 //  meta owners and their target objects
 
 TP.META_TYPE_OWNER = {};
