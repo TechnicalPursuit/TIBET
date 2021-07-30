@@ -575,7 +575,7 @@ function() {
     virtualScroller.
         rowHeight(rowHeight).
         totalRows(totalRows).
-        data(selectionData, this.getKeyFunction());
+        data(selectionData, this.d3KeyFunction());
 
     //  Call it's render() to redraw. This is the same method that the virtual
     //  scroller object itself will call when we scroll and provides the

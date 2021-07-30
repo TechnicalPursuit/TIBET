@@ -346,12 +346,12 @@ function(rootUpdateSelection) {
     data = this.computeSelectionData();
 
     //  Note how we pass 'false' here to not trigger change notification for the
-    //  set() calls in this method. Commonly, subtypes of this type will be bound
-    //  objects, so change notification will be on by default.
+    //  set() calls in this method. Commonly, subtypes of this type will be
+    //  bound objects, so change notification will be on by default.
 
     if (TP.isValid(data)) {
 
-        keyFunc = this.getKeyFunction();
+        keyFunc = this.d3KeyFunction();
         if (TP.isCallable(keyFunc)) {
             this.set('updateSelection',
                         rootUpdateSelection.data(data, keyFunc),
@@ -657,23 +657,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.D3Tag.Inst.defineMethod('getKeyFunction',
+TP.dom.D3Tag.Inst.defineMethod('d3KeyFunction',
 function() {
 
     /**
-     * @method getKeyFunction
+     * @method d3KeyFunction
      * @summary Returns the Function that should be used to generate keys into
      *     the receiver's data set. By default this method returns a null key
-     *     function, thereby using the index in the data set as the key.
-     * @description This Function should take a single argument, an individual
-     *     item from the receiver's data set, and return a value that will act
-     *     as that item's key in the overall data set. The default version
-     *     returns the item itself.
+     *     function, thereby causing d3 to use each datum in the data set as the
+     *     key.
+     * @description This Function should take two arguments, an individual item
+     *     from the receiver's data set and it's index in the overall data set,
+     *     and return a value that will act as that item's key in the overall
+     *     data set.
      * @returns {Function} A Function that provides a key for the supplied data
      *     item.
      */
 
-    //  By default we return a null key function.
+    //  By default we return null - this means d3 will use each datum.
     return null;
 });
 
