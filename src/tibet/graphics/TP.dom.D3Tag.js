@@ -484,6 +484,29 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.D3Tag.Inst.defineMethod('d3KeyFunction',
+function() {
+
+    /**
+     * @method d3KeyFunction
+     * @summary Returns the Function that should be used to generate keys into
+     *     the receiver's data set. By default this method returns a null key
+     *     function, thereby causing d3 to use each datum in the data set as the
+     *     key.
+     * @description This Function should take two arguments, an individual item
+     *     from the receiver's data set and it's index in the overall data set,
+     *     and return a value that will act as that item's key in the overall
+     *     data set.
+     * @returns {Function} A Function that provides a key for the supplied data
+     *     item.
+     */
+
+    //  By default we return null - this means d3 will use each datum.
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.D3Tag.Inst.defineMethod('d3Select',
 function() {
 
@@ -653,29 +676,6 @@ function() {
      */
 
     return TP.ac('class', 'item');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.dom.D3Tag.Inst.defineMethod('d3KeyFunction',
-function() {
-
-    /**
-     * @method d3KeyFunction
-     * @summary Returns the Function that should be used to generate keys into
-     *     the receiver's data set. By default this method returns a null key
-     *     function, thereby causing d3 to use each datum in the data set as the
-     *     key.
-     * @description This Function should take two arguments, an individual item
-     *     from the receiver's data set and it's index in the overall data set,
-     *     and return a value that will act as that item's key in the overall
-     *     data set.
-     * @returns {Function} A Function that provides a key for the supplied data
-     *     item.
-     */
-
-    //  By default we return null - this means d3 will use each datum.
-    return null;
 });
 
 //  ------------------------------------------------------------------------
