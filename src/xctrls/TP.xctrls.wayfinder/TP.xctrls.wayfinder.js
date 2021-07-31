@@ -194,8 +194,6 @@ TP.xctrls.wayfinder.Inst.defineAttribute('$dataKeys');
 
 //  The data as massaged into what this control needs. This is reset whenever
 //  the control's whole data set is reset.
-TP.xctrls.wayfinder.Inst.defineAttribute('$convertedData');
-
 TP.xctrls.wayfinder.Inst.defineAttribute('data');
 
 TP.xctrls.wayfinder.Inst.defineAttribute('dynamicContentEntries');
@@ -344,11 +342,11 @@ function(bayContent, bayConfig, process) {
 
     //  NOTE: We use setRawContent() here to avoid compiling twice. The content
     //  will be processed when it, along with it's item, is added to the
-    //  inspector's overall container.
+    //  wayfinder's overall container.
     bay.setRawContent(TP.wrap(bayContent));
 
     if (TP.notFalse(process)) {
-        //  Append the new inspector item to the container here. Content
+        //  Append the new wayfinder item to the container here. Content
         //  compilation will take place here.
         //  Note the reassignment here.
         bay = this.get('container').addContent(bay);
@@ -400,7 +398,7 @@ function() {
     var data,
         dataURI;
 
-    data = this.getDataForWayfinder(TP.hc());
+    data = this.get('data').getDataForWayfinder(TP.hc());
 
     dataURI = TP.uc(this.createDataLocation('_bay_0'));
     dataURI.setResource(data);
@@ -647,7 +645,7 @@ function(info) {
         //  The difference between the screen width and the bays width.
         diff = screenWidth - baysWidth;
 
-        //  Grab the inspector bays (but not the filler bays).
+        //  Grab the wayfinder bays (but not the filler bays).
         inspectorBays = this.getInspectorBays();
 
         //  This should never be empty (we should always have at least one 'real
@@ -655,7 +653,7 @@ function(info) {
         if (TP.notEmpty(inspectorBays)) {
 
             //  Grab the style sheet element that contains the rule that gives
-            //  us our minimum width for inspector bays.
+            //  us our minimum width for wayfinder bays.
             inspectorItemsStyleSheetElem =
                 TP.styleSheetGetOwnerNode(
                     inspectorBays.first().getStylesheetForStyleResource());
@@ -674,7 +672,7 @@ function(info) {
 
             bayConfig = TP.getConfigForTool(
                         this,
-                        'inspector',
+                        'wayfinder',
                         TP.hc('pathParts', TP.ac('FILLER'),
                                 'targetAspect', null,
                                 'targetObject', null));
@@ -700,7 +698,7 @@ function(info) {
 
         this.signal('WayfinderDidFocus');
 
-        //  Grab the inspector bays (but not the filler bays).
+        //  Grab the wayfinder bays (but not the filler bays).
         inspectorBays = this.getInspectorBays();
         if (TP.notEmpty(inspectorBays)) {
             inspectorBays.last().focus();
@@ -725,7 +723,7 @@ function() {
 
     var info;
 
-    info = TP.hc('targetObject', this,
+    info = TP.hc('targetObject', this.get('data'),
                     'targetAspect', this.getID(),
                     'bayIndex', 0);
 
@@ -809,10 +807,10 @@ function(anInfo) {
         targetPath = TP.stringSplitSlashesAndRejoin(targetPath, TP.PATH_SEP);
     }
 
-    //  Grab all of the inspector bays in the receiver.
+    //  Grab all of the wayfinder bays in the receiver.
     //  NB: inspectorBays could be empty here, and that's ok.
 
-    //  Grab the inspector bays (but not the filler bays).
+    //  Grab the wayfinder bays (but not the filler bays).
     inspectorBays = this.getInspectorBays();
 
     //  Pass along any extra targeting information that editors or property
@@ -877,6 +875,7 @@ function(anInfo) {
     //  0 and return.
     if (target === this) {
 
+        /*
         this.buildRootBayData();
 
         //  Populate bay 0
@@ -888,6 +887,7 @@ function(anInfo) {
         this.finishUpdateAfterNavigation(info);
 
         this.signal('WayfinderDidFocus');
+        */
 
         return this;
     }
@@ -904,9 +904,9 @@ function(anInfo) {
         //  Select the item (in bay 0) and populate bay 1
         this.populateBayUsing(info);
 
-        //  Now that we have more inspector items, obtain the list again.
+        //  Now that we have more wayfinder items, obtain the list again.
 
-        //  Grab the inspector bays (but not the filler bays).
+        //  Grab the wayfinder bays (but not the filler bays).
         inspectorBays = this.getInspectorBays();
 
     } else if (TP.isValid(target) && TP.isValid(resolver)) {
@@ -1003,9 +1003,9 @@ function(anInfo) {
 
             info.atPut('bayIndex', 2);
 
-            //  Now that we have more inspector items, obtain the list again.
+            //  Now that we have more wayfinder items, obtain the list again.
 
-            //  Grab the inspector bays (but not the filler bays).
+            //  Grab the wayfinder bays (but not the filler bays).
             inspectorBays = this.getInspectorBays();
         } else {
             //  No root resolver - can't go any further
@@ -1078,9 +1078,9 @@ function(anInfo) {
 
             info.atPut('bayIndex', 2);
 
-            //  Now that we have more inspector items, obtain the list again.
+            //  Now that we have more wayfinder items, obtain the list again.
 
-            //  Grab the inspector bays (but not the filler bays).
+            //  Grab the wayfinder bays (but not the filler bays).
             inspectorBays = this.getInspectorBays();
 
         } else {
@@ -1108,9 +1108,9 @@ function(anInfo) {
 
                 info.atPut('bayIndex', 2);
 
-                //  Now that we have more inspector items, obtain the list again.
+                //  Now that we have more wayfinder items, obtain the list again.
 
-                //  Grab the inspector bays (but not the filler bays).
+                //  Grab the wayfinder bays (but not the filler bays).
                 inspectorBays = this.getInspectorBays();
             }
         }
@@ -1155,9 +1155,9 @@ function(anInfo) {
                                 'targetObject', rootEntryResolver);
             this.populateBayUsing(rootInfo, false);
 
-            //  Now that we have more inspector items, obtain the list again.
+            //  Now that we have more wayfinder items, obtain the list again.
 
-            //  Grab the inspector bays (but not the filler bays).
+            //  Grab the wayfinder bays (but not the filler bays).
             inspectorBays = this.getInspectorBays();
         } else {
             //  If any of these path parts returned an alias, look it up here.
@@ -1229,10 +1229,10 @@ function(anInfo) {
                     this.populateBayUsing(info);
                 }
 
-                //  Now that we have more inspector items, obtain the list
+                //  Now that we have more wayfinder items, obtain the list
                 //  again.
 
-                //  Grab the inspector bays (but not the filler bays).
+                //  Grab the wayfinder bays (but not the filler bays).
                 inspectorBays = this.getInspectorBays();
             }
         }
@@ -1325,7 +1325,7 @@ function(aSlotPosition) {
         return null;
     }
 
-    //  Grab the inspector bays (but not the filler bays).
+    //  Grab the wayfinder bays (but not the filler bays).
     inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return null;
@@ -1526,7 +1526,7 @@ function() {
 
         lastResolver;
 
-    //  Grab the inspector bays (but not the filler bays).
+    //  Grab the wayfinder bays (but not the filler bays).
     inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return null;
@@ -1635,27 +1635,6 @@ function() {
                 });
 
     return result;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.wayfinder.Inst.defineHandler('AppDidStart',
-function(aSignal) {
-
-    /**
-     * @method handleAppDidStart
-     * @summary Handles notifications of when the document containing the
-     *     receiver or one of its elements resizes.
-     * @param {TP.sig.DOMResize} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.xctrls.wayfinder} The receiver.
-     */
-
-    TP.sys.getApplication().removeController(this);
-
-    this.focusUsingInfo(TP.hc('targetObject', this));
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1918,10 +1897,10 @@ function(shouldIncludeFillers) {
 
     /**
      * @method getInspectorBays
-     * @summary Returns the receiver's inspector bay items.
+     * @summary Returns the receiver's wayfinder bay items.
      * @param {Boolean} [shouldIncludeFillers=false] Whether or not to include
      *     'filler' bays in the list of returned bays.
-     * @returns {TP.xctrls.wayfinderitem[]} An Array of the receiver's inspector
+     * @returns {TP.xctrls.wayfinderitem[]} An Array of the receiver's wayfinder
      *     bay items.
      */
 
@@ -1967,11 +1946,11 @@ function(shouldIncludeFillers) {
 
     /**
      * @method getInspectorBaysWidth
-     * @summary Returns the sum total of the receiver's inspector bay items
+     * @summary Returns the sum total of the receiver's wayfinder bay items
      *     widths.
      * @param {Boolean} [shouldIncludeFillers=false] Whether or not to include
      *     'filler' bays in the list of returned bays.
-     * @returns {Number} The width of the inspector bay items summed together.
+     * @returns {Number} The width of the wayfinder bay items summed together.
      */
 
     var includeFillers,
@@ -2017,6 +1996,7 @@ function(info, createHistoryEntry) {
      *          'targetAspect':     The property of the target object to use to
      *                              query the target object for the next object
      *                              to query, thereby traversing.
+     *          'bayIndex':         The bay to populate.
      * @param {Boolean} [createHistoryEntry=true] Whether or not to create a
      *     history entry after traversing.
      * @returns {TP.xctrls.wayfinder} The receiver.
@@ -2052,7 +2032,7 @@ function(info, createHistoryEntry) {
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
 
-    //  Grab the inspector bays (*including* the filler bays).
+    //  Grab the wayfinder bays (*including* the filler bays).
     //  NB: existingBays could be empty here, and that's ok.
     existingBays = this.getInspectorBays(true);
 
@@ -2258,9 +2238,9 @@ function(aBayNum) {
         bayNum = selectedItems.getSize();
     }
 
-    //  Grab the inspector bay corresponding to that bay number
+    //  Grab the wayfinder bay corresponding to that bay number
 
-    //  Grab the inspector bays (but not the filler bays).
+    //  Grab the wayfinder bays (but not the filler bays).
     inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return this;
@@ -2355,9 +2335,9 @@ function(aBayNum) {
         bayNum = selectedItems.getSize();
     }
 
-    //  Grab the inspector bay corresponding to that bay number
+    //  Grab the wayfinder bay corresponding to that bay number
 
-    //  Grab the inspector bays (but not the filler bays).
+    //  Grab the wayfinder bays (but not the filler bays).
     inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return this;
@@ -2580,7 +2560,7 @@ function(direction) {
 
     inspectorElem = this.getNativeNode();
 
-    //  Grab the inspector bays (but not the filler bays).
+    //  Grab the wayfinder bays (but not the filler bays).
     inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return this;
@@ -2643,7 +2623,7 @@ function(direction) {
         //  end of the list, then that must mean we're right on the edge of the
         //  bay.
         //  This means that this calculation won't allow us to proceed, which
-        //  means that we need to force the inspector to go one more bay to the
+        //  means that we need to force the wayfinder to go one more bay to the
         //  right.
         if (inspectorElem.scrollLeft === newEdge && i < len - 1) {
             //  Grab one more bay to the right, get it's 'east' edge and use
@@ -2678,7 +2658,7 @@ function() {
 
         eastEdgeX;
 
-    //  Grab the inspector bays (but not the filler bays).
+    //  Grab the wayfinder bays (but not the filler bays).
     inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return this;
@@ -2764,11 +2744,7 @@ function(aDataObject, shouldSignal, isFiltered) {
      * @returns {TP.xctrls.wayfinder} The receiver.
      */
 
-    var dataObj,
-        keys,
-        obj,
-
-        filteringSource;
+    var dataObj;
 
     if (TP.notValid(aDataObject)) {
         return this;
@@ -2777,86 +2753,9 @@ function(aDataObject, shouldSignal, isFiltered) {
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
 
-    //  If the data object is an Array and only has 1 item, which must be a
-    //  non-Array Collection (Hash, POJO, NodeList, NamedNodeMap), then we use
-    //  the entries collection as our data object.
-    if (TP.isArray(dataObj) &&
-        dataObj.getSize() === 1 &&
-        TP.isCollection(dataObj.first()) &&
-        !TP.isArray(dataObj.first())) {
-        dataObj = TP.entries(dataObj.first());
-    }
-
     this.$set('data', dataObj, false);
 
-    //  Make sure to clear our converted data.
-    this.set('$convertedData', null, false);
-
-    //  This object needs to see keys in 'Array of keys' format. Therefore, the
-    //  following conversions are done:
-
-    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
-    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
-    //  Array of items: ['a','b','c']               -> [0, 1, 2]
-
-    if (TP.isValid(dataObj)) {
-
-        //  If we have a hash as our data, this will convert it into an Array of
-        //  ordered pairs (i.e. an Array of Arrays) where the first item in each
-        //  Array is the key and the second item is the value.
-        if (TP.isHash(dataObj)) {
-            keys = dataObj.getKeys();
-            filteringSource = dataObj.getValues();
-        } else if (TP.isPlainObject(dataObj)) {
-            //  Make sure to convert a POJO into a TP.core.Hash
-            obj = TP.hc(dataObj);
-            keys = obj.getKeys();
-            filteringSource = obj.getValues();
-        } else if (TP.isPair(dataObj.first())) {
-            keys = TP.ac();
-            filteringSource = TP.ac();
-            dataObj.perform(
-                    function(item) {
-                        //  Note that we want a String here.
-                        keys.push(item.first().toString());
-                        filteringSource.push(item.last().toString());
-                    });
-        } else if (TP.isArray(dataObj)) {
-            keys = dataObj.getIndices().collect(
-                    function(item) {
-                        //  Note that we want a String here.
-                        return item.toString();
-                    });
-            filteringSource = dataObj;
-        }
-
-        this.set('$dataKeys', keys, false);
-    } else {
-        this.set('$dataKeys', null, false);
-    }
-
-    if (TP.isEmpty(keys)) {
-        return this;
-    }
-
-    keys.forEach(
-        function(aKey, anIndex) {
-            var sourceObj,
-                resolver;
-
-            sourceObj = filteringSource.at(anIndex);
-
-            if (TP.isString(sourceObj)) {
-                resolver = TP.bySystemId(sourceObj);
-            } else {
-                resolver = sourceObj;
-            }
-
-            //  TODO: Verify that resolver implements TP.xctrls.WayfinderAPI
-            //  Use canInvokeInterface(methodNameArray);
-
-            this.addEntry(resolver.getEntryLabel(aKey), resolver);
-        }.bind(this));
+    this.focusInspectorOnHome();
 
     return this;
 });
@@ -2877,8 +2776,6 @@ function() {
 
     //  Selected items
     this.set('selectedItems', TP.ac());
-
-    TP.sys.getApplication().pushController(this);
 
     return this;
 });
@@ -2953,7 +2850,7 @@ function(pathParts) {
         targetAspect,
         info;
 
-    //  Grab the inspector bays (but not the filler bays).
+    //  Grab the wayfinder bays (but not the filler bays).
     inspectorBays = this.getInspectorBays();
     if (TP.isEmpty(inspectorBays)) {
         return this;
@@ -3011,7 +2908,7 @@ function(pathParts) {
             //  Now that we have more wayfinder items, obtain the list
             //  again.
 
-            //  Grab the inspector bays (but not the filler bays).
+            //  Grab the wayfinder bays (but not the filler bays).
             inspectorBays = this.getInspectorBays();
         }
     }
