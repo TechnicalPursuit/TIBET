@@ -1935,6 +1935,10 @@ function(anElement, aRequest) {
     //  Grab the new native Element back from the wrapper.
     newElem = tpElem.getNativeNode();
 
+    //  Just in case the compilation process put TIBET expandos on the result
+    //  element. We want them removed.
+    TP.nodeRemoveTIBETExpandos(newElem);
+
     return newElem;
 });
 
