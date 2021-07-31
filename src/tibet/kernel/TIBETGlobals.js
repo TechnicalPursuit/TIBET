@@ -955,38 +955,38 @@ TP.REQUIRED = function() {
 
 //  for native nodes
 //  NOTE: If this list is changed, the TP.nodeCopyTIBETExpandos() routine needs
-//  to be changed.
-TP.EVENT_IDS = 'tp_eventIds';
-TP.EVENT_BLOCKS = 'tp_eventBlocks';
-TP.GLOBAL_ID = 'tp_globalID';
-TP.SHOULD_SIGNAL_CHANGE = 'tp_shouldSignalChange';
-TP.SHOULD_SUSPEND_SIGNALING = 'tp_shouldSuspendSignaling';
-TP.WRAPPER = 'tp_wrapper';
-TP.GENERATOR = 'tp_generator';
-TP.IS_XHTML = 'tp_isXHTML';
-TP.IS_XML = 'tp_isXML';
-TP.SRC_LOCATION = 'tp_source_location';
-TP.OBSERVED_ATTRS = 'tp_observed_attrs';
-TP.NODE_TYPE = 'tp_nodetype';
-TP.BIND_INFO_REGISTRY = 'tp_bind_info_registry';
-TP.GENERATED = 'tp_generated';
-TP.AWAKENED = 'tp_awakened';
-TP.APPLIED_RULES = 'tp_applied_rules';
-TP.TIBET_PRIVATE = 'tp_tibet_private';
-TP.PREVIOUS_POSITION = 'tp_previous_position';
-TP.INSERTION_POSITION = 'tp_insertion_position';
-TP.RESIZE_LISTENERS = 'tp_resize_listeners';
-TP.LAMA_MUTATION = 'tp_lama_mutated';
-TP.OLD_OVERFLOW = 'tp_old_overflow';
-TP.BUSY_ELEMENT = 'tp_busy_element';
-TP.BUSY_MSG_ELEMENT = 'tp_busy_msg_element';
-TP.BUSY_BKGD_ELEMENT = 'tp_busy_bkgd_element';
-TP.BUSY_RESIZE_FUNC = 'tp_busy_resize_function';
-TP.REPEAT_SOURCE = 'tp_repeat_source';
-TP.REPEAT_INDEX = 'tp_repeat_index';
-TP.PSEUDO_INLINE_STYLE = 'tp_pseudo_inline_style';
-TP.RESPONDER_EXPRESSION = 'tp_responder_expr';
-TP.RESPONDER_REGEX = 'tp_responder_regex';
+//  to be changed. 'done' indicates that this method has been updated to take
+//  that property into account. 'ignore' indicates that this method should
+//  ignore this property.
+TP.EVENT_IDS = 'tp_eventIds';                               //  ignore
+TP.EVENT_BLOCKS = 'tp_eventBlocks';                         //  ignore
+TP.GLOBAL_ID = 'tp_globalID';                               //  done
+TP.SHOULD_SIGNAL_CHANGE = 'tp_shouldSignalChange';          //  done
+TP.SHOULD_SUSPEND_SIGNALING = 'tp_shouldSuspendSignaling';  //  done
+TP.WRAPPER = 'tp_wrapper';                                  //  ignore
+TP.GENERATOR = 'tp_generator';                              //  done
+TP.IS_XHTML = 'tp_isXHTML';                                 //  done
+TP.IS_XML = 'tp_isXML';                                     //  done
+TP.SRC_LOCATION = 'tp_source_location';                     //  done
+TP.OBSERVED_ATTRS = 'tp_observed_attrs';                    //  ignore
+TP.NODE_TYPE = 'tp_nodetype';                               //  done
+TP.BIND_INFO_REGISTRY = 'tp_bind_info_registry';            //  ignore
+TP.GENERATED = 'tp_generated';                              //  done
+TP.AWAKENED = 'tp_awakened';                                //  ignore
+TP.APPLIED_RULES = 'tp_applied_rules';                      //  ignore
+TP.TIBET_PRIVATE = 'tp_tibet_private';                      //  done
+TP.PREVIOUS_POSITION = 'tp_previous_position';              //  ignore
+TP.INSERTION_POSITION = 'tp_insertion_position';            //  ignore
+TP.RESIZE_LISTENERS = 'tp_resize_listeners';                //  ignore
+TP.LAMA_MUTATION = 'tp_lama_mutated';                       //  ignore
+TP.OLD_OVERFLOW = 'tp_old_overflow';                        //  done
+TP.BUSY_ELEMENT = 'tp_busy_element';                        //  ignore
+TP.BUSY_MSG_ELEMENT = 'tp_busy_msg_element';                //  ignore
+TP.BUSY_BKGD_ELEMENT = 'tp_busy_bkgd_element';              //  ignore
+TP.BUSY_RESIZE_FUNC = 'tp_busy_resize_function';            //  ignore
+TP.REPEAT_SOURCE = 'tp_repeat_source';                      //  done
+TP.REPEAT_INDEX = 'tp_repeat_index';                        //  done
+TP.PSEUDO_INLINE_STYLE = 'tp_pseudo_inline_style';          //  ignore
 
 TP.BOUND_ATTR_COUNT = 'tp_bound_attr_count';
 TP.BOUND_ATTR_PROCESSED_COUNT = 'tp_bound_attr_processed_count';
