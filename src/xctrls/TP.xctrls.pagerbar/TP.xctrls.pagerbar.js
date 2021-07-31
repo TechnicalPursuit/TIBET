@@ -247,7 +247,7 @@ function(aSignal) {
                 signalName = 'TP.sig.UIPageSet';
 
                 //  We're going to use the item number as the new page value.
-                newValue = valueTPElem.getParentNode().getAttribute('itemnum');
+                newValue = valueTPElem.getParentNode().getAttribute(TP.ITEM_NUM);
 
                 newPageValue = newValue.asNumber();
                 if (TP.isNaN(newPageValue)) {

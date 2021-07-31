@@ -303,7 +303,7 @@ function() {
 
     //  All DOM 'items' in an itemset have an item number. This will also be the
     //  index into the data for that item.
-    itemNum = item.getAttribute('itemnum');
+    itemNum = item.getAttribute(TP.ITEM_NUM);
 
     data = this.get('data');
 
@@ -1483,7 +1483,7 @@ function(selection) {
 
             return '0';
         }).attr(
-        'itemnum', function(d, i) {
+        TP.ITEM_NUM, function(d, i) {
             return i;
         }).attr(
         'hidefocus', function(d, i) {
@@ -1610,7 +1610,7 @@ function(selection) {
 
                 return '0';
             }).attr(
-            'itemnum', function(d, i) {
+            TP.ITEM_NUM, function(d, i) {
                 return i;
             }).attr(
             'hidefocus', function(d, i) {
