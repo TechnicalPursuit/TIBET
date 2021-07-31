@@ -139,10 +139,6 @@ function(aRequest) {
 
 TP.xctrls.Lattice.Inst.defineAttribute('$numSpacerRows');
 
-//  The data as massaged into what this control needs. This is reset whenever
-//  the control's whole data set is reset.
-TP.xctrls.Lattice.Inst.defineAttribute('$convertedData');
-
 TP.xctrls.Lattice.Inst.defineAttribute(
     'scroller', TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
 
@@ -192,7 +188,7 @@ function() {
 
         oldSpacingRowCount;
 
-    selectionData = this.get('$convertedData');
+    selectionData = this.get('data');
 
     //  First, make sure the converted data is valid. If not, then convert it.
     if (TP.notValid(selectionData)) {
@@ -677,7 +673,6 @@ function(aValue, shouldSignal) {
         //  Otherwise, we just return false
 
         if (TP.isCollection(newValue)) {
-            this.set('$convertedData', null, false);
             this.render();
 
             return true;
