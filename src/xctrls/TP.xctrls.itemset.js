@@ -1260,9 +1260,12 @@ function(enterSelection) {
         shouldConstructCloseMarks,
         shouldConstructTooltips;
 
+    //  We share this key function with d3. This will invoke 'getKeyFunction' on
+    //  any adaptor that we define or the item type.
+    keyFunc = this.d3KeyFunction();
+
     labelFunc = this.getLabelFunction();
     valueFunc = this.getValueFunction();
-    keyFunc = this.getKeyFunction();
 
     itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
                                 this.getType().get('defaultItemTagName'));
@@ -1275,6 +1278,7 @@ function(enterSelection) {
     newContent.each(
         function(data, index) {
             var key,
+
                 labelContent,
                 markContent,
                 valueContent,
