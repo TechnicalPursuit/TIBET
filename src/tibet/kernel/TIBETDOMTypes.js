@@ -1949,6 +1949,7 @@ function() {
 
     var aspects;
 
+    //  If we've already cached the faceted aspects, just return them.
     if (TP.owns(this, '$$faceted_aspects')) {
         return this.$$faceted_aspects;
     }
@@ -1977,6 +1978,9 @@ function() {
 
                     return false;
                 });
+
+    //  Cache the filtered set of aspects locally on this instance.
+    this.$$faceted_aspects = aspects;
 
     return aspects;
 });

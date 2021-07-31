@@ -9244,13 +9244,15 @@ function() {
     var aspects,
         thisType;
 
+    //  If we've already cached the faceted aspects, just return them.
     if (TP.owns(this, '$$faceted_aspects')) {
         return this.$$faceted_aspects;
     }
 
-    aspects = this.getKeys();
+    //  Get all of the keys representing attributes on us.
+    aspects = this.getAttributeKeys();
 
-    //  We want to filter out slots holding facet values
+    //  We want to filter out slots holding facet values.
     aspects = aspects.reject(
             function(aspectName) {
                 return TP.regex.FACET_SLOT_NAME_MATCH.test(aspectName);
@@ -9258,16 +9260,13 @@ function() {
 
     thisType = this.getType();
 
-    //  Next filter out slots that don't have property descriptors
+    //  Next filter out slots that don't have property descriptors.
     aspects = aspects.select(
             function(aspectName) {
                 return TP.isValid(thisType.getInstDescriptorFor(aspectName));
             });
 
-    if (!TP.owns(this, '$$faceted_aspects')) {
-        this.$$faceted_aspects = [];
-    }
-
+    //  Cache the computed set of aspects locally on this instance.
     this.$$faceted_aspects = aspects;
 
     return aspects;
@@ -12140,6 +12139,36 @@ function(keyArray, forceInvalid) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.Object.Inst.defineMethod('getAttributeKeys',
+function() {
+
+    /**
+     * @method getAttributeKeys
+     * @summary Returns the objects keys that represent attributes on the
+     *     object. The keys will be all of the receiver's attributes, hidden or
+     *     shown, instance-level or local-level.
+     * @returns {String[]} An Array of all attributes of the receiver, hidden or
+     *     shown, instance-level or local-level.
+     */
+
+    var keys;
+
+    //  The 'inst interface' call will retrieve all of the 'instance
+    //  attributes', hidden or not, and the 'local interface' call will retrieve
+    //  all of the 'local attributes', hidden or not.
+    keys = this.getInstInterface(
+                    TP.SLOT_FILTERS.known_attributes).concat(
+            this.getLocalInterface(TP.SLOT_FILTERS.known_local_attributes));
+
+    //  Make sure that we unique this list. Otherwise, attributes that have
+    //  local values will show up twice.
+    keys.unique();
+
+    return keys;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Object.Inst.defineMethod('getConstructor',
 function() {
 
@@ -12176,26 +12205,13 @@ function() {
 
     /**
      * @method getKeys
-     * @summary Returns the objects keys. The keys will be all of the receiver's
-     *     attributes, hidden or shown, instance-level or local-level.
-     * @returns {String[]} An Array of all attributes of the receiver, hidden or
-     *     shown, instance-level or local-level.
+     * @summary Returns the objects keys. By default, this is the receiver's
+     *     'attribute keys' (i.e. keys matching the attributes of the receiver).
+     * @returns {String[]} An Array of keys matching all attributes of the
+     *     receiver, hidden or shown, instance-level or local-level.
      */
 
-    var keys;
-
-    //  The 'inst interface' call will retrieve all of the 'instance
-    //  attributes', hidden or not, and the 'local interface' call will retrieve
-    //  all of the 'local attributes', hidden or not.
-    keys = this.getInstInterface(
-                    TP.SLOT_FILTERS.known_attributes).concat(
-            this.getLocalInterface(TP.SLOT_FILTERS.known_local_attributes));
-
-    //  Make sure that we unique this list. Otherwise, attributes that have
-    //  local values will show up twice.
-    keys.unique();
-
-    return keys;
+    return this.getAttributeKeys();
 });
 
 //  ------------------------------------------------------------------------

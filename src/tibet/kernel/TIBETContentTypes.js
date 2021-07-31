@@ -585,17 +585,25 @@ function() {
      *     the receiver.
      */
 
-    var aspectsToCheck,
+    var aspects,
         index;
 
-    aspectsToCheck = this.callNextMethod();
-
-    //  We want to filter out the 'data' slot
-    if ((index = aspectsToCheck.indexOf('data')) !== TP.NOT_FOUND) {
-        aspectsToCheck.splice(index, 1);
+    //  If we've already cached the faceted aspects, just return them.
+    if (TP.owns(this, '$$faceted_aspects')) {
+        return this.$$faceted_aspects;
     }
 
-    return aspectsToCheck;
+    aspects = this.callNextMethod();
+
+    //  We want to filter out the 'data' slot.
+    if ((index = aspects.indexOf('data')) !== TP.NOT_FOUND) {
+        aspects.splice(index, 1);
+    }
+
+    //  Cache the filtered set of aspects locally on this instance.
+    this.$$faceted_aspects = aspects;
+
+    return aspects;
 });
 
 //  ------------------------------------------------------------------------
@@ -912,6 +920,7 @@ function() {
 
     var aspects;
 
+    //  If we've already cached the faceted aspects, just return them.
     if (TP.owns(this, '$$faceted_aspects')) {
         return this.$$faceted_aspects;
     }
@@ -938,6 +947,7 @@ function() {
                     return false;
                 });
 
+    //  Cache the filtered set of aspects locally on this instance.
     this.$$faceted_aspects = aspects;
 
     return aspects;
