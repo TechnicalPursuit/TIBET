@@ -16,6 +16,18 @@ TP.lang.Object.defineSubtype('TP.xctrls.WayfinderAPI');
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('getResolverForTool',
+function(anObject, toolName, anID, options) {
+
+    if (TP.canInvoke(anObject, 'getResolverForTool')) {
+        return anObject.getResolverForTool(toolName, anID, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.WayfinderAPI.Inst.defineMethod('canReuseContentForTool',
 function(toolName, options) {
 
@@ -163,18 +175,18 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.WayfinderAPI.Inst.defineMethod('resolveAspectForTool',
+TP.xctrls.WayfinderAPI.Inst.defineMethod('getResolverForTool',
 function(toolName, anID, options) {
 
     /**
-     * @method resolveAspectForTool
+     * @method getResolverForTool
      * @summary
      * @returns
      */
 
     var methodName;
 
-    methodName = 'resolveAspectFor' + toolName.asTitleCase();
+    methodName = 'getResolverFor' + toolName.asTitleCase();
     if (TP.canInvoke(this, methodName)) {
         return this[methodName](anID, options);
     }

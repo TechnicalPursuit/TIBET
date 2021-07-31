@@ -856,7 +856,7 @@ function(anInfo) {
         //  If we have a valid resolver, use it to compute the target from the
         //  target aspect.
         if (TP.isValid(resolver)) {
-            target = TP.resolveAspectForTool(
+            target = TP.getResolverForTool(
                         resolver,
                         'wayfinder',
                         targetAspect,
@@ -1177,7 +1177,7 @@ function(anInfo) {
                 targetAspect = pathParts.at(i);
 
                 //  Resolve the targetAspect to a target object
-                target = TP.resolveAspectForTool(
+                target = TP.getResolverForTool(
                                 resolver,
                                 'wayfinder',
                                 targetAspect,
@@ -2986,7 +2986,7 @@ function(pathParts) {
             targetAspect = resolvedPathParts.at(i);
 
             //  Resolve the targetAspect to a target object
-            target = TP.resolveAspectForTool(
+            target = TP.getResolverForTool(
                             resolver,
                             'wayfinder',
                             targetAspect,
