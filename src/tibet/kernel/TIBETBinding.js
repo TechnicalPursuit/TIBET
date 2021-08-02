@@ -4522,6 +4522,104 @@ function(indexes, aCollection) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('isAspectBoundIn',
+function(aspectName) {
+
+    /**
+     * @method isAspectBoundIn
+     * @summary Returns whether or not the aspect is bound 'in' on the receiver.
+     * @param {String} aspectName The name of the aspect that the caller wants
+     *     to check the binding for.
+     * @returns {Boolean} Whether or not the supplied aspect is bound 'in' to
+     *     the receiver.
+     */
+
+    var bindingInfo,
+
+        keys,
+        len,
+        i;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:in', this.getAttribute('bind:in'));
+
+    //  This info is keyed by aspect. If one of the keys matches the aspect,
+    //  return true.
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        if (keys.at(i) === aspectName) {
+            return true;
+        }
+    }
+
+    //  It might not have been in the 'bind:in', so we do it again with
+    //  'bind:io'
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:io', this.getAttribute('bind:io'));
+
+    //  This info is keyed by aspect. If one of the keys matches the aspect,
+    //  return true.
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        if (keys.at(i) === aspectName) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('isAspectBoundOut',
+function(aspectName) {
+
+    /**
+     * @method isAspectBoundOut
+     * @summary Returns whether or not the aspect is bound 'out' on the
+     *     receiver.
+     * @param {String} aspectName The name of the aspect that the caller wants
+     *     to check the binding for.
+     * @returns {Boolean} Whether or not the supplied aspect is bound 'out' to
+     *     the receiver.
+     */
+
+    var bindingInfo,
+
+        keys,
+        len,
+        i;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:out', this.getAttribute('bind:out'));
+
+    //  This info is keyed by aspect. If one of the keys matches the aspect,
+    //  return true.
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        if (keys.at(i) === aspectName) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('isBoundElement',
 function() {
 
