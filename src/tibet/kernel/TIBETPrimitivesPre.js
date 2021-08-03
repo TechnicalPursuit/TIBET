@@ -3739,6 +3739,44 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isScalarType',
+function(anObj) {
+
+    /**
+     * @method isScalarType
+     * @summary Returns true if the type provided is a scalar type.
+     * @param {Object} anObj The object to test.
+     * @example Test what's a scalar type and what's not:
+     *     <code>
+     *          TP.isScalarType(42);
+     *          <samp>true</samp>
+     *          TP.isScalarType(true);
+     *          <samp>true</samp>
+     *          TP.isScalarType('hi');
+     *          <samp>true</samp>
+     *          TP.isScalarType(new Date());
+     *          <samp>true</samp>
+     *          TP.isScalarType(function() {alert('hi'));
+     *          <samp>true</samp>
+     *          TP.isScalarType(/foo/);
+     *          <samp>true</samp>
+     *          TP.isScalarType({});
+     *          <samp>false</samp>
+     *          TP.isScalarType([]);
+     *          <samp>false</samp>
+     *          TP.isScalarType(TP.lang.Object.construct());
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a 'scalar type'.
+     */
+
+    //  For now, we just return the inversion of whether something is a
+    //  reference type.
+    return !TP.isReferenceType(anObj);
+}, null, 'TP.isScalarType');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('genUUID',
 function() {
 
