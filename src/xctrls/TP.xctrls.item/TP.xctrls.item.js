@@ -124,6 +124,10 @@ function(ownerElement) {
     slotName = TP.ifEmpty(slotName, 1);
 
     func = function(d, i) {
+        if (TP.isScalarType(d)) {
+            return d;
+        }
+
         if (TP.canInvoke(d, 'at')) {
             return d.at(slotName);
         } else {
@@ -167,6 +171,10 @@ function(ownerElement) {
     slotName = TP.ifEmpty(slotName, 0);
 
     func = function(d, i) {
+        if (TP.isScalarType(d)) {
+            return d;
+        }
+
         if (TP.canInvoke(d, 'at')) {
             return d.at(slotName);
         } else {
