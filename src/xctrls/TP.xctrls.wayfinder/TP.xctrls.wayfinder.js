@@ -2083,6 +2083,12 @@ function(info, createHistoryEntry) {
                 'wayfinder',
                 params);
 
+    //  If the target handed back null as the final target, it doesn't want to
+    //  traverse so we end here.
+    if (TP.notValid(target)) {
+        return this;
+    }
+
     //  Make sure to reset the target in the info hash to the final one.
     info.atPut('targetObject', target);
 
@@ -2093,7 +2099,7 @@ function(info, createHistoryEntry) {
             'wayfinder',
             params);
 
-    //  If there wasn't a valid target , then clean up/out any unused bays, let
+    //  If there wasn't a valid target, then clean up/out any unused bays, let
     //  any observers know that we 'focused' (on null) and return.
     if (TP.notValid(target)) {
 

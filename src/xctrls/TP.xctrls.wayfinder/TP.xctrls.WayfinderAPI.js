@@ -16,6 +16,90 @@ TP.lang.Object.defineSubtype('TP.xctrls.WayfinderAPI');
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('canReuseContentForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'canReuseContentForTool')) {
+        return anObject.canReuseContentForTool(toolName, options);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getConfigForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getConfigForTool')) {
+        return anObject.getConfigForTool(toolName, options);
+    }
+
+    return TP.hc();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getContentForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getContentForTool')) {
+        return anObject.getContentForTool(toolName, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getChildTypeForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getChildTypeForTool')) {
+        return anObject.getChildTypeForTool(toolName, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getDataForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getDataForTool')) {
+        return anObject.getDataForTool(toolName, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getFinalTargetForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getFinalTargetForTool')) {
+        return anObject.getFinalTargetForTool(toolName, options);
+    }
+
+    return anObject;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getPathPartsForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getPathPartsForTool')) {
+        return anObject.getPathPartsForTool(toolName, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getResolverForTool',
 function(anObject, toolName, anID, options) {
 
