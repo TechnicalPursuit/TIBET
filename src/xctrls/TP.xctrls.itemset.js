@@ -1286,7 +1286,7 @@ function(enterSelection) {
 
                 hintElement;
 
-            key = keyFunc(data, index);
+            key = TP.isCallable(keyFunc) ? keyFunc(data, index) : index;
             TP.elementSetAttribute(this, TP.DATA_KEY, key, true);
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
@@ -1821,7 +1821,7 @@ function(exitSelection) {
         function(data, index) {
             var key;
 
-            key = keyFunc(data);
+            key = TP.isCallable(keyFunc) ? keyFunc(data, index) : index;
             keys.remove(key);
         });
 
@@ -1961,7 +1961,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
             keyFunc = adaptorType.getKeyFunction(this);
         }
 
-        key = keyFunc(datum, index);
+        key = TP.isCallable(keyFunc) ? keyFunc(datum, index) : index;
         TP.elementSetAttribute(itemElement, TP.DATA_KEY, key, true);
     }
 
