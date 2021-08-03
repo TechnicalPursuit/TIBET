@@ -7932,7 +7932,11 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
         getRequest = TP.request('signalChange', false,
                                 'shouldCollapse', shouldCollapseVal);
 
-        initialScopedValue = TP.collapse(outerScopeValue);
+        if (shouldCollapseVal) {
+            initialScopedValue = TP.collapse(outerScopeValue);
+        } else {
+            initialScopedValue = outerScopeValue;
+        }
 
         hasTransformFunc = TP.isCallable(transformFunc);
 
@@ -8034,6 +8038,7 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                                 //  empty
                             } else {
                                 pathType = null;
+                                scopedVal = TP.collapse(scopedVal);
                             }
 
                             break;
@@ -8041,6 +8046,16 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                         case TP.JSON_PATH_TYPE:
                             if (TP.isKindOf(scopedVal, TP.core.JSONContent)) {
                                 //  empty
+                            } else {
+                                pathType = null;
+                                scopedVal = TP.collapse(scopedVal);
+                            }
+
+                            break;
+
+                        case TP.TIBET_PATH_TYPE:
+                            if (TP.isArray(scopedVal)) {
+                                scopedVal = TP.collapse(scopedVal);
                             } else {
                                 pathType = null;
                             }
