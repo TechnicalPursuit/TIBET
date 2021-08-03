@@ -5436,9 +5436,12 @@ function(anObject) {
      * @returns {Object} The result of collapsing the object.
      */
 
-    //  no valid source object means no work
-    if (TP.notValid(anObject)) {
-        return;
+    if (TP.notDefined(anObject)) {
+        return undefined;
+    }
+
+    if (TP.isNull(anObject)) {
+        return null;
     }
 
     if (TP.isString(anObject) ||
