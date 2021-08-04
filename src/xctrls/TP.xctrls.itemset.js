@@ -221,6 +221,12 @@ TP.xctrls.itemset.Inst.defineAttribute(
         TP.hc('shouldCollapse', true)));
 
 TP.xctrls.itemset.Inst.defineAttribute(
+    'itemWithKey',
+    TP.xpc('.//*[substring(name(), string-length(name()) - 3) = "item"' +
+                    ' and @datakey="{{0}}"]',
+        TP.hc('shouldCollapse', true)));
+
+TP.xctrls.itemset.Inst.defineAttribute(
     'itemWithLabel',
     TP.xpc('.//xctrls:label[text() = "{{0}}"]/' +
             'ancestor::*[contains(@class, "item")]',
