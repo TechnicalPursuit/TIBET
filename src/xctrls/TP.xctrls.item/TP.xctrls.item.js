@@ -277,7 +277,7 @@ function() {
      */
 
     return this.get(
-        TP.xpc('string(./xctrls:value)', TP.hc('shouldCollapse', true)));
+        TP.xpc('string(.//xctrls:value)', TP.hc('shouldCollapse', true)));
 });
 
 //  ------------------------------------------------------------------------
