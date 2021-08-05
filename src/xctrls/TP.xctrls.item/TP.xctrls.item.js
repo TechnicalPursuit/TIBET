@@ -101,15 +101,19 @@ function(ownerElement) {
      * @method getLabelFunction
      * @summary Returns a Function that will be used to extract the label from
      *     the data.
-     * @description If the supplied owner element (an itemset or some other
-     *     container holding multiple items) defines a 'itemLabel' attribute, it
-     *     should be naming a 'slot' on the data that should be used as the label.
-     *     Then, the returned label function will use that slot name to query the
-     *     data for the label.
-     *     If no slot name is provided under the 'itemLabel' attribute on the
-     *     supplied owner element, then slot '1' of the data will be used by the
-     *     returned function as the key (because, by default, items handle
-     *     key/value pair Arrays).
+     * @description This method will return a Function that returns the label of
+     *     the data based on whether the data is a scalar value or not.
+     *     - If the data is a scalar value, then that value is returned 'whole'.
+     *     - If the data is not a scalar value, then:
+     *         - If the supplied owner element (an itemset or some other
+     *         container holding multiple items) defines a 'itemLabel'
+     *         attribute, it should be naming a 'slot' on the data that should
+     *         be used as the label. The returned label function will use that
+     *         slot name to query the data for the label.
+     *         -  If no slot name is provided under the 'itemLabel' attribute on
+     *         the supplied owner element, then slot '0' of the data will be
+     *         used by the returned function as the key (because, by default,
+     *         items handle key/value pair Arrays).
      * @returns {Function} The Function that will be used to extract the label
      *     from the data.
      */
@@ -147,16 +151,19 @@ function(ownerElement) {
      * @method getValueFunction
      * @summary Returns a Function that will be used to extract the value from
      *     the data.
-     * @description If the supplied owner element (an itemset or some other
-     *     container holding multiple items) defines a 'itemValue' attribute, it
-     *     should be naming a 'slot' on the data that should be used as the
-     *     value.
-     *     Then, the returned value function will use that slot name to query the
-     *     data for the value.
-     *     If no slot name is provided under the 'itemValue' attribute on the
-     *     supplied owner element, then slot '0' of the data will be used by the
-     *     returned function as the key (because, by default, items handle
-     *     key/value pair Arrays).
+     * @description This method will return a Function that returns the value of
+     *     the data based on whether the data is a scalar value or not.
+     *     - If the data is a scalar value, then that value is returned 'whole'.
+     *     - If the data is not a scalar value, then:
+     *         - If the supplied owner element (an itemset or some other
+     *         container holding multiple items) defines a 'itemValue'
+     *         attribute, it should be naming a 'slot' on the data that should
+     *         be used as the value. The returned value function will use that
+     *         slot name to query the data for the value.
+     *         -  If no slot name is provided under the 'itemValue' attribute on
+     *         the supplied owner element, then slot '0' of the data will be
+     *         used by the returned function as the key (because, by default,
+     *         items handle key/value pair Arrays).
      * @returns {Function} The Function that will be used to extract the value
      *     from the data.
      */

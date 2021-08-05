@@ -501,7 +501,7 @@ function() {
      *     item.
      */
 
-    //  By default we return null - this means d3 will use each datum.
+    //  By default we return null - this means d3 will use the index.
     return null;
 });
 

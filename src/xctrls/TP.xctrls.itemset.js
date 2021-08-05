@@ -1407,6 +1407,8 @@ function() {
         adaptorType = this.getItemTagType();
     }
 
+    //  It's highly unlikely that we couldn't obtain an adaptor type, but in
+    //  case that happened, exit here.
     if (!TP.isType(adaptorType)) {
         return this.callNextMethod();
     }
