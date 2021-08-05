@@ -2174,6 +2174,34 @@
     TP.sys.setcfg('uri.watch.exclude', ['~app/TIBET-INF/tibet', '*.bak$']);
 
     //  ---
+    //  Puppeteer
+    //  ---
+
+    TP.sys.setcfg('puppeteer.chromium_args', [
+                    '--disable-web-security',
+                    '--allow-file-access-from-files',
+                    '--no-sandbox']);
+
+    TP.sys.setcfg('puppeteer.debug_userdata_path', '~lib/.tshDebugPrefs');
+
+    //  NB: These are quoted JSON values as that's what the Devtools Preferences
+    //  system uses.
+    /* eslint-disable quote-props */
+    TP.sys.setcfg('puppeteer.devtools_preferences', {
+                    'currentDockState':
+                        '"undocked"',
+                    'panel-selectedTag':
+                        '"sources"',
+                    'Inspector.drawerSplitViewState':
+                        '{"horizontal":{"size":500,"showMode":"Both"}}',
+                    'Inspector.splitViewState':
+                        '{"vertical":{"size":775},"horizontal":{"size":450}}',
+                    'sourcesPanelNavigatorSplitViewState':
+                        '{"vertical":{"size":300,"showMode":"OnlyMain"}}'
+    });
+    /* eslint-enable quote-props */
+
+    //  ---
     //  CouchDB
     //  ---
 

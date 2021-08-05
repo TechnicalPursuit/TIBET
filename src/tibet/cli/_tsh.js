@@ -209,6 +209,8 @@ Cmd.prototype.execute = function() {
         ignoreStartupOutput,
         devtoolsPref,
         headlessPref,
+        userDataPath,
+        promise,
         puppetBrowser,
         puppetPage,
         start,
@@ -341,27 +343,98 @@ Cmd.prototype.execute = function() {
         headlessPref = CLI.getcfg('puppeteer.headless', true);
     }
 
-    //  Let us access file urls so we don't have to launch a server. Also, don't
-    //  specify a sandbox in case we're running as root.
-    puppeteerArgs = {
-        args: CLI.getcfg('puppeteer.chromium_args', [
-                        '--disable-web-security',
-                        '--allow-file-access-from-files',
-                        '--no-sandbox']),
-        devtools: devtoolsPref,
-        headless: headlessPref,
-        slowMo: CLI.getcfg('puppeteer.slowMo', false)
-    };
+    promise = Promise.resolve();
+
+    //  If we're running with 'devtools' on, then we try to use a user profile
+    //  so that we'll get Devtools to save things like recently opened files,
+    //  breakpoints, etc.
+    if (devtoolsPref) {
+        userDataPath = CLI.expandPath(
+            CLI.getcfg('puppeteer.debug_userdata_path', '~lib/.tshDebugPrefs'));
+
+        //  If the path doesn't exist, then launch Puppeteer with the user data
+        //  path so that it can create the user preference data and dump it
+        //  there. Then close it as soon as it opens.
+        if (!CLI.sh.test('-e', userDataPath)) {
+            promise = puppeteer.launch(
+                        {
+                            devtools: true,
+                            userDataDir: userDataPath
+                        });
+            promise = promise.then(
+                function(browser) {
+                    return browser.close();
+                });
+
+            //  Now that the user data directory and files exist, update the
+            //  '.../Default/Preferences' file under it with the
+            //  devtools_preferences that we have.
+            promise = promise.then(
+                function() {
+                    var prefsFilePath,
+                        prefs,
+
+                        devtoolsCfg,
+                        keys,
+                        i;
+
+                    prefsFilePath = CLI.joinPaths(userDataPath,
+                                                    'Default',
+                                                    'Preferences');
+                    prefs = JSON.parse(CLI.sh.cat(prefsFilePath));
+                    if (!prefs.devtools.preferences) {
+                        prefs.devtools.preferences = {};
+                    }
+
+                    //  Grab the Devtools preferences. Note that we supply true
+                    //  as the 3rd parameter to get a nested JS object.
+                    devtoolsCfg = CLI.getcfg('puppeteer.devtools_preferences',
+                                                {},
+                                                true);
+
+                    keys = Object.keys(devtoolsCfg);
+                    for (i = 0; i < keys.length; i++) {
+                        prefs.devtools.preferences[keys[i]] =
+                            devtoolsCfg[keys[i]];
+                    }
+
+                    new CLI.sh.ShellString(JSON.stringify(prefs)).to(
+                                                            prefsFilePath);
+                });
+        }
+
+        //  Let us access file urls so we don't have to launch a server. Also,
+        //  don't specify a sandbox in case we're running as root.
+        puppeteerArgs = {
+            args: CLI.getcfg('puppeteer.chromium_args', [
+                            '--disable-web-security',
+                            '--allow-file-access-from-files',
+                            '--no-sandbox']),
+            devtools: devtoolsPref,
+            userDataDir: userDataPath,
+            headless: headlessPref,
+            slowMo: CLI.getcfg('puppeteer.slowMo', false)
+        };
+
+    } else {
+        //  Let us access file urls so we don't have to launch a server. Also,
+        //  don't specify a sandbox in case we're running as root.
+        puppeteerArgs = {
+            args: CLI.getcfg('puppeteer.chromium_args', [
+                            '--disable-web-security',
+                            '--allow-file-access-from-files',
+                            '--no-sandbox'])
+        };
+    }
 
     if (cmd.options.verbose) {
         cmd.stdout('Launching puppeteer with args:\n' +
             CLI.beautify(puppeteerArgs));
     }
 
-    puppeteer.launch(
-        puppeteerArgs
-    ).then(
-    function(browser) {
+    promise.then(function() {
+        return puppeteer.launch(puppeteerArgs);
+    }).then(function(browser) {
 
         puppetBrowser = browser;
         return browser.newPage();
