@@ -925,7 +925,6 @@ function(anAspect) {
         selectionModel.empty();
 
         keys = this.get('$dataKeys');
-
         if (TP.isEmpty(keys)) {
             return this;
         }
@@ -1170,7 +1169,6 @@ function(aValue) {
     selectionEntry = TP.ac();
 
     keys = this.get('$dataKeys');
-
     if (TP.isEmpty(keys)) {
         return this;
     }
@@ -1183,8 +1181,8 @@ function(aValue) {
 
             lenj = value.getSize();
             for (j = 0; j < lenj; j++) {
-                if (keys.at(i) === value.at(j)) {
-                    selectionEntry.push(value.at(j));
+                if (this.getValueForKey(keys.at(i)) === value.at(j)) {
+                    selectionEntry.push(keys.at(i));
                     break;
                 }
             }
@@ -1198,8 +1196,8 @@ function(aValue) {
 
         for (i = 0; i < leni; i++) {
 
-            if (keys.at(i) === value) {
-                selectionEntry.push(value);
+            if (this.getValueForKey(keys.at(i)) === value) {
+                selectionEntry.push(keys.at(i));
                 break;
             }
         }
