@@ -2723,6 +2723,15 @@ function(aspectName, aContentObject, aRequest) {
     if (this.isScalarValued(aspectName)) {
         if (TP.isString(input)) {
             value = input;
+        } else if (TP.isFragment(input)) {
+            //  Since we're scalar-valued we want child nodes of the fragment to
+            //  be converted to Arrays of the node "values" in text form
+            result = TP.ac();
+            len = input.childNodes.length;
+            for (i = 0; i < len; i++) {
+                result.atPut(i, TP.val(input.childNodes[i]));
+            }
+            value = result;
         } else if (TP.isNode(input)) {
             value = TP.val(input);
         } else if (TP.isNodeList(input)) {
