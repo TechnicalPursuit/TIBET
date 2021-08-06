@@ -5056,7 +5056,13 @@ function(aspectName, facetName, facetValue, shouldSignal) {
         return true;
     }
 
-    if (!TP.equal(currentFacetVal, facetValue)) {
+    //  If it's a reference type or the two values are not equal, then we call
+    //  the setter. We do this for reference types in all cases because the
+    //  receiver may already be holding a reference to the reference-typed
+    //  object in 'currentFacetVal' and that object has been mutated so even an
+    //  equality compare is going to return true.
+    if (TP.isReferenceType(currentFacetVal) ||
+        !TP.equal(currentFacetVal, facetValue)) {
         funcName = this.computeAttrMethodName('setAttr', aspectName);
 
         if (TP.canInvoke(this, funcName)) {
