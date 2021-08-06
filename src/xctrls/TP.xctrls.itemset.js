@@ -390,6 +390,31 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.itemset.Inst.defineMethod('getKeyForValue',
+function(itemValue) {
+
+    /**
+     * @method getKeyForValue
+     * @summary Returns the key in the receiver's data set that matches the
+     *     supplied value. Note that if there are multiple values that match the
+     *     supplied value, the key matching the first one will be returned.
+     * @param {String} itemKey The value of the item to match.
+     * @returns {Object|null} The key that matches the supplied value in the
+     *     receiver's data set.
+     */
+
+    var item;
+
+    item = this.get('itemWithValue', itemValue);
+    if (TP.isValid(item)) {
+        return item.getAttribute(TP.DATA_KEY);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.itemset.Inst.defineMethod('getItemTagType',
 function() {
 
@@ -528,6 +553,74 @@ function() {
     data = this.get('data');
 
     return data.at(itemNum);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.itemset.Inst.defineMethod('getValueForKey',
+function(itemKey) {
+
+    /**
+     * @method getValueForKey
+     * @summary Returns the item in the receiver's data set that matches the
+     *     supplied key.
+     * @param {String} itemKey The key of the item to match. This will be
+     *     used to match the first item with that key, and so it should be
+     *     unique.
+     * @returns {Object|null} The item that matches the supplied key in the
+     *     receiver's data set.
+     */
+
+    var keys,
+
+        data,
+
+        hasStaticContent,
+
+        valueFunc,
+
+        dataIndex,
+
+        staticItem;
+
+    data = this.get('data');
+
+    //  If we're data bound, then all of our keys (static and dynamic) will be
+    //  found in '$dataKeys'.
+    if (TP.notEmpty(data)) {
+        keys = this.get('$dataKeys');
+
+        hasStaticContent = data.getSize() !== keys.getSize();
+
+        //  If we have static content, then we need to slice off those keys from
+        //  the front and back.
+        if (hasStaticContent) {
+            keys = keys.slice(this.getPrecedingStaticItemContent().getSize(),
+                                -this.getFollowingStaticItemContent().getSize());
+        }
+
+        dataIndex = keys.indexOf(itemKey);
+
+        if (dataIndex === TP.NOT_FOUND) {
+            staticItem = this.get('itemWithKey', itemKey);
+            if (TP.isValid(staticItem)) {
+                return staticItem.getValue();
+            }
+        }
+
+        valueFunc = this.getValueFunction();
+
+        return valueFunc(data.at(dataIndex), dataIndex);
+    } else {
+        //  We must have a purely static set of items. Their keys will be in the
+        //  DOM.
+        staticItem = this.get('itemWithKey', itemKey);
+        if (TP.isValid(staticItem)) {
+            return staticItem.getValue();
+        }
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
