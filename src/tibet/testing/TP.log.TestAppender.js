@@ -34,6 +34,7 @@ TP.log.TestAppender.Type.$set('defaultLayoutType', 'TP.log.TestLayout');
 //  Instance Attribute
 //  ----------------------------------------------------------------------------
 
+TP.log.TestAppender.Inst.defineAttribute('currentTestSuite');
 TP.log.TestAppender.Inst.defineAttribute('currentTestCase');
 
 //  ----------------------------------------------------------------------------
@@ -54,7 +55,8 @@ function(anEntry) {
     var layout,
         content,
 
-        currentCase;
+        currentCase,
+        currentSuite;
 
     //  If this flag is not true, then just bail out here.
     if (!TP.sys.cfg('test.fail_on_error_log')) {
@@ -67,9 +69,15 @@ function(anEntry) {
 
         layout = this.getLayout();
         content = layout.layout(anEntry).at('content');
-        currentCase = this.get('currentTestCase');
 
-        currentCase.error(content);
+        currentCase = this.get('currentTestCase');
+        currentSuite = this.get('currentTestSuite');
+
+        if (TP.isValid(currentCase)) {
+            currentCase.error(content);
+        } else if (TP.isValid(currentSuite)) {
+            currentSuite.error(content);
+        }
     }
 
     return this;

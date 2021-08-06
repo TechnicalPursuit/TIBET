@@ -1352,8 +1352,17 @@ function(options) {
     //  it*. This will be the Promise that 'starts things off' below.
     firstPromise = firstPromise.then(
         function() {
-            var beforeMaybe,
+            var logAppender,
+
+                beforeMaybe,
                 generatedPromise;
+
+            //  Capture the current test suite onto the log appender for its
+            //  use.
+            logAppender = TP.test.Suite.get('logAppender');
+            if (TP.isValid(logAppender)) {
+                logAppender.$set('currentTestSuite', suite);
+            }
 
             //  Run any 'before' hook for the suite. Note that this may
             //  generate a Promise that will now be in '$internalPromise'.
