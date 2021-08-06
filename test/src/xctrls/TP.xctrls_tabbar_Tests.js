@@ -2,6 +2,269 @@
 //  xctrls:tabbar
 //  ========================================================================
 
+TP.xctrls.tabbar.Type.describe('TP.xctrls.tabbar: rendering',
+function() {
+
+    var unloadURI,
+        loadURI,
+
+        windowContext;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            var loc;
+
+            TP.$$setupCommonObjectValues();
+
+            windowContext = this.getDriver().get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
+            loadURI = TP.uc(loc);
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:tabbar - simple Array', function(test, options) {
+
+        var tabbar;
+
+        tabbar = TP.byId('tabbar1', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return tabbar.get('allItemContent').first();
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    tabbar.get('allItemContent').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    tabbar.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    tabbar.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = tabbar.get('allItemContent');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:tabbar - Array of Pairs', function(test, options) {
+
+        var tabbar;
+
+        tabbar = TP.byId('tabbar2', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return tabbar.get('allItemContent').first();
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    tabbar.get('allItemContent').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    tabbar.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    tabbar.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = tabbar.get('allItemContent');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:tabbar - multi-item Array', function(test, options) {
+
+        var tabbar;
+
+        tabbar = TP.byId('tabbar3', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return tabbar.get('allItemContent').first();
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    tabbar.get('allItemContent').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    tabbar.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    tabbar.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = tabbar.get('allItemContent');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:tabbar - single-item Array with Hash', function(test, options) {
+
+        var tabbar;
+
+        tabbar = TP.byId('tabbar4', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return tabbar.get('allItemContent').first();
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    tabbar.get('allItemContent').getSize(),
+                    1);
+                test.assert.isEqualTo(
+                    tabbar.get('data').getSize(),
+                    1);
+                test.assert.isEqualTo(
+                    tabbar.get('$dataKeys').getSize(),
+                    1);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = tabbar.get('allItemContent');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:tabbar - multi-item Array with Hashes', function(test, options) {
+
+        var tabbar;
+
+        tabbar = TP.byId('tabbar5', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return tabbar.get('allItemContent').first();
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    tabbar.get('allItemContent').getSize(),
+                    2);
+                test.assert.isEqualTo(
+                    tabbar.get('data').getSize(),
+                    2);
+                test.assert.isEqualTo(
+                    tabbar.get('$dataKeys').getSize(),
+                    2);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = tabbar.get('allItemContent');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Brown');
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.tabbar.Type.describe('TP.xctrls.tabbar: manipulation',
 function() {
 
@@ -397,7 +660,7 @@ function() {
             var tabbar;
 
             //  Make sure that each test starts with a freshly reset item
-            tabbar = TP.byId('tabbar4', windowContext);
+            tabbar = TP.byId('tabbar6', windowContext);
             tabbar.deselectAll();
         });
 
@@ -423,7 +686,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tabbar = TP.byId('tabbar4', windowContext);
+        tabbar = TP.byId('tabbar6', windowContext);
 
         //  undefined
         tabbar.set('value', testData.at(TP.UNDEF));
@@ -461,7 +724,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tabbar = TP.byId('tabbar4', windowContext);
+        tabbar = TP.byId('tabbar6', windowContext);
 
         //  RegExp
         tabbar.set('value', testData.at('RegExp'));
@@ -499,7 +762,7 @@ function() {
         var tabbar,
             value;
 
-        tabbar = TP.byId('tabbar4', windowContext);
+        tabbar = TP.byId('tabbar6', windowContext);
 
         //  XMLDocument
         tabbar.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -609,7 +872,7 @@ function() {
             var tabbar;
 
             //  Make sure that each test starts with a freshly reset item
-            tabbar = TP.byId('tabbar4', windowContext);
+            tabbar = TP.byId('tabbar6', windowContext);
             tabbar.deselectAll();
         });
 
@@ -631,7 +894,7 @@ function() {
 
         var tabbar;
 
-        tabbar = TP.byId('tabbar4', windowContext);
+        tabbar = TP.byId('tabbar6', windowContext);
 
         //  ---
 
@@ -659,7 +922,7 @@ function() {
 
         var tabbar;
 
-        tabbar = TP.byId('tabbar4', windowContext);
+        tabbar = TP.byId('tabbar6', windowContext);
 
         //  (property defaults to 'value')
         tabbar.deselectAll();
@@ -690,7 +953,7 @@ function() {
 
         var tabbar;
 
-        tabbar = TP.byId('tabbar4', windowContext);
+        tabbar = TP.byId('tabbar6', windowContext);
 
         tabbar.deselectAll();
         tabbar.select('bar');
@@ -709,7 +972,7 @@ function() {
 
         var tabbar;
 
-        tabbar = TP.byId('tabbar4', windowContext);
+        tabbar = TP.byId('tabbar6', windowContext);
 
         tabbar.deselectAll();
         tabbar.select(/ba/);
@@ -722,7 +985,7 @@ function() {
 
         var tabbar;
 
-        tabbar = TP.byId('tabbar4', windowContext);
+        tabbar = TP.byId('tabbar6', windowContext);
 
         tabbar.addSelection('foo');
         tabbar.deselect('bar');
@@ -737,7 +1000,7 @@ function() {
 
         var tabbar;
 
-        tabbar = TP.byId('tabbar4', windowContext);
+        tabbar = TP.byId('tabbar6', windowContext);
 
         tabbar.addSelection('foo');
         tabbar.deselect(/ba/);
@@ -797,7 +1060,7 @@ function() {
 
             modelObj;
 
-        tabbar = TP.byId('tabbar5', windowContext);
+        tabbar = TP.byId('tabbar7', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -819,7 +1082,7 @@ function() {
             modelObj,
             firstTabbarItem;
 
-        tabbar = TP.byId('tabbar5', windowContext);
+        tabbar = TP.byId('tabbar7', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -849,6 +1112,79 @@ function() {
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_1')),
                     'foo');
+            });
+    });
+
+    this.it('xctrls:tabbar - change data and re-render', function(test, options) {
+
+        var tabbar,
+
+            modelURI,
+            firsttabbarItem;
+
+        tabbar = TP.byId('tabbar7', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        //  Change the content via 'user' interaction
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firsttabbarItem = tabbar.get('allItemContent').first();
+                    return firsttabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                var items;
+
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('fido', 'Fido'),
+                            TP.ac('lassie', 'Lassie'))));
+
+                items = tabbar.get('allItemContent');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    2);
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Lassie');
+            });
+
+        test.chain(
+            function() {
+                var modelObj,
+                    items;
+
+                modelObj = modelURI.getContent();
+
+                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+
+                modelURI.$changed();
+
+                items = tabbar.get('allItemContent');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    4);
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fluffy');
+                test.assert.isEqualTo(
+                    items.at(3).getLabelText(),
+                    'Tigger');
             });
     });
 
@@ -903,7 +1239,7 @@ function() {
 
             modelObj;
 
-        tabbar = TP.byId('tabbar6', windowContext);
+        tabbar = TP.byId('tabbar8', windowContext);
 
         modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
 
@@ -925,7 +1261,7 @@ function() {
             firstTabbarItem,
             lastTabbarItem;
 
-        tabbar = TP.byId('tabbar6', windowContext);
+        tabbar = TP.byId('tabbar8', windowContext);
 
         test.andIfNotValidWaitFor(
                 function() {
@@ -959,18 +1295,18 @@ function() {
 
             localHandlerRan;
 
-        tabbar = TP.byId('tabbar6', windowContext);
+        tabbar = TP.byId('tabbar8', windowContext);
 
         modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
 
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        staticTabbarItem = tabbar.get('allItemContent').first();
+        staticTabbarItem = tabbar.get('allItemContent').last();
 
         test.andIfNotValidWaitFor(
                 function() {
-                    staticTabbarItem = tabbar.get('allItemContent').first();
+                    staticTabbarItem = tabbar.get('allItemContent').last();
                     staticTabbarItem.defineHandler(
                         'TestClick',
                         function() {
@@ -992,11 +1328,11 @@ function() {
             function() {
                 test.assert.isEqualTo(
                     tabbar.get('value'),
-                    'before');
+                    'after');
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_1')),
-                    'before');
+                    'after');
 
                 test.assert.isTrue(localHandlerRan);
             });
@@ -1053,7 +1389,7 @@ function() {
 
             modelObj;
 
-        tabbar = TP.byId('tabbar7', windowContext);
+        tabbar = TP.byId('tabbar9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1075,7 +1411,7 @@ function() {
             firstTabbarItem,
             lastTabbarItem;
 
-        tabbar = TP.byId('tabbar7', windowContext);
+        tabbar = TP.byId('tabbar9', windowContext);
 
         test.andIfNotValidWaitFor(
                 function() {
@@ -1108,7 +1444,7 @@ function() {
             staticTabbarItem,
             dynamicTabbarItem;
 
-        tabbar = TP.byId('tabbar7', windowContext);
+        tabbar = TP.byId('tabbar9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1161,6 +1497,79 @@ function() {
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_2')),
                     'foo');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:tabbar - change data and re-render', function(test, options) {
+
+        var tabbar,
+
+            modelURI,
+            firsttabbarItem;
+
+        tabbar = TP.byId('tabbar9', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firsttabbarItem = tabbar.get('allItemContent').first();
+                    return firsttabbarItem;
+                },
+                TP.gid(tabbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                var items;
+
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('fido', 'Fido'),
+                            TP.ac('lassie', 'Lassie'))));
+
+                items = tabbar.get('allItemContent');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    4);
+
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(2).getLabelText(),
+                    'Lassie');
+            });
+
+        test.chain(
+            function() {
+                var modelObj,
+                    items;
+
+                modelObj = modelURI.getContent();
+
+                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+
+                modelURI.$changed();
+
+                items = tabbar.get('allItemContent');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    6);
+
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Fluffy');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Tigger');
             });
     });
 
