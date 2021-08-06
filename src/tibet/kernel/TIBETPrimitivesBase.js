@@ -156,5 +156,54 @@ function(pluginKey) {
 });
 
 //  ------------------------------------------------------------------------
+//  ERROR UTILITIES
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('errorFormatStack',
+function(errorObj) {
+
+    /**
+     * @method errorFormatStack
+     * @summary Format data that can be extracted from the stack of the supplied
+     *     error object.
+     * @param {Error} errorObj The error object to extract stack information
+     *     from.
+     * @returns {String} Stack information from the supplied error object
+     *     formatted as a String.
+     */
+
+    var stackEntries,
+        stackStr;
+
+    stackEntries = TP.getStackInfo(errorObj);
+
+    if (TP.notEmpty(stackEntries)) {
+        stackStr = '';
+
+        stackStr = stackEntries.collect(
+            function(infoPiece) {
+                var infoStr;
+
+                infoStr =
+                    'at ' +
+                    infoPiece.at(0) +
+                    '(' +
+                    infoPiece.at(1) +
+                    ':' +
+                    infoPiece.at(2) +
+                    ':' +
+                    infoPiece.at(3) +
+                    ')\n';
+
+                return infoStr;
+            });
+
+        return stackStr.join('');
+    }
+
+    return '';
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
