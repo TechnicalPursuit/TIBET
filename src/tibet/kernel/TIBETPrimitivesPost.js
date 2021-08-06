@@ -3753,7 +3753,9 @@ function(anObject, verbose) {
     //  got to check Errors next... they freak out if handed to TP.isString().
     if (TP.isError(anObject)) {
         if (wantsVerbose) {
-            return TP.tname(anObject) + ' :: ' + TP.errorAsString(anObject);
+            return TP.tname(anObject) +
+                    ' :: ' +
+                    TP.errorAsString(anObject);
         } else {
             return TP.objectToString(anObject);
         }

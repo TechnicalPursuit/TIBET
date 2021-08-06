@@ -380,7 +380,7 @@ function(setup) {
      * @method before
      * @summary Defines an optional function to run before all test cases have
      *     been executed.
-     * @param {Function} setup The 'after all' function to save.
+     * @param {Function} setup The 'before all' function to save.
      * @returns {TP.test.Suite} The receiver.
      */
 
@@ -396,9 +396,9 @@ function(setup) {
 
     /**
      * @method before
-     * @summary Defines an optional function to run before all test cases have
+     * @summary Defines an optional function to run before each test case has
      *     been executed.
-     * @param {Function} setup The 'after all' function to save.
+     * @param {Function} setup The 'before each' function to save.
      * @returns {TP.test.Suite} The receiver.
      */
 

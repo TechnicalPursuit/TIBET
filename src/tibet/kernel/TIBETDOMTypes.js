@@ -13948,16 +13948,17 @@ function(aspectName, aContentObject, aRequest) {
 
     /**
      * @method produceValue
-     * @summary Produces the value that will be used by the setValue() method
+     * @summary Produces the value that will be used by the setValue method
      *     to set the content of the receiver.
-     * @description This method works together with the 'isSingleValued()' and
-     *     'isScalarValued()' methods to produce the proper value for the
-     *     receiver. See the method description for isScalarValued() for more
+     * @description This method works together with the 'isSingleValued' and
+     *     'isScalarValued' methods to produce the proper value for the
+     *     receiver. See the method description for isScalarValued for more
      *     information.
      * @param {String} aspectName The aspect name on the receiver that the value
      *     is being produced for. Many times, this is 'value'.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {Object} The object produced for use by the setValue method.
      */
 
     var value,

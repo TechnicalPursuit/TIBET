@@ -983,6 +983,8 @@ function(options) {
                 refuter.$set('currentTestCase', testcase);
                 testcase.$set('refute', refuter);
 
+                //  Capture the current test case onto the log appender for its
+                //  use.
                 logAppender = TP.test.Suite.get('logAppender');
                 if (TP.isValid(logAppender)) {
                     logAppender.$set('currentTestCase', testcase);
