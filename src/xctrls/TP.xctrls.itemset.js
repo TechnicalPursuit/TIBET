@@ -228,13 +228,13 @@ TP.xctrls.itemset.Inst.defineAttribute(
 
 TP.xctrls.itemset.Inst.defineAttribute(
     'itemWithLabel',
-    TP.xpc('.//xctrls:label[text() = "{{0}}"]/' +
+    TP.xpc('.//xctrls:label[.//text() = "{{0}}"]/' +
             'ancestor::*[contains(@class, "item")]',
         TP.hc('shouldCollapse', true)));
 
 TP.xctrls.itemset.Inst.defineAttribute(
     'itemWithValue',
-    TP.xpc('.//xctrls:value[text() = "{{0}}"]/' +
+    TP.xpc('.//xctrls:value[.//text() = "{{0}}"]/' +
             'ancestor::*[contains(@class, "item")]',
         TP.hc('shouldCollapse', true)));
 
