@@ -183,6 +183,14 @@ function(enterSelection) {
         //  Construct the template and obtain it.
         this.constructTemplateFromInline();
         compiledTemplateContent = this.get('$compiledTemplateContent');
+    } else {
+        //  Clean any id's or other instance specific information from the
+        //  compiled content. We pass true to clean it from any descendants as
+        //  well.
+        //  We have to do this every time we use it because we leave the
+        //  template in the overall DOM and it or its descendants might pick up
+        //  instance specific information during runtime.
+        TP.elementClean(compiledTemplateContent, true);
     }
 
     registry = this.get('$templateExprRegistry');
@@ -309,12 +317,12 @@ function() {
     //  Grab the first child Element under the template root.
     templateContentTPElem = this.getTemplate().getFirstChildElement();
 
-    //  Note here how we remove the 'id' attribute, since we're going to be
-    //  using it as a template.
-    templateContentTPElem.removeAttribute('id');
-
     //  Grab it's native node and cache that.
     compiledTemplateContent = templateContentTPElem.getNativeNode();
+
+    //  Clean any id's or other instance specific information from the compiled
+    //  content. We pass true to clean it from any descendants as well.
+    TP.elementClean(compiledTemplateContent, true);
 
     //  Note how we pass 'false' here to not trigger change notification.
     //  Commonly, subtypes of this type will be bound objects, so change
