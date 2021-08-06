@@ -331,16 +331,34 @@ function() {
      */
 
     var selectionModel,
-        entryArray;
+        keys,
+
+        values;
 
     selectionModel = this.$getSelectionModel();
 
-    entryArray = selectionModel.at('value');
-    if (TP.notValid(entryArray)) {
-        entryArray = TP.ac();
+    //  The entries from the selection model will be the keys into the data
+    //  where the data can be found.
+    keys = selectionModel.at('value');
+    if (TP.notValid(keys)) {
+        if (!this.allowsMultiples()) {
+            return null;
+        }
+        return TP.ac();
     }
 
-    return entryArray.first();
+    //  Iterate over the found keys and gather the 'values' for them. This
+    //  provides our 'key -> value' mapping.
+    values = keys.map(
+        function(aKey) {
+            return this.getValueForKey(aKey);
+        }.bind(this));
+
+    if (!this.allowsMultiples()) {
+        return values.first();
+    }
+
+    return values;
 });
 
 //  ------------------------------------------------------------------------
@@ -707,7 +725,7 @@ function(aSignal) {
     var domTarget,
         wrappedDOMTarget,
 
-        valueTPElem,
+        dataKey,
 
         newValue,
         oldValue,
@@ -746,15 +764,9 @@ function(aSignal) {
             return this;
         }
 
-        //  Grab the value element of the list item.
-        valueTPElem = wrappedDOMTarget.get('xctrls|value');
-        if (TP.notValid(valueTPElem) ||
-            !TP.canInvoke(valueTPElem, 'getTextContent')) {
-            return this;
-        }
+        dataKey = wrappedDOMTarget.getAttribute(TP.DATA_KEY);
 
-        //  And it's text content.
-        newValue = valueTPElem.getTextContent();
+        newValue = this.getValueForKey(dataKey);
 
         //  Grab the old value before we set it.
         oldValue = this.getValue();
@@ -812,9 +824,9 @@ function(aSignal) {
         }
 
         if (TP.isTrue(wrappedDOMTarget.isSelected()) && toggleItems) {
-            this.deselect(newValue, dataIndex);
+            this.deselect(dataKey, dataIndex);
         } else {
-            this.select(newValue, dataIndex);
+            this.select(dataKey, dataIndex);
         }
 
         this.changed('value', TP.UPDATE,
