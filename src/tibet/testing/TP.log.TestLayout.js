@@ -41,10 +41,23 @@ function(anEntry) {
     //  The arglist may have multiple elements in it which we need to handle.
     arglist = anEntry.getArglist();
     if (TP.isValid(arglist)) {
-        arglist.forEach(function(item) {
-            str += TP.str(item);
-            str += ' ';
-        });
+        arglist.forEach(
+            function(item) {
+                var errObj,
+                    stackStr;
+
+                str += TP.str(item);
+                str += ' ';
+
+                errObj = item.at('error');
+                if (TP.isValid(errObj)) {
+                    stackStr = TP.errorFormatStack(errObj);
+                    if (TP.notEmpty(stackStr)) {
+                        str += '\n' + stackStr;
+                    }
+                }
+            });
+
         str = str.trim();
         if (str.charAt(str.getSize() - 1) !== '.') {
             str += '.';
@@ -59,3 +72,6 @@ function(anEntry) {
     return TP.hc('content', str);
 });
 
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================
