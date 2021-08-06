@@ -260,7 +260,7 @@ function(enterSelection) {
                         registry);
 
             //  Compile the element now that we've resolved the outer bindings.
-            return TP.elementCompile(
+            newElem = TP.elementCompile(
                         newElem,
                         TP.request(
                             'phases', TP.ac(
@@ -269,12 +269,12 @@ function(enterSelection) {
                                             'TP.tag.CompileCompletePhase'
                                             )));
 
+            TP.elementBubbleXMLNSAttributesOnDescendants(newElem);
+
+            return newElem;
         }.bind(this)).attr(
             itemSelectionInfo.first(),
             itemSelectionInfo.last());
-
-    //  Bubble any namespaces we find to reduce clutter on the DOM tree.
-    TP.elementBubbleXMLNSAttributesOnDescendants(newContent.node());
 
     return newContent;
 });
