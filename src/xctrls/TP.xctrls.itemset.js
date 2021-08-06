@@ -739,7 +739,10 @@ function(aSignal) {
         toggleItems,
 
         precedingStaticContent,
-        precedingSize;
+        precedingSize,
+
+        isDataAspectBound,
+        upperBounds;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -808,13 +811,20 @@ function(aSignal) {
         precedingStaticContent = this.get('precedingStaticItemContent');
         precedingSize = precedingStaticContent.getSize();
 
+        isDataAspectBound = this.isAspectBoundIn('data');
+        if (isDataAspectBound) {
+            upperBounds = this.get('data').getSize() + precedingSize;
+        } else {
+            upperBounds = precedingSize;
+        }
+
         //  If the data index is greater than or equal to the number of entries
         //  in our data plus the size of the 'preceding static content', then
         //  its a selection in the 'following static content' and the index
         //  should be TP.NOT_FOUND
-        if (dataIndex >= this.get('data').getSize() + precedingSize) {
+        if (dataIndex >= upperBounds) {
             dataIndex = TP.NOT_FOUND;
-        } else {
+        } else if (isDataAspectBound) {
             //  Otherwise, the index into our data that this item represents is
             //  its itemnum minus the number of items in the 'preceding static
             //  content'.
