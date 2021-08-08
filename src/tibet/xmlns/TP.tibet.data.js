@@ -326,7 +326,7 @@ function(aName) {
 
     newURI.setResource(
         resource,
-        TP.hc('observeResource', true, 'signalChange', true));
+        TP.request('observeResource', true, 'signalChange', true));
 
     this.$setAttribute('name', aName);
 
@@ -438,11 +438,13 @@ function(aContentObject, aRequest) {
         this.dispatchResponderSignalFromAttr('UIDataDestruct', null);
     }
 
-    //  Set the resource to the new resource (causing any observers of the URI
-    //  to get notified of a change) and signal 'TP.sig.UIDataConstruct'.
-    namedURI.setResource(
-        newResource,
-        TP.hc('observeResource', true, 'signalChange', true));
+    //  Make sure that the URI will observe the resource for change so that it
+    //  can signal change when appropriate.
+    req.atPut('observeResource', true);
+
+    //  Set the resource to the new resource and signal 'TP.sig.UIDataConstruct'
+    //  (if we're signaling).
+    namedURI.setResource(newResource, req);
 
     if (shouldSignal) {
         this.signal('TP.sig.UIDataConstruct');
