@@ -5056,33 +5056,28 @@ function(aspectName, facetName, facetValue, shouldSignal) {
         return true;
     }
 
-    //  If it's a reference type or the two values are not equal, then we call
-    //  the setter. We do this for reference types in all cases because the
-    //  receiver may already be holding a reference to the reference-typed
-    //  object in 'currentFacetVal' and that object has been mutated so even an
-    //  equality compare is going to return true.
-    if (TP.isReferenceType(currentFacetVal) ||
-        !TP.equal(currentFacetVal, facetValue)) {
-        funcName = this.computeAttrMethodName('setAttr', aspectName);
+    //  NOTE: We always call the setter here. We don't bother to compare values
+    //  for whether they changed or not - we assume that the receiver will know
+    //  better than we do whether they want to re-render based on some internal
+    //  state.
 
-        if (TP.canInvoke(this, funcName)) {
-            this[funcName](facetValue);
-        } else if (facetName === 'value') {
-            //  If the facet is 'value', then use the standard 'set'
-            //  mechanism.
+    funcName = this.computeAttrMethodName('setAttr', aspectName);
 
-            //  NB: This will signal the standard TP.sig.ValueChange (where
-            //  'value' is the facet that changed).
-            this.set(aspectName, facetValue, shouldSignal);
-        }
+    if (TP.canInvoke(this, funcName)) {
+        this[funcName](facetValue);
+    } else if (facetName === 'value') {
+        //  If the facet is 'value', then use the standard 'set'
+        //  mechanism.
 
-        this.signalUsingFacetAndValue(facetName, facetValue);
-
-        //  Return true because the value of the facet changed.
-        return true;
+        //  NB: This will signal the standard TP.sig.ValueChange (where
+        //  'value' is the facet that changed).
+        this.set(aspectName, facetValue, shouldSignal);
     }
 
-    return false;
+    this.signalUsingFacetAndValue(facetName, facetValue);
+
+    //  Return true because the value of the facet changed.
+    return true;
 });
 
 //  ------------------------------------------------------------------------
