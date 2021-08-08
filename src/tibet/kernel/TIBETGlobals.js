@@ -3594,16 +3594,6 @@ TP.regex.ANONYMOUS_NAME = /^\$\d/;
 TP.regex.IS_NAMEXP = /\*| /;
 
 //  ---
-//  number support
-//  ---
-
-TP.MAX_DOUBLE = 9007199254740991;
-
-//  The maximum timeout as supported by Mozilla. Roughly equivalent to 596.5
-//  hours or 24 days.
-TP.MAX_TIMEOUT = 2147483647;
-
-//  ---
 //  object support
 //  ---
 
@@ -3904,6 +3894,16 @@ TP.sys[TP.TNAME] = 'Object';
 TP.sys.$$realBrowser = null;
 
 TP.sys.$LICENSE = TP.NULL_OID;
+
+//  ---
+//  number support
+//  ---
+
+TP.MAX_DOUBLE = 9007199254740991;
+
+//  The maximum timeout as supported by Mozilla. Roughly equivalent to 596.5
+//  hours or 24 days.
+TP.MAX_TIMEOUT = 2147483647;
 
 //  ------------------------------------------------------------------------
 //  end
