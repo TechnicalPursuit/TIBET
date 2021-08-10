@@ -3305,15 +3305,15 @@ TP.regex.ACP_END_CONTROL_STATEMENT = /\{\{\/:(with|if|for)\}\}/;
 
 //  '$' followed by a word character (but *not* including '_') or '*' or '#'
 TP.regex.ACP_PATH_CONTAINS_VARIABLES =
-    /(TP\.|APP\.|\$)([a-zA-Z0-9]+|\*|#)/;
+    /(TP\.|APP\.|\$)([a-zA-Z0-9]+|#)/;
 
 TP.regex.ACP_VARIABLE_STATEMENT =
-    /(TP\.|APP\.|\$)(\w+|\*|#)/;
+    /(TP\.|APP\.|\$)(\w+|#)/;
 
 TP.regex.ACP_VARIABLE_FUNCTION_STATEMENT =
-    /((TP\.|APP\.|\$)(\w+|\*|#))(\.\w+\()/g;
+    /((TP\.|APP\.|\$)(\w+|#))(\.\w+\()/g;
 
-TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|\*|#)+)/;
+TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|#)+)/;
 
 //  Finds ACP expressions that have an 'id' construct along with '$SOURCE' for
 //  tag processing.

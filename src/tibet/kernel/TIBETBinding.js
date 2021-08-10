@@ -1782,15 +1782,7 @@ function(anExpression, stdinIsSpecial) {
                                 '$SELECTION', targetTPElem.
                                                 getCurrentSelectionValue.
                                                 bind(targetTPElem),
-                                //  Alias for $SELECTION
-                                '$*', targetTPElem.
-                                        getCurrentSelectionValue.
-                                        bind(targetTPElem),
                                 '$FOCUS', targetTPElem.
-                                            getCurrentFocusedValue.
-                                            bind(targetTPElem),
-                                //  Alias for $FOCUS
-                                '$@', targetTPElem.
                                             getCurrentFocusedValue.
                                             bind(targetTPElem),
                                 '$TARGET', targetTPDoc,
@@ -1816,15 +1808,7 @@ function(anExpression, stdinIsSpecial) {
                                 '$SELECTION', targetTPElem.
                                                 getCurrentSelectionValue.
                                                 bind(targetTPElem),
-                                //  Alias for $SELECTION
-                                '$*', targetTPElem.
-                                        getCurrentSelectionValue.
-                                        bind(targetTPElem),
                                 '$FOCUS', targetTPElem.
-                                            getCurrentFocusedValue.
-                                            bind(targetTPElem),
-                                //  Alias for $FOCUS
-                                '$@', targetTPElem.
                                             getCurrentFocusedValue.
                                             bind(targetTPElem),
                                 '$TARGET', targetTPDoc,
@@ -1850,15 +1834,7 @@ function(anExpression, stdinIsSpecial) {
                             '$SELECTION', targetTPElem.
                                             getCurrentSelectionValue.
                                             bind(targetTPElem),
-                            //  Alias for $SELECTION
-                            '$*', targetTPElem.
-                                    getCurrentSelectionValue.
-                                    bind(targetTPElem),
                             '$FOCUS', targetTPElem.
-                                        getCurrentFocusedValue.
-                                        bind(targetTPElem),
-                            //  Alias for $FOCUS
-                            '$@', targetTPElem.
                                         getCurrentFocusedValue.
                                         bind(targetTPElem),
                             '$TARGET', targetTPDoc,
@@ -4359,15 +4335,7 @@ function(indexes, aCollection) {
                         '$SELECTION', newTPElem.
                                         getCurrentSelectionValue.
                                         bind(newTPElem),
-                        //  Alias for $SELECTION
-                        '$*', newTPElem.
-                                getCurrentSelectionValue.
-                                bind(newTPElem),
                         '$FOCUS', newTPElem.
-                                    getCurrentFocusedValue.
-                                    bind(newTPElem),
-                        //  Alias for $FOCUS
-                        '$@', newTPElem.
                                     getCurrentFocusedValue.
                                     bind(newTPElem),
                         '$TARGET', targetTPDoc,
@@ -4393,15 +4361,7 @@ function(indexes, aCollection) {
                         '$SELECTION', newTPElem.
                                         getCurrentSelectionValue.
                                         bind(newTPElem),
-                        //  Alias for $SELECTION
-                        '$*', newTPElem.
-                                getCurrentSelectionValue.
-                                bind(newTPElem),
                         '$FOCUS', newTPElem.
-                                    getCurrentFocusedValue.
-                                    bind(newTPElem),
-                        //  Alias for $FOCUS
-                        '$@', newTPElem.
                                     getCurrentFocusedValue.
                                     bind(newTPElem),
                         '$TARGET', targetTPDoc,
@@ -6487,15 +6447,7 @@ function(regenerateIfNecessary) {
                                         '$SELECTION', nearestScopeTPElem.
                                                         getCurrentSelectionValue.
                                                         bind(nearestScopeTPElem),
-                                        //  Alias for $SELECTION
-                                        '$*', nearestScopeTPElem.
-                                                getCurrentSelectionValue.
-                                                bind(nearestScopeTPElem),
                                         '$FOCUS', nearestScopeTPElem.
-                                                    getCurrentFocusedValue.
-                                                    bind(nearestScopeTPElem),
-                                        //  Alias for $FOCUS
-                                        '$@', nearestScopeTPElem.
                                                     getCurrentFocusedValue.
                                                     bind(nearestScopeTPElem),
                                         '$TARGET', targetTPDoc,
@@ -6519,15 +6471,7 @@ function(regenerateIfNecessary) {
                                         '$SELECTION', nearestScopeTPElem.
                                                         getCurrentSelectionValue.
                                                         bind(nearestScopeTPElem),
-                                        //  Alias for $SELECTION
-                                        '$*', nearestScopeTPElem.
-                                                getCurrentSelectionValue.
-                                                bind(nearestScopeTPElem),
                                         '$FOCUS', nearestScopeTPElem.
-                                                    getCurrentFocusedValue.
-                                                    bind(nearestScopeTPElem),
-                                        //  Alias for $FOCUS
-                                        '$@', nearestScopeTPElem.
                                                     getCurrentFocusedValue.
                                                     bind(nearestScopeTPElem),
                                         '$TARGET', targetTPDoc,
@@ -6705,15 +6649,7 @@ function(regenerateIfNecessary) {
                                         '$SELECTION', nearestScopeTPElem.
                                                         getCurrentSelectionValue.
                                                         bind(nearestScopeTPElem),
-                                        //  Alias for $SELECTION
-                                        '$*', nearestScopeTPElem.
-                                                getCurrentSelectionValue.
-                                                bind(nearestScopeTPElem),
                                         '$FOCUS', nearestScopeTPElem.
-                                                    getCurrentFocusedValue.
-                                                    bind(nearestScopeTPElem),
-                                        //  Alias for $FOCUS
-                                        '$@', nearestScopeTPElem.
                                                     getCurrentFocusedValue.
                                                     bind(nearestScopeTPElem),
                                         '$TARGET', targetTPDoc,
@@ -6737,15 +6673,7 @@ function(regenerateIfNecessary) {
                                         '$SELECTION', nearestScopeTPElem.
                                                         getCurrentSelectionValue.
                                                         bind(nearestScopeTPElem),
-                                        //  Alias for $SELECTION
-                                        '$*', nearestScopeTPElem.
-                                                getCurrentSelectionValue.
-                                                bind(nearestScopeTPElem),
                                         '$FOCUS', nearestScopeTPElem.
-                                                    getCurrentFocusedValue.
-                                                    bind(nearestScopeTPElem),
-                                        //  Alias for $FOCUS
-                                        '$@', nearestScopeTPElem.
                                                     getCurrentFocusedValue.
                                                     bind(nearestScopeTPElem),
                                         '$TARGET', targetTPDoc,
@@ -7050,15 +6978,7 @@ function(aCollection, elems) {
                         '$SELECTION', newTPElem.
                                         getCurrentSelectionValue.
                                         bind(newTPElem),
-                        //  Alias for $SELECTION
-                        '$*', newTPElem.
-                                getCurrentSelectionValue.
-                                bind(newTPElem),
                         '$FOCUS', newTPElem.
-                                    getCurrentFocusedValue.
-                                    bind(newTPElem),
-                        //  Alias for $FOCUS
-                        '$@', newTPElem.
                                     getCurrentFocusedValue.
                                     bind(newTPElem),
                         '$TARGET', targetTPDoc,
@@ -7084,15 +7004,7 @@ function(aCollection, elems) {
                         '$SELECTION', newTPElem.
                                         getCurrentSelectionValue.
                                         bind(newTPElem),
-                        //  Alias for $SELECTION
-                        '$*', newTPElem.
-                                getCurrentSelectionValue.
-                                bind(newTPElem),
                         '$FOCUS', newTPElem.
-                                    getCurrentFocusedValue.
-                                    bind(newTPElem),
-                        //  Alias for $FOCUS
-                        '$@', newTPElem.
                                     getCurrentFocusedValue.
                                     bind(newTPElem),
                         '$TARGET', targetTPDoc,
