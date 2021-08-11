@@ -5033,28 +5033,12 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      *     had before this method was called.
      */
 
-    var funcName,
-        currentFacetVal;
+    var funcName;
 
     //  See if there is a specific Attribute setter on this element. If so, use
     //  it to set any attribute named with the aspect name. This will be done in
     //  addition to any internal value of the aspect on the receiver (i.e. both
     //  attribute 'foo' and the internal 'foo' property will be set).
-
-    funcName = this.computeAttrMethodName('getAttr', aspectName);
-
-    if (TP.canInvoke(this, funcName)) {
-        currentFacetVal = this[funcName]();
-    } else if (facetName === 'value') {
-        //  If the facet is 'value', then use the standard 'get' mechanism.
-        currentFacetVal = this.get(aspectName);
-    } else {
-        //  It didn't have a 'getAttr<aspectName>' and the name of the facet
-        //  that changed wasn't 'value', so we just signal that it changed and
-        //  return. This keeps compatibility with non-'value' facets.
-        this.signalUsingFacetAndValue(facetName, facetValue);
-        return true;
-    }
 
     //  NOTE: We always call the setter here. We don't bother to compare values
     //  for whether they changed or not - we assume that the receiver will know
