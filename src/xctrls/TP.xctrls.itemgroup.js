@@ -79,8 +79,8 @@ function() {
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
      */
 
-    //  We allow multiples if we have the 'multiple' attribute.
-    return this.hasAttribute('multiple');
+    //  We allow multiples if we have the 'multiple' attribute and it's true.
+    return TP.bc(this.getAttribute('multiple')) === true;
 });
 
 //  ------------------------------------------------------------------------
