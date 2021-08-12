@@ -50,7 +50,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    return toolbar.get('allItemContent').first();
+                    return toolbar.get('allItems').first();
                 },
                 TP.gid(toolbar),
                 'TP.sig.DidRenderData');
@@ -58,7 +58,7 @@ function() {
         test.chain(
             function() {
                 test.assert.isEqualTo(
-                    toolbar.get('allItemContent').getSize(),
+                    toolbar.get('allItems').getSize(),
                     10);
                 test.assert.isEqualTo(
                     toolbar.get('data').getSize(),
@@ -72,7 +72,7 @@ function() {
             function() {
                 var items;
 
-                items = toolbar.get('allItemContent');
+                items = toolbar.get('allItems');
 
                 test.assert.isEqualTo(
                     items.first().getLabelText(),
@@ -96,7 +96,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    return toolbar.get('allItemContent').first();
+                    return toolbar.get('allItems').first();
                 },
                 TP.gid(toolbar),
                 'TP.sig.DidRenderData');
@@ -104,7 +104,7 @@ function() {
         test.chain(
             function() {
                 test.assert.isEqualTo(
-                    toolbar.get('allItemContent').getSize(),
+                    toolbar.get('allItems').getSize(),
                     10);
                 test.assert.isEqualTo(
                     toolbar.get('data').getSize(),
@@ -118,7 +118,7 @@ function() {
             function() {
                 var items;
 
-                items = toolbar.get('allItemContent');
+                items = toolbar.get('allItems');
 
                 test.assert.isEqualTo(
                     items.first().getLabelText(),
@@ -142,7 +142,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    return toolbar.get('allItemContent').first();
+                    return toolbar.get('allItems').first();
                 },
                 TP.gid(toolbar),
                 'TP.sig.DidRenderData');
@@ -150,7 +150,7 @@ function() {
         test.chain(
             function() {
                 test.assert.isEqualTo(
-                    toolbar.get('allItemContent').getSize(),
+                    toolbar.get('allItems').getSize(),
                     10);
                 test.assert.isEqualTo(
                     toolbar.get('data').getSize(),
@@ -164,7 +164,7 @@ function() {
             function() {
                 var items;
 
-                items = toolbar.get('allItemContent');
+                items = toolbar.get('allItems');
 
                 test.assert.isEqualTo(
                     items.first().getLabelText(),
@@ -188,7 +188,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    return toolbar.get('allItemContent').first();
+                    return toolbar.get('allItems').first();
                 },
                 TP.gid(toolbar),
                 'TP.sig.DidRenderData');
@@ -196,7 +196,7 @@ function() {
         test.chain(
             function() {
                 test.assert.isEqualTo(
-                    toolbar.get('allItemContent').getSize(),
+                    toolbar.get('allItems').getSize(),
                     1);
                 test.assert.isEqualTo(
                     toolbar.get('data').getSize(),
@@ -210,7 +210,7 @@ function() {
             function() {
                 var items;
 
-                items = toolbar.get('allItemContent');
+                items = toolbar.get('allItems');
 
                 test.assert.isEqualTo(
                     items.first().getLabelText(),
@@ -228,7 +228,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    return toolbar.get('allItemContent').first();
+                    return toolbar.get('allItems').first();
                 },
                 TP.gid(toolbar),
                 'TP.sig.DidRenderData');
@@ -236,7 +236,7 @@ function() {
         test.chain(
             function() {
                 test.assert.isEqualTo(
-                    toolbar.get('allItemContent').getSize(),
+                    toolbar.get('allItems').getSize(),
                     2);
                 test.assert.isEqualTo(
                     toolbar.get('data').getSize(),
@@ -250,7 +250,7 @@ function() {
             function() {
                 var items;
 
-                items = toolbar.get('allItemContent');
+                items = toolbar.get('allItems');
 
                 test.assert.isEqualTo(
                     items.first().getLabelText(),
@@ -338,7 +338,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -373,7 +373,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -451,7 +451,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -508,7 +508,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -835,7 +835,7 @@ function() {
 
         var itemIndices;
 
-        itemIndices = aTPElem.get('allItemContent').collect(
+        itemIndices = aTPElem.get('allItems').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -1090,7 +1090,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -1130,7 +1130,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -1147,7 +1147,7 @@ function() {
                             TP.ac('fido', 'Fido'),
                             TP.ac('lassie', 'Lassie'))));
 
-                items = toolbar.get('allItemContent');
+                items = toolbar.get('allItems');
 
                 test.assert.isEqualTo(
                     items.getSize(),
@@ -1173,7 +1173,7 @@ function() {
 
                 modelURI.$changed();
 
-                items = toolbar.get('allItemContent');
+                items = toolbar.get('allItems');
 
                 test.assert.isEqualTo(
                     items.getSize(),
@@ -1265,8 +1265,8 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
-                    lasttoolbarItem = toolbar.get('allItemContent').last();
+                    firsttoolbarItem = toolbar.get('allItems').first();
+                    lasttoolbarItem = toolbar.get('allItems').last();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -1302,11 +1302,11 @@ function() {
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        statictoolbarItem = toolbar.get('allItemContent').last();
+        statictoolbarItem = toolbar.get('allItems').last();
 
         test.andIfNotValidWaitFor(
                 function() {
-                    statictoolbarItem = toolbar.get('allItemContent').last();
+                    statictoolbarItem = toolbar.get('allItems').last();
                     statictoolbarItem.defineHandler(
                         'TestClick',
                         function() {
@@ -1415,8 +1415,8 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
-                    lasttoolbarItem = toolbar.get('allItemContent').last();
+                    firsttoolbarItem = toolbar.get('allItems').first();
+                    lasttoolbarItem = toolbar.get('allItems').last();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -1451,12 +1451,12 @@ function() {
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        statictoolbarItem = toolbar.get('allItemContent').first();
+        statictoolbarItem = toolbar.get('allItems').first();
 
         test.andIfNotValidWaitFor(
                 function() {
-                    statictoolbarItem = toolbar.get('allItemContent').first();
-                    dynamictoolbarItem = toolbar.get('allItemContent').at(1);
+                    statictoolbarItem = toolbar.get('allItems').first();
+                    dynamictoolbarItem = toolbar.get('allItems').at(1);
 
                     return statictoolbarItem;
                 },
@@ -1515,7 +1515,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -1532,7 +1532,7 @@ function() {
                             TP.ac('fido', 'Fido'),
                             TP.ac('lassie', 'Lassie'))));
 
-                items = toolbar.get('allItemContent');
+                items = toolbar.get('allItems');
 
                 test.assert.isEqualTo(
                     items.getSize(),
@@ -1558,7 +1558,7 @@ function() {
 
                 modelURI.$changed();
 
-                items = toolbar.get('allItemContent');
+                items = toolbar.get('allItems');
 
                 test.assert.isEqualTo(
                     items.getSize(),

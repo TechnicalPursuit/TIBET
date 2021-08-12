@@ -256,11 +256,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.itemset.Inst.defineMethod('getAllItemContent',
+TP.xctrls.itemset.Inst.defineMethod('getAllItems',
 function() {
 
     /**
-     * @method getAllItemContent
+     * @method getAllItems
      * @summary Returns all of the receiver's item content, no matter whether it
      *     was statically supplied or generated dynamically.
      * @returns {TP.xctrls.item[]} All of the receiver's item content.
@@ -662,7 +662,7 @@ function() {
     keys = TP.ac();
 
     //  Stamp all of the items in the item content with an index.
-    allItems = this.get('allItemContent');
+    allItems = this.get('allItems');
     allItems.forEach(
         function(item, index) {
             var key;
@@ -1810,7 +1810,7 @@ function(selection) {
     }
 
     //  Stamp all of the items in the item content with an index.
-    allItems = this.get('allItemContent');
+    allItems = this.get('allItems');
     allItems.forEach(
         function(item, index) {
             item.setAttribute(TP.ITEM_NUM, index);
@@ -1905,7 +1905,7 @@ function(selection) {
     }
 
     //  Stamp all of the items in the item content with an index.
-    allItems = this.get('allItemContent');
+    allItems = this.get('allItems');
     allItems.forEach(
         function(item, index) {
             item.setAttribute(TP.ITEM_NUM, index);

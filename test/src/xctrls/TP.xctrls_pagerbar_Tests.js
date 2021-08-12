@@ -75,7 +75,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -110,7 +110,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -188,7 +188,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -245,7 +245,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -592,7 +592,7 @@ function() {
 
         var itemIndices;
 
-        itemIndices = aTPElem.get('allItemContent').collect(
+        itemIndices = aTPElem.get('allItems').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -851,7 +851,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -957,8 +957,8 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstpagerbarItem = pagerbar.get('allItemContent').first();
-                    lastpagerbarItem = pagerbar.get('allItemContent').last();
+                    firstpagerbarItem = pagerbar.get('allItems').first();
+                    lastpagerbarItem = pagerbar.get('allItems').last();
                     return firstpagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -994,11 +994,11 @@ function() {
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        staticpagerbarItem = pagerbar.get('allItemContent').first();
+        staticpagerbarItem = pagerbar.get('allItems').first();
 
         test.andIfNotValidWaitFor(
                 function() {
-                    staticpagerbarItem = pagerbar.get('allItemContent').first();
+                    staticpagerbarItem = pagerbar.get('allItems').first();
                     staticpagerbarItem.defineHandler(
                         'TestClick',
                         function() {
@@ -1112,8 +1112,8 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
-                    lastPagerbarItem = pagerbar.get('allItemContent').last();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
+                    lastPagerbarItem = pagerbar.get('allItems').last();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -1150,8 +1150,8 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    staticPagerItem = pagerbar.get('allItemContent').first();
-                    dynamicPagerItem = pagerbar.get('allItemContent').at(2);
+                    staticPagerItem = pagerbar.get('allItems').first();
+                    dynamicPagerItem = pagerbar.get('allItems').at(2);
                     return staticPagerItem;
                 },
                 TP.gid(pagerbar),
@@ -1293,11 +1293,11 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    startPagerItem = pagerbar.get('allItemContent').at(0);
-                    previousPagerItem = pagerbar.get('allItemContent').at(1);
-                    numTwoPagerItem = pagerbar.get('allItemContent').at(3);
-                    nextPagerItem = pagerbar.get('allItemContent').at(5);
-                    endPagerItem = pagerbar.get('allItemContent').at(6);
+                    startPagerItem = pagerbar.get('allItems').at(0);
+                    previousPagerItem = pagerbar.get('allItems').at(1);
+                    numTwoPagerItem = pagerbar.get('allItems').at(3);
+                    nextPagerItem = pagerbar.get('allItems').at(5);
+                    endPagerItem = pagerbar.get('allItems').at(6);
                     return startPagerItem;
                 },
                 TP.gid(pagerbar),
@@ -1455,11 +1455,11 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    startPagerItem = pagerbar.get('allItemContent').at(0);
-                    previousPagerItem = pagerbar.get('allItemContent').at(1);
-                    numTwoPagerItem = pagerbar.get('allItemContent').at(3);
-                    nextPagerItem = pagerbar.get('allItemContent').at(5);
-                    endPagerItem = pagerbar.get('allItemContent').at(6);
+                    startPagerItem = pagerbar.get('allItems').at(0);
+                    previousPagerItem = pagerbar.get('allItems').at(1);
+                    numTwoPagerItem = pagerbar.get('allItems').at(3);
+                    nextPagerItem = pagerbar.get('allItems').at(5);
+                    endPagerItem = pagerbar.get('allItems').at(6);
                     return startPagerItem;
                 },
                 TP.gid(pagerbar),
@@ -1640,7 +1640,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),

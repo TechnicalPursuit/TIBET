@@ -477,7 +477,7 @@ function(aValue) {
 
     this.setValue(val);
 
-    allItems = this.get('allItemContent');
+    allItems = this.get('allItems');
 
     if (atStart) {
         if (hasNextPrevious) {
