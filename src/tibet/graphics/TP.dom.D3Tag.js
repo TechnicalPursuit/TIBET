@@ -1019,7 +1019,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
         ind,
 
-        targetTPElem,
+        controlScopeValues,
 
         len,
 
@@ -1030,6 +1030,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
         ownerElem,
         ownerTPElem,
+        scopeValues,
 
         attrVal,
         entry;
@@ -1048,7 +1049,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
     ind = this.adjustIterationIndex(index);
 
-    targetTPElem = TP.wrap(itemElement);
+    controlScopeValues = this.getBindingScopeValues();
 
     //  Loop over all of the elements that were found.
     len = elems.getSize();
@@ -1065,6 +1066,14 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
             ownerElem = attrs[j].ownerElement;
             ownerTPElem = TP.wrap(ownerElem);
 
+            //  Grab the scoping values from the element that we're currently
+            //  processing for *inside the template*. If it has no scope values,
+            //  then we use the ones for the overall control.
+            scopeValues = ownerTPElem.getBindingScopeValues();
+            if (TP.isEmpty(scopeValues)) {
+                scopeValues = controlScopeValues;
+            }
+
             attrVal = attrs[j].value;
 
             //  See if there's an entry in the registry for the expression with
@@ -1078,41 +1087,26 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
                     var key,
                         record,
 
-                        transformFunc,
-                        val,
-
-                        expr;
+                        finalVal;
 
                     key = kvPair.first();
                     record = kvPair.last();
 
-                    transformFunc = record.at('transformFunc');
-
-                    //  If there is, grab the transformation function and
-                    //  execute it.
-                    if (TP.isCallable(transformFunc)) {
-                        //  Execute the transformation function and the return
-                        //  value.
-                        val = transformFunc(
-                                this, datum, targetTPElem, allData, ind, false);
-                    } else {
-                        //  TODO: Support more than 1 expr
-                        expr = record.at('dataExprs').at(0);
-                        val = TP.wrap(datum).get(TP.apc(expr));
-                    }
+                    finalVal = this.$computeValueForBoundAspect(
+                                    record, scopeValues, datum, allData, ind);
 
                     //  If the key is 'value', set the text content of the owner
                     //  element to the transformed value. Otherwise, set the
                     //  facet on the owner using that value (it's up to the type
                     //  to decide whether to set an Attribute or not).
                     if (key === 'value') {
-                        ownerTPElem.setValue(val);
+                        ownerTPElem.setValue(finalVal);
                     } else if (key[0] === '@') {
-                        ownerTPElem.setAttribute(key.slice(1), val);
+                        ownerTPElem.setAttribute(key.slice(1), finalVal);
                     } else {
                         //  The parameters here are:
                         //      aspect, facet (always 'value' here), value
-                        ownerTPElem.setFacet(key, 'value', val);
+                        ownerTPElem.setFacet(key, 'value', finalVal);
                     }
                 }.bind(this));
             /* eslint-enable no-loop-func */
