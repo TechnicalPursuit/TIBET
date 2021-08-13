@@ -1842,12 +1842,16 @@ function(anExpression, stdinIsSpecial) {
                             '$INPUT', vals);
             }
 
-            //  Register the Array of values we were handed as 'arguments' under
-            //  '$ARGN' variable names.
-            vals.forEach(
-                function(aVal, valIndex) {
-                    params.atPut('$ARG' + valIndex, aVal);
-                });
+            if (TP.isArray(vals)) {
+                //  Register the Array of values we were handed as 'arguments'
+                //  under '$ARGN' variable names.
+                vals.forEach(
+                    function(aVal, valIndex) {
+                        params.atPut('$ARG' + valIndex, aVal);
+                    });
+            } else {
+                params.atPut('$ARG0', vals);
+            }
 
             //  If we got a non-empty Array of values, then process them. Note
             //  here that we do *not* hand in a 'main data source', but all
@@ -1865,7 +1869,6 @@ function(anExpression, stdinIsSpecial) {
                 } else {
                     retVal = val;
                 }
-
             } else {
                 //  null or undefined (or empty), but let's be pendantic
                 retVal = vals;
