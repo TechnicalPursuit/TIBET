@@ -3896,6 +3896,15 @@ TP.sys.$$realBrowser = null;
 TP.sys.$LICENSE = TP.NULL_OID;
 
 //  ---
+//  collection member data type support
+//  ---
+
+TP.PAIR = 'pair';
+TP.HASH = 'hash';
+TP.POJO = 'pojo';
+TP.ARRAY = 'array';
+
+//  ---
 //  number support
 //  ---
 

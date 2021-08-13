@@ -201,6 +201,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.itemset.Inst.defineAttribute('$dataKeys');
+TP.xctrls.itemset.Inst.defineAttribute('$rowType');
 
 TP.xctrls.itemset.Inst.defineAttribute(
     'contentElement',
@@ -887,7 +888,9 @@ function(aDataObject) {
      *     for use by the receiver.
      */
 
-    var dataObj;
+    var dataObj,
+        testSample,
+        sampleType;
 
     //  Make sure to unwrap this from any TP.core.Content objects, etc.
     dataObj = TP.val(aDataObject);
@@ -901,6 +904,20 @@ function(aDataObject) {
             dataObj = Array.from(dataObj);
         }
     }
+
+    testSample = dataObj.first();
+
+    if (TP.isPair(testSample)) {
+        sampleType = TP.PAIR;
+    } else if (TP.isHash(testSample)) {
+        sampleType = TP.HASH;
+    } else if (TP.isPlainObject(testSample)) {
+        sampleType = TP.POJO;
+    } else {
+        sampleType = TP.ARRAY;
+    }
+
+    this.set('$rowType', sampleType);
 
     return dataObj;
 });
