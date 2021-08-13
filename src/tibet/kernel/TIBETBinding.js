@@ -2159,7 +2159,7 @@ function(attributeName, aspectName, expression) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$computeValueForBoundAspect',
-function(bindInfo, scopeValues) {
+function(bindInfo, scopeValues, dataSource, repeatDataSource, repeatDataIndex) {
 
     /**
      * @method $computeValueForBoundAspect
@@ -2169,6 +2169,14 @@ function(bindInfo, scopeValues) {
      *     particular bound aspect that we want a value for.
      * @param {String[]} scopeValues The list of scoping values (i.e. parts
      *     that, when combined, make up the entire bind scoping path).
+     * @param {Object} [dataSource] An optional data source that will be used if
+     *     the embedded expressions cannot be resolved to URIs.
+     * @param {Object} [repeatDataSource] The 'repeat data source' that will be
+     *     supplied if a transformation function is available for the bound
+     *     aspect. This should be the 'overall collection' of data that the
+     *     data source is part of.
+     * @param {Number} [repeatDataIndex] The index of the data source in the
+     *     'overall collection' that it is a part of.
      * @returns {Object|String} The value of the bound aspect. Note that if the
      *     supplied binding information for this aspect has more than 1 data
      *     expressions, this will be a String with all of the values
@@ -2177,6 +2185,10 @@ function(bindInfo, scopeValues) {
 
     var dataExprs,
         len,
+
+        transformFunc,
+        resultsForTransform,
+
         i,
 
         dataExpr,
@@ -2187,12 +2199,16 @@ function(bindInfo, scopeValues) {
         wholeURI,
 
         result,
-        finalResult;
+        finalResult,
 
-    //  There will be 1...n data expressions here. Iterate over them and compute
-    //  a model reference.
+        isXMLResource;
+
+    //  There will be 1...n data expressions here.
     dataExprs = bindInfo.at('dataExprs');
     len = dataExprs.getSize();
+
+    transformFunc = bindInfo.at('transformFunc');
+    resultsForTransform = TP.ac();
 
     for (i = 0; i < len; i++) {
         dataExpr = TP.trim(dataExprs.at(i));
@@ -2209,10 +2225,9 @@ function(bindInfo, scopeValues) {
             fullExpr = TP.uriJoinFragments.apply(TP, allVals);
 
             //  If we weren't able to compute a real URI from the fully expanded
-            //  URI value, then raise an exception and return here.
+            //  URI value, then raise an exception and break.
             if (!TP.isURIString(fullExpr)) {
                 this.raise('TP.sig.InvalidURI');
-
                 break;
             }
 
@@ -2222,37 +2237,57 @@ function(bindInfo, scopeValues) {
             //  binding expression.
 
             //  If we weren't able to compute a real URI from the fully expanded
-            //  URI value, then raise an exception and return here.
+            //  URI value, check to see if there is an optional data source
+            //  here.
             if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
-                this.raise('TP.sig.InvalidURI');
 
-                break;
+                //  No optional data source? Then raise an exception and break.
+                if (TP.notValid(dataSource)) {
+                    this.raise('TP.sig.InvalidURI');
+                    break;
+                }
+
+                //  Extract a value from the optional data source by running
+                //  the data expression against it.
+                result = TP.wrap(dataSource).get(TP.apc(dataExpr));
+            } else {
+                wholeURI = TP.uc(dataExpr);
             }
-
-            wholeURI = TP.uc(dataExpr);
         }
 
-        if (!TP.isURI(wholeURI)) {
-            this.raise('TP.sig.InvalidURI');
-
-            break;
+        if (TP.isURI(wholeURI)) {
+            //  Grab the result from the computed URI.
+            //  Note here how we specifically tell the URI to *not* signal
+            //  change if it has to fetch new content.
+            result = wholeURI.getContent(TP.request('signalChange', false));
         }
-
-        //  Grab the result from the computed URI.
-        //  Note here how we specifically tell the URI to *not* signal change if
-        //  it has to fetch new content.
-        result = wholeURI.getContent(TP.request('signalChange', false));
 
         //  If we have a valid result, then either set the finalResult to it or
         //  append it onto the finalResult if that already exists (this will
         //  occur if we have multiple data expressions).
-        if (TP.isValid(result)) {
-            if (TP.isValid(finalResult)) {
-                finalResult = TP.str(finalResult) + result;
-            } else {
-                finalResult = result;
+        if (!TP.isCallable(transformFunc)) {
+            if (TP.isValid(result)) {
+                if (TP.isValid(finalResult)) {
+                    finalResult = TP.str(finalResult) + result;
+                } else {
+                    finalResult = result;
+                }
             }
+        } else {
+            resultsForTransform.push(result);
         }
+    }
+
+    //  If we have a callable transform Function, then run it against the
+    //  results, using the supplied repeat data source and index.
+    if (TP.isCallable(transformFunc)) {
+        isXMLResource = TP.isXMLNode(TP.unwrap(resultsForTransform.first()));
+        finalResult = transformFunc(this,
+                                    resultsForTransform,
+                                    this,
+                                    repeatDataSource,
+                                    repeatDataIndex,
+                                    isXMLResource);
     }
 
     return finalResult;
