@@ -656,7 +656,7 @@ function() {
         'CDATASectionNode',     '<![CDATA[foo]]>',
         'PINode',               '<?foo bar?>',
         'CommentNode',          '<!--foo-->',
-        'DocumentFragmentNode', /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
+        'DocumentFragmentNode', /<foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>/,
 
         'NodeList',             /^NodeList :: \[([\s\S]+)\]$/,
         'NamedNodeMap',         /^NamedNodeMap :: \{([\s\S]+)\}$/,
@@ -682,7 +682,7 @@ function() {
         'TP.dom.XMLDocumentNode',       /<\?xml version="1.0"\?>\s*<foo([\s\S]*)bar="baz"([\s\S]*)>Hi there<boo><goo\/><\/boo><moo\/><\/foo>/,
         'TP.dom.XMLElementNode',        /<foo([\s\S]*)>bar<\/foo>/,
 
-        'TP.dom.DocumentFragmentNode',         /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
+        'TP.dom.DocumentFragmentNode',         /<foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>/,
         'TP.dom.AttributeNode',                'foo="bar"',
         'TP.dom.TextNode',                     'foo',
         'TP.dom.CDATASectionNode',             '<![CDATA[foo]]>',
@@ -853,7 +853,7 @@ function() {
         'CDATASectionNode',     '[CDATASection :: <![CDATA[foo]]>]',
         'PINode',               '[ProcessingInstruction :: <?foo bar?>]',
         'CommentNode',          '[Comment :: <!--foo-->]',
-        'DocumentFragmentNode', /\[DocumentFragment :: <foo([\s\S]*)\/><bar([\s\S]*)\/>\]/,
+        'DocumentFragmentNode', /\[DocumentFragment :: <foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>\]/,
 
         'NodeList',             /^\[NodeList :: ([\s\S]+)\]$/,
         'NamedNodeMap',         /^\[NamedNodeMap :: \(([\s\S]+)\)\]$/,
@@ -881,7 +881,7 @@ function() {
 
         'TP.dom.XMLElementNode',        /\[TP.dom.XMLElementNode \(Element\) :: <foo([\s\S]*)>bar<\/foo>\]/,
 
-        'TP.dom.DocumentFragmentNode',  /\[TP.dom.DocumentFragmentNode \(DocumentFragment\) :: <foo([\s\S]*)\/><bar([\s\S]*)\/>\]/,
+        'TP.dom.DocumentFragmentNode',  /\[TP.dom.DocumentFragmentNode \(DocumentFragment\) :: <foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>\]/,
         'TP.dom.AttributeNode',         '[TP.dom.AttributeNode (Attr) :: foo="bar"]',
         'TP.dom.TextNode',              '[TP.dom.TextNode (Text) :: foo]',
         'TP.dom.CDATASectionNode',      '[TP.dom.CDATASectionNode (CDATASection) :: <![CDATA[foo]]>]',
@@ -1049,7 +1049,7 @@ function() {
         'CDATASectionNode',     'foo',
         'PINode',               '<?foo bar?>',
         'CommentNode',          '<!--foo-->',
-        'DocumentFragmentNode', /<foo([\s\S]*)><\/foo><bar([\s\S]*)><\/bar>/,
+        'DocumentFragmentNode', /<foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>/,
 
         'NodeList',             /<span class="NodeList">([\s\S]*)<span data-name="0">Hi there<\/span><span data-name="1"><boo><goo><\/goo><\/boo><\/span><span data-name="2"><moo><\/moo><\/span><\/span>/,
         'NamedNodeMap',         /<span class="NamedNodeMap">([\s\S]*)<span data-name="key">bar<\/span><span data-name="value">baz<\/span>([\s\S]*)<\/span>/,
@@ -1075,7 +1075,7 @@ function() {
         'TP.dom.XMLDocumentNode',       /<foo([\s\S]*)bar="baz"([\s\S]*)>Hi there<boo><goo><\/goo><\/boo><moo><\/moo><\/foo>/,
         'TP.dom.XMLElementNode',        /<foo([\s\S]*)>bar<\/foo>/,
 
-        'TP.dom.DocumentFragmentNode',         /<foo([\s\S]*)><\/foo><bar([\s\S]*)><\/bar>/,
+        'TP.dom.DocumentFragmentNode',         /<foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>/,
         'TP.dom.AttributeNode',                'foo="bar"',
         'TP.dom.TextNode',                     'foo',
         'TP.dom.CDATASectionNode',             'foo',
@@ -1242,7 +1242,7 @@ function() {
         'CDATASectionNode',     '<![CDATA[foo]]>',
         'PINode',               '<?foo bar?>',
         'CommentNode',          '<!--foo-->',
-        'DocumentFragmentNode', /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
+        'DocumentFragmentNode', /<foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>/,
 
         'NodeList',             '<node index="0">Hi there</node><node index="1"><boo><goo/></boo></node><node index="2"><moo/></node>',
         'NamedNodeMap',         /([\s\S]*)<bar>baz<\/bar>([\s\S]*)/,
@@ -1270,7 +1270,7 @@ function() {
 
         'TP.dom.XMLElementNode',        /<instance type="TP.dom.XMLElementNode"><foo([\s\S]*)>bar<\/foo><\/instance>/,
 
-        'TP.dom.DocumentFragmentNode',  /<instance type="TP.dom.DocumentFragmentNode"><foo([\s\S]*)\/><bar([\s\S]*)\/><\/instance>/,
+        'TP.dom.DocumentFragmentNode',  /<instance type="TP.dom.DocumentFragmentNode"><foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar><\/instance>/,
         'TP.dom.AttributeNode',         '<instance type="TP.dom.AttributeNode">foo="bar"</instance>',
         'TP.dom.TextNode',              '<instance type="TP.dom.TextNode">foo</instance>',
         'TP.dom.CDATASectionNode',      '<instance type="TP.dom.CDATASectionNode"><![CDATA[foo]]></instance>',
@@ -1438,8 +1438,7 @@ function() {
         'CDATASectionNode',     '<dl class="pretty CDATASection"><dt>Type name</dt><dd class="pretty typename">CDATASection</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;![CDATA[foo]]&gt;</dd></dl>',
         'PINode',               '<dl class="pretty ProcessingInstruction"><dt>Type name</dt><dd class="pretty typename">ProcessingInstruction</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;?foo bar?&gt;</dd></dl>',
         'CommentNode',          '<dl class="pretty Comment"><dt>Type name</dt><dd class="pretty typename">Comment</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;!--foo--&gt;</dd></dl>',
-        'DocumentFragmentNode', /<dl class="pretty DocumentFragment"><dt>Type name<\/dt><dd class="pretty typename">DocumentFragment<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo([\s\S]*)\/&gt;&lt;bar([\s\S]*)\/&gt;<\/dd><\/dl>/,
-
+        'DocumentFragmentNode', /<dl class="pretty DocumentFragment"><dt>Type name<\/dt><dd class="pretty typename">DocumentFragment<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo(.+)&gt;(.+)&lt;\/foo&gt;&lt;bar(.+)&gt;(.+)&lt;\/bar&gt;<\/dd><\/dl>/,
         'NodeList',             '<dl class="pretty NodeList"><dt>Type name</dt><dd class="pretty typename">NodeList</dd><dt class="pretty key">0</dt><dd class="pretty value">Hi there</dd><dt class="pretty key">1</dt><dd class="pretty value">&lt;boo&gt;&lt;goo/&gt;&lt;/boo&gt;</dd><dt class="pretty key">2</dt><dd class="pretty value">&lt;moo/&gt;</dd></dl>',
         'NamedNodeMap',         /<dl class="pretty NamedNodeMap"><dt>Type name<\/dt><dd class="pretty typename">NamedNodeMap<\/dd><dt class="pretty key">bar<\/dt><dd class="pretty value">baz<\/dd>([\s\S]*)<\/dl>/,
 
@@ -1465,8 +1464,7 @@ function() {
 
         'TP.dom.XMLDocumentNode',       /<dl class="pretty TP_dom_XMLDocumentNode"><dt>Type name<\/dt><dd class="pretty typename">XMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value"><dl class="pretty XMLDocument"><dt>Type name<\/dt><dd class="pretty typename">XMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo bar=&quot;baz&quot;([\s\S]*);&gt;Hi there&lt;boo&gt;&lt;goo\/&gt;&lt;\/boo&gt;&lt;moo\/&gt;&lt;\/foo&gt;<\/dd><\/dl><\/dd><\/dl>/,
         'TP.dom.XMLElementNode',        /<dl class="pretty TP_dom_XMLElementNode"><dt>Type name<\/dt><dd class="pretty typename">Element<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value"><dl class="pretty Element"><dt>Type name<\/dt><dd class="pretty typename">Element<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo([\s\S]*)&gt;bar&lt;\/foo&gt;<\/dd><\/dl><\/dd><\/dl>/,
-
-        'TP.dom.DocumentFragmentNode',  /<dl class="pretty TP_dom_DocumentFragmentNode"><dt>Type name<\/dt><dd class="pretty typename">DocumentFragment<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value"><dl class="pretty DocumentFragment"><dt>Type name<\/dt><dd class="pretty typename">DocumentFragment<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo([\s\S]*)\/&gt;&lt;bar([\s\S]*)\/&gt;<\/dd><\/dl><\/dd><\/dl>/,
+        'TP.dom.DocumentFragmentNode',  /<dl class="pretty TP_dom_DocumentFragmentNode"><dt>Type name<\/dt><dd class="pretty typename">DocumentFragment<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value"><dl class="pretty DocumentFragment"><dt>Type name<\/dt><dd class="pretty typename">DocumentFragment<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo(.+)&gt;(.+)&lt;\/foo&gt;&lt;bar(.+)&gt;(.+)&lt;\/bar&gt;<\/dd><\/dl><\/dd><\/dl>/,
         'TP.dom.AttributeNode',         '<dl class="pretty TP_dom_AttributeNode"><dt>Type name</dt><dd class="pretty typename">Attr</dd><dt class="pretty key">Content</dt><dd class="pretty value"><dl class="pretty Attr"><dt>Type name</dt><dd class="pretty typename">Attr</dd><dt class="pretty key">Content</dt><dd class="pretty value">foo=&quot;bar&quot;</dd></dl></dd></dl>',
         'TP.dom.TextNode',              '<dl class="pretty TP_dom_TextNode"><dt>Type name</dt><dd class="pretty typename">Text</dd><dt class="pretty key">Content</dt><dd class="pretty value"><dl class="pretty Text"><dt>Type name</dt><dd class="pretty typename">Text</dd><dt class="pretty key">Content</dt><dd class="pretty value">foo</dd></dl></dd></dl>',
         'TP.dom.CDATASectionNode',      '<dl class="pretty TP_dom_CDATASectionNode"><dt>Type name</dt><dd class="pretty typename">CDATASection</dd><dt class="pretty key">Content</dt><dd class="pretty value"><dl class="pretty CDATASection"><dt>Type name</dt><dd class="pretty typename">CDATASection</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;![CDATA[foo]]&gt;</dd></dl></dd></dl>',
@@ -1501,8 +1499,7 @@ function() {
         'TP.gui.RadialGradient',    '<dl class="pretty TP_gui_RadialGradient"><dt>Type name</dt><dd class="pretty typename">TP.gui.RadialGradient</dd><dt class="pretty key">cx</dt><dd class="pretty value">50%</dd><dt class="pretty key">cy</dt><dd class="pretty value">50%</dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">10%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_gui_Color"><dt>Type name</dt><dd class="pretty typename">TP.gui.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">0</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">0.5</dd></dl></dd></dl></dd><dt class="pretty key">stop</dt><dd class="pretty value"><dl><dt class="pretty key">value</dt><dd class="pretty value">50%</dd><dt class="pretty key">color</dt><dd class="pretty value"><dl class="pretty TP_gui_Color"><dt>Type name</dt><dd class="pretty typename">TP.gui.Color</dd><dt class="pretty key">R</dt><dd class="pretty value">0</dd><dt class="pretty key">G</dt><dd class="pretty value">255</dd><dt class="pretty key">B</dt><dd class="pretty value">255</dd><dt class="pretty key">A</dt><dd class="pretty value">1</dd></dl></dd></dl></dd></dl>',
         'TP.gui.Pattern',           '<dl class="pretty TP_gui_Pattern"><dt>Type name</dt><dd class="pretty typename">TP.gui.Pattern</dd><dt class="pretty key">x</dt><dd class="pretty value">20</dd><dt class="pretty key">y</dt><dd class="pretty value">20</dd><dt class="pretty key">width</dt><dd class="pretty value">100</dd><dt class="pretty key">height</dt><dd class="pretty value">100</dd><dt class="pretty key">url</dt><dd class="pretty value">null</dd></dl>',
         'TP.gui.Path',              '<dl class="pretty TP_gui_SVGPath"><dt>Type name</dt><dd class="pretty typename">TP.gui.SVGPath</dd><dt class="pretty key">Segments</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>M 10,10 M 20,20</dd></dl></dd></dl>',
-
-        'TP.core.Job',              /^<dl class="pretty TP_core_Job"><dt>Type name<\/dt><dd class="pretty typename">TP.core.Job<\/dd>([\s\S]+)<dt class="pretty key">PID<\/dt>([\s\S]+)<\/dl>$/,
+        'TP.core.Job',                /^<dl class="pretty TP_core_Job"><dt>Type name<\/dt><dd class="pretty typename">TP.core.Job<\/dd>([\s\S]*)<dt class="pretty key">PID<\/dt>([\s\S]+)<\/dl>$/,
         'TP.core.Browser_TYPE',     'browser',
         'TP.boot.Annotation',       '<dl class="pretty TP_boot_Annotation"><dt>Type name</dt><dd class="pretty typename">TP.boot.Annotation</dd><dt class="pretty key">object</dt><dd class="pretty value">A String</dd><dt class="pretty key">message</dt><dd class="pretty value">This is a message</dd></dl>',
         'TP.core.Annotation',       '<dl class="pretty TP_core_Annotation"><dt>Type name</dt><dd class="pretty typename">TP.core.Annotation</dd><dt class="pretty key">object</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>A String</dd></dl></dd><dt class="pretty key">message</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>This is a message</dd></dl></dd></dl>'

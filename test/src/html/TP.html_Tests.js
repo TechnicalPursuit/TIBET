@@ -932,8 +932,7 @@ function() {
         value = value.
                     strip(/ xmlns:tibet=".+?"/g).
                     strip(/ tibet:no-compile="true"/g);
-
-        test.assert.isEqualTo(value, '<foo/><bar/>');
+        test.assert.isEqualTo(value, '<foo>foo</foo><bar>bar</bar>');
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));
@@ -1078,8 +1077,7 @@ function() {
         value = value.
                     strip(/ xmlns:tibet=".+?"/g).
                     strip(/ tibet:no-compile="true"/g);
-
-        test.assert.isEqualTo(value, '<foo/><bar/>');
+        test.assert.isEqualTo(value, '<foo>foo</foo><bar>bar</bar>');
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));
@@ -1219,11 +1217,8 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
-        value = value.
-                    strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:no-compile="true"/g);
         //  <input type="text"/> is both single-valued and scalar-valued
-        test.assert.isEqualTo(value, '<foo/><bar/>');
+        test.assert.isEqualTo(value, 'foo, bar');
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));
@@ -1365,11 +1360,8 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
-        value = value.
-                    strip(/ xmlns:tibet=".+?"/g).
-                    strip(/ tibet:no-compile="true"/g);
         //  <input type="text"/> is both single-valued and scalar-valued
-        test.assert.isEqualTo(value, '<foo/><bar/>');
+        test.assert.isEqualTo(value, 'foo, bar');
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));
@@ -1507,7 +1499,7 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
-        test.assert.isNull(value);
+        test.assert.isEqualTo(value, 'foo');
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));
@@ -1648,7 +1640,7 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
-        test.assert.isEmpty(value);
+        test.assert.isEqualTo(value, TP.ac('foo', 'bar'));
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));
@@ -1784,7 +1776,7 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
-        test.assert.isNull(value);
+        test.assert.isEqualTo(value, 'foo');
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));
@@ -1958,7 +1950,7 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
-        test.assert.isEmpty(value);
+        test.assert.isEqualTo(value, TP.ac('foo', 'bar'));
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));

@@ -440,7 +440,7 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
-        test.assert.isNull(value);
+        test.assert.isEqualTo(value, 'foo');
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));
@@ -663,7 +663,7 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
-        test.assert.isEmpty(value);
+        test.assert.isEqualTo(value, TP.ac('foo', 'bar'));
 
         //  NodeList
         tpElem.set('value', testData.at('NodeList'));

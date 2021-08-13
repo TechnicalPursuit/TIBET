@@ -233,10 +233,12 @@ function(aRequest) {
     documentFragmentNodeVal = xmlDocumentVal.createDocumentFragment();
 
     newXMLElement = xmlDocumentVal.createElement('foo');
+    newXMLElement.appendChild(xmlDocumentVal.createTextNode('foo'));
     TP.elementSetAttribute(newXMLElement, 'tibet:no-compile', 'true', true);
     documentFragmentNodeVal.appendChild(newXMLElement);
 
     newXMLElement = xmlDocumentVal.createElement('bar');
+    newXMLElement.appendChild(xmlDocumentVal.createTextNode('bar'));
     TP.elementSetAttribute(newXMLElement, 'tibet:no-compile', 'true', true);
     documentFragmentNodeVal.appendChild(newXMLElement);
 
@@ -1245,7 +1247,7 @@ function(aRequest) {
         'CDATASectionNode',                     'foo',
         'PINode',                               'bar',
         'CommentNode',                          'foo',
-        'DocumentFragmentNode',                 /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
+        'DocumentFragmentNode',                 /<foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>/,
 
         'NodeList',                             TP.IDENTITY,
         'NamedNodeMap',                         TP.IDENTITY,
@@ -1271,7 +1273,7 @@ function(aRequest) {
         'TP.dom.XMLDocumentNode',               'Hi there<boo><goo/></boo><moo/>',
         'TP.dom.XMLElementNode',                'bar',
 
-        'TP.dom.DocumentFragmentNode',          /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
+        'TP.dom.DocumentFragmentNode',          /<foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>/,
         'TP.dom.AttributeNode',                 'bar',
         'TP.dom.TextNode',                      'foo',
         'TP.dom.CDATASectionNode',              'foo',
