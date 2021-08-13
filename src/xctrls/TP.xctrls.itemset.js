@@ -1093,10 +1093,21 @@ function(aDataObject, shouldSignal) {
         return this;
     }
 
+    //  Grab the current data and if it's (deep) equal to the supplied data
+    //  object, then there's no reason to re-render.
+    dataObj = this.$get('data');
+    if (TP.equal(dataObj, aDataObject)) {
+        return this;
+    }
+
+    //  We copy the page data here because we might modify it and we can use it
+    //  for future comparison purposes.
+    dataObj = TP.copy(aDataObject);
+
     //  Prepare the supplied data into the proper format so that keys can be
     //  computed and it can be thought of as 'rows' of data. This normally means
     //  making 'pairs' of the 'entries' of the data object.
-    dataObj = this.prepareData(aDataObject);
+    dataObj = this.prepareData(dataObj);
 
     this.$set('data', dataObj, false);
 
