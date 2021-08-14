@@ -2100,7 +2100,7 @@ function(selection) {
                 //  selected or not. Note that we convert to a String to make
                 //  sure the proper comparison with selected values (which will
                 //  contain only Strings).
-                if (selectAll || selectedValues.contains(d[0].toString())) {
+                if (selectAll || selectedValues.contains(TP.tostr(d[0]))) {
                     wrappedElem.$setVisualToggle(true);
                     return;
                 }
