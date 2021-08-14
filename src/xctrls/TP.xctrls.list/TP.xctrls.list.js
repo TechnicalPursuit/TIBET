@@ -181,11 +181,6 @@ TP.xctrls.list.Inst.defineAttribute(
     TP.cpc('> .scroller xctrls|content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.list.Inst.defineAttribute(
-    'listitems',
-    TP.cpc('> .scroller xctrls|content > xctrls|*',
-                                        TP.hc('shouldCollapse', false)));
-
-TP.xctrls.list.Inst.defineAttribute(
     'itemWithLabel',
     TP.xpc('.//xctrls:label[.//text() = "{{0}}"]/',
             'ancestor::*[contains(@class, "item")]',
@@ -204,6 +199,32 @@ TP.xctrls.list.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('getAllItems',
+function() {
+
+    /**
+     * @method getAllItems
+     * @summary Returns all of the receiver's item content, no matter whether it
+     *     was statically supplied or generated dynamically.
+     * @returns {TP.xctrls.item[]} All of the receiver's item content.
+     */
+
+    var getterPath,
+        result;
+
+    getterPath = TP.xpc(
+                    './/' +
+                    '*[local-name() = "content"]//' +
+                    '*[substring(name(), string-length(name()) - 3) = "item"]',
+                TP.hc('shouldCollapse', false));
+
+    result = this.get(getterPath);
+
+    return result;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('changeValueUsingTarget',
@@ -386,7 +407,7 @@ function(aTerm) {
         this.render();
 
         if (hasFocus) {
-            this.get('listitems').first().focus();
+            this.get('allItems').first().focus();
         }
     } else {
 
@@ -445,7 +466,7 @@ function(aTerm) {
                             this.getNativeNode(),
                             TP.ac('borderRightWidth'));
         itemBorderVals = TP.elementGetComputedStyleValuesInPixels(
-                            this.get('listitems').first().getNativeNode(),
+                            this.get('allItems').first().getNativeNode(),
                             TP.ac('borderRightWidth'));
         stickyOffset = ourBorderVals.at('borderRightWidth') +
                         itemBorderVals.at('borderRightWidth');
@@ -508,7 +529,7 @@ function(aTerm) {
 
         //  Focus the first item
         if (hasFocus) {
-            this.get('listitems').first().focus();
+            this.get('allItems').first().focus();
         }
     }
 
@@ -536,7 +557,7 @@ function() {
     keys = TP.ac();
 
     //  Stamp all of the items in the item content with an index.
-    allItems = this.get('listitems');
+    allItems = this.get('allItems');
     allItems.forEach(
         function(item, index) {
             var key;
@@ -959,7 +980,7 @@ function(moveAction) {
     lastDataItemIndex = this.get('data').getSize() - 1;
 
     currentFocusedTPElem = this.get('focusedItem');
-    listTPElems = this.get('listitems');
+    listTPElems = this.get('allItems');
 
     pageSize = this.getPageSize();
 
@@ -986,7 +1007,7 @@ function(moveAction) {
             this.scrollTopToRow(0);
             this.render();
 
-            listTPElems = this.get('listitems');
+            listTPElems = this.get('allItems');
             successorTPElem = listTPElems.first();
             break;
 
@@ -1000,7 +1021,7 @@ function(moveAction) {
             this.scrollTopToRow(lastDataItemIndex);
             this.render();
 
-            listTPElems = this.get('listitems');
+            listTPElems = this.get('allItems');
             successorTPElem = listTPElems.last();
             break;
 
@@ -1016,7 +1037,7 @@ function(moveAction) {
             this.scrollTopToRow(focusRowNum);
             this.render();
 
-            listTPElems = this.get('listitems');
+            listTPElems = this.get('allItems');
             successorTPElem = listTPElems.first();
             break;
 
@@ -1035,7 +1056,7 @@ function(moveAction) {
             this.scrollTopToRow(focusRowNum + (pageSize - 1));
             this.render();
 
-            listTPElems = this.get('listitems');
+            listTPElems = this.get('allItems');
             successorTPElem = listTPElems.first();
             break;
 
@@ -1056,7 +1077,7 @@ function(moveAction) {
                     this.scrollTopToRow(0);
                     this.render();
 
-                    listTPElems = this.get('listitems');
+                    listTPElems = this.get('allItems');
                     successorTPElem = listTPElems.first();
                 }
             }
@@ -1079,7 +1100,7 @@ function(moveAction) {
                     this.scrollTopToRow(lastDataItemIndex);
                     this.render();
 
-                    listTPElems = this.get('listitems');
+                    listTPElems = this.get('allItems');
 
                     successorTPElem = listTPElems.at(
                             lastDataItemIndex - this.get('$numSpacingRows'));
@@ -2026,7 +2047,7 @@ function(selection) {
 
     //  If we were focused, the grab the first item and focus it.
     if (hasFocus) {
-        this.get('listitems').first().focus();
+        this.get('allItems').first().focus();
     }
 
     return this;

@@ -75,7 +75,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstListItem = list.get('listitems').first();
+                    firstListItem = list.get('allItems').first();
                     return firstListItem;
                 },
                 TP.gid(list),
@@ -110,7 +110,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstListItem = list.get('listitems').first();
+                    firstListItem = list.get('allItems').first();
                     return firstListItem;
                 },
                 TP.gid(list),
@@ -188,7 +188,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstListItem = list.get('listitems').first();
+                    firstListItem = list.get('allItems').first();
                     return firstListItem;
                 },
                 TP.gid(list),
@@ -245,7 +245,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstListItem = list.get('listitems').first();
+                    firstListItem = list.get('allItems').first();
                     return firstListItem;
                 },
                 TP.gid(list),
@@ -742,7 +742,7 @@ function() {
 
         var itemIndices;
 
-        itemIndices = aTPElem.get('listitems').collect(
+        itemIndices = aTPElem.get('allItems').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -1013,7 +1013,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstListItem = tpElem.get('listitems').first();
+                    firstListItem = tpElem.get('allItems').first();
                     return firstListItem;
                 },
                 TP.gid(tpElem),
@@ -1117,7 +1117,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    secondListItem = tpElem.get('listitems').at(1);
+                    secondListItem = tpElem.get('allItems').at(1);
                     return secondListItem;
                 },
                 TP.gid(tpElem),
@@ -1143,7 +1143,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    thirdListItem = tpElem.get('listitems').at(2);
+                    thirdListItem = tpElem.get('allItems').at(2);
                     return thirdListItem;
                 },
                 TP.gid(tpElem),
