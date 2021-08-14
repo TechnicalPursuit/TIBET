@@ -1387,7 +1387,9 @@ function() {
 
         var tabbar,
 
-            modelObj;
+            modelObj,
+
+            items;
 
         tabbar = TP.byId('tabbar9', windowContext);
 
@@ -1400,6 +1402,19 @@ function() {
         test.assert.isEqualTo(
             TP.val(modelObj.get('selection_set_2')),
             'foo');
+
+        items = tabbar.get('allItems');
+
+        test.assert.isEqualTo(
+            items.getSize(),
+            5);
+
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'FOO');
+        test.assert.isEqualTo(
+            items.at(1).getAttribute('foo'),
+            'Value was: FOO');
     });
 
     //  ---
@@ -1540,10 +1555,10 @@ function() {
 
                 test.assert.isEqualTo(
                     items.at(1).getLabelText(),
-                    'Fido');
+                    'FIDO');
                 test.assert.isEqualTo(
                     items.at(2).getLabelText(),
-                    'Lassie');
+                    'LASSIE');
             });
 
         test.chain(
@@ -1566,10 +1581,10 @@ function() {
 
                 test.assert.isEqualTo(
                     items.at(1).getLabelText(),
-                    'Fluffy');
+                    'FLUFFY');
                 test.assert.isEqualTo(
                     items.at(4).getLabelText(),
-                    'Tigger');
+                    'TIGGER');
             });
     });
 

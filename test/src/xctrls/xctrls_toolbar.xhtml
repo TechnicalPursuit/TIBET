@@ -11,34 +11,6 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
 
-    <style type="text/css">
-/*
-    #toolbar1 {
-        top: 30px;
-    }
-
-    #toolbar2 {
-        top: 60px;
-    }
-
-    #toolbar3 {
-        top: 90px;
-    }
-
-    #toolbar4 {
-        top: 120px;
-    }
-
-    #toolbar5 {
-        top: 150px;
-    }
-
-    #toolbar6 {
-        top: 180px;
-    }
-*/
-    </style>
-
     <!-- As a single item Array, the item labels and values will be the same -->
     <tibet:data name="urn:tibet:single_item_array" content="TP.core.Hash">
         <![CDATA[
@@ -241,7 +213,7 @@
     toolbar #8:
     <br/>
 
-    A standard XControls toolbar enabled showing only static content:
+    A standard XControls toolbar enabled showing only static content and value bound to a selection model:
     <xctrls:toolbar id="toolbar8" bind:io="{value: urn:tibet:static_selection_test_data#tibet(selection_set_1)}">
         <xctrls:textitem tabindex="0">
             <xctrls:label>Before Content</xctrls:label>
@@ -267,8 +239,8 @@
             <xctrls:value>before</xctrls:value>
         </xctrls:textitem>
         <tibet:template>
-            <xctrls:textitem>
-                <xctrls:label>[[value.1]]</xctrls:label>
+            <xctrls:textitem bind:in="{@foo: 'Value was: [[value.0 .% upperCase]]'}">
+                <xctrls:label>[[value.1 .% upperCase]]</xctrls:label>
                 <xctrls:value>[[value.0]]</xctrls:value>
             </xctrls:textitem>
         </tibet:template>
