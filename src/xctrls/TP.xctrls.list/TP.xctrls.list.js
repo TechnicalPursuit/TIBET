@@ -1297,7 +1297,21 @@ function(aDataObject, shouldSignal, isFiltered) {
         return this;
     }
 
-    dataObj = this.prepareData(aDataObject);
+    //  Grab the current data and if it's (deep) equal to the supplied data
+    //  object, then there's no reason to re-render.
+    dataObj = this.$get('data');
+    if (TP.equal(dataObj, aDataObject)) {
+        this.finalizeContent();
+        return this;
+    }
+
+    //  We copy the page data here because we might modify it below.
+    dataObj = TP.copy(aDataObject);
+
+    //  Prepare the supplied data into the proper format so that keys can be
+    //  computed and it can be thought of as 'rows' of data. This normally means
+    //  making 'pairs' of the 'entries' of the data object.
+    dataObj = this.prepareData(dataObj);
 
     this.$set('data', dataObj, false);
 
