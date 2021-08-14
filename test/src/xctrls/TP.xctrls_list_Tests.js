@@ -2,6 +2,270 @@
 //  xctrls:list
 //  ========================================================================
 
+TP.xctrls.list.Type.describe('TP.xctrls.list: rendering',
+function() {
+
+    var unloadURI,
+        loadURI,
+
+        windowContext;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            var loc;
+
+            TP.$$setupCommonObjectValues();
+
+            windowContext = this.getDriver().get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loadURI = TP.uc(loc);
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:list - simple Array', function(test, options) {
+
+        var list;
+
+        list = TP.byId('list1', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return list.get('allItems').first();
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+
+                test.assert.isEqualTo(
+                    list.get('allItems').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    list.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    list.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = list.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:list - Array of Pairs', function(test, options) {
+
+        var list;
+
+        list = TP.byId('list2', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return list.get('allItems').first();
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    list.get('allItems').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    list.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    list.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = list.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:list - multi-item Array', function(test, options) {
+
+        var list;
+
+        list = TP.byId('list3', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return list.get('allItems').first();
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    list.get('allItems').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    list.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    list.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = list.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:list - single-item Array with Hash', function(test, options) {
+
+        var list;
+
+        list = TP.byId('list4', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return list.get('allItems').first();
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    list.get('allItems').getSize(),
+                    3);
+                test.assert.isEqualTo(
+                    list.get('data').getSize(),
+                    3);
+                test.assert.isEqualTo(
+                    list.get('$dataKeys').getSize(),
+                    3);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = list.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:list - multi-item Array with Hashes', function(test, options) {
+
+        var list;
+
+        list = TP.byId('list5', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return list.get('allItems').first();
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    list.get('allItems').getSize(),
+                    3);
+                test.assert.isEqualTo(
+                    list.get('data').getSize(),
+                    3);
+                test.assert.isEqualTo(
+                    list.get('$dataKeys').getSize(),
+                    3);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = list.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Brown');
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Type.describe('TP.xctrls.list: manipulation',
 function() {
 
@@ -397,10 +661,10 @@ function() {
             var tpElem;
 
             //  Make sure that each test starts with a freshly reset item
-            tpElem = TP.byId('list4', windowContext);
+            tpElem = TP.byId('list6', windowContext);
             tpElem.deselectAll();
 
-            tpElem = TP.byId('list5', windowContext);
+            tpElem = TP.byId('list7', windowContext);
             tpElem.deselectAll();
         });
 
@@ -426,7 +690,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byId('list4', windowContext);
+        tpElem = TP.byId('list6', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -464,7 +728,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byId('list4', windowContext);
+        tpElem = TP.byId('list6', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -502,7 +766,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('list4', windowContext);
+        tpElem = TP.byId('list6', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -562,7 +826,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -608,7 +872,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -652,7 +916,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -771,7 +1035,7 @@ function() {
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            listID = TP.computeOriginID(windowContext, loc, 'list5');
+            listID = TP.computeOriginID(windowContext, loc, 'list7');
             this.andWaitFor(listID, 'TP.sig.DidRender');
         });
 
@@ -783,7 +1047,7 @@ function() {
             var tpElem;
 
             //  Make sure that each test starts with a freshly reset item
-            tpElem = TP.byId('list5', windowContext);
+            tpElem = TP.byId('list7', windowContext);
             tpElem.deselectAll();
         });
 
@@ -805,13 +1069,13 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         //  ---
 
         //  allowsMultiples
 
-        //  list5 is configured to allow multiples
+        //  list7 is configured to allow multiples
         test.assert.isTrue(tpElem.allowsMultiples());
 
         //  ---
@@ -833,7 +1097,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -864,7 +1128,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         tpElem.selectAll();
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
@@ -876,7 +1140,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         tpElem.deselectAll();
         tpElem.select('bar');
@@ -895,7 +1159,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         tpElem.deselectAll();
         tpElem.select(/ba/);
@@ -908,7 +1172,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         tpElem.selectAll();
         tpElem.deselect('bar');
@@ -927,7 +1191,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('list7', windowContext);
 
         tpElem.selectAll();
         tpElem.deselect(/ba/);
@@ -983,7 +1247,7 @@ function() {
 
             modelObj;
 
-        tpElem = TP.byId('list8', windowContext);
+        tpElem = TP.byId('list9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1005,7 +1269,7 @@ function() {
             modelObj,
             firstListItem;
 
-        tpElem = TP.byId('list8', windowContext);
+        tpElem = TP.byId('list9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1035,6 +1299,84 @@ function() {
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_1')),
                     'foo');
+            });
+    });
+
+    this.it('xctrls:list - change data and re-render', function(test, options) {
+
+        var list,
+
+            modelURI,
+            firstListItem;
+
+        list = TP.byId('list9', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        //  Change the content via 'user' interaction
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstListItem = list.get('allItems').first();
+                    return firstListItem;
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                var items;
+
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('fido', 'Fido'),
+                            TP.ac('lassie', 'Lassie'))));
+
+                items = list.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    3);
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Lassie');
+            });
+
+        test.chain(
+            function() {
+                var modelObj,
+                    items;
+
+                modelObj = modelURI.getContent();
+
+                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+
+                modelURI.$changed();
+
+                items = list.get('allItems');
+
+                //  Even though the data set has 4 items, we're only displaying
+                //  3 (virtual list).
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    3);
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fluffy');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(2).getLabelText(),
+                    'Lassie');
             });
     });
 
@@ -1086,7 +1428,7 @@ function() {
 
             modelObj;
 
-        tpElem = TP.byId('list9', windowContext);
+        tpElem = TP.byId('list10', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1109,7 +1451,7 @@ function() {
             secondListItem,
             thirdListItem;
 
-        tpElem = TP.byId('list9', windowContext);
+        tpElem = TP.byId('list10', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1168,6 +1510,83 @@ function() {
             });
     });
 
+    this.it('xctrls:list - change data and re-render', function(test, options) {
+
+        var list,
+
+            modelURI,
+            firstListItem;
+
+        list = TP.byId('list10', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        //  Change the content via 'user' interaction
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstListItem = list.get('allItems').first();
+                    return firstListItem;
+                },
+                TP.gid(list),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                var items;
+
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('fido', 'Fido'),
+                            TP.ac('lassie', 'Lassie'))));
+
+                items = list.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    3);
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Lassie');
+            });
+
+        test.chain(
+            function() {
+                var modelObj,
+                    items;
+
+                modelObj = modelURI.getContent();
+
+                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+
+                modelURI.$changed();
+
+                items = list.get('allItems');
+
+                //  Even though the data set has 4 items, we're only displaying
+                //  3 (virtual list).
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    3);
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fluffy');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(2).getLabelText(),
+                    'Lassie');
+            });
+    });
 });
 
 //  ------------------------------------------------------------------------
