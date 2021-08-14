@@ -21,9 +21,11 @@
     /* The border height (top and bottom added together) */
     --xctrls-item-border-height: 1px;
 
+    --xctrls-list-minimum-rows: 3;
+
     /* Minimum of 10 characters of width and 3 rows of height */
     min-width: 10em;
-    min-height: 60px;
+    min-height: calc(var(--xctrls-list-minimum-rows) * var(--xctrls-item-height));
 
     line-height: var(--xctrls-item-height);
 }
