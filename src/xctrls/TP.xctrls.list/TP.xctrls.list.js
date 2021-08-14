@@ -1251,29 +1251,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Inst.defineMethod('prepareData',
-function(aDataObject) {
-
-    var dataObj;
-
-    //  Make sure to unwrap this from any TP.core.Content objects, etc.
-    dataObj = TP.val(aDataObject);
-
-    //  Now, make sure that we have an Array no matter what kind of data object
-    //  we were handed.
-    if (!TP.isArray(dataObj)) {
-        if (TP.canInvoke(dataObj, 'asArray')) {
-            dataObj = dataObj.asArray();
-        } else {
-            dataObj = Array.from(dataObj);
-        }
-    }
-
-    return dataObj;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.list.Inst.defineMethod('setData',
 function(aDataObject, shouldSignal, isFiltered) {
 

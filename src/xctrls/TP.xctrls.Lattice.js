@@ -137,6 +137,7 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Lattice.Inst.defineAttribute('$rowType');
 TP.xctrls.Lattice.Inst.defineAttribute('$numSpacerRows');
 
 TP.xctrls.Lattice.Inst.defineAttribute(
@@ -436,6 +437,54 @@ function(aspectName) {
      */
 
     return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('prepareData',
+function(aDataObject) {
+
+    /**
+     * @method prepareData
+     * @summary Returns data that has been 'prepared' for usage by the receiver.
+     * @param {Object} aDataObject The original object supplied to the receiver
+     *     as it's 'data object'.
+     * @returns {Object} The data object 'massaged' into a data format suitable
+     *     for use by the receiver.
+     */
+
+    var dataObj,
+        testSample,
+        sampleType;
+
+    //  Make sure to unwrap this from any TP.core.Content objects, etc.
+    dataObj = TP.val(aDataObject);
+
+    //  Now, make sure that we have an Array no matter what kind of data object
+    //  we were handed.
+    if (!TP.isArray(dataObj)) {
+        if (TP.canInvoke(dataObj, 'asArray')) {
+            dataObj = dataObj.asArray();
+        } else {
+            dataObj = Array.from(dataObj);
+        }
+    }
+
+    testSample = dataObj.first();
+
+    if (TP.isPair(testSample)) {
+        sampleType = TP.PAIR;
+    } else if (TP.isHash(testSample)) {
+        sampleType = TP.HASH;
+    } else if (TP.isPlainObject(testSample)) {
+        sampleType = TP.POJO;
+    } else {
+        sampleType = TP.ARRAY;
+    }
+
+    this.set('$rowType', sampleType);
+
+    return dataObj;
 });
 
 //  ------------------------------------------------------------------------
