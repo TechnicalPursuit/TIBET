@@ -353,7 +353,28 @@ function(anIndex) {
      * @returns {Object} The data object representing a blank row for this type.
      */
 
-    return TP.ac(TP.SPACING + anIndex, 'BLANK');
+    var rowType,
+        key;
+
+    rowType = this.get('$rowType');
+
+    key = TP.ifEmpty(this.getAttribute('itemKey'),
+                        TP.ac(TP.SPACING + anIndex));
+
+    switch (rowType) {
+        case TP.PAIR:
+            return TP.ac(key, TP.SPACING);
+        case TP.HASH:
+            return TP.hc(key, TP.SPACING);
+        case TP.POJO:
+            return {key: TP.SPACING};
+        case TP.ARRAY:
+            return TP.ac(TP.SPACING);
+        default:
+            break;
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
