@@ -1664,7 +1664,7 @@ function(enterSelection) {
                         preIndex,
                         postIndex;
 
-                    val = valueFunc(d, index);
+                    val = valueFunc(data, index);
 
                     if (TP.regex.SPACING.test(val)) {
                         return '&#160;';
@@ -1673,7 +1673,7 @@ function(enterSelection) {
                     if (TP.regex.GROUPING.test(val)) {
                         labelVal = TP.regex.GROUPING.exec(val)[1];
                     } else {
-                        labelVal = TP.str(labelFunc(d, index));
+                        labelVal = TP.str(labelFunc(data, index));
                     }
 
                     if (/match_result">/g.test(labelVal)) {
@@ -1700,7 +1700,7 @@ function(enterSelection) {
                 function(d, i) {
                     var val;
 
-                    val = valueFunc(d, index);
+                    val = valueFunc(data, index);
 
                     if (TP.regex.SPACING.test(val)) {
                         return '';
@@ -1721,7 +1721,7 @@ function(enterSelection) {
                         var val,
                             hintVal;
 
-                        val = valueFunc(d, index);
+                        val = valueFunc(data, index);
 
                         //  If the data value is a SPACING or GROUPING value
                         //  then we don't want the hint/tooltip to show so we
@@ -2280,7 +2280,7 @@ function(updateSelection) {
                         preIndex,
                         postIndex;
 
-                    val = valueFunc(d, index);
+                    val = valueFunc(data, index);
 
                     if (TP.regex.SPACING.test(val)) {
                         return '&#160;';
@@ -2289,7 +2289,7 @@ function(updateSelection) {
                     if (TP.regex.GROUPING.test(val)) {
                         labelVal = TP.regex.GROUPING.exec(val)[1];
                     } else {
-                        labelVal = TP.str(labelFunc(d, index));
+                        labelVal = TP.str(labelFunc(data, index));
                     }
 
                     if (/match_result">/g.test(labelVal)) {
@@ -2317,7 +2317,7 @@ function(updateSelection) {
                 function(d, i) {
                     var val;
 
-                    val = valueFunc(d, index);
+                    val = valueFunc(data, index);
 
                     if (TP.regex.SPACING.test(val)) {
                         return '';
@@ -2344,7 +2344,7 @@ function(updateSelection) {
                         var val,
                             hintVal;
 
-                        val = valueFunc(d, index);
+                        val = valueFunc(data, index);
 
                         //  If the data value is a SPACING or GROUPING value
                         //  then we don't want the hint/tooltip to show so we
