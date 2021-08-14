@@ -151,7 +151,7 @@ function(aRequest) {
 
     //  Finalize content so that static items get keys, etc. If this is a bound
     //  element, this will be called from the setData method.
-    if (!tpElem.isBoundElement()) {
+    if (!tpElem.isAspectBoundIn('data')) {
         tpElem.finalizeContent();
     }
 
@@ -1459,7 +1459,6 @@ function(aValue) {
     selectionEntry = TP.ac();
 
     keys = this.get('$dataKeys');
-
     if (TP.isEmpty(keys)) {
         return this;
     }
