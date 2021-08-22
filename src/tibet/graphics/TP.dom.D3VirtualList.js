@@ -194,12 +194,6 @@ function() {
         return this.raise('TP.sig.InvalidNumber');
     }
 
-    //  If the current height is less than the row height (a single row height),
-    //  then return that.
-    if (currentHeight < rowHeight) {
-        return rowHeight;
-    }
-
     //  See if a fixed size is available.
     fixedSize = this.getAttribute('size');
     fixedSize = fixedSize.asNumber();
@@ -223,6 +217,12 @@ function() {
     if (TP.isNumber(minHeight) && minHeight > 0 &&
         currentHeight <= minHeight) {
         return minHeight;
+    }
+
+    //  If the current height is less than the row height (a single row height),
+    //  then return that.
+    if (currentHeight < rowHeight) {
+        return rowHeight;
     }
 
     return currentHeight;
