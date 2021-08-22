@@ -16,15 +16,6 @@
 
 TP.xctrls.Lattice.defineSubtype('xctrls:list');
 
-/**
- * The tag name of the tag to use for each item if there is no template.
- * @type {String}
- */
-TP.xctrls.list.Type.defineAttribute('defaultItemTagName', 'xctrls:textitem');
-
-//  Note how this property is TYPE_LOCAL, by design.
-TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
-
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
@@ -43,6 +34,15 @@ TP.xctrls.list.Type.defineAttribute('opaqueBubblingSignalNames',
             'TP.sig.UIDisabled',
             'TP.sig.UIEnabled'
             ));
+
+/**
+ * The tag name of the tag to use for each item if there is no template.
+ * @type {String}
+ */
+TP.xctrls.list.Type.defineAttribute('defaultItemTagName', 'xctrls:textitem');
+
+//  Note how this property is TYPE_LOCAL, by design.
+TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
 
 TP.xctrls.list.Type.set('bidiAttrs', TP.ac('value'));
 
