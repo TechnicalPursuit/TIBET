@@ -47,18 +47,57 @@ TP.xctrls.table.defineAttribute('themeURI', TP.NO_RESULT);
 TP.xctrls.table.Type.set('bidiAttrs', TP.ac('value'));
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.table.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    //  Finalize content so that static items get keys, etc. If this is a bound
+    //  element, this will be called from the setData method.
+    if (!tpElem.isAspectBoundIn('data')) {
+        tpElem.finalizeContent();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 TP.xctrls.table.Inst.defineAttribute('$numColumns');
 TP.xctrls.table.Inst.defineAttribute('columns');
 
+TP.xctrls.table.Inst.defineAttribute('$dataKeys');
+
 TP.xctrls.table.Inst.defineAttribute(
     'tablecontent',
     TP.cpc('> .scroller xctrls|content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.table.Inst.defineAttribute(
-    'rowitems',
+    'rows',
         TP.cpc('> .scroller xctrls|content > .row', TP.hc('shouldCollapse', false)));
 
 TP.xctrls.table.Inst.defineAttribute(
@@ -170,7 +209,10 @@ function(anIndex) {
 
         spacerRow,
 
-        j;
+        j,
+
+        rowType,
+        key;
 
     numCols = TP.ifInvalid(this.get('$numColumns'), 0);
 
@@ -180,7 +222,74 @@ function(anIndex) {
         spacerRow.push(TP.SPACING + anIndex + '__' + j);
     }
 
-    return spacerRow;
+    rowType = this.get('$rowType');
+
+    key = TP.ifEmpty(this.getAttribute('itemKey'),
+                        TP.ac(TP.SPACING + anIndex));
+
+    switch (rowType) {
+        case TP.PAIR:
+            return TP.ac(key, spacerRow);
+        case TP.HASH:
+            return TP.hc(key, spacerRow);
+        case TP.POJO:
+            return {key: spacerRow};
+        case TP.ARRAY:
+            return TP.ac(spacerRow);
+        default:
+            break;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.table.Inst.defineMethod('finalizeContent',
+function() {
+
+    /**
+     * @method finalizeContent
+     * @summary Updates an internal data structures from static item content
+     *     that the author might have put into the receiver.
+     * @description This method is called when the receiver is first awakened
+     *     in order to set up any data structures that are required to treat
+     *     static content as we would dynamically generated content.
+     * @returns {TP.xctrls.table} The receiver.
+     */
+
+    var keys,
+        allRows,
+
+        allItems;
+
+    keys = TP.ac();
+
+    //  Stamp all of the *rows* in the item content with an index.
+    allRows = this.get('rows');
+    allRows.forEach(
+        function(row, index) {
+            var key;
+
+            key = row.getAttribute(TP.DATA_KEY);
+            if (TP.isEmpty(key)) {
+                key = TP.genID();
+                row.setAttribute(TP.DATA_KEY, key);
+            }
+            keys.push(key);
+        });
+
+    this.set('$dataKeys', keys, false);
+
+    //  Stamp all of the items in the item content with an index.
+    allItems = this.get('allItems');
+    allItems.forEach(
+        function(item, index) {
+            item.setAttribute(TP.ITEM_NUM, index);
+            item.addClass('item');
+        });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -278,7 +387,7 @@ TP.xctrls.table.Inst.defineMethod('getValueData',
 function() {
 
     /**
-     * @method getValueValue
+     * @method getValueData
      * @summary Returns the 'value data' of the receiver. This will be the data
      *     'row' associated with the current value of the receiver.
      * @returns {Object|null} The value data of the receiver.
@@ -580,7 +689,7 @@ function(moveAction) {
         startIndex,
         endIndex,
 
-        tableTPElems,
+        rowTPElems,
 
         firstAndLastVisualItems,
         firstVisualItem,
@@ -590,10 +699,10 @@ function(moveAction) {
 
         focusRowNum;
 
-    lastDataItemIndex = this.get('$convertedData').getSize() - 1;
+    lastDataItemIndex = this.get('data').getSize() - 1;
 
     currentFocusedTPElem = this.get('focusedItem');
-    tableTPElems = this.get('rowitems');
+    rowTPElems = this.get('rows');
 
     pageSize = this.getPageSize();
 
@@ -620,8 +729,8 @@ function(moveAction) {
             this.scrollTopToRow(0);
             this.render();
 
-            tableTPElems = this.get('rowitems');
-            successorTPElem = tableTPElems.first();
+            rowTPElems = this.get('rows');
+            successorTPElem = rowTPElems.first();
             break;
 
         case TP.LAST:
@@ -634,8 +743,8 @@ function(moveAction) {
             this.scrollTopToRow(lastDataItemIndex);
             this.render();
 
-            tableTPElems = this.get('rowitems');
-            successorTPElem = tableTPElems.last();
+            rowTPElems = this.get('rows');
+            successorTPElem = rowTPElems.last();
             break;
 
         case TP.FIRST_IN_GROUP:
@@ -650,8 +759,8 @@ function(moveAction) {
             this.scrollTopToRow(focusRowNum);
             this.render();
 
-            tableTPElems = this.get('rowitems');
-            successorTPElem = tableTPElems.first();
+            rowTPElems = this.get('rows');
+            successorTPElem = rowTPElems.first();
             break;
 
         case TP.LAST_IN_GROUP:
@@ -669,8 +778,8 @@ function(moveAction) {
             this.scrollTopToRow(focusRowNum + (pageSize - 1));
             this.render();
 
-            tableTPElems = this.get('rowitems');
-            successorTPElem = tableTPElems.first();
+            rowTPElems = this.get('rows');
+            successorTPElem = rowTPElems.first();
             break;
 
         case TP.NEXT:
@@ -691,8 +800,8 @@ function(moveAction) {
                     this.scrollTopToRow(0);
                     this.render();
 
-                    tableTPElems = this.get('rowitems');
-                    successorTPElem = tableTPElems.first();
+                    rowTPElems = this.get('rows');
+                    successorTPElem = rowTPElems.first();
                 }
             }
             break;
@@ -715,8 +824,8 @@ function(moveAction) {
                     this.scrollTopToRow(lastDataItemIndex);
                     this.render();
 
-                    tableTPElems = this.get('rowitems');
-                    successorTPElem = tableTPElems.at(
+                    rowTPElems = this.get('rows');
+                    successorTPElem = rowTPElems.at(
                             lastDataItemIndex - this.get('$numSpacingRows'));
                 }
             }
@@ -743,104 +852,40 @@ function(aDataObject, shouldSignal) {
      * @returns {TP.xctrls.table} The receiver.
      */
 
-    var dataObj,
-        keys,
-
-        leni,
-        i,
-
-        row,
-
-        isHash,
-        isPOJO,
-
-        alreadyCopied,
-
-        columns,
-
-        lenj,
-        j,
-
-        newRow;
+    var dataObj;
 
     if (TP.notValid(aDataObject)) {
         return this;
     }
 
-    //  Make sure to unwrap this from any TP.core.Content objects, etc.
-    dataObj = TP.val(aDataObject);
-
-    //  xctrl:tables can only operate on an Array.
-    if (!TP.isArray(dataObj)) {
-        //  TODO: Raise an exception
+    //  Grab the current data and if it's (deep) equal to the supplied data
+    //  object, then there's no reason to re-render.
+    dataObj = this.$get('data');
+    if (TP.equal(dataObj, aDataObject)) {
+        this.finalizeContent();
         return this;
     }
 
-    keys = TP.ac();
+    //  We copy the page data here because we might modify it below.
+    dataObj = TP.copy(aDataObject);
 
-    alreadyCopied = false;
-
-    leni = dataObj.getSize();
-    for (i = 0; i < leni; i++) {
-        row = dataObj.at(i);
-
-        keys.push(i.toString());
-
-        //  If the value is either a TP.core.Hash or a plain object, then we
-        //  need to convert it to an Array so that we can deal with it. Note
-        //  that we will order it based on matching the key of the hash/POJO
-        //  entry with the column name, if possible. If this isn't possible,
-        //  we'll just use the key names in the hash or POJO.
-
-        isHash = TP.isHash(row);
-        isPOJO = TP.isPlainObject(row);
-
-        if (isHash || isPOJO) {
-
-            //  Make a copy of the overall data object before we start modifying
-            //  it. We'll use this copy. Otherwise, we end up overlaying data
-            //  we'll need.
-            if (!alreadyCopied) {
-                dataObj = TP.copy(dataObj);
-                row = dataObj.at(i);
-                alreadyCopied = true;
-            }
-
-            if (!TP.isArray(columns)) {
-                columns = this.get('columns');
-                if (TP.notValid(columns)) {
-                    columns = this.getBoundValue('columns');
-                }
-
-                if (TP.notValid(columns)) {
-                    columns = TP.keys(row);
-                }
-            }
-
-            newRow = TP.ac();
-
-            lenj = columns.getSize();
-            for (j = 0; j < lenj; j++) {
-                if (isHash) {
-                    newRow.push(row.at(columns.at(j)));
-                } else if (isPOJO) {
-                    newRow.push(row[columns.at(j)]);
-                }
-            }
-
-            dataObj.atPut(i, newRow);
-        }
-    }
+    //  Prepare the supplied data into the proper format so that keys can be
+    //  computed and it can be thought of as 'rows' of data. This normally means
+    //  making 'pairs' of the 'entries' of the data object.
+    dataObj = this.prepareData(dataObj);
 
     this.$set('data', dataObj, false);
-    this.set('$dataKeys', keys, false);
-
-    //  Make sure to clear our converted data.
-    this.set('$convertedData', null, false);
 
     //  Clear the selection model, since we're setting a whole new data set for
     //  the receiver.
     this.$getSelectionModel().empty();
+
+    //  Reset the number of spacing rows to 0
+    this.set('$numSpacingRows', 0, false);
+
+    this.setAttribute('colcount', dataObj.first().getSize());
+
+    this.set('$numColumns', dataObj.first().getSize(), false);
 
     if (this.isReadyToRender()) {
 
@@ -852,6 +897,10 @@ function(aDataObject, shouldSignal) {
 
         //  When the data changes, we have to re-render.
         this.render();
+
+        //  And we have to finalize the content again since we're not a
+        //  static-only list.
+        this.finalizeContent();
     }
 
     return this;
@@ -875,24 +924,25 @@ function(aValue) {
      * @returns {TP.xctrls.table} The receiver.
      */
 
-    var separator,
+    var data,
+
+        separator,
         value,
-
-        isHash,
-        isPOJO,
-
-        newValue,
 
         columns,
 
         leni,
         i,
 
+        rowType,
+
+        massageValues,
+
+        isArrayOfCollection,
+
         allowsMultiples,
 
         selectionEntry,
-
-        data,
 
         lenj,
         j,
@@ -905,80 +955,145 @@ function(aValue) {
         return this.deselectAll();
     }
 
+    data = this.get('data');
+    if (TP.isEmpty(data)) {
+        return this;
+    }
+
     separator = TP.ifEmpty(this.getAttribute('bind:separator'),
                             TP.sys.cfg('bind.value_separator'));
 
     value = aValue;
 
+    columns = this.get('columns');
+    if (TP.notValid(columns)) {
+        columns = this.getBoundValue('columns');
+    }
+
     //  If the value is an String, split it on the separator and then wrap that
     //  into an Array, creating a 'single row'.
     if (TP.isString(value)) {
         value = value.split(separator);
-        value = TP.ac(value);
-    }
-
-    //  If the value is either a TP.core.Hash or a plain object, then we need to
-    //  convert it to an Array so that we can deal with it. Note that we will
-    //  order it based on matching the key of the hash/POJO entry with the
-    //  column name, if possible. If this isn't possible, we'll just use the key
-    //  names in the hash or POJO.
-
-    isHash = TP.isHash(value);
-    isPOJO = TP.isPlainObject(value);
-
-    if (isHash || isPOJO) {
-        newValue = TP.ac();
-
-        if (!TP.isArray(columns)) {
-            columns = this.get('columns');
-            if (TP.notValid(columns)) {
-                columns = this.getBoundValue('columns');
-            }
-
-            if (TP.notValid(columns)) {
-                columns = TP.keys(value);
-            }
-        }
-
-        leni = columns.getSize();
+        leni = value.getSize();
         for (i = 0; i < leni; i++) {
-            if (isHash) {
-                newValue.push(value.at(columns.at(i)));
-            } else if (isPOJO) {
-                newValue.push(value[columns.at(i)]);
+            if (TP.isNumber(value.at(i))) {
+                value.atPut(i, TP.nc(value.at(i)));
+            } else if (TP.isBoolean(value.at(i))) {
+                value.atPut(i, TP.bc(value.at(i)));
             }
         }
-
-        value = newValue;
     }
 
-    //  If the value itself isn't an Array, then make it the first item in one.
-    if (!TP.isArray(value)) {
-        value = TP.ac(value);
-    } else if (!TP.isArray(value.first())) {
-        //  If the value's first element isn't an Array, then wrap the value
-        //  (which should be an Array) in another Array, making it the first
-        //  (Array) item in a nested Array.
-        value = TP.ac(value);
+    rowType = this.get('$rowType');
+
+    massageValues = function(oldValue) {
+        var newObj,
+            lenk,
+            k,
+
+            keys,
+
+            retValue,
+
+            val;
+
+        if (TP.isArray(oldValue)) {
+            switch (rowType) {
+                case TP.HASH:
+                    newObj = TP.hc();
+                    if (TP.notEmpty(columns)) {
+                        lenk = columns.getSize();
+                        for (k = 0; k < lenk; k++) {
+                            newObj.atPut(columns.at(k), oldValue.at(k));
+                        }
+                    } else {
+                        keys = TP.keys(data.first());
+                        lenk = keys.getSize();
+                        for (k = 0; k < lenk; k++) {
+                            newObj.atPut(keys.at(k), oldValue.at(k));
+                        }
+                    }
+                    break;
+                case TP.POJO:
+                    newObj = {};
+                    if (TP.notEmpty(columns)) {
+                        lenk = columns.getSize();
+                        for (k = 0; k < lenk; k++) {
+                            newObj[columns.at(k)] = oldValue.at(k);
+                        }
+                    } else {
+                        keys = TP.keys(data.first());
+                        lenk = keys.getSize();
+                        for (k = 0; k < lenk; k++) {
+                            newObj[keys.at(k)] = oldValue.at(k);
+                        }
+                    }
+                    break;
+                default:
+                    newObj = oldValue;
+                    break;
+            }
+
+            retValue = newObj;
+        } else if (TP.isHash(oldValue)) {
+            switch (rowType) {
+                case TP.ARRAY:
+                    newObj = TP.ac();
+                    if (TP.notEmpty(columns)) {
+                        lenk = columns.getSize();
+                        for (k = 0; k < lenk; k++) {
+                            val = oldValue.at(columns.at(k));
+                            if (TP.isDefined(val)) {
+                                newObj.push(val);
+                            }
+                        }
+                    } else {
+                        newObj = oldValue.getValues();
+                    }
+                    break;
+                default:
+                    newObj = oldValue;
+                    break;
+            }
+
+            retValue = newObj;
+        } else if (TP.isScalarType(oldValue)) {
+            retValue = TP.ac(oldValue);
+        }
+
+        return retValue;
+    };
+
+    isArrayOfCollection = TP.isArray(value) && TP.isCollection(value.first());
+
+    if (isArrayOfCollection) {
+        value = value.collect(
+                    function(aCollection) {
+                        return massageValues(aCollection);
+                    });
+    } else {
+        value = massageValues(value);
     }
 
     allowsMultiples = this.allowsMultiples();
 
     selectionEntry = TP.ac();
 
-    data = this.get('data');
-
-    if (TP.isEmpty(data)) {
-        return this;
-    }
-
     //  Compute a set of indexes for the data that's being supplied.
     leni = data.getSize();
     for (i = 0; i < leni; i++) {
-
-        lenj = value.getSize();
-        for (j = 0; j < lenj; j++) {
-            if (TP.equal(data.at(i), value.at(j))) {
+        if (isArrayOfCollection) {
+            lenj = value.getSize();
+            for (j = 0; j < lenj; j++) {
+                if (TP.equal(data.at(i), value.at(j))) {
+                    selectionEntry.push(i);
+                    if (!allowsMultiples) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            if (TP.equal(data.at(i), value)) {
                 selectionEntry.push(i);
                 if (!allowsMultiples) {
                     break;
@@ -997,7 +1112,8 @@ function(aValue) {
 
     //  Iterate over the new indexes. If one of them is *not* currently
     //  selected, we set dirty to true and break.
-    for (i = 0; i < selectionEntry.getSize(); i++) {
+    leni = selectionEntry.getSize();
+    for (i = 0; i < leni; i++) {
         if (!currentEntry.contains(selectionEntry.at(i))) {
             dirty = true;
             break;
@@ -1045,11 +1161,17 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var itemTagName,
+    var keyFunc,
+
+        labelFunc,
+        valueFunc,
+
+        itemTagName,
 
         itemSelectionInfo,
 
         newRows,
+        columns,
         newCells,
 
         newContent,
@@ -1059,6 +1181,13 @@ function(enterSelection) {
         numCols,
 
         rowNum;
+
+    //  We share this key function with d3. This will invoke 'getKeyFunction' on
+    //  any adaptor that we define or the item type.
+    keyFunc = this.d3KeyFunction();
+
+    labelFunc = this.getLabelFunction();
+    valueFunc = this.getValueFunction();
 
     itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
                                 this.getType().get('defaultItemTagName'));
@@ -1072,9 +1201,43 @@ function(enterSelection) {
                     attr(itemSelectionInfo.first(), itemSelectionInfo.last()).
                     attr('tibet:tag', 'TP.xctrls.item');
 
+    newRows.each(
+        function(data, index) {
+            var key;
+
+            key = TP.isCallable(keyFunc) ? keyFunc(data, index) : index;
+            TP.elementSetAttribute(this, TP.DATA_KEY, key, true);
+
+            TP.elementSetAttribute(this, 'rowNum', index, true);
+        });
+
+    columns = this.get('columns');
+
     newCells = newRows.selectAll(TP.D3_SELECT_ALL('html|div')).
                     data(function(row) {
-                        return row;
+                        var result,
+                            keys,
+
+                            len,
+                            i;
+
+                        if (TP.isHash(row)) {
+                            result = TP.ac();
+                            if (TP.isEmpty(columns)) {
+                                keys = TP.keys(row);
+                            } else {
+                                keys = columns;
+                            }
+
+                            len = keys.getSize();
+                            for (i = 0; i < len; i++) {
+                                result.push(row.at(keys.at(i)));
+                            }
+                        } else {
+                            result = row;
+                        }
+
+                        return result;
                     }).
                     enter().
                     append('xhtml:div').
@@ -1098,23 +1261,27 @@ function(enterSelection) {
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
-                function(d) {
-                    var labelVal,
+                function(d, i) {
+                    var val,
+
+                        labelVal,
 
                         preIndex,
                         postIndex;
 
+                    val = valueFunc(data, index);
+
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
                     //  spacer slot.
-                    if (TP.regex.SPACING.test(d)) {
+                    if (TP.regex.SPACING.test(val)) {
                         return '&#160;';
                     }
 
-                    if (TP.regex.GROUPING.test(d)) {
-                        labelVal = TP.regex.GROUPING.exec(d)[1];
+                    if (TP.regex.GROUPING.test(val)) {
+                        labelVal = TP.regex.GROUPING.exec(val)[1];
                     } else {
-                        labelVal = d;
+                        labelVal = TP.str(labelFunc(data, index));
                     }
 
                     if (/match_result">/g.test(labelVal)) {
@@ -1138,15 +1305,19 @@ function(enterSelection) {
 
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(
-                function(d) {
+                function(d, i) {
+                    var val;
+
+                    val = valueFunc(data, index);
+
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
                     //  spacer slot.
-                    if (TP.regex.SPACING.test(d)) {
+                    if (TP.regex.SPACING.test(val)) {
                         return '';
                     }
 
-                    if (TP.regex.GROUPING.test(d)) {
+                    if (TP.regex.GROUPING.test(val)) {
                         return '';
                     }
 
@@ -1187,6 +1358,7 @@ function(enterSelection) {
                 TP.xctrls.hint.setupHintOn(
                     this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
             }
+
             if (index === numCols - 1) {
                 rowNum++;
             }
@@ -1200,115 +1372,6 @@ function(enterSelection) {
                                             this.getNativeDocument());
 
     return newRows;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineMethod('computeSelectionData',
-function() {
-
-    /**
-     * @method computeSelectionData
-     * @summary Returns the data that will actually be used for binding into the
-     *     d3.js selection.
-     * @description The selection data may very well be different than the bound
-     *     data that uses TIBET data binding to bind data to this control. This
-     *     method allows the receiver to transform it's 'data binding data' into
-     *     data appropriate for d3.js selections.
-     * @returns {Object} The selection data.
-     */
-
-    var selectionData,
-        wholeData,
-
-        columns,
-
-        numCols;
-
-    selectionData = this.get('$convertedData');
-
-    //  First, make sure the converted data is valid. If not, then convert it.
-    if (TP.notValid(selectionData)) {
-
-        wholeData = this.get('data');
-
-        if (TP.notEmpty(wholeData)) {
-
-            columns = this.get('columns');
-
-            if (TP.isEmpty(columns)) {
-                columns = TP.ac();
-            }
-
-            if (TP.isArray(wholeData.first())) {
-                //  The data structure is already an Array of Arrays - no need
-                //  convert it here.
-
-                //  We clone the data here, since we end up putting
-                //  'TP.SPACING's in etc, and we don't want to pollute the
-                //  original data source
-                selectionData = TP.copy(wholeData);
-
-            } else {
-
-                selectionData = wholeData.collect(
-                        function(item, index) {
-
-                            var row,
-
-                                keys,
-
-                                rowArray,
-
-                                keyLen,
-                                k,
-
-                                keyIndex;
-
-                            row = item;
-
-                            if (TP.isPlainObject(row)) {
-                                row = TP.hc(row);
-                            }
-
-                            if (TP.isEmpty(columns)) {
-                                keys = row.getKeys();
-                                columns = keys;
-                            } else {
-                                keys = columns;
-                            }
-
-                            rowArray = TP.ac();
-                            keyLen = keys.getSize();
-                            for (k = 0; k < keyLen; k++) {
-
-                                keyIndex = columns.indexOf(keys.at(k));
-                                rowArray.atPut(keyIndex, row.at(keys.at(k)));
-                            }
-
-                            return rowArray;
-                        });
-            }
-
-            //  If the data is an Array of Arrays, then the number of columns is
-            //  whatever the size of the first item (the first Array) is
-            numCols = selectionData.first().getSize();
-        } else {
-            numCols = 0;
-        }
-
-        this.setAttribute('colcount', numCols);
-
-        this.set('$numColumns', numCols, false);
-
-        //  Cache our converted data.
-        this.set('$convertedData', selectionData, false);
-
-        //  Reset the number of spacing rows to 0
-        this.set('$numSpacingRows', 0, false);
-    }
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -1350,12 +1413,16 @@ function(selection) {
      * @returns {TP.xctrls.table} The receiver.
      */
 
-    var selectedIndexes,
+    var valueFunc,
+
+        selectedIndexes,
         startOffset,
 
         selectAll,
 
         groupID;
+
+    valueFunc = this.getValueFunction();
 
     //  Update any selection indices before we retrieve them
     this.$updateSelectionIndices();
@@ -1441,14 +1508,17 @@ function(selection) {
 
             wrappedElem.$setVisualToggle(false);
         }).attr(
-        'disabled', function(d) {
+        'disabled', function(d, i) {
+            var val;
+
+            val = TP.str(valueFunc(d[0], i));
 
             //  We go ahead and 'disable' the item if it's a grouping item. Note
             //  that we recommend that CSS styling be done via
             //  'pclass:disabled', so this really affects only behavior. We
             //  don't want grouping items to be able to receive events or be
             //  focusable, so setting this to true works out well.
-            if (TP.regex.GROUPING.test(d[0])) {
+            if (TP.regex.GROUPING.test(val)) {
                 return true;
             }
 
@@ -1456,8 +1526,12 @@ function(selection) {
             //  attribute.
             return null;
         }).attr(
-        'grouping', function(d) {
-            if (TP.regex.GROUPING.test(d[0])) {
+        'grouping', function(d, i) {
+            var val;
+
+            val = TP.str(valueFunc(d[0], i));
+
+            if (TP.regex.GROUPING.test(val)) {
                 return true;
             }
 
@@ -1465,8 +1539,12 @@ function(selection) {
             //  attribute.
             return null;
         }).attr(
-        'spacer', function(d) {
-            if (TP.regex.SPACING.test(d[0])) {
+        'spacer', function(d, i) {
+            var val;
+
+            val = TP.str(valueFunc(d[0], i));
+
+            if (TP.regex.SPACING.test(val)) {
                 return true;
             }
 
@@ -1475,7 +1553,11 @@ function(selection) {
             return null;
         }).attr(
         'tabindex', function(d, i) {
-            if (TP.regex.SPACING.test(d[0])) {
+            var val;
+
+            val = TP.str(valueFunc(d[0], i));
+
+            if (TP.regex.SPACING.test(val)) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
@@ -1483,14 +1565,15 @@ function(selection) {
 
             return '0';
         }).attr(
-        TP.ITEM_NUM, function(d, i) {
-            return i;
-        }).attr(
         'hidefocus', function(d, i) {
             return 'true';
         }).attr(
         'tibet:group', function(d, i) {
-            if (TP.regex.SPACING.test(d[0])) {
+            var val;
+
+            val = TP.str(valueFunc(d[0], i));
+
+            if (TP.regex.SPACING.test(val)) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
@@ -1568,7 +1651,7 @@ function(selection) {
 
                 wrappedElem.$setVisualToggle(false);
             }).attr(
-            'disabled', function(d) {
+            'disabled', function(d, i) {
 
                 //  We go ahead and 'disable' the item if it's a grouping item.
                 //  Note that we recommend that CSS styling be done via
@@ -1583,7 +1666,7 @@ function(selection) {
                 //  attribute.
                 return null;
             }).attr(
-            'grouping', function(d) {
+            'grouping', function(d, i) {
                 if (TP.regex.GROUPING.test(d[0])) {
                     return true;
                 }
@@ -1592,7 +1675,7 @@ function(selection) {
                 //  attribute.
                 return null;
             }).attr(
-            'spacer', function(d) {
+            'spacer', function(d, i) {
                 if (TP.regex.SPACING.test(d[0])) {
                     return true;
                 }
@@ -1609,9 +1692,6 @@ function(selection) {
                 }
 
                 return '0';
-            }).attr(
-            TP.ITEM_NUM, function(d, i) {
-                return i;
             }).attr(
             'hidefocus', function(d, i) {
                 return 'true';
@@ -1632,6 +1712,40 @@ function(selection) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineMethod('removeOldContent',
+function(exitSelection) {
+
+    /**
+     * @method removeOldContent
+     * @summary Removes any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'exit selection'.
+     * @param {TP.extern.d3.selection} exitSelection The d3.js exit selection
+     *     that existing content should be altered in.
+     * @returns {TP.dom.D3Tag} The receiver.
+     */
+
+    var keys,
+        keyFunc;
+
+    //  Make sure to remove the keys of any 'exit selection' elements that are
+    //  going away from the '$dataKeys' Array to avoid pollution.
+
+    keys = this.get('$dataKeys');
+    keyFunc = this.d3KeyFunction();
+
+    exitSelection.each(
+        function(data, index) {
+            var key;
+
+            key = TP.isCallable(keyFunc) ? keyFunc(data, index) : index;
+            keys.remove(key);
+        });
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.table.Inst.defineMethod('updateExistingContent',
 function(updateSelection) {
 
@@ -1644,45 +1758,78 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    var numCols;
+    var numCols,
+
+        labelFunc,
+        valueFunc,
+
+        columns;
 
     numCols = this.getAttribute('colcount').asNumber();
 
+    labelFunc = this.getLabelFunction();
+    valueFunc = this.getValueFunction();
+
+    columns = this.get('columns');
+
     updateSelection.each(
         function(data, index) {
-            var i,
+            var dataset,
+
+                keys,
+                len,
+
+                j,
                 datum,
 
                 labelContent,
                 valueContent;
 
+            if (TP.isHash(data)) {
+                dataset = TP.ac();
+                if (TP.isEmpty(columns)) {
+                    keys = TP.keys(data);
+                } else {
+                    keys = columns;
+                }
+
+                len = keys.getSize();
+                for (j = 0; j < len; j++) {
+                    dataset.push(data.at(keys.at(j)));
+                }
+            } else {
+                dataset = data;
+            }
+
             /* eslint-disable no-loop-func */
-            for (i = 0; i < numCols; i++) {
+            for (j = 0; j < numCols; j++) {
 
                 //  'data' is a single row of data. Grab the individual datum at
                 //  that cell.
-                datum = data[i];
+                datum = dataset.at(j);
 
                 //  'this' is the 'row div' - select the 'div' representing its
                 //  column, 'textitem' and then 'label'
                 labelContent = TP.extern.d3.select(
-                                    TP.nodeGetDescendantAt(this, i + '.0.0'));
+                                    TP.nodeGetDescendantAt(this, j + '.0.0'));
                 labelContent.html(
-                    function() {
-
-                        var labelVal,
+                    function(d, i) {
+                        var val,
+                            labelVal,
 
                             preIndex,
                             postIndex;
 
-                        if (TP.regex.SPACING.test(datum)) {
+                        val = valueFunc(datum, index);
+
+                        if (TP.regex.SPACING.test(val)) {
                             return '&#160;';
                         }
 
-                        if (TP.regex.GROUPING.test(datum)) {
-                            labelVal = TP.regex.GROUPING.exec(datum)[1];
+                        if (TP.regex.GROUPING.test(val)) {
+                            labelVal = TP.regex.GROUPING.exec(val)[1];
                         } else {
-                            labelVal = datum;
+                            labelVal = TP.str(labelFunc(datum, index));
                         }
 
                         if (/match_result">/g.test(labelVal)) {
@@ -1707,15 +1854,19 @@ function(updateSelection) {
                 //  'this' is the 'row div' - select the 'div' representing its
                 //  column, 'textitem' and then 'value'
                 valueContent = TP.extern.d3.select(
-                                    TP.nodeGetDescendantAt(this, i + '.0.1'));
+                                    TP.nodeGetDescendantAt(this, j + '.0.1'));
                 valueContent.text(
-                    function() {
+                    function(d, i) {
 
-                        if (TP.regex.SPACING.test(datum)) {
+                        var val;
+
+                        val = valueFunc(datum, index);
+
+                        if (TP.regex.SPACING.test(val)) {
                             return '';
                         }
 
-                        if (TP.regex.GROUPING.test(datum)) {
+                        if (TP.regex.GROUPING.test(val)) {
                             return '';
                         }
 

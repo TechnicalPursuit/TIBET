@@ -75,7 +75,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttableItem = table.get('rowitems').first();
+                    firsttableItem = table.get('rows').first();
                     return firsttableItem;
                 },
                 TP.gid(table),
@@ -113,7 +113,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttableItem = table.get('rowitems').first();
+                    firsttableItem = table.get('rows').first();
                     return firsttableItem;
                 },
                 TP.gid(table),
@@ -191,7 +191,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttableItem = table.get('rowitems').first();
+                    firsttableItem = table.get('rows').first();
                     return firsttableItem;
                 },
                 TP.gid(table),
@@ -248,7 +248,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttableItem = table.get('rowitems').first();
+                    firsttableItem = table.get('rows').first();
                     return firsttableItem;
                 },
                 TP.gid(table),
@@ -405,6 +405,12 @@ function() {
 
             tpElem = TP.byId('table5', windowContext);
             tpElem.deselectAll();
+
+            tpElem = TP.byId('table6', windowContext);
+            tpElem.deselectAll();
+
+            tpElem = TP.byId('table7', windowContext);
+            tpElem.deselectAll();
         });
 
     //  ---
@@ -423,51 +429,72 @@ function() {
 
     this.it('xctrls:table - setting value to scalar values', function(test, options) {
 
-        var tpElem,
+        var tableWithHashes,
+            tableWithArrays,
             value;
 
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byId('table4', windowContext);
+        tableWithHashes = TP.byId('table4', windowContext);
+        tableWithArrays = TP.byId('table5', windowContext);
 
         //  undefined
-        tpElem.set('value', testData.at(TP.UNDEF));
-        value = tpElem.get('value');
-        test.assert.isArray(value);
+        tableWithHashes.set('value', testData.at(TP.UNDEF));
+        value = tableWithHashes.get('value');
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at(TP.UNDEF));
+        value = tableWithArrays.get('value');
         test.assert.isEmpty(value);
 
         //  null
-        tpElem.set('value', testData.at(TP.NULL));
-        value = tpElem.get('value');
-        test.assert.isArray(value);
+        tableWithHashes.set('value', testData.at(TP.NULL));
+        value = tableWithHashes.get('value');
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at(TP.NULL));
+        value = tableWithArrays.get('value');
         test.assert.isEmpty(value);
 
         //  String
-        tpElem.set('value', testData.at('String'));
-        value = tpElem.get('value');
-        test.assert.isArray(value);
+        tableWithHashes.set('value', testData.at('String'));
+        value = tableWithHashes.get('value');
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('String'));
+        value = tableWithArrays.get('value');
         test.assert.isEmpty(value);
 
         //  String (multiple)
-        tpElem.set('value', 'Smith;Joe;42');
-        value = tpElem.get('value');
-        test.assert.isArray(value);
+        tableWithHashes.set('value', 'Smith;Joe;42;male');
+        value = tableWithHashes.get('value');
+        test.refute.isEmpty(value);
+
+        tableWithArrays.set('value', 'Smith;Joe;42');
+        value = tableWithArrays.get('value');
         test.refute.isEmpty(value);
 
         //  reset
-        tpElem.deselectAll();
+        tableWithHashes.deselectAll();
+        tableWithArrays.deselectAll();
 
         //  Number
-        tpElem.set('value', testData.at('Number'));
-        value = tpElem.get('value');
-        test.assert.isArray(value);
+        tableWithHashes.set('value', testData.at('Number'));
+        value = tableWithHashes.get('value');
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('Number'));
+        value = tableWithArrays.get('value');
         test.assert.isEmpty(value);
 
         //  Boolean
-        tpElem.set('value', testData.at('Boolean'));
-        value = tpElem.get('value');
-        test.assert.isArray(value);
+        tableWithHashes.set('value', testData.at('Boolean'));
+        value = tableWithHashes.get('value');
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('Boolean'));
+        value = tableWithArrays.get('value');
         test.assert.isEmpty(value);
     });
 
@@ -508,11 +535,11 @@ function() {
         test.assert.isEmpty(value);
 
         //  Array
-        tableWithHashes.set('value', TP.ac('Smith', 'Joe', 42));
+        tableWithHashes.set('value', TP.ac('Smith', 'Joe', 42, 'male'));
         value = tableWithHashes.get('value');
-        test.assert.isArray(value);
-        //  tableWithHashes is single selection.
-        test.assert.isEqualTo(value, TP.ac('Smith', 'Joe', 42));
+        test.assert.isEqualTo(value,
+            TP.hc('last_name', 'Smith', 'first_name', 'Joe',
+                    'age', 42, 'gender', 'male'));
 
         //  reset
         tableWithHashes.deselectAll();
@@ -520,8 +547,7 @@ function() {
         tableWithArrays.set('value', TP.ac('Smith', 'Joe', 42));
         value = tableWithArrays.get('value');
         test.assert.isArray(value);
-        //  tableWithArrays is multiple selection.
-        test.assert.isEqualTo(value, TP.ac(TP.ac('Smith', 'Joe', 42)));
+        test.assert.isEqualTo(value, TP.ac('Smith', 'Joe', 42));
 
         //  reset
         tableWithArrays.deselectAll();
@@ -535,91 +561,149 @@ function() {
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
+        tableWithArrays.set('value',
+            {
+                foo: 'baz'
+            });
+        value = tableWithArrays.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
         //  TP.core.Hash
         tableWithHashes.set('value',
-            TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41));
+            TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41, 'gender', 'male'));
         value = tableWithHashes.get('value');
-        test.assert.isArray(value);
-        //  tableWithHashes is single selection.
-        test.assert.isEqualTo(
-            value, TP.ac('Jones', 'Jeff', 41));
+        test.assert.isEqualTo(value,
+            TP.hc('last_name', 'Jones', 'first_name', 'Jeff',
+                    'age', 41, 'gender', 'male'));
 
         tableWithArrays.set('value',
             TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41));
         value = tableWithArrays.get('value');
         test.assert.isArray(value);
-        //  tableWithArrays is multiple selection.
         test.assert.isEqualTo(
             value,
-            TP.ac(TP.ac('Jones', 'Jeff', 41)));
+            TP.ac('Jones', 'Jeff', 41));
     });
 
     //  ---
 
     this.it('xctrls:table - setting value to markup', function(test, options) {
 
-        var tpElem,
+        var tableWithHashes,
+            tableWithArrays,
             value;
 
-        tpElem = TP.byId('table4', windowContext);
+        tableWithHashes = TP.byId('table4', windowContext);
+        tableWithArrays = TP.byId('table5', windowContext);
 
         //  XMLDocument
-        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  XMLElement
-        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  AttributeNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  TextNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  CDATASectionNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  PINode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  CommentNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  DocumentFragmentNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  Nodetable
-        tpElem.set('value', testData.at('Nodetable'));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at('Nodetable'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('Nodetable'));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  NamedNodeMap
-        tpElem.set('value', testData.at('NamedNodeMap'));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at('NamedNodeMap'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('NamedNodeMap'));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
     });
@@ -628,38 +712,65 @@ function() {
 
     this.it('xctrls:table (multiple) - setting value to scalar values', function(test, options) {
 
-        var tpElem,
+        var tableWithHashes,
+            tableWithArrays,
             value;
 
-        tpElem = TP.byId('table5', windowContext);
+        tableWithHashes = TP.byId('table6', windowContext);
+        tableWithArrays = TP.byId('table7', windowContext);
 
         //  undefined
-        tpElem.set('value', testData.at(TP.UNDEF));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at(TP.UNDEF));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at(TP.UNDEF));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  null
-        tpElem.set('value', testData.at(TP.NULL));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at(TP.NULL));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at(TP.NULL));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  String
-        tpElem.set('value', testData.at('String'));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at('String'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('String'));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  Number
-        tpElem.set('value', testData.at('Number'));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at('Number'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('Number'));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  Boolean
-        tpElem.set('value', testData.at('Boolean'));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at('Boolean'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('Boolean'));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
     });
@@ -668,118 +779,222 @@ function() {
 
     this.it('xctrls:table (multiple) - setting value to complex object values', function(test, options) {
 
-        var tpElem,
+        var tableWithHashes,
+            tableWithArrays,
             value;
 
-        tpElem = TP.byId('table5', windowContext);
+        tableWithHashes = TP.byId('table6', windowContext);
+        tableWithArrays = TP.byId('table7', windowContext);
 
         //  RegExp
-        tpElem.set('value', testData.at('RegExp'));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at('RegExp'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('RegExp'));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  Date
-        tpElem.set('value', testData.at('Date'));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at('Date'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('Date'));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  Array
-        tpElem.set('value', TP.ac(TP.ac('Smith', 'Joe', 42),
-                                    TP.ac('Jones', 'Jeff', 41)));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac(TP.ac('Smith', 'Joe', 42),
-                                        TP.ac('Jones', 'Jeff', 41)));
+        tableWithHashes.set('value',
+            TP.ac(
+                TP.ac('Smith', 'Joe', 42, 'male'),
+                TP.ac('Jones', 'Jeff', 41, 'male')));
+        value = tableWithHashes.get('value');
+        test.assert.isEqualTo(value,
+            TP.ac(
+                TP.hc('last_name', 'Smith', 'first_name', 'Joe',
+                        'age', 42, 'gender', 'male'),
+                TP.hc('last_name', 'Jones', 'first_name', 'Jeff',
+                        'age', 41, 'gender', 'male')));
+
+        tableWithArrays.set('value',
+            TP.ac(
+                TP.ac('Smith', 'Joe', 42),
+                TP.ac('Jones', 'Jeff', 41)));
+        value = tableWithArrays.get('value');
+        test.assert.isEqualTo(value,
+            TP.ac(
+                TP.ac('Smith', 'Joe', 42),
+                TP.ac('Jones', 'Jeff', 41)));
 
         //  reset
-        tpElem.deselectAll();
+        tableWithHashes.deselectAll();
+        tableWithArrays.deselectAll();
 
         //  Object
-        tpElem.set('value',
+        tableWithHashes.set('value',
             {
                 foo: 'baz'
             });
-        value = tpElem.get('value');
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value',
+            {
+                foo: 'baz'
+            });
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  TP.core.Hash
-        tpElem.set('value', TP.ac(
-                                TP.ac('Smith', 'Joe', 42),
-                                TP.ac('Jones', 'Jeff', 41)));
+        tableWithHashes.set('value',
+            TP.ac(
+                TP.hc('last_name', 'Smith', 'first_name', 'Joe', 'age', 42, 'gender', 'male'),
+                TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41, 'gender', 'male')));
 
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac(TP.ac('Smith', 'Joe', 42),
-                                        TP.ac('Jones', 'Jeff', 41)));
+        value = tableWithHashes.get('value');
+        test.assert.isEqualTo(value,
+            TP.ac(
+                TP.hc('last_name', 'Smith', 'first_name', 'Joe',
+                        'age', 42, 'gender', 'male'),
+                TP.hc('last_name', 'Jones', 'first_name', 'Jeff',
+                        'age', 41, 'gender', 'male')));
+
+        tableWithArrays.set('value',
+            TP.ac(
+                TP.hc('last_name', 'Smith', 'first_name', 'Joe', 'age', 42),
+                TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41)));
+        value = tableWithArrays.get('value');
+        test.assert.isEqualTo(value,
+            TP.ac(
+                TP.ac('Smith', 'Joe', 42),
+                TP.ac('Jones', 'Jeff', 41)));
     });
 
     //  ---
 
     this.it('xctrls:table (multiple) - setting value to markup', function(test, options) {
 
-        var tpElem,
+        var tableWithHashes,
+            tableWithArrays,
             value;
 
-        tpElem = TP.byId('table5', windowContext);
+        tableWithHashes = TP.byId('table6', windowContext);
+        tableWithArrays = TP.byId('table7', windowContext);
 
         //  XMLDocument
-        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  XMLElement
-        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  AttributeNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  TextNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  CDATASectionNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  PINode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  CommentNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  DocumentFragmentNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  Nodetable
-        tpElem.set('value', testData.at('Nodetable'));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at('Nodetable'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('Nodetable'));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  NamedNodeMap
-        tpElem.set('value', testData.at('NamedNodeMap'));
-        value = tpElem.get('value');
+        tableWithHashes.set('value', testData.at('NamedNodeMap'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('NamedNodeMap'));
+        value = tableWithArrays.get('value');
         test.assert.isArray(value);
         test.assert.isEmpty(value);
     });
@@ -803,7 +1018,7 @@ function() {
 
         var itemIndices;
 
-        itemIndices = aTPElem.get('rowitems').collect(
+        itemIndices = aTPElem.get('rows').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -832,7 +1047,7 @@ function() {
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            tableID = TP.computeOriginID(windowContext, loc, 'table5');
+            tableID = TP.computeOriginID(windowContext, loc, 'table7');
             this.andWaitFor(tableID, 'TP.sig.DidRender');
         });
 
@@ -844,7 +1059,7 @@ function() {
             var tpElem;
 
             //  Make sure that each test starts with a freshly reset item
-            tpElem = TP.byId('table5', windowContext);
+            tpElem = TP.byId('table7', windowContext);
             tpElem.deselectAll();
         });
 
@@ -866,13 +1081,13 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('table5', windowContext);
+        tpElem = TP.byId('table7', windowContext);
 
         //  ---
 
         //  allowsMultiples
 
-        //  table5 is configured to allow multiples
+        //  table7 is configured to allow multiples
         test.assert.isTrue(tpElem.allowsMultiples());
 
         //  ---
@@ -900,7 +1115,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('table5', windowContext);
+        tpElem = TP.byId('table7', windowContext);
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -939,7 +1154,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('table5', windowContext);
+        tpElem = TP.byId('table7', windowContext);
 
         tpElem.selectAll();
         test.assert.isEqualTo(
@@ -953,7 +1168,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('table5', windowContext);
+        tpElem = TP.byId('table7', windowContext);
 
         tpElem.deselectAll();
         tpElem.select(TP.ac('Johnson', 'Sam', 23));
@@ -974,7 +1189,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('table5', windowContext);
+        tpElem = TP.byId('table7', windowContext);
 
         tpElem.deselectAll();
         tpElem.select(/ba/);
@@ -987,7 +1202,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('table5', windowContext);
+        tpElem = TP.byId('table7', windowContext);
 
         tpElem.selectAll();
         tpElem.deselect(TP.ac('Johnson', 'Sam', 23));
@@ -1015,7 +1230,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('table5', windowContext);
+        tpElem = TP.byId('table7', windowContext);
 
         tpElem.selectAll();
         tpElem.deselect(/ba/);
@@ -1070,7 +1285,7 @@ function() {
 
             modelObj;
 
-        tpElem = TP.byId('table8', windowContext);
+        tpElem = TP.byId('table10', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1092,7 +1307,7 @@ function() {
             modelObj,
             tableItem;
 
-        tpElem = TP.byId('table8', windowContext);
+        tpElem = TP.byId('table10', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1100,7 +1315,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    tableItem = tpElem.get('rowitems').first();
+                    tableItem = tpElem.get('rows').first();
                     return tableItem;
                 },
                 TP.gid(tpElem),
@@ -1125,6 +1340,111 @@ function() {
             });
     });
 
+    this.it('xctrls:table - change data and re-render', function(test, options) {
+
+        var tpElem,
+
+            modelURI,
+            tableItem;
+
+        tpElem = TP.byId('table9', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        //  Change the content via 'user' interaction
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    tableItem = tpElem.get('allItems').first();
+                    return tableItem;
+                },
+                TP.gid(tpElem),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                var rows,
+                    items;
+
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('Fluffy', 'Fido', 'Foofy'),
+                            TP.ac('Goofy', 'Sneezy', 'Schlumpy'))));
+
+                rows = tpElem.get('rows');
+
+                test.assert.isEqualTo(
+                    rows.getSize(),
+                    3);
+
+                items = tpElem.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fluffy');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(2).getLabelText(),
+                    'Foofy');
+                test.assert.isEqualTo(
+                    items.at(3).getLabelText(),
+                    'Goofy');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Sneezy');
+                test.assert.isEqualTo(
+                    items.at(5).getLabelText(),
+                    'Schlumpy');
+            });
+
+        test.chain(
+            function() {
+                var modelObj,
+
+                    rows,
+                    items;
+
+                modelObj = modelURI.getContent();
+
+                modelObj.at('data').unshift(TP.ac('Fluffy', 'Fido', 'Foofy'));
+                modelObj.at('data').push(TP.ac('Goofy', 'Sneezy', 'Schlumpy'));
+
+                modelURI.$changed();
+
+                rows = tpElem.get('rows');
+
+                //  Even though the data set has 4 items, we're only displaying
+                //  3 (virtual table).
+                test.assert.isEqualTo(
+                    rows.getSize(),
+                    3);
+
+                items = tpElem.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fluffy');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(2).getLabelText(),
+                    'Foofy');
+                test.assert.isEqualTo(
+                    items.at(-3).getLabelText(),
+                    'Goofy');
+                test.assert.isEqualTo(
+                    items.at(-2).getLabelText(),
+                    'Sneezy');
+                test.assert.isEqualTo(
+                    items.at(-1).getLabelText(),
+                    'Schlumpy');
+            });
+    });
 });
 
 //  ------------------------------------------------------------------------
@@ -1173,7 +1493,7 @@ function() {
 
             modelObj;
 
-        tpElem = TP.byId('table9', windowContext);
+        tpElem = TP.byId('table12', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1200,7 +1520,7 @@ function() {
             secondtableItem,
             thirdtableItem;
 
-        tpElem = TP.byId('table9', windowContext);
+        tpElem = TP.byId('table12', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1208,7 +1528,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    secondtableItem = tpElem.get('rowitems').at(1);
+                    secondtableItem = tpElem.get('rows').at(1);
                     return secondtableItem;
                 },
                 TP.gid(tpElem),
@@ -1241,7 +1561,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    thirdtableItem = tpElem.get('rowitems').at(2);
+                    thirdtableItem = tpElem.get('rows').at(2);
                     return thirdtableItem;
                 },
                 TP.gid(tpElem),
@@ -1270,6 +1590,111 @@ function() {
             });
     });
 
+    this.it('xctrls:table - change data and re-render', function(test, options) {
+
+        var tpElem,
+
+            modelURI,
+            tableItem;
+
+        tpElem = TP.byId('table11', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        //  Change the content via 'user' interaction
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    tableItem = tpElem.get('allItems').first();
+                    return tableItem;
+                },
+                TP.gid(tpElem),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                var rows,
+                    items;
+
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('Fluffy', 'Fido', 'Foofy'),
+                            TP.ac('Goofy', 'Sneezy', 'Schlumpy'))));
+
+                rows = tpElem.get('rows');
+
+                test.assert.isEqualTo(
+                    rows.getSize(),
+                    3);
+
+                items = tpElem.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fluffy');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(2).getLabelText(),
+                    'Foofy');
+                test.assert.isEqualTo(
+                    items.at(3).getLabelText(),
+                    'Goofy');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Sneezy');
+                test.assert.isEqualTo(
+                    items.at(5).getLabelText(),
+                    'Schlumpy');
+            });
+
+        test.chain(
+            function() {
+                var modelObj,
+
+                    rows,
+                    items;
+
+                modelObj = modelURI.getContent();
+
+                modelObj.at('data').unshift(TP.ac('Fluffy', 'Fido', 'Foofy'));
+                modelObj.at('data').push(TP.ac('Goofy', 'Sneezy', 'Schlumpy'));
+
+                modelURI.$changed();
+
+                rows = tpElem.get('rows');
+
+                //  Even though the data set has 4 items, we're only displaying
+                //  3 (virtual table).
+                test.assert.isEqualTo(
+                    rows.getSize(),
+                    3);
+
+                items = tpElem.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fluffy');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(2).getLabelText(),
+                    'Foofy');
+                test.assert.isEqualTo(
+                    items.at(-3).getLabelText(),
+                    'Goofy');
+                test.assert.isEqualTo(
+                    items.at(-2).getLabelText(),
+                    'Sneezy');
+                test.assert.isEqualTo(
+                    items.at(-1).getLabelText(),
+                    'Schlumpy');
+            });
+    });
 });
 
 //  ------------------------------------------------------------------------
