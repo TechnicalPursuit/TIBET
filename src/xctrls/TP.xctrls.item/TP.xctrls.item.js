@@ -78,6 +78,10 @@ function(ownerElement) {
 
     if (TP.notEmpty(slotName)) {
         func = function(d, i) {
+            if (TP.isScalarType(d)) {
+                return d;
+            }
+
             if (TP.canInvoke(d, 'at')) {
                 return d.at(slotName);
             } else {
