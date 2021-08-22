@@ -1947,7 +1947,7 @@ function(selection) {
     groupID = this.get('group').getLocalID();
 
     selection.each(
-            function(d) {
+            function(d, i) {
 
                 var wrappedElem;
 
@@ -1970,7 +1970,7 @@ function(selection) {
 
                 wrappedElem.$setVisualToggle(false);
             }).attr(
-            'disabled', function(d) {
+            'disabled', function(d, i) {
 
                 //  We go ahead and 'disable' the item if it's a grouping item.
                 //  Note that we recommend that CSS styling be done via
@@ -1985,7 +1985,7 @@ function(selection) {
                 //  attribute.
                 return null;
             }).attr(
-            'grouping', function(d) {
+            'grouping', function(d, i) {
                 if (TP.regex.GROUPING.test(d[0])) {
                     return true;
                 }
@@ -1994,7 +1994,7 @@ function(selection) {
                 //  attribute.
                 return null;
             }).attr(
-            'spacer', function(d) {
+            'spacer', function(d, i) {
                 if (TP.regex.SPACING.test(d[0])) {
                     return true;
                 }
@@ -2135,9 +2135,7 @@ function(updateSelection) {
                                     TP.nodeGetChildElementAt(this, 0));
             labelContent.html(
                 function(d, i) {
-
                     var val,
-
                         labelVal,
 
                         preIndex,
