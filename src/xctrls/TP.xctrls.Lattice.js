@@ -137,6 +137,7 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Lattice.Inst.defineAttribute('$dataKeys');
 TP.xctrls.Lattice.Inst.defineAttribute('$rowType');
 TP.xctrls.Lattice.Inst.defineAttribute('$numSpacerRows');
 
@@ -284,6 +285,86 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Lattice.Inst.defineMethod('d3KeyFunction',
+function() {
+
+    /**
+     * @method d3KeyFunction
+     * @summary Returns the Function that should be used to generate keys into
+     *     the receiver's data set. By default this method returns a null key
+     *     function, thereby causing d3 to use each datum in the data set as the
+     *     key.
+     * @description This Function should take two arguments, an individual item
+     *     from the receiver's data set and it's index in the overall data set,
+     *     and return a value that will act as that item's key in the overall
+     *     data set.
+     * @returns {Function} A Function that provides a key for the supplied data
+     *     item.
+     */
+
+    var adaptor,
+        adaptorType;
+
+    adaptor = this.getAttribute('ui:adaptor');
+    if (TP.notEmpty(adaptor)) {
+        adaptorType = TP.sys.getTypeByName(adaptor);
+    } else {
+        adaptorType = this.getItemTagType();
+    }
+
+    if (!TP.isType(adaptorType)) {
+        return this.callNextMethod();
+    }
+
+    return adaptorType.getKeyFunction(this);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('finalizeContent',
+function() {
+
+    /**
+     * @method finalizeContent
+     * @summary Updates an internal data structures from static item content
+     *     that the author might have put into the receiver.
+     * @description This method is called when the receiver is first awakened
+     *     in order to set up any data structures that are required to treat
+     *     static content as we would dynamically generated content.
+     * @returns {TP.xctrls.Lattice} The receiver.
+     */
+
+    var keys,
+        allItems;
+
+    keys = TP.ac();
+
+    //  Stamp all of the items in the item content with an index (and possibly a
+    //  data key if one wasn't put on there by the generation code - which
+    //  happens in the case of static content).
+    allItems = this.get('allItems');
+    allItems.forEach(
+        function(item, index) {
+            var key;
+
+            key = item.getAttribute(TP.DATA_KEY);
+            if (TP.isEmpty(key)) {
+                key = TP.genID();
+                item.setAttribute(TP.DATA_KEY, key);
+            }
+            keys.push(key);
+
+            item.setAttribute(TP.ITEM_NUM, index);
+            item.addClass('item');
+        });
+
+    this.set('$dataKeys', keys, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.Lattice.Inst.defineMethod('focus',
 function(moveAction) {
 
@@ -307,6 +388,85 @@ function(moveAction) {
 
     //  We're not a valid focus target, but our group is.
     return this.get('group').focus(moveAction);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('getAllItems',
+function() {
+
+    /**
+     * @method getAllItems
+     * @summary Returns all of the receiver's item content, no matter whether it
+     *     was statically supplied or generated dynamically.
+     * @returns {TP.xctrls.item[]} All of the receiver's item content.
+     */
+
+    var getterPath,
+        result;
+
+    getterPath = TP.xpc(
+                    './/' +
+                    '*[local-name() = "content"]//' +
+                    '*[substring(name(), string-length(name()) - 3) = "item"]',
+                TP.hc('shouldCollapse', false));
+
+    result = this.get(getterPath);
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('getItemTagType',
+function() {
+
+    /**
+     * @method getItemTagType
+     * @summary Returns the item tag type.
+     * @returns {TP.meta.xctrls.item} The item tag type.
+     */
+
+    var itemTagName;
+
+    itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
+                                this.getType().get('defaultItemTagName'));
+
+    return TP.sys.getTypeByName(itemTagName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('getLabelFunction',
+function() {
+
+    /**
+     * @method getLabelFunction
+     * @summary Returns a Function that will be used to extract the label from
+     *     the data.
+     * @description If the receiver defines a 'ui:adaptor' attribute, it should
+     *     be naming a type. That type should respond to 'getLabelFunction' and
+     *     return the Function to be used. Otherwise, the item tag type should
+     *     implement 'getLabelFunction'.
+     * @returns {Function} The Function that will be used to extract the label
+     *     from the data.
+     */
+
+    var adaptor,
+        adaptorType;
+
+    adaptor = this.getAttribute('ui:adaptor');
+    if (TP.notEmpty(adaptor)) {
+        adaptorType = TP.sys.getTypeByName(adaptor);
+    } else {
+        adaptorType = this.getItemTagType();
+    }
+
+    if (!TP.isType(adaptorType)) {
+        return this.callNextMethod();
+    }
+
+    return adaptorType.getLabelFunction(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -385,6 +545,40 @@ function() {
     }
 
     return value;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('getValueFunction',
+function() {
+
+    /**
+     * @method getValueFunction
+     * @summary Returns a Function that will be used to extract the value from
+     *     the data.
+     * @description If the receiver defines a 'ui:adaptor' attribute, it should
+     *     be naming a type. That type should respond to 'getValueFunction' and
+     *     return the Function to be used. Otherwise, the item tag type should
+     *     implement 'getValueFunction'.
+     * @returns {Function} The Function that will be used to extract the value
+     *     from the data.
+     */
+
+    var adaptor,
+        adaptorType;
+
+    adaptor = this.getAttribute('ui:adaptor');
+    if (TP.notEmpty(adaptor)) {
+        adaptorType = TP.sys.getTypeByName(adaptor);
+    } else {
+        adaptorType = this.getItemTagType();
+    }
+
+    if (!TP.isType(adaptorType)) {
+        return this.callNextMethod();
+    }
+
+    return adaptorType.getValueFunction(this);
 });
 
 //  ------------------------------------------------------------------------

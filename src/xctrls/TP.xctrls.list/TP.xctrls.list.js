@@ -168,7 +168,6 @@ TP.xctrls.list.Inst.defineAttribute('$wasFocused');
 
 //  The whole (unfiltered) data set being managed by the control.
 TP.xctrls.list.Inst.defineAttribute('$wholeData');
-TP.xctrls.list.Inst.defineAttribute('$dataKeys');
 
 //  The accumulated value being kept by the control for filtering purposes.
 TP.xctrls.list.Inst.defineAttribute('filterValue');
@@ -199,32 +198,6 @@ TP.xctrls.list.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.list.Inst.defineMethod('getAllItems',
-function() {
-
-    /**
-     * @method getAllItems
-     * @summary Returns all of the receiver's item content, no matter whether it
-     *     was statically supplied or generated dynamically.
-     * @returns {TP.xctrls.item[]} All of the receiver's item content.
-     */
-
-    var getterPath,
-        result;
-
-    getterPath = TP.xpc(
-                    './/' +
-                    '*[local-name() = "content"]//' +
-                    '*[substring(name(), string-length(name()) - 3) = "item"]',
-                TP.hc('shouldCollapse', false));
-
-    result = this.get(getterPath);
-
-    return result;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('changeValueUsingTarget',
@@ -652,25 +625,6 @@ function() {
     }
 
     return entryArray;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.list.Inst.defineMethod('getItemTagType',
-function() {
-
-    /**
-     * @method getItemTagType
-     * @summary Returns the item tag type.
-     * @returns {TP.meta.xctrls.item} The item tag type.
-     */
-
-    var itemTagName;
-
-    itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
-                                this.getType().get('defaultItemTagName'));
-
-    return TP.sys.getTypeByName(itemTagName);
 });
 
 //  ------------------------------------------------------------------------
@@ -1204,74 +1158,6 @@ function(value) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Inst.defineMethod('getLabelFunction',
-function() {
-
-    /**
-     * @method getLabelFunction
-     * @summary Returns a Function that will be used to extract the label from
-     *     the data.
-     * @description If the receiver defines a 'ui:adaptor' attribute, it should
-     *     be naming a type. That type should respond to 'getLabelFunction' and
-     *     return the Function to be used. Otherwise, the item tag type should
-     *     implement 'getLabelFunction'.
-     * @returns {Function} The Function that will be used to extract the label
-     *     from the data.
-     */
-
-    var adaptor,
-        adaptorType;
-
-    adaptor = this.getAttribute('ui:adaptor');
-    if (TP.notEmpty(adaptor)) {
-        adaptorType = TP.sys.getTypeByName(adaptor);
-    } else {
-        adaptorType = this.getItemTagType();
-    }
-
-    if (!TP.isType(adaptorType)) {
-        return this.callNextMethod();
-    }
-
-    return adaptorType.getLabelFunction(this);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.list.Inst.defineMethod('getValueFunction',
-function() {
-
-    /**
-     * @method getValueFunction
-     * @summary Returns a Function that will be used to extract the value from
-     *     the data.
-     * @description If the receiver defines a 'ui:adaptor' attribute, it should
-     *     be naming a type. That type should respond to 'getValueFunction' and
-     *     return the Function to be used. Otherwise, the item tag type should
-     *     implement 'getValueFunction'.
-     * @returns {Function} The Function that will be used to extract the value
-     *     from the data.
-     */
-
-    var adaptor,
-        adaptorType;
-
-    adaptor = this.getAttribute('ui:adaptor');
-    if (TP.notEmpty(adaptor)) {
-        adaptorType = TP.sys.getTypeByName(adaptor);
-    } else {
-        adaptorType = this.getItemTagType();
-    }
-
-    if (!TP.isType(adaptorType)) {
-        return this.callNextMethod();
-    }
-
-    return adaptorType.getValueFunction(this);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.list.Inst.defineMethod('setData',
 function(aDataObject, shouldSignal, isFiltered) {
 
@@ -1770,42 +1656,6 @@ function(enterSelection) {
                                             this.getNativeDocument());
 
     return newContent;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.list.Inst.defineMethod('d3KeyFunction',
-function() {
-
-    /**
-     * @method d3KeyFunction
-     * @summary Returns the Function that should be used to generate keys into
-     *     the receiver's data set. By default this method returns a null key
-     *     function, thereby causing d3 to use each datum in the data set as the
-     *     key.
-     * @description This Function should take two arguments, an individual item
-     *     from the receiver's data set and it's index in the overall data set,
-     *     and return a value that will act as that item's key in the overall
-     *     data set.
-     * @returns {Function} A Function that provides a key for the supplied data
-     *     item.
-     */
-
-    var adaptor,
-        adaptorType;
-
-    adaptor = this.getAttribute('ui:adaptor');
-    if (TP.notEmpty(adaptor)) {
-        adaptorType = TP.sys.getTypeByName(adaptor);
-    } else {
-        adaptorType = this.getItemTagType();
-    }
-
-    if (!TP.isType(adaptorType)) {
-        return this.callNextMethod();
-    }
-
-    return adaptorType.getKeyFunction(this);
 });
 
 //  ------------------------------------------------------------------------
