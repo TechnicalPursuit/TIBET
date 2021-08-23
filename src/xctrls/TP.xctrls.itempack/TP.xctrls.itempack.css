@@ -1,0 +1,33 @@
+/*
+    CSS styles for 'xctrls:itempack' controls.
+*/
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+xctrls|itempack {
+
+    user-select: none;
+}
+
+xctrls|itempack xctrls|content {
+
+    display: flex;
+}
+
+xctrls|itempack xctrls|content .templated {
+
+    /* We want to pretend that the span holding templated content doesn't exist
+     * (CSS-wise) */
+    display: contents;
+}
+
+xctrls|itempack xctrls|content .templated:empty {
+
+    display: none;
+}
+
+xctrls|itempack *|*[class~="item"] {
+
+    flex: 0 1 auto;
+}

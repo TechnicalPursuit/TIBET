@@ -368,6 +368,7 @@
     <package src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.xml" config="base"/>
     <package src="xctrls/TP.xctrls.hint/TP.xctrls.hint.xml" config="base"/>
     <package src="xctrls/TP.xctrls.imageitem/TP.xctrls.imageitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.itempack/TP.xctrls.itempack.xml" config="base"/>
     <package src="xctrls/TP.xctrls.list/TP.xctrls.list.xml" config="base"/>
     <package src="xctrls/TP.xctrls.menu/TP.xctrls.menu.xml" config="base"/>
     <package src="xctrls/TP.xctrls.menuitem/TP.xctrls.menuitem.xml" config="base"/>
