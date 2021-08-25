@@ -290,7 +290,9 @@ function(aSignal) {
 
     var targetElem,
         triggerTPElem,
-        triggerElem;
+        triggerElem,
+
+        shouldClose;
 
     targetElem = aSignal.getResolvedTarget();
 
@@ -321,11 +323,16 @@ function(aSignal) {
         //  then hide ourself.
         if (!this.contains(targetElem)) {
 
-            if (triggerElem !== targetElem &&
-                !triggerElem.contains(targetElem)) {
-                this.setAttribute('closed', true);
-                this.setAttribute('hidden', true);
-            } else if (!this.get('isTriggeringSignal')) {
+            //  We should close if the triggering element is *not* target
+            //  element and contains the target element, OR
+            //  is the target element itself OR
+            //  this is *not* the triggering click.
+            shouldClose = (triggerElem !== targetElem &&
+                                !triggerElem.contains(targetElem)) ||
+                            triggerElem === targetElem ||
+                            !this.get('isTriggeringSignal');
+
+            if (shouldClose) {
                 this.setAttribute('closed', true);
                 this.setAttribute('hidden', true);
             }
