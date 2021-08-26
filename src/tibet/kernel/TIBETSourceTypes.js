@@ -2219,11 +2219,6 @@ function(aDocument) {
 
                 target = targets.at(i);
 
-                //  Refresh the rules cache for any elements that are affected
-                //  by the stylesheet of the newly loaded style element.
-                TP.$styleSheetRefreshAppliedRulesCaches(
-                                        TP.cssElementGetStyleSheet(target));
-
                 styleType = TP.wrap(target).getType();
 
                 //  Allow the stylesheet to process the fact that it has been
