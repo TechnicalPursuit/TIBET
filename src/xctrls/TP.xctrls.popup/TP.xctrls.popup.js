@@ -327,10 +327,12 @@ function(aSignal) {
             //  element and contains the target element, OR
             //  is the target element itself OR
             //  this is *not* the triggering click.
+            /* eslint-disable no-extra-parens */
             shouldClose = (triggerElem !== targetElem &&
                                 !triggerElem.contains(targetElem)) ||
                             triggerElem === targetElem ||
                             !this.get('isTriggeringSignal');
+            /* eslint-enable no-extra-parens */
 
             if (shouldClose) {
                 this.setAttribute('closed', true);
