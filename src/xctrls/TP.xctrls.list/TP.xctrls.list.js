@@ -83,6 +83,10 @@ function(aTargetElem, anEvent) {
 
     listTPElem = TP.wrap(aTargetElem);
 
+    if (!listTPElem.hasFocus()) {
+        return this.callNextMethod();
+    }
+
     //  Grab the value that we're accumulating for filtering.
     accumValue = listTPElem.get('filterValue');
 
