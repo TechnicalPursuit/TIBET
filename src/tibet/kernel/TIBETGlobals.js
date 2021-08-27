@@ -1416,6 +1416,7 @@ TP.PROXIED = 'Proxied';
 //  requests
 //  ---
 
+TP.REFRESH = 'shouldrefresh';
 TP.ONLOAD = 'onload';
 TP.ONSUCCESS = 'onsuccess';
 TP.ONFAIL = 'onfail';

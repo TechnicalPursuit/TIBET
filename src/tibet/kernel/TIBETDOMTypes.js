@@ -4961,6 +4961,10 @@ function(newContent, aRequest, shouldSignal) {
         loadFunc =
             function(targetNode, newNode) {
 
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
+
                 reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
@@ -4970,6 +4974,10 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(targetNode, newNode) {
+
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
 
                 thisref.contentAppendCallback(targetNode);
 
@@ -5281,6 +5289,10 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
         loadFunc =
             function(targetNode, newNode) {
 
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
+
                 reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
@@ -5290,6 +5302,10 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(targetNode, newNode) {
+
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
 
                 thisref.contentInsertCallback(targetNode);
 
@@ -5610,6 +5626,10 @@ function(newContent, aRequest, shouldSignal) {
         loadFunc =
             function(targetNode, newNode) {
 
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
+
                 reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
@@ -5619,6 +5639,10 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(targetNode, newNode) {
+
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -5882,6 +5906,10 @@ function(newContent, aRequest, shouldSignal) {
         loadFunc =
             function(targetNode, newNode) {
 
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
+
                 reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
@@ -5891,6 +5919,10 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(targetNode, newNode) {
+
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
 
                 thisref.contentReplaceCallback(targetNode);
 
