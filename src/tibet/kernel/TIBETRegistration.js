@@ -105,7 +105,7 @@ function(anID, regOnly, nodeContext) {
     //  result object, then return that. Note here how we use 'getInstanceById'
     //  on the TP.uri.URI type rather than 'TP.uc()' - that call will always
     //  create an instance *and register it* if it doesn't exist.
-    if (TP.regex.TIBET_URN.test(id)) {
+    if (TP.regex.ANY_URN.test(id)) {
         if (TP.isURI(url = TP.uri.URI.getInstanceById(id))) {
 
             //  NB: This is a URN so we assume 'async' of false here.
@@ -500,7 +500,7 @@ function(anObj, anID) {
 
     //  If a TIBET URN can be made from the ID and it is registered with the URI
     //  type and it has a real resource result object, then return that.
-    if (TP.regex.TIBET_URN.test(id) &&
+    if (TP.regex.ANY_URN.test(id) &&
         TP.uri.URI.instances.containsKey(id) &&
         TP.isValid(TP.uc(id).getResource().get('result'))) {
 
@@ -511,7 +511,7 @@ function(anObj, anID) {
 
     //  Try to make a TIBET URN from the urnID and, if it is registered with the
     //  URI type and it has a real resource result object, then return that.
-    if (TP.regex.TIBET_URN.test(urnID) &&
+    if (TP.regex.ANY_URN.test(urnID) &&
         TP.uri.URI.instances.containsKey(urnID) &&
         TP.isValid(TP.uc(urnID).getResource().get('result'))) {
 

@@ -5034,7 +5034,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  that the handler can't be the TIBETURN URI itself. Therefore, if
             //  the item's handler starts with 'tibet:urn', then go ahead and
             //  use the URI object as the handler object.
-            if (TP.regex.TIBET_URN.test(item.handler)) {
+            if (TP.regex.ANY_URN.test(item.handler)) {
                 handler = TP.uc(item.handler);
             } else {
                 //  Otherwise, just get the handler by it's system ID
