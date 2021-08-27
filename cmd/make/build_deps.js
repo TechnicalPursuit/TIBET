@@ -27,7 +27,7 @@
             '_rollup_codemirror',
             '_rollup_cryptojs',
             '_rollup_d3',
-            '_rollup_discovery',
+            //'_rollup_discovery',  For now, we use a manually-copied file
             '_rollup_diff',
             '_rollup_forge',
             '_rollup_fuse',
