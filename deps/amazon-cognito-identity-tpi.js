@@ -124,6 +124,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        crypto = window.crypto;
 	    }
 
+	    // Native crypto in web worker (Browser)
+	    if (typeof self !== 'undefined' && self.crypto) {
+	        crypto = self.crypto;
+	    }
+
+	    // Native crypto from worker
+	    if (typeof globalThis !== 'undefined' && globalThis.crypto) {
+	        crypto = globalThis.crypto;
+	    }
+
 	    // Native (experimental IE 11) crypto from window (Browser)
 	    if (!crypto && typeof window !== 'undefined' && window.msCrypto) {
 	        crypto = window.msCrypto;
@@ -184,7 +194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            return subtype;
 	        };
-	    }())
+	    }());
 
 	    /**
 	     * CryptoJS namespace.
@@ -395,8 +405,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	            } else {
 	                // Copy one word at a time
-	                for (var i = 0; i < thatSigBytes; i += 4) {
-	                    thisWords[(thisSigBytes + i) >>> 2] = thatWords[i >>> 2];
+	                for (var j = 0; j < thatSigBytes; j += 4) {
+	                    thisWords[(thisSigBytes + j) >>> 2] = thatWords[j >>> 2];
 	                }
 	            }
 	            this.sigBytes += thatSigBytes;
@@ -5113,6 +5123,7 @@ var CognitoUser = /*#__PURE__*/function () {
     }
 
     if (challengeName === 'DEVICE_SRP_AUTH') {
+      this.Session = dataAuthenticate.Session;
       this.getDeviceResponse(callback);
       return undefined;
     }
@@ -5253,7 +5264,8 @@ var CognitoUser = /*#__PURE__*/function () {
         ChallengeName: 'DEVICE_SRP_AUTH',
         ClientId: _this6.pool.getClientId(),
         ChallengeResponses: authParameters,
-        ClientMetadata: clientMetadata
+        ClientMetadata: clientMetadata,
+        Session: _this6.Session
       };
 
       if (_this6.getUserContextData()) {
@@ -5868,6 +5880,8 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.deleteAttributes = function deleteAttributes(attributeList, callback) {
+    var _this14 = this;
+
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       return callback(new Error('User is not authenticated'), null);
     }
@@ -5878,9 +5892,14 @@ var CognitoUser = /*#__PURE__*/function () {
     }, function (err) {
       if (err) {
         return callback(err, null);
-      }
+      } // update cached user
 
-      return callback(null, 'SUCCESS');
+
+      return _this14.getUserData(function () {
+        return callback(null, 'SUCCESS');
+      }, {
+        bypassCache: true
+      });
     });
     return undefined;
   }
@@ -5985,7 +6004,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.refreshSession = function refreshSession(refreshToken, callback, clientMetadata) {
-    var _this14 = this;
+    var _this15 = this;
 
     var wrappedCallback = this.pool.wrapRefreshSessionCallback ? this.pool.wrapRefreshSessionCallback(callback) : callback;
     var authParameters = {};
@@ -6014,7 +6033,7 @@ var CognitoUser = /*#__PURE__*/function () {
     this.client.request('InitiateAuth', jsonReq, function (err, authResult) {
       if (err) {
         if (err.code === 'NotAuthorizedException') {
-          _this14.clearCachedUser();
+          _this15.clearCachedUser();
         }
 
         return wrappedCallback(err, null);
@@ -6027,11 +6046,11 @@ var CognitoUser = /*#__PURE__*/function () {
           authenticationResult.RefreshToken = refreshToken.getToken();
         }
 
-        _this14.signInUserSession = _this14.getCognitoUserSession(authenticationResult);
+        _this15.signInUserSession = _this15.getCognitoUserSession(authenticationResult);
 
-        _this14.cacheTokens();
+        _this15.cacheTokens();
 
-        return wrappedCallback(null, _this14.signInUserSession);
+        return wrappedCallback(null, _this15.signInUserSession);
       }
 
       return undefined;
@@ -6228,7 +6247,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback.onFailure(err);
       }
 
-      return callback.onSuccess();
+      return callback.onSuccess('SUCCESS');
     });
   }
   /**
@@ -6260,7 +6279,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback.inputVerificationCode(data);
       }
 
-      return callback.onSuccess();
+      return callback.onSuccess('SUCCESS');
     });
     return undefined;
   }
@@ -6356,16 +6375,16 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.forgetDevice = function forgetDevice(callback) {
-    var _this15 = this;
+    var _this16 = this;
 
     this.forgetSpecificDevice(this.deviceKey, {
       onFailure: callback.onFailure,
       onSuccess: function onSuccess(result) {
-        _this15.deviceKey = null;
-        _this15.deviceGroupKey = null;
-        _this15.randomPassword = null;
+        _this16.deviceKey = null;
+        _this16.deviceGroupKey = null;
+        _this16.randomPassword = null;
 
-        _this15.clearCachedDeviceKeyAndPassword();
+        _this16.clearCachedDeviceKeyAndPassword();
 
         return callback.onSuccess(result);
       }
@@ -6470,7 +6489,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.globalSignOut = function globalSignOut(callback) {
-    var _this16 = this;
+    var _this17 = this;
 
     if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
       return callback.onFailure(new Error('User is not authenticated'));
@@ -6483,7 +6502,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback.onFailure(err);
       }
 
-      _this16.clearCachedUser();
+      _this17.clearCachedUser();
 
       return callback.onSuccess('SUCCESS');
     });
@@ -6496,7 +6515,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.signOut = function signOut(revokeTokenCallback) {
-    var _this17 = this;
+    var _this18 = this;
 
     // If tokens won't be revoked, we just clean the client data.
     if (!revokeTokenCallback || typeof revokeTokenCallback !== "function") {
@@ -6509,8 +6528,8 @@ var CognitoUser = /*#__PURE__*/function () {
         return revokeTokenCallback(error);
       }
 
-      _this17.revokeTokens(function (err) {
-        _this17.cleanClientData();
+      _this18.revokeTokens(function (err) {
+        _this18.cleanClientData();
 
         revokeTokenCallback(err);
       });
@@ -6596,7 +6615,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.sendMFASelectionAnswer = function sendMFASelectionAnswer(answerChallenge, callback) {
-    var _this18 = this;
+    var _this19 = this;
 
     var challengeResponses = {};
     challengeResponses.USERNAME = this.username;
@@ -6617,7 +6636,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback.onFailure(err);
       }
 
-      _this18.Session = data.Session;
+      _this19.Session = data.Session;
 
       if (answerChallenge === 'SMS_MFA') {
         return callback.mfaRequired(data.ChallengeName, data.ChallengeParameters);
@@ -6648,7 +6667,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.associateSoftwareToken = function associateSoftwareToken(callback) {
-    var _this19 = this;
+    var _this20 = this;
 
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       this.client.request('AssociateSoftwareToken', {
@@ -6658,7 +6677,7 @@ var CognitoUser = /*#__PURE__*/function () {
           return callback.onFailure(err);
         }
 
-        _this19.Session = data.Session;
+        _this20.Session = data.Session;
         return callback.associateSecretCode(data.SecretCode);
       });
     } else {
@@ -6683,7 +6702,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.verifySoftwareToken = function verifySoftwareToken(totpCode, friendlyDeviceName, callback) {
-    var _this20 = this;
+    var _this21 = this;
 
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       this.client.request('VerifySoftwareToken', {
@@ -6695,30 +6714,30 @@ var CognitoUser = /*#__PURE__*/function () {
           return callback.onFailure(err);
         }
 
-        _this20.Session = data.Session;
+        _this21.Session = data.Session;
         var challengeResponses = {};
-        challengeResponses.USERNAME = _this20.username;
+        challengeResponses.USERNAME = _this21.username;
         var jsonReq = {
           ChallengeName: 'MFA_SETUP',
-          ClientId: _this20.pool.getClientId(),
+          ClientId: _this21.pool.getClientId(),
           ChallengeResponses: challengeResponses,
-          Session: _this20.Session
+          Session: _this21.Session
         };
 
-        if (_this20.getUserContextData()) {
-          jsonReq.UserContextData = _this20.getUserContextData();
+        if (_this21.getUserContextData()) {
+          jsonReq.UserContextData = _this21.getUserContextData();
         }
 
-        _this20.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
+        _this21.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
           if (errRespond) {
             return callback.onFailure(errRespond);
           }
 
-          _this20.signInUserSession = _this20.getCognitoUserSession(dataRespond.AuthenticationResult);
+          _this21.signInUserSession = _this21.getCognitoUserSession(dataRespond.AuthenticationResult);
 
-          _this20.cacheTokens();
+          _this21.cacheTokens();
 
-          return callback.onSuccess(_this20.signInUserSession);
+          return callback.onSuccess(_this21.signInUserSession);
         });
 
         return undefined;
@@ -7146,11 +7165,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return appendToCognitoUserAgent; });
-// constructor
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Platform__ = __webpack_require__(32);
+ // constructor
+
 function UserAgent() {} // public
 
 
-UserAgent.prototype.userAgent = 'aws-amplify/0.1.x js';
+UserAgent.prototype.userAgent = Object(__WEBPACK_IMPORTED_MODULE_0__Platform__["a" /* getUserAgent */])();
 var appendToCognitoUserAgent = function appendToCognitoUserAgent(content) {
   if (!content) {
     return;
@@ -7191,7 +7212,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserPool", function() { return __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__ = __webpack_require__(15);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserSession", function() { return __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CookieStorage__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CookieStorage__ = __webpack_require__(34);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CookieStorage", function() { return __WEBPACK_IMPORTED_MODULE_9__CookieStorage__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__DateHelper__ = __webpack_require__(16);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "DateHelper", function() { return __WEBPACK_IMPORTED_MODULE_10__DateHelper__["a"]; });
@@ -8146,10 +8167,6 @@ var CognitoUserPool = /*#__PURE__*/function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_isomorphic_unfetch__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__UserAgent__ = __webpack_require__(20);
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
 
 function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
@@ -8360,82 +8377,37 @@ var isNonRetryableError = function isNonRetryableError(obj) {
   return obj && obj[key];
 };
 
-function retry(_x, _x2, _x3, _x4) {
-  return _retry.apply(this, arguments);
-}
+function retry(functionToRetry, args, delayFn, attempt) {
+  if (attempt === void 0) {
+    attempt = 1;
+  }
 
-function _retry() {
-  _retry = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(functionToRetry, args, delayFn, attempt) {
-    var retryIn;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            if (attempt === void 0) {
-              attempt = 1;
-            }
+  if (typeof functionToRetry !== 'function') {
+    throw Error('functionToRetry must be a function');
+  }
 
-            if (!(typeof functionToRetry !== 'function')) {
-              _context.next = 3;
-              break;
-            }
+  logger.debug(functionToRetry.name + " attempt #" + attempt + " with args: " + JSON.stringify(args));
+  return functionToRetry.apply(void 0, args)["catch"](function (err) {
+    logger.debug("error on " + functionToRetry.name, err);
 
-            throw Error('functionToRetry must be a function');
+    if (isNonRetryableError(err)) {
+      logger.debug(functionToRetry.name + " non retryable error", err);
+      throw err;
+    }
 
-          case 3:
-            logger.debug(functionToRetry.name + " attempt #" + attempt + " with args: " + JSON.stringify(args));
-            _context.prev = 4;
-            _context.next = 7;
-            return functionToRetry.apply(void 0, args);
+    var retryIn = delayFn(attempt, args, err);
+    logger.debug(functionToRetry.name + " retrying in " + retryIn + " ms");
 
-          case 7:
-            return _context.abrupt("return", _context.sent);
-
-          case 10:
-            _context.prev = 10;
-            _context.t0 = _context["catch"](4);
-            logger.debug("error on " + functionToRetry.name, _context.t0);
-
-            if (!isNonRetryableError(_context.t0)) {
-              _context.next = 16;
-              break;
-            }
-
-            logger.debug(functionToRetry.name + " non retryable error", _context.t0);
-            throw _context.t0;
-
-          case 16:
-            retryIn = delayFn(attempt, args, _context.t0);
-            logger.debug(functionToRetry.name + " retrying in " + retryIn + " ms");
-
-            if (!(retryIn !== false)) {
-              _context.next = 26;
-              break;
-            }
-
-            _context.next = 21;
-            return new Promise(function (res) {
-              return setTimeout(res, retryIn);
-            });
-
-          case 21:
-            _context.next = 23;
-            return retry(functionToRetry, args, delayFn, attempt + 1);
-
-          case 23:
-            return _context.abrupt("return", _context.sent);
-
-          case 26:
-            throw _context.t0;
-
-          case 27:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, null, [[4, 10]]);
-  }));
-  return _retry.apply(this, arguments);
+    if (retryIn !== false) {
+      return new Promise(function (res) {
+        return setTimeout(res, retryIn);
+      }).then(function () {
+        return retry(functionToRetry, args, delayFn, attempt + 1);
+      });
+    } else {
+      throw err;
+    }
+  });
 }
 
 function jitteredBackoff(maxDelayMs) {
@@ -8471,8 +8443,72 @@ module.exports = self.fetch || (self.fetch = __webpack_require__(19).default || 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* unused harmony export Platform */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getUserAgent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(33);
+/*
+ * Copyright 2017-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with
+ * the License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/apache2.0/
+ *
+ * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
+ */
+
+var BASE_USER_AGENT = "aws-amplify/" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* version */];
+var Platform = {
+  userAgent: BASE_USER_AGENT + " js",
+  product: '',
+  navigator: null,
+  isReactNative: false
+};
+
+if (typeof navigator !== 'undefined' && navigator.product) {
+  Platform.product = navigator.product || '';
+  Platform.navigator = navigator || null;
+
+  switch (navigator.product) {
+    case 'ReactNative':
+      Platform.userAgent = BASE_USER_AGENT + " react-native";
+      Platform.isReactNative = true;
+      break;
+
+    default:
+      Platform.userAgent = BASE_USER_AGENT + " js";
+      Platform.isReactNative = false;
+      break;
+  }
+}
+
+var getUserAgent = function getUserAgent() {
+  return Platform.userAgent;
+};
+/**
+ * @deprecated use named import
+ */
+
+/* unused harmony default export */ var _unused_webpack_default_export = (Platform);
+
+/***/ }),
+/* 33 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return version; });
+// generated by genversion
+var version = '5.0.4';
+
+/***/ }),
+/* 34 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CookieStorage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_js_cookie__);
 
 /** @class */
@@ -8607,7 +8643,7 @@ var CookieStorage = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!

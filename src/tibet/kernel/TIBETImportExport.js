@@ -34,6 +34,8 @@ function(aURI, aDocument, aRequest, scriptElemAttrs) {
 
         docHead,
 
+        targetLoc,
+
         newPromise;
 
     url = TP.uc(aURI);
@@ -60,16 +62,14 @@ function(aURI, aDocument, aRequest, scriptElemAttrs) {
 
     docHead = TP.documentEnsureHeadElement(aDocument);
 
+    targetLoc = url.getLocation();
+
     newPromise = TP.extern.Promise.construct(
         function(resolver, rejector) {
-            var targetLoc,
-
-                loadedCB,
+            var loadedCB,
                 scriptElem,
 
                 err;
-
-            targetLoc = url.getLocation();
 
             loadedCB = function() {
 
@@ -127,7 +127,12 @@ function(aURI, aDocument, aRequest, scriptElemAttrs) {
             //  Append it into the document head - this will start the
             //  loading process.
             TP.nodeAppendChild(docHead, scriptElem, false);
-        });
+        }).catch(
+            function(e) {
+                TP.ifError() ?
+                    TP.error('Error loading script: ' + targetLoc + ' ' +
+                                TP.str(e)) : 0;
+            });
 
     return newPromise;
 }, {

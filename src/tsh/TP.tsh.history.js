@@ -142,7 +142,7 @@ function(aRequest) {
         origReq = aRequest;
     }
 
-    isEdit = shell.getArgument(aRequest, 'tsh:edit', false, false);
+    isEdit = TP.bc(shell.getArgument(aRequest, 'tsh:edit', false, false));
     if (TP.bc(isEdit)) {
         req = TP.sig.ConsoleRequest.construct(
                                     TP.hc('cmd', 'input', 'body', str));

@@ -356,7 +356,7 @@ function(aContentObject, aRequest) {
         //  If we're not skipping setting the content, then we do so. This will
         //  refresh any data.
         if (!skipSettingContent) {
-            panelTPElem.setContent(aContentObject);
+            panelTPElem.setContent(aContentObject, request);
         } else {
             //  Otherwise, just refresh the panel.
             panelTPElem.refresh();
