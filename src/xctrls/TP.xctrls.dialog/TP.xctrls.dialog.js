@@ -255,7 +255,7 @@ function(aContentObject, aRequest) {
 
     contentTPElem = this.get('contentElement');
 
-    return contentTPElem.setContent(aContentObject);
+    return contentTPElem.setContent(aContentObject, aRequest);
 });
 
 //  ------------------------------------------------------------------------

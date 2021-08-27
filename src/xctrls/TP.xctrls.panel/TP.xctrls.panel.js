@@ -145,7 +145,7 @@ function(aContentObject, aRequest) {
     }
 
     //  Grab the panel's content element and set its content.
-    return contentTPElem.setContent(aContentObject);
+    return contentTPElem.setContent(aContentObject, aRequest);
 });
 
 //  ------------------------------------------------------------------------
