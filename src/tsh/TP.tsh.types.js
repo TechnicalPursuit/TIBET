@@ -63,7 +63,7 @@ function(aRequest) {
 
     typesKeys = TP.sys.getCustomTypes().getKeys();
 
-    includeNatives = shell.getArgument(aRequest, 'tsh:includenative');
+    includeNatives = TP.bc(shell.getArgument(aRequest, 'tsh:includenative'));
     if (TP.isValid(includeNatives) && TP.isTrue(TP.bc(includeNatives))) {
         typesKeys.addAll(TP.sys.getNativeTypes().getKeys());
     }

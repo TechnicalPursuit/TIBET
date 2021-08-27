@@ -169,15 +169,15 @@ function(aRequest) {
         interf = interf.unquoted();
     }
 
-    types = shell.getArgument(aRequest, 'tsh:types', false);
-    subtypes = shell.getArgument(aRequest, 'tsh:subtypes', false);
-    methods = shell.getArgument(aRequest, 'tsh:methods', false);
-    owners = shell.getArgument(aRequest, 'tsh:owners', false);
-    attributes = shell.getArgument(aRequest, 'tsh:attributes', false);
+    types = TP.bc(shell.getArgument(aRequest, 'tsh:types', false));
+    subtypes = TP.bc(shell.getArgument(aRequest, 'tsh:subtypes', false));
+    methods = TP.bc(shell.getArgument(aRequest, 'tsh:methods', false));
+    owners = TP.bc(shell.getArgument(aRequest, 'tsh:owners', false));
+    attributes = TP.bc(shell.getArgument(aRequest, 'tsh:attributes', false));
 
-    pwd = shell.getArgument(aRequest, 'tsh:pwd', false);
+    pwd = TP.bc(shell.getArgument(aRequest, 'tsh:pwd', false));
 
-    docsonly = shell.getArgument(aRequest, 'tsh:docsonly', false);
+    docsonly = TP.bc(shell.getArgument(aRequest, 'tsh:docsonly', false));
 
     //  We collect data based on potentially multiple flags so the best way to
     //  start is with an empty array we can add to.
