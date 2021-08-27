@@ -1779,11 +1779,15 @@ function(aContentObject, aRequest) {
             function(targetNode, newNode) {
                 reqLoadFunc(targetNode, newNode);
 
+                //  NB: We don't worry about the TP.REFRESH flag here - we're
+                //  loading a whole document.
                 doc.refresh();
             };
     } else {
         loadFunc =
             function(targetNode, newNode) {
+                //  NB: We don't worry about the TP.REFRESH flag here - we're
+                //  loading a whole document.
                 doc.refresh();
             };
     }
