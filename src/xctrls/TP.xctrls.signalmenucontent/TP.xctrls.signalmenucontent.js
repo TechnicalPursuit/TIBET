@@ -49,7 +49,7 @@ function(aRequest, anElement) {
 
     //  Query under the element in the node to see if the xctrls:menu has been
     //  produced yet (the tag processor is multi-cycle, so this may not be true
-    //  during the first pass.
+    //  during the first pass).
     //  If so, merge the attributes starting with 'item' onto the menu.
     menuElement = TP.byCSSPath('xctrls|menu', elem, true, false);
     if (TP.isElement(menuElement)) {
