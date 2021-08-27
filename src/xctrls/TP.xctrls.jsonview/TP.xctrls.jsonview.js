@@ -352,29 +352,51 @@ function(aValue) {
      * @returns {TP.xctrls.jsonview} The receiver.
      */
 
-    var discoveryObj,
-        json,
-        obj;
+    var setData,
+
+        discoveryObj,
+        handler;
+
+    //  Define a function that will set the data. This is either called
+    //  immediately if the 'discovery' object is already available or when this
+    //  object is ready.
+    setData =
+        function(val) {
+            var json,
+                obj;
+
+            //  Grab the supplied value - if it's not a JSON string, then get
+            //  it's 'JSON source' representation.
+            json = val;
+            if (!TP.isJSONString(json)) {
+                json = TP.jsonsrc(val);
+            }
+
+            //  Turn that back into a JavaScript object *without* converting
+            //  POJOs to TP.core.Hash objects.
+            obj = TP.json2js(json, false);
+
+            discoveryObj.setData(
+                obj,
+                {
+                    createdAt: new Date().toISOString()
+                }
+            );
+        };
 
     discoveryObj = this.$get('$discoveryObj');
+    if (TP.notValid(discoveryObj)) {
+        handler = function() {
+            handler.ignore(this, 'TP.sig.DOMReady');
 
-    //  Grab the supplied value - if it's not a JSON string, then get it's 'JSON
-    //  source' representation.
-    json = aValue;
-    if (!TP.isJSONString(json)) {
-        json = TP.jsonsrc(aValue);
+            discoveryObj = this.$get('$discoveryObj');
+            setData(aValue);
+        }.bind(this);
+
+        handler.observe(this, 'TP.sig.DOMReady');
+    } else {
+        setData(aValue);
     }
-
-    //  Turn that back into a JavaScript object *without* converting POJOs to
-    //  TP.core.Hash objects.
-    obj = TP.json2js(json, false);
-
-    discoveryObj.setData(
-        obj,
-        {
-            createdAt: new Date().toISOString()
-        }
-    );
 
     return this;
 });
