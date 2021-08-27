@@ -492,12 +492,10 @@ Cmd.prototype.executeMissingCheck = function() {
 Cmd.prototype.executeTopics = function(silent) {
     var paths,
         fullpath,
-        topics,
         results,
         cmd;
 
     results = [];
-    topics = [];
     paths = [];
 
     cmd = this;
@@ -514,6 +512,9 @@ Cmd.prototype.executeTopics = function(silent) {
     }
 
     paths.forEach(function(root, index) {
+        var topics;
+
+        topics = [];
 
         sh.ls('-R', root).forEach(function(file) {
             var filename,
@@ -532,6 +533,9 @@ Cmd.prototype.executeTopics = function(silent) {
             //  and they will lay out into different section subdirectories. We
             //  want to trim all that off and just list the topic.
             name = path.basename(filename).replace(path.extname(filename), '');
+
+            results.push(name);
+
             parts = name.split('-');
             if (parts.length > 1) {
                 name = parts.slice(1).join('-');
@@ -546,9 +550,6 @@ Cmd.prototype.executeTopics = function(silent) {
                     cmd.info('\nProject help topics include:\n');
                     cmd.logCommands(topics);
                 }
-                topics.forEach(function(topic) {
-                    results.push(cmd.getcfg('npm.name') + '-' + topic);
-                });
             }
         } else {
             if (!silent) {
@@ -556,9 +557,6 @@ Cmd.prototype.executeTopics = function(silent) {
                 cmd.logCommands(topics);
                 cmd.log('');
             }
-            topics.forEach(function(topic) {
-                results.push('tibet-' + topic);
-            });
         }
     });
 
