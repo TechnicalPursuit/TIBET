@@ -31,7 +31,8 @@
             'build_resources',
             '_rollup',
             '_linkup',
-            'build_docs'
+            'build_docs',
+            'build_sitedocs'
         ];
 
         //  If we're going to clean just do it once via the clean target and
