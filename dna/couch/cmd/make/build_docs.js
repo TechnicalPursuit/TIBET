@@ -7,6 +7,7 @@
             footer,
             clean,
             fullpath,
+            partialspath,
             genHtml,
             genMan,
             header,
@@ -31,26 +32,55 @@
 
         make.log('building project documentation...');
 
+        rootpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc');
+
         clean = make.getArgument('clean');
         if (clean) {
-            fullpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc', 'html');
+            fullpath = make.CLI.joinPaths(rootpath, 'html');
             if (make.sh.test('-d', fullpath)) {
                 make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
             }
 
-            fullpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc', 'man');
+            fullpath = make.CLI.joinPaths(rootpath, 'man');
             if (make.sh.test('-d', fullpath)) {
                 make.sh.rm('-rf', make.CLI.joinPaths(fullpath, '*'));
             }
         }
 
-        rootpath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'doc');
-        srcpath = make.CLI.joinPaths(rootpath, 'markdown');
+        //  Where are the manpage source documents kept?
+        srcpath = make.CLI.joinPaths(rootpath, 'markdown', 'manpages');
 
         if (!make.sh.test('-d', srcpath)) {
-            reject('Unable to find doc source directory.');
+            reject('Unable to find doc source directory ' + srcpath);
             return;
         }
+
+        partialspath = make.CLI.joinPaths(make.CLI.expandPath('~'), 'views',
+            'partials');
+
+        //  load any partials and get them registered so they can be used
+        //  in the preprocessor and/or template logic.
+        if (make.sh.test('-d', partialspath)) {
+            list = make.sh.ls(partialspath);
+            list.forEach(function(file) {
+                var filename,
+                    name,
+                    partial,
+                    filepath;
+
+                filename = file.toString();
+                filepath = make.CLI.joinPaths(partialspath, filename);
+                name = filename.replace('.handlebars', '');
+                partial = make.sh.cat(filepath).toString();
+                try {
+                    make.CLI.debug('Loading partial ' + name + '...');
+                    make.template.registerPartial(name, partial);
+                } catch (e) {
+                    make.CLI.error('Error loading partial ' + name + ': ' + e);
+                }
+            });
+        }
+
 
         htmlpath = make.CLI.joinPaths(rootpath, 'html');
         if (!make.sh.test('-d', htmlpath)) {
