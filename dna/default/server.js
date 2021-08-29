@@ -313,7 +313,7 @@
 
     //  Default to https for the site and require it to be forced off via flag.
     if (useHttps) {
-        certPath = TDS.getcfg('tds.cert.path') || '~/etc';
+        certPath = TDS.getcfg('tds.cert.path') || '~/etc/https';
         certKey = TDS.getcfg('tds.cert.key') || 'ssl.key';
         certFile = TDS.getcfg('tds.cert.file') || 'ssl.crt';
 
@@ -326,7 +326,7 @@
             Place the resulting cert/key files in a directory in your TIBET
             project such as ~/etc and set the TIBET configuration values for
 
-                'tds.cert.path' (defaults to '~/etc')
+                'tds.cert.path' (defaults to '~/etc/https')
                 'tds.cert.key' (defaults to 'ssl.key')
                 'tds.cert.file' (defaults to 'ssl.crt')
         `;

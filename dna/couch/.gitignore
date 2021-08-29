@@ -47,5 +47,7 @@ Thumbs.db
 /.tibetlint.json
 
 # TIBET
+/etc/https
+/etc/minica
 /public/build
 /public/TIBET-INF/tibet
