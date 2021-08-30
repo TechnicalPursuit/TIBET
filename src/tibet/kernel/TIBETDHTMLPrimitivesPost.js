@@ -4812,9 +4812,15 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.notValid(computedStyle =
-                    TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
+    //  If the element isn't in a doc, or the doc isn't in a window, the
+    //  primitive below throws, we only care that it's clearly not displayed.
+    try {
+        computedStyle = TP.elementGetComputedStyleObj(anElement);
+        if (TP.notValid(computedStyle)) {
+            return false;
+        }
+    } catch (e) {
+        return false;
     }
 
     elemComputedDisplay = computedStyle.display;
@@ -4923,9 +4929,15 @@ function(anElement, partial, direction, wantsTransformed) {
     //  we're not checking for partial visibility (only whole visibility) then
     //  this element isn't visible.
 
-    if (TP.notValid(computedStyle =
-                    TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
+    //  If the element isn't in a doc, or the doc isn't in a window, the
+    //  primitive below throws, we only care that it's clearly not displayed.
+    try {
+        computedStyle = TP.elementGetComputedStyleObj(anElement);
+        if (TP.notValid(computedStyle)) {
+            return false;
+        }
+    } catch (e) {
+        return false;
     }
 
     //  Note the native check here for offsetParent rather than using our
