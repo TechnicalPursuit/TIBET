@@ -1238,7 +1238,8 @@ function(anElement) {
      *     to get individual style data values.
      */
 
-    var doc;
+    var doc,
+        win;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -1248,7 +1249,11 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    return TP.nodeGetWindow(doc).getComputedStyle(anElement, null);
+    if (!TP.isWindow(win = TP.nodeGetWindow(doc))) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    return win.getComputedStyle(anElement, null);
 });
 
 //  ------------------------------------------------------------------------

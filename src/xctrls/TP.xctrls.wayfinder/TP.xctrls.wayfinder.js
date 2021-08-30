@@ -1822,10 +1822,22 @@ function(aSignal) {
     targetBay = TP.nodeGetFirstAncestorByTagName(
                             domTarget, 'xctrls:wayfinderitem');
 
+    //  Ignore signals that are outside of a wayfinder item.
+    if (TP.notValid(targetBay)) {
+        return this;
+    }
+
     targetBay = TP.wrap(targetBay);
 
     //  Remove any bays after (i.e. to the right of) the target bay.
     this.removeBaysAfter(targetBay);
+
+    //  TODO:   is this the right way to keep from having the entire wayfinder
+    //  decide it should have display: none set?
+    aSignal.preventDefault();
+
+    //  TODO:   AND THEN PUT BACK IN FILLER BAYS!!!
+
 
     return this;
 });
@@ -1844,24 +1856,46 @@ function(aSignal) {
      */
 
     var domTarget,
-        domTargetParentTPElem,
+        targetBay,
+        bayIndex,
+        selectedItems,
         value;
 
     //  Grab the 'value' from the current DOM target.
     domTarget = aSignal.getTarget();
 
-    //  If the parent of the DOM target is not an wayfinder item, then we bail
-    //  out here - we don't want selection signals in panel content to trigger
-    //  navigation.
-    domTargetParentTPElem = TP.wrap(domTarget.parentNode);
-    if (!TP.isKindOf(domTargetParentTPElem, TP.xctrls.wayfinderitem)) {
+    targetBay = TP.nodeGetFirstAncestorByTagName(
+                            domTarget, 'xctrls:wayfinderitem');
+
+    //  Ignore signals that are outside of a wayfinder item.
+    if (TP.notValid(targetBay)) {
         return this;
     }
+    targetBay = TP.wrap(targetBay);
 
     value = TP.wrap(domTarget).get('value');
 
     //  No value? Then just exit.
     if (TP.isEmpty(value)) {
+        //  TODO:   you can't just exit... things have to have a way to say
+        //  "clear my selection" and the deselect logic is a cluster that a)
+        //  doesn't work and b) turns off the whole wayfinder.
+        // return this;
+        bayIndex = targetBay.getBayIndex();
+        selectedItems = this.get('selectedItems');
+
+        //  If we're "past the end" of the current path we can safely ignore.
+        if (bayIndex > selectedItems.getSize()) {
+            return this;
+        }
+
+        //  If we're somewhere within the current path range we're essentially
+        //  changing the path by clearing a location inside it and we have to
+        //  re-set the overall path
+        selectedItems.truncate(bayIndex);
+
+        this.traversePath(selectedItems);
+
         return this;
     }
 

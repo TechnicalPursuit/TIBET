@@ -986,6 +986,8 @@ function() {
      * @returns {Number} The height of a row when rendered.
      */
 
+    var height;
+
     //  Headless doesn't load the stylesheet that contains the
     //  'xctrls-item-height' variable in a timely fashion, so we just hardcode a
     //  Number here.
@@ -993,8 +995,13 @@ function() {
         return 20;
     }
 
-    return this.getComputedStyleProperty(
-                        '--xctrls-item-height').asNumber();
+    height = this.getComputedStyleProperty('--xctrls-item-height').asNumber();
+
+    if (TP.isNumber(height)) {
+        return height;
+    }
+
+    return 20;
 });
 
 //  ------------------------------------------------------------------------
@@ -1008,8 +1015,23 @@ function() {
      * @returns {Number} The height of a row bottom and top borders.
      */
 
-    return this.getComputedStyleProperty(
-                        '--xctrls-item-border-height').asNumber();
+    var height;
+
+    //  Headless doesn't load the stylesheet that contains the
+    //  'xctrls-item-height' variable in a timely fashion, so we just hardcode a
+    //  Number here.
+    if (TP.sys.isHeadless()) {
+        return 1;
+    }
+
+    height = this.getComputedStyleProperty(
+        '--xctrls-item-border-height').asNumber();
+
+    if (TP.isNumber(height)) {
+        return height;
+    }
+
+    return 1;
 });
 
 //  ------------------------------------------------------------------------
