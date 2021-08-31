@@ -481,7 +481,7 @@ function(aSignal) {
             return this;
         }
 
-        rowIndex = wrappedRow.getParentNode().getChildIndex(row);
+        rowIndex = wrappedRow.getAttribute('rowNum').asNumber();
         rowIndex += this.get('$startOffset');
 
         //  If the item was already selected, then deselect the value.
