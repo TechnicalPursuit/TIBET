@@ -15,7 +15,9 @@
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
-        var logger,
+        var pkg,
+            app,
+            logger,
 
             meta,
 
@@ -28,6 +30,8 @@
             loadProfile,
             saveProfile;
 
+        pkg = options.pkg;
+        app = options.app;
         logger = options.logger;
 
         //  NOTE this plugin loads prior to the logger so our best option here
@@ -108,6 +112,33 @@
         };
 
         //  ---
+        //  Application event handlers
+        //  ---
+
+        /**
+         * Event emitted when Electron has finished initialization and is ready
+         * to create browser windows, etc.. Some APIs can only be used after
+         * this event occurs.
+         */
+        app.on('ready',
+                function() {
+                    var data;
+
+                    //  We go ahead load the profile data here because we may
+                    //  have other plugins (i.e. devtools) that need this data
+                    //  on startup (if opening when launching for window
+                    //  positioning, etc.)
+                    //  The fact that we will also load it later when TIBET asks
+                    //  for it from the renderer side is of no consequence.
+
+                    //  Grab the data from the profile
+                    data = loadProfile();
+
+                    //  Set the profile data into the 'main process' side config.
+                    pkg.overlayProperties(data.profile, 'profile');
+                });
+
+        //  ---
         //  Profile event handlers.
         //  ---
 
@@ -128,7 +159,17 @@
          */
         ipcMain.handle('TP.sig.LoadProfile',
             function(event) {
-                return loadProfile();
+                var data;
+
+                //  Grab the data from the profile
+                data = loadProfile();
+
+                //  Set the profile data into the 'main process' side config.
+                pkg.overlayProperties(data.profile, 'profile');
+
+                //  Return the profile data to the 'renderer process'. Assumably
+                //  it will make it available to its config system.
+                return data;
             });
 
     };

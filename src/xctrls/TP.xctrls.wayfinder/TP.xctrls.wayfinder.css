@@ -1,0 +1,35 @@
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+xctrls|wayfinder {
+
+    display: block;
+
+    overflow: hidden;
+}
+
+xctrls|wayfinder > xctrls|content {
+
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    gap: 1px;
+
+    flex-wrap: wrap;
+}
+
+/* The wayfinder's background user message */
+xctrls|wayfinder > xctrls|content > div.usermessage {
+
+    display: flex;
+
+    border: none;
+
+    align-items: center;
+    justify-content: center;
+}

@@ -132,7 +132,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -233,7 +233,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -314,7 +314,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -370,7 +370,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -447,7 +447,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -593,7 +593,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -659,7 +659,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -725,7 +725,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -772,7 +772,7 @@ function() {
                 //  DocumentFragmentNode
                 select.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
                 value = select.get('value');
-                test.assert.isNull(value);
+                test.assert.isEqualTo(value, 'foo');
 
                 //  NodeList
                 select.set('value', testData.at('NodeList'));
@@ -808,7 +808,7 @@ function() {
 
         selectList = aTPElem.get('popupContentFirstElement');
 
-        itemIndices = selectList.get('listitems').collect(
+        itemIndices = selectList.get('allItems').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -845,8 +845,22 @@ function() {
             var select;
 
             //  Make sure that each test starts with a freshly reset item
-            select = TP.byId('select4', windowContext);
+            select = TP.byId('select5', windowContext);
             select.deselectAll();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function(test, suite) {
+            test.chain(
+                function() {
+                    //  'Click away' from the currently selected popup to get it
+                    //  to close.
+                    test.getDriver().constructSequence().
+                        click(windowContext.getDocument().getBody()).
+                        run();
+                });
         });
 
     //  ---
@@ -868,7 +882,7 @@ function() {
         var select,
             firstSelectItem;
 
-        select = TP.byId('select4', windowContext);
+        select = TP.byId('select5', windowContext);
 
         //  ---
 
@@ -887,7 +901,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -932,7 +946,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -989,7 +1003,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -1034,7 +1048,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -1073,7 +1087,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -1115,7 +1129,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -1203,7 +1217,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),
@@ -1252,7 +1266,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstSelectItem = selectList.get('listitems').first();
+                            firstSelectItem = selectList.get('allItems').first();
                             return firstSelectItem;
                         },
                         TP.gid(selectList),

@@ -2,7 +2,7 @@
     CSS styles common across all 'xctrls:' controls for the 'tpi' theme.
 */
 
-@import url("~xctrls_src/themes/TP.xctrls_common_all.css");
+@import url("~lib_src/xctrls/themes/TP.xctrls_common_all.css");
 
 @import url("TP.xctrls_variables_tpi.css");
 

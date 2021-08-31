@@ -689,7 +689,7 @@ function(anObj) {
 
     //  Flatten the types information and make sure it's not an origin set.
     typesObj = typesObj.flatten();
-    typesObj.isOriginSet(false);
+    typesObj.useAsCollection(false);
 
     //  Massage the types information into an Array of Arrays with the entry as
     //  both the key and value.

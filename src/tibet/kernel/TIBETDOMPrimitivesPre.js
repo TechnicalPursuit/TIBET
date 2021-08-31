@@ -352,8 +352,23 @@ function(srcNode, destNode, shouldRemove) {
     destDoc = TP.nodeGetDocument(srcNode);
 
     //  We never copy the following TIBET expandos:
-    //      TP.EVENT_IDS
+    //      TP.EVENT_IDS            (DOM position dependent)
+    //      TP.EVENT_BLOCKS         (DOM position dependent)
     //      TP.WRAPPER
+    //      TP.OBSERVED_ATTRS       (local-level attributes set during attach)
+    //      TP.BIND_INFO_REGISTRY   (document-only, bindings cache)
+    //      TP.APPLIED_RULES        (DOM position dependent)
+    //      TP.PREVIOUS_POSITION    (DOM position dependent)
+    //      TP.INSERTION_POSITION   (DOM position dependent)
+    //      TP.RESIZE_LISTENERS
+    //      TP.LAMA_MUTATION        (Lama dependent)
+    //      TP.BUSY_ELEMENT         (DOM position and style dependent)
+    //      TP.BUSY_MSG_ELEMENT     (DOM position and style dependent)
+    //      TP.BUSY_BKGD_ELEMENT    (DOM position and style dependent)
+    //      TP.BUSY_RESIZE_FUNC     (DOM position and style dependent)
+    //      TP.PSEUDO_INLINE_STYLE  (DOM style dependent)
+
+    destNode[TP.NODE_TYPE] = srcNode[TP.NODE_TYPE];
 
     //  We only copy the following TIBET expandos if the 2 documents are the
     //  same.
@@ -377,6 +392,9 @@ function(srcNode, destNode, shouldRemove) {
                                 val :
                                 destNode[TP.GENERATOR];
 
+    destNode[TP.IS_XHTML] = srcNode[TP.IS_XHTML];
+    destNode[TP.IS_XML] = srcNode[TP.IS_XML];
+
     if (TP.isDocument(srcNode) && TP.isDocument(destNode)) {
         destNode[TP.SRC_LOCATION] =
                     TP.notEmpty(val = srcNode[TP.SRC_LOCATION]) ?
@@ -384,23 +402,85 @@ function(srcNode, destNode, shouldRemove) {
                                 destNode[TP.SRC_LOCATION];
     }
 
+    destNode[TP.GENERATED] = srcNode[TP.GENERATED];
+    destNode[TP.TIBET_PRIVATE] = srcNode[TP.TIBET_PRIVATE];
+
+    destNode[TP.OLD_OVERFLOW] = srcNode[TP.OLD_OVERFLOW];
+
+    destNode[TP.REPEAT_SOURCE] = srcNode[TP.REPEAT_SOURCE];
+    destNode[TP.REPEAT_INDEX] = srcNode[TP.REPEAT_INDEX];
+
     if (TP.notFalse(shouldRemove)) {
-        srcNode[TP.EVENT_IDS] = null;
 
-        srcNode[TP.WRAPPER] = null;
-        srcNode[TP.NODE_TYPE] = null;
-
-        srcNode[TP.GLOBAL_ID] = null;
-
-        srcNode[TP.SHOULD_SIGNAL_CHANGE] = null;
-        srcNode[TP.SHOULD_SUSPEND_SIGNALING] = null;
-
-        srcNode[TP.GENERATOR] = null;
-
-        if (TP.isDocument(srcNode) && TP.isDocument(destNode)) {
-            srcNode[TP.SRC_LOCATION] = null;
-        }
+        TP.nodeRemoveExpandos(srcNode);
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeRemoveTIBETExpandos',
+function(srcNode) {
+
+    /**
+     * @method nodeRemoveTIBETExpandos
+     * @summary Removes the special TIBET expandos from the srcNode.
+     * @param {Node} srcNode The node to copy the expandos from.
+     * @exception TP.sig.InvalidNode
+     */
+
+    if (!TP.isNode(srcNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  We never copy the following TIBET expandos:
+    //      TP.EVENT_IDS            (DOM position dependent)
+    //      TP.EVENT_BLOCKS         (DOM position dependent)
+    //      TP.WRAPPER
+    //      TP.OBSERVED_ATTRS       (local-level attributes set during attach)
+    //      TP.BIND_INFO_REGISTRY   (document-only, bindings cache)
+    //      TP.APPLIED_RULES        (DOM position dependent)
+    //      TP.PREVIOUS_POSITION    (DOM position dependent)
+    //      TP.INSERTION_POSITION   (DOM position dependent)
+    //      TP.RESIZE_LISTENERS
+    //      TP.LAMA_MUTATION        (Lama dependent)
+    //      TP.BUSY_ELEMENT         (DOM position and style dependent)
+    //      TP.BUSY_MSG_ELEMENT     (DOM position and style dependent)
+    //      TP.BUSY_BKGD_ELEMENT    (DOM position and style dependent)
+    //      TP.BUSY_RESIZE_FUNC     (DOM position and style dependent)
+    //      TP.PSEUDO_INLINE_STYLE  (DOM style dependent)
+
+    srcNode[TP.EVENT_IDS] = null;
+    srcNode[TP.EVENT_BLOCKS] = null;
+
+    srcNode[TP.GLOBAL_ID] = null;
+
+    srcNode[TP.SHOULD_SIGNAL_CHANGE] = null;
+    srcNode[TP.SHOULD_SUSPEND_SIGNALING] = null;
+
+    srcNode[TP.WRAPPER] = null;
+
+    srcNode[TP.GENERATOR] = null;
+
+    srcNode[TP.IS_XHTML] = null;
+    srcNode[TP.IS_XML] = null;
+
+    srcNode[TP.OBSERVED_ATTRS] = null;
+
+    srcNode[TP.NODE_TYPE] = null;
+
+    if (TP.isDocument(srcNode)) {
+        srcNode[TP.BIND_INFO_REGISTRY] = null;
+        srcNode[TP.SRC_LOCATION] = null;
+    }
+
+    srcNode[TP.GENERATED] = null;
+    srcNode[TP.TIBET_PRIVATE] = null;
+    srcNode[TP.OLD_OVERFLOW] = null;
+
+    srcNode[TP.REPEAT_SOURCE] = null;
+    srcNode[TP.REPEAT_INDEX] = null;
 
     return;
 });

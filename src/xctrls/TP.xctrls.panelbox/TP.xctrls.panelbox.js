@@ -200,7 +200,7 @@ function(aspectName) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.panelbox.Inst.defineMethod('refresh',
-function(shouldRender, shouldRefreshBindings) {
+function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
     /**
      * @method refresh
@@ -211,9 +211,15 @@ function(shouldRender, shouldRefreshBindings) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
-     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
-     *     bindings from the receiver down (in a 'sparse' fashion). If not
-     *     supplied, this parameter will default to true.
+     * @param {Boolean} [shouldRefreshBindings=true] Whether or not to refresh
+     *     data bindings from the receiver down (in a 'sparse' fashion).
+     * @param {TP.core.Hash} [localRefreshInfo] Information about a local-only
+     *     refresh that can be used to specifically target binds that occur only
+     *     *locally* on the receiver (i.e. where the receiver itself has the
+     *     'bind:*' attribute). Note that if this is supplied, that a *local
+     *     only* refresh will be performed and it will be the responsibility of
+     *     the caller to refresh any descendant bindings, scoped to the receiver
+     *     or not.
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
@@ -226,7 +232,9 @@ function(shouldRender, shouldRefreshBindings) {
         return this.callNextMethod();
     }
 
-    return selectedPanel.refresh(shouldRender, shouldRefreshBindings);
+    return selectedPanel.refresh(shouldRender,
+                                    shouldRefreshBindings,
+                                    localRefreshInfo);
 });
 
 //  ------------------------------------------------------------------------
@@ -348,7 +356,7 @@ function(aContentObject, aRequest) {
         //  If we're not skipping setting the content, then we do so. This will
         //  refresh any data.
         if (!skipSettingContent) {
-            panelTPElem.setContent(aContentObject);
+            panelTPElem.setContent(aContentObject, request);
         } else {
             //  Otherwise, just refresh the panel.
             panelTPElem.refresh();

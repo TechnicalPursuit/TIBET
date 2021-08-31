@@ -1011,7 +1011,7 @@ Cmd.prototype.processStylelintResult = function(result) {
     summary.warnings = result.warnings.length - summary.errors;
 
     //  Add any file that doesn't pass cleanly to the recheck list.
-    if (summary.errors + summary.warnings > 1) {
+    if (summary.errors + summary.warnings > 0) {
         summary.recheck.push(file);
     }
 

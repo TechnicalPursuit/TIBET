@@ -148,7 +148,7 @@ function() {
     logger.addAppender(appender);
 
     //  Don't inherit so we skip the ConsoleAppender when in headless mode.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         logger.inheritsAppenders(false);
     }
 
@@ -158,7 +158,7 @@ function() {
     logger.addAppender(appender);
 
     //  Don't inherit so we skip the ConsoleAppender when in headless mode.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         logger.inheritsAppenders(false);
     }
 
@@ -380,7 +380,7 @@ function(setup) {
      * @method before
      * @summary Defines an optional function to run before all test cases have
      *     been executed.
-     * @param {Function} setup The 'after all' function to save.
+     * @param {Function} setup The 'before all' function to save.
      * @returns {TP.test.Suite} The receiver.
      */
 
@@ -396,9 +396,9 @@ function(setup) {
 
     /**
      * @method before
-     * @summary Defines an optional function to run before all test cases have
+     * @summary Defines an optional function to run before each test case has
      *     been executed.
-     * @param {Function} setup The 'after all' function to save.
+     * @param {Function} setup The 'before each' function to save.
      * @returns {TP.test.Suite} The receiver.
      */
 
@@ -1271,7 +1271,7 @@ function(options) {
 
     TP.sys.logTest('#', TP.DEBUG);
 
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         TP.sys.logTest('# ' + 'tibet test ' +
                         id +
                         (isAppTarget ? ' ' : ' --context=\'all\' ') +
@@ -1352,8 +1352,17 @@ function(options) {
     //  it*. This will be the Promise that 'starts things off' below.
     firstPromise = firstPromise.then(
         function() {
-            var beforeMaybe,
+            var logAppender,
+
+                beforeMaybe,
                 generatedPromise;
+
+            //  Capture the current test suite onto the log appender for its
+            //  use.
+            logAppender = TP.test.Suite.get('logAppender');
+            if (TP.isValid(logAppender)) {
+                logAppender.$set('currentTestSuite', suite);
+            }
 
             //  Run any 'before' hook for the suite. Note that this may
             //  generate a Promise that will now be in '$internalPromise'.

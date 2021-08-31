@@ -324,6 +324,7 @@
     <resource href="xctrls/themes/TP.xctrls.table_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.textitem_all.css"/>
     <resource href="xctrls/themes/TP.xctrls.tooltip_all.css"/>
+    <resource href="xctrls/themes/TP.xctrls.wayfinder_all.css"/>
 
     <!-- Individual theme files are brought in by their components based on a
             setting of a cfg parameter so we don't have to mention them here.
@@ -367,7 +368,10 @@
     <package src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.xml" config="base"/>
     <package src="xctrls/TP.xctrls.hint/TP.xctrls.hint.xml" config="base"/>
     <package src="xctrls/TP.xctrls.imageitem/TP.xctrls.imageitem.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.itempack/TP.xctrls.itempack.xml" config="base"/>
     <package src="xctrls/TP.xctrls.list/TP.xctrls.list.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.menu/TP.xctrls.menu.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.menuitem/TP.xctrls.menuitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.notifier/TP.xctrls.notifier.xml" config="base"/>
     <package src="xctrls/TP.xctrls.pagerbar/TP.xctrls.pagerbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.xml" config="base"/>
@@ -375,12 +379,14 @@
     <package src="xctrls/TP.xctrls.propertysheet/TP.xctrls.propertysheet.xml" config="base"/>
     <package src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.select/TP.xctrls.select.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.signalmenucontent/TP.xctrls.signalmenucontent.xml" config="base"/>
     <package src="xctrls/TP.xctrls.sticky/TP.xctrls.sticky.xml" config="base"/>
     <package src="xctrls/TP.xctrls.tabbar/TP.xctrls.tabbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.table/TP.xctrls.table.xml" config="base"/>
     <package src="xctrls/TP.xctrls.textitem/TP.xctrls.textitem.xml" config="base"/>
     <package src="xctrls/TP.xctrls.toolbar/TP.xctrls.toolbar.xml" config="base"/>
     <package src="xctrls/TP.xctrls.tooltip/TP.xctrls.tooltip.xml" config="base"/>
+    <package src="xctrls/TP.xctrls.wayfinder/TP.xctrls.wayfinder.xml" config="base"/>
 
     <!-- BEGIN xctrls:codeeditor -->
 
@@ -409,7 +415,7 @@
 
     <!-- END xctrls:codeeditor -->
 
-    <resource href="~lib_deps/discovery/discovery-tpi.js" no-inline="true"/>
+    <resource href="~lib_deps/discovery/discovery-tpi.min.js" no-inline="true"/>
     <resource href="~lib_deps/discovery/discovery.css" no-inline="true"/>
 
     <package src="xctrls/TP.xctrls.jsonview/TP.xctrls.jsonview.xml" config="base"/>

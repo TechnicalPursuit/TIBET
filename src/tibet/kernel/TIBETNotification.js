@@ -297,31 +297,6 @@ TP.sig.Signal.Type.defineAttribute('signalRoot', null);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Type.defineMethod('defineSubtype',
-function() {
-
-    /**
-     * @method defineSubtype
-     * @summary Creates a new subtype. This particular override ensures that all
-     *     direct subtypes of TP.sig.Signal serve as signaling roots, meaning
-     *     that you never signal a raw TP.sig.Signal without a spoofed signal
-     *     name.
-     * @returns {TP.sig.Signal} A new signal-derived type object.
-     */
-
-    var type;
-
-    type = this.callNextMethod();
-
-    if (this === TP.sig.Signal) {
-        type.isSignalingRoot(true);
-    }
-
-    return type;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Signal.Type.defineMethod('fire',
 function(anOrigin, aPayload, aPolicy) {
 
@@ -416,8 +391,10 @@ function() {
 
     while (type) {
         names.push(type.getSignalName());
-        if (type === TP.sig.Signal) {
-            break;
+        if (TP.canInvoke(type, 'isSignalingRoot')) {
+            if (type.isSignalingRoot()) {
+                break;
+            }
         }
         type = type.getSupertype();
     }
@@ -1657,12 +1634,17 @@ function() {
      * @returns {String[]} An Array of signal names.
      */
 
-    var names;
+    var names,
+        name;
 
     names = this.getTypeSignalNames();
+    name = this.getSignalName();
 
-    if (!names.contains(this.getSignalName())) {
-        names.unshift(this.getSignalName());
+    //  IF signal name and type name differ this is a spoof so ensure we put
+    //  the spoofed name on the front of the list. NOTE the type signal name
+    //  list is a copy so we can mutate it without any problem.
+    if (name !== this.getTypeName()) {
+        names.unshift(name);
     }
 
     return names;
@@ -5052,7 +5034,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  that the handler can't be the TIBETURN URI itself. Therefore, if
             //  the item's handler starts with 'tibet:urn', then go ahead and
             //  use the URI object as the handler object.
-            if (TP.regex.TIBET_URN.test(item.handler)) {
+            if (TP.regex.ANY_URN.test(item.handler)) {
                 handler = TP.uc(item.handler);
             } else {
                 //  Otherwise, just get the handler by it's system ID
@@ -5378,7 +5360,7 @@ function(anOrigin, signalSet, aPayload, aType) {
 
     //  deal with possibility that origin IS an array
     /* eslint-disable no-extra-parens */
-    if ((TP.isArray(anOrigin) && !anOrigin.isOriginSet()) ||
+    if ((TP.isArray(anOrigin) && !anOrigin.useAsCollection()) ||
         (!TP.isArray(anOrigin))) {
     /* eslint-enable no-extra-parens */
 
@@ -6094,6 +6076,79 @@ function(anOrigin, aSignal, aPayload, aType) {
     //  ---
     //  Bubbling phase...controllers
     //  ---
+
+    //  Restore the "entry" origin to whatever value we captured. This avoids
+    //  any issues due to notifications revolving the origin for signaling.
+    sig.setOrigin(origin);
+
+    TP.sig.SignalMap.notifyControllers(sig);
+
+    return sig;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('CONTROLLER_FIRING',
+function(anOrigin, aSignal, aPayload, aType) {
+
+    /**
+     * @method CONTROLLER_FIRING
+     * @summary Fires signals across the controller stack only.
+     * @description The controller stack exists outside the DOM. This policy
+     *     is suitable for firing signals which have no DOM implications. The
+     *     lack of any check for DOM-based observers/responders is what makes
+     *     this policy unique as well as more efficient for application signals.
+     * @param {Object} anOrigin The originator of the signal.
+     * @param {String|TP.sig.Signal} aSignal The signal to fire.
+     * @param {Object} aPayload Optional argument object.
+     * @param {String|TP.sig.Signal} aType A default type to use when the signal
+     *     type itself isn't found and a new signal subtype must be created.
+     *     Defaults to TP.sig.Signal.
+     * @returns {TP.sig.Signal|undefined} The signal.
+     */
+
+    var sig,
+        origin;
+
+    if (TP.notValid(aSignal)) {
+        return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
+    }
+
+    //  Must be able to create a signal instance or no point in continuing.
+    sig = TP.sig.SignalMap.$getSignalInstance(aSignal, aPayload, aType);
+    if (!TP.isKindOf(sig, TP.sig.Signal)) {
+        return;
+    }
+
+    //  Update any newly created signal to have the proper origin.
+    if (TP.notValid(sig.getOrigin())) {
+        sig.setOrigin(anOrigin);
+    }
+
+    //  Capture initial target and origin data. We use these to ensure we
+    //  message controllers properly during both capturing and bubbling.
+    origin = sig.getOrigin();
+
+    //  ---
+    //  Capturing phase...controllers
+    //  ---
+
+    //  set the phase to capturing to get started
+    sig.setPhase(TP.CAPTURING);
+
+    TP.sig.SignalMap.notifyControllers(sig);
+
+    //  After processing make sure we should continue with the next phase.
+    if (sig.shouldStop() || sig.shouldStopImmediately()) {
+        return;
+    }
+
+    //  ---
+    //  Bubbling phase...controllers
+    //  ---
+
+    //  we're bubbling... we're bubbling...
+    sig.setPhase(TP.BUBBLING);
 
     //  Restore the "entry" origin to whatever value we captured. This avoids
     //  any issues due to notifications revolving the origin for signaling.
@@ -6950,13 +7005,13 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (!TP.isArray(origins = anOrigin)) {
         origins = TP.ac(anOrigin);
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     //  NB: Note the direct comparison to false here - this is by design if the
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
-    if (origins.isOriginSet() === false) {
+    if (origins.useAsCollection() === false) {
         return this;
     }
 
@@ -7003,7 +7058,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (!TP.isArray(typenames = aSignal)) {
         typenames = TP.ac(aSignal);
-        typenames.isOriginSet(true);
+        typenames.useAsCollection(true);
     }
 
     len = typenames.getSize();
@@ -7128,7 +7183,7 @@ TP.sig.SignalMap.$invokePolicy = function(origins, signals, handler, policy) {
 
     //  deal with possibility that origin IS an array
     /* eslint-disable no-extra-parens */
-    if ((TP.isArray(origins) && !origins.isOriginSet()) ||
+    if ((TP.isArray(origins) && !origins.useAsCollection()) ||
         !TP.isArray(origins)) {
     /* eslint-enable no-extra-parens */
         //  only one origin
@@ -7205,13 +7260,13 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (!TP.isArray(origins = anOrigin)) {
         origins = TP.ac(anOrigin);
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     //  NB: Note the direct comparison to false here - this is by design if the
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
-    if (origins.isOriginSet() === false) {
+    if (origins.useAsCollection() === false) {
         return this;
     }
 
@@ -7398,13 +7453,13 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
 
     if (!TP.isArray(origins = anOrigin)) {
         origins = TP.ac(anOrigin);
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     //  NB: Note the direct comparison to false here - this is by design if the
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
-    if (origins.isOriginSet() === false) {
+    if (origins.useAsCollection() === false) {
         return this;
     }
 
@@ -7555,13 +7610,13 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
 
     if (!TP.isArray(origins = anOrigin)) {
         origins = TP.ac(anOrigin);
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     //  NB: Note the direct comparison to false here - this is by design if the
     //  creator of an Array which is being observed has explicitly set this to
     //  false.
-    if (origins.isOriginSet() === false) {
+    if (origins.useAsCollection() === false) {
         return this;
     }
 
@@ -7596,7 +7651,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
 
     if (!TP.isArray(typenames = aSignal)) {
         typenames = TP.ac(aSignal);
-        typenames.isOriginSet(true);
+        typenames.useAsCollection(true);
     }
 
     len = typenames.getSize();
@@ -7885,7 +7940,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
         if (loggable) {
             //  compute an origin string
             if (anOrigin) {
-                if (TP.isArray(anOrigin) && anOrigin.isOriginSet()) {
+                if (TP.isArray(anOrigin) && anOrigin.useAsCollection()) {
                     if (TP.$$VERBOSE) {
                         orgstr = '[' + anOrigin.collect(
                                     function(item) {

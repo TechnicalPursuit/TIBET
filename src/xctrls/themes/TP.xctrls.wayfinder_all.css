@@ -1,0 +1,21 @@
+/*
+    CSS styles common across 'xctrls:wayfinder' controls for any theme.
+*/
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* All themed 'xctrls:wayfinder' controls */
+*|*[data-theme] xctrls|wayfinder {
+
+    cursor: pointer;
+}
+
+/* All themed, non-disabled 'xctrls:wayfinder' controls */
+*|*[data-theme] xctrls|wayfinder:not([pclass|disabled]) {
+
+    background: transparent;
+
+    text-decoration: none;
+}

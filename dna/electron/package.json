@@ -9,10 +9,11 @@
         "marked": "^0.7.0",
         "marked-man": "^0.7.0",
         "minimist": "^1.2.5",
+        "showdown": "^1.9.1",
         "shelljs": "^0.8.4"
     },
     "devDependencies": {
-        "electron": "^13.0.1",
+        "electron": "^13.1.5",
         "electron-builder": "^22.9.1",
         "electron-notarize": "^1.0.0",
         "stylelint": "^13.13.1",

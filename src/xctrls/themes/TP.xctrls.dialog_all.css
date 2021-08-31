@@ -6,6 +6,7 @@
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
 
 /* All themed 'xctrls:dialog' controls */
 *|*[data-theme] xctrls|dialog {
@@ -35,13 +36,15 @@
     cursor: move;
 }
 
+*|*[data-theme] xctrls|dialog > xctrls|content > div[tibet|pelem="header"] svg|svg {
+    margin-left: 2px;
+
+    cursor: pointer;
+}
+
 /* The dialog body */
 *|*[data-theme] xctrls|dialog > xctrls|content > *[tibet|pelem="body"] {
-
-    top: 27px;
-    right: 0;
-    bottom: 9px;
-    left: 0;
+    flex: 1;
 
     margin: 2px;
     padding: 4px;
@@ -51,11 +54,6 @@
 
 /* The dialog footer */
 *|*[data-theme] xctrls|dialog > xctrls|content > *[tibet|pelem="footer"] {
-
-    right: 0;
-    bottom: 0;
-    left: 0;
-
     height: 8px;
 
     margin: 2px;

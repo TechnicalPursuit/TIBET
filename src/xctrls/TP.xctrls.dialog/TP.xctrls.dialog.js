@@ -84,6 +84,9 @@ TP.xctrls.dialog.Inst.defineAttribute('body',
 TP.xctrls.dialog.Inst.defineAttribute('header',
     TP.cpc('> xctrls|content > *[tibet|pelem="header"]', TP.hc('shouldCollapse', true)));
 
+TP.xctrls.dialog.Inst.defineAttribute('headerText',
+    TP.cpc('> xctrls|content > *[tibet|pelem="header"] > span.msg', TP.hc('shouldCollapse', true)));
+
 TP.xctrls.dialog.Inst.defineAttribute('contentElement',
     TP.cpc('> xctrls|content > *[tibet|pelem="body"] > tibet|group > xctrls|content',
         TP.hc('shouldCollapse', true)));
@@ -108,20 +111,13 @@ function() {
 
     var tpDoc,
 
-        curtainID,
-        curtainTPElem;
+        curtainID;
 
     tpDoc = this.getDocument();
 
     curtainID = this.getAttribute('curtainID');
-    if (TP.notEmpty(curtainID)) {
-        curtainTPElem = tpDoc.get('//*[@id="' + curtainID + '"]');
-        if (TP.isKindOf(curtainTPElem, TP.dom.ElementNode)) {
-            return curtainTPElem;
-        }
-    }
 
-    return TP.xctrls.curtain.getSystemCurtainFor(tpDoc);
+    return TP.xctrls.curtain.getCurtainById(tpDoc, curtainID);
 });
 
 //  ------------------------------------------------------------------------
@@ -162,27 +158,20 @@ function(beHidden) {
 
     var focusedTPElem;
 
-    //  If we're about to show, we need to tell the system that we're switching
-    //  focus contexts in an async fashion. Otherwise, it can't properly track
-    //  previously focused elements.
-    if (!beHidden) {
-        this.asyncActivatingFocusContext();
-    }
-
-    //  If we're hiding, toggle the curtain to be hidden as well. Note that
-    //  toggling the curtain to show is done in the 'dialog' primitive defined
-    //  below.
-    if (beHidden) {
-        this.toggleCurtain(beHidden);
-    }
-
     if (beHidden) {
         //  Blur any focused element that is enclosed within us.
         this.blurFocusedDescendantElement();
 
         this.ignoreKeybindingsDirectly();
 
+        this.toggleCurtain(beHidden);
+
     } else {
+
+        //  If we're about to show, we need to tell the system that we're
+        //  switching focus contexts in an async fashion. Otherwise, it can't
+        //  properly track previously focused elements.
+        this.asyncActivatingFocusContext();
 
         this.observeKeybindingsDirectly();
 
@@ -212,7 +201,7 @@ function(beHidden) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.dialog.Inst.defineMethod('refresh',
-function(shouldRender, shouldRefreshBindings) {
+function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
     /**
      * @method refresh
@@ -223,9 +212,15 @@ function(shouldRender, shouldRefreshBindings) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
-     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
-     *     bindings from the receiver down (in a 'sparse' fashion). If not
-     *     supplied, this parameter will default to true.
+     * @param {Boolean} [shouldRefreshBindings=true] Whether or not to refresh
+     *     data bindings from the receiver down (in a 'sparse' fashion).
+     * @param {TP.core.Hash} [localRefreshInfo] Information about a local-only
+     *     refresh that can be used to specifically target binds that occur only
+     *     *locally* on the receiver (i.e. where the receiver itself has the
+     *     'bind:*' attribute). Note that if this is supplied, that a *local
+     *     only* refresh will be performed and it will be the responsibility of
+     *     the caller to refresh any descendant bindings, scoped to the receiver
+     *     or not.
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
@@ -236,7 +231,9 @@ function(shouldRender, shouldRefreshBindings) {
     //  found with that content key.
     contentTPElem = this.get('contentElement');
 
-    return contentTPElem.refresh(shouldRender, shouldRefreshBindings);
+    return contentTPElem.refresh(shouldRender,
+                                    shouldRefreshBindings,
+                                    localRefreshInfo);
 });
 
 //  ------------------------------------------------------------------------
@@ -258,7 +255,7 @@ function(aContentObject, aRequest) {
 
     contentTPElem = this.get('contentElement');
 
-    return contentTPElem.setContent(aContentObject);
+    return contentTPElem.setContent(aContentObject, aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -273,7 +270,7 @@ function(aTitle) {
      * @returns {TP.xctrls.dialog} The receiver.
      */
 
-    this.get('header').setTextContent(aTitle);
+    this.get('headerText').setTextContent(aTitle);
 
     return this;
 });
@@ -317,9 +314,7 @@ function(info) {
      *          {String} [dialogTypeName] A String that should be a typename
      *          matching a particular subtype of TP.xctrls.dialog that the
      *          caller wants to use on the created dialog.
-     * @returns {Promise} A Promise to be used as necessary. Since this is an
-     *     alert(), this Promise's resolver Function will be called with no
-     *     return value.
+     * @returns {Promise} A Promise to be used as necessary.
      */
 
     var promise;
@@ -336,42 +331,172 @@ function(info) {
     promise = TP.extern.Promise.construct(
         function(resolver, rejector) {
 
-            var dialogID,
-                isModal,
-                template,
+            var displayHandler,
+                template;
 
-                win,
+            displayHandler = function(templateStr) {
+                var dialogID,
+                    isModal,
 
-                dialogTPElem,
+                    win,
 
-                title,
+                    dialogTPElem,
 
-                dialogElem,
+                    curtainID,
 
-                typeName,
+                    title,
 
-                docBody,
+                    dialogElem,
 
-                templateData,
+                    attrHash,
 
-                contentResource,
+                    typeName,
 
-                beforeShowCallback,
+                    docBody,
 
-                isShowing;
+                    templateData,
 
-            //  Default the dialog ID and whether we're displaying in a modal
-            //  fashion
-            dialogID = info.atIfInvalid('dialogID', 'systemDialog');
-            dialogID = dialogID.unquoted();
+                    contentResource,
 
-            isModal = info.atIfInvalid('isModal', true);
+                    beforeShowCallback,
+
+                    isShowing;
+
+                //  Default the dialog ID and whether we're displaying in a
+                //  modal fashion
+                dialogID = info.atIfInvalid('dialogID', 'systemDialog');
+                dialogID = dialogID.unquoted();
+
+                isModal = info.atIfInvalid('isModal', true);
+
+                win = TP.sys.uiwin(true);
+
+                //  Grab the dialog and create one if one isn't present.
+                dialogTPElem = TP.byId(dialogID, win);
+
+                //  If we couldn't find the dialog element and we're running the
+                //  Lama, then we can try to find it in the UIROOT window.
+                if (TP.notValid(dialogTPElem) && TP.sys.hasFeature('lama')) {
+                    win = TP.sys.getUIRoot();
+                    dialogTPElem = TP.byId(dialogID, win);
+                }
+
+                if (TP.notValid(dialogTPElem)) {
+
+                    //  Reset win to uiwin (not getUIRoot from lama-based
+                    //  search).
+                    win = TP.sys.uiwin(true);
+
+                    //  If the caller provided an attribute hash, then copy
+                    //  that. Otherwise, create a new one. We'll populate it
+                    //  with the 'id' and 'curtainID' below.
+                    if (TP.isValid(info.at('attrs'))) {
+                        attrHash = TP.copy(info.at('attrs'));
+                    } else {
+                        attrHash = TP.hc();
+                    }
+
+                    attrHash.atPut('id', dialogID);
+
+                    //  The caller might have provided the ID of the curtain
+                    //  we're supposed to use. Otherwise, we default to the
+                    //  shared system curtain.
+                    curtainID = TP.ifInvalid(info.at('curtainID'),
+                                                'systemCurtain');
+                    attrHash.atPut('curtainID', curtainID);
+
+                    //  Create a new 'xctrls:dialog' Element and set it's modal
+                    //  attribute if appropriate.
+                    dialogElem = TP.elem('<xctrls:dialog ' +
+                                            attrHash.asAttributeString() +
+                                            '/>');
+
+                    if (isModal) {
+                        TP.elementSetAttribute(dialogElem,
+                                                'modal',
+                                                'true',
+                                                true);
+                    }
+
+                    typeName = info.at('dialogTypeName');
+                    if (TP.notEmpty(typeName)) {
+                        TP.elementSetAttribute(
+                                dialogElem, 'tibet:tag', typeName, true);
+                    }
+
+                    //  Grab the TP.html.body of the window's document and
+                    //  insert the content before it's end tag.
+                    docBody = TP.wrap(win).getDocument().getBody();
+
+                    //  Note the assignment here to capture the TP version of
+                    //  the element that got inserted.
+                    dialogTPElem = docBody.insertContent(dialogElem,
+                                                            TP.BEFORE_END);
+                }
+
+                //  If a title was defined, then set the dialog's title to it.
+                //  Otherwise, clear the dialog's title (in case it's shared and
+                //  it had a title from it's previous user).
+                title = info.at('title');
+                if (TP.notEmpty(title)) {
+                    dialogTPElem.setTitle(title);
+                } else {
+                    dialogTPElem.setTitle('');
+                }
+
+                //  Grab any template data and transform the supplied
+                //  templateStr with
+                //  it.
+                templateData = info.at('templateData');
+                if (TP.notEmpty(templateData)) {
+                    contentResource = templateStr.transform(templateData);
+                } else {
+                    contentResource = templateStr;
+                }
+
+                if (!TP.isString(templateStr) && TP.isURI(templateStr)) {
+                    //  Set that contentResource's result as the content of our
+                    //  dialog
+                    dialogTPElem.setContent(contentResource.get('result'),
+                                            info.at('setContentParams'));
+                } else {
+                    dialogTPElem.setContent(contentResource,
+                                            info.at('setContentParams'));
+                }
+
+                //  If a callback Function that should be executed before we
+                //  show the dialog was supplied, invoke it with the dialog
+                //  TP.dom.ElementNode as the only parameter.
+                beforeShowCallback = info.at('beforeShow');
+                if (TP.isCallable(beforeShowCallback)) {
+                    beforeShowCallback(dialogTPElem);
+                }
+
+                //  If the panel is modal, then we need to manage the curtain
+                //  appropriately.
+                if (dialogTPElem.getAttribute('modal') === 'true') {
+                    isShowing = dialogTPElem.getAttribute('hidden') === false;
+                    dialogTPElem.toggleCurtain(isShowing);
+                }
+
+                //  Show the dialog
+                dialogTPElem.setAttribute('hidden', false);
+
+                //  Call the Promise's resolver with the created
+                //  TP.xctrls.dialog object.
+                resolver(dialogTPElem);
+            };
 
             template = info.at('templateContent');
             if (TP.isString(template)) {
                 template = template.unquoted();
                 if (TP.isURIString(template)) {
                     template = TP.uc(template);
+                    //  This returns a Promise.
+                    return TP.elementFromURI(template).then(
+                            function(resultElement) {
+                                displayHandler(TP.str(resultElement));
+                            });
                 }
             } else if (TP.notValid(template)) {
                 template = info.at('templateURI');
@@ -379,96 +504,17 @@ function(info) {
                 if (!TP.isURI(template)) {
                     return TP.raise(TP, 'InvalidTemplate');
                 }
+
+                //  This returns a Promise.
+                return TP.elementFromURI(template).then(
+                        function(resultElement) {
+                            displayHandler(TP.str(resultElement));
+                        });
             }
 
-            win = TP.sys.uiwin(true);
-
-            //  Grab the dialog and create one if one isn't present.
-            dialogTPElem = TP.byId(dialogID, win);
-
-            //  If we couldn't find the dialog element and we're running the
-            //  Lama, then we can try to find it in the UIROOT window.
-            if (TP.notValid(dialogTPElem) && TP.sys.hasFeature('lama')) {
-                win = TP.sys.getUIRoot();
-                dialogTPElem = TP.byId(dialogID, win);
-            }
-
-            if (TP.notValid(dialogTPElem)) {
-
-                //  Create a new 'xctrls:dialog' Element and set it's modal
-                //  attribute if appropriate.
-                dialogElem = TP.elem(
-                                '<xctrls:dialog id="' + dialogID + '"' +
-                                ' curtainID="systemCurtain"/>');
-                if (isModal) {
-                    TP.elementSetAttribute(dialogElem, 'modal', 'true', true);
-                }
-
-                typeName = info.at('dialogTypeName');
-                if (TP.notEmpty(typeName)) {
-                    TP.elementSetAttribute(
-                            dialogElem, 'tibet:tag', typeName, true);
-                }
-
-                //  Grab the TP.html.body of the window's document and insert
-                //  the content before it's end tag.
-                docBody = TP.wrap(win).getDocument().getBody();
-
-                //  Note the assignment here to capture the TP version of the
-                //  element that got inserted.
-                dialogTPElem = docBody.insertContent(dialogElem, TP.BEFORE_END);
-            }
-
-            //  If a title was defined, then set the dialog's title to it.
-            //  Otherwise, clear the dialog's title (in case it's shared and it
-            //  had a title from it's previous user).
-            title = info.at('title');
-            if (TP.notEmpty(title)) {
-                dialogTPElem.setTitle(title);
-            } else {
-                dialogTPElem.setTitle('');
-            }
-
-            //  Grab any template data and transform the supplied template with
-            //  it.
-            templateData = info.at('templateData');
-            if (TP.notEmpty(templateData)) {
-                contentResource = template.transform(templateData);
-            } else {
-                contentResource = template;
-            }
-
-            if (!TP.isString(template) && TP.isURI(template)) {
-                //  Set that contentResource's result as the content of our
-                //  dialog
-                dialogTPElem.setContent(contentResource.get('result'),
-                                        info.at('setContentParams'));
-            } else {
-                dialogTPElem.setContent(contentResource,
-                                        info.at('setContentParams'));
-            }
-
-            //  If a callback Function that should be executed before we show
-            //  the dialog was supplied, invoke it with the dialog
-            //  TP.dom.ElementNode as the only parameter.
-            beforeShowCallback = info.at('beforeShow');
-            if (TP.isCallable(beforeShowCallback)) {
-                beforeShowCallback(dialogTPElem);
-            }
-
-            //  If the panel is modal, then we need to manage the curtain
-            //  appropriately.
-            if (dialogTPElem.getAttribute('modal') === 'true') {
-                isShowing = dialogTPElem.getAttribute('hidden') === false;
-                dialogTPElem.toggleCurtain(isShowing);
-            }
-
-            //  Show the dialog
-            dialogTPElem.setAttribute('hidden', false);
-
-            //  Call the Promise's resolver with the created
-            //  TP.xctrls.dialog object.
-            resolver(dialogTPElem);
+            //  A URI wasn't supplied, so there must've been a String in the
+            //  templateContent.
+            displayHandler(template);
         });
 
     return promise;
@@ -785,7 +831,7 @@ function(aQuestion, aDefaultAnswer, info) {
 
                 answerPromise;
 
-            inputField = TP.byCSSPath(' .dialogContent input[type="text"]',
+            inputField = TP.byCSSPath(' .dialogPrompt',
                                         dialogTPElem,
                                         true);
 
@@ -984,7 +1030,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
     }
 
     //  Make a node out of the built HTML - we'll inject this into the
-    //  'choiceContent' div below.
+    //  'dialogChoices' div below.
     choicesNode = TP.xhtmlnode(str);
 
     //  Call the TP.dialog() method with that data and specifying that the panel
@@ -1004,7 +1050,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
     return promise.then(
         function(dialogTPElem) {
 
-            var choiceContent,
+            var dialogChoices,
 
                 inputField,
                 openField,
@@ -1013,9 +1059,9 @@ function(aQuestion, choices, aDefaultAnswer, info) {
 
                 answerPromise;
 
-            //  Grab the choiceContent and inject the node that we built above.
-            choiceContent = TP.byCSSPath(' .choiceContent', dialogTPElem, true);
-            choiceContent.setContent(choicesNode);
+            //  Grab the dialogChoices and inject the node that we built above.
+            dialogChoices = TP.byCSSPath(' .dialogChoices', dialogTPElem, true);
+            dialogChoices.setContent(choicesNode);
 
             //  Grab the input field (which won't be a text field here - this is
             //  either the select or the group of checkboxes or radio buttons).

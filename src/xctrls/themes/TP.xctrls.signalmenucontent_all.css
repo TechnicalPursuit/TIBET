@@ -1,0 +1,31 @@
+/*
+    CSS styles common across 'xctrls:signalmenucontent' controls for any theme.
+*/
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+/* All themed 'xctrls:signalmenucontent' controls */
+*|*[data-theme] xctrls|signalmenucontent {
+
+    z-index: var(--tibet-MENU-TIER);
+}
+
+*|*[data-theme] xctrls|signalmenucontent > xctrls|menu .header {
+
+    display: none;
+}
+
+*|*[data-theme] xctrls|signalmenucontent > xctrls|menu .body xctrls|content {
+
+    height: 100%;
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+*|*[data-theme] xctrls|signalmenucontent > xctrls|menu .footer {
+
+    display: none;
+}

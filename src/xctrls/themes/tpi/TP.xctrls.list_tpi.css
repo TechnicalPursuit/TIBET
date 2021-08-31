@@ -2,7 +2,7 @@
     CSS styles for 'xctrls:list' controls for the 'tpi' theme.
 */
 
-@import url("~xctrls_src/themes/TP.xctrls.list_all.css");
+@import url("~lib_src/xctrls/themes/TP.xctrls.list_all.css");
 
 @namespace url("http://www.w3.org/1999/xhtml");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
@@ -15,26 +15,31 @@
     border-width: var(--xctrls-list-border-width);
     border-style: var(--xctrls-list-border-style);
     border-radius: var(--xctrls-list-border-radius);
+    border-color: var(--xctrls-list-border-color-normal);
 }
 
 /* Hovering over the list */
 *|*[data-theme~="tpi"] xctrls|list:hover {
 
+    border-color: var(--xctrls-list-border-color-hover);
 }
 
 /* Focusing on the list */
 *|*[data-theme~="tpi"] xctrls|list[pclass|focus] {
 
+    border-color: var(--xctrls-list-border-color-focus);
 }
 
 /* Clicking down on the list */
 *|*[data-theme~="tpi"] xctrls|list[pclass|active] {
 
+    border-color: var(--xctrls-list-border-color-active);
 }
 
 /* The list is disabled */
 *|*[data-theme~="tpi"] xctrls|list[pclass|disabled] {
 
+    border-color: var(--xctrls-list-border-color-disabled);
 }
 
 *|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] {
@@ -52,10 +57,31 @@
     border-left: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-light);
     border-right: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-normal);
     border-bottom: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-normal);
+    background-color: var(--xctrls-listitem-background-color-normal);
+}
+
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem:hover {
+
+    border-right: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-hover);
+    border-bottom: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-hover);
 }
 
 *|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|focus] {
 
+    border-right: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-focus);
+    border-bottom: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-focus);
+}
+
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|active] {
+
+    border-right: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-active);
+    border-bottom: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-active);
+}
+
+*|*[data-theme~="tpi"] xctrls|list xctrls|content[tibet|pelem="choices"] > xctrls|textitem[pclass|disabled] {
+
+    border-right: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-disabled);
+    border-bottom: var(--xctrls-listitem-border-width) var(--xctrls-listitem-border-style) var(--xctrls-listitem-border-color-disabled);
 }
 
 /* The list label */

@@ -39,6 +39,15 @@ TP.lama.Element.defineAttribute('styleURI', TP.NO_RESULT);
 TP.lama.Element.Type.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.lama.Element.Type.defineMethod('isResponderFor',
+function(aSignal, aNode) {
+    return true;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance methods
 //  ------------------------------------------------------------------------
 

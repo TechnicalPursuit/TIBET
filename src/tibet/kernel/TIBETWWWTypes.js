@@ -2415,6 +2415,41 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.w3.Xmlns.Type.defineMethod('isNativeElement',
+function(anElement) {
+
+    /**
+     * @method isNativeElement
+     * @summary Returns true if the namespace URI of the supplied element is
+     *     natively supported on the current browser. Note that the result of
+     *     this call is browser-specific.
+     * @description Note that this method will return true if the element is an
+     *     element that is natively supported by the browser even if it has a
+     *     'tibet:tag' attribute, which usually means it is a standin for a
+     *     custom element (i.e. an XHTML 'span' with a 'tibet:tag' attribute of
+     *     'foo:mytag' will still return true).
+     * @param {Element} anElement The element to check the namespace on.
+     * @exception TP.sig.InvalidElement
+     * @returns {Boolean} True if the element is a native element according to
+     *     its namespace.
+     */
+
+    var ns;
+
+    if (TP.notValid(anElement)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    if (TP.notEmpty(ns = anElement.namespaceURI) &&
+        TP.w3.Xmlns.isNativeNS(ns)) {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.w3.Xmlns.Type.defineMethod('isNativeNS',
 function(anNSURI) {
 

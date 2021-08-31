@@ -203,7 +203,7 @@ With TIBET cloned, initialized, linked, and built you're ready to rock.
 
 ### TIBET CLI / Server
 
-The TIBET CLI, TIBET Data Server (TDS), and TIBET Workflow System (TWS) are fully-supported on supported NodeJS platforms including Windows, Mac OS, and common Linux variants.
+The TIBET CLI, TIBET Data Server (TDS), and TIBET Workflow System (TWS) run on supported NodeJS platforms including Windows, Mac OS, and common Linux variants.
 
 
 ### TIBET Client / Lama

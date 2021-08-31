@@ -1,0 +1,98 @@
+/*
+    CSS styles for the 'xctrls:menuitem' control.
+*/
+
+@import url("~lib_src/xctrls/themes/TP.xctrls.menuitem_all.css");
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace svg url("http://www.w3.org/2000/svg");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The menuitem */
+*|*[data-theme~="tpi"] xctrls|menuitem {
+
+    background-color: var(--xctrls-menuitem-background-color-normal);
+}
+
+/* Hovering over the menuitem */
+*|*[data-theme~="tpi"] xctrls|menuitem:hover {
+
+    background-color: var(--xctrls-menuitem-background-color-hover);
+}
+
+/* Focusing on the menuitem */
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|focus] {
+
+    background-color: var(--xctrls-menuitem-background-color-focus);
+}
+
+/* Clicking down on the menuitem */
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|active] {
+
+    background-color: var(--xctrls-menuitem-background-color-active);
+}
+
+/* The menuitem is disabled */
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|disabled] {
+
+    background-color: var(--xctrls-menuitem-background-color-disabled);
+}
+
+/* The menuitem is selected */
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|selected] {
+
+    background-color: var(--xctrls-menuitem-background-color-selected);
+}
+
+/* The menuitem label */
+*|*[data-theme~="tpi"] xctrls|menuitem > xctrls|label {
+
+    font-family: var(--xctrls-menuitem-font-family);
+    color: var(--xctrls-menuitem-font-color-normal);
+}
+
+/* Hovering over the menuitem, label must highlight */
+*|*[data-theme~="tpi"] xctrls|menuitem:hover > xctrls|label {
+
+    color: var(--xctrls-menuitem-font-color-hover);
+}
+
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|selected]:hover > xctrls|label {
+
+    color: var(--xctrls-menuitem-font-color-normal);
+}
+
+/* Focusing on the menuitem, label must highlight */
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|focus] {
+
+}
+
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|focus] > xctrls|label {
+
+    color: var(--xctrls-menuitem-font-color-focus);
+}
+
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|focus][pclass|selected] > xctrls|label {
+
+}
+
+/* Clicking down on the menuitem, label must highlight */
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|active] {
+
+}
+
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|active] > xctrls|label {
+
+    color: var(--xctrls-menuitem-font-color-active);
+}
+
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|active][pclass|selected] > xctrls|label {
+
+}
+
+/* The menuitem is disabled, so is the label */
+*|*[data-theme~="tpi"] xctrls|menuitem[pclass|disabled] > xctrls|label {
+
+    color: var(--xctrls-menuitem-font-color-disabled);
+}

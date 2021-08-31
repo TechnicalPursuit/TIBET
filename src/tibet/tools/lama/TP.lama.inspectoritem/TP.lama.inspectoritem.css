@@ -26,9 +26,12 @@ lama|inspectoritem {
     flex-basis: calc(var(--lama-inspector-item-flex-basis) * var(--lama-inspector-width));
 }
 
-lama|inspectoritem > div {
+lama|inspectoritem > *|* {
 
     position: absolute;
+}
+
+lama|inspectoritem > div {
 
     top: 0;
     right: 0;

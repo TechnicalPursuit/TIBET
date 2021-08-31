@@ -28,9 +28,10 @@ TP.html.Element.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.html.Element.Type.set('booleanAttrs',
-        TP.ac('translate', 'itemScope', 'hidden', 'draggable',
-                'isContentEditable', 'spellcheck',
-                'commandHidden', 'commandDisabled', 'commandChecked'));
+        TP.html.Element.Type.get('booleanAttrs').concat(
+            TP.ac('translate', 'itemScope', 'hidden', 'draggable',
+                    'isContentEditable', 'spellcheck',
+                    'commandHidden', 'commandDisabled', 'commandChecked')));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -56,7 +57,57 @@ function(resource, mimeType, fallback) {
      * @returns {TP.uri.URI} The computed resource URI.
      */
 
+    //  These are natively supported elements - they don't have templates,
+    //  styles or theming styles.
+
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.Element.Type.defineMethod('isResponderFor',
+function(aSignal, aNode) {
+
+    /**
+     * @method isResponderFor
+     * @summary Returns true if the type in question should be considered a
+     *     responder for the specific node/signal pair provided.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    var signame;
+
+    signame = aSignal.getSignalName();
+
+    //  NOTE: it's not useful to ignore Enabled/Disabled calls when disabled...
+    //  or you'll always stay that way ;)
+    if (TP.regex.UI_ABLED_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    //  Check the disabled state... if we're disabled all other signals should
+    //  effectively be ignored.
+    if (TP.elementHasAttribute(aNode, 'disabled', true)) {
+        return false;
+    }
+
+    if (TP.regex.UI_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    if (TP.regex.DOM_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    if (TP.regex.CHANGE_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------

@@ -94,6 +94,7 @@ function(anEvent) {
         case 'resize':
         case 'scroll':
         case 'select':
+        case 'selectionchange':
         case 'transitionend':
         case 'unload':
 
@@ -1518,6 +1519,34 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$$handleSelect',
+function(anEvent) {
+
+    /**
+     * @method $$handleSelect
+     * @summary Document-level select handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$handleSelectionChange',
+function(anEvent) {
+
+    /**
+     * @method $$handleAnimationEnd
+     * @summary Document-level selectionchange handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$$handleSubmit',
 function(anEvent) {
 
@@ -1654,7 +1683,7 @@ function(anElement, invalidateIdCache) {
         eventIdArray.reverse();
 
         //  Make sure to configure it as an origin set.
-        eventIdArray.isOriginSet(true);
+        eventIdArray.useAsCollection(true);
 
         //  Cache the eventIdArray on anElement
         anElement[TP.EVENT_IDS] = eventIdArray;
@@ -1768,7 +1797,7 @@ function(anElement, anEvent) {
     originArray.reverse();
 
     //  Make sure to configure it as an origin set.
-    originArray.isOriginSet(true);
+    originArray.useAsCollection(true);
 
     return originArray;
 });

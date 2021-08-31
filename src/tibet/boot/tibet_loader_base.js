@@ -1540,6 +1540,21 @@ if (TP.sys.$httpBased) {
 
 //  ----------------------------------------------------------------------------
 
+TP.sys.isHeadless = function() {
+
+    /**
+     * @method isHeadless
+     * @summary Returns true if the TIBET codebase was loaded in headless
+     *     environment such as puppeteer.
+     * @returns {Boolean} Whether or not the TIBET codebase is running in a
+     *     headless environment.
+     */
+
+    return TP.sys.cfg('boot.context') === 'headless';
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.sys.isHTTPBased = function() {
 
     /**
@@ -6082,7 +6097,7 @@ TP.boot.Log.prototype.report = function(entry) {
             });
     }
 
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         reporterName = 'headless';
     } else {
         reporterName = TP.sys.cfg('boot.reporter');
@@ -7815,7 +7830,7 @@ TP.boot.$getAppHead = function() {
     //  Headless launches are unique in that they leverage a page that resides
     //  in the library (usually under node_modules) and therefore one that will
     //  not expose a tibet_pub reference. We have to add that in manually.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
 
         index = path.indexOf(TP.sys.cfg('boot.libtest', '/etc/headless'));
         if (index !== -1) {
@@ -7943,7 +7958,7 @@ TP.boot.$getAppRoot = function() {
     //  Headless launches are unique in that they leverage a page that resides
     //  in the library (usually under node_modules) and therefore one that will
     //  not expose a tibet_pub reference. We have to add that in manually.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
 
         //  First look for help on the URL. TIBET's headless launch script is
         //  often invoked via CLI calls that augment the URI with app_root.
@@ -9450,7 +9465,8 @@ isECMAModule) {
         //  first, check to see if we already have a 'script' node with a
         //  'source' attribute equal to scriptUrl. If we do, that means we've
         //  already brought this code in once and need to remove the old node
-        oldScript = scriptHead.querySelector('*[source="' + scriptUrl + '"]');
+        oldScript = scriptHead.querySelector(
+                                ':scope *[source="' + scriptUrl + '"]');
         if (oldScript) {
             oldScript.parentNode.removeChild(oldScript);
 
@@ -12305,7 +12321,7 @@ TP.boot.shouldCacheFiles = function() {
 
     //  If we're headless, even if we've been launched over HTTP, then we don't
     //  cache any files.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         return false;
     }
 

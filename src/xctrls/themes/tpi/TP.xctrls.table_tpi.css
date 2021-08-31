@@ -2,7 +2,7 @@
     CSS styles for 'xctrls:table' controls for the 'tpi' theme.
 */
 
-@import url("~xctrls_src/themes/TP.xctrls.table_all.css");
+@import url("~lib_src/xctrls/themes/TP.xctrls.table_all.css");
 
 @namespace url("http://www.w3.org/1999/xhtml");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
@@ -15,26 +15,31 @@
     border-width: var(--xctrls-table-border-width);
     border-style: var(--xctrls-table-border-style);
     border-radius: var(--xctrls-table-border-radius);
+    border-color: var(--xctrls-table-border-color-normal);
 }
 
 /* Hovering over the table */
 *|*[data-theme~="tpi"] xctrls|table:hover {
 
+    border-color: var(--xctrls-table-border-color-hover);
 }
 
 /* Focusing on the table */
 *|*[data-theme~="tpi"] xctrls|table[pclass|focus] {
 
+    border-color: var(--xctrls-table-border-color-focus);
 }
 
 /* Clicking down on the table */
 *|*[data-theme~="tpi"] xctrls|table[pclass|active] {
 
+    border-color: var(--xctrls-table-border-color-active);
 }
 
 /* The table is disabled */
 *|*[data-theme~="tpi"] xctrls|table[pclass|disabled] {
 
+    border-color: var(--xctrls-table-border-color-disabled);
 }
 
 *|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] {
@@ -51,7 +56,36 @@
      * shows through to show the cell borders
      */
 
-    background-color: var(--xctrls-tableitem-border-color-normal);
+    background-color: var(--xctrls-tableitem-background-color-normal);
+
+    border-top: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-light);
+    border-left: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-light);
+    border-right: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-normal);
+    border-bottom: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-normal);
+}
+
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row:hover {
+
+    border-right: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-hover);
+    border-bottom: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-hover);
+}
+
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[pclass|focus] {
+
+    border-right: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-focus);
+    border-bottom: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-focus);
+}
+
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[pclass|active] {
+
+    border-right: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-active);
+    border-bottom: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-active);
+}
+
+*|*[data-theme~="tpi"] xctrls|table xctrls|content[tibet|pelem="choices"] > .row[pclass|disabled] {
+
+    border-right: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-disabled);
+    border-bottom: var(--xctrls-tableitem-border-width) var(--xctrls-tableitem-border-style) var(--xctrls-tableitem-border-color-disabled);
 }
 
 /* Hovering over the table, label must highlight */

@@ -23,7 +23,9 @@ TP.html.Attrs.defineSubtype('img');
 
 TP.html.img.Type.set('uriAttrs', TP.ac('src', 'longdesc', 'usemap'));
 
-TP.html.img.Type.set('booleanAttrs', TP.ac('isMap', 'complete'));
+TP.html.img.Type.set('booleanAttrs',
+        TP.html.img.Type.get('booleanAttrs').concat(
+            TP.ac('isMap', 'complete')));
 
 TP.html.img.addTraits(TP.dom.EmptyElementNode);
 

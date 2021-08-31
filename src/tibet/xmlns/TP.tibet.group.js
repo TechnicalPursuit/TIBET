@@ -68,6 +68,41 @@ function(wantsDeep, wantsCompiled, wantsDisabled) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.tibet.group.Type.defineMethod('isResponderFor',
+function(aSignal, aNode) {
+
+    /**
+     * @method isResponderFor
+     * @summary Returns true if the type in question should be considered a
+     *     responder for the specific node/signal pair provided.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    var signame;
+
+    signame = aSignal.getSignalName();
+
+    if (TP.regex.UI_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    if (TP.regex.DOM_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    if (TP.regex.CHANGE_SIGNAL.test(signame)) {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
@@ -546,7 +581,8 @@ function() {
 
         results;
 
-    //  No query? Use the standard 'all child elements'
+    //  No query? Use the standard 'all descendant elements except those under a
+    //  nested group'.
     if (TP.isEmpty(query = this.getAttribute('query'))) {
         queryWasDefined = false;
 
@@ -590,7 +626,7 @@ function() {
                     return TP.isKindOf(aTPNode, TP.dom.ElementNode);
                 });
 
-    //  This will wrap all of the elements found in the results
+    //  This will wrap all of the elements found in the results.
     results = TP.wrap(results);
 
     return results;
@@ -603,7 +639,7 @@ function() {
 
     /**
      * @method getMemberGroups
-     * @summary Returns the members of the group that are themselves groups
+     * @summary Returns the members of the group that are themselves groups.
      * @returns {TP.tibet.group[]} The Array of member 'tibet:group'
      *     TP.dom.ElementNodes.
      */

@@ -1133,6 +1133,9 @@
     TP.sys.setcfg('path.app_tsh', '~app_inf/tsh');
     TP.sys.setcfg('path.lib_tsh', '~lib_lib/tsh');
 
+    TP.sys.setcfg('path.app_templates', '~app_src/templates');
+    TP.sys.setcfg('path.lib_templates', '~lib/templates');
+
     TP.sys.setcfg('path.app_test', '~app/test');
     TP.sys.setcfg('path.lib_test', '~lib/test');
 
@@ -1543,6 +1546,9 @@
 
     //  should signals sent prior to signaling system installation be logged?
     TP.sys.setcfg('log.load_signals', false);
+
+    //  should we log warnings about isResponderFor misses during chain lookup?
+    TP.sys.setcfg('log.missing_isresponderfor', true);
 
     //  Turns on/off warnings regarding detached nodes in DOM traversal
     //  routines. The default is true since this implies a true bug.
@@ -2166,6 +2172,34 @@
     //  be provided as virtual paths or wildcard expressions to match since
     //  they're shared between client and server.
     TP.sys.setcfg('uri.watch.exclude', ['~app/TIBET-INF/tibet', '*.bak$']);
+
+    //  ---
+    //  Puppeteer
+    //  ---
+
+    TP.sys.setcfg('puppeteer.chromium_args', [
+                    '--disable-web-security',
+                    '--allow-file-access-from-files',
+                    '--no-sandbox']);
+
+    TP.sys.setcfg('puppeteer.debug_userdata_path', '~lib/.tshDebugPrefs');
+
+    //  NB: These are quoted JSON values as that's what the Devtools Preferences
+    //  system uses.
+    /* eslint-disable quote-props */
+    TP.sys.setcfg('puppeteer.devtools_preferences', {
+                    'currentDockState':
+                        '"undocked"',
+                    'panel-selectedTag':
+                        '"sources"',
+                    'Inspector.drawerSplitViewState':
+                        '{"horizontal":{"size":500,"showMode":"Both"}}',
+                    'Inspector.splitViewState':
+                        '{"vertical":{"size":775},"horizontal":{"size":450}}',
+                    'sourcesPanelNavigatorSplitViewState':
+                        '{"vertical":{"size":300,"showMode":"OnlyMain"}}'
+    });
+    /* eslint-enable quote-props */
 
     //  ---
     //  CouchDB

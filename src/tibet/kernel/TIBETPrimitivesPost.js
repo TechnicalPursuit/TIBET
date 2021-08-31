@@ -3191,6 +3191,8 @@ function(anObject, includeNonenumerables, includePrototypeProps) {
     if (!includeNonenumerables && !includePrototypeProps) {
 
         //  native Map and Set instances can be processed by native Array.from.
+        //  Note that we don't invoke Array's version of this to avoid getting
+        //  'INTERNAL_SLOT' keys.
         if (TP.canInvoke(anObject, 'entries') && !TP.isArray(anObject)) {
             return Array.ECMAfrom(anObject);
         }
@@ -3751,7 +3753,9 @@ function(anObject, verbose) {
     //  got to check Errors next... they freak out if handed to TP.isString().
     if (TP.isError(anObject)) {
         if (wantsVerbose) {
-            return TP.tname(anObject) + ' :: ' + TP.errorAsString(anObject);
+            return TP.tname(anObject) +
+                    ' :: ' +
+                    TP.errorAsString(anObject);
         } else {
             return TP.objectToString(anObject);
         }
@@ -5342,6 +5346,15 @@ function(anObject) {
         return null;
     }
 
+    if (TP.owns(anObject, TP.WRAPPER) && TP.isValid(anObject[TP.WRAPPER])) {
+        return anObject[TP.WRAPPER];
+    }
+
+    //  We never wrap POJOs.
+    if (TP.isPlainObject(anObject)) {
+        return anObject;
+    }
+
     //  The wrapped value of a Type is the Type (native or TIBET-made)
     if (TP.isType(anObject) || TP.isNamespace(anObject)) {
         return anObject;
@@ -5350,11 +5363,6 @@ function(anObject) {
     //  90% case or better is that we're trying to wrap an element node from
     //  the UI
     if (TP.isElement(anObject)) {
-        if (TP.isValid(anObject[TP.WRAPPER])) {
-            //  Make sure the wrapper has this node as its native node.
-            anObject[TP.WRAPPER].$set('node', anObject, false);
-            return anObject[TP.WRAPPER];
-        }
         return TP.dom.ElementNode.construct(anObject);
     } else if (TP.isDocument(anObject)) {
         return TP.dom.DocumentNode.construct(anObject);
@@ -5430,9 +5438,12 @@ function(anObject) {
      * @returns {Object} The result of collapsing the object.
      */
 
-    //  no valid source object means no work
-    if (TP.notValid(anObject)) {
-        return;
+    if (TP.notDefined(anObject)) {
+        return undefined;
+    }
+
+    if (TP.isNull(anObject)) {
+        return null;
     }
 
     if (TP.isString(anObject) ||

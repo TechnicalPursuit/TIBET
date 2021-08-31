@@ -1,0 +1,78 @@
+/*
+    CSS styles for 'xctrls:signalmenucontent' controls for the 'tpi' theme.
+*/
+
+@import url("~lib_src/xctrls/themes/TP.xctrls.signalmenucontent_all.css");
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The signalmenucontent's menu */
+*|*[data-theme~="tpi"] xctrls|signalmenucontent > xctrls|menu {
+
+    background-color: var(--xctrls-signalmenucontent-menu-background-color);
+
+    border-width: var(--xctrls-signalmenucontent-menu-border-width);
+    border-style: var(--xctrls-signalmenucontent-menu-border-style);
+    border-radius: var(--xctrls-signalmenucontent-menu-border-radius);
+    border-color: var(--xctrls-signalmenucontent-menu-border-color-normal);
+}
+
+*|*[data-theme~="tpi"] xctrls|signalmenucontent > xctrls|menu:hover {
+
+    border: solid 1px transparent;
+}
+
+*|*[data-theme~="tpi"] xctrls|signalmenucontent > xctrls|menu .body {
+
+    min-width: auto;
+
+    margin: var(--xctrls-signalmenucontent-menu-margin);
+
+    overflow: auto;
+}
+
+*|*[data-theme~="tpi"] xctrls|signalmenucontent > xctrls|menu .body xctrls|content {
+
+    line-height: var(--xctrls-signalmenucontent-menu-line-height);
+}
+
+*|*[data-theme~="tpi"] xctrls|signalmenucontent > xctrls|menu .body xctrls|content xctrls|textitem {
+
+    display: list-item;
+
+    font-family: var(--xctrls-signalmenucontent-textitem-font-family);
+    color: var(--xctrls-signalmenucontent-textitem-font-color-normal);
+
+    border: 0;
+    border-top: 1px solid transparent;
+    border-bottom-width: var(--xctrls-signalmenucontent-textitem-border-width);
+    border-bottom-style: var(--xctrls-signalmenucontent-textitem-border-style);
+    border-bottom-color: var(--xctrls-signalmenucontent-textitem-border-color-normal);
+
+    padding-left: var(--xctrls-signalmenucontent-textitem-padding);
+    padding-right: var(--xctrls-signalmenucontent-textitem-padding);
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+*|*[data-theme~="tpi"] xctrls|signalmenucontent > xctrls|menu .body xctrls|content xctrls|textitem:hover {
+
+    background-color: var(--xctrls-signalmenucontent-textitem-background-color-hover);
+    color: var(--xctrls-signalmenucontent-textitem-font-color-hover);
+
+    border-top-color: var(--xctrls-signalmenucontent-textitem-border-color-hover);
+    border-bottom-color: var(--xctrls-signalmenucontent-textitem-border-color-hover);
+}
+
+*|*[data-theme~="tpi"] xctrls|signalmenucontent > xctrls|menu .body xctrls|content xctrls|textitem:last-child:hover {
+
+    border-bottom-color: var(--xctrls-signalmenucontent-textitem-border-color-hover);
+}

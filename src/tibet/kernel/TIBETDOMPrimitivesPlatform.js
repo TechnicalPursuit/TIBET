@@ -299,12 +299,12 @@ TP.hc(
         /**
          * @method $documentCaptureACPAttrExpressions
          * @summary Captures any ACP expressions inside of attributes and adds a
-         *     new attribute, 'tibet:attrtemplateexprs', that has those
+         *     new attribute, 'tibet:attr-acp-exprs', that has those
          *     expressions captured.
          * @param {String} inputStr The markup String to convert attribute ACP
          *     expressions in.
          * @returns {String} A markup String that has attribute ACP expressions
-         *     captured into a 'tibet:attrtemplateexprs' attribute.
+         *     captured into a 'tibet:attr-acp-exprs' attribute.
          */
 
         var parser,
@@ -358,7 +358,7 @@ TP.hc(
             ownerElem = srcAttr.ownerElement;
 
             //  Initially set the trackingAttr to null
-            trackingAttr = ownerElem.attributes['tibet:attrtemplateexprs'];
+            trackingAttr = ownerElem.attributes['tibet:attr-acp-exprs'];
 
             val = srcAttr.nodeValue;
 
@@ -374,15 +374,15 @@ TP.hc(
 
             val = val.quoted('"');
 
-            //  There was no existing tibet:attrtemplateexprs attribute - build
+            //  There was no existing tibet:attr-acp-exprs attribute - build
             //  one and set it's value.
             if (!TP.isAttributeNode(trackingAttr)) {
                 ownerElem.setAttributeNS(
                         TP.w3.Xmlns.TIBET,
-                        'tibet:attrtemplateexprs',
+                        'tibet:attr-acp-exprs',
                         '{' + srcAttr.name + ': ' + val + '}');
             } else {
-                //  Already have a tibet:attrtemplateexprs attribute - add to
+                //  Already have a tibet:attr-acp-exprs attribute - add to
                 //  it.
                 trackingAttr.nodeValue =
                     trackingAttr.nodeValue.slice(

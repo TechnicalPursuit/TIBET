@@ -308,8 +308,8 @@ function(aDocument, shouldFocusPrevious) {
         //  For headless systems, we just return here - otherwise we get
         //  multiple pops off of the stack below.
 
-        //  TODO: Investigate why this is the case.
-        if (TP.sys.cfg('boot.context') === 'headless') {
+        //  TODO: Investigate why this is necessary.
+        if (TP.sys.isHeadless()) {
             return;
         }
     }
@@ -4654,8 +4654,8 @@ function(anElement, preserveSpace) {
      *     method adjusts the CSS 'visibility' property of the supplied element.
      *     Otherwise, it adjusts both the 'display' and the visibility.
      * @param {HTMLElement} anElement The element to hide.
-     * @param {Boolean} preserveSpace Whether or not to 'preserve the space'
-     *     taken up by the element in its document. The default is false.
+     * @param {Boolean} [preserveSpace=false] Whether or not to 'preserve the
+     *     space' taken up by the element in its document.
      * @exception TP.sig.InvalidElement
      */
 
@@ -4812,9 +4812,15 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.notValid(computedStyle =
-                    TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
+    //  If the element isn't in a doc, or the doc isn't in a window, the
+    //  primitive below throws, we only care that it's clearly not displayed.
+    try {
+        computedStyle = TP.elementGetComputedStyleObj(anElement);
+        if (TP.notValid(computedStyle)) {
+            return false;
+        }
+    } catch (e) {
+        return false;
     }
 
     elemComputedDisplay = computedStyle.display;
@@ -4923,9 +4929,15 @@ function(anElement, partial, direction, wantsTransformed) {
     //  we're not checking for partial visibility (only whole visibility) then
     //  this element isn't visible.
 
-    if (TP.notValid(computedStyle =
-                    TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyleDeclaration');
+    //  If the element isn't in a doc, or the doc isn't in a window, the
+    //  primitive below throws, we only care that it's clearly not displayed.
+    try {
+        computedStyle = TP.elementGetComputedStyleObj(anElement);
+        if (TP.notValid(computedStyle)) {
+            return false;
+        }
+    } catch (e) {
+        return false;
     }
 
     //  Note the native check here for offsetParent rather than using our
@@ -8763,7 +8775,7 @@ function(aWindow) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
-    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'headless') {
+    if (TP.sys.cfg('log.hook') && !TP.sys.isHeadless()) {
         msg = 'Processing document loaded for: ' + TP.gid(aWindow) + '.';
         TP.boot.$stdout(msg, TP.DEBUG);
     }

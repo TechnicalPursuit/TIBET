@@ -79,8 +79,8 @@ function(aRequest) {
 
     url = TP.uc(imagePath);
     if (!TP.isURI(url)) {
-        //  TODO: Raise an exception
-        return;
+        TP.ifWarn() ?
+            TP.warn('Expected valid URI in src or name attribute: ' + imagePath) : 0;
     }
 
     //  If the image path points to an SVG, then we inline it.
@@ -90,12 +90,10 @@ function(aRequest) {
         if (TP.notValid(svgMarkup = resp.get('result'))) {
             TP.ifWarn() ?
                 TP.warn('Unable to load SVG image from URI: ' + imagePath) : 0;
-
-            return true;
+        } else {
+            TP.nodeSetContent(elem, svgMarkup);
         }
-
-        TP.nodeSetContent(elem, svgMarkup);
-    } else {
+    } else if (TP.isURI(url)) {
         //  Otherwise, we set the backgroundImage of our 'most specific' CSS to
         //  the location of the URL.
         TP.elementGetStyleObj(elem).backgroundImage = url.getLocation();

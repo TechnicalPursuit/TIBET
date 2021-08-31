@@ -599,7 +599,7 @@ function(aNode) {
      * @returns {TP.test.GUIDriver} The receiver.
      */
 
-    if (TP.sys.cfg('boot.context') !== 'headless') {
+    if (!TP.sys.isHeadless()) {
         return this.raise('TP.sig.UnsupportedOperation');
     }
 

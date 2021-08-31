@@ -86,7 +86,9 @@ TP.html.Attrs.defineSubtype('datalist');
 
 TP.html.Attrs.defineSubtype('fieldset');
 
-TP.html.fieldset.Type.set('booleanAttrs', TP.ac('disabled', 'willValidate'));
+TP.html.fieldset.Type.set('booleanAttrs',
+        TP.html.fieldset.Type.get('booleanAttrs').concat(
+            TP.ac('disabled', 'willValidate')));
 
 //  ========================================================================
 //  TP.html.form
@@ -142,7 +144,9 @@ TP.html.form.Type.defineConstant('NODE_TYPE_NAMES',
             'url', 'TP.html.inputUrl',
             'week', 'TP.html.inputWeek'));
 
-TP.html.form.Type.set('booleanAttrs', TP.ac('noValidate'));
+TP.html.form.Type.set('booleanAttrs',
+        TP.html.form.Type.get('booleanAttrs').concat(
+            TP.ac('noValidate')));
 
 TP.html.form.Type.set('uriAttrs', TP.ac('action'));
 
@@ -345,7 +349,8 @@ function() {
 TP.html.Attrs.defineSubtype('keygen');
 
 TP.html.keygen.Type.set('booleanAttrs',
-        TP.ac('autofocus', 'disabled', 'willValidate'));
+        TP.html.keygen.Type.get('booleanAttrs').concat(
+            TP.ac('autofocus', 'disabled', 'willValidate')));
 
 //  ========================================================================
 //  TP.html.label
@@ -373,7 +378,9 @@ TP.html.Attrs.defineSubtype('label');
 
 TP.html.Attrs.defineSubtype('optgroup');
 
-TP.html.optgroup.Type.set('booleanAttrs', TP.ac('disabled'));
+TP.html.optgroup.Type.set('booleanAttrs',
+        TP.html.optgroup.Type.get('booleanAttrs').concat(
+            TP.ac('disabled')));
 
 //  ========================================================================
 //  TP.html.option
@@ -393,7 +400,8 @@ TP.html.Attrs.defineSubtype('option');
 TP.html.option.addTraits(TP.dom.SelectableItemUIElementNode);
 
 TP.html.option.Type.set('booleanAttrs',
-            TP.ac('disabled', 'defaultSelected', 'selected'));
+        TP.html.option.Type.get('booleanAttrs').concat(
+            TP.ac('disabled', 'defaultSelected', 'selected')));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -667,7 +675,9 @@ function(aToggleValue) {
 
 TP.html.Attrs.defineSubtype('output');
 
-TP.html.output.Type.set('booleanAttrs', TP.ac('willValidate'));
+TP.html.output.Type.set('booleanAttrs',
+        TP.html.output.Type.get('booleanAttrs').concat(
+            TP.ac('willValidate')));
 
 //  ========================================================================
 //  TP.html.textUtilities
@@ -1253,9 +1263,10 @@ TP.html.input.Inst.resolveTraits(
 TP.html.input.Type.set('bidiAttrs', TP.ac('value'));
 
 TP.html.input.Type.set('booleanAttrs',
-        TP.ac('autofocus', 'defaultChecked', 'checked', 'disabled',
-                'formNoValidate', 'indeterminate', 'multiple',
-                'readOnly', 'required', 'willValidate'));
+        TP.html.input.Type.get('booleanAttrs').concat(
+            TP.ac('autofocus', 'defaultChecked', 'checked', 'disabled',
+                    'formNoValidate', 'indeterminate', 'multiple',
+                    'readOnly', 'required', 'willValidate')));
 
 TP.html.input.Type.set('uriAttrs', TP.ac('src', 'usemap'));
 
@@ -2945,7 +2956,9 @@ TP.html.select.addTraits(TP.dom.TogglingUIElementNode);
 //  ------------------------------------------------------------------------
 
 TP.html.select.Type.set('booleanAttrs',
-        TP.ac('autofocus', 'disabled', 'multiple', 'required', 'willValidate'));
+        TP.html.select.Type.get('booleanAttrs').concat(
+            TP.ac('autofocus', 'disabled', 'multiple', 'required',
+                    'willValidate')));
 
 TP.html.select.Type.set('bidiAttrs', TP.ac('value'));
 
@@ -3607,7 +3620,9 @@ TP.html.textarea.Inst.resolveTraits(
 TP.html.textarea.Type.set('bidiAttrs', TP.ac('value'));
 
 TP.html.textarea.Type.set('booleanAttrs',
-        TP.ac('autofocus', 'disabled', 'readOnly', 'required', 'willValidate'));
+        TP.html.textarea.Type.get('booleanAttrs').concat(
+            TP.ac('autofocus', 'disabled', 'readOnly', 'required',
+                    'willValidate')));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -3785,7 +3800,8 @@ function(aValue) {
 TP.html.Focused.defineSubtype('button');
 
 TP.html.button.Type.set('booleanAttrs',
-            TP.ac('autofocus', 'disabled', 'formNoValidate', 'willValidate'));
+        TP.html.button.Type.get('booleanAttrs').concat(
+            TP.ac('autofocus', 'disabled', 'formNoValidate', 'willValidate')));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

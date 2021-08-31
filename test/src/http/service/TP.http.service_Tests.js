@@ -101,7 +101,7 @@ function() {
                 //  If we're running in headless mode (we're probably testing),
                 //  then we need to rewrite the URL to have an HTTP resource and
                 //  reset it on the service element.
-                if (TP.sys.cfg('boot.context') === 'headless') {
+                if (TP.sys.isHeadless()) {
                     locStr = httpLoc + locStr;
                     TP.elementSetAttribute(serviceTPElem.getNativeNode(),
                                             'href',
@@ -325,7 +325,7 @@ function() {
                 //  If we're running in headless mode (we're probably testing),
                 //  then we need to rewrite the URL to have an HTTP resource and
                 //  reset it on the service element.
-                if (TP.sys.cfg('boot.context') === 'headless') {
+                if (TP.sys.isHeadless()) {
                     locStr = httpLoc + locStr;
                     TP.elementSetAttribute(serviceTPElem.getNativeNode(),
                                             'href',
@@ -438,7 +438,7 @@ function() {
                 //  If we're running in headless mode (we're probably testing),
                 //  then we need to rewrite the URL to have an HTTP resource and
                 //  reset it on the service element.
-                if (TP.sys.cfg('boot.context') === 'headless') {
+                if (TP.sys.isHeadless()) {
                     locStr = httpLoc + locStr;
                     TP.elementSetAttribute(serviceTPElem.getNativeNode(),
                                             'href',
@@ -775,7 +775,7 @@ function() {
                 //  If we're running in headless mode (we're probably testing),
                 //  then we need to rewrite the URL to have an HTTP resource and
                 //  reset it on the service element.
-                if (TP.sys.cfg('boot.context') === 'headless') {
+                if (TP.sys.isHeadless()) {
                     locStr = httpLoc + locStr;
                     TP.elementSetAttribute(serviceTPElem.getNativeNode(),
                                             'href',
@@ -1119,7 +1119,7 @@ function() {
                 //  If we're running in headless mode (we're probably testing),
                 //  then we need to rewrite the URL to have an HTTP resource and
                 //  reset it on the service element.
-                if (TP.sys.cfg('boot.context') === 'headless') {
+                if (TP.sys.isHeadless()) {
                     locStr = httpLoc + locStr;
                     TP.elementSetAttribute(serviceTPElem.getNativeNode(),
                                             'href',
@@ -1232,7 +1232,7 @@ function() {
                 //  If we're running in headless mode (we're probably testing),
                 //  then we need to rewrite the URL to have an HTTP resource and
                 //  reset it on the service element.
-                if (TP.sys.cfg('boot.context') === 'headless') {
+                if (TP.sys.isHeadless()) {
                     locStr = httpLoc + locStr;
                     TP.elementSetAttribute(serviceTPElem.getNativeNode(),
                                             'href',
@@ -1346,7 +1346,7 @@ function() {
                 //  If we're running in headless mode (we're probably testing),
                 //  then we need to rewrite the URL to have an HTTP resource and
                 //  reset it on the service element.
-                if (TP.sys.cfg('boot.context') === 'headless') {
+                if (TP.sys.isHeadless()) {
                     locStr = httpLoc + locStr;
                     TP.elementSetAttribute(serviceTPElem.getNativeNode(),
                                             'href',

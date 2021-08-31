@@ -56,6 +56,7 @@
     <config ref="content"/>
     <config ref="data"/>
     <config ref="databinding"/>
+    <config ref="dhtml"/>
     <config ref="dom"/>
     <config ref="ecma"/>
     <config ref="ev"/>
@@ -208,6 +209,10 @@
 
 <config id="bind">
     <script src="~lib_test/src/bind/TP.bind_Tests.js"/>
+</config>
+
+<config id="dhtml">
+    <script src="~lib_test/src/tibet/dhtml/TP.dhtml_Tests.js"/>
 </config>
 
 <config id="grouping">

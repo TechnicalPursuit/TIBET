@@ -1,4 +1,4 @@
-/* Sinon.JS 11.1.1, 2021-05-26, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/* Sinon.JS 11.1.2, 2021-07-27, @license BSD-3 */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.sinon = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
 var behavior = require("./sinon/behavior");
@@ -1047,12 +1047,248 @@ var createProxy = require("./proxy");
 var nextTick = require("./util/core/next-tick");
 
 var slice = arrayProto.slice;
+var promiseLib = Promise;
 
-function getError(value) {
-    return value instanceof Error ? value : new Error(value);
+module.exports = fake;
+
+/**
+ * Returns a `fake` that records all calls, arguments and return values.
+ *
+ * When an `f` argument is supplied, this implementation will be used.
+ *
+ * @example
+ * // create an empty fake
+ * var f1 = sinon.fake();
+ *
+ * f1();
+ *
+ * f1.calledOnce()
+ * // true
+ *
+ * @example
+ * function greet(greeting) {
+ *   console.log(`Hello ${greeting}`);
+ * }
+ *
+ * // create a fake with implementation
+ * var f2 = sinon.fake(greet);
+ *
+ * // Hello world
+ * f2("world");
+ *
+ * f2.calledWith("world");
+ * // true
+ *
+ * @param {Function|undefined} f
+ * @returns {Function}
+ * @namespace
+ */
+function fake(f) {
+    if (arguments.length > 0 && typeof f !== "function") {
+        throw new TypeError("Expected f argument to be a Function");
+    }
+
+    return wrapFunc(f);
 }
 
+/**
+ * Creates a `fake` that returns the provided `value`, as well as recording all
+ * calls, arguments and return values.
+ *
+ * @example
+ * var f1 = sinon.fake.returns(42);
+ *
+ * f1();
+ * // 42
+ *
+ * @memberof fake
+ * @param {*} value
+ * @returns {Function}
+ */
+fake.returns = function returns(value) {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    function f() {
+        return value;
+    }
+
+    return wrapFunc(f);
+};
+
+/**
+ * Creates a `fake` that throws an Error.
+ * If the `value` argument does not have Error in its prototype chain, it will
+ * be used for creating a new error.
+ *
+ * @example
+ * var f1 = sinon.fake.throws("hello");
+ *
+ * f1();
+ * // Uncaught Error: hello
+ *
+ * @example
+ * var f2 = sinon.fake.throws(new TypeError("Invalid argument"));
+ *
+ * f2();
+ * // Uncaught TypeError: Invalid argument
+ *
+ * @memberof fake
+ * @param {*|Error} value
+ * @returns {Function}
+ */
+fake.throws = function throws(value) {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    function f() {
+        throw getError(value);
+    }
+
+    return wrapFunc(f);
+};
+
+/**
+ * Creates a `fake` that returns a promise that resolves to the passed `value`
+ * argument.
+ *
+ * @example
+ * var f1 = sinon.fake.resolves("apple pie");
+ *
+ * await f1();
+ * // "apple pie"
+ *
+ * @memberof fake
+ * @param {*} value
+ * @returns {Function}
+ */
+fake.resolves = function resolves(value) {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    function f() {
+        return promiseLib.resolve(value);
+    }
+
+    return wrapFunc(f);
+};
+
+/**
+ * Creates a `fake` that returns a promise that rejects to the passed `value`
+ * argument. When `value` does not have Error in its prototype chain, it will be
+ * wrapped in an Error.
+ *
+ * @example
+ * var f1 = sinon.fake.rejects(":(");
+ *
+ * try {
+ *   await ft();
+ * } catch (error) {
+ *   console.log(error);
+ *   // ":("
+ * }
+ *
+ * @memberof fake
+ * @param {*} value
+ * @returns {Function}
+ */
+fake.rejects = function rejects(value) {
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    function f() {
+        return promiseLib.reject(getError(value));
+    }
+
+    return wrapFunc(f);
+};
+
+/**
+ * Causes `fake` to use a custom Promise implementation, instead of the native
+ * Promise implementation.
+ *
+ * @example
+ * const bluebird = require("bluebird");
+ * sinon.fake.usingPromise(bluebird);
+ *
+ * @memberof fake
+ * @param {*} promiseLibrary
+ * @returns {Function}
+ */
+fake.usingPromise = function usingPromise(promiseLibrary) {
+    promiseLib = promiseLibrary;
+    return fake;
+};
+
+/**
+ * Returns a `fake` that calls the callback with the defined arguments.
+ *
+ * @example
+ * function callback() {
+ *   console.log(arguments.join("*"));
+ * }
+ *
+ * const f1 = sinon.fake.yields("apple", "pie");
+ *
+ * f1(callback);
+ * // "apple*pie"
+ *
+ * @memberof fake
+ * @returns {Function}
+ */
+fake.yields = function yields() {
+    var values = slice(arguments);
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    function f() {
+        var callback = arguments[arguments.length - 1];
+        if (typeof callback !== "function") {
+            throw new TypeError("Expected last argument to be a function");
+        }
+
+        callback.apply(null, values);
+    }
+
+    return wrapFunc(f);
+};
+
+/**
+ * Returns a `fake` that calls the callback **asynchronously** with the
+ * defined arguments.
+ *
+ * @example
+ * function callback() {
+ *   console.log(arguments.join("*"));
+ * }
+ *
+ * const f1 = sinon.fake.yields("apple", "pie");
+ *
+ * f1(callback);
+ *
+ * setTimeout(() => {
+ *   // "apple*pie"
+ * });
+ *
+ * @memberof fake
+ * @returns {Function}
+ */
+fake.yieldsAsync = function yieldsAsync() {
+    var values = slice(arguments);
+
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    function f() {
+        var callback = arguments[arguments.length - 1];
+        if (typeof callback !== "function") {
+            throw new TypeError("Expected last argument to be a function");
+        }
+        nextTick(function () {
+            callback.apply(null, values);
+        });
+    }
+
+    return wrapFunc(f);
+};
+
 var uuid = 0;
+/**
+ * Creates a proxy (sinon concept) from the passed function.
+ *
+ * @private
+ * @param  {Function} f
+ * @returns {Function}
+ */
 function wrapFunc(f) {
     var proxy;
     var fakeInstance = function () {
@@ -1080,87 +1316,17 @@ function wrapFunc(f) {
     return proxy;
 }
 
-function fakeClass() {
-    var promiseLib = null;
-    if (typeof Promise === "function") {
-        promiseLib = Promise;
-    }
-
-    function fake(f) {
-        if (arguments.length > 0 && typeof f !== "function") {
-            throw new TypeError("Expected f argument to be a Function");
-        }
-
-        return wrapFunc(f);
-    }
-
-    fake.returns = function returns(value) {
-        function f() {
-            return value;
-        }
-
-        return wrapFunc(f);
-    };
-
-    fake.throws = function throws(value) {
-        function f() {
-            throw getError(value);
-        }
-
-        return wrapFunc(f);
-    };
-
-    fake.resolves = function resolves(value) {
-        function f() {
-            return promiseLib.resolve(value);
-        }
-
-        return wrapFunc(f);
-    };
-
-    fake.rejects = function rejects(value) {
-        function f() {
-            return promiseLib.reject(getError(value));
-        }
-
-        return wrapFunc(f);
-    };
-
-    fake.usingPromise = function usingPromise(promiseLibrary) {
-        promiseLib = promiseLibrary;
-        return fake;
-    };
-
-    function yieldInternal(async, values) {
-        function f() {
-            var callback = arguments[arguments.length - 1];
-            if (typeof callback !== "function") {
-                throw new TypeError("Expected last argument to be a function");
-            }
-            if (async) {
-                nextTick(function () {
-                    callback.apply(null, values);
-                });
-            } else {
-                callback.apply(null, values);
-            }
-        }
-
-        return wrapFunc(f);
-    }
-
-    fake.yields = function yields() {
-        return yieldInternal(false, slice(arguments));
-    };
-
-    fake.yieldsAsync = function yieldsAsync() {
-        return yieldInternal(true, slice(arguments));
-    };
-
-    return fake;
+/**
+ * Returns an Error instance from the passed value, if the value is not
+ * already an Error instance.
+ *
+ * @private
+ * @param  {*} value [description]
+ * @returns {Error}       [description]
+ */
+function getError(value) {
+    return value instanceof Error ? value : new Error(value);
 }
-
-module.exports = fakeClass();
 
 },{"./proxy":15,"./util/core/next-tick":33,"@sinonjs/commons":46}],9:[function(require,module,exports){
 "use strict";
@@ -3853,13 +4019,30 @@ module.exports = function extend(target, ...sources) {
             if (prop === "name" && !destOwnPropertyDescriptor.writable) {
                 return;
             }
-
-            Object.defineProperty(dest, prop, {
+            const descriptors = {
                 configurable: sourceOwnPropertyDescriptor.configurable,
                 enumerable: sourceOwnPropertyDescriptor.enumerable,
-                writable: sourceOwnPropertyDescriptor.writable,
-                value: sourceOwnPropertyDescriptor.value,
-            });
+            };
+            /*
+                if the sorce has an Accessor property copy over the accessor functions (get and set)
+                data properties has writable attribute where as acessor property don't
+                REF: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#properties
+            */
+
+            if (hasOwnProperty(sourceOwnPropertyDescriptor, "writable")) {
+                descriptors.writable = sourceOwnPropertyDescriptor.writable;
+                descriptors.value = sourceOwnPropertyDescriptor.value;
+            } else {
+                if (sourceOwnPropertyDescriptor.get) {
+                    descriptors.get =
+                        sourceOwnPropertyDescriptor.get.bind(dest);
+                }
+                if (sourceOwnPropertyDescriptor.set) {
+                    descriptors.set =
+                        sourceOwnPropertyDescriptor.set.bind(dest);
+                }
+            }
+            Object.defineProperty(dest, prop, descriptors);
         }
     );
 };
@@ -4946,11 +5129,11 @@ var globalObject = require("@sinonjs/commons").global;
  * Configuration object for the `install` method.
  *
  * @typedef {object} Config
- * @property {number|Date} now a number (in milliseconds) or a Date object (default epoch)
- * @property {string[]} toFake names of the methods that should be faked.
- * @property {number} loopLimit the maximum number of timers that will be run when calling runAll()
- * @property {boolean} shouldAdvanceTime tells FakeTimers to increment mocked time automatically (default false)
- * @property {number} advanceTimeDelta increment mocked time every <<advanceTimeDelta>> ms (default: 20ms)
+ * @property {number|Date} [now] a number (in milliseconds) or a Date object (default epoch)
+ * @property {string[]} [toFake] names of the methods that should be faked.
+ * @property {number} [loopLimit] the maximum number of timers that will be run when calling runAll()
+ * @property {boolean} [shouldAdvanceTime] tells FakeTimers to increment mocked time automatically (default false)
+ * @property {number} [advanceTimeDelta] increment mocked time every <<advanceTimeDelta>> ms (default: 20ms)
  */
 
 /**
@@ -5512,7 +5695,6 @@ function withGlobal(_global) {
     }
 
     function hijackMethod(target, method, clock) {
-        var prop;
         clock[method].hadOwnProperty = Object.prototype.hasOwnProperty.call(
             target,
             method
@@ -5552,11 +5734,10 @@ function withGlobal(_global) {
                 return clock[method].apply(clock, arguments);
             };
 
-            for (prop in clock[method]) {
-                if (clock[method].hasOwnProperty(prop)) {
-                    target[method][prop] = clock[method][prop];
-                }
-            }
+            Object.defineProperties(
+                target[method],
+                Object.getOwnPropertyDescriptors(clock[method])
+            );
         }
 
         target[method].clock = clock;
@@ -5634,8 +5815,8 @@ function withGlobal(_global) {
     var originalSetTimeout = _global.setImmediate || _global.setTimeout;
 
     /**
-     * @param {Date|number} start the system time - non-integer values are floored
-     * @param {number} loopLimit maximum number of timers that will be run when calling runAll()
+     * @param {Date|number} [start] the system time - non-integer values are floored
+     * @param {number} [loopLimit] maximum number of timers that will be run when calling runAll()
      * @returns {Clock}
      */
     function createClock(start, loopLimit) {
@@ -6212,7 +6393,7 @@ function withGlobal(_global) {
     /* eslint-disable complexity */
 
     /**
-     * @param {Config=} config Optional config
+     * @param {Config=} [config] Optional config
      * @returns {Clock}
      */
     function install(config) {

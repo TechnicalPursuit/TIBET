@@ -31,13 +31,15 @@ TP.xctrls.curtain.set('requiredAttrs', TP.hc('pclass:hidden', true));
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.curtain.Type.defineMethod('getSystemCurtainFor',
+TP.xctrls.curtain.Type.defineMethod('getCurtainById',
 function(aTPDocument, aCurtainID) {
 
     /**
-     * @method getSystemCurtainFor
-     * @summary Returns (and, if necessary, creates) a 'shared system curtain'
-     *     for use by the system on the supplied TP.dom.Document.
+     * @method getCurtainById
+     * @summary Returns (and, if necessary, creates) the curtain with the
+     *     supplied ID for use by the system on the supplied TP.dom.Document. If
+     *     an ID is not supplied, the 'shared system curtain' will be returned
+     *     (and possibly created).
      * @param {TP.dom.Document} aTPDocument The document to create the curtain
      *     in, if it can't be found. Note that, in this case, the curtain will
      *     be created as the last child of the document's 'body' element.

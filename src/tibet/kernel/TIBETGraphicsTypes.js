@@ -643,6 +643,76 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
+TP.gui.Point.Inst.defineMethod('getComputedPointUsingCompassCorner',
+function(compassCorner, width, height) {
+
+    /**
+     * @method getProjectedPointUsingCompassCorner
+     * @summary Returns a point that uses the receiver as an anchor point
+     *     positioned at the supplied compass point. For instance, TP.NORTHWEST
+     *     will return a point identical to the receiver corner point and
+     *     TP.SOUTHEAST will return a point that uses the width and height to
+     *     offset the receiver downward and rightward.
+     * @param {Number} compassCorner A Number matching the compass corner
+     *     constant to return the edge point of. This should be one of these
+     *     constants:
+     *
+     *     TP.NORTH
+     *     TP.NORTHEAST
+     *     TP.EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTH
+     *     TP.SOUTHWEST
+     *     TP.WEST
+     *     TP.NORTHWEST
+     *
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.gui.Point} A point computed from the receiver and supplied
+     *     compass points, width and height.
+     */
+
+    var data;
+
+    if (TP.notValid(compassCorner)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+
+    /* eslint-disable no-extra-parens */
+    switch (compassCorner) {
+        case TP.NORTHWEST:
+            return TP.pc(data.x, data.y);
+
+        case TP.NORTH:
+            return TP.pc(data.x - (width / 2), data.y);
+
+        case TP.NORTHEAST:
+            return TP.pc(data.x - width, data.y);
+
+        case TP.EAST:
+            return TP.pc(data.x - width, data.y - (height / 2));
+
+        case TP.SOUTHEAST:
+            return TP.pc(data.x - width, data.y - height);
+
+        case TP.SOUTH:
+            return TP.pc(data.x - (width / 2), data.y - height);
+
+        case TP.SOUTHWEST:
+            return TP.pc(data.x, data.y - height);
+
+        case TP.WEST:
+            return TP.pc(data.x, data.y - (height / 2));
+
+        default:
+            return TP.pc(data.x, data.y);
+    }
+    /* eslint-enable no-extra-parens */
+});
+
+//  ------------------------------------------------------------------------
+
 TP.gui.Point.Inst.defineMethod('getX',
 function() {
 
@@ -1511,12 +1581,22 @@ function(aRect) {
     }
 
     /* eslint-disable no-extra-parens */
-    diffX = ((rectData.x + rectData.width) - (data.x + data.width)).max(0);
-    diffY = ((rectData.y + rectData.height) - (data.y + data.height)).max(0);
-    /* eslint-enable no-extra-parens */
+    if (rectData.x < data.x) {
+        diffX = data.x - rectData.x;
+        rectData.x += diffX;
+    } else {
+        diffX = ((rectData.x + rectData.width) - (data.x + data.width)).max(0);
+        rectData.x -= diffX;
+    }
 
-    rectData.x -= diffX;
-    rectData.y -= diffY;
+    if (rectData.y < data.y) {
+        diffY = data.y - rectData.y;
+        rectData.y += diffY;
+    } else {
+        diffY = ((rectData.y + rectData.height) - (data.y + data.height)).max(0);
+        rectData.y -= diffY;
+    }
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
@@ -8481,7 +8561,7 @@ function(aTarget, propertyName, aTransitionParams) {
 
                                 return TP.gid(target);
                             });
-        origins.isOriginSet(true);
+        origins.useAsCollection(true);
     }
 
     sig = origins.signal('TP.sig.PropertyWillTransition',

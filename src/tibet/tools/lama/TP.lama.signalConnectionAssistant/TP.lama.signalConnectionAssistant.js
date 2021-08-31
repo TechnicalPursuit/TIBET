@@ -309,7 +309,7 @@ function(anObject) {
                 handlersURI = TP.uc('urn:tibet:handlernamelist');
 
                 handlersObj = this.getHandlerMethodsFor(targetType);
-                handlersObj.isOriginSet(false);
+                handlersObj.useAsCollection(false);
 
                 handlersURI.setResource(handlersObj,
                                         TP.hc('signalChange', true));
@@ -715,7 +715,7 @@ function(anObj) {
 
     //  Flatten the signals information and make sure it's not an origin set.
     signalsObj = signalsObj.flatten();
-    signalsObj.isOriginSet(false);
+    signalsObj.useAsCollection(false);
 
     //  Massage the signals information into an Array of Arrays with the entry
     //  as both the key and value.
@@ -736,7 +736,7 @@ function(anObj) {
 
     //  NB: This assumes that the target is a type.
     handlersObj = this.getHandlerMethodsFor(anObj.at('destinationTarget'));
-    handlersObj.isOriginSet(false);
+    handlersObj.useAsCollection(false);
 
     //  Set the resource of the types URI to the computed object containing our
     //  types.

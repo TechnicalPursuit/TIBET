@@ -202,7 +202,7 @@ tibet|group {
 
 *|*[pclass|hidden] {
 
-    display: none;
+    display: none !important;
 }
 
 /*
@@ -211,9 +211,9 @@ tibet|group {
   ========================================================================
 */
 
-*|span[tibet|templateexpr] {
+tibet|acp {
 
-    /* We want to pretend that this span doesn't exist (CSS-wise) */
+    /* We want to pretend that this element doesn't exist (CSS-wise) */
     display: contents;
 }
 

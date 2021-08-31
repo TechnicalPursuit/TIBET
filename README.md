@@ -26,7 +26,7 @@ Build desktop applications, web applications, Cloud APIs, and more with TIBET.
 
 We like to say TIBET is **The Sum Of The Parts, Not Some Of The Parts&#8482;**
 
-TIBET includes a full client stack, full server stack, and full tool chain. All fully-integrated, all fully-supported. See <a href="https://www.technicalpursuit.com">technicalpursuit.com</a> for details.
+TIBET includes a full client stack, full server stack, and full tool chain. See <a href="https://www.technicalpursuit.com">technicalpursuit.com</a> for details.
 
 ## Primary Features
 

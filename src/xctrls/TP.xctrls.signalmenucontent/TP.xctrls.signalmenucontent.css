@@ -1,0 +1,13 @@
+/**
+ * @overview 'TP.xctrls.signalmenucontent' styles.
+ */
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url("http://www.technicalpursuit.com/1999/tibet");
+
+xctrls|signalmenucontent {
+
+    /* We want to pretend that we don't exist (CSS-wise) */
+    display: contents;
+}

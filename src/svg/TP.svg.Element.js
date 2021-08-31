@@ -24,6 +24,56 @@ TP.svg.Element.isAbstract(true);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.svg.Element.Type.defineMethod('getResourceURI',
+function(resource, mimeType, fallback) {
+
+    /**
+     * @method getResourceURI
+     * @summary Returns a resource URI specific to the receiver for the named
+     *     resource and mimeType. This method is used to look up template,
+     *     style, theme, and other resource URIs by leveraging cfg flags and
+     *     methods on the receiver specific to each resource/mime requirement.
+     * @param {String} resource The resource name. Typically 'template',
+     *     'style', 'style_{theme}', etc. but it could be essentially anything
+     *     except the word 'resource' (since that would trigger a recursion).
+     * @param {String} mimeType The mimeType for the resource being looked up.
+     *     This is used to locate viable extensions based on the data in TIBET's
+     *     TP.ietf.mime.INFO dictionary.
+     * @param {Boolean} [fallback] Compute a fallback value?  Defaults to the
+     *     value of 'uri.fallbacks'.
+     * @returns {TP.uri.URI} The computed resource URI.
+     */
+
+    //  These are natively supported elements - they don't have templates,
+    //  styles or theming styles.
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.svg.Element.Type.defineMethod('isResponderFor',
+function(aSignal, aNode) {
+
+    /**
+     * @method isResponderFor
+     * @summary Returns true if the type in question should be considered a
+     *     responder for the specific node/signal pair provided.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    var signame;
+
+    signame = aSignal.getSignalName();
+
+    return TP.regex.UI_SIGNAL.test(signame) ||
+        TP.regex.DOM_SIGNAL.test(signame);
+});
+
 //  ------------------------------------------------------------------------
 //  TSH Execution Support
 //  ------------------------------------------------------------------------

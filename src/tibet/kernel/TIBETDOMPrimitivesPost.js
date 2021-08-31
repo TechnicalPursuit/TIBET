@@ -763,7 +763,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     docHead = TP.documentEnsureHeadElement(aDocument);
 
     //  Grab all of the 'style related' link elements.
-    styleLinks = TP.ac(docHead.querySelectorAll('link[type="text/css"]'));
+    styleLinks = TP.ac(docHead.querySelectorAll(
+                                ':scope link[type="text/css"]'));
 
     //  Since script elements, if we have them and they have a 'src'
     //  attribute, may be processed and fully realized in an asynchronous
@@ -1899,6 +1900,46 @@ function(anElement, cleanDescendants) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementCompile',
+function(anElement, aRequest) {
+
+    /**
+     * @method elementCompile
+     * @summary Compiles the supplied element and returns the result..
+     *     'instance-specific' information from the supplied Element and any
+     *     Element descendants, if the flag is supplied.
+     * @param {Element} anElement The element to compile.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     * @returns {Element} A new element.
+     */
+
+    var tpElem,
+        newElem;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement',
+                                'Must provide a valid Element node.');
+    }
+
+    //  Wrap the element and compile it. The result will be placed *back in the
+    //  wrapper* (i.e. it's a mutator).
+    tpElem = TP.wrap(anElement);
+    tpElem.compile(aRequest);
+
+    //  Grab the new native Element back from the wrapper.
+    newElem = tpElem.getNativeNode();
+
+    //  Just in case the compilation process put TIBET expandos on the result
+    //  element. We want them removed.
+    TP.nodeRemoveTIBETExpandos(newElem);
+
+    return newElem;
 });
 
 //  ------------------------------------------------------------------------
@@ -5303,7 +5344,7 @@ function(aNode) {
     if (TP.isElement(aNode)) {
         if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
             TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
-            !TP.w3.Xmlns.isNativeNS(TP.nodeGetNSURI(aNode))) {
+            !TP.w3.Xmlns.isNativeElement(aNode)) {
             return true;
         }
     }
@@ -6183,17 +6224,38 @@ function(aNode, aSignal) {
      */
 
     var arr,
-        node;
+        signame,
+        handlerFlags,
+        node,
+        parent;
+
 
     arr = TP.ac();
 
-    node = TP.nodeGetResponderElement(aNode, aSignal);
+    //  Create a reusable descriptor so we don't create too many objects during
+    //  the loop we'll run below.
+    handlerFlags = {
+        dontTraverseHierarchy: true,
+        dontTraverseSpoofs: true,
+        phase: '*'
+    };
+
+    //  Change signals are special in that they're _always_ spoofed to some
+    //  degree. As a result we have to override any flag saying to ignore them
+    //  or we'll never find suitable handlers.
+    signame = aSignal.getSignalName();
+    if (TP.regex.CHANGE_SIGNAL.test(signame)) {
+        handlerFlags.dontTraverseSpoofs = false;
+    }
+
+    node = TP.nodeGetResponderElement(aNode, aSignal, handlerFlags);
     while (TP.isValid(node)) {
         arr.push(node);
-        if (TP.notValid(node.parentNode)) {
+        parent = node.parentNode;
+        if (TP.notValid(parent)) {
             break;
         }
-        node = TP.nodeGetResponderElement(node.parentNode, aSignal);
+        node = TP.nodeGetResponderElement(parent, aSignal, handlerFlags);
     }
 
     return arr;
@@ -6202,48 +6264,54 @@ function(aNode, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetResponderElement',
-function(aNode, aSignal) {
+function(aNode, aSignal, handlerFlags) {
 
     /**
      * @method nodeGetResponderElement
      * @summary Finds the 'responder' element for aNode and returns it. A
-     *     responder element is an element with either tibet:ctrl or tibet:tag
-     *     or one whose type responds affirmatively to isResponderFor.
-     *     NOTE that this method will also traverse up through iframe containers
+     *     responder is an element with tibet:ctrl, tibet:tag or non-native
+     *     namespace (i.e. a "custom tag") or a native tag whose type responds
+     *     affirmatively to isResponderFor* when provided the target signal.
+     *     NOTE that this method will traverse up through iframe containers
      *     to locate a potential component element.
      * @param {Node} aNode The DOM node to operate on.
      * @param {TP.sig.Signal} aSignal The signal instance being dispatched.
+     * @param {Object} handlerFlags A set of optional flags ultimately passed to
+     *     getBestHandler which refine how handler searches should be done.
      * @returns {Element} A valid element or null.
      */
 
     var node,
+        signame,
+        answer,
+        message,
+        fname,
+        handler,
         win,
-
-        attrVal,
-
         type,
         frame;
 
     if (TP.notValid(aNode)) {
-        return this.raise('InvalidNode');
+        return;
     }
 
     if (!TP.isElement(aNode)) {
-
-        node = aNode.parentNode;
-        if (TP.isValid(node)) {
-            return TP.nodeGetResponderElement(node);
-        }
-
-        //  Check for a containing iframe element often used as a "screen".
-        win = TP.nodeGetWindow(aNode);
-        if (TP.isIFrameWindow(win)) {
-            frame = win.frameElement;
-            if (TP.isElement(frame)) {
-                return TP.nodeGetResponderElement(frame);
+        node = aNode ? aNode.parentNode : null;
+        if (TP.notValid(node)) {
+            //  Check for a containing iframe element often used as a "screen".
+            win = TP.nodeGetWindow(aNode);
+            if (TP.isIFrameWindow(win)) {
+                frame = win.frameElement;
+                if (TP.isElement(frame)) {
+                    node = frame;
+                }
             }
         }
+    } else {
+        node = aNode;
+    }
 
+    if (TP.notValid(node)) {
         return;
     }
 
@@ -6253,52 +6321,89 @@ function(aNode, aSignal) {
     //  object that is named here via this attribute (either a type of some sort
     //  or a registered object) can actually respond to the signal is determined
     //  later by the signaling system.
-    if (TP.elementHasAttribute(aNode, 'tibet:ctrl', true)) {
-        return aNode;
+    if (TP.elementHasAttribute(node, 'tibet:ctrl', true)) {
+        return node;
     }
 
     //  Next, check to see if a 'tibet:tag' attribute is defined. If so, then it
-    //  will point to a TIBET type of some sort. This mechanism allows the
-    //  author to override the TIBET type that this tag would normally resolve
-    //  to. Therefore, in the case of custom tags that have been processed into
-    //  platform native markup (i.e. XHTML or SVG), this attribute will probably
-    //  point to the custom TIBET type that the platform-native markup is
-    //  standing in for.
-    attrVal = TP.elementGetAttribute(aNode, 'tibet:tag', true);
-    if (TP.notEmpty(attrVal)) {
-        type = TP.sys.getTypeByName(attrVal);
+    //  will point to a type. The tibet:tag attribute is typically added during
+    //  tag processing from custom tag(s) into XHTML native tags while retaining
+    //  awareness of the originating tag type (for TP.wrap etc.).
+    if (TP.elementHasAttribute(node, 'tibet:tag', true)) {
+        return node;
     }
 
-    if (!TP.isType(type)) {
+    //  All other tags (native and non-native) must actively implement
+    //  isResponderFor variations to successfully be added to the computed
+    //  responder chain. The goal is to default to a sparse list, not the same
+    //  one the DOM uses, hence the requirement tags "opt-in" as responders.
 
-        //  Native types may be responders but not have a tibet:tag or
-        //  tibet:ctrl attribute so we need to query them by type.
+    //  NB: Many times the node will already have its node type, so we
+    //  use a fast way to get that here.
+    type = node[TP.NODE_TYPE];
+    if (TP.notValid(type)) {
+        type = TP.nodeGetConcreteType(node);
+        node[TP.NODE_TYPE] = type;
+    }
 
-        //  NB: Many times the node will already have it's node type, so we
-        //  use a fast way to get that here.
-        type = aNode[TP.NODE_TYPE];
-        if (TP.notValid(type)) {
-            type = TP.nodeGetConcreteType(aNode);
-            aNode[TP.NODE_TYPE] = type;
+    //  See if the receiving type implements a specific variant for the signal
+    //  or, failing that, if it has a more general isResponderFor method.
+    signame = TP.contractSignalName(TP.expandSignalName(aSignal.getSignalName()));
+
+    fname = 'isResponderFor' + signame;
+    if (TP.canInvoke(type, fname)) {
+        answer = type[fname](aSignal, node);
+        if (TP.isTrue(answer)) {
+            return node;
         }
     }
 
-    if (TP.canInvoke(type, 'isResponderFor')) {
-        if (type.isResponderFor(aNode, aSignal)) {
-            return aNode;
+    //  If specific method returned explicit true or false we shouldn't run the
+    //  generic one, we should skip it (and next test below as well).
+    if (TP.notValid(answer)) {
+        if (TP.canInvoke(type, 'isResponderFor')) {
+            //  A specific yes/no answer for any signal provided.
+            answer = type.isResponderFor(aSignal, node);
+            if (TP.isTrue(answer)) {
+                return node;
+            }
         }
     }
 
-    if (TP.isValid(aNode.parentNode)) {
-        return TP.nodeGetResponderElement(aNode.parentNode, aSignal);
+    //  If either prior check returned explicit true or false we shouldn't be
+    //  using reflection test, we've been told "Node is not a responder".
+    handler = TP.wrap(node).getBestHandler(aSignal, handlerFlags);
+
+    if (TP.isCallable(handler)) {
+        if (TP.notValid(answer)) {
+            if (TP.ifWarn() && TP.sys.cfg('log.missing_isresponderfor')) {
+                message = 'For better performance implement missing ' +
+                    type.getName() + '.Type.isResponderFor' + signame;
+                TP.sys.isHeadless() ? console.log(message) : TP.warn(message);
+            }
+            return node;
+        } else {
+            //  Got explicit false but there's a callable handler...
+            //  that should be warned so we know about "unreachable handler"
+            if (TP.ifDebug() && TP.sys.cfg('log.missing_isresponderfor')) {
+                message = 'Overlooked callable handler: ' + type.getName() +
+                    '.Inst.' + TP.name(handler);
+                TP.sys.isHeadless() ? console.log(message) : TP.debug(message);
+            }
+        }
+    }
+
+    //  If node isn't a responder work our way up the tree
+    if (TP.isValid(node.parentNode)) {
+        return TP.nodeGetResponderElement(node.parentNode, aSignal);
     }
 
     //  Check for a containing iframe element often used as a "screen".
-    win = TP.nodeGetWindow(aNode);
+    win = TP.nodeGetWindow(node);
     if (TP.isIFrameWindow(win)) {
         frame = win.frameElement;
         if (TP.isElement(frame)) {
-            return TP.nodeGetResponderElement(frame);
+            return TP.nodeGetResponderElement(frame, aSignal);
         }
     }
 

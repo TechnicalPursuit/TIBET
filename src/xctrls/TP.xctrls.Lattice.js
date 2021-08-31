@@ -85,7 +85,7 @@ function(aRequest) {
     //  Observe ourself for when we're resized
     tpElem.observe(tpElem, TP.ac('TP.sig.DOMResize', 'TP.sig.DOMVisible'));
 
-    tpElem.set('$numSpacingRows', 0, false);
+    tpElem.set('$numSpacerRows', 0, false);
 
     //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
     //  then just return. When our stylesheet loads, it will trigger the
@@ -137,11 +137,9 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Lattice.Inst.defineAttribute('$numSpacingRows');
-
-//  The data as massaged into what this control needs. This is reset whenever
-//  the control's whole data set is reset.
-TP.xctrls.Lattice.Inst.defineAttribute('$convertedData');
+TP.xctrls.Lattice.Inst.defineAttribute('$dataKeys');
+TP.xctrls.Lattice.Inst.defineAttribute('$rowType');
+TP.xctrls.Lattice.Inst.defineAttribute('$numSpacerRows');
 
 TP.xctrls.Lattice.Inst.defineAttribute(
     'scroller', TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
@@ -151,6 +149,220 @@ TP.xctrls.Lattice.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('computeSelectionData',
+function() {
+
+    /**
+     * @method computeSelectionData
+     * @summary Returns the data that will actually be used for binding into the
+     *     d3.js selection.
+     * @description The selection data may very well be different than the bound
+     *     data that uses TIBET data binding to bind data to this control. This
+     *     method allows the receiver to transform it's 'data binding data' into
+     *     data appropriate for d3.js selections.
+     * @returns {Object} The selection data.
+     */
+
+    var selectionData,
+
+        currentSpacerRowCount,
+
+        containerHeight,
+        rowHeight,
+
+        bumpRowCount,
+
+        visibleRowCount,
+
+        selectionDataSize,
+
+        lowerBumpRowBounds,
+        upperBumpRowBounds,
+
+        shouldAdd,
+
+        realDataSize,
+
+        additionalSpacerRowCount,
+        i,
+
+        oldSpacingRowCount;
+
+    selectionData = this.get('data');
+
+    //  First, make sure the converted data is valid. If not, then convert it.
+    if (TP.notValid(selectionData)) {
+        return this;
+    }
+
+    if (TP.isValid(selectionData)) {
+
+        currentSpacerRowCount = this.get('$numSpacerRows');
+
+        containerHeight = this.computeHeight();
+        rowHeight = this.getRowHeight();
+
+        bumpRowCount = this.$get('$bumpRowCount');
+
+        //  The number of rows of data in the current selection. These will
+        //  also include spacing rows if previously built by this call.
+        selectionDataSize = selectionData.getSize();
+
+        //  See if the height falls within the 'bump row' (i.e. greater than the
+        //  height of the real amount of data (spacer or otherwise) we have, but
+        //  less than the bump row bottom edge.
+        lowerBumpRowBounds = selectionDataSize * rowHeight;
+        upperBumpRowBounds = (selectionDataSize + bumpRowCount) * rowHeight;
+
+        if (containerHeight > lowerBumpRowBounds &&
+            containerHeight < upperBumpRowBounds) {
+            return selectionData;
+        }
+
+        //  The number of currently displayed rows is computed by dividing the
+        //  containerHeight by the rowHeight. Note here that we 'round up' to
+        //  make sure that we err on the side of *more* spacing rows rather than
+        //  less for maximum visual crispness.
+        visibleRowCount = (containerHeight / rowHeight).ceil();
+
+        shouldAdd = true;
+        if (visibleRowCount === selectionDataSize) {
+            shouldAdd = false;
+        }
+
+        //  If the list is actually tall enough to display at least one row, go
+        //  for it.
+        if (visibleRowCount > 0) {
+
+            //  The "real" data size is the number of total rows minus the
+            //  current number of spacing rows.
+            realDataSize = selectionDataSize - currentSpacerRowCount;
+
+            if (visibleRowCount > realDataSize && shouldAdd) {
+
+                /* eslint-disable no-extra-parens */
+                additionalSpacerRowCount =
+                    (visibleRowCount - selectionDataSize) + bumpRowCount;
+                /* eslint-enable no-extra-parens */
+
+                for (i = realDataSize;
+                        i < realDataSize + additionalSpacerRowCount;
+                            i++) {
+                    selectionData.push(
+                        this.createBlankRowData(selectionData.getSize()));
+                    currentSpacerRowCount++;
+                }
+
+            }
+
+            //  If there is more data in the selection than there is in the
+            //  'real' data set, that means we have 'blank filler' rows. Trim
+            //  off any unnecessary ones.
+            if (selectionDataSize > realDataSize) {
+
+                oldSpacingRowCount = selectionDataSize - visibleRowCount;
+
+                for (i = selectionDataSize - 1;
+                        i >= selectionDataSize - oldSpacingRowCount;
+                        i--) {
+                    if (selectionData.at(i).last() !== 'BLANK') {
+                        break;
+                    }
+                    selectionData.pop();
+                    currentSpacerRowCount--;
+                }
+            }
+
+            //  NB: We never let this drop below 0
+            this.set('$numSpacerRows', currentSpacerRowCount.max(0), false);
+        }
+    }
+
+    return selectionData;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('d3KeyFunction',
+function() {
+
+    /**
+     * @method d3KeyFunction
+     * @summary Returns the Function that should be used to generate keys into
+     *     the receiver's data set. By default this method returns a null key
+     *     function, thereby causing d3 to use each datum in the data set as the
+     *     key.
+     * @description This Function should take two arguments, an individual item
+     *     from the receiver's data set and it's index in the overall data set,
+     *     and return a value that will act as that item's key in the overall
+     *     data set.
+     * @returns {Function} A Function that provides a key for the supplied data
+     *     item.
+     */
+
+    var adaptor,
+        adaptorType;
+
+    adaptor = this.getAttribute('ui:adaptor');
+    if (TP.notEmpty(adaptor)) {
+        adaptorType = TP.sys.getTypeByName(adaptor);
+    } else {
+        adaptorType = this.getItemTagType();
+    }
+
+    if (!TP.isType(adaptorType)) {
+        return this.callNextMethod();
+    }
+
+    return adaptorType.getKeyFunction(this);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('finalizeContent',
+function() {
+
+    /**
+     * @method finalizeContent
+     * @summary Updates an internal data structures from static item content
+     *     that the author might have put into the receiver.
+     * @description This method is called when the receiver is first awakened
+     *     in order to set up any data structures that are required to treat
+     *     static content as we would dynamically generated content.
+     * @returns {TP.xctrls.Lattice} The receiver.
+     */
+
+    var keys,
+        allItems;
+
+    keys = TP.ac();
+
+    //  Stamp all of the items in the item content with an index (and possibly a
+    //  data key if one wasn't put on there by the generation code - which
+    //  happens in the case of static content).
+    allItems = this.get('allItems');
+    allItems.forEach(
+        function(item, index) {
+            var key;
+
+            key = item.getAttribute(TP.DATA_KEY);
+            if (TP.isEmpty(key)) {
+                key = TP.genID();
+                item.setAttribute(TP.DATA_KEY, key);
+            }
+            keys.push(key);
+
+            item.setAttribute(TP.ITEM_NUM, index);
+            item.addClass('item');
+        });
+
+    this.set('$dataKeys', keys, false);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.Lattice.Inst.defineMethod('focus',
@@ -176,6 +388,85 @@ function(moveAction) {
 
     //  We're not a valid focus target, but our group is.
     return this.get('group').focus(moveAction);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('getAllItems',
+function() {
+
+    /**
+     * @method getAllItems
+     * @summary Returns all of the receiver's item content, no matter whether it
+     *     was statically supplied or generated dynamically.
+     * @returns {TP.xctrls.item[]} All of the receiver's item content.
+     */
+
+    var getterPath,
+        result;
+
+    getterPath = TP.xpc(
+                    './/' +
+                    '*[local-name() = "content"]//' +
+                    '*[substring(name(), string-length(name()) - 3) = "item"]',
+                TP.hc('shouldCollapse', false));
+
+    result = this.get(getterPath);
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('getItemTagType',
+function() {
+
+    /**
+     * @method getItemTagType
+     * @summary Returns the item tag type.
+     * @returns {TP.meta.xctrls.item} The item tag type.
+     */
+
+    var itemTagName;
+
+    itemTagName = TP.ifEmpty(this.getAttribute('itemTag'),
+                                this.getType().get('defaultItemTagName'));
+
+    return TP.sys.getTypeByName(itemTagName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('getLabelFunction',
+function() {
+
+    /**
+     * @method getLabelFunction
+     * @summary Returns a Function that will be used to extract the label from
+     *     the data.
+     * @description If the receiver defines a 'ui:adaptor' attribute, it should
+     *     be naming a type. That type should respond to 'getLabelFunction' and
+     *     return the Function to be used. Otherwise, the item tag type should
+     *     implement 'getLabelFunction'.
+     * @returns {Function} The Function that will be used to extract the label
+     *     from the data.
+     */
+
+    var adaptor,
+        adaptorType;
+
+    adaptor = this.getAttribute('ui:adaptor');
+    if (TP.notEmpty(adaptor)) {
+        adaptorType = TP.sys.getTypeByName(adaptor);
+    } else {
+        adaptorType = this.getItemTagType();
+    }
+
+    if (!TP.isType(adaptorType)) {
+        return this.callNextMethod();
+    }
+
+    return adaptorType.getLabelFunction(this);
 });
 
 //  ------------------------------------------------------------------------
@@ -258,6 +549,40 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Lattice.Inst.defineMethod('getValueFunction',
+function() {
+
+    /**
+     * @method getValueFunction
+     * @summary Returns a Function that will be used to extract the value from
+     *     the data.
+     * @description If the receiver defines a 'ui:adaptor' attribute, it should
+     *     be naming a type. That type should respond to 'getValueFunction' and
+     *     return the Function to be used. Otherwise, the item tag type should
+     *     implement 'getValueFunction'.
+     * @returns {Function} The Function that will be used to extract the value
+     *     from the data.
+     */
+
+    var adaptor,
+        adaptorType;
+
+    adaptor = this.getAttribute('ui:adaptor');
+    if (TP.notEmpty(adaptor)) {
+        adaptorType = TP.sys.getTypeByName(adaptor);
+    } else {
+        adaptorType = this.getItemTagType();
+    }
+
+    if (!TP.isType(adaptorType)) {
+        return this.callNextMethod();
+    }
+
+    return adaptorType.getValueFunction(this);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.Lattice.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
@@ -268,17 +593,7 @@ function(aSignal) {
      * @returns {TP.xctrls.Lattice} The receiver.
      */
 
-    var currentRowCount,
-
-        newRowCount;
-
-    currentRowCount = this.$get('$endOffset') - this.$get('$startOffset');
-    newRowCount = this.computeGeneratedRowCount();
-
-    if (newRowCount !== currentRowCount) {
-        //  When the number of rows changed, we have to re-render.
-        this.render();
-    }
+    this.render();
 
     return this;
 });
@@ -295,17 +610,7 @@ function(aSignal) {
      * @returns {TP.xctrls.Lattice} The receiver.
      */
 
-    var currentRowCount,
-
-        newRowCount;
-
-    currentRowCount = this.$get('$endOffset') - this.$get('$startOffset');
-    newRowCount = this.computeGeneratedRowCount();
-
-    if (newRowCount !== currentRowCount) {
-        //  When the number of rows changed, we have to re-render.
-        this.render();
-    }
+    this.render();
 
     return this;
 });
@@ -330,8 +635,56 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.Lattice.Inst.defineMethod('prepareData',
+function(aDataObject) {
+
+    /**
+     * @method prepareData
+     * @summary Returns data that has been 'prepared' for usage by the receiver.
+     * @param {Object} aDataObject The original object supplied to the receiver
+     *     as it's 'data object'.
+     * @returns {Object} The data object 'massaged' into a data format suitable
+     *     for use by the receiver.
+     */
+
+    var dataObj,
+        testSample,
+        sampleType;
+
+    //  Make sure to unwrap this from any TP.core.Content objects, etc.
+    dataObj = TP.val(aDataObject);
+
+    //  Now, make sure that we have an Array no matter what kind of data object
+    //  we were handed.
+    if (!TP.isArray(dataObj)) {
+        if (TP.canInvoke(dataObj, 'asArray')) {
+            dataObj = dataObj.asArray();
+        } else {
+            dataObj = Array.from(dataObj);
+        }
+    }
+
+    testSample = dataObj.first();
+
+    if (TP.isPair(testSample)) {
+        sampleType = TP.PAIR;
+    } else if (TP.isHash(testSample)) {
+        sampleType = TP.HASH;
+    } else if (TP.isPlainObject(testSample)) {
+        sampleType = TP.POJO;
+    } else {
+        sampleType = TP.ARRAY;
+    }
+
+    this.set('$rowType', sampleType);
+
+    return dataObj;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.Lattice.Inst.defineMethod('refresh',
-function(shouldRender, shouldRefreshBindings) {
+function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
     /**
      * @method refresh
@@ -343,14 +696,21 @@ function(shouldRender, shouldRefreshBindings) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
-     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
-     *     bindings from the receiver down (in a 'sparse' fashion). If not
-     *     supplied, this parameter will default to true.
+     * @param {Boolean} [shouldRefreshBindings=true] Whether or not to refresh
+     *     data bindings from the receiver down (in a 'sparse' fashion).
+     * @param {TP.core.Hash} [localRefreshInfo] Information about a local-only
+     *     refresh that can be used to specifically target binds that occur only
+     *     *locally* on the receiver (i.e. where the receiver itself has the
+     *     'bind:*' attribute). Note that if this is supplied, that a *local
+     *     only* refresh will be performed and it will be the responsibility of
+     *     the caller to refresh any descendant bindings, scoped to the receiver
+     *     or not.
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
 
-    var hasChanged;
+    var hasChanged,
+        updatedAspects;
 
     //  If rendering is forced, scroll to the top of the list.
     if (shouldRender) {
@@ -363,7 +723,21 @@ function(shouldRender, shouldRefreshBindings) {
 
     //  If the bound value truly changed, clear the selection.
     if (hasChanged) {
-        this.setValue(null);
+
+        //  If we're doing a local-only refresh, and the aspect that is being
+        //  updated is either 'data' or 'value', then reset the value to null.
+        //  Otherwise, leave it alone.
+        if (TP.isValid(localRefreshInfo)) {
+            updatedAspects = localRefreshInfo.at('updatadAspects');
+            if (TP.isArray(updatedAspects) &&
+                (updatedAspects.contains('data') ||
+                    updatedAspects.contains('value'))) {
+                this.setValue(null);
+            }
+        } else {
+            //  A 'general' refresh - reset the value to null.
+            this.setValue(null);
+        }
     }
 
     return hasChanged;
@@ -542,7 +916,6 @@ function(aValue, shouldSignal) {
         //  Otherwise, we just return false
 
         if (TP.isCollection(newValue)) {
-            this.set('$convertedData', null, false);
             this.render();
 
             return true;
@@ -613,15 +986,22 @@ function() {
      * @returns {Number} The height of a row when rendered.
      */
 
+    var height;
+
     //  Headless doesn't load the stylesheet that contains the
     //  'xctrls-item-height' variable in a timely fashion, so we just hardcode a
     //  Number here.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         return 20;
     }
 
-    return this.getComputedStyleProperty(
-                        '--xctrls-item-height').asNumber();
+    height = this.getComputedStyleProperty('--xctrls-item-height').asNumber();
+
+    if (TP.isNumber(height)) {
+        return height;
+    }
+
+    return 20;
 });
 
 //  ------------------------------------------------------------------------
@@ -635,8 +1015,23 @@ function() {
      * @returns {Number} The height of a row bottom and top borders.
      */
 
-    return this.getComputedStyleProperty(
-                        '--xctrls-item-border-height').asNumber();
+    var height;
+
+    //  Headless doesn't load the stylesheet that contains the
+    //  'xctrls-item-height' variable in a timely fashion, so we just hardcode a
+    //  Number here.
+    if (TP.sys.isHeadless()) {
+        return 1;
+    }
+
+    height = this.getComputedStyleProperty(
+        '--xctrls-item-border-height').asNumber();
+
+    if (TP.isNumber(height)) {
+        return height;
+    }
+
+    return 1;
 });
 
 //  ------------------------------------------------------------------------
@@ -669,8 +1064,8 @@ function() {
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
      */
 
-    //  We allow multiples if we have the 'multiple' attribute.
-    return this.hasAttribute('multiple');
+    //  We allow multiples if we have the 'multiple' attribute and it's true.
+    return TP.bc(this.getAttribute('multiple')) === true;
 });
 
 //  ------------------------------------------------------------------------

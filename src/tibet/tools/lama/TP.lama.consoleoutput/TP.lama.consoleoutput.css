@@ -578,8 +578,7 @@ lama|consoleoutput .flex-item > .content > .result a[target="_blank"]::after {
     margin: 0 3px;
 }
 
-/* The first 'span' skips over the tibet:templateexpr span */
-lama|consoleoutput .flex-item > .content > .result > span span {
+lama|consoleoutput .flex-item > .content > .result > tibet|acp span {
     color: #345;
     user-select: text;
 }

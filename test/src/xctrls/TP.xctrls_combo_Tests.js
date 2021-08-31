@@ -136,7 +136,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -237,7 +237,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -318,7 +318,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -374,7 +374,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -451,7 +451,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -597,7 +597,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -663,7 +663,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -729,7 +729,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -776,7 +776,7 @@ function() {
                 //  DocumentFragmentNode
                 combo.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
                 value = combo.get('value');
-                test.assert.isNull(value);
+                test.assert.isEqualTo(value, 'foo');
 
                 //  NodeList
                 combo.set('value', testData.at('NodeList'));
@@ -812,7 +812,7 @@ function() {
 
         comboList = aTPElem.get('popupContentFirstElement');
 
-        itemIndices = comboList.get('listitems').collect(
+        itemIndices = comboList.get('allItems').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -849,8 +849,22 @@ function() {
             var combo;
 
             //  Make sure that each test starts with a freshly reset item
-            combo = TP.byId('combo4', windowContext);
+            combo = TP.byId('combo5', windowContext);
             combo.deselectAll();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function(test, suite) {
+            test.chain(
+                function() {
+                    //  'Click away' from the currently selected popup to get it
+                    //  to close.
+                    test.getDriver().constructSequence().
+                        click(windowContext.getDocument().getBody()).
+                        run();
+                });
         });
 
     //  ---
@@ -872,7 +886,7 @@ function() {
         var combo,
             firstComboItem;
 
-        combo = TP.byId('combo4', windowContext);
+        combo = TP.byId('combo5', windowContext);
 
         //  ---
 
@@ -891,7 +905,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -936,7 +950,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -993,7 +1007,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -1038,7 +1052,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -1077,7 +1091,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -1119,7 +1133,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -1207,7 +1221,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),
@@ -1256,7 +1270,7 @@ function() {
 
                 test.andIfNotValidWaitFor(
                         function() {
-                            firstComboItem = comboList.get('listitems').first();
+                            firstComboItem = comboList.get('allItems').first();
                             return firstComboItem;
                         },
                         TP.gid(comboList),

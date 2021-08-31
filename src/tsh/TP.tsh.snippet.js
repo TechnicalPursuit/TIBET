@@ -146,7 +146,7 @@ function(aRequest) {
     arg0 = shell.getArgument(aRequest, 'ARG0');
     arg1 = shell.getArgument(aRequest, 'ARG1');
 
-    isRemove = shell.getArgument(aRequest, 'tsh:remove', false);
+    isRemove = TP.bc(shell.getArgument(aRequest, 'tsh:remove', false));
 
     snippets = TP.uc('urn:tibet:tsh_snippets').getResource().get('result');
 

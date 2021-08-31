@@ -181,6 +181,8 @@ if (TP.notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
         'reset', 'TP.sig.DOMReset',
         'resize', 'TP.sig.DOMResize',
         'scroll', 'TP.sig.DOMScroll',
+        'select', 'TP.sig.DOMSelect',
+        'selectionchange', 'TP.sig.DOMSelectionChange',
         'submit', 'TP.sig.DOMSubmit',
         'transitionend', 'TP.sig.DOMTransitionEnd',
         'unload', 'TP.sig.DOMUnload');

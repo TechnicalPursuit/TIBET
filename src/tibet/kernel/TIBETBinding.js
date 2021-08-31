@@ -257,11 +257,14 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     //  If the resource is a URI and we can obtain the resource result value of
     //  it, make sure that it is configured to signal Change notifications.
+    //  Also, we specifically tell the URI to *not* signal change if it has to
+    //  fetch new content.
 
     //  NB: We assume 'async' of false here.
     if (TP.isURI(resource) &&
         TP.isValid(resourceValue =
-            resource.getResource(TP.hc('resultType', TP.WRAP)).get('result'))) {
+            resource.getContent(
+                TP.request('resultType', TP.WRAP, 'signalChange', false)))) {
         resourceValue.shouldSignalChange(true);
     }
 
@@ -578,16 +581,6 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 //  MARKUP BINDING
 //  ========================================================================
 
-TP.totalSetupTime = 0;
-
-TP.totalBranchQueryTime = 0;
-TP.totalInlineQueryTime = 0;
-TP.totalTextQueryTime = 0;
-
-TP.totalUpdateTime = 0;
-
-TP.totalInitialGetTime = 0;
-
 //  ------------------------------------------------------------------------
 //  TP.dom.DocumentNode
 //  ------------------------------------------------------------------------
@@ -606,6 +599,259 @@ TP.dom.DocumentNode.Inst.defineAttribute('$originalLocationInfos');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.dom.DocumentNode.Inst.defineHandler('DOMFocus',
+function(aSignal) {
+
+    /**
+     * @method DOMFocus
+     * @summary Handles when the focused element in the receiver changes and
+     *     some components on the receiver surface (i.e. usually GUI widgets)
+     *     need to be updated in response to that change.
+     * @param {DOMFocus} aSignal The signal instance which triggered this
+     *     handler.
+     * @returns {TP.dom.DocumentNode} The receiver.
+     */
+
+    var query,
+        docElem,
+        boundElems,
+
+        signalFlag,
+
+        doc,
+
+        value,
+
+        matcher,
+
+        sigSource,
+        allRefreshedElements;
+
+    //  Query for all elements containing the ACP variable '$FOCUS'. Since
+    //  this is a query from the document, we don't bother to include ':scope'.
+    query = '*[*|io*="$FOCUS"], *[*|in*="$FOCUS"]';
+
+    docElem = this.getNativeNode().documentElement;
+
+    boundElems = TP.ac(docElem.querySelectorAll(query));
+    if (TP.isEmpty(boundElems)) {
+        return this;
+    }
+
+    //  Turn off any kind of DOM loaded signaling. This just adds overhead and
+    //  is unnecessary - in this mode, dependent items are themselves
+    //  responsible for signaling that their content got replaced.
+    signalFlag = TP.sys.shouldSignalDOMLoaded();
+    TP.sys.shouldSignalDOMLoaded(false);
+
+    doc = TP.nodeGetDocument(docElem);
+
+    value = TP.val(TP.documentGetFocusedElement(doc));
+
+    matcher = /\$FOCUS/;
+
+    //  Refresh any bindings on descendant elements of ours that pass the
+    //  filtering function.
+    this.$refreshBindingsMatching(
+        value,
+        boundElems,
+        function(anAttrNode) {
+            return anAttrNode.namespaceURI === TP.w3.Xmlns.BIND &&
+                    matcher.test(anAttrNode.value);
+        },
+        sigSource);
+
+    //  Set the DOM content loaded signaling whatever it was when we entered
+    //  this method.
+    TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed.
+    allRefreshedElements = this.get('$refreshedElements');
+    if (TP.notEmpty(allRefreshedElements)) {
+        this.getBody().$sendNativeRefreshEvent();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.DocumentNode.Inst.defineHandler('DOMSelect',
+function(aSignal) {
+
+    /**
+     * @method DOMSelect
+     * @summary Handles when the selection in a input text field or text area in
+     *     the receiver changes and some components on the receiver surface
+     *     (i.e. usually GUI widgets) need to be updated in response to that
+     *     change.
+     * @description Note that this handler is called when a selection is made
+     *     anywhere *inside of input text fields and textareas*. For selections
+     *     that happen outside of these controls, the document has its own
+     *     signal that it throws ('selectionchange')and we handle that in
+     *     another handler.
+     * @param {DOMSelect} aSignal The signal instance which triggered this
+     *     handler.
+     * @returns {TP.dom.DocumentNode} The receiver.
+     */
+
+    var resolvedTarget,
+        val,
+
+        value,
+
+        query,
+        docElem,
+        boundElems,
+
+        signalFlag,
+
+        matcher,
+
+        sigSource,
+        allRefreshedElements;
+
+    resolvedTarget = aSignal.getResolvedTarget();
+
+    //  In (X)HTML, only 'input type="text"' and 'textarea' elements have this
+    //  property.
+    if (TP.isNumber(resolvedTarget.selectionStart)) {
+        val = TP.wrap(resolvedTarget).getValue();
+        value = val.substring(resolvedTarget.selectionStart,
+                                    resolvedTarget.selectionEnd);
+    } else {
+        return this;
+    }
+
+    //  Query for all elements containing the ACP variable '$SELECTION'. Since
+    //  this is a query from the document, we don't bother to include ':scope'.
+    query = '*[*|io*="$SELECTION"], *[*|in*="$SELECTION"]';
+
+    docElem = this.getNativeNode().documentElement;
+
+    boundElems = TP.ac(docElem.querySelectorAll(query));
+    if (TP.isEmpty(boundElems)) {
+        return this;
+    }
+
+    //  Turn off any kind of DOM loaded signaling. This just adds overhead and
+    //  is unnecessary - in this mode, dependent items are themselves
+    //  responsible for signaling that their content got replaced.
+    signalFlag = TP.sys.shouldSignalDOMLoaded();
+    TP.sys.shouldSignalDOMLoaded(false);
+
+    matcher = /\$SELECTION/;
+
+    //  Refresh any bindings on descendant elements of ours that pass the
+    //  filtering function.
+    this.$refreshBindingsMatching(
+        value,
+        boundElems,
+        function(anAttrNode) {
+            return anAttrNode.namespaceURI === TP.w3.Xmlns.BIND &&
+                    matcher.test(anAttrNode.value);
+        },
+        sigSource);
+
+    //  Set the DOM content loaded signaling whatever it was when we entered
+    //  this method.
+    TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed.
+    allRefreshedElements = this.get('$refreshedElements');
+    if (TP.notEmpty(allRefreshedElements)) {
+        this.getBody().$sendNativeRefreshEvent();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.DocumentNode.Inst.defineHandler('DOMSelectionChange',
+function(aSignal) {
+
+    /**
+     * @method DOMSelectionChange
+     * @summary Handles when the receiver's selection changes and some
+     *     components on the receiver surface (i.e. usually GUI widgets) need to
+     *     be updated in response to that change.
+     * @description Note that this handler is called when a selection is made
+     *     anywhere *outside of input text fields and textareas*. Those controls
+     *     have their own signal that they throw ('select') and we handle that
+     *     in another handler.
+     * @param {DOMSelectionChange} aSignal The signal instance which triggered
+     *     this handler.
+     * @returns {TP.dom.DocumentNode} The receiver.
+     */
+
+    var query,
+        docElem,
+        boundElems,
+
+        signalFlag,
+
+        doc,
+
+        value,
+
+        matcher,
+
+        sigSource,
+        allRefreshedElements;
+
+    //  Query for all elements containing the ACP variable '$SELECTION'. Since
+    //  this is a query from the document, we don't bother to include ':scope'.
+    query = '*[*|io*="$SELECTION"], *[*|in*="$SELECTION"]';
+
+    docElem = this.getNativeNode().documentElement;
+
+    boundElems = TP.ac(docElem.querySelectorAll(query));
+    if (TP.isEmpty(boundElems)) {
+        return this;
+    }
+
+    //  Turn off any kind of DOM loaded signaling. This just adds overhead and
+    //  is unnecessary - in this mode, dependent items are themselves
+    //  responsible for signaling that their content got replaced.
+    signalFlag = TP.sys.shouldSignalDOMLoaded();
+    TP.sys.shouldSignalDOMLoaded(false);
+
+    doc = TP.nodeGetDocument(docElem);
+
+    value = TP.documentGetSelectionText(doc);
+
+    matcher = /\$SELECTION/;
+
+    //  Refresh any bindings on descendant elements of ours that pass the
+    //  filtering function.
+    this.$refreshBindingsMatching(
+        value,
+        boundElems,
+        function(anAttrNode) {
+            return anAttrNode.namespaceURI === TP.w3.Xmlns.BIND &&
+                    matcher.test(anAttrNode.value);
+        },
+        sigSource);
+
+    //  Set the DOM content loaded signaling whatever it was when we entered
+    //  this method.
+    TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+    //  Send a custom DOM-level event to allow 3rd party libraries to know that
+    //  the bindings have been refreshed.
+    allRefreshedElements = this.get('$refreshedElements');
+    if (TP.notEmpty(allRefreshedElements)) {
+        this.getBody().$sendNativeRefreshEvent();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.DocumentNode.Inst.defineHandler('FacetChange',
 function(aSignal) {
 
@@ -614,7 +860,8 @@ function(aSignal) {
      * @summary Handles when an object (usually a URI of some sort) changes and
      *     some components on the receiver surface (i.e. usually GUI widgets)
      *     need to be updated in response to that change.
-     * @param {Change} aSignal The signal instance which triggered this handler.
+     * @param {FacetChange} aSignal The signal instance which triggered this
+     *     handler.
      * @returns {TP.dom.DocumentNode} The receiver.
      */
 
@@ -648,12 +895,6 @@ function(aSignal) {
         keyToProcess,
 
         matcher,
-        len,
-
-        attrName,
-
-        ownerElem,
-        ownerTPElem,
 
         aspect,
         facet,
@@ -664,12 +905,6 @@ function(aSignal) {
         sigIndexes,
 
         pathPieces,
-
-        boundAttrNodes,
-        attrs,
-        attrVal,
-
-        aspectNames,
 
         originVal,
 
@@ -736,7 +971,9 @@ function(aSignal) {
         //  The changed data source is a URI
 
         //  The primary source is the overall 'whole data' object that changed.
-        primarySource = sigOrigin.getResource().get('result');
+        //  Note here how we specifically tell the URI to *not* signal change if
+        //  it has to fetch new content.
+        primarySource = sigOrigin.getContent(TP.request('signalChange', false));
         changedPrimaryLoc = sigOrigin.getPrimaryLocation();
 
         //  Compute a RegExp that will be used to match 'top level' (i.e. not
@@ -937,10 +1174,6 @@ function(aSignal) {
                             sigIndexes);
                     }
                 });
-
-        //  TIMING: var endUpdate = Date.now();
-        //  TIMING: TP.totalUpdateTime += (endUpdate - startUpdate);
-
     } else {
 
         //  TIMING: var startSetup = Date.now();
@@ -994,104 +1227,33 @@ function(aSignal) {
             //  another GUI control within the page. Because we don't have
             //  'changed data paths' to go by, we update all 'direct GUI'
             //  bindings.
+
             /* eslint-disable no-extra-parens */
             if ((TP.isKindOf(sigOrigin, TP.uri.TIBETURL) &&
                 TP.notEmpty(sigOrigin.getCanvasName())) || !originWasURI) {
             /* eslint-enable no-extra-parens */
 
-                //  Gather up all of the bound attributes.
-
-                boundAttrNodes = TP.ac();
-
-                //  Loop over all of the elements that were found.
-                for (i = 0; i < boundElems.length; i++) {
-                    attrs = boundElems[i].attributes;
-
-                    //  Loop over all of the attributes of the found element.
-                    for (j = 0; j < attrs.length; j++) {
-
-                        attrVal = attrs[j].value;
-
-                        //  If the attribute was in the BIND namespace and
-                        //  either matched our matcher OR contained ACP
-                        //  variables, then add it to our list of bound
-                        //  attributes.
-                        if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
-                            (matcher.test(attrVal) ||
-                                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(
-                                                                    attrVal))) {
-
-                            boundAttrNodes.push(attrs[j]);
-                        }
-                    }
-                }
-
-                //  Sort the attribute nodes so that 'bind:in' attributes come
-                //  first. This is important when an element has both 'bind:in'
-                //  and 'bind:io' attributes, since we want the 'in' bindings to
-                //  be refreshed first to have that data available to the 'io'
-                //  bindings.
-                boundAttrNodes.sort(
-                    function(a, b) {
-
-                        if (a.nodeName === 'bind:in' &&
-                            b.nodeName !== 'bind:in') {
-                            return -1;
-                        } else if (a.nodeName !== 'bind:in' &&
-                                    b.nodeName === 'bind:in') {
-                            return 1;
-                        }
-
-                        return 0;
-                    });
-
                 if (originWasURI) {
-                    originVal = sigOrigin.getContent();
+                    //  Note here how we specifically tell the URI to *not*
+                    //  signal change if it has to fetch new content.
+                    originVal = sigOrigin.getContent(
+                                    TP.request('signalChange', false));
                 } else {
                     originVal = sigOrigin;
                 }
 
-                len = boundAttrNodes.getSize();
-                for (i = 0; i < len; i++) {
-
-                    attrName = boundAttrNodes.at(i).localName;
-
-                    //  We only worry about updating 'bind:io' and 'bind:in'
-                    //  paths.
-                    if (attrName === 'io' || attrName === 'in') {
-
-                        attrVal = boundAttrNodes.at(i).value;
-
-                        if (matcher.test(attrVal)) {
-
-                            ownerElem = boundAttrNodes.at(i).ownerElement;
-                            ownerTPElem = TP.wrap(ownerElem);
-
-                            //  Grab all of the names of the aspects referencing
-                            //  the changed location, as given by the matcher.
-                            aspectNames = ownerTPElem.$computeMatchingAspects(
-                                                    boundAttrNodes.at(i).name,
-                                                    attrVal,
-                                                    matcher);
-
-                            //  Note that we use sigOrigin here as the
-                            //  primarySource and initialValue. We let the
-                            //  observers of this element decide how to use this
-                            //  element based on their standard data binding /
-                            //  decoding methods (isSingleValued,
-                            //  isScalarValued, etc.)
-                            ownerTPElem.$refreshLeaf(
-                                    facet,
-                                    originVal,
-                                    aspectNames,
-                                    boundAttrNodes[i],
-                                    null,
-                                    sigSource,
-                                    null,
-                                    NaN);
-                        }
-                    }
-                }
+                //  Refresh any bindings on descendant elements of ours that
+                //  pass the filtering function.
+                this.$refreshBindingsMatching(
+                    originVal,
+                    boundElems,
+                    function(anAttrNode) {
+                        return anAttrNode.namespaceURI === TP.w3.Xmlns.BIND &&
+                            (matcher.test(anAttrNode.value) ||
+                                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(
+                                                            anAttrNode.value));
+                    },
+                    sigSource);
             } else {
                 tpDocElem.$refreshBranches(
                         primarySource,
@@ -1108,9 +1270,6 @@ function(aSignal) {
                         sigIndexes);
             }
         }
-
-        //  TIMING: var endSetup = Date.now();
-        //  TIMING: TP.totalSetupTime += (endSetup - startSetup);
     }
 
     //  Set the DOM content loaded signaling whatever it was when we entered
@@ -1148,7 +1307,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.dom.DocumentNode.Inst.defineMethod('refresh',
-function(shouldRender) {
+function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
     /**
      * @method refresh
@@ -1160,6 +1319,15 @@ function(shouldRender) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
+     * @param {Boolean} [shouldRefreshBindings=true] Whether or not to refresh
+     *     data bindings from the receiver down (in a 'sparse' fashion).
+     * @param {TP.core.Hash} [localRefreshInfo] Information about a local-only
+     *     refresh that can be used to specifically target binds that occur only
+     *     *locally* on the receiver (i.e. where the receiver itself has the
+     *     'bind:*' attribute). Note that if this is supplied, that a *local
+     *     only* refresh will be performed and it will be the responsibility of
+     *     the caller to refresh any descendant bindings, scoped to the receiver
+     *     or not..
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
@@ -1171,13 +1339,139 @@ function(shouldRender) {
 
     if (TP.isHTMLDocument(node) || TP.isXHTMLDocument(node)) {
         if (TP.isElement(body = TP.documentGetBody(node))) {
-            return TP.tpnode(body).refresh(shouldRender);
+            return TP.tpnode(body).refresh(shouldRender,
+                                            shouldRefreshBindings,
+                                            localRefreshInfo);
         }
     } else {
-        return TP.tpnode(node.documentElement).refresh(shouldRender);
+        return TP.tpnode(node.documentElement).refresh(shouldRender,
+                                                        shouldRefreshBindings,
+                                                        localRefreshInfo);
     }
 
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.DocumentNode.Inst.defineMethod('$refreshBindingsMatching',
+function(newValue, boundElems, matchingFunc, signalSource) {
+
+    /**
+     * @method $refreshBindingsMatching
+     * @summary Refreshes descendant bindings whose attribute values test
+     *     successfully against both the matching Function and potentially the
+     *     source matcher RegExp (if supplied).
+     * @param {Object} newValue The value that descendant bindings can use to
+     *     set their value.
+     * @param {Element[]} boundElems Descendant elements of the receiver that
+     *     have binding attributes.
+     * @param {Function} matchingFunc The expression to extract binding
+     *     information from to compute the transformation function and data
+     *     expressions.
+     * @param {Object} [signalSource] The source of the change. If a signal
+     *     initiated the refreshing process, this will be the signal's 'source'.
+     * @returns {TP.dom.DocumentNode} The receiver.
+     */
+
+    var boundAttrNodes,
+        len,
+
+        i,
+        attrs,
+        j,
+
+        attrNode,
+        attrName,
+        attrVal,
+
+        ownerElem,
+        ownerTPElem,
+
+        aspectNames;
+
+    //  Gather up all of the bound attributes.
+
+    boundAttrNodes = TP.ac();
+
+    //  Loop over all of the elements that were found.
+    len = boundElems.getSize();
+    for (i = 0; i < len; i++) {
+        attrs = boundElems.at(i).attributes;
+
+        //  Loop over all of the attributes of the found element.
+        for (j = 0; j < attrs.length; j++) {
+            if (matchingFunc(attrs[j])) {
+                boundAttrNodes.push(attrs[j]);
+            }
+        }
+    }
+
+    if (TP.isEmpty(boundAttrNodes)) {
+        return this;
+    }
+
+    //  Sort the attribute nodes so that 'bind:in' attributes come first. This
+    //  is important when an element has both 'bind:in' and 'bind:io'
+    //  attributes, since we want the 'in' bindings to be refreshed first to
+    //  have that data available to the 'io' bindings.
+    boundAttrNodes.sort(
+        function(a, b) {
+
+            if (a.nodeName === 'bind:in' &&
+                b.nodeName !== 'bind:in') {
+                return -1;
+            } else if (a.nodeName !== 'bind:in' &&
+                        b.nodeName === 'bind:in') {
+                return 1;
+            }
+
+            return 0;
+        });
+
+    len = boundAttrNodes.getSize();
+    for (i = 0; i < len; i++) {
+
+        attrNode = boundAttrNodes.at(i);
+
+        attrName = attrNode.localName;
+
+        //  We only worry about updating 'bind:io' and 'bind:in'
+        //  paths.
+        if (attrName === 'io' || attrName === 'in') {
+
+            attrVal = attrNode.value;
+
+            ownerElem = attrNode.ownerElement;
+            ownerTPElem = TP.wrap(ownerElem);
+
+            //  Grab all of the names of the aspects referencing the changed
+            //  location. Note here how we supply a RegExp matching all. We
+            //  assume that the caller of this method has already filtered out
+            //  any bound node attributes that didn't match what they wanted amd
+            //  we wamt all attributes that
+            aspectNames = ownerTPElem.$computeMatchingAspects(
+                                        attrNode.name,
+                                        attrVal,
+                                        /\.*/);
+
+            ownerTPElem.refresh(
+                false,
+                true,
+                TP.hc(
+                    'facet', 'value',
+                    'initialVal', newValue,
+                    'updatedAspects', aspectNames,
+                    'bindingAttr', attrNode,
+                    'pathType', null,
+                    'changeSource', signalSource,
+                    'repeatSource', null,
+                    'repeatIndex', null
+                ));
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1449,7 +1743,7 @@ function(anExpression, stdinIsSpecial) {
                                  repeatSource, index, isXMLResource) {
             var wrappedVal,
 
-                tpDoc,
+                targetTPDoc,
 
                 params,
 
@@ -1469,7 +1763,7 @@ function(anExpression, stdinIsSpecial) {
             }
 
             if (TP.isValid(targetTPElem)) {
-                tpDoc = targetTPElem.getDocument();
+                targetTPDoc = targetTPElem.getDocument();
             }
 
             //  Iterating context
@@ -1485,7 +1779,13 @@ function(anExpression, stdinIsSpecial) {
                                 'APP', APP,
                                 '$SOURCE', source,
                                 '$TAG', targetTPElem,
-                                '$TARGET', tpDoc,
+                                '$SELECTION', targetTPElem.
+                                                getCurrentSelectionValue.
+                                                bind(targetTPElem),
+                                '$FOCUS', targetTPElem.
+                                            getCurrentFocusedValue.
+                                            bind(targetTPElem),
+                                '$TARGET', targetTPDoc,
                                 '$_', wrappedVal,
                                 '$INPUT', repeatSource,
                                 '$INDEX', index,
@@ -1505,7 +1805,13 @@ function(anExpression, stdinIsSpecial) {
                                 'APP', APP,
                                 '$SOURCE', source,
                                 '$TAG', targetTPElem,
-                                '$TARGET', tpDoc,
+                                '$SELECTION', targetTPElem.
+                                                getCurrentSelectionValue.
+                                                bind(targetTPElem),
+                                '$FOCUS', targetTPElem.
+                                            getCurrentFocusedValue.
+                                            bind(targetTPElem),
+                                '$TARGET', targetTPDoc,
                                 '$_', wrappedVal,
                                 '$INPUT', repeatSource,
                                 '$INDEX', index,
@@ -1525,17 +1831,27 @@ function(anExpression, stdinIsSpecial) {
                             'APP', APP,
                             '$SOURCE', source,
                             '$TAG', targetTPElem,
-                            '$TARGET', tpDoc,
+                            '$SELECTION', targetTPElem.
+                                            getCurrentSelectionValue.
+                                            bind(targetTPElem),
+                            '$FOCUS', targetTPElem.
+                                        getCurrentFocusedValue.
+                                        bind(targetTPElem),
+                            '$TARGET', targetTPDoc,
                             '$_', wrappedVal,
                             '$INPUT', vals);
             }
 
-            //  Register the Array of values we were handed as 'arguments' under
-            //  '$ARGN' variable names.
-            vals.forEach(
-                function(aVal, valIndex) {
-                    params.atPut('$ARG' + valIndex, aVal);
-                });
+            if (TP.isArray(vals)) {
+                //  Register the Array of values we were handed as 'arguments'
+                //  under '$ARGN' variable names.
+                vals.forEach(
+                    function(aVal, valIndex) {
+                        params.atPut('$ARG' + valIndex, aVal);
+                    });
+            } else {
+                params.atPut('$ARG0', vals);
+            }
 
             //  If we got a non-empty Array of values, then process them. Note
             //  here that we do *not* hand in a 'main data source', but all
@@ -1553,7 +1869,6 @@ function(anExpression, stdinIsSpecial) {
                 } else {
                     retVal = val;
                 }
-
             } else {
                 //  null or undefined (or empty), but let's be pendantic
                 retVal = vals;
@@ -1847,7 +2162,7 @@ function(attributeName, aspectName, expression) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$computeValueForBoundAspect',
-function(bindInfo, scopeValues) {
+function(bindInfo, scopeValues, dataSource, repeatDataSource, repeatDataIndex) {
 
     /**
      * @method $computeValueForBoundAspect
@@ -1857,6 +2172,14 @@ function(bindInfo, scopeValues) {
      *     particular bound aspect that we want a value for.
      * @param {String[]} scopeValues The list of scoping values (i.e. parts
      *     that, when combined, make up the entire bind scoping path).
+     * @param {Object} [dataSource] An optional data source that will be used if
+     *     the embedded expressions cannot be resolved to URIs.
+     * @param {Object} [repeatDataSource] The 'repeat data source' that will be
+     *     supplied if a transformation function is available for the bound
+     *     aspect. This should be the 'overall collection' of data that the
+     *     data source is part of.
+     * @param {Number} [repeatDataIndex] The index of the data source in the
+     *     'overall collection' that it is a part of.
      * @returns {Object|String} The value of the bound aspect. Note that if the
      *     supplied binding information for this aspect has more than 1 data
      *     expressions, this will be a String with all of the values
@@ -1865,6 +2188,10 @@ function(bindInfo, scopeValues) {
 
     var dataExprs,
         len,
+
+        transformFunc,
+        resultsForTransform,
+
         i,
 
         dataExpr,
@@ -1875,12 +2202,16 @@ function(bindInfo, scopeValues) {
         wholeURI,
 
         result,
-        finalResult;
+        finalResult,
 
-    //  There will be 1...n data expressions here. Iterate over them and compute
-    //  a model reference.
+        isXMLResource;
+
+    //  There will be 1...n data expressions here.
     dataExprs = bindInfo.at('dataExprs');
     len = dataExprs.getSize();
+
+    transformFunc = bindInfo.at('transformFunc');
+    resultsForTransform = TP.ac();
 
     for (i = 0; i < len; i++) {
         dataExpr = TP.trim(dataExprs.at(i));
@@ -1897,10 +2228,9 @@ function(bindInfo, scopeValues) {
             fullExpr = TP.uriJoinFragments.apply(TP, allVals);
 
             //  If we weren't able to compute a real URI from the fully expanded
-            //  URI value, then raise an exception and return here.
+            //  URI value, then raise an exception and break.
             if (!TP.isURIString(fullExpr)) {
                 this.raise('TP.sig.InvalidURI');
-
                 break;
             }
 
@@ -1910,35 +2240,57 @@ function(bindInfo, scopeValues) {
             //  binding expression.
 
             //  If we weren't able to compute a real URI from the fully expanded
-            //  URI value, then raise an exception and return here.
+            //  URI value, check to see if there is an optional data source
+            //  here.
             if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
-                this.raise('TP.sig.InvalidURI');
 
-                break;
+                //  No optional data source? Then raise an exception and break.
+                if (TP.notValid(dataSource)) {
+                    this.raise('TP.sig.InvalidURI');
+                    break;
+                }
+
+                //  Extract a value from the optional data source by running
+                //  the data expression against it.
+                result = TP.wrap(dataSource).get(TP.apc(dataExpr));
+            } else {
+                wholeURI = TP.uc(dataExpr);
             }
-
-            wholeURI = TP.uc(dataExpr);
         }
 
-        if (!TP.isURI(wholeURI)) {
-            this.raise('TP.sig.InvalidURI');
-
-            break;
+        if (TP.isURI(wholeURI)) {
+            //  Grab the result from the computed URI.
+            //  Note here how we specifically tell the URI to *not* signal
+            //  change if it has to fetch new content.
+            result = wholeURI.getContent(TP.request('signalChange', false));
         }
-
-        //  Grab the result from the computed URI.
-        result = wholeURI.getResource().get('result');
 
         //  If we have a valid result, then either set the finalResult to it or
         //  append it onto the finalResult if that already exists (this will
         //  occur if we have multiple data expressions).
-        if (TP.isValid(result)) {
-            if (TP.isValid(finalResult)) {
-                finalResult = TP.str(finalResult) + result;
-            } else {
-                finalResult = result;
+        if (!TP.isCallable(transformFunc)) {
+            if (TP.isValid(result)) {
+                if (TP.isValid(finalResult)) {
+                    finalResult = TP.str(finalResult) + result;
+                } else {
+                    finalResult = result;
+                }
             }
+        } else {
+            resultsForTransform.push(result);
         }
+    }
+
+    //  If we have a callable transform Function, then run it against the
+    //  results, using the supplied repeat data source and index.
+    if (TP.isCallable(transformFunc)) {
+        isXMLResource = TP.isXMLNode(TP.unwrap(resultsForTransform.first()));
+        finalResult = transformFunc(this,
+                                    resultsForTransform,
+                                    this,
+                                    repeatDataSource,
+                                    repeatDataIndex,
+                                    isXMLResource);
     }
 
     return finalResult;
@@ -1964,8 +2316,9 @@ function(attributeName, attributeValue, valueMatcher) {
      *     the binding information from.
      * @param {String} attributeValue The value of the binding attribute to
      *     extract binding information from.
-     * @param {RegExp} valueMatcher The RegExp to use to match against aspect
-     *     values.
+     * @param {RegExp} [valueMatcher] The RegExp to use to match against aspect
+     *     values. If this is not supplied, then no aspects will be returned
+     *     unless they contain ACP variables.
      * @returns {String[]} An array of aspect names that matched using the
      *     criteria described above.
      */
@@ -2029,10 +2382,10 @@ function(attributeName, attributeValue, valueMatcher) {
                     break;
                 }
 
-                //  If the matcher matched the expression itself, which means
-                //  that the aspect is probably a 'whole URI' (since it failed
-                //  the test above), then add the aspect.
-                if (valueMatcher.test(theExpr)) {
+                //  If the matcher was real and matched the expression itself,
+                //  which means that the aspect is probably a 'whole URI' (since
+                //  it failed the test above), then add the aspect.
+                if (TP.isRegExp(valueMatcher) && valueMatcher.test(theExpr)) {
                     aspectNames.push(aspect);
                     break;
                 }
@@ -3007,19 +3360,22 @@ function(branchExpr, initialVal, initialPathType) {
 
     theVal = initialVal;
 
-    //  If the attribute value is a whole URI, then just grab the
-    //  result of the URI and use that as the branch value to
-    //  process 'the next level down' in the branching.
+    //  If the attribute value is a whole URI, then just grab the result of the
+    //  URI and use that as the branch value to process 'the next level down' in
+    //  the branching.
+    //  Note here how we specifically tell the URI to *not* collapse its results
+    //  and to *not* signal change if it has to fetch new content.
     if (TP.isURIString(branchExpr)) {
         branchURI = TP.uc(branchExpr);
-        branchValReq = TP.request('shouldCollapse', false);
+        branchValReq =
+            TP.request('shouldCollapse', false, 'signalChange', false);
 
         if (branchURI.hasFragment()) {
-            branchVal = branchURI.getResource(branchValReq).get('result');
+            branchVal = branchURI.getContent(branchValReq);
         } else if (TP.isValid(theVal)) {
             branchVal = theVal;
         } else {
-            branchVal = branchURI.getResource(branchValReq).get('result');
+            branchVal = branchURI.getContent(branchValReq);
         }
 
         //  Try to detect the type of path based on tasting the
@@ -3089,6 +3445,107 @@ function(branchExpr, initialVal, initialPathType) {
     pathType = TP.ifInvalid(pathType, initialPathType);
 
     return TP.ac(branchVal, pathType);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getCurrentFocusedValue',
+function(exprParams) {
+
+    /**
+     * @method getCurrentFocusedValue
+     * @summary Returns the value of the currently focused element in the same
+     *     document as the receiver. This method is invoked from the binding
+     *     expression machinery when a '$FOCUS' ACP variable is encountered.
+     * @param {TP.core.Hash} exprParams The current set of expression params
+     *     that are being used to evaluate the expression.
+     * @returns {String} The value of the currently focused element in the
+     *     receiver's document.
+     */
+
+    var val;
+
+    //  If there is a value at '$_' in the expression params, return that. This
+    //  will contain any value of the currently focused element that was
+    //  computed by the handlers for DOMFocus and supplied to the binding
+    //  refresh machinery.
+    val = exprParams.at('$_');
+    if (TP.isValid(val)) {
+        return val;
+    }
+
+    //  Otherwise, the $TARGET is usually a TP.dom.DocumentNode. If it is, then
+    //  grab the value of the currently focused element using our primitive
+    //  call.
+    val = exprParams.at('$TARGET');
+    if (TP.isKindOf(val, TP.dom.DocumentNode)) {
+        //  Return the *value* of the currently focused element.
+        return TP.val(TP.documentGetFocusedElement(TP.unwrap(val)));
+    }
+
+    //  Otherwise, the $TAG is usually a TP.dom.ElementNode. If it is, then
+    //  grab its TP.dom.DocumentNode and grab the value of the currently focused
+    //  element using our primitive call.
+    val = exprParams.at('$TAG');
+    if (TP.isKindOf(val, TP.dom.ElementNode)) {
+        val = val.getDocument();
+        if (TP.isKindOf(val, TP.dom.DocumentNode)) {
+            //  Return the *value* of the currently focused element.
+            return TP.val(TP.documentGetFocusedElement(TP.unwrap(val)));
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getCurrentSelectionValue',
+function(exprParams) {
+
+    /**
+     * @method getCurrentSelectionValue
+     * @summary Returns the value of the current selection in the same
+     *     document as the receiver. This method is invoked from the binding
+     *     expression machinery when a '$SELECTION' ACP variable is encountered.
+     * @description This method will return a String if the current selection is
+     *     a piece of text in the document. Otherwise, it will return an Object
+     *     that represents the current selection of the focused GUI control.
+     * @param {TP.core.Hash} exprParams The current set of expression params
+     *     that are being used to evaluate the expression.
+     * @returns {Object} The current selection in the receiver's document.
+     */
+
+    var val;
+
+    //  If there is a value at '$_' in the expression params, return that. This
+    //  will contain any selection value that was computed by the handlers for
+    //  DOMSelect and DOMSelectionChange and supplied to the binding refresh
+    //  machinery.
+    val = exprParams.at('$_');
+    if (TP.isValid(val)) {
+        return val;
+    }
+
+    //  Otherwise, the $TARGET is usually a TP.dom.DocumentNode. If it is, then
+    //  grab the current selection using our primitive call.
+    val = exprParams.at('$TARGET');
+    if (TP.isKindOf(val, TP.dom.DocumentNode)) {
+        return TP.sys.getCurrentSelection(TP.unwrap(val));
+    }
+
+    //  Otherwise, the $TAG is usually a TP.dom.ElementNode. If it is, then
+    //  grab its TP.dom.DocumentNode and grab the current selection using our
+    //  primitive call.
+    val = exprParams.at('$TAG');
+    if (TP.isKindOf(val, TP.dom.ElementNode)) {
+        val = val.getDocument();
+        if (TP.isKindOf(val, TP.dom.DocumentNode)) {
+            return TP.sys.getCurrentSelection(TP.unwrap(val));
+        }
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -3792,7 +4249,7 @@ function(indexes, aCollection) {
 
         wrapperElement,
 
-        tpDoc,
+        targetTPDoc,
 
         isXMLResource,
 
@@ -3872,7 +4329,7 @@ function(indexes, aCollection) {
         return this;
     }
 
-    tpDoc = this.getDocument();
+    targetTPDoc = this.getDocument();
 
     if (TP.canInvoke(aCollection, 'first')) {
         //  Detect whether we're drawing GUI for model which is a chunk of XML
@@ -3913,7 +4370,13 @@ function(indexes, aCollection) {
                         'APP', APP,
                         '$SOURCE', this,
                         '$TAG', newTPElem,
-                        '$TARGET', tpDoc,
+                        '$SELECTION', newTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(newTPElem),
+                        '$FOCUS', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        '$TARGET', targetTPDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
                         '$INDEX', scopeIndex,
@@ -3933,7 +4396,13 @@ function(indexes, aCollection) {
                         'APP', APP,
                         '$SOURCE', this,
                         '$TAG', newTPElem,
-                        '$TARGET', tpDoc,
+                        '$SELECTION', newTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(newTPElem),
+                        '$FOCUS', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        '$TARGET', targetTPDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
                         '$INDEX', scopeIndex,
@@ -4051,6 +4520,104 @@ function(indexes, aCollection) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('isAspectBoundIn',
+function(aspectName) {
+
+    /**
+     * @method isAspectBoundIn
+     * @summary Returns whether or not the aspect is bound 'in' on the receiver.
+     * @param {String} aspectName The name of the aspect that the caller wants
+     *     to check the binding for.
+     * @returns {Boolean} Whether or not the supplied aspect is bound 'in' to
+     *     the receiver.
+     */
+
+    var bindingInfo,
+
+        keys,
+        len,
+        i;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:in', this.getAttribute('bind:in'));
+
+    //  This info is keyed by aspect. If one of the keys matches the aspect,
+    //  return true.
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        if (keys.at(i) === aspectName) {
+            return true;
+        }
+    }
+
+    //  It might not have been in the 'bind:in', so we do it again with
+    //  'bind:io'
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:io', this.getAttribute('bind:io'));
+
+    //  This info is keyed by aspect. If one of the keys matches the aspect,
+    //  return true.
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        if (keys.at(i) === aspectName) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('isAspectBoundOut',
+function(aspectName) {
+
+    /**
+     * @method isAspectBoundOut
+     * @summary Returns whether or not the aspect is bound 'out' on the
+     *     receiver.
+     * @param {String} aspectName The name of the aspect that the caller wants
+     *     to check the binding for.
+     * @returns {Boolean} Whether or not the supplied aspect is bound 'out' to
+     *     the receiver.
+     */
+
+    var bindingInfo,
+
+        keys,
+        len,
+        i;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:out', this.getAttribute('bind:out'));
+
+    //  This info is keyed by aspect. If one of the keys matches the aspect,
+    //  return true.
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        if (keys.at(i) === aspectName) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('isBoundElement',
 function() {
 
@@ -4091,11 +4658,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('$refresh',
+TP.dom.ElementNode.Inst.defineMethod('$refreshBindings',
 function(shouldRender) {
 
     /**
-     * @method $refresh
+     * @method $refreshBindings
      * @summary Updates the receiver's content by refreshing all bound aspects
      *     in the receiver.
      * @param {Boolean} [shouldRender] Whether or not to force (or not force)
@@ -4109,6 +4676,11 @@ function(shouldRender) {
     var elem,
 
         scopeVals,
+        scopedValExpr,
+        scopedURI,
+        valueAndPath,
+        scopedVal,
+        pathType,
 
         didProcess,
 
@@ -4141,22 +4713,65 @@ function(shouldRender) {
     didProcess = false;
     scopeVals = this.getBindingScopeValues();
 
+    if (TP.notEmpty(scopeVals)) {
+        //  Concatenate the binding value onto the scope values array (thereby
+        //  creating a new Array) and use it to join all of the values together.
+        scopedValExpr = TP.uriJoinFragments.apply(TP, scopeVals);
+
+        //  If we weren't able to compute a real URI from the fully expanded URI
+        //  value, then raise an exception and return here.
+        if (!TP.isURIString(scopedValExpr)) {
+            this.raise('TP.sig.InvalidURI');
+
+            return false;
+        }
+
+        //  Create a URI from the scoped expression and get its result. This
+        //  will provide with the 'closest scoped expression'. Note here how we
+        //  specifically tell the URI to *not* signal change if it has to fetch
+        //  new content.
+        scopedURI = TP.uc(scopedValExpr);
+        scopedVal = scopedURI.getContent(TP.request('signalChange', false));
+
+        //  Obtain the branching value and path type, given the scoped value
+        //  expression and the value as we've computed it so far.
+        valueAndPath = this.$getBranchValueAndPathType(
+                                scopedValExpr, scopedVal);
+
+        scopedVal = valueAndPath.at(0);
+        pathType = valueAndPath.at(1);
+
+    } else {
+        scopedVal = null;
+        pathType = null;
+    }
+
     valChanged = false;
 
     if (TP.elementHasAttribute(elem, 'bind:in', true)) {
         didProcess = true;
         attrNode = TP.elementGetAttributeNode(elem, 'bind:in');
-        attrVal = this.getAttribute('bind:in');
-
-        valChanged = this.$refreshAttr(scopeVals, attrNode, 'bind:in', attrVal);
+        valChanged = this.$refreshLocalBindings('value',
+                                        scopedVal,
+                                        TP.ALL,
+                                        attrNode,
+                                        pathType,
+                                        this,
+                                        null,
+                                        NaN);
     }
 
     if (TP.elementHasAttribute(elem, 'bind:io', true)) {
         didProcess = true;
         attrNode = TP.elementGetAttributeNode(elem, 'bind:io');
-        attrVal = this.getAttribute('bind:io');
-
-        valChanged = this.$refreshAttr(scopeVals, attrNode, 'bind:io', attrVal);
+        valChanged = this.$refreshLocalBindings('value',
+                                        scopedVal,
+                                        TP.ALL,
+                                        attrNode,
+                                        pathType,
+                                        this,
+                                        null,
+                                        NaN);
     }
 
     //  If this element has a bind:scope, then refresh our bound descendants.
@@ -4194,11 +4809,11 @@ function(shouldRender) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('refresh',
-function(shouldRender, shouldRefreshBindings) {
+TP.dom.ElementNode.Inst.defineMethod('$refresh',
+function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
     /**
-     * @method refresh
+     * @method $refresh
      * @summary Updates the receiver's content by refreshing all bound aspects
      *     in the receiver and all of the descendants of the receiver that are
      *     bound.
@@ -4206,9 +4821,15 @@ function(shouldRender, shouldRefreshBindings) {
      *     re-rendering if the data source changes. If not supplied, this
      *     parameter will default to true if the bound data changed and false if
      *     it didn't.
-     * @param {Boolean} [shouldRefreshBindings] Whether or not to refresh data
-     *     bindings from the receiver down (in a 'sparse' fashion). If not
-     *     supplied, this parameter will default to true.
+     * @param {Boolean} [shouldRefreshBindings=true] Whether or not to refresh
+     *     data bindings from the receiver down (in a 'sparse' fashion).
+     * @param {TP.core.Hash} [localRefreshInfo] Information about a local-only
+     *     refresh that can be used to specifically target binds that occur only
+     *     *locally* on the receiver (i.e. where the receiver itself has the
+     *     'bind:*' attribute). Note that if this is supplied, that a *local
+     *     only* refresh will be performed and it will be the responsibility of
+     *     the caller to refresh any descendant bindings, scoped to the receiver
+     *     or not..
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
@@ -4216,6 +4837,23 @@ function(shouldRender, shouldRefreshBindings) {
     var retVal,
 
         allRefreshedElements;
+
+    if (TP.isValid(localRefreshInfo)) {
+        retVal = this.$refreshLocalBindings(
+                    localRefreshInfo.at('facet'),
+                    localRefreshInfo.at('initialVal'),
+                    localRefreshInfo.at('updatedAspects'),
+                    localRefreshInfo.at('bindingAttr'),
+                    localRefreshInfo.at('pathType'),
+                    localRefreshInfo.at('changeSource'),
+                    localRefreshInfo.at('repeatSource'),
+                    localRefreshInfo.at('repeatIndex'));
+        if (TP.notFalse(shouldRender) && retVal) {
+            this.render();
+        }
+
+        return retVal;
+    }
 
     //  First, call refresh on all of the *direct children* of the receiver,
     //  specifying to *not* refresh data bindings. We'll do that in a more
@@ -4230,12 +4868,12 @@ function(shouldRender, shouldRefreshBindings) {
     //  If the caller hasn't explicitly said to refresh data bindings, then we
     //  do so.
     if (TP.notFalse(shouldRefreshBindings)) {
-        retVal = this.$refresh(shouldRender);
+        retVal = this.$refreshBindings(shouldRender);
 
-        //  If this element has a 'bind:scope', then the '$refresh' call above
-        //  will have already called refreshBoundDescendants on it. Note that
-        //  refreshBoundDescendants will process refreshed elements so we only
-        //  do that if we don't call it.
+        //  If this element has a 'bind:scope', then the '$refreshBindings' call
+        //  above will have already called 'refreshBoundDescendants' on it. Note
+        //  that 'refreshBoundDescendants' will process refreshed elements so we
+        //  only do that if we don't call it.
         if (!this.hasAttribute('bind:scope')) {
             this.refreshBoundDescendants(shouldRender);
         } else {
@@ -4255,127 +4893,32 @@ function(shouldRender, shouldRefreshBindings) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('$refreshAttr',
-function(scopeVals, attributeNode, bindingAttrName, bindingAttrValue) {
+TP.dom.ElementNode.Inst.defineMethod('refresh',
+function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
     /**
-     * @method $refreshAttr
-     * @summary Updates the receiver's content using the supplied scope values,
-     *     attribute node and binding expression.
-     * @param {String[]} scopeVals An Array of scoping values to use for
-     *     computing the binding scope when evaluating the expressions as
-     *     supplied in the binding expression.
-     * @param {Attribute} attributeNode The attribute node that the binding
-     *     expression was found on. This is passed along to code that refreshes
-     *     expressions at our 'leaf' level.
-     * @param {String} bindingAttrName The name of the binding attribute.
-     * @param {String} bindingAttrValue The value of the binding attribute. This
-     *     will contain the information that binding expressions can be
-     *     extracted from.
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound aspects
+     *     in the receiver and all of the descendants of the receiver that are
+     *     bound.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @param {Boolean} [shouldRefreshBindings=true] Whether or not to refresh
+     *     data bindings from the receiver down (in a 'sparse' fashion).
+     * @param {TP.core.Hash} [localRefreshInfo] Information about a local-only
+     *     refresh that can be used to specifically target binds that occur only
+     *     *locally* on the receiver (i.e. where the receiver itself has the
+     *     'bind:*' attribute). Note that if this is supplied, that a *local
+     *     only* refresh will be performed and it will be the responsibility of
+     *     the caller to refresh any descendant bindings, scoped to the receiver
+     *     or not..
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
 
-    var bindingInfo,
-
-        scopedValExpr,
-        scopedURI,
-        scopedVal,
-
-        pathType,
-
-        valueAndPath,
-
-        didRefresh;
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(bindingAttrName, bindingAttrValue);
-
-    //  If we are inside of a scoping context.
-    if (TP.notEmpty(scopeVals)) {
-        //  Concatenate the binding value onto the scope values array (thereby
-        //  creating a new Array) and use it to join all of the values together.
-        scopedValExpr = TP.uriJoinFragments.apply(TP, scopeVals);
-
-        //  If we weren't able to compute a real URI from the fully expanded URI
-        //  value, then raise an exception and return here.
-        if (!TP.isURIString(scopedValExpr)) {
-            this.raise('TP.sig.InvalidURI');
-
-            return false;
-        }
-
-        //  Create a URI from the scoped expression and get its result. This
-        //  will provide with the 'closest scoped expression'. Note here how we
-        //  specifically tell the URI to *not* signal change if it has to fetch
-        //  new content.
-        scopedURI = TP.uc(scopedValExpr);
-        scopedVal = scopedURI.getResource(
-                            TP.request('signalChange', false)).get('result');
-
-        //  Obtain the branching value and path type, given the scoped value
-        //  expression and the value as we've computed it so far.
-        valueAndPath = this.$getBranchValueAndPathType(
-                                scopedValExpr, scopedVal);
-
-        scopedVal = valueAndPath.at(0);
-        pathType = valueAndPath.at(1);
-
-    } else {
-        scopedVal = null;
-        pathType = null;
-    }
-
-    didRefresh = false;
-
-    //  Iterate over each binding expression in the binding information.
-    bindingInfo.perform(
-        function(bindEntry) {
-
-            var aspectName,
-                bindVal,
-
-                dataExprs,
-                transformFunc,
-
-                refreshedEntry;
-
-            aspectName = bindEntry.first();
-            bindVal = bindEntry.last();
-
-            //  There will be 1...n data expressions here.
-            dataExprs = bindVal.at('dataExprs');
-
-            //  If a transformation function was computed from the expression,
-            //  it will be here.
-            transformFunc = bindVal.at('transformFunc');
-
-            //  Set our final value for the current binding expresssion. This
-            //  will return whether or not setting this value will have changed
-            //  one or more of the values of the observers.
-            refreshedEntry = this.$setFinalValue(
-                                    aspectName,
-                                    dataExprs,
-                                    scopedVal,
-                                    TP.ac(aspectName),
-                                    'value',
-                                    transformFunc,
-                                    pathType,
-                                    this,
-                                    null,
-                                    NaN);
-
-            //  If at least one returned true, then flip the flag to true. Note
-            //  that this is constructed such that, once the flag is flipped to
-            //  true, it cannot be changed back.
-            if (refreshedEntry) {
-                didRefresh = refreshedEntry;
-            }
-        }.bind(this));
-
-    return didRefresh;
+    return this.$refresh(shouldRender, shouldRefreshBindings, localRefreshInfo);
 });
 
 //  ------------------------------------------------------------------------
@@ -4415,13 +4958,13 @@ function(shouldRender, shouldSendEvent) {
         function(aDescendant) {
             var testValChanged;
 
-            //  NB: We call the primitive '$refresh' call here - otherwise,
-            //  we'll end up recursing. Note that, even though boundDescendants
-            //  will contain 'bind:scope' and 'bind:repeat' elements at this
-            //  point, they will be filtered out by this method. Their
-            //  descendants, the real bind:[in|io|out] elements, will be
-            //  refreshed.
-            testValChanged = aDescendant.$refresh(shouldRender);
+            //  NB: We call the primitive '$refreshBindings' call here -
+            //  otherwise, we'll end up recursing. Note that, even though
+            //  boundDescendants will contain 'bind:scope' and 'bind:repeat'
+            //  elements at this point, they will be filtered out by this
+            //  method. Their descendants, the real bind:[in|io|out] elements,
+            //  will be refreshed.
+            testValChanged = aDescendant.$refreshBindings(shouldRender);
 
             //  NB: We only flip this if the descendant returned true. Once
             //  flipped to true, we never want to flip it back to false.
@@ -4590,41 +5133,8 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
     //  on those attributes here because the 'querySelectorAll' call has no
     //  namespace support :-(. It is, however, very fast. We'll filter for that
     //  later.
-    subscopes = TP.ac(elem.querySelectorAll('*[*|scope], *[*|repeat]'));
-
-    subscopes = subscopes.filter(
-            function(aSubscope) {
-
-                var l;
-
-                //  We don't want ourself in the list
-                if (aSubscope === elem) {
-                    return false;
-                }
-
-                if (!elem.contains(aSubscope)) {
-                    return false;
-                }
-
-                for (l = 0; l < subscopes.length; l++) {
-                    //  If:
-                    //  -   We're not checking ourself as a subscope
-                    //  -   The subscope we're checking is actually contained in
-                    //      the element
-                    //  -   The iterating subscope contains the target subscope
-                    //  -   We're at the end of checking all of the subscopes
-                    //  then return false to filter out the target subscope.
-                    if (subscopes[l] !== aSubscope &&
-                        elem.contains(subscopes[l]) &&
-                        subscopes[l].contains(aSubscope)) {
-                            if (l === subscopes.length - 1) {
-                                return false;
-                            }
-                    }
-                }
-
-                return true;
-            });
+    subscopes = TP.ac(elem.querySelectorAll(
+                        ':scope *[*|scope], :scope *[*|repeat]'));
 
     boundElems = needsRefreshElems;
 
@@ -4700,7 +5210,9 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
     //  the rooted URI).
 
     //  Grab the primary location of the signal origin.
-    primaryLoc = sigOrigin.getPrimaryLocation();
+    if (TP.isValid(sigOrigin)) {
+        primaryLoc = sigOrigin.getPrimaryLocation();
+    }
 
     //  Grab the 'original location' info records that were computed by the
     //  'bind:' namespace object when the content containing these binds was
@@ -4724,7 +5236,7 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
             //  location obtained above. If they don't match, then we're not
             //  going to match here at all.
             concreteLocation = infoPair.last();
-            if (concreteLocation !== primaryLoc) {
+            if (TP.notEmpty(primaryLoc) && concreteLocation !== primaryLoc) {
                 return;
             }
 
@@ -4835,9 +5347,6 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
 
             return 0;
         });
-
-    //  TIMING: var endQuery = Date.now();
-    //  TIMING: TP.totalBranchQueryTime += (endQuery - startQuery);
 
     if (TP.isPlainObject(initialVal)) {
         theVal = TP.hc(initialVal);
@@ -4980,15 +5489,20 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                                                         boundAttr.name,
                                                         attrVal,
                                                         primaryLocMatcher);
-                        ownerTPElem.$refreshLeaf(
-                            aFacet,
-                            branchVal,
-                            aspectNames,
-                            boundAttr,
-                            pathType,
-                            changeSource,
-                            null,
-                            null);
+
+                        ownerTPElem.refresh(
+                            false,
+                            true,
+                            TP.hc(
+                                'facet', aFacet,
+                                'initialVal', branchVal,
+                                'updatedAspects', aspectNames,
+                                'bindingAttr', boundAttr,
+                                'pathType', pathType,
+                                'changeSource', changeSource,
+                                'repeatSource', null,
+                                'repeatIndex', null
+                            ));
 
                         //  Now, we must remove the ownerTPElem from the list of
                         //  bound elements, or we'll recurse endlessly.
@@ -5062,16 +5576,19 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     }
                 }
 
-                //  Go ahead and process this as a leaf.
-                ownerTPElem.$refreshLeaf(
-                    aFacet,
-                    theVal,
-                    aspectNames,
-                    boundAttr,
-                    aPathType,
-                    changeSource,
-                    repeatSource,
-                    repeatIndex);
+                ownerTPElem.refresh(
+                    false,
+                    true,
+                    TP.hc(
+                        'facet', aFacet,
+                        'initialVal', theVal,
+                        'updatedAspects', aspectNames,
+                        'bindingAttr', boundAttr,
+                        'pathType', aPathType,
+                        'changeSource', changeSource,
+                        'repeatSource', repeatSource,
+                        'repeatIndex', repeatIndex
+                    ));
             }
         }
 
@@ -5218,8 +5735,11 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                         if (TP.isURIString(attrVal)) {
                             branchURI = TP.uc(attrVal);
                             if (branchURI.hasFragment()) {
-                                branchVal =
-                                    branchURI.getResource().get('result');
+                                //  Note here how we specifically tell the URI to
+                                //  *not* signal change if it has to fetch new
+                                //  content.
+                                branchVal = branchURI.getContent(
+                                            TP.request('signalChange', false));
                             } else {
                                 branchVal = theVal;
                             }
@@ -5461,15 +5981,19 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                         }
                     }
 
-                    ownerTPElem.$refreshLeaf(
-                        aFacet,
-                        theVal,
-                        updatedUIAspects,
-                        boundAttr,
-                        aPathType,
-                        changeSource,
-                        repeatSource,
-                        repeatIndex);
+                    ownerTPElem.refresh(
+                        false,
+                        true,
+                        TP.hc(
+                            'facet', aFacet,
+                            'initialVal', theVal,
+                            'updatedAspects', updatedUIAspects,
+                            'bindingAttr', boundAttr,
+                            'pathType', aPathType,
+                            'changeSource', changeSource,
+                            'repeatSource', repeatSource,
+                            'repeatIndex', repeatIndex
+                        ));
 
                     didProcess = true;
                 }
@@ -5524,13 +6048,13 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('$refreshLeaf',
+TP.dom.ElementNode.Inst.defineMethod('$refreshLocalBindings',
 function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, changeSource, repeatSource, repeatIndex) {
 
     /**
-     * @method $refreshLeaf
-     * @summary Refreshes any data bindings occurring as a 'leaf' (i.e. a
-     *     scalar displayed value) under the receiver.
+     * @method $refreshLocalBindings
+     * @summary Refreshes any data bindings occurring directly on the receiver
+     *     (i.e. a scalar displayed value) under the receiver.
      * @param {String} [aFacet=value] The facet of the binding expressions that
      *     we're refreshing. This defaults to 'value' which is the 99% case.
      * @param {Object} initialVal The initial value to use to update the
@@ -5549,7 +6073,8 @@ function(aFacet, initialVal, updatedAspects, bindingAttr, aPathType, changeSourc
      *     receiver is inside of a repeat context.
      * @param {Number} repeatIndex The index of the nearest scope within the
      *     nearest repeat if the receiver is inside of a repeat context.
-     * @returns {TP.dom.ElementNode} The receiver.
+     * @returns {Boolean} Whether or not the machinery invoked the set machinery
+     *     of the leaf to change the value it is displaying.
      */
 
     var bindingInfo,
@@ -5693,7 +6218,7 @@ function(regenerateIfNecessary) {
         templatedAttrs,
 
         elem,
-        tpDoc,
+        targetTPDoc,
 
         isXMLResource,
 
@@ -5746,12 +6271,13 @@ function(regenerateIfNecessary) {
 
     //  Grab the results of both URIs.
 
-    //  NB: Note how we do *not* want the getResource() call to collapse
-    //  it's results here - we always want a collection.
-    repeatResult = repeatURI.getResource(
-                    TP.request('shouldCollapse', false)).get('result');
-    repeatWholeResult = repeatWholeURI.getResource(
-                    TP.request('shouldCollapse', false)).get('result');
+    //  NB: Note how we do *not* want the getContent() call to collapse it's
+    //  results here - we always want a collection. We also tell it to *not*
+    //  signal change if it has to fetch new content.
+    repeatResult = repeatURI.getContent(
+                    TP.request('shouldCollapse', false, 'signalChange', false));
+    repeatWholeResult = repeatWholeURI.getContent(
+                    TP.request('shouldCollapse', false, 'signalChange', false));
 
     if (TP.notValid(repeatResult)) {
         return this;
@@ -5849,15 +6375,10 @@ function(regenerateIfNecessary) {
 
             elem = this.getNativeNode();
 
-            tpDoc = this.getDocument();
+            targetTPDoc = this.getDocument();
 
             //  Grab any templated elements and refresh their values.
-
-            templatedElems =
-                TP.byCSSPath('*[tibet|templateexpr]',
-                                elem,
-                                false,
-                                true);
+            templatedElems = TP.byCSSPath('tibet|acp', elem, false, true);
 
             if (TP.notEmpty(templatedElems)) {
 
@@ -5961,7 +6482,13 @@ function(regenerateIfNecessary) {
                                         'APP', APP,
                                         '$SOURCE', this,
                                         '$TAG', nearestScopeTPElem,
-                                        '$TARGET', tpDoc,
+                                        '$SELECTION', nearestScopeTPElem.
+                                                        getCurrentSelectionValue.
+                                                        bind(nearestScopeTPElem),
+                                        '$FOCUS', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        '$TARGET', targetTPDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
                                         '$INDEX', dataIndex,
@@ -5979,7 +6506,13 @@ function(regenerateIfNecessary) {
                                         'APP', APP,
                                         '$SOURCE', this,
                                         '$TAG', nearestScopeTPElem,
-                                        '$TARGET', tpDoc,
+                                        '$SELECTION', nearestScopeTPElem.
+                                                        getCurrentSelectionValue.
+                                                        bind(nearestScopeTPElem),
+                                        '$FOCUS', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        '$TARGET', targetTPDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
                                         '$INDEX', dataIndex,
@@ -5995,8 +6528,7 @@ function(regenerateIfNecessary) {
                             //  Grab the templating expression and wrap it in
                             //  ACP brackets. This allows the transform
                             //  machinery to treat it properly.
-                            template = templatedElem.getAttribute(
-                                                        'tibet:templateexpr');
+                            template = templatedElem.getAttribute('expr');
                             template = '{{' + template + '}}';
 
                             //  Run the the transform machinery and use the
@@ -6152,7 +6684,13 @@ function(regenerateIfNecessary) {
                                         'APP', APP,
                                         '$SOURCE', this,
                                         '$TAG', nearestScopeTPElem,
-                                        '$TARGET', tpDoc,
+                                        '$SELECTION', nearestScopeTPElem.
+                                                        getCurrentSelectionValue.
+                                                        bind(nearestScopeTPElem),
+                                        '$FOCUS', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        '$TARGET', targetTPDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
                                         '$INDEX', dataIndex,
@@ -6170,7 +6708,13 @@ function(regenerateIfNecessary) {
                                         'APP', APP,
                                         '$SOURCE', this,
                                         '$TAG', nearestScopeTPElem,
-                                        '$TARGET', tpDoc,
+                                        '$SELECTION', nearestScopeTPElem.
+                                                        getCurrentSelectionValue.
+                                                        bind(nearestScopeTPElem),
+                                        '$FOCUS', nearestScopeTPElem.
+                                                    getCurrentFocusedValue.
+                                                    bind(nearestScopeTPElem),
+                                        '$TARGET', targetTPDoc,
                                         '$_', aData,
                                         '$INPUT', repeatResultSlice,
                                         '$INDEX', dataIndex,
@@ -6233,7 +6777,8 @@ function(regenerateIfNecessary) {
                             var jsonStr,
                                 attrData;
 
-                            jsonStr = TP.reformatJSToJSON(anAttr.nodeValue, false);
+                            jsonStr = TP.reformatJSToJSON(anAttr.nodeValue,
+                                                            false);
 
                             attrData = TP.json2js(jsonStr);
 
@@ -6331,7 +6876,7 @@ function(aCollection, elems) {
 
         startIndex,
 
-        tpDoc,
+        targetTPDoc,
 
         scopeIndex,
 
@@ -6434,8 +6979,8 @@ function(aCollection, elems) {
         return false;
     }
 
-    tpDoc = this.getDocument();
-    doc = tpDoc.getNativeNode();
+    targetTPDoc = this.getDocument();
+    doc = targetTPDoc.getNativeNode();
 
     bodyFragment = doc.createDocumentFragment();
 
@@ -6468,7 +7013,13 @@ function(aCollection, elems) {
                         'APP', APP,
                         '$SOURCE', this,
                         '$TAG', newTPElem,
-                        '$TARGET', tpDoc,
+                        '$SELECTION', newTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(newTPElem),
+                        '$FOCUS', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        '$TARGET', targetTPDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
                         '$INDEX', scopeIndex,
@@ -6488,7 +7039,13 @@ function(aCollection, elems) {
                         'APP', APP,
                         '$SOURCE', this,
                         '$TAG', newTPElem,
-                        '$TARGET', tpDoc,
+                        '$SELECTION', newTPElem.
+                                        getCurrentSelectionValue.
+                                        bind(newTPElem),
+                        '$FOCUS', newTPElem.
+                                    getCurrentFocusedValue.
+                                    bind(newTPElem),
+                        '$TARGET', targetTPDoc,
                         '$_', aCollection.at(scopeIndex),
                         '$INPUT', aCollection,
                         '$INDEX', scopeIndex,
@@ -6654,7 +7211,6 @@ function() {
      */
 
     var elem,
-        doc,
 
         nestedRepeatElems,
         nestedRepeatTPElems,
@@ -6683,18 +7239,12 @@ function() {
         return this;
     }
 
-    doc = TP.nodeGetDocument(elem);
-
     //  Cause any repeats that haven't registered their content to grab it
     //  before we start other processing.
     //  To do this, we need any repeats that are under us (but only the ones
     //  under us, which is we need to use the filter here).
     nestedRepeatElems =
-            TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
-    nestedRepeatElems = nestedRepeatElems.filter(
-                    function(anElem) {
-                        return elem !== anElem && elem.contains(anElem);
-                    });
+            TP.ac(elem.querySelectorAll(':scope *[*|repeat]'));
 
     //  To avoid mutation events as register the repeat content will cause DOM
     //  modifications, we wrap all of the found 'bind:repeat' Elements at once
@@ -7077,8 +7627,10 @@ ignoreBidiInfo) {
                 //  set it's 'value' value to the value that we're trying to
                 //  set. Then set that as the 'whole resource' of the primary
                 //  URI.
-                if (TP.notValid(
-                        result = primaryURI.getResource().get('result'))) {
+                //  Note here how we specifically tell the URI to *not* signal
+                //  change if it has to fetch new content.
+                if (TP.notValid(result = primaryURI.getContent(
+                                        TP.request('signalChange', false)))) {
 
                     newValue = TP.lang.ValueHolder.construct(aValue);
 
@@ -7102,8 +7654,11 @@ ignoreBidiInfo) {
                         //  primary URI, then we're a 'direct to GUI' binding.
                         //  Use the *whole* URI to get a reference to the
                         //  (wrapped) element and set its value.
+                        //  Note here how we specifically tell the URI to *not*
+                        //  signal change if it has to fetch new content.
                         if (TP.isKindOf(result, TP.core.Window)) {
-                            result = wholeURI.getResource().get('result');
+                            result = wholeURI.getContent(
+                                        TP.request('signalChange', false));
                             result.set('value', aValue);
                         } else {
                             result.set(TP.apc(frag), aValue);
@@ -7324,9 +7879,14 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
             pathOptions.atPut('shouldCollapse', true);
         }
 
-        getRequest = TP.request('shouldCollapse', false);
+        getRequest = TP.request('signalChange', false,
+                                'shouldCollapse', shouldCollapseVal);
 
-        initialScopedValue = TP.collapse(outerScopeValue);
+        if (shouldCollapseVal) {
+            initialScopedValue = TP.collapse(outerScopeValue);
+        } else {
+            initialScopedValue = outerScopeValue;
+        }
 
         hasTransformFunc = TP.isCallable(transformFunc);
 
@@ -7368,17 +7928,21 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                 //  '#tibet(.)' fragment expression onto the URI, which will
                 //  just return whatever object is considered the 'whole value'
                 //  of the resource's result.
+                //  Note here how we specifically tell the URI to *not* signal
+                //  change if it has to fetch new content.
                 if (TP.regex.URI_FRAGMENT.test(expr)) {
                     uriExpr = expr;
+                    exprVal = TP.uc(uriExpr, null, false).getContent(
+                                                            getRequest);
                 } else {
-                    uriExpr = TP.uc(expr).getPrimaryLocation() + '#tibet(.)';
-                }
-
-                exprVal = TP.uc(uriExpr, null, false).getResource(
-                                                    getRequest).get('result');
-
-                if (shouldCollapseVal) {
-                    exprVal = TP.collapse(exprVal);
+                    if (TP.isValid(scopedVal)) {
+                        exprVal = scopedVal;
+                    } else {
+                        uriExpr =
+                            TP.uc(expr).getPrimaryLocation() + '#tibet(.)';
+                        exprVal = TP.uc(uriExpr, null, false).getContent(
+                                                            getRequest);
+                    }
                 }
 
                 //  If there is no transformation function defined, and if the
@@ -7424,6 +7988,7 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                                 //  empty
                             } else {
                                 pathType = null;
+                                scopedVal = TP.collapse(scopedVal);
                             }
 
                             break;
@@ -7431,6 +7996,16 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
                         case TP.JSON_PATH_TYPE:
                             if (TP.isKindOf(scopedVal, TP.core.JSONContent)) {
                                 //  empty
+                            } else {
+                                pathType = null;
+                                scopedVal = TP.collapse(scopedVal);
+                            }
+
+                            break;
+
+                        case TP.TIBET_PATH_TYPE:
+                            if (TP.isArray(scopedVal)) {
+                                scopedVal = TP.collapse(scopedVal);
                             } else {
                                 pathType = null;
                             }

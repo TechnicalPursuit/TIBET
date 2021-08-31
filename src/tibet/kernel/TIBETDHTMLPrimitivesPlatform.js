@@ -348,6 +348,7 @@ TP.hc(
             case 'focusin':
             case 'focusout':
             case 'input':
+            case 'selectionchange':
                 evt = doc.createEvent('UIEvents');
                 evt.initUIEvent(
                             type,
@@ -588,6 +589,7 @@ TP.hc(
             case 'focusin':
             case 'focusout':
             case 'input':
+            case 'selectionchange':
                 evt = doc.createEvent('UIEvents');
                 evt.initUIEvent(
                             type,

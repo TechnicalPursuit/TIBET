@@ -877,24 +877,26 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lama.styleshud.Inst.defineMethod('getKeyFunction',
+TP.lama.styleshud.Inst.defineMethod('d3KeyFunction',
 function() {
 
     /**
-     * @method getKeyFunction
+     * @method d3KeyFunction
      * @summary Returns the Function that should be used to generate keys into
-     *     the receiver's data set.
-     * @description This Function should take a single argument, an individual
-     *     item from the receiver's data set, and return a value that will act
-     *     as that item's key in the overall data set. The default version
-     *     returns the item itself.
+     *     the receiver's data set. By default this method returns a null key
+     *     function, thereby causing d3 to use each datum in the data set as the
+     *     key.
+     * @description This Function should take two arguments, an individual item
+     *     from the receiver's data set and it's index in the overall data set,
+     *     and return a value that will act as that item's key in the overall
+     *     data set.
      * @returns {Function} A Function that provides a key for the supplied data
      *     item.
      */
 
     var keyFunc;
 
-    keyFunc = function(d) {
+    keyFunc = function(d, i) {
         return d.at(1);
     };
 

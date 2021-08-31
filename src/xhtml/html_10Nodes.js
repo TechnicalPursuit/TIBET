@@ -72,7 +72,9 @@ TP.html.Attrs.defineSubtype('center');
 
 TP.html.List.defineSubtype('dir');
 
-TP.html.dir.Type.set('booleanAttrs', TP.ac('compact'));
+TP.html.dir.Type.set('booleanAttrs',
+        TP.html.dir.Type.get('booleanAttrs').concat(
+            TP.ac('compact')));
 
 //  ========================================================================
 //  TP.html.font
@@ -100,7 +102,9 @@ TP.html.CoreAttrs.defineSubtype('font');
 
 TP.html.CoreAttrs.defineSubtype('frame');
 
-TP.html.frame.Type.set('booleanAttrs', TP.ac('noResize'));
+TP.html.frame.Type.set('booleanAttrs',
+        TP.html.frame.Type.get('booleanAttrs').concat(
+            TP.ac('noResize')));
 
 //  ========================================================================
 //  TP.html.frameset
@@ -131,7 +135,9 @@ TP.html.CoreAttrs.defineSubtype('frameset');
 //  an IFRAME is an element...
 TP.html.CoreAttrs.defineSubtype('iframe');
 
-TP.html.iframe.Type.set('booleanAttrs', TP.ac('seamless', 'allowFullscreen'));
+TP.html.iframe.Type.set('booleanAttrs',
+        TP.html.iframe.Type.get('booleanAttrs').concat(
+            TP.ac('seamless', 'allowFullscreen')));
 
 //  IFRAME elements are also UI canvases just like windows
 TP.html.iframe.addTraits(TP.core.UICanvas);
@@ -143,16 +149,16 @@ TP.html.iframe.Type.set('uriAttrs', TP.ac('src', 'longdesc'));
 //  ------------------------------------------------------------------------
 
 TP.html.iframe.Type.defineMethod('isResponderForUIFocusChange',
-function(aNode, aSignal) {
+function(aSignal, aNode) {
 
     /**
      * @method isResponderForUIFocusChange
      * @summary Returns true if the node does not have a 'disabled' attribute to
      *     match (X)HTML semantics.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
      * @param {TP.sig.Signal} aSignal The signal that responders are being
      *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
@@ -162,16 +168,16 @@ function(aNode, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.html.iframe.Type.defineMethod('isResponderForUIFocusComputation',
-function(aNode, aSignal) {
+function(aSignal, aNode) {
 
     /**
      * @method isResponderForUIFocusComputation
      * @summary Returns true if the node does not have a 'disabled' attribute to
      *     match (X)HTML semantics.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
      * @param {TP.sig.Signal} aSignal The signal that responders are being
      *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
@@ -491,7 +497,9 @@ TP.html.Attrs.defineSubtype('listing');
 
 TP.html.List.defineSubtype('menu');
 
-TP.html.menu.Type.set('booleanAttrs', TP.ac('compact'));
+TP.html.menu.Type.set('booleanAttrs',
+        TP.html.menu.Type.get('booleanAttrs').concat(
+            TP.ac('compact')));
 
 //  ========================================================================
 //  TP.html.noframes

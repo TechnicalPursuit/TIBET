@@ -1,0 +1,129 @@
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+xctrls|wayfinderitem {
+
+    position: relative;
+
+    overflow: hidden;
+
+    background-color: var(--xctrls-wayfinder-background-color);
+
+    /* CSS custom properties that determine inspector width/height and
+     * flexing */
+    --xctrls-wayfinder-width: 1;
+
+    --xctrls-wayfinder-item-minwidth: 250px;
+    --xctrls-wayfinder-item-maxwidth: 350px;
+
+    --xctrls-wayfinder-item-flex-basis: var(--xctrls-wayfinder-item-minwidth);
+
+    flex: 1 0 calc(var(--xctrls-wayfinder-item-flex-basis) * var(--xctrls-wayfinder-width));
+
+    max-width: calc(var(--xctrls-wayfinder-item-maxwidth) * var(--xctrls-wayfinder-width));
+
+    height: 100%;
+}
+
+xctrls|wayfinderitem > *|* {
+
+    position: absolute;
+}
+
+xctrls|wayfinderitem > div {
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    padding: 0.25em;
+}
+
+xctrls|wayfinderitem > div.scrollable {
+
+    overflow: auto;
+}
+
+xctrls|wayfinderitem > div.filler {
+
+}
+
+xctrls|wayfinderitem > div.wrapped {
+
+    white-space: pre-wrap;
+}
+
+xctrls|wayfinderitem > div.noselect {
+
+    user-select: none;
+}
+
+xctrls|wayfinderitem > div.readonly {
+
+    border: dashed 1px #aaa;
+}
+
+xctrls|wayfinderitem > div.usermessage {
+
+    display: flex;
+
+    border: none;
+
+    font-size: 131%;
+    font-family: "arial", "helvetica", "clean", sans-serif;
+    color: #999;
+
+    align-items: center;
+    justify-content: center;
+}
+
+xctrls|wayfinderitem > div.usermessage a {
+    color: #999;
+}
+
+xctrls|wayfinderitem > div > textarea {
+
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 90%;
+
+    margin: 0;
+    padding: 0;
+
+    border: none;
+    border-radius: initial;
+
+    width: 100%;
+    height: 100%;
+}
+
+xctrls|wayfinderitem[childtype="html:div"] {
+}
+
+xctrls|wayfinderitem[childtype="html:iframe"] > iframe {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+}
+
+xctrls|wayfinderitem[class~="doublewide"] {
+
+    /* CSS custom property */
+    --xctrls-wayfinder-width: 2;
+}
+
+xctrls|wayfinderitem > *|* {
+
+    height: 100%;
+    width: 100%;
+
+    max-height: initial;
+
+    line-height: 1.5em;
+
+    border: none;
+
+    overflow-y: auto;
+}

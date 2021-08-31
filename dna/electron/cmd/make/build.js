@@ -31,7 +31,8 @@
             'build_resources',
             '_rollup',
             '_linkup',
-            'build_docs'
+            'build_docs',
+            'build_sitedocs'
         ];
 
         if (options.release) {

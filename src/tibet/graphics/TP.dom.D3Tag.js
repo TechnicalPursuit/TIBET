@@ -183,6 +183,14 @@ function(enterSelection) {
         //  Construct the template and obtain it.
         this.constructTemplateFromInline();
         compiledTemplateContent = this.get('$compiledTemplateContent');
+    } else {
+        //  Clean any id's or other instance specific information from the
+        //  compiled content. We pass true to clean it from any descendants as
+        //  well.
+        //  We have to do this every time we use it because we leave the
+        //  template in the overall DOM and it or its descendants might pick up
+        //  instance specific information during runtime.
+        TP.elementClean(compiledTemplateContent, true);
     }
 
     registry = this.get('$templateExprRegistry');
@@ -203,7 +211,14 @@ function(enterSelection) {
         //  Query the item element for elements with a '*:in' or '*:io' - we'll
         //  filter for the 'bind' namespace below.
         elems = TP.ac(
-                compiledTemplateContent.querySelectorAll('*[*|in], *[*|io]'));
+                    compiledTemplateContent.querySelectorAll(
+                        ':scope *[*|in], :scope *[*|io]'));
+
+        //  Additionally, if the supplied Element itself matches that query then
+        //  unshift it onto the result.
+        if (compiledTemplateContent.matches('*[*|in], *[*|io]')) {
+            elems.unshift(compiledTemplateContent);
+        }
 
         //  Loop over all of the elements that were found.
         for (i = 0; i < elems.length; i++) {
@@ -236,13 +251,25 @@ function(enterSelection) {
 
             newElem = TP.nodeCloneNode(compiledTemplateContent);
 
-            this.updateRepeatingItemContent(
+            this.updateTemplatedItemContent(
                         newElem,
                         datum,
                         index,
                         group,
                         allData,
                         registry);
+
+            //  Compile the element now that we've resolved the outer bindings.
+            newElem = TP.elementCompile(
+                        newElem,
+                        TP.request(
+                            'phases', TP.ac(
+                                            'TP.tag.PrecompilePhase',
+                                            'TP.tag.CompilePhase',
+                                            'TP.tag.CompileCompletePhase'
+                                            )));
+
+            TP.elementBubbleXMLNSAttributesOnDescendants(newElem);
 
             return newElem;
         }.bind(this)).attr(
@@ -290,15 +317,12 @@ function() {
     //  Grab the first child Element under the template root.
     templateContentTPElem = this.getTemplate().getFirstChildElement();
 
-    //  Compile it.
-    templateContentTPElem.compile();
-
-    //  Note here how we remove the 'id' attribute, since we're going to be
-    //  using it as a template.
-    templateContentTPElem.removeAttribute('id');
-
     //  Grab it's native node and cache that.
     compiledTemplateContent = templateContentTPElem.getNativeNode();
+
+    //  Clean any id's or other instance specific information from the compiled
+    //  content. We pass true to clean it from any descendants as well.
+    TP.elementClean(compiledTemplateContent, true);
 
     //  Note how we pass 'false' here to not trigger change notification.
     //  Commonly, subtypes of this type will be bound objects, so change
@@ -330,12 +354,12 @@ function(rootUpdateSelection) {
     data = this.computeSelectionData();
 
     //  Note how we pass 'false' here to not trigger change notification for the
-    //  set() calls in this method. Commonly, subtypes of this type will be bound
-    //  objects, so change notification will be on by default.
+    //  set() calls in this method. Commonly, subtypes of this type will be
+    //  bound objects, so change notification will be on by default.
 
     if (TP.isValid(data)) {
 
-        keyFunc = this.getKeyFunction();
+        keyFunc = this.d3KeyFunction();
         if (TP.isCallable(keyFunc)) {
             this.set('updateSelection',
                         rootUpdateSelection.data(data, keyFunc),
@@ -468,6 +492,29 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.D3Tag.Inst.defineMethod('d3KeyFunction',
+function() {
+
+    /**
+     * @method d3KeyFunction
+     * @summary Returns the Function that should be used to generate keys into
+     *     the receiver's data set. By default this method returns a null key
+     *     function, thereby causing d3 to use each datum in the data set as the
+     *     key.
+     * @description This Function should take two arguments, an individual item
+     *     from the receiver's data set and it's index in the overall data set,
+     *     and return a value that will act as that item's key in the overall
+     *     data set.
+     * @returns {Function} A Function that provides a key for the supplied data
+     *     item.
+     */
+
+    //  By default we return null - this means d3 will use the index.
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.D3Tag.Inst.defineMethod('d3Select',
 function() {
 
@@ -499,8 +546,8 @@ function() {
 
     /**
      * @method d3SelectContainer
-     * @summary Using the receiver's 'selectionContainer', this method performs a
-     *     d3.js 'select' to select the root Element under which all of the
+     * @summary Using the receiver's 'selectionContainer', this method performs
+     *     a d3.js 'select' to select the root Element under which all of the
      *     receiver's content that will be redrawn with d3.js can be found.
      * @returns {TP.dom.D3Tag} The receiver.
      */
@@ -641,28 +688,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.D3Tag.Inst.defineMethod('getKeyFunction',
-function() {
-
-    /**
-     * @method getKeyFunction
-     * @summary Returns the Function that should be used to generate keys into
-     *     the receiver's data set. By default this method returns a null key
-     *     function, thereby using the index in the data set as the key.
-     * @description This Function should take a single argument, an individual
-     *     item from the receiver's data set, and return a value that will act
-     *     as that item's key in the overall data set. The default version
-     *     returns the item itself.
-     * @returns {Function} A Function that provides a key for the supplied data
-     *     item.
-     */
-
-    //  By default we return a null key function.
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.dom.D3Tag.Inst.defineMethod('getRootUpdateSelection',
 function(containerSelection) {
 
@@ -746,8 +771,8 @@ function() {
     }
 
     //  Note how we pass 'false' here to not trigger change notification for the
-    //  set() calls in this method. Commonly, subtypes of this type will be bound
-    //  objects, so change notification will be on by default.
+    //  set() calls in this method. Commonly, subtypes of this type will be
+    //  bound objects, so change notification will be on by default.
 
     //  Grab the template. If we cannot get a valid template element, then set
     //  our flag to false and return false.
@@ -950,7 +975,7 @@ function(updateSelection) {
             //  by d3.js (this, datum, index & groupIndex) and the ones provided
             //  by us (allData & registry) that we wanted to cache and not
             //  re-obtain through each iteration.
-            thisref.updateRepeatingItemContent(
+            thisref.updateTemplatedItemContent(
                     this,
                     datum,
                     index,
@@ -964,11 +989,11 @@ function(updateSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.D3Tag.Inst.defineMethod('updateRepeatingItemContent',
+TP.dom.D3Tag.Inst.defineMethod('updateTemplatedItemContent',
 function(itemElement, datum, index, groupIndex, allData, registry) {
 
     /**
-     * @method updateRepeatingItemContent
+     * @method updateTemplatedItemContent
      * @summary Updates the supplied element, which may contain data binding
      *     expressions in it, using the supplied data.
      * @param {Element} itemElement The top-level element to update. Either this
@@ -994,7 +1019,7 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
         ind,
 
-        targetTPElem,
+        controlScopeValues,
 
         len,
 
@@ -1005,17 +1030,26 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
         ownerElem,
         ownerTPElem,
+        scopeValues,
 
         attrVal,
         entry;
 
     //  Query the item element for elements with a '*:in' or '*:io' - we'll
     //  filter for the 'bind' namespace below.
-    elems = TP.ac(itemElement.querySelectorAll('*[*|in], *[*|io]'));
+    elems = TP.ac(
+                itemElement.querySelectorAll(
+                    ':scope *[*|in], :scope *[*|io]'));
+
+    //  Additionally, if the supplied Element itself matches that query then
+    //  unshift it onto the result.
+    if (itemElement.matches('*[*|in], *[*|io]')) {
+        elems.unshift(itemElement);
+    }
 
     ind = this.adjustIterationIndex(index);
 
-    targetTPElem = TP.wrap(itemElement);
+    controlScopeValues = this.getBindingScopeValues();
 
     //  Loop over all of the elements that were found.
     len = elems.getSize();
@@ -1032,6 +1066,14 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
             ownerElem = attrs[j].ownerElement;
             ownerTPElem = TP.wrap(ownerElem);
 
+            //  Grab the scoping values from the element that we're currently
+            //  processing for *inside the template*. If it has no scope values,
+            //  then we use the ones for the overall control.
+            scopeValues = ownerTPElem.getBindingScopeValues();
+            if (TP.isEmpty(scopeValues)) {
+                scopeValues = controlScopeValues;
+            }
+
             attrVal = attrs[j].value;
 
             //  See if there's an entry in the registry for the expression with
@@ -1045,39 +1087,26 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
                     var key,
                         record,
 
-                        transformFunc,
-                        val,
-
-                        expr;
+                        finalVal;
 
                     key = kvPair.first();
                     record = kvPair.last();
 
-                    transformFunc = record.at('transformFunc');
-
-                    //  If there is, grab the transformation function and
-                    //  execute it.
-                    if (TP.isCallable(transformFunc)) {
-                        //  Execute the transformation function and the return
-                        //  value.
-                        val = transformFunc(
-                                this, datum, targetTPElem, allData, ind, false);
-                    } else {
-                        //  TODO: Support more than 1 expr
-                        expr = record.at('dataExprs').at(0);
-                        val = TP.wrap(datum).get(TP.apc(expr));
-                    }
+                    finalVal = this.$computeValueForBoundAspect(
+                                    record, scopeValues, datum, allData, ind);
 
                     //  If the key is 'value', set the text content of the owner
                     //  element to the transformed value. Otherwise, set the
                     //  facet on the owner using that value (it's up to the type
                     //  to decide whether to set an Attribute or not).
                     if (key === 'value') {
-                        TP.nodeSetTextContent(ownerElem, val);
+                        ownerTPElem.setValue(finalVal);
+                    } else if (key[0] === '@') {
+                        ownerTPElem.setAttribute(key.slice(1), finalVal);
                     } else {
                         //  The parameters here are:
                         //      aspect, facet (always 'value' here), value
-                        ownerTPElem.setFacet(key, 'value', val);
+                        ownerTPElem.setFacet(key, 'value', finalVal);
                     }
                 }.bind(this));
             /* eslint-enable no-loop-func */

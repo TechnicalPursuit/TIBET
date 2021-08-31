@@ -26,9 +26,10 @@ function() {
 
     if (!TP.isType(tagType = TP.sys.getTypeByName('TP.test.nochange'))) {
         tagType = TP.dom.ElementNode.defineSubtype('test.nochange');
-        tagType.Type.defineMethod('allNodesTransform', function(aRequest) {
-            //  This method does nothing on this tag type
-        });
+        tagType.Type.defineMethod('allNodesTransform',
+            function(aRequest) {
+                //  This method does nothing on this tag type
+            });
     }
 
     return tagType;
@@ -207,6 +208,19 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.tag.TagProcessorFixtureBuilder.Type.defineMethod(
+'buildACPProcessor',
+function() {
+    var processor;
+
+    processor = TP.tag.TagProcessor.constructWithPhaseTypes(
+                                        TP.ac('TP.tag.PrecompilePhase'));
+
+    return processor;
+});
+
+//  ------------------------------------------------------------------------
 //  TagProcessor Fixture
 //  ------------------------------------------------------------------------
 
@@ -216,6 +230,8 @@ function(options) {
     switch (options) {
         case 'allNodes':
             return TP.tag.TagProcessorFixtureBuilder.buildAllNodesProcessor();
+        case 'acpNodes':
+            return TP.tag.TagProcessorFixtureBuilder.buildACPProcessor();
         default:
             return null;
     }
@@ -246,12 +262,15 @@ function() {
 
     this.it('\'all nodes\' - no mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#nochange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
                 var processor,
 
                     beforeStr,
@@ -277,12 +296,15 @@ function() {
 
     this.it('\'all nodes\' - attribute mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#attrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
@@ -299,12 +321,15 @@ function() {
 
     this.it('\'all nodes\' - more attribute mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#moreattrchange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
                 var processor;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
@@ -322,19 +347,25 @@ function() {
 
     this.it('\'all nodes\' - content mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#contentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
-                var processor;
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
+                var processor,
+                    testElem;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
                 processor.processTree(result);
 
-                test.assert.isXMLNode(result.firstElementChild);
+                testElem = result.firstElementChild;
+
+                test.assert.isXMLNode(testElem);
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -344,28 +375,186 @@ function() {
 
     this.it('\'all nodes\' - more content mutation', function(test, options) {
 
-        var loadURI;
+        var loadURI,
+            promise;
 
         loadURI = TP.uc(testDataLoc + '#morecontentchange');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
-                var processor;
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+        promise.chain(function(result) {
+                var processor,
+                    testElem;
 
                 processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
                 processor.processTree(result);
 
+                testElem = result.firstElementChild;
+
                 test.assert.hasAttribute(result, 'allnodesmark');
 
-                test.assert.isXMLNode(result.firstElementChild);
-                test.assert.hasAttribute(result.firstElementChild, 'allnodesmark2');
+                test.assert.isXMLNode(testElem);
+                test.assert.hasAttribute(testElem, 'allnodesmark2');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
     });
+
+    this.it('\'all nodes\' - ACP substitution', function(test, options) {
+
+        var loadURI,
+            promise;
+
+        loadURI = TP.uc(testDataLoc + '#acpcontentchange');
+
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
+                var processor,
+                    req,
+                    testElem;
+
+                processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
+
+                req = TP.request(
+                        'sources',
+                            TP.ac(TP.tpelem('<wrapper>' +
+                                            '<foo xmlns="" bar="baz"/>' +
+                                            '</wrapper>', ''))
+                        );
+
+                processor.processTree(result, req);
+
+                testElem = result.firstElementChild;
+
+                test.assert.isXMLNode(testElem);
+                test.assert.isNull(testElem.namespaceURI);
+                test.assert.hasAttribute(testElem, 'bar');
+
+                test.assert.isEqualTo(testElem.localName, 'foo');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    this.it('\'all nodes\' - ACP select substitution', function(test, options) {
+
+        var loadURI,
+            promise;
+
+        loadURI = TP.uc(testDataLoc + '#selectacpcontentchange');
+
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
+                var processor,
+                    req,
+                    testElem;
+
+                processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
+
+                req = TP.request(
+                        'sources',
+                            TP.ac(TP.tpelem('<wrapper>' +
+                                            '<foo xmlns="" bar="baz"/>' +
+                                            '<moo xmlns="" bar="baz"/>' +
+                                            '</wrapper>', ''))
+                        );
+
+                processor.processTree(result, req);
+
+                test.assert.isEqualTo(result.children.length, 1);
+
+                testElem = result.firstElementChild;
+
+                test.assert.isXMLNode(testElem);
+                test.assert.isNull(testElem.namespaceURI);
+                test.assert.hasAttribute(testElem, 'bar');
+
+                test.assert.isEqualTo(testElem.localName, 'foo');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    this.it('\'all nodes\' - ACP attribute substitution', function(test, options) {
+
+        var loadURI,
+            promise;
+
+        loadURI = TP.uc(testDataLoc + '#attracpcontentchange');
+
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
+                var processor,
+                    req,
+                    testElem;
+
+                processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
+
+                req = TP.request(
+                        'sources',
+                            TP.ac(TP.tpelem('<foo xmlns="" bar="baz"/>', ''))
+                        );
+
+                processor.processTree(result, req);
+
+                testElem = result.firstElementChild;
+
+                test.assert.hasAttribute(testElem, 'foo');
+                test.assert.isEqualTo(testElem.getAttribute('foo'), 'baz');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    this.it('\'all nodes\' - ACP no-exist attribute substitution', function(test, options) {
+
+        var loadURI,
+            promise;
+
+        loadURI = TP.uc(testDataLoc + '#attrnoexistacpcontentchange');
+
+        promise = test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
+
+        promise.chain(function(result) {
+                var processor,
+                    req,
+                    testElem;
+
+                processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
+
+                req = TP.request(
+                        'sources',
+                            TP.ac(TP.tpelem('<foo xmlns="" bar="baz"/>', ''))
+                        );
+
+                processor.processTree(result, req);
+
+                testElem = result.firstElementChild;
+
+                test.refute.hasAttribute(testElem, 'foo');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
 });
 
 //  ------------------------------------------------------------------------

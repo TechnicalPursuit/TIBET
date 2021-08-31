@@ -4007,7 +4007,18 @@ function(aTargetElem, anEvent) {
 
     dragStateMachine = TP.dnd.DragResponder.get('dragStateMachine');
     if (!dragStateMachine.isActive()) {
-        return this;
+        //  There is no active drag state machine - just do what the mouseup
+        //  would've done.
+
+        //  Reset our cached reference to the target element that we sent the
+        //  'TP.sig.UIActivate' signal from to the current target element. This
+        //  is so that the 'deactivation' is sent from the element that we're
+        //  currently over.
+        TP.dom.UIElementNode.set('$lastActiveElement',
+                                    TP.wrap(aTargetElem),
+                                    false);
+
+        return this.onmouseup(aTargetElem, anEvent);
     }
 
     //  Grab the target element before we deactivate.
@@ -5594,7 +5605,7 @@ function(aValue, anIndex, shouldSignal) {
     dirty = this.removeSelection(aValue, 'value');
 
     if (dirty && TP.notFalse(shouldSignal)) {
-        this.dispatch('TP.sig.UIDeselect');
+        this.dispatch('TP.sig.UIDeselect', null, TP.hc('index', anIndex));
     }
 
     return dirty;
@@ -5939,7 +5950,7 @@ function(aValue, anIndex, shouldSignal) {
     dirty = this.addSelection(aValue, 'value');
 
     if (dirty && TP.notFalse(shouldSignal)) {
-        this.dispatch('TP.sig.UISelect');
+        this.dispatch('TP.sig.UISelect', null, TP.hc('index', anIndex));
     }
 
     return dirty;

@@ -34,7 +34,9 @@ TP.html.Attrs.defineSubtype('noscript');
 
 TP.html.Attrs.defineSubtype('script');
 
-TP.html.script.Type.set('booleanAttrs', TP.ac('async', 'defer'));
+TP.html.script.Type.set('booleanAttrs',
+        TP.html.script.Type.get('booleanAttrs').concat(
+            TP.ac('async', 'defer')));
 
 TP.html.script.Type.set('uriAttrs', TP.ac('src', 'source'));
 TP.html.script.Type.set('reloadableUriAttrs', TP.ac('src', 'source'));

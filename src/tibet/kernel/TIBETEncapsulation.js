@@ -381,6 +381,7 @@ function(attributeName, attributeValue, shouldSignal, allowUndef) {
     //  explicit and can often be "demand driven" to avoid exposure
     if (!allowUndef &&
         !TP.isProperty(this, attributeName) &&
+        !TP.regex.INTERNAL_ID.test(attributeName) &&
         !TP.regex.INTERNAL_SLOT.test(attributeName)) {
         TP.ifWarn() ?
             TP.warn(TP.sc('Setting undefined attribute: ',

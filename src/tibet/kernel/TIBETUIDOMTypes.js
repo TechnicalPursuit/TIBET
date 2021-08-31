@@ -47,6 +47,13 @@ TP.dom.UIElementNode.Type.defineAttribute('toggleableStateNames', TP.ac());
 //  new instances of the tag.
 TP.dom.UIElementNode.Type.defineAttribute('requiredAttrs');
 
+TP.dom.UIElementNode.Type.set('booleanAttrs',
+        TP.dom.UIElementNode.Type.get('booleanAttrs').concat(
+            TP.ac('pclass:active', 'pclass:busy', 'pclass:closed',
+                    'pclass:collapsed', 'pclass:disabled', 'pclass:focused',
+                    'pclass:hidden', 'pclass:invalid', 'pclass:out-of-range',
+                    'pclass:readonly', 'pclass:required', 'pclass:selected')));
+
 //  Note how these properties are TYPE_LOCAL, by design.
 
 //  The TP.dom.UIElementNode that focus is moving to, based on TIBET
@@ -760,16 +767,16 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('isResponderForUIFocusChange',
-function(aNode, aSignal) {
+function(aSignal, aNode) {
 
     /**
      * @method isResponderForUIFocusChange
      * @summary Returns true if the node has a 'tabindex' attribute (but not if
      *     it has a 'disabled' attribute) to match (X)HTML semantics.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
      * @param {TP.sig.Signal} aSignal The signal that responders are being
      *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
@@ -780,16 +787,16 @@ function(aNode, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Type.defineMethod('isResponderForUIFocusComputation',
-function(aNode, aSignal) {
+function(aSignal, aNode) {
 
     /**
      * @method isResponderForUIFocusComputation
      * @summary Returns true if the node has a 'tabindex' attribute (but not if
      *     it has a 'disabled' attribute) to match (X)HTML semantics.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
      * @param {TP.sig.Signal} aSignal The signal that responders are being
      *     computed for.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
      * @returns {Boolean} True when the receiver should respond to aSignal.
      */
 
@@ -868,7 +875,7 @@ function(styleTPElem) {
     var body,
 
         gids,
-        notReadyToRenderInstances;
+        werentReadyToRenderInstances;
 
     //  Grab the body and, if its a real Element, then reset the CSS rule caches
     //  of all of the elements in it.
@@ -879,18 +886,11 @@ function(styleTPElem) {
 
     //  Grab all of the existing instances in that document and then iterate
     //  and notify them.
-    notReadyToRenderInstances = TP.byCSSPath(
-                            this.getQueryPath(true, true),
-                            styleTPElem.getNativeDocument(),
-                            false,
-                            true);
-
-    //  Filter out any instances that are already ready to render. No sense in
-    //  sending them a method that might do things like cause extra rendering.
-    notReadyToRenderInstances = notReadyToRenderInstances.filter(
-        function(anInstance) {
-            return anInstance.isReadyToRender();
-        });
+    werentReadyToRenderInstances = TP.byCSSPath(
+                                    this.getQueryPath(true, true),
+                                    styleTPElem.getNativeDocument(),
+                                    false,
+                                    true);
 
     //  Add the Document global ID of the stylesheet Element to our list of
     //  where the stylesheet has been successfully installed.
@@ -898,7 +898,7 @@ function(styleTPElem) {
     gids.push(styleTPElem.getDocument().getGlobalID());
     gids.unique();
 
-    notReadyToRenderInstances.forEach(
+    werentReadyToRenderInstances.forEach(
         function(aTPElem) {
             aTPElem.stylesheetReady(styleTPElem);
         });
@@ -1713,7 +1713,6 @@ function(aRequest) {
      */
 
     var elem,
-        ns,
 
         targetDoc,
 
@@ -1733,10 +1732,8 @@ function(aRequest) {
     //  a 'native namespace' (i.e. this element is supported natively on the
     //  platform) and we don't have a 'tibet:tag' attribute we don't want to
     //  transform the tag, so we just exit here.
-    if (TP.notEmpty(ns = elem.namespaceURI) &&
-        TP.w3.Xmlns.isNativeNS(ns) &&
+    if (TP.w3.Xmlns.isNativeElement(elem) &&
         !TP.elementHasAttribute(elem, 'tibet:tag', true)) {
-
         elem = TP.nodeCloneNode(elem);
 
         TP.elementSetGenerator(elem);
@@ -2674,13 +2671,13 @@ function(aSignalName, aTriggerSignal) {
 
     originElem = this.getNativeNode();
 
-    //  First, try the full signal name.
-    sigName = 'on:' + TP.expandSignalName(aSignalName);
+    //  First, try the shortened version of that name, that's the 90% case.
+    sigName = 'on:' + TP.contractSignalName(aSignalName);
     if (TP.elementHasAttribute(originElem, sigName, true)) {
         sigData = TP.elementGetAttribute(originElem, sigName, true);
     } else {
-        //  Next, try the shortened version of that name.
-        sigName = 'on:' + TP.contractSignalName(aSignalName);
+        //  Next, try the full signal name, only used to avoid conflicts.
+        sigName = 'on:' + TP.expandSignalName(aSignalName);
         sigData = TP.elementGetAttribute(originElem, sigName, true);
     }
 
@@ -4258,6 +4255,67 @@ function(moveAction, fromFocusedElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('positionUsingCompassPoints',
+function(receiverCompassPoint, alignmentCompassPoint, alignmentTPElement,
+            constrainingRects, avoidPoints, offsetX, offsetY) {
+
+    /**
+     * @method positionUsingCompassPoints
+     * @summary Positions the receiver according to the supplied compass points
+     *     and element to align to.
+     * @param {Number} receiverCompassPoint The compass point of the *receiver*
+     *     to use to position the receiver. This should be a constant value
+     *     corresponding to one of TIBET's compass values.
+     * @param {Number} alignmentCompassPoint The compass point of the element
+     *     that the receiver is aligning to. This should be a constant value
+     *     corresponding to one of TIBET's compass values.
+     * @param {TP.dom.UIElementNode} alignmentTPElement The element that the
+     *     receiver is aligning to.
+     * @param {TP.gui.Rect[]} [constrainingRects] An Array of TP.gui.Rects that
+     *     will be used to 'constrain' the position of the receiver so that the
+     *     receiver is completely contained within them, as best as possible.
+     *     Note that these rectangles should be expressed in terms of *global*
+     *     coordinates of the GUI.
+     * @param {TP.gui.Point[]} [avoidPoints] An Array of TP.gui.Points that the
+     *     positioning machinery will try to 'avoid' when positioning the
+     *     receiver.
+     * @param {Number} [offsetX=0] Any offset that should be added to computed X
+     *     position value before the constraining process takes place.
+     * @param {Number} [offsetY=0] Any offset that should be added to computed Y
+     *     position value before the constraining process takes place.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var alignmentCP,
+
+        alignmentRect,
+        alignmentPoint;
+
+    //  We default a compass value here that would place the receiver to the
+    //  right and top of the alignment element.
+    alignmentCP = TP.ifInvalid(alignmentCompassPoint, TP.NORTHEAST);
+
+    //  Compute the global rect of the alignment element and get the 'edge
+    //  point' corresponding to the compass point on the alignment element that
+    //  we're aligning to.
+    alignmentRect = alignmentTPElement.getGlobalRect();
+    alignmentPoint = alignmentRect.getEdgePoint(alignmentCP);
+
+    //  Set our position using the computed alignment point.
+    this.setPositionRelativeTo(alignmentPoint,
+                                receiverCompassPoint,
+                                alignmentCP,
+                                alignmentTPElement,
+                                constrainingRects,
+                                avoidPoints,
+                                offsetX,
+                                offsetY);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('removeAttrActive',
 function() {
 
@@ -4776,7 +4834,7 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
      * @returns {undefined} Undefined according to the spec for DOM
-     *     'setAttribute'.
+     *     setAttribute.
      */
 
     var node,
@@ -4975,50 +5033,35 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      *     had before this method was called.
      */
 
-    var funcName,
-        currentFacetVal;
+    var funcName;
 
     //  See if there is a specific Attribute setter on this element. If so, use
     //  it to set any attribute named with the aspect name. This will be done in
     //  addition to any internal value of the aspect on the receiver (i.e. both
     //  attribute 'foo' and the internal 'foo' property will be set).
 
-    funcName = this.computeAttrMethodName('getAttr', aspectName);
+    //  NOTE: We always call the setter here. We don't bother to compare values
+    //  for whether they changed or not - we assume that the receiver will know
+    //  better than we do whether they want to re-render based on some internal
+    //  state.
+
+    funcName = this.computeAttrMethodName('setAttr', aspectName);
 
     if (TP.canInvoke(this, funcName)) {
-        currentFacetVal = this[funcName]();
+        this[funcName](facetValue);
     } else if (facetName === 'value') {
-        //  If the facet is 'value', then use the standard 'get' mechanism.
-        currentFacetVal = this.get(aspectName);
-    } else {
-        //  It didn't have a 'getAttr<aspectName>' and the name of the facet
-        //  that changed wasn't 'value', so we just signal that it changed and
-        //  return. This keeps compatibility with non-'value' facets.
-        this.signalUsingFacetAndValue(facetName, facetValue);
-        return true;
+        //  If the facet is 'value', then use the standard 'set'
+        //  mechanism.
+
+        //  NB: This will signal the standard TP.sig.ValueChange (where
+        //  'value' is the facet that changed).
+        this.set(aspectName, facetValue, shouldSignal);
     }
 
-    if (!TP.equal(currentFacetVal, facetValue)) {
-        funcName = this.computeAttrMethodName('setAttr', aspectName);
+    this.signalUsingFacetAndValue(facetName, facetValue);
 
-        if (TP.canInvoke(this, funcName)) {
-            this[funcName](facetValue);
-        } else if (facetName === 'value') {
-            //  If the facet is 'value', then use the standard 'set'
-            //  mechanism.
-
-            //  NB: This will signal the standard TP.sig.ValueChange (where
-            //  'value' is the facet that changed).
-            this.set(aspectName, facetValue, shouldSignal);
-        }
-
-        this.signalUsingFacetAndValue(facetName, facetValue);
-
-        //  Return true because the value of the facet changed.
-        return true;
-    }
-
-    return false;
+    //  Return true because the value of the facet changed.
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -5751,6 +5794,213 @@ function(aPointOrObject) {
     /* eslint-enable no-extra-parens */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('setPositionRelativeTo',
+function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
+            alignmentTPElement, constrainingRects, avoidPoints,
+            anOffsetX, anOffsetY) {
+
+    /**
+     * @method setPositionRelativeTo
+     * @summary Sets the positions of the receiver according to the supplied
+     *     point, compass points and element to align to.
+     * @param {TP.gui.Point} initialPoint The initial point to position the
+     *     receiver at. This will very likely be modified by the various compass
+     *     points and constraining elements and points (if supplied).
+     * @param {Number} receiverCompassPoint The compass point of the *receiver*
+     *     to use to position the receiver. This should be a constant value
+     *     corresponding to one of TIBET's compass values.
+     * @param {Number} alignmentCompassPoint The compass point of the element
+     *     that the receiver is aligning to. This should be a constant value
+     *     corresponding to one of TIBET's compass values.
+     * @param {TP.dom.UIElementNode} alignmentTPElement The element that the
+     *     receiver is aligning to.
+     * @param {TP.gui.Rect[]} [constrainingRects] An Array of TP.gui.Rects that
+     *     will be used to 'constrain' the position of the receiver so that the
+     *     receiver is completely contained within them, as best as possible.
+     *     Note that these rectangles should be expressed in terms of *global*
+     *     coordinates of the GUI.
+     * @param {TP.gui.Point[]} [avoidPoints] An Array of TP.gui.Points that the
+     *     positioning machinery will try to 'avoid' when positioning the
+     *     receiver.
+     * @param {Number} [offsetX=0] Any offset that should be added to computed X
+     *     position value before the constraining process takes place.
+     * @param {Number} [offsetY=0] Any offset that should be added to computed Y
+     *     position value before the constraining process takes place.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var offsetX,
+        offsetY,
+
+        receiverCP,
+
+        adjustedPoint,
+
+        positioningRect,
+
+        scrollOffsets,
+
+        diffX,
+        diffY,
+
+        positionPoint;
+
+    offsetX = TP.ifInvalid(anOffsetX, 0);
+    offsetY = TP.ifInvalid(anOffsetY, 0);
+
+    //  We default corner values here that would place the receiver to the right
+    //  and top of the alignment element.
+    receiverCP = TP.ifInvalid(receiverCompassPoint, TP.NORTHWEST);
+
+    //  Based on the compass point that the receiver wants to use to position
+    //  itself, we compute an point that is adjusted using that compass point.
+    //  For instance, if the receiver's compass point is TP.SOUTHEAST, then the
+    //  compass point will be rightward and downward from the receiver (by the
+    //  values of width and height).
+    adjustedPoint = initialPoint.getComputedPointUsingCompassCorner(
+                        receiverCP,
+                        this.getWidth() + offsetX,
+                        this.getHeight() + offsetY);
+
+    //  Compute rectangle, supplying it the inital point and the receiver's
+    //  width and height. This is important to do the calculation below where we
+    //  try to 'fit' the rectangle within the constraining elements (so that it
+    //  doesn't clip against a window boundary or something).
+    positioningRect = TP.rtc(
+                        adjustedPoint.getX() + offsetX,
+                        adjustedPoint.getY() + offsetY,
+                        this.getWidth() + offsetX,
+                        this.getHeight() + offsetY);
+
+    //  Constrain the overlay rectangle to inside of each 'constraining
+    //  rectangle'. This will make sure that the receiver's content isn't
+    //  clipped against the constraining rectangles.
+    if (TP.isArray(constrainingRects)) {
+        constrainingRects.forEach(
+            function(aRect) {
+                aRect.constrainRect(positioningRect);
+            });
+    }
+
+    //  Now, adjust the rectangle further
+
+    //  Add in the scrolling offsets.
+    scrollOffsets = this.getScrollOffsetFromAncestor();
+
+    positioningRect.addToX(scrollOffsets.getX());
+    positioningRect.addToY(scrollOffsets.getY());
+
+    //  If the caller supplied 'avoid points', do our best to avoid them :-).
+    if (TP.isArray(avoidPoints)) {
+
+        avoidPoints.forEach(
+            function(avoidPoint) {
+                var testPoint;
+
+                testPoint = TP.copy(avoidPoint);
+
+                //  Adjust the testing point based on our alignment compass
+                //  point. The intent is to adjust the testing point by a pixel
+                //  in both the X and Y directions to not have it be part of the
+                //  test itself.
+                switch (alignmentCompassPoint) {
+                    case TP.NORTH:
+                        testPoint.subtractFromY(1);
+                        break;
+                    case TP.NORTHEAST:
+                        testPoint.addToX(1);
+                        testPoint.subtractFromY(1);
+                        break;
+                    case TP.EAST:
+                        testPoint.addToX(1);
+                        break;
+                    case TP.SOUTHEAST:
+                        testPoint.addToX(1);
+                        testPoint.addToY(1);
+                        break;
+                    case TP.SOUTH:
+                        testPoint.addToY(1);
+                        break;
+                    case TP.SOUTHWEST:
+                        testPoint.subtractFromX(1);
+                        testPoint.addToY(1);
+                        break;
+                    case TP.WEST:
+                        testPoint.subtractFromX(1);
+                        break;
+                    case TP.NORTHWEST:
+                        testPoint.subtractFromX(1);
+                        testPoint.subtractFromY(1);
+                        break;
+                    default:
+                        break;
+                }
+
+                if (positioningRect.containsPoint(testPoint)) {
+                    if (positioningRect.containsPointX(testPoint)) {
+
+                        diffX = positioningRect.getX() +
+                                positioningRect.getWidth() -
+                                testPoint.getX();
+
+                        //  If by subtracting the difference, we're still
+                        //  greater than 0, then do that (shifting the
+                        //  positioning rectangle towards the left).
+                        if (positioningRect.getX() - diffX > 0) {
+                            positioningRect.subtractFromX(diffX);
+                        } else {
+                            //  Otherwise, if by adding the difference, we're
+                            //  still less than one of the constraining
+                            //  rectangles, then shift the positioning rectangle
+                            //  towards the right by 1px.
+                            constrainingRects.forEach(
+                                function(aRect) {
+                                    if (positioningRect.getX() + diffX <
+                                                        aRect.getWidth()) {
+                                        positioningRect.addToX(1);
+                                    }
+                                });
+                        }
+                    }
+
+                    if (positioningRect.containsPointY(testPoint)) {
+
+                        diffY = positioningRect.getY() +
+                                positioningRect.getHeight() -
+                                testPoint.getY();
+
+                        //  If by subtracting the difference, we're still
+                        //  greater than 0, then do that (shifting the
+                        //  positioning rectangle towards the top).
+                        if (positioningRect.getY() - diffY > 0) {
+                            positioningRect.subtractFromY(diffY);
+                        } else {
+                            //  Otherwise, if by adding the difference, we're
+                            //  still less than one of the constraining
+                            //  rectangles, then shift the positioning rectangle
+                            //  towards the bottom by 1px.
+                            constrainingRects.forEach(
+                                function(aRect) {
+                                    if (positioningRect.getY() + diffY <
+                                                        aRect.getHeight()) {
+                                        positioningRect.addToY(1);
+                                    }
+                                });
+                        }
+                    }
+                }
+        });
+    }
+
+    //  Grab the final point.
+    positionPoint = positioningRect.getXYPoint();
+
+    //  Set our global position to be that point
+    this.setGlobalPosition(positionPoint);
 });
 
 //  ------------------------------------------------------------------------
@@ -8031,7 +8281,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
 
         if (this.getType().isResponderForUIFocusChange(
-                                    this.getNativeNode(), aSignal)) {
+                aSignal, this.getNativeNode())) {
             this.blur();
         }
 
@@ -8489,7 +8739,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
 
         if (this.getType().isResponderForUIFocusChange(
-                                    this.getNativeNode(), aSignal)) {
+                aSignal, this.getNativeNode())) {
             this.focus();
         }
 

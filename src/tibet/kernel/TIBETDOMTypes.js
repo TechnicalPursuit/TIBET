@@ -862,82 +862,6 @@ function(aNode) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.dom.Node.Type.defineMethod('isResponderFor',
-function(aNode, aSignal) {
-
-    /**
-     * @method isResponderFor
-     * @summary Returns true if the type in question should be considered a
-     *     responder for the specific node/signal pair provided.
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
-     * @param {TP.sig.Signal} aSignal The signal that responders are being
-     *     computed for.
-     * @returns {Boolean} True when the receiver should respond to aSignal.
-     */
-
-    var signames,
-
-        fname,
-        len,
-        i,
-
-        desc,
-        tpNode;
-
-    if (TP.isValid(aSignal)) {
-        signames = aSignal.getSignalNames();
-    } else {
-        signames = TP.ac('Signal');
-    }
-
-    //  Convert all the signal names to simple form (making sure they're
-    //  canonical).
-    signames = signames.map(
-                function(name) {
-                    //  Expand first to make sure signal name is prefixed, if
-                    //  necessary, but then contract that. This gives canonical
-                    //  results.
-                    return TP.contractSignalName(TP.expandSignalName(name));
-                });
-
-    //  Iterate over all of the signal names and check to see if they respond to
-    //  a type method of 'isResponderFor' + the signal name.
-    len = signames.getSize();
-    for (i = 0; i < len; i++) {
-        fname = 'isResponderFor' + signames.at(i);
-        if (TP.canInvoke(this, fname)) {
-            return this[fname](aNode, aSignal);
-        }
-    }
-
-    //  If we couldn't find an 'isResponderFor' method, see if the target node
-    //  has an instance handler method. If it does, then consider ourself to be
-    //  a responder for that signal.
-
-    if (TP.isValid(aSignal)) {
-        desc = {
-            signal: aSignal,
-            //  TODO: determine why we thought this was a good idea. It's
-            //  commented out because it means many on: scenarios will fail.
-            // dontTraverseSpoofs: true,   //  We're not interested in spoofs
-            phase: '*'                  //  We want handler methods of any phase
-                                        //  since all we're doing is returning a
-                                        //  Boolean.
-        };
-
-        tpNode = TP.wrap(aNode);
-
-        if (TP.isCallable(tpNode.getBestHandler(aSignal, desc))) {
-            return true;
-        }
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
@@ -1025,9 +949,9 @@ function(aRequest) {
         '$REQUEST', aRequest,
         'TP', TP,
         'APP', APP,
+        '$SOURCE', TP.wrap(source),
         '$TAG', TP.wrap(parentNode),
         '$TARGET', aRequest.at('target'),
-        '$SOURCE', TP.wrap(source),
         '$SELECTION', selectionFunc,
         '$*', selectionFunc,            //  Alias for $SELECTION
         '$FOCUS', focusFunc,
@@ -1121,6 +1045,9 @@ function(aRequest) {
 
     info.atPut('shouldEcho', false);
     info.atPut('annotateMarkup', this.shouldWrapACPOutput());
+
+    //  We want to remove attributes if their values are empty.
+    info.atPut('removeAttrIfEmpty', true);
 
     //  Make sure that any required data (i.e. 'id' attributes and others) are
     //  defined. id attributes, in particular, because they can be dynamically
@@ -2022,6 +1949,7 @@ function() {
 
     var aspects;
 
+    //  If we've already cached the faceted aspects, just return them.
     if (TP.owns(this, '$$faceted_aspects')) {
         return this.$$faceted_aspects;
     }
@@ -2050,6 +1978,9 @@ function() {
 
                     return false;
                 });
+
+    //  Cache the filtered set of aspects locally on this instance.
+    this.$$faceted_aspects = aspects;
 
     return aspects;
 });
@@ -2792,6 +2723,15 @@ function(aspectName, aContentObject, aRequest) {
     if (this.isScalarValued(aspectName)) {
         if (TP.isString(input)) {
             value = input;
+        } else if (TP.isFragment(input)) {
+            //  Since we're scalar-valued we want child nodes of the fragment to
+            //  be converted to Arrays of the node "values" in text form
+            result = TP.ac();
+            len = input.childNodes.length;
+            for (i = 0; i < len; i++) {
+                result.atPut(i, TP.val(input.childNodes[i]));
+            }
+            value = result;
         } else if (TP.isNode(input)) {
             value = TP.val(input);
         } else if (TP.isNodeList(input)) {
@@ -5021,6 +4961,10 @@ function(newContent, aRequest, shouldSignal) {
         loadFunc =
             function(targetNode, newNode) {
 
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
+
                 reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
@@ -5030,6 +4974,10 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(targetNode, newNode) {
+
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
 
                 thisref.contentAppendCallback(targetNode);
 
@@ -5341,6 +5289,10 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
         loadFunc =
             function(targetNode, newNode) {
 
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
+
                 reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
@@ -5350,6 +5302,10 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(targetNode, newNode) {
+
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
 
                 thisref.contentInsertCallback(targetNode);
 
@@ -5670,6 +5626,10 @@ function(newContent, aRequest, shouldSignal) {
         loadFunc =
             function(targetNode, newNode) {
 
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
+
                 reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
@@ -5679,6 +5639,10 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(targetNode, newNode) {
+
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -5942,6 +5906,10 @@ function(newContent, aRequest, shouldSignal) {
         loadFunc =
             function(targetNode, newNode) {
 
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
+
                 reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
@@ -5951,6 +5919,10 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(targetNode, newNode) {
+
+                if (TP.isTrue(request.at(TP.REFRESH))) {
+                    TP.wrap(newNode).refresh();
+                }
 
                 thisref.contentReplaceCallback(targetNode);
 
@@ -9430,7 +9402,9 @@ function(aRequest, replaceNode, alternateNode) {
 
         //  Allocate a tag processor and initialize it with the COMPILE_PHASES
         processor = TP.tag.TagProcessor.constructWithPhaseTypes(
-                                        TP.tag.TagProcessor.COMPILE_PHASES);
+                            request.atIfInvalid(
+                                'phases',
+                                TP.tag.TagProcessor.COMPILE_PHASES));
 
         //  Capture this before processing - the following steps will virtually
         //  detach this node.
@@ -14006,16 +13980,17 @@ function(aspectName, aContentObject, aRequest) {
 
     /**
      * @method produceValue
-     * @summary Produces the value that will be used by the setValue() method
+     * @summary Produces the value that will be used by the setValue method
      *     to set the content of the receiver.
-     * @description This method works together with the 'isSingleValued()' and
-     *     'isScalarValued()' methods to produce the proper value for the
-     *     receiver. See the method description for isScalarValued() for more
+     * @description This method works together with the 'isSingleValued' and
+     *     'isScalarValued' methods to produce the proper value for the
+     *     receiver. See the method description for isScalarValued for more
      *     information.
      * @param {String} aspectName The aspect name on the receiver that the value
      *     is being produced for. Many times, this is 'value'.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {Object} The object produced for use by the setValue method.
      */
 
     var value,
@@ -15183,7 +15158,7 @@ function(attributeName, attributeValue) {
      * @param {String} attributeName The attribute name to set.
      * @param {Object} attributeValue The value to set.
      * @returns {undefined} Undefined according to the spec for DOM
-     *     'setAttribute'.
+     *     setAttribute.
      */
 
     var suspendedAttrs,
@@ -15195,7 +15170,7 @@ function(attributeName, attributeValue) {
     suspendedAttrs = this.$get('$suspendedAttributes');
     if (TP.isValid(suspendedAttrs) &&
         suspendedAttrs.indexOf(attributeName) !== TP.NOT_FOUND) {
-        //  returns null according to the spec for DOM 'setAttribute'.
+        //  returns null according to the spec for DOM setAttribute.
         return;
     }
 
@@ -15395,8 +15370,16 @@ function(attrNode, info) {
     if (TP.regex.HAS_ACP.test(str)) {
         //  Run a transform on it.
         result = str.transform(this, info);
-        if (result !== str) {
-            TP.nodeSetTextContent(attrNode, result);
+
+        if (TP.isEmpty(result) && TP.isTrue(info.at('removeAttrIfEmpty'))) {
+            TP.elementRemoveAttribute(
+                TP.attributeGetOwnerElement(attrNode),
+                TP.attributeGetLocalName(attrNode),
+                true);
+        } else {
+            if (result !== str) {
+                TP.nodeSetTextContent(attrNode, result);
+            }
         }
     }
 
@@ -15713,8 +15696,8 @@ function(aValue, formats) {
     }
 
     //  Formatters can sometimes consist of chain separated (for compatibility
-    //  with TSH) with '.|'. We split these and process each one individually in
-    //  the chain.
+    //  with TSH) with '.|'). We split these and process each one individually
+    //  in the chain.
 
     elemFmts = formats.split(TP.regex.ACP_FORMAT_SEPARATOR);
     len = elemFmts.getSize();
@@ -15944,7 +15927,7 @@ function(aValue, shouldSignal) {
     /**
      * @method setValue
      * @summary Sets the value of the receiver's node. For attribute nodes,
-     *     this calls 'setAttribute' with the attribute name on the owner
+     *     this calls setAttribute with the attribute name on the owner
      *     element.
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false

@@ -105,7 +105,7 @@ function(anID, regOnly, nodeContext) {
     //  result object, then return that. Note here how we use 'getInstanceById'
     //  on the TP.uri.URI type rather than 'TP.uc()' - that call will always
     //  create an instance *and register it* if it doesn't exist.
-    if (TP.regex.TIBET_URN.test(id)) {
+    if (TP.regex.ANY_URN.test(id)) {
         if (TP.isURI(url = TP.uri.URI.getInstanceById(id))) {
 
             //  NB: This is a URN so we assume 'async' of false here.
@@ -231,27 +231,29 @@ function(anID, regOnly, nodeContext) {
     //  resolve those cases.
     if (TP.regex.TIBET_URL_SPLITTER.test(id)) {
         parts = TP.regex.TIBET_URL_SPLITTER.match(id);
-        inst = TP.sys.getWindowById(parts.at(3));
-        if (TP.isWindow(inst)) {
-            if (parts.at(4) === 'document') {
-                return TP.tpdoc(inst.document);
-            } else if (TP.notEmpty(parts.at(6))) {
-
-                if (parts.at(6) === '#document') {
+        winid = parts.at(3);
+        if (TP.notEmpty(winid)) {
+            inst = TP.sys.getWindowById(winid);
+            if (TP.isWindow(inst)) {
+                if (parts.at(4) === 'document') {
                     return TP.tpdoc(inst.document);
-                }
+                } else if (TP.notEmpty(parts.at(6))) {
 
-                inst = TP.nodeGetElementById(inst.document,
-                                                parts.at(6).slice(1));
-                if (TP.isNode(inst)) {
-                    return TP.tpnode(inst);
-                }
+                    if (parts.at(6) === '#document') {
+                        return TP.tpdoc(inst.document);
+                    }
 
-                //  We're definitely a tibet:// URL, but we couldn't resolve to
-                //  a Node of some sort. No sense in continuing - exit with
-                //  null.
-                return null;
+                    inst = TP.nodeGetElementById(inst.document,
+                                                    parts.at(6).slice(1));
+                    if (TP.isNode(inst)) {
+                        return TP.tpnode(inst);
+                    }
+                }
             }
+
+            //  We're definitely a tibet:// URL, but we couldn't resolve to a
+            //  Node of some sort. No sense in continuing - exit with null.
+            return null;
         }
     }
 
@@ -498,7 +500,7 @@ function(anObj, anID) {
 
     //  If a TIBET URN can be made from the ID and it is registered with the URI
     //  type and it has a real resource result object, then return that.
-    if (TP.regex.TIBET_URN.test(id) &&
+    if (TP.regex.ANY_URN.test(id) &&
         TP.uri.URI.instances.containsKey(id) &&
         TP.isValid(TP.uc(id).getResource().get('result'))) {
 
@@ -509,7 +511,7 @@ function(anObj, anID) {
 
     //  Try to make a TIBET URN from the urnID and, if it is registered with the
     //  URI type and it has a real resource result object, then return that.
-    if (TP.regex.TIBET_URN.test(urnID) &&
+    if (TP.regex.ANY_URN.test(urnID) &&
         TP.uri.URI.instances.containsKey(urnID) &&
         TP.isValid(TP.uc(urnID).getResource().get('result'))) {
 

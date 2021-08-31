@@ -94,9 +94,9 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, 
      * @param {Boolean} [echoFormat=true] Whether or not to 'echo' the format
      *     out to the result if no source object can be computed for it.
      * @param {Boolean} [annotateMarkup=true] Whether or not to annotate markup
-     *     output with embedded XHTML 'span' elements that wrap ACP expressions
-     *     and contain the ACP expression in a 'tibet:templateexpr' attribute
-     *     on that element.
+     *     output with embedded 'tibet:acp' elements that wrap ACP expressions
+     *     and contain the ACP expression in an 'expr' attribute on that
+     *     element.
      * @returns {Function|undefined} The compiled template Function.
      */
 
@@ -208,11 +208,11 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, 
                         //  starting and ending markup.
                         newTokens.push(
                             TP.ac('text',
-                                    '<span' +
-                                    ' tibet:templateexpr="' + tokenText + '"' +
+                                    '<tibet:acp' +
+                                    ' expr="' + tokenText + '"' +
                                     '>'),
                                     tokens.at(i),
-                                    TP.ac('text', '</span>'));
+                                    TP.ac('text', '</tibet:acp>'));
                     }
                 } else {
 

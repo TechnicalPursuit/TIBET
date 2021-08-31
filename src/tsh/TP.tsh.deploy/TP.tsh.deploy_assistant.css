@@ -1,17 +1,10 @@
 @namespace url("http://www.w3.org/1999/xhtml");
 @namespace tsh url("http://www.technicalpursuit.com/1999/tshell");
 @namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 tsh|deploy_assistant {
 
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-
-    overflow: hidden;
 }
 
 tsh|deploy_assistant > .head {
@@ -19,7 +12,6 @@ tsh|deploy_assistant > .head {
 
 tsh|deploy_assistant > .body {
 
-    position: absolute;
     display: grid;
 
     grid-template-columns: 9em 1fr;
@@ -29,14 +21,9 @@ tsh|deploy_assistant > .body {
         "properties_control_group properties_control_group"
         "properties_group properties_group";
 
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 7em;
+    align-items: center;
 
     text-align: left;
-
-    align-items: center;
 }
 
 tsh|deploy_assistant > .body label {
@@ -69,12 +56,7 @@ tsh|deploy_assistant > .body .propertiesControlGroup {
 
     grid-area: properties_control_group;
 
-    position: absolute;
     display: flex;
-
-    top: 8px;
-    right: 5px;
-    left: 5px;
 
     align-items: center;
     justify-content: flex-start;
@@ -105,37 +87,23 @@ tsh|deploy_assistant > .body .propertiesControlGroup > .inserter {
 tsh|deploy_assistant > .body .propertiesGroup {
 
     grid-area: properties_group;
-
-    position: absolute;
-
-    top: 0;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
 }
 
-tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries {
-
-    position: absolute;
-
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries {
 
     border: dotted 1px gray;
 
     overflow-y: auto;
 }
 
-tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries > span {
+tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries > span {
 
     display: flex;
 
     width: 100%;
 }
 
-tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries > span input {
+tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries > span input {
 
     width: auto;
     height: 1em;
@@ -147,7 +115,7 @@ tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries > span input {
     flex: 1;
 }
 
-tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries .deleter {
+tsh|deploy_assistant > .body tibet|group#deploy_assistant_PropertyEntries .deleter {
 
     width: 24px;
     height: 24px;
@@ -163,14 +131,6 @@ tsh|deploy_assistant > .body #deploy_assistant_PropertyEntries .deleter {
 
 tsh|deploy_assistant > .foot {
 
-    position: absolute;
-
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-
-    height: 7em;
 }
 
 tsh|deploy_assistant > .foot #generatedCmdLine {

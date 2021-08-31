@@ -185,15 +185,7 @@ function() {
      * @returns {TP.lama.IDE} The receiver.
      */
 
-    var uiBootIFrameElem,
-        win;
-
-    //  Manually 'display: none' the boot iframe. It's already
-    //  'visibility:hidden', but we need to get it out of the way.
-    uiBootIFrameElem = TP.byId('UIBOOT', TP.topWindow, false);
-    if (TP.isValid(uiBootIFrameElem)) {
-        TP.elementHide(uiBootIFrameElem);
-    }
+    var win;
 
     //  Set up our window. By default, the Lama exists in the UIROOT window.
 
@@ -4961,7 +4953,7 @@ function() {
     //  Put both the root and the current canvas document into an Array and
     //  configure that Array to be an origin set.
     docs = TP.ac(rootDoc, currentCanvasDoc);
-    docs.isOriginSet(true);
+    docs.useAsCollection(true);
 
     //  Observe both documents for DOMDragDown and DOMMouseDown in a *capturing*
     //  fashion (to avoid having issues with the standard platform's
@@ -5894,8 +5886,7 @@ function(mutatedNodes, mutationAncestor, operation, attributeName,
 
             for (i = 0; i < len; i++) {
                 if (TP.isElement(templateTestNode) &&
-                    TP.elementHasAttribute(
-                            templateTestNode, 'tibet:templateexpr', true)) {
+                    TP.name(templateTestNode) === 'tibet:acp') {
                     //  empty
                 } else {
                     testAddressParts.push(visualAddressParts.at(i));

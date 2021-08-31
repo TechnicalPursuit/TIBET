@@ -322,6 +322,12 @@ function() {
 
             var tibetToken;
 
+            //  Set up common URIs for use as binding targets throughout the
+            //  system.
+            TP.uc('urn:tibet:empty_array', TP.ac());
+            TP.uc('urn:tibet:empty_hash', TP.hc());
+            TP.uc('urn:tibet:empty_string', '');
+
             //  Set up common URIs for the user object, the raw user vCard data
             //  and the host data.
             TP.uc('urn:tibet:hosturi').setResource(
@@ -336,7 +342,7 @@ function() {
             //  *not* check to see if the application is configured to require
             //  login here. When in a headless mode, the 'boot.use_login' cfg
             //  parameter will always be false.
-            if (TP.sys.cfg('boot.context') === 'headless') {
+            if (TP.sys.isHeadless()) {
 
                 tibetToken = TP.global.sessionStorage.getItem(
                                             'TIBET.boot.tibet_token');
@@ -696,7 +702,7 @@ function() {
         bootTPFrameElem,
         bootdoc;
 
-    inHeadless = TP.sys.cfg('boot.context') === 'headless';
+    inHeadless = TP.sys.isHeadless();
 
     rootLoc = TP.uriJoinPaths('~boot_xhtml', TP.sys.cfg('project.root_page'));
 

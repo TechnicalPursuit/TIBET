@@ -36,7 +36,7 @@ TP.dom.D3VirtualList.Type.set('shouldOrder', false);
 
 TP.dom.D3VirtualList.Inst.defineAttribute('$virtualScroller');
 
-TP.dom.D3VirtualList.Inst.defineAttribute('$hasBumpRows');
+TP.dom.D3VirtualList.Inst.defineAttribute('$bumpRowCount');
 
 TP.dom.D3VirtualList.Inst.defineAttribute('$startOffset');
 TP.dom.D3VirtualList.Inst.defineAttribute('$endOffset');
@@ -174,6 +174,11 @@ function() {
     //  Get the current, computed height
     currentHeight = this.getHeight();
 
+    //  We need to subtract *our own* (vertical) border
+    currentHeight -=
+        this.getComputedStyleProperty('border-top-width').asNumber() +
+        this.getComputedStyleProperty('border-bottom-width').asNumber();
+
     //  If we have a direct 'height' value set on the '.style' property, then
     //  that overrides everything - return it.
 
@@ -185,11 +190,8 @@ function() {
     }
 
     rowHeight = this.getRowHeight();
-
-    //  If the current height is less than the row height (a single row height),
-    //  then return that.
-    if (currentHeight < rowHeight) {
-        return rowHeight;
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
     }
 
     //  See if a fixed size is available.
@@ -215,6 +217,12 @@ function() {
     if (TP.isNumber(minHeight) && minHeight > 0 &&
         currentHeight <= minHeight) {
         return minHeight;
+    }
+
+    //  If the current height is less than the row height (a single row height),
+    //  then return that.
+    if (currentHeight < rowHeight) {
+        return rowHeight;
     }
 
     return currentHeight;
@@ -244,18 +252,23 @@ function() {
 
     //  The current row height.
     rowHeight = this.getRowHeight();
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
+    }
 
-    this.$set('$hasBumpRows', false, false);
+    this.$set('$bumpRowCount', 0, false);
 
     //  Viewport height less than row height. Default to 1 row.
     if (viewportHeight < rowHeight) {
         computedRowCount = 1;
     } else {
-
         computedRowCount = (viewportHeight / rowHeight).round();
 
         //  Grab the border size
         borderSize = this.getRowBorderHeight();
+        if (!TP.isNumber(borderSize)) {
+            return this.raise('TP.sig.InvalidNumber');
+        }
 
         //  Double the border size to ensure enough overlap.
         borderSize *= 2;
@@ -263,9 +276,9 @@ function() {
         //  If the viewport, minus the border height, doesn't fall on an even
         //  boundary, then increment the count by 1, so that we get an overlap
         //  to avoid 'blank' spaces.
-        if ((viewportHeight - borderSize) % rowHeight !== 0) {
+        if ((viewportHeight - borderSize) / rowHeight > computedRowCount) {
             computedRowCount += 1;
-            this.$set('$hasBumpRows', true, false);
+            this.$set('$bumpRowCount', 1, false);
         }
     }
 
@@ -338,6 +351,9 @@ function() {
         displayedRowCount;
 
     rowHeight = this.getRowHeight();
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
+    }
 
     //  And the number of rows we're currently displaying is our overall element
     //  divided by our row height.
@@ -384,6 +400,9 @@ function() {
     elem = this.getNativeNode();
 
     rowHeight = this.getRowHeight();
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
+    }
 
     //  The current starting row is whatever our current scrollTop setting is
     //  divided by our row height. Note here how we 'ceil()' the value to get
@@ -494,7 +513,9 @@ function() {
      * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
-    var selectionData,
+    var containerSelection,
+
+        selectionData,
 
         rowHeight,
         totalRows,
@@ -518,13 +539,20 @@ function() {
     //  root itself intact for future updates).
     if (TP.notValid(this.get('data'))) {
 
-        this.get('containerSelection').selectAll('*').remove();
+        containerSelection = this.get('containerSelection');
+        if (TP.isValid(containerSelection)) {
+            containerSelection.selectAll('*').remove();
 
-        //  Signal to observers that this control has rendered.
-        this.signal('TP.sig.DidRender');
+            //  Signal to observers that this control has rendered.
+            this.signal('TP.sig.DidRender');
+        }
 
         return this;
     }
+
+    //  Compute the number of rows we need to generate *before* we try to
+    //  compute the data that will be the d3 selection data.
+    this.computeGeneratedRowCount();
 
     //  The d3 selection data.
     selectionData = this.computeSelectionData();
@@ -534,6 +562,9 @@ function() {
 
     //  The current row height.
     rowHeight = this.getRowHeight();
+    if (!TP.isNumber(rowHeight)) {
+        return this.raise('TP.sig.InvalidNumber');
+    }
 
     //  Grab the virtual scroller object.
     virtualScroller = this.get('$virtualScroller');
@@ -544,7 +575,7 @@ function() {
     virtualScroller.
         rowHeight(rowHeight).
         totalRows(totalRows).
-        data(selectionData, this.getKeyFunction());
+        data(selectionData, this.d3KeyFunction());
 
     //  Call it's render() to redraw. This is the same method that the virtual
     //  scroller object itself will call when we scroll and provides the
@@ -693,12 +724,15 @@ TP.extern.d3.VirtualScroller = function() {
 
     scrollerFunc = function(container) {
 
-        var render,
+        var bumpRowCount,
+
+            render,
             scrollRenderFrame;
 
         render = function() {
 
             var scrollTop,
+                finalRowCount,
                 lastPosition;
 
             if (TP.notValid(container.node()) ||
@@ -708,10 +742,17 @@ TP.extern.d3.VirtualScroller = function() {
 
             computedRowCount = control.computeGeneratedRowCount();
 
+            bumpRowCount = control.$get('$bumpRowCount');
+
             scrollTop = viewport.node().scrollTop;
 
+            finalRowCount = totalRows;
+            if (bumpRowCount > 0) {
+                finalRowCount -= bumpRowCount;
+            }
+
             /* eslint-disable no-extra-parens */
-            totalHeight = Math.max(minHeight, (totalRows * rowHeight));
+            totalHeight = Math.max(minHeight, (finalRowCount * rowHeight));
             /* eslint-enable no-extra-parens */
 
             //  both style and attr height values seem to be respected
@@ -731,15 +772,11 @@ TP.extern.d3.VirtualScroller = function() {
                 //  Signal to observers that this control has rendered.
                 control.signal('TP.sig.DidRenderData');
             } else {
-                //  Otherwise, there was a change in scroll position. Make the
-                //  scrolling render function itself run after the next repaint
-                //  for less flicker.
-                (function() {
-                    scrollRenderFrame(position);
+                //  Otherwise, there was a change in scroll position.
+                scrollRenderFrame(position);
 
-                    //  Signal to observers that this control has rendered.
-                    control.signal('TP.sig.DidRenderData');
-                }).queueAfterNextRepaint();
+                //  Signal to observers that this control has rendered.
+                control.signal('TP.sig.DidRenderData');
             }
 
             lastScrollTop = scrollTop;
@@ -749,7 +786,7 @@ TP.extern.d3.VirtualScroller = function() {
 
         scrollRenderFrame = function(scrollPosition) {
 
-            var hasBumpRows,
+            var finalRowCount,
 
                 startOffset,
                 endOffset,
@@ -760,20 +797,25 @@ TP.extern.d3.VirtualScroller = function() {
 
                 rowSelector;
 
-            hasBumpRows = control.$get('$hasBumpRows');
+            finalRowCount = totalRows;
 
-            //  Calculate the start offset (if there are 'bump rows', add 2 to
-            //  offset 0 position vs totalRow count diff)
-            if (hasBumpRows) {
+            //  Calculate the start offset (if there are 'bump rows', add them
+            //  and then 1 to offset 0 position vs totalRow count diff)
+            if (bumpRowCount > 0) {
+                finalRowCount -= 1;
                 startOffset = Math.max(
-                    0,
-                    Math.min(scrollPosition, totalRows - computedRowCount + 2));
+                0,
+                Math.min(
+                    scrollPosition,
+                    finalRowCount - computedRowCount + bumpRowCount + 1));
 
-                endOffset = startOffset + computedRowCount + 2;
+                endOffset = startOffset + computedRowCount + bumpRowCount + 1;
             } else {
                 startOffset = Math.max(
-                    0,
-                    Math.min(scrollPosition, totalRows - computedRowCount));
+                0,
+                Math.min(
+                    scrollPosition,
+                    finalRowCount - computedRowCount));
 
                 endOffset = startOffset + computedRowCount;
             }
@@ -798,7 +840,7 @@ TP.extern.d3.VirtualScroller = function() {
                         //  compute the new data slice
                         newData = allData.slice(
                                     startOffset,
-                                    Math.min(endOffset, totalRows));
+                                    Math.min(endOffset, finalRowCount));
 
                         //  Just update the individual datums for each row.
                         rowUpdateSelection.each(
@@ -850,7 +892,7 @@ TP.extern.d3.VirtualScroller = function() {
                         //  compute the new data slice
                         newData = allData.slice(
                                     startOffset,
-                                    Math.min(endOffset, totalRows));
+                                    Math.min(endOffset, finalRowCount));
 
                         rowSelection = container.selectAll(rowSelector).
                                         data(newData, dataid);

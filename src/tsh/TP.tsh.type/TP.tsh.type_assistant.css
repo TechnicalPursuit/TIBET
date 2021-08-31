@@ -58,7 +58,7 @@ tsh|type_assistant > .body .supertypeFieldGroup > input {
     margin-left: 0.5em;
 }
 
-tsh|type_assistant > .body #type_assistant_SupertypeList {
+tsh|type_assistant > .body xctrls|list#type_assistant_SupertypeList {
 
     grid-area: supertype_list;
 

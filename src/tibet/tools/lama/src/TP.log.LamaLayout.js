@@ -41,8 +41,20 @@ function(anEntry) {
     } else {
         str = arglist.collect(
                 function(item) {
-                    return TP.str(item);
-                }).join(' ');
+                    var errObj,
+                        stackStr;
+
+                    str += TP.str(item);
+                    str += ' ';
+
+                    errObj = item.at('error');
+                    if (TP.isValid(errObj)) {
+                        stackStr = TP.errorFormatStack(errObj);
+                        if (TP.notEmpty(stackStr)) {
+                            str += '\n' + stackStr;
+                        }
+                    }
+                });
     }
 
     //  Make sure to convert any embedded markup to entities before generating

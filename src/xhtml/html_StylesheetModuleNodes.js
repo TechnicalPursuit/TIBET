@@ -21,7 +21,9 @@
 
 TP.html.Attrs.defineSubtype('style');
 
-TP.html.style.Type.set('booleanAttrs', TP.ac('scoped'));
+TP.html.style.Type.set('booleanAttrs',
+        TP.html.style.Type.get('booleanAttrs').concat(
+            TP.ac('scoped')));
 TP.html.style.Type.set('reloadableUriAttrs', TP.ac('tibet:originalhref'));
 
 //  ------------------------------------------------------------------------
@@ -37,7 +39,12 @@ function(aTargetElem) {
      *     element.
      * @description This method is usually activated as the result of a 'DOM
      *     Mutation' of this node because of changes to the remote resource that
-     *     caused this element to be created in the first place
+     *     caused this element to be created in the first place.
+     *     NOTE: For newly attached style elements, this is called *before* the
+     *     associated style sheet is loaded. For logic that needs to execute
+     *     after the sheet is available, it is best to listen for the
+     *     TP.sig.DOMReady signal that the element will send after the sheet is
+     *     loaded.
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @exception TP.sig.InvalidElement
@@ -154,6 +161,10 @@ function(aRequest) {
                     function(anHref) {
                         TP.uc(anHref);
                     });
+
+                //  Refresh the rules cache for any elements that are affected
+                //  by the stylesheet of the newly loaded style element.
+                TP.$styleSheetRefreshAppliedRulesCaches(stylesheet);
             }
 
             //  If the element doesn't have a 'imports' attribute (and,

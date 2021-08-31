@@ -18,13 +18,16 @@
 'use strict';
 
 var CLI,
-    Cmd,
     Promise,
-    puppeteer;
+    puppeteer,
+    readline,
+
+    Cmd;
 
 CLI = require('./_cli');
-puppeteer = require('puppeteer');
 Promise = require('bluebird');
+puppeteer = require('puppeteer');
+readline = require('readline');
 
 
 //  ---
@@ -71,11 +74,13 @@ Cmd.NO_VALUE = '__TSH__NO_VALUE__TSH__';
 
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
-    boolean: ['break', 'debug', 'silent', 'tap', 'verbose'],
+    boolean: ['break', 'debug', 'debugger', 'interactive', 'silent', 'tap', 'verbose'],
     string: ['package', 'profile', 'config', 'script'],
     number: ['timeout'],
     default: {
-        color: true
+        color: true,
+        debugger: false,
+        interactive: false
     }
 },
 Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -202,6 +207,10 @@ Cmd.prototype.execute = function() {
     var ignoreMessage,
         ignoreChromeOutput,
         ignoreStartupOutput,
+        devtoolsPref,
+        headlessPref,
+        userDataPath,
+        promise,
         puppetBrowser,
         puppetPage,
         start,
@@ -326,27 +335,106 @@ Cmd.prototype.execute = function() {
         }
     };
 
-    //  Let us access file urls so we don't have to launch a server. Also, don't
-    //  specify a sandbox in case we're running as root.
-    puppeteerArgs = {
-        args: CLI.getcfg('puppeteer.chromium_args', [
-                        '--disable-web-security',
-                        '--allow-file-access-from-files',
-                        '--no-sandbox']),
-        devtools: CLI.getcfg('puppeteer.devtools', false),
-        headless: CLI.getcfg('puppeteer.headless', true),
-        slowMo: CLI.getcfg('puppeteer.slowMo', false)
-    };
+    if (this.options.debugger) {
+        devtoolsPref = true;
+        headlessPref = false;
+    } else {
+        devtoolsPref = CLI.getcfg('puppeteer.devtools', false);
+        headlessPref = CLI.getcfg('puppeteer.headless', true);
+    }
+
+    promise = Promise.resolve();
+
+    //  If we're running with 'devtools' on, then we try to use a user profile
+    //  so that we'll get Devtools to save things like recently opened files,
+    //  breakpoints, etc.
+    if (devtoolsPref) {
+        userDataPath = CLI.expandPath(
+            CLI.getcfg('puppeteer.debug_userdata_path', '~lib/.tshDebugPrefs'));
+
+        //  If the path doesn't exist, then launch Puppeteer with the user data
+        //  path so that it can create the user preference data and dump it
+        //  there. Then close it as soon as it opens.
+        if (!CLI.sh.test('-e', userDataPath)) {
+            promise = puppeteer.launch(
+                        {
+                            devtools: true,
+                            userDataDir: userDataPath
+                        });
+            promise = promise.then(
+                function(browser) {
+                    return browser.close();
+                });
+
+            //  Now that the user data directory and files exist, update the
+            //  '.../Default/Preferences' file under it with the
+            //  devtools_preferences that we have.
+            promise = promise.then(
+                function() {
+                    var prefsFilePath,
+                        prefs,
+
+                        devtoolsCfg,
+                        keys,
+                        i;
+
+                    prefsFilePath = CLI.joinPaths(userDataPath,
+                                                    'Default',
+                                                    'Preferences');
+                    prefs = JSON.parse(CLI.sh.cat(prefsFilePath));
+                    if (!prefs.devtools.preferences) {
+                        prefs.devtools.preferences = {};
+                    }
+
+                    //  Grab the Devtools preferences. Note that we supply true
+                    //  as the 3rd parameter to get a nested JS object.
+                    devtoolsCfg = CLI.getcfg('puppeteer.devtools_preferences',
+                                                {},
+                                                true);
+
+                    keys = Object.keys(devtoolsCfg);
+                    for (i = 0; i < keys.length; i++) {
+                        prefs.devtools.preferences[keys[i]] =
+                            devtoolsCfg[keys[i]];
+                    }
+
+                    new CLI.sh.ShellString(JSON.stringify(prefs)).to(
+                                                            prefsFilePath);
+                });
+        }
+
+        //  Let us access file urls so we don't have to launch a server. Also,
+        //  don't specify a sandbox in case we're running as root.
+        puppeteerArgs = {
+            args: CLI.getcfg('puppeteer.chromium_args', [
+                            '--disable-web-security',
+                            '--allow-file-access-from-files',
+                            '--no-sandbox']),
+            devtools: devtoolsPref,
+            userDataDir: userDataPath,
+            headless: headlessPref,
+            slowMo: CLI.getcfg('puppeteer.slowMo', false)
+        };
+
+    } else {
+        //  Let us access file urls so we don't have to launch a server. Also,
+        //  don't specify a sandbox in case we're running as root.
+        puppeteerArgs = {
+            args: CLI.getcfg('puppeteer.chromium_args', [
+                            '--disable-web-security',
+                            '--allow-file-access-from-files',
+                            '--no-sandbox'])
+        };
+    }
 
     if (cmd.options.verbose) {
         cmd.stdout('Launching puppeteer with args:\n' +
             CLI.beautify(puppeteerArgs));
     }
 
-    puppeteer.launch(
-        puppeteerArgs
-    ).then(
-    function(browser) {
+    promise.then(function() {
+        return puppeteer.launch(puppeteerArgs);
+    }).then(function(browser) {
 
         puppetBrowser = browser;
         return browser.newPage();
@@ -418,10 +506,6 @@ Cmd.prototype.execute = function() {
                         cmd.stdout(msg);
                     }
                     break;
-            }
-
-            if (/FAIL:/.test(text)) {
-                cmd.close(1, puppetBrowser);
             }
         });
 
@@ -520,7 +604,16 @@ Cmd.prototype.execute = function() {
     }).then(function(context) {
 
         var input,
-            shouldBreak;
+            shouldBreak,
+
+            tshEvaluate,
+
+            readlineLib,
+            promptUser,
+
+            histPath,
+            histJSON,
+            histEntries;
 
         input = cmd.options.script;
         shouldBreak = cmd.options.break;
@@ -529,7 +622,7 @@ Cmd.prototype.execute = function() {
             cmd.stdout(input);
         }
 
-        return context.evaluate(function(tshInput, breakBeforeExec) {
+        tshEvaluate = function(tshInput, breakBeforeExec) {
 
             return new Promise(function(resolve, reject) {
                 var handler;
@@ -624,27 +717,94 @@ Cmd.prototype.execute = function() {
                     'onsuccess', handler,   //  success handler (same handler)
                     'onfail', handler));    //  failure handler (same handler)
             });
-        }, input, shouldBreak);
+        };
+
+        if (cmd.options.interactive) {
+            histPath = CLI.expandPath('~lib/.tshHistory');
+            if (CLI.sh.test('-e', histPath)) {
+                histJSON = CLI.sh.cat(histPath).toString();
+                histEntries = JSON.parse(histJSON);
+            } else {
+                histEntries = [];
+            }
+
+            readlineLib = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout,
+                terminal: true,
+                history: histEntries    //  This Array is modified by the
+                                        //  readline library as history is added
+            });
+
+            promptUser = function() {
+                var prompt;
+
+                prompt = 'tsh>> ';
+
+                return new Promise((resolve, reject) => {
+                    readlineLib.question(
+                        prompt,
+                        function(cmdLineInput) {
+                            var closePromise;
+
+                            if (cmdLineInput === 'exit') {
+                                closePromise = cmd.beforeBrowserClose(
+                                                puppetBrowser, puppetPage);
+
+                                if (closePromise) {
+                                    closePromise.then(
+                                        function() {
+                                            cmd.close(0, puppetBrowser);
+                                        });
+                                } else {
+                                    cmd.close(0, puppetBrowser);
+                                }
+
+                                return;
+                            }
+
+                            histJSON = JSON.stringify(histEntries);
+                            new CLI.sh.ShellString(histJSON).to(histPath);
+
+                            return context.evaluate(
+                                tshEvaluate, cmdLineInput, shouldBreak).then(
+                                    function(results) {
+                                        //  Print out results then return a
+                                        //  Promise that will prompt the user
+                                        //  again.
+                                        cmd.stdout(results);
+                                        return promptUser();
+                                    });
+                        });
+                });
+            };
+
+            return promptUser();
+        } else {
+            return context.evaluate(tshEvaluate, input, shouldBreak);
+        }
 
     }).then(function(results) {
 
         var closePromise;
 
-        cmd.stdout(results);
+        if (!cmd.options.interactive) {
+            cmd.stdout(results);
 
-        //  Call beforeBrowserClose. Its return value is either a Promise or
-        //  null. If it hands back a Promise, wait until that is fulfilled
-        //  before closing.
+            //  Call beforeBrowserClose. Its return value is either a Promise or
+            //  null. If it hands back a Promise, wait until that is fulfilled
+            //  before closing.
 
-        closePromise = cmd.beforeBrowserClose(puppetBrowser, puppetPage);
+            closePromise = cmd.beforeBrowserClose(puppetBrowser, puppetPage);
 
-        if (closePromise) {
-            closePromise.then(
-                function() {
-                    cmd.close(0, puppetBrowser);
-                });
-        } else {
-            cmd.close(0, puppetBrowser);
+            if (closePromise) {
+                closePromise.then(
+                    function() {
+                        cmd.close(0, puppetBrowser);
+                    });
+            } else {
+                cmd.close(0, puppetBrowser);
+            }
         }
 
     }).catch(function(err) {
@@ -952,6 +1112,10 @@ Cmd.prototype.close = function(code, browser) {
     if (CLI.isValid(browser) && browser.close) {
         browser.close();
     }
+
+    //  Tweak the shutdown timeout to be 250ms rather than the default of
+    //  1000ms. We're wrapping up anyway.
+    CLI.setcfg('cli.shutdown_timeout', 250);
     return CLI.exitSoon(code);
 };
 
@@ -1031,6 +1195,14 @@ Cmd.prototype.stringifyForStdio = function(obj) {
 
     arr = arr.map(function(item) {
         var val;
+
+        if (item === undefined) {
+            return '';
+        }
+
+        if (item === null) {
+            return '';
+        }
 
         if (Array.isArray(item)) {
 

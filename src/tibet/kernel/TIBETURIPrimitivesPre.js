@@ -37,18 +37,27 @@ function(anObject, schemeOptional) {
      *     String.
      */
 
+    var str;
+
     if (!TP.isString(anObject)) {
         return false;
     }
 
-    if (schemeOptional) {
-        return TP.regex.URI_LIKELY.test(anObject) &&
-            !TP.regex.HAS_LINEBREAK.test(anObject);
+    //  If it's a virtual path, then we need to expand it before testing.
+    if (TP.uriIsVirtual(anObject)) {
+        str = TP.uriExpandPath(anObject);
+    } else {
+        str = anObject;
     }
 
-    return TP.regex.SCHEME.test(anObject) &&
-        !TP.regex.HAS_LINEBREAK.test(anObject) &&
-        TP.regex.URI_STRICT.test(anObject);
+    if (schemeOptional) {
+        return TP.regex.URI_LIKELY.test(str) &&
+            !TP.regex.HAS_LINEBREAK.test(str);
+    }
+
+    return TP.regex.SCHEME.test(str) &&
+        !TP.regex.HAS_LINEBREAK.test(str) &&
+        TP.regex.URI_STRICT.test(str);
 });
 
 //  ------------------------------------------------------------------------

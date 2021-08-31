@@ -2,12 +2,13 @@
     CSS styles for 'xctrls:dialog' controls for the 'tpi' theme.
 */
 
-@import url("~xctrls_src/themes/TP.xctrls.dialog_all.css");
+@import url("~lib_src/xctrls/themes/TP.xctrls.dialog_all.css");
 
 @namespace url("http://www.w3.org/1999/xhtml");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace svg url("http://www.w3.org/2000/svg");
 
 /* The dialog */
 *|*[data-theme~="tpi"] xctrls|dialog > xctrls|content {
@@ -60,6 +61,13 @@
 
     border-top-left-radius: calc(var(--xctrls-dialog-border-radius) - 2px);
     border-top-right-radius: calc(var(--xctrls-dialog-border-radius) - 2px);
+}
+
+*|*[data-theme~="tpi"] xctrls|dialog > xctrls|content > div[tibet|pelem="header"] svg|svg svg|path[class~="main"] {
+
+    fill: var(--xctrls-dialog-header-close-fill-color);
+    stroke: var(--xctrls-dialog-header-close-stroke-color);
+    stroke-width: var(--xctrls-dialog-header-close-stroke-width);
 }
 
 /* The dialog body */

@@ -66,9 +66,9 @@ function(aRequest) {
     }
 
     terms = shell.getArgument(aRequest, 'ARGV');
-    limit = Math.max(1, shell.getArgument(aRequest, 'tsh:limit', 2));
-    comments = shell.getArgument(aRequest, 'tsh:comments', false);
-    ignorecase = shell.getArgument(aRequest, 'tsh:ignorecase', true);
+    limit = Math.max(1, TP.nc(shell.getArgument(aRequest, 'tsh:limit', 2)));
+    comments = TP.bc(shell.getArgument(aRequest, 'tsh:comments', false));
+    ignorecase = TP.bc(shell.getArgument(aRequest, 'tsh:ignorecase', true));
 
     //  Convert terms into regular expressions if possible. Otherwise use the
     //  original term and we'll try indexOf during checking.
@@ -272,7 +272,7 @@ function(aRequest) {
     }
 
     //  Headless/CLI support requires output line-by-line.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
 
         results.forEach(
                 function(result) {

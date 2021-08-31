@@ -121,12 +121,18 @@ function() {
      */
 
     var value,
+
+        key,
         pageValue;
 
     //  Grab the underlying data value.
     value = this.getValue();
 
-    pageValue = this.get('$dataKeys').indexOf(value);
+    key = this.getKeyForValue(value);
+    pageValue = this.get('$dataKeys').indexOf(key);
+    if (pageValue === TP.NOT_FOUND) {
+        return TP.NOT_FOUND;
+    }
 
     //  Adjust the page value, taking into account off-by-1 and whether or not
     //  we're showing the next/previous and start/end items.
@@ -247,7 +253,7 @@ function(aSignal) {
                 signalName = 'TP.sig.UIPageSet';
 
                 //  We're going to use the item number as the new page value.
-                newValue = valueTPElem.getParentNode().getAttribute('itemnum');
+                newValue = valueTPElem.getParentNode().getAttribute(TP.ITEM_NUM);
 
                 newPageValue = newValue.asNumber();
                 if (TP.isNaN(newPageValue)) {
@@ -327,46 +333,41 @@ function(aDataObject, shouldSignal) {
      * @returns {TP.xctrls.pagerbar} The receiver.
      */
 
-    var dataObj,
+    var pageData,
+        //  pageSize,
 
-        pageData,
-        pageSize,
+        rowType;
 
-        groupedData,
-        len,
-        i,
-
-        firstObj;
+        //  groupedData,
+        //  len,
+        //  i;
 
     if (TP.notValid(aDataObject)) {
         return this;
     }
 
-    //  Make sure to unwrap this from any TP.core.Content objects, etc.
-    dataObj = TP.val(aDataObject);
-
-    //  Now, obtain a set of key/value pairs no matter what kind of data object
-    //  we were handed.
-    if (TP.isArray(dataObj)) {
-        firstObj = dataObj.first();
-
-        if (dataObj.getSize() === 1 &&
-            TP.isCollection(firstObj) &&
-            !TP.isArray(firstObj)) {
-            pageData = TP.entries(firstObj);
-        } else if (TP.isPair(firstObj)) {
-            pageData = TP.copy(dataObj);
-        } else {
-            pageData = TP.entries(dataObj);
-        }
-    } else {
-        pageData = TP.entries(dataObj);
+    //  Grab the current data and if it's (deep) equal to the supplied data
+    //  object, then there's no reason to re-render.
+    pageData = this.$get('data');
+    if (TP.equal(pageData, aDataObject)) {
+        return this;
     }
+
+    //  We copy the page data here because we might modify it and we can use it
+    //  for future comparison purposes.
+    pageData = TP.copy(aDataObject);
+
+    //  Prepare the supplied data into the proper format so that keys can be
+    //  computed and it can be thought of as 'rows' of data. This normally means
+    //  making 'pairs' of the 'entries' of the data object.
+    pageData = this.prepareData(pageData);
 
     //  Grab the 'paging size' that we're going to page the data by. If it's a
     //  Number with a size greater than 1, we generate a new data set, taking
     //  the first of each item in a group, as computed by the paging size.
+    /*
     pageSize = this.getAttribute('pagesize').asNumber();
+
     if (TP.isNumber(pageSize) && pageSize > 1) {
         groupedData = TP.ac();
 
@@ -377,27 +378,90 @@ function(aDataObject, shouldSignal) {
 
         pageData = groupedData;
     }
+    */
+
+    rowType = this.get('$rowType');
 
     //  Unshift the starting entries on the front, if the author wanted them.
 
     //  NB: This looks to be in a strange order, but only because of how unshift
     //  works.
     if (this.hasAttribute('nextprevious')) {
-        pageData.unshift(TP.ac('previous', 'Previous'));
+        switch (rowType) {
+            case TP.PAIR:
+                pageData.unshift(TP.ac('previous', 'Previous'));
+                break;
+            case TP.HASH:
+                pageData.unshift(TP.hc('previous', 'Previous'));
+                break;
+            case TP.POJO:
+                pageData.unshift({previous: 'Previous'});
+                break;
+            case TP.ARRAY:
+                pageData.unshift('Previous');
+                break;
+            default:
+                break;
+        }
     }
 
     if (this.hasAttribute('startend')) {
-        pageData.unshift(TP.ac('start', 'Start'));
+        switch (rowType) {
+            case TP.PAIR:
+                pageData.unshift(TP.ac('start', 'Start'));
+                break;
+            case TP.HASH:
+                pageData.unshift(TP.hc('start', 'Start'));
+                break;
+            case TP.POJO:
+                pageData.unshift({start: 'Start'});
+                break;
+            case TP.ARRAY:
+                pageData.unshift('Start');
+                break;
+            default:
+                break;
+        }
     }
 
     //  Push the ending entries on the back, if the author wanted them.
 
     if (this.hasAttribute('nextprevious')) {
-        pageData.push(TP.ac('next', 'Next'));
+        switch (rowType) {
+            case TP.PAIR:
+                pageData.unshift(TP.ac('next', 'Next'));
+                break;
+            case TP.HASH:
+                pageData.unshift(TP.hc('next', 'Next'));
+                break;
+            case TP.POJO:
+                pageData.unshift({next: 'Next'});
+                break;
+            case TP.ARRAY:
+                pageData.unshift('Next');
+                break;
+            default:
+                break;
+        }
     }
 
     if (this.hasAttribute('startend')) {
-        pageData.push(TP.ac('end', 'End'));
+        switch (rowType) {
+            case TP.PAIR:
+                pageData.unshift(TP.ac('end', 'End'));
+                break;
+            case TP.HASH:
+                pageData.unshift(TP.hc('end', 'End'));
+                break;
+            case TP.POJO:
+                pageData.unshift({end: 'End'});
+                break;
+            case TP.ARRAY:
+                pageData.unshift('End');
+                break;
+            default:
+                break;
+        }
     }
 
     this.callNextMethod(pageData, shouldSignal);
@@ -432,6 +496,7 @@ function(aValue) {
         atStart,
         atEnd,
 
+        key,
         val,
 
         allItems,
@@ -493,11 +558,12 @@ function(aValue) {
 
     //  Grab the data value at that position in our data key Array and set the
     //  *data value* to it.
-    val = this.get('$dataKeys').at(pageValue);
+    key = this.get('$dataKeys').at(pageValue);
+    val = this.getValueForKey(key);
 
     this.setValue(val);
 
-    allItems = this.get('allItemContent');
+    allItems = this.get('allItems');
 
     if (atStart) {
         if (hasNextPrevious) {
@@ -577,12 +643,18 @@ function(aValue, shouldSignal) {
      */
 
     var didChange,
+
+        val,
+        key,
         newPageValue;
 
     didChange = this.callNextMethod();
 
     if (TP.isTrue(didChange)) {
-        newPageValue = this.get('$dataKeys').indexOf(aValue);
+        val = this.produceValue('value', aValue);
+        key = this.getKeyForValue(val);
+
+        newPageValue = this.get('$dataKeys').indexOf(key);
         if (newPageValue === TP.NOT_FOUND) {
             return didChange;
         }

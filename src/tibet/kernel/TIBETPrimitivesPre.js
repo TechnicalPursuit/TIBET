@@ -3739,6 +3739,44 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isScalarType',
+function(anObj) {
+
+    /**
+     * @method isScalarType
+     * @summary Returns true if the type provided is a scalar type.
+     * @param {Object} anObj The object to test.
+     * @example Test what's a scalar type and what's not:
+     *     <code>
+     *          TP.isScalarType(42);
+     *          <samp>true</samp>
+     *          TP.isScalarType(true);
+     *          <samp>true</samp>
+     *          TP.isScalarType('hi');
+     *          <samp>true</samp>
+     *          TP.isScalarType(new Date());
+     *          <samp>true</samp>
+     *          TP.isScalarType(function() {alert('hi'));
+     *          <samp>true</samp>
+     *          TP.isScalarType(/foo/);
+     *          <samp>true</samp>
+     *          TP.isScalarType({});
+     *          <samp>false</samp>
+     *          TP.isScalarType([]);
+     *          <samp>false</samp>
+     *          TP.isScalarType(TP.lang.Object.construct());
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a 'scalar type'.
+     */
+
+    //  For now, we just return the inversion of whether something is a
+    //  reference type.
+    return !TP.isReferenceType(anObj);
+}, null, 'TP.isScalarType');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('genUUID',
 function() {
 
@@ -5403,6 +5441,12 @@ function() {
      * @returns {String}
      */
 
+    var name;
+
+    if (TP.owns(this, 'name') && TP.notEmpty(name = this.$get('name'))) {
+        return name;
+    }
+
     if (TP.owns(this, TP.NAME)) {
         return this[TP.NAME];
     }
@@ -5421,6 +5465,12 @@ function() {
      *     receiver's ID as the 'Name'.
      * @returns {String}
      */
+
+    var name;
+
+    if (TP.owns(this, 'name') && TP.notEmpty(name = this.$get('name'))) {
+        return name;
+    }
 
     if (TP.owns(this, TP.NAME)) {
         return this[TP.NAME];
@@ -6773,8 +6823,89 @@ function() {
 //  ------------------------------------------------------------------------
 
 //  context support variables
-TP.defineAttribute('$focus_stack', []);      //  stack of focused elements
-TP.defineAttribute('$signal_stack', []);     //  stack of signal instances
+
+//  stack of focused elements
+TP.defineAttribute('$focus_stack', []);
+
+//  stack of signal instances
+TP.defineAttribute('$signal_stack', []);
+
+//  currently selected data
+TP.defineAttribute('$current_selection', null);
+
+//  currently selected data index (if current selection is a selection on
+//  collection).
+TP.defineAttribute('$current_selection_index', null);
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getCurrentSelection',
+function(aDocument) {
+
+    /**
+     * @method getCurrentSelection
+     * @summary Returns the current selection.
+     * @example Get TIBET's current 'selection':
+     *     <code>
+     *          TP.sys.getCurrentSelection();
+     *          <samp>fluffy</samp>
+     *     </code>
+     * @param {Document} [aDocument] The document that contains the current text
+     *     selection. This defaults to the current UICANVAS if not supplied.
+     * @returns {String} The current selection value.
+     */
+
+    var selection,
+        doc;
+
+    selection = TP.get('$current_selection');
+    if (TP.isEmpty(selection)) {
+        doc = TP.ifInvalid(aDocument, TP.sys.uidoc(true));
+        selection = TP.documentGetSelectionText(doc);
+    }
+
+    if (TP.isEmpty(selection)) {
+        selection = null;
+    }
+
+    return selection;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('setCurrentSelection',
+function(aSelection) {
+
+    /**
+     * @method setCurrentSelection
+     * @summary Sets the current selection to the supplied object.
+     * @example Set TIBET's current 'selection':
+     *     <code>
+     *          TP.sys.setCurrentSelection(TP.ac('str1', 'str2'));
+     *     </code>
+     * @param {Object} aSelection The object to make the current selection.
+     */
+
+    TP.$current_selection = aSelection;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('setCurrentSelectionIndex',
+function(anIndex) {
+
+    /**
+     * @method setCurrentSelectionIndex
+     * @summary Sets the current selection index to the supplied index.
+     * @example Set TIBET's current 'selection index':
+     *     <code>
+     *          TP.sys.setCurrentSelectionIndex(2)
+     *     </code>
+     * @param {Number} index The number to set the index to.
+     */
+
+    TP.$current_selection_index = anIndex;
+});
 
 //  ------------------------------------------------------------------------
 //  CONVERSION
@@ -13045,6 +13176,9 @@ function(aFlag, shouldSignal) {
     /**
      * @method $$shouldUseInferencing
      * @summary Controls and returns the state of TIBET's 'inferencing' flag.
+     * @description This flag tells TIBET whether inferences should be made.
+     *     Note that the overall TIBET backstop processing must be active for
+     *     this flag to change actual runtime behavior.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling for this call.
@@ -13056,9 +13190,6 @@ function(aFlag, shouldSignal) {
      *     </code>
      * @returns {Boolean} Whether or not TIBET should use its inferencer when
      *     methods cannot be found.
-     * @discusson This flag tells TIBET whether inferences should be made. Note
-     *     that the overall TIBET backstop processing must be active for this
-     *     flag to change actual runtime behavior.
      */
 
     if (TP.isBoolean(aFlag)) {

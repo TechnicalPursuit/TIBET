@@ -89,7 +89,7 @@ function(aRequest) {
 
     //  NB: We supply 'false' as the default value if 'tsh:repeat' wasn't
     //  specified.
-    repeat = shell.getArgument(aRequest, 'tsh:repeat', false);
+    repeat = TP.bc(shell.getArgument(aRequest, 'tsh:repeat', false));
 
     /* eslint-disable no-loop-func */
 

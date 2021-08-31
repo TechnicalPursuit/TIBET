@@ -3586,7 +3586,7 @@ function(anEntry) {
 
     //  If we don't use the console (but rely on stdio) Headless won't be
     //  happy.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
 
         //  If the content matches the TSH_NO_VALUE, exit here - we don't log
         //  that value.

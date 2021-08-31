@@ -59,10 +59,10 @@
         //  is to use the prelog function to queue logging output.
         meta = {
             type: 'plugin',
-            name: 'appmenu'
+            name: 'devtools'
         };
 
-        logger.system('loading appmenu', meta);
+        logger.system('loading devtools', meta);
 
         //  ---
         //  Requires
@@ -88,7 +88,7 @@
 
         if (inDeveloperMode) {
             enableLamaExtMode = pkg.getcfg(
-                            'electron.enableLamaExt', false);
+                            'electron.enableLamaExtension', false);
             inDevelopingDeveloperMode = pkg.getcfg(
                             'electron.developingDeveloper', false);
         } else {
@@ -424,6 +424,7 @@
             }
 
             if (!shouldOpenDevOnDev && isDevToolsOpen) {
+                devToolsWindow.show();
                 return;
             }
 
@@ -542,6 +543,24 @@
         //  ---
         //  Application event handlers
         //  ---
+
+        /**
+         * Event emitted when Electron has finished initialization and is ready
+         * to create browser windows, etc.. Some APIs can only be used after
+         * this event occurs.
+         */
+        app.on('ready',
+                function() {
+                    //  If the 'dev' option was specified, then we launch the
+                    //  devtools. Note that this option is added by the Electron
+                    //  CLI command when '--devtools' is specified, but we don't
+                    //  want the standard behavior when you just hand that flag
+                    //  to Electron. So we substitute '--dev' for that so that
+                    //  we can control it.
+                    if (options.dev) {
+                        launchDevTools(false);
+                    }
+                });
 
         /**
          * Event emitted when the user wants to show the devtools panel.

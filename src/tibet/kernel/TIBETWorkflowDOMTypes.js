@@ -440,6 +440,10 @@ TP.ietf.vcard.Inst.defineAttribute('iswebdav',
     TP.xpc('./vcard-ext:x-is-webdav',
         TP.hc('shouldCollapse', true, 'extractWith', 'value')));
 
+TP.ietf.vcard.Inst.defineAttribute('license',
+    TP.xpc('./vcard-ext:x-license/$def:text',
+        TP.hc('extractWith', 'value')));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -496,12 +500,16 @@ function() {
     /*
     var str;
 
-    str = '["vcard",' +
+    str =
+        '["vcard",' +
             '[' +
-            '["version", {}, "text", "4.0"],';
-
-    str += ']' +
-            ']';
+                '["version", {}, "text", "4.0"],' +
+                '["n", {}, "text", ]' +
+                '["fn", {}, "text", "' + this.get('fullname') + '"]' +
+                '["org", {}, "text", "' + this.get('orgname') + '"]' +
+                '["title", {}, "text", "' + this.get('') + '"]' +
+            ']' +
+        ']';
     */
 
     //  TODO: Finish the implementation here according to RFC 7095
@@ -1753,7 +1761,39 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                 //  Otherwise, if the node had a generator and it *is* the same
                 //  as the one for our result node, we have no more outstanding
                 //  work to do. Continue on to the next node.
+
+                //  If the result element stamped 'tibet:no-compile' on itself,
+                //  then we need to clear out any following nodes from the 'to
+                //  be processed' list that are contained by the *original*
+                //  node.
+                if (TP.isElement(result) &&
+                    TP.elementGetAttribute(
+                            result, 'tibet:no-compile', true) === 'true') {
+                    /* eslint-disable no-loop-func */
+                    nodes = nodes.filter(
+                        function(possibleDescendant) {
+                            return node === possibleDescendant ||
+                                            !node.contains(possibleDescendant);
+                        });
+                    /* eslint-enable no-loop-func */
+                }
+
                 continue;
+            }
+
+            //  If the result element stamped 'tibet:no-compile' on itself, then
+            //  we need to clear out any following nodes from the 'to be
+            //  processed' list that are contained by the *original* node.
+            if (TP.isElement(result) &&
+                TP.elementGetAttribute(
+                        result, 'tibet:no-compile', true) === 'true') {
+                /* eslint-disable no-loop-func */
+                nodes = nodes.filter(
+                    function(possibleDescendant) {
+                        return node === possibleDescendant ||
+                                        !node.contains(possibleDescendant);
+                    });
+                /* eslint-enable no-loop-func */
             }
 
             producedEntries.push(TP.ac(result, node));
@@ -2784,9 +2824,8 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  If this wasn't another type of collection node (i.e. Document or
-    //  Element), then just return an empty Array here.
-    if (!TP.isCollectionNode(aNode)) {
+    //  If this wasn't an Element, then just return an empty Array here.
+    if (!TP.isElement(aNode)) {
         return TP.ac();
     }
 
@@ -2796,12 +2835,19 @@ function(aNode) {
     //  call in most browsers. It is extremely fast, which is why we use it and
     //  then filter more later, but it's query capabilities around namespaces is
     //  quite pathetic.
-    query = '*[*|io],' +
-            '*[*|in],' +
-            '*[*|scope],' +
-            '*[*|repeat]';
+    query = ':scope *[*|io],' +
+            ':scope *[*|in],' +
+            ':scope *[*|scope],' +
+            ':scope *[*|repeat]';
 
-    boundElements = aNode.ownerDocument.querySelectorAll(query);
+    boundElements = TP.ac(aNode.querySelectorAll(query));
+
+    //  Additionally, if the supplied Element itself matches that query then
+    //  unshift it onto the result.
+    query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
+    if (aNode.matches(query)) {
+        boundElements.unshift(aNode);
+    }
 
     //  Make sure to filter out all non-roots. This will filter out the vast
     //  majority of bound nodes (esp. in a bind:repeat) but we will still get
@@ -2809,9 +2855,6 @@ function(aNode) {
     //  'tibet:no-awaken' on them.
     boundElements = TP.nodeListFilterNonRoots(boundElements);
 
-    //  Since querySelectorAll always queries from the Document even though we
-    //  messaged the Element (yet another limitation... sigh...) we have to
-    //  filter further based on containment.
     boundElements = boundElements.filter(
             function(anElem) {
                 var ans;
@@ -2824,7 +2867,7 @@ function(aNode) {
                     return false;
                 }
 
-                return aNode.contains(anElem);
+                return true;
             });
 
     //  Grab any standalone text nodes that have binding expressions.
@@ -3427,9 +3470,8 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  If this wasn't another type of collection node (i.e. Document or
-    //  Element), then just return an empty Array here.
-    if (!TP.isCollectionNode(aNode)) {
+    //  If this wasn't an Element, then just return an empty Array here.
+    if (!TP.isElement(aNode)) {
         return TP.ac();
     }
 
@@ -3439,12 +3481,19 @@ function(aNode) {
     //  call in most browsers. It is extremely fast, which is why we use it and
     //  then filter more later, but it's query capabilities around namespaces is
     //  quite pathetic.
-    query = '*[*|io],' +
-            '*[*|in],' +
-            '*[*|scope],' +
-            '*[*|repeat]';
+    query = ':scope *[*|io],' +
+            ':scope *[*|in],' +
+            ':scope *[*|scope],' +
+            ':scope *[*|repeat]';
 
-    boundElements = aNode.ownerDocument.querySelectorAll(query);
+    boundElements = TP.ac(aNode.querySelectorAll(query));
+
+    //  Additionally, if the supplied Element itself matches that query then
+    //  unshift it onto the result.
+    query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
+    if (aNode.matches(query)) {
+        boundElements.unshift(aNode);
+    }
 
     //  Make sure to filter out all non-roots. This will filter out the vast
     //  majority of bound nodes (esp. in a bind:repeat) but we will still get
@@ -3452,9 +3501,6 @@ function(aNode) {
     //  'tibet:no-awaken' on them.
     boundElements = TP.nodeListFilterNonRoots(boundElements);
 
-    //  Since querySelectorAll always queries from the Document even though we
-    //  messaged the Element (yet another limitation... sigh...) we have to
-    //  filter further based on containment.
     boundElements = boundElements.filter(
             function(anElem) {
                 var ans;
@@ -3467,7 +3513,7 @@ function(aNode) {
                     return false;
                 }
 
-                return aNode.contains(anElem);
+                return true;
             });
 
     //  Grab any standalone text nodes that have binding expressions.

@@ -950,7 +950,7 @@ function(aSignal) {
                 'OpenPopup',
                 TP.hc(
                     'overlayID', 'LamaContextMenuPopup',
-                    'overlayCSSClass', 'lamahalocontextmenu',
+                    'overlayAttrs', TP.hc('class', 'lamahalocontextmenu'),
                     'contentID', 'LamaHaloContextMenu',
                     'hideOn', 'SelectMenuItem',
                     'useTopLevelContentElem', true,

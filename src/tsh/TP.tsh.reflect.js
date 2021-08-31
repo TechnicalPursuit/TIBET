@@ -118,7 +118,7 @@ function(aRequest) {
 
     renderResults = function(inputKeys, inputResults, inputRequest) {
 
-        if (TP.sys.cfg('boot.context') === 'headless') {
+        if (TP.sys.isHeadless()) {
             inputResults.addAll(inputKeys);
         } else {
             inputRequest.atPut('cmdAsIs', true);
@@ -169,15 +169,15 @@ function(aRequest) {
         interf = interf.unquoted();
     }
 
-    types = shell.getArgument(aRequest, 'tsh:types', false);
-    subtypes = shell.getArgument(aRequest, 'tsh:subtypes', false);
-    methods = shell.getArgument(aRequest, 'tsh:methods', false);
-    owners = shell.getArgument(aRequest, 'tsh:owners', false);
-    attributes = shell.getArgument(aRequest, 'tsh:attributes', false);
+    types = TP.bc(shell.getArgument(aRequest, 'tsh:types', false));
+    subtypes = TP.bc(shell.getArgument(aRequest, 'tsh:subtypes', false));
+    methods = TP.bc(shell.getArgument(aRequest, 'tsh:methods', false));
+    owners = TP.bc(shell.getArgument(aRequest, 'tsh:owners', false));
+    attributes = TP.bc(shell.getArgument(aRequest, 'tsh:attributes', false));
 
-    pwd = shell.getArgument(aRequest, 'tsh:pwd', false);
+    pwd = TP.bc(shell.getArgument(aRequest, 'tsh:pwd', false));
 
-    docsonly = shell.getArgument(aRequest, 'tsh:docsonly', false);
+    docsonly = TP.bc(shell.getArgument(aRequest, 'tsh:docsonly', false));
 
     //  We collect data based on potentially multiple flags so the best way to
     //  start is with an empty array we can add to.
@@ -408,7 +408,7 @@ function(aRequest) {
                     //  If we're running in a Headless/CLI environment, then
                     //  try to use reflection the best we can to find some
                     //  printable information about the function/method
-                    if (TP.sys.cfg('boot.context') === 'headless') {
+                    if (TP.sys.isHeadless()) {
                         getTIBETMethodInfoOrNull(obj, results);
                     } else {
                         //  We're running in a browser, so we try to use
@@ -531,7 +531,7 @@ function(aRequest) {
         }
 
         //  Headles/CLI support requires output line-by-line.
-        if (TP.sys.cfg('boot.context') === 'headless') {
+        if (TP.sys.isHeadless()) {
             results.forEach(
                     function(result) {
                         aRequest.stdout(result);
@@ -543,7 +543,7 @@ function(aRequest) {
 
         aRequest.complete(results.join('\n'));
     } else {
-        if (TP.sys.cfg('boot.context') === 'headless') {
+        if (TP.sys.isHeadless()) {
             return aRequest.complete('');
         }
         aRequest.complete(TP.TSH_NO_VALUE);
@@ -575,7 +575,7 @@ function(anObj, anInputStr) {
 
     //  If we're running in a Headless/CLI environment, then we always return
     //  null here since we can't go get Web-based docs.
-    if (TP.sys.cfg('boot.context') === 'headless') {
+    if (TP.sys.isHeadless()) {
         return null;
     }
 

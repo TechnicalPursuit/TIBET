@@ -83,10 +83,10 @@ function(aRequest) {
 
     aRequest.stdout(TP.TSH_NO_VALUE);
 
-    ignore_only = shell.getArgument(aRequest, 'tsh:ignore_only', false);
-    ignore_skip = shell.getArgument(aRequest, 'tsh:ignore_skip', false);
-    inherit = shell.getArgument(aRequest, 'tsh:inherit', false);
-    subtypes = shell.getArgument(aRequest, 'tsh:subtypes', false);
+    ignore_only = TP.bc(shell.getArgument(aRequest, 'tsh:ignore_only', false));
+    ignore_skip = TP.bc(shell.getArgument(aRequest, 'tsh:ignore_skip', false));
+    inherit = TP.bc(shell.getArgument(aRequest, 'tsh:inherit', false));
+    subtypes = TP.bc(shell.getArgument(aRequest, 'tsh:subtypes', false));
 
     //  Grab the argument for 'target', either from a named flag parameter or
     //  from the 'first argument' (ARG0) of the command. Note that in both cases
@@ -250,7 +250,7 @@ function(aRequest) {
         //  for it to run both Type and Inst tests by essentially running each
         //  of the likely targets.
         if (TP.isType(obj)) {
-            if (!shell.getArgument(aRequest, 'tsh:local_only', false)) {
+            if (!TP.bc(shell.getArgument(aRequest, 'tsh:local_only', false))) {
 
                 params = options.asObject();
                 params.target = obj.Type;

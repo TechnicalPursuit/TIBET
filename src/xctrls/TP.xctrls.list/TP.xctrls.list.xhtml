@@ -6,7 +6,9 @@
         tibet:opaque="bind">
     <div tibet:assembly="xctrls:list" class="scroller">
         <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
-            <xctrls:content tibet:pelem="choices" class="noselect"/>
+            <xctrls:content tibet:pelem="choices" class="noselect">
+            {{$SOURCE.(./*[local-name() != 'template'])}}
+            </xctrls:content>
         </tibet:group>
         {{$SOURCE.(./*[local-name() = 'template'])}}
     </div>

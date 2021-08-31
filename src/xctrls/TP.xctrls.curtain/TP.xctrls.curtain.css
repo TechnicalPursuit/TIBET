@@ -10,6 +10,7 @@
 xctrls|curtain {
 
     position: fixed;
+    top: 0;
 
     width: 100vw;
     height: 100vh;
@@ -25,6 +26,11 @@ xctrls|curtain {
 xctrls|curtain:not([pclass|hidden]) {
 
     display: block;
+}
+
+body xctrls|curtain:not([pclass|hidden]) {
+
+    overflow: hidden;
 }
 
 /* When the curtain is acting as a drag layer */

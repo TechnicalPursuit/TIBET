@@ -35,15 +35,12 @@ TP.xctrls.SharedOverlay.Type.defineAttribute('opaqueCapturingSignalNames', null)
 //  SharedOverlay controls are initially hidden, so we ensure that here.
 TP.xctrls.SharedOverlay.set('requiredAttrs', TP.hc('pclass:hidden', true));
 
-//  The ID of the last trigger that triggered the overlay.
-TP.xctrls.SharedOverlay.Type.defineAttribute('$lastTriggerID');
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ----------------------------------------------------------------------------
 
 TP.xctrls.SharedOverlay.Type.defineMethod('constructOverlay',
-function(anOverlayID, aTPDocument) {
+function(anOverlayID, aTPDocument, overlayAttrs) {
 
     /**
      * @method constructOverlay
@@ -53,6 +50,8 @@ function(anOverlayID, aTPDocument) {
      * @param {TP.dom.Document} aTPDocument The document to create the overlay
      *     in, if it can't be found. Note that, in this case, the overlay will
      *     be created as the last child of the document's 'body' element.
+     * @param {TP.core.Hash} [overlayAttrs] A hash of attributes to add to a
+     *     newly created overlay element.
      * @returns {TP.xctrls.SharedOverlay} The matching overlay on the supplied
      *     TP.dom.Document.
      */
@@ -60,6 +59,8 @@ function(anOverlayID, aTPDocument) {
     var overlayTPElem,
 
         tpDocBody,
+
+        attrHash,
         overlayElem;
 
     if (TP.isEmpty(anOverlayID)) {
@@ -74,8 +75,19 @@ function(anOverlayID, aTPDocument) {
 
     if (TP.isValid(tpDocBody)) {
 
+        //  If the caller provided an attribute hash, then copy that. Otherwise,
+        //  create a new one. We'll populate it with the 'id' below.
+        if (TP.isValid(overlayAttrs)) {
+            attrHash = TP.copy(overlayAttrs);
+        } else {
+            attrHash = TP.hc();
+        }
+
+        attrHash.atPut('id', anOverlayID);
+
         overlayElem = TP.elem(
-            '<' + this.getCanonicalName() + ' id="' + anOverlayID + '"/>');
+            '<' + this.getCanonicalName() + ' ' +
+            attrHash.asAttributeString() + '/>');
 
         overlayTPElem = tpDocBody.insertContent(
                                 overlayElem,
@@ -89,7 +101,7 @@ function(anOverlayID, aTPDocument) {
 //  ----------------------------------------------------------------------------
 
 TP.xctrls.SharedOverlay.Type.defineMethod('getOverlayWithID',
-function(aTPDocument, anOverlayID) {
+function(aTPDocument, anOverlayID, overlayAttrs) {
 
     /**
      * @method getOverlayWithID
@@ -101,6 +113,8 @@ function(aTPDocument, anOverlayID) {
      * @param {String} [anOverlayID] The ID to use to query for the system
      *     overlay. If this isn't supplied, the receiver is messaged for it's
      *     'sharedOverlayID'.
+     * @param {TP.core.Hash} [overlayAttrs] A hash of attributes to add to a
+     *     newly created overlay element.
      * @returns {TP.xctrls.SharedOverlay} The system overlay on the supplied
      *     TP.dom.Document.
      */
@@ -120,7 +134,8 @@ function(aTPDocument, anOverlayID) {
     //  Array. Otherwise it will hand back the TP.dom.ElementNode that
     //  represents the overlay.
     if (TP.isEmpty(overlayTPElem)) {
-        overlayTPElem = this.constructOverlay(overlayID, aTPDocument);
+        overlayTPElem = this.constructOverlay(
+                                    overlayID, aTPDocument, overlayAttrs);
     }
 
     return overlayTPElem;
@@ -205,12 +220,9 @@ function(aSignal) {
 
     var overlayTPElem,
 
-        overlayCSSClass,
-
         triggerDoc,
         triggerSignal,
 
-        triggerID,
         triggerTPElem,
 
         hideOn,
@@ -222,13 +234,6 @@ function(aSignal) {
         originTPElem;
 
     overlayTPElem = this.getOverlayElement(aSignal);
-
-    //  See if the OpenOverlay signal contains a class that we should put on
-    //  the overlay element itself.
-    overlayCSSClass = aSignal.at('overlayCSSClass');
-    if (TP.notEmpty(overlayCSSClass)) {
-        overlayTPElem.addClass(overlayCSSClass);
-    }
 
     triggerDoc = aSignal.at('triggerTPDocument');
     if (TP.notValid(triggerDoc)) {
@@ -250,15 +255,6 @@ function(aSignal) {
     }
 
     triggerTPElem = this.getTriggerElement(aSignal, triggerDoc);
-
-    //  If the signal has a triggerID, then use that. Otherwise, use the local
-    //  ID of the trigger element.
-    triggerID = aSignal.at('triggerID');
-    if (TP.notValid(triggerID)) {
-        triggerID = triggerTPElem.getLocalID(true);
-    }
-
-    overlayTPElem.set('$currentTriggerID', triggerID, false);
 
     //  NB: At this point, there might not be a triggerTPElem. That's ok, but in
     //  that case, we need to make sure that a trigger point has been supplied.
@@ -363,6 +359,7 @@ function(aSignal) {
         triggerDoc,
 
         overlayID,
+        overlayAttrs,
 
         overlayTPElem;
 
@@ -390,8 +387,9 @@ function(aSignal) {
     if (TP.notEmpty(overlayID)) {
         overlayID = overlayID.unquoted();
     }
+    overlayAttrs = aSignal.at('overlayAttrs');
 
-    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
+    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID, overlayAttrs);
 
     return overlayTPElem;
 });
@@ -403,11 +401,11 @@ function(contentInfo) {
 
     /**
      * @method preload
-     * @summary Preloads an overlay of the receiving type given the combination
-     *     of supplied overlayID and triggerID. Note that, if this is a shared
-     *     overlay, any content preloaded with this step might very well be
-     *     replaced with new content if the first invocation to 'activate' this
-     *     overlay is not from the same trigger.
+     * @summary Preloads an overlay of the receiving type given the supplied
+     *     overlayID. Note that, if this is a shared overlay, any content
+     *     preloaded with this step might very well be replaced with new content
+     *     if the first invocation to 'activate' this overlay is not from the
+     *     same trigger.
      * @param {TP.core.Hash} contentInfo Information about the content, where to
      *     obtain it, how to render it, where to position it, etc.
      * @returns {TP.meta.xctrls.SharedOverlay} The receiver.
@@ -415,34 +413,21 @@ function(contentInfo) {
 
     var triggerDoc,
         overlayID,
-
-        triggerID,
-        triggerPath,
-        triggerTPElem,
+        overlayAttrs,
 
         overlayTPElem;
 
     triggerDoc = contentInfo.at('triggerTPDocument');
-    overlayID = contentInfo.at('overlayID');
 
-    //  Grab the triggerID from the supplied info. If it's not available, then
-    //  try to compute one from a triggerPath if it's supplied. If it's not
-    //  supplied, then use the body as the trigger element and obtain it's ID.
-    triggerID = contentInfo.at('triggerID');
-    if (TP.notValid(triggerID)) {
-        triggerPath = contentInfo.at('triggerPath');
-        if (TP.notEmpty(triggerPath)) {
-            triggerTPElem = TP.byPath(triggerPath, triggerDoc).first();
-        } else {
-            triggerTPElem = triggerDoc.getBody();
-        }
-        triggerID = triggerTPElem.getLocalID(true);
+    overlayID = contentInfo.at('overlayID');
+    if (TP.notEmpty(overlayID)) {
+        overlayID = overlayID.unquoted();
     }
+    overlayAttrs = contentInfo.at('overlayAttrs');
 
     //  Grab the (possibly shared) overlay element. This will cause whatever
     //  'type-level' setup of the content to take place.
-    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID);
-    overlayTPElem.set('$currentTriggerID', triggerID, false);
+    overlayTPElem = this.getOverlayWithID(triggerDoc, overlayID, overlayAttrs);
 
     //  Invoke loadContent with contentInfo. This should cause the
     //  'instance-level' setup of the content to take place (as far as it can,
@@ -456,8 +441,9 @@ function(contentInfo) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  The ID of the current trigger that is trying to trigger the overlay
-TP.xctrls.SharedOverlay.Inst.defineAttribute('$currentTriggerID');
+//  The last content we displayed. The control using us can use this to
+//  determine whether or not it has to regenerate content, etc.
+TP.xctrls.SharedOverlay.Inst.defineAttribute('$lastContent');
 
 //  The last TP.dom.ElementNode that triggered the overlay
 TP.xctrls.SharedOverlay.Inst.defineAttribute('$triggerTPElement');
@@ -498,159 +484,15 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.SharedOverlay.Inst.defineMethod('getPositioningPoint',
-function(anOverlayPoint, anAvoidPoint) {
-
-    /**
-     * @method getPositioningPoint
-     * @summary Computes and returns the point used to position the overlay
-     *     using the supplied point (which should be the initial point).
-     * @param {TP.gui.Point} anOverlayPoint The initial point to use to
-     *     position the overlay. NOTE: This point should be in *global*
-     *     coordinates.
-     * @param {TP.gui.Point} [anAvoidPoint] A point to 'avoid' when computing
-     *     the positioning point. The system will shift the overlay around,
-     *     trying to avoid this point.
-     * @returns {TP.gui.Point} The point (in global coordinates) to position
-     *     the overlay at.
-     */
-
-    var offset,
-
-        overlayPoint,
-        overlayRect,
-
-        bodyTPElem,
-        bodyRect,
-
-        scrollOffsets,
-
-        testPoint,
-        overlayCorner,
-
-        diffX,
-        diffY;
-
-    offset = this.getOverlayOffset();
-
-    //  Compute rectangle, supplying it the overlay origin point and the
-    //  overlay's width and height. This is important to do the calculation
-    //  below where we try to 'fit' the rectangle within the body (so that it
-    //  doesn't clip against a window boundary or something).
-
-    //  Note here that we have to double the margin to account for the original
-    //  margin as defined in the initial CSS.
-    overlayRect = TP.rtc(
-                    anOverlayPoint.getX().max(offset),
-                    anOverlayPoint.getY().max(offset),
-                    this.getWidth() + offset,
-                    this.getHeight() + offset);
-
-    //  Grab the body's rectangle and constrain the overlay rectangle against
-    //  it.
-
-    bodyTPElem = this.getDocument().getBody();
-
-    bodyRect = bodyTPElem.getGlobalRect();
-
-    //  Constrain the overlay rectangle to inside of the body element rectangle.
-    //  This will make sure that the overlay's content isn't clipped against the
-    //  body of its document.
-    bodyRect.constrainRect(overlayRect);
-
-    //  Make sure to add in the scrolling offsets.
-    scrollOffsets = this.getScrollOffsetFromAncestor();
-
-    overlayRect.addToX(scrollOffsets.getX());
-    overlayRect.addToY(scrollOffsets.getY());
-
-    //  If the computed overlay rectangle includes the 'avoid point' (in many
-    //  cases, this is the current mouse location), then try to adjust its X and
-    //  Y to avoid that point
-    if (TP.isValid(anAvoidPoint)) {
-
-        testPoint = TP.copy(anAvoidPoint);
-
-        overlayCorner = this.getOverlayCorner();
-
-        //  Adjust the testing point based on our overlay corner. The intent is
-        //  to adjust the testing point by a pixel in both the X and Y
-        //  directions to not have it be part of the test itself.
-        switch (overlayCorner) {
-
-            case TP.NORTHEAST:
-                testPoint.addToX(1);
-                testPoint.subtractFromY(1);
-                break;
-            case TP.NORTHWEST:
-                testPoint.subtractFromX(1);
-                testPoint.subtractFromY(1);
-                break;
-            case TP.SOUTHEAST:
-                testPoint.addToX(1);
-                testPoint.addToY(1);
-                break;
-            case TP.SOUTHWEST:
-                testPoint.subtractFromX(1);
-                testPoint.addToY(1);
-                break;
-            default:
-                break;
-        }
-
-        if (overlayRect.containsPoint(testPoint)) {
-            if (overlayRect.containsPointX(testPoint)) {
-
-                diffX = overlayRect.getX() + overlayRect.getWidth() -
-                        testPoint.getX();
-
-                //  If by subtracting the difference, we're still greater than 0,
-                //  then do that (shifting the overlay towards the left).
-                if (overlayRect.getX() - diffX > 0) {
-                    overlayRect.subtractFromX(diffX);
-                } else if (overlayRect.getX() + diffX < bodyRect.getWidth()) {
-                    //  Otherwise, if by adding the difference, we're still less
-                    //  than the body's rectangle, then do that (shifting the
-                    //  overlay towards the right by 1px)
-                    overlayRect.addToX(1);
-                }
-            }
-
-            if (overlayRect.containsPointY(testPoint)) {
-
-                diffY = overlayRect.getY() + overlayRect.getHeight() -
-                        testPoint.getY();
-
-                //  If by subtracting the difference, we're still greater than 0,
-                //  then do that (shifting the overlay towards the top).
-                if (overlayRect.getY() - diffY > 0) {
-                    overlayRect.subtractFromY(diffY);
-                } else if (overlayRect.getY() + diffY < bodyRect.getHeight()) {
-                    //  Otherwise, if by adding the difference, we're still less
-                    //  than the body's rectangle, then do that (shifting the
-                    //  overlay towards the bottom by 1px)
-                    overlayRect.addToY(1);
-                }
-            }
-        }
-    }
-
-    //  Now, get the 'top left' corner point of the computed overlay rectangle.
-    overlayPoint = overlayRect.getXYPoint();
-
-    return overlayPoint;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.SharedOverlay.Inst.defineMethod('getOverlayCorner',
+TP.xctrls.SharedOverlay.Inst.defineMethod('getAlignmentCompassCorner',
 function() {
 
     /**
-     * @method getOverlayCorner
+     * @method getAlignmentCompassCorner
      * @summary Returns a constant responding to one of 8 compass points that
-     *     the overlay will be positioned at relative to the overlay's
-     *     container.
+     *     the overlay will be positioned at relative to the element that it is
+     *     trying to align to. This is the point that the overlay wants to be
+     *     positioned *to* relative to it's aligning element.
      * @returns {Number} A Number matching the constant corresponding to the
      *     compass corner.
      */
@@ -672,6 +514,62 @@ function() {
      */
 
     return 0;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Inst.defineMethod('getPositionCompassCorner',
+function() {
+
+    /**
+     * @method getPositionCompassCorner
+     * @summary Returns a constant responding to one of 8 compass points that
+     *     the overlay will be positioned at relative to the itself. This is the
+     *     point that the overlay wants to be positioned *from* on itself.
+     * @returns {Number} A Number matching the constant corresponding to the
+     *     compass corner.
+     */
+
+    return TP.NORTHWEST;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.xctrls.SharedOverlay.Inst.defineMethod('isContentDifferent',
+function(signalToCheck) {
+
+    /**
+     * @method isContentDifferent
+     * @summary Returns true if the content that was last used with the receiver
+     *     is *not* the same content (URI, ID or element content) that is
+     *     defined in the supplied signal.
+     * @param {TP.sig.OpenOverlay} signalToCheck The signal to check for content
+     *     to see if it matches what this overlay displayed last.
+     * @returns {Boolean} Whether or not the content in the supplied signal is
+     *     different than what the receiver displayed last.
+     */
+
+    var lastContent,
+        currentContent;
+
+    lastContent = this.$get('$lastContent');
+
+    currentContent = signalToCheck.at('contentURI');
+    if (TP.isDefined(currentContent)) {
+        return !TP.equal(currentContent, lastContent);
+    }
+
+    currentContent = signalToCheck.at('contentID');
+    if (TP.isDefined(currentContent)) {
+        return currentContent !== lastContent;
+    }
+
+    currentContent = signalToCheck.at('content');
+    if (TP.isDefined(currentContent)) {
+        return currentContent !== lastContent;
+    }
+
+    return false;
 });
 
 //  ----------------------------------------------------------------------------
@@ -700,14 +598,11 @@ function(contentInfo, overlayContent, afterLoadHandler) {
 
         finalContent,
 
-        extractElementFromResult,
         contentElem,
 
         content,
 
         contentAttributes,
-
-        triggerID,
 
         tpContent,
         handler;
@@ -724,16 +619,22 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     contentURI = contentInfo.at('contentURI');
     if (TP.notEmpty(contentURI)) {
         contentURI = contentURI.unquoted();
+        this.set('$lastContent', contentURI, false);
     }
 
     contentID = contentInfo.at('contentID');
     if (TP.notEmpty(contentID)) {
         contentID = contentID.unquoted();
+        this.set('$lastContent', contentID, false);
     }
 
     //  If the signal has real content in its payload, then use that in
     //  preference to the other mechanisms.
     finalContent = contentInfo.at('content');
+    if (TP.notEmpty(finalContent)) {
+        this.set('$lastContent', finalContent, false);
+    }
+
 
     if (TP.isValid(overlayContent)) {
         //  see below for processing content
@@ -741,53 +642,19 @@ function(contentInfo, overlayContent, afterLoadHandler) {
 
         contentURI = TP.uc(contentURI);
 
-        extractElementFromResult = function(result) {
-
-            var elem;
-
-            //  If the URI pointed to a type and that type is a subtype
-            //  of TP.dom.ElementNode, then create an Element using the
-            //  canonical name.
-            if (TP.isType(result) &&
-                TP.isSubtypeOf(result, TP.dom.ElementNode)) {
-                elem = TP.elem('<' + result.getCanonicalName() + '/>');
-            } else if (TP.isKindOf(result, TP.dom.ElementNode)) {
-                elem = result.getNativeNode();
-            } else if (TP.isElement(result)) {
-                elem = result;
-            } else if (TP.isString(result)) {
-                elem = TP.elem(result);
-            } else {
-                elem = TP.elem(result.get('data'));
-            }
-
-            return elem;
-        };
-
         //  If we could create a real URI from the supplied URI, then fetch the
         //  content and recursively call this method with that content.
         if (TP.notEmpty(contentURI) && TP.isURI(contentURI)) {
 
-            if (contentURI.get('mode') === TP.core.SyncAsync.ASYNCHRONOUS) {
-                contentURI.getResource().then(
-                    function(result) {
+            TP.elementFromURI(contentURI).then(
+                function(resultElement) {
+                    //  Note the recursive call to this method, but this time
+                    //  with content.
+                    this.loadContent(
+                            contentInfo, resultElement, afterLoadHandler);
+                }.bind(this));
 
-                        var elem;
-
-                        elem = extractElementFromResult(result);
-
-                        //  Note the recursive call to this method, but this
-                        //  time with content.
-                        this.loadContent(contentInfo, elem, afterLoadHandler);
-
-                    }.bind(this));
-
-                //  Return here - we have the recursive call above.
-                return this;
-            } else {
-                finalContent = extractElementFromResult(
-                                contentURI.getResource().get('result'));
-            }
+            return this;
         }
     } else if (TP.isString(contentID)) {
 
@@ -875,13 +742,6 @@ function(contentInfo, overlayContent, afterLoadHandler) {
             });
     }
 
-    //  Capture the trigger ID in case that same trigger uses this overlay
-    //  before another trigger uses it - we can use this for comparison purposes
-    //  for content refresh, etc.
-
-    triggerID = this.get('$currentTriggerID');
-    this.getType().set('$lastTriggerID', triggerID, false);
-
     //  That will be the real element generated from the content that got placed
     //  into our 'content' div.
     tpContent = this.setContent(content);
@@ -915,32 +775,6 @@ function(contentInfo, overlayContent, afterLoadHandler) {
     };
 
     handler.observe(tpContent, 'TP.sig.AttachComplete');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.SharedOverlay.Inst.defineMethod('positionUsing',
-function(anOverlayPoint, anAvoidPoint) {
-
-    /**
-     * @method positionUsing
-     * @summary Positions the overlay using the supplied point.
-     * @param {TP.gui.Point} anOverlayPoint The point to use to position the
-     *     overlay. NOTE: This point should be in *global* coordinates.
-     * @param {TP.gui.Point} [anAvoidPoint] A point to 'avoid' when computing
-     *     the positioning point. The system will shift the overlay around,
-     *     trying to avoid this point.
-     * @returns {TP.xctrls.SharedOverlay} The receiver.
-     */
-
-    var overlayPoint;
-
-    overlayPoint = this.getPositioningPoint(anOverlayPoint, anAvoidPoint);
-
-    //  Set our global position to be that point
-    this.setGlobalPosition(overlayPoint);
 
     return this;
 });
@@ -1028,23 +862,32 @@ function(contentInfo, overlayContent) {
         contentInfo,
         overlayContent,
         function(tpContent) {
+            var positionCC,
 
-            var overlayCorner,
-
-                triggerRect,
                 triggerPoint,
                 mousePoint,
                 triggerTPElem,
 
-                lastMoveEvent,
-                lastMoveSignal;
+                alignmentCC,
+
+                tpDocBody,
+                constrainingRects,
+                constrainingTPElements,
+
+                offsetX,
+                offsetY;
+
+            //  Compute the position compass corner if its not supplied in the
+            //  trigger signal.
+            positionCC = contentInfo.at('positionCompassCorner');
+            if (TP.isEmpty(positionCC)) {
+                positionCC = this.getPositionCompassCorner();
+            }
 
             //  First, see if the open signal provided a overlay point.
             triggerPoint = contentInfo.at('triggerPoint');
 
-            lastMoveEvent = TP.core.Mouse.$get('lastMove');
-            lastMoveSignal = TP.sig.DOMMouseMove.construct(lastMoveEvent);
-            mousePoint = lastMoveSignal.getGlobalPoint();
+            mousePoint = TP.core.Mouse.getLastMovePoint();
 
             //  If no overlay point was given, compute one from the triggering
             //  element.
@@ -1057,34 +900,92 @@ function(contentInfo, overlayContent) {
                     return this;
                 }
 
-                //  Grab the global rect from the supplied element.
-                triggerRect = triggerTPElem.getGlobalRect();
-
-                //  Compute the corner if its not supplied in the trigger
-                //  signal.
-                overlayCorner = contentInfo.at('corner');
-                if (TP.isEmpty(overlayCorner)) {
-                    overlayCorner = this.getOverlayCorner();
+                //  Compute the alignment compass corner if its not supplied in
+                //  the trigger signal.
+                alignmentCC = contentInfo.at('alignmentCompassCorner');
+                if (TP.isEmpty(alignmentCC)) {
+                    alignmentCC = this.getAlignmentCompassCorner();
                 }
 
-                //  The point that the overlay should appear at is the 'edge
-                //  point' for that compass edge of the trigger rectangle.
-                triggerPoint = triggerRect.getEdgePoint(overlayCorner);
             } else if (triggerPoint === TP.MOUSE) {
                 triggerPoint = mousePoint;
             }
 
-            //  The overlay is not closed.
-            this.setAttribute('closed', false);
+            tpDocBody = this.getDocument().getBody();
+
+            //  Grab the list 'constraining rectangles' from the overlay info.
+            //  These *must* be in 'global coordinates'. Note that we'll make a
+            //  copy of the array, since we're going to modify.
+            if (TP.isEmpty(constrainingRects =
+                            contentInfo.at('constrainingRects'))) {
+                constrainingRects = TP.ac();
+            } else {
+                constrainingRects = TP.copy(constrainingRects);
+            }
+
+            constrainingRects.push(tpDocBody.getGlobalRect());
+
+            if (TP.notEmpty(constrainingTPElements =
+                            contentInfo.at('constrainingTPElements'))) {
+                constrainingTPElements.forEach(
+                    function(aTPElem) {
+                        //  We already added the body above so we skip it here.
+                        if (aTPElem !== tpDocBody) {
+                            return;
+                        }
+
+                        constrainingRects.push(aTPElem.getGlobalRect());
+                    });
+            }
+
+            //  Initially set the overlay to hide (by supplying true we flip the
+            //  'visibility' property).
+            this.hide(true);
 
             //  Show the overlay and set up signal handlers.
             this.setAttribute('hidden', false);
 
+            //  The overlay is not closed.
+            this.setAttribute('closed', false);
+
             //  If the signal doesn't have a flag to not position the overlay,
             //  then position the overlay relative to the overlay point and the
-            //  corner.
+            //  corners.
             if (TP.notTrue(contentInfo.at('noPosition'))) {
-                this.positionUsing(triggerPoint, mousePoint);
+                offsetX = contentInfo.atIfInvalid('offsetX',
+                                                    this.getOverlayOffset());
+                offsetY = contentInfo.atIfInvalid('offsetY',
+                                                    this.getOverlayOffset());
+
+                //  Queue the positioning of the overlay into a 'next repaint'
+                //  so that layout of the overlay's content happens and proper
+                //  sizing numbers can be computed.
+                (function() {
+                    if (triggerPoint) {
+                        this.setPositionRelativeTo(
+                                            triggerPoint,
+                                            positionCC,
+                                            alignmentCC,
+                                            triggerTPElem,
+                                            constrainingRects,
+                                            TP.ac(mousePoint),
+                                            offsetX,
+                                            offsetY);
+                    } else {
+                        this.positionUsingCompassPoints(
+                                            positionCC,
+                                            alignmentCC,
+                                            triggerTPElem,
+                                            constrainingRects,
+                                            TP.ac(mousePoint),
+                                            offsetX,
+                                            offsetY);
+                    }
+
+                    //  Now set the overlay to show (by flipping the
+                    //  'visibility' property back).
+                    this.show();
+                }.bind(this)).queueBeforeNextRepaint(this.getNativeWindow());
             }
         }.bind(this));
 

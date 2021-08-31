@@ -121,6 +121,34 @@ xctrls|radioitem {
     --xctrls-radioitem-check-color-disabled: #eee;
 }
 
+xctrls|menuitem {
+
+    /* xctrls|menuitem variables */
+
+    --xctrls-menuitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-menuitem-font-color-normal: black;
+    --xctrls-menuitem-font-color-hover: #666;
+    --xctrls-menuitem-font-color-focus: #666;
+    --xctrls-menuitem-font-color-active: #666;
+    --xctrls-menuitem-font-color-disabled: #aaa;
+
+    --xctrls-menuitem-background-color-normal: transparent;
+    --xctrls-menuitem-background-color-hover: cornsilk;
+    --xctrls-menuitem-background-color-focus: gold;
+    --xctrls-menuitem-background-color-active: gold;
+    --xctrls-menuitem-background-color-disabled: #eee;
+
+    --xctrls-menuitem-background-color-selected: gold;
+
+    --xctrls-menuitem-border-width: 1px;
+    --xctrls-menuitem-border-style: solid;
+    --xctrls-menuitem-border-radius: 3px;
+    --xctrls-menuitem-border-color-normal: #999;
+
+    --xctrls-menuitem-margin: 0 0 1px 0;
+    --xctrls-menuitem-padding: 1em;
+}
+
 xctrls|textitem {
 
     /* xctrls|textitem variables */
@@ -188,7 +216,14 @@ xctrls|dialog {
     --xctrls-dialog-header-background-color: #f9f9f9;
     --xctrls-dialog-header-color: black;
     --xctrls-dialog-header-font-size: 116%;
+    --xctrls-dialog-header-height: 2em;
     --xctrls-dialog-header-line-height: 1.5;
+    --xctrls-dialog-header-margin: 1px;
+    --xctrls-dialog-header-padding: 0 0.5em;
+
+    --xctrls-dialog-header-close-fill-color: black;
+    --xctrls-dialog-header-close-stroke-color: black;
+    --xctrls-dialog-header-close-stroke-width: 1px;
 
     --xctrls-dialog-body-background-color: white;
 
@@ -211,18 +246,6 @@ xctrls|imageitem {
     --xctrls-imageitem-background-color-focus: white;
     --xctrls-imageitem-background-color-active: white;
     --xctrls-imageitem-background-color-disabled: white;
-
-    --xctrls-imageitem-check-border-color-normal: black;
-    --xctrls-imageitem-check-border-color-hover: black;
-    --xctrls-imageitem-check-border-color-focus: black;
-    --xctrls-imageitem-check-border-color-active: black;
-    --xctrls-imageitem-check-border-color-disabled: #eee;
-
-    --xctrls-imageitem-check-color-normal: black;
-    --xctrls-imageitem-check-color-hover: cornsilk;
-    --xctrls-imageitem-check-color-focus: gold;
-    --xctrls-imageitem-check-color-active: gold;
-    --xctrls-imageitem-check-color-disabled: #eee;
 }
 
 xctrls|list {
@@ -351,6 +374,7 @@ xctrls|table {
     --xctrls-tableitem-border-width: 1px;
     --xctrls-tableitem-border-style: solid;
 
+    --xctrls-tableitem-border-color-light: white;
     --xctrls-tableitem-border-color-normal: #eee;
     --xctrls-tableitem-border-color-hover: initial;
     --xctrls-tableitem-border-color-focus: black;
@@ -438,6 +462,49 @@ xctrls|propertysheet {
     --xctrls-propertysheet-border-color-normal: #666;
 }
 
+xctrls|signalmenucontent {
+
+    /* xctrls|signalmenucontent variables */
+
+    --xctrls-signalmenucontent-menu-border-width: 1px;
+    --xctrls-signalmenucontent-menu-border-style: solid;
+    --xctrls-signalmenucontent-menu-border-radius: 4px;
+
+    --xctrls-signalmenucontent-menu-border-color-normal: #eee;
+
+    --xctrls-signalmenucontent-menu-background-color: white;
+
+    --xctrls-signalmenucontent-menu-margin: 2px;
+    --xctrls-signalmenucontent-menu-line-height: 29px;
+
+    --xctrls-signalmenucontent-menuitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-signalmenucontent-menuitem-font-color-normal: #999;
+
+    --xctrls-signalmenucontent-menuitem-border-width: 1px;
+    --xctrls-signalmenucontent-menuitem-border-style: solid;
+    --xctrls-signalmenucontent-menuitem-border-color-normal: #999;
+
+    --xctrls-signalmenucontent-menuitem-padding: 5px;
+
+    --xctrls-signalmenucontent-menuitem-background-color-hover: cornsilk;
+    --xctrls-signalmenucontent-menuitem-font-color-hover: #eee;
+    --xctrls-signalmenucontent-menuitem-border-color-hover: #eee;
+
+    --xctrls-signalmenucontent-textitem-font-family: arial, helvetica, clean, sans-serif;
+    --xctrls-signalmenucontent-textitem-font-color-normal: black;
+
+    --xctrls-signalmenucontent-textitem-border-width: 1px;
+    --xctrls-signalmenucontent-textitem-border-style: solid;
+    --xctrls-signalmenucontent-textitem-border-color-normal: #999;
+
+    --xctrls-signalmenucontent-textitem-margin: 0 0 1px 0;
+    --xctrls-signalmenucontent-textitem-padding: 1em;
+
+    --xctrls-signalmenucontent-textitem-background-color-hover: cornsilk;
+    --xctrls-signalmenucontent-textitem-font-color-hover: #eee;
+    --xctrls-signalmenucontent-textitem-border-color-hover: #eee;
+}
+
 xctrls|sticky {
 
     /* xctrls|sticky variables */
@@ -488,5 +555,26 @@ xctrls|toolbar {
     --xctrls-toolbar-border-color-normal: #333;
     --xctrls-toolbar-border-color-disabled: initial;
 
-    --xctrls-toolbar-background-color: gold;
+    --xctrls-toolbar-background-color: white;
+}
+
+xctrls|wayfinder {
+
+    /* xctrls|wayfinder variables */
+
+    --xctrls-wayfinder-font-family: "arial", "helvetica", "clean", sans-serif;
+    --xctrls-wayfinder-font-size: 131%;
+    --xctrls-wayfinder-font-color-normal: #999;
+
+    --xctrls-wayfinder-border-width: 1px;
+    --xctrls-wayfinder-border-style: solid;
+    --xctrls-wayfinder-border-radius: 4px;
+
+    --xctrls-wayfinder-background-color: white;
+
+    --xctrls-wayfinder-border-color-normal: #eee;
+    --xctrls-wayfinder-border-color-hover: initial;
+    --xctrls-wayfinder-border-color-focus: initial;
+    --xctrls-wayfinder-border-color-active: initial;
+    --xctrls-wayfinder-border-color-disabled: initial;
 }

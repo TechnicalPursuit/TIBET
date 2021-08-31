@@ -124,6 +124,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        crypto = window.crypto;
 	    }
 
+	    // Native crypto in web worker (Browser)
+	    if (typeof self !== 'undefined' && self.crypto) {
+	        crypto = self.crypto;
+	    }
+
+	    // Native crypto from worker
+	    if (typeof globalThis !== 'undefined' && globalThis.crypto) {
+	        crypto = globalThis.crypto;
+	    }
+
 	    // Native (experimental IE 11) crypto from window (Browser)
 	    if (!crypto && typeof window !== 'undefined' && window.msCrypto) {
 	        crypto = window.msCrypto;
@@ -184,7 +194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            return subtype;
 	        };
-	    }())
+	    }());
 
 	    /**
 	     * CryptoJS namespace.
@@ -395,8 +405,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	            } else {
 	                // Copy one word at a time
-	                for (var i = 0; i < thatSigBytes; i += 4) {
-	                    thisWords[(thisSigBytes + i) >>> 2] = thatWords[i >>> 2];
+	                for (var j = 0; j < thatSigBytes; j += 4) {
+	                    thisWords[(thisSigBytes + j) >>> 2] = thatWords[j >>> 2];
 	                }
 	            }
 	            this.sigBytes += thatSigBytes;
@@ -5113,6 +5123,7 @@ var CognitoUser = /*#__PURE__*/function () {
     }
 
     if (challengeName === 'DEVICE_SRP_AUTH') {
+      this.Session = dataAuthenticate.Session;
       this.getDeviceResponse(callback);
       return undefined;
     }
@@ -5253,7 +5264,8 @@ var CognitoUser = /*#__PURE__*/function () {
         ChallengeName: 'DEVICE_SRP_AUTH',
         ClientId: _this6.pool.getClientId(),
         ChallengeResponses: authParameters,
-        ClientMetadata: clientMetadata
+        ClientMetadata: clientMetadata,
+        Session: _this6.Session
       };
 
       if (_this6.getUserContextData()) {
@@ -5868,6 +5880,8 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.deleteAttributes = function deleteAttributes(attributeList, callback) {
+    var _this14 = this;
+
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       return callback(new Error('User is not authenticated'), null);
     }
@@ -5878,9 +5892,14 @@ var CognitoUser = /*#__PURE__*/function () {
     }, function (err) {
       if (err) {
         return callback(err, null);
-      }
+      } // update cached user
 
-      return callback(null, 'SUCCESS');
+
+      return _this14.getUserData(function () {
+        return callback(null, 'SUCCESS');
+      }, {
+        bypassCache: true
+      });
     });
     return undefined;
   }
@@ -5985,7 +6004,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.refreshSession = function refreshSession(refreshToken, callback, clientMetadata) {
-    var _this14 = this;
+    var _this15 = this;
 
     var wrappedCallback = this.pool.wrapRefreshSessionCallback ? this.pool.wrapRefreshSessionCallback(callback) : callback;
     var authParameters = {};
@@ -6014,7 +6033,7 @@ var CognitoUser = /*#__PURE__*/function () {
     this.client.request('InitiateAuth', jsonReq, function (err, authResult) {
       if (err) {
         if (err.code === 'NotAuthorizedException') {
-          _this14.clearCachedUser();
+          _this15.clearCachedUser();
         }
 
         return wrappedCallback(err, null);
@@ -6027,11 +6046,11 @@ var CognitoUser = /*#__PURE__*/function () {
           authenticationResult.RefreshToken = refreshToken.getToken();
         }
 
-        _this14.signInUserSession = _this14.getCognitoUserSession(authenticationResult);
+        _this15.signInUserSession = _this15.getCognitoUserSession(authenticationResult);
 
-        _this14.cacheTokens();
+        _this15.cacheTokens();
 
-        return wrappedCallback(null, _this14.signInUserSession);
+        return wrappedCallback(null, _this15.signInUserSession);
       }
 
       return undefined;
@@ -6228,7 +6247,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback.onFailure(err);
       }
 
-      return callback.onSuccess();
+      return callback.onSuccess('SUCCESS');
     });
   }
   /**
@@ -6260,7 +6279,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback.inputVerificationCode(data);
       }
 
-      return callback.onSuccess();
+      return callback.onSuccess('SUCCESS');
     });
     return undefined;
   }
@@ -6356,16 +6375,16 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.forgetDevice = function forgetDevice(callback) {
-    var _this15 = this;
+    var _this16 = this;
 
     this.forgetSpecificDevice(this.deviceKey, {
       onFailure: callback.onFailure,
       onSuccess: function onSuccess(result) {
-        _this15.deviceKey = null;
-        _this15.deviceGroupKey = null;
-        _this15.randomPassword = null;
+        _this16.deviceKey = null;
+        _this16.deviceGroupKey = null;
+        _this16.randomPassword = null;
 
-        _this15.clearCachedDeviceKeyAndPassword();
+        _this16.clearCachedDeviceKeyAndPassword();
 
         return callback.onSuccess(result);
       }
@@ -6470,7 +6489,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.globalSignOut = function globalSignOut(callback) {
-    var _this16 = this;
+    var _this17 = this;
 
     if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
       return callback.onFailure(new Error('User is not authenticated'));
@@ -6483,7 +6502,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback.onFailure(err);
       }
 
-      _this16.clearCachedUser();
+      _this17.clearCachedUser();
 
       return callback.onSuccess('SUCCESS');
     });
@@ -6495,9 +6514,97 @@ var CognitoUser = /*#__PURE__*/function () {
    */
   ;
 
-  _proto.signOut = function signOut() {
+  _proto.signOut = function signOut(revokeTokenCallback) {
+    var _this18 = this;
+
+    // If tokens won't be revoked, we just clean the client data.
+    if (!revokeTokenCallback || typeof revokeTokenCallback !== "function") {
+      this.cleanClientData();
+      return;
+    }
+
+    this.getSession(function (error, _session) {
+      if (error) {
+        return revokeTokenCallback(error);
+      }
+
+      _this18.revokeTokens(function (err) {
+        _this18.cleanClientData();
+
+        revokeTokenCallback(err);
+      });
+    });
+  };
+
+  _proto.revokeTokens = function revokeTokens(revokeTokenCallback) {
+    if (revokeTokenCallback === void 0) {
+      revokeTokenCallback = function revokeTokenCallback() {};
+    }
+
+    if (typeof revokeTokenCallback !== 'function') {
+      throw new Error('Invalid revokeTokenCallback. It should be a function.');
+    }
+
+    var tokensToBeRevoked = [];
+
+    if (!this.signInUserSession) {
+      var error = new Error('User is not authenticated');
+      return revokeTokenCallback(error);
+    }
+
+    if (!this.signInUserSession.getAccessToken()) {
+      var _error = new Error('No Access token available');
+
+      return revokeTokenCallback(_error);
+    }
+
+    var refreshToken = this.signInUserSession.getRefreshToken().getToken();
+    var accessToken = this.signInUserSession.getAccessToken();
+
+    if (this.isSessionRevocable(accessToken)) {
+      if (refreshToken) {
+        return this.revokeToken({
+          token: refreshToken,
+          callback: revokeTokenCallback
+        });
+      }
+    }
+
+    revokeTokenCallback();
+  };
+
+  _proto.isSessionRevocable = function isSessionRevocable(token) {
+    if (token && typeof token.decodePayload === 'function') {
+      try {
+        var _token$decodePayload = token.decodePayload(),
+            origin_jti = _token$decodePayload.origin_jti;
+
+        return !!origin_jti;
+      } catch (err) {// Nothing to do, token doesnt have origin_jti claim
+      }
+    }
+
+    return false;
+  };
+
+  _proto.cleanClientData = function cleanClientData() {
     this.signInUserSession = null;
     this.clearCachedUser();
+  };
+
+  _proto.revokeToken = function revokeToken(_ref2) {
+    var token = _ref2.token,
+        callback = _ref2.callback;
+    this.client.requestWithRetry('RevokeToken', {
+      Token: token,
+      ClientId: this.pool.getClientId()
+    }, function (err) {
+      if (err) {
+        return callback(err);
+      }
+
+      callback();
+    });
   }
   /**
    * This is used by a user trying to select a given MFA
@@ -6508,7 +6615,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.sendMFASelectionAnswer = function sendMFASelectionAnswer(answerChallenge, callback) {
-    var _this17 = this;
+    var _this19 = this;
 
     var challengeResponses = {};
     challengeResponses.USERNAME = this.username;
@@ -6529,7 +6636,7 @@ var CognitoUser = /*#__PURE__*/function () {
         return callback.onFailure(err);
       }
 
-      _this17.Session = data.Session;
+      _this19.Session = data.Session;
 
       if (answerChallenge === 'SMS_MFA') {
         return callback.mfaRequired(data.ChallengeName, data.ChallengeParameters);
@@ -6560,7 +6667,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.associateSoftwareToken = function associateSoftwareToken(callback) {
-    var _this18 = this;
+    var _this20 = this;
 
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       this.client.request('AssociateSoftwareToken', {
@@ -6570,7 +6677,7 @@ var CognitoUser = /*#__PURE__*/function () {
           return callback.onFailure(err);
         }
 
-        _this18.Session = data.Session;
+        _this20.Session = data.Session;
         return callback.associateSecretCode(data.SecretCode);
       });
     } else {
@@ -6595,7 +6702,7 @@ var CognitoUser = /*#__PURE__*/function () {
   ;
 
   _proto.verifySoftwareToken = function verifySoftwareToken(totpCode, friendlyDeviceName, callback) {
-    var _this19 = this;
+    var _this21 = this;
 
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
       this.client.request('VerifySoftwareToken', {
@@ -6607,30 +6714,30 @@ var CognitoUser = /*#__PURE__*/function () {
           return callback.onFailure(err);
         }
 
-        _this19.Session = data.Session;
+        _this21.Session = data.Session;
         var challengeResponses = {};
-        challengeResponses.USERNAME = _this19.username;
+        challengeResponses.USERNAME = _this21.username;
         var jsonReq = {
           ChallengeName: 'MFA_SETUP',
-          ClientId: _this19.pool.getClientId(),
+          ClientId: _this21.pool.getClientId(),
           ChallengeResponses: challengeResponses,
-          Session: _this19.Session
+          Session: _this21.Session
         };
 
-        if (_this19.getUserContextData()) {
-          jsonReq.UserContextData = _this19.getUserContextData();
+        if (_this21.getUserContextData()) {
+          jsonReq.UserContextData = _this21.getUserContextData();
         }
 
-        _this19.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
+        _this21.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
           if (errRespond) {
             return callback.onFailure(errRespond);
           }
 
-          _this19.signInUserSession = _this19.getCognitoUserSession(dataRespond.AuthenticationResult);
+          _this21.signInUserSession = _this21.getCognitoUserSession(dataRespond.AuthenticationResult);
 
-          _this19.cacheTokens();
+          _this21.cacheTokens();
 
-          return callback.onSuccess(_this19.signInUserSession);
+          return callback.onSuccess(_this21.signInUserSession);
         });
 
         return undefined;
@@ -7058,11 +7165,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return appendToCognitoUserAgent; });
-// constructor
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Platform__ = __webpack_require__(32);
+ // constructor
+
 function UserAgent() {} // public
 
 
-UserAgent.prototype.userAgent = 'aws-amplify/0.1.x js';
+UserAgent.prototype.userAgent = Object(__WEBPACK_IMPORTED_MODULE_0__Platform__["a" /* getUserAgent */])();
 var appendToCognitoUserAgent = function appendToCognitoUserAgent(content) {
   if (!content) {
     return;
@@ -7103,7 +7212,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserPool", function() { return __WEBPACK_IMPORTED_MODULE_7__CognitoUserPool__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__ = __webpack_require__(15);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CognitoUserSession", function() { return __WEBPACK_IMPORTED_MODULE_8__CognitoUserSession__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CookieStorage__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__CookieStorage__ = __webpack_require__(34);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "CookieStorage", function() { return __WEBPACK_IMPORTED_MODULE_9__CookieStorage__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__DateHelper__ = __webpack_require__(16);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "DateHelper", function() { return __WEBPACK_IMPORTED_MODULE_10__DateHelper__["a"]; });
@@ -8133,6 +8242,27 @@ var Client = /*#__PURE__*/function () {
         }
       });
     });
+  };
+
+  _proto.requestWithRetry = function requestWithRetry(operation, params, callback) {
+    var _this3 = this;
+
+    var MAX_DELAY_IN_MILLIS = 5 * 1000;
+    jitteredExponentialRetry(function (p) {
+      return new Promise(function (res, rej) {
+        _this3.request(operation, p, function (error, result) {
+          if (error) {
+            rej(error);
+          } else {
+            res(result);
+          }
+        });
+      });
+    }, [params], MAX_DELAY_IN_MILLIS).then(function (result) {
+      return callback(null, result);
+    })["catch"](function (error) {
+      return callback(error);
+    });
   }
   /**
    * Makes an unauthenticated request on AWS Cognito Identity Provider API
@@ -8220,6 +8350,86 @@ var Client = /*#__PURE__*/function () {
 }();
 
 
+var logger = {
+  debug: function debug() {// Intentionally blank. This package doesn't have logging
+  }
+};
+/**
+ * For now, all errors are retryable.
+ */
+
+var NonRetryableError = /*#__PURE__*/function (_Error2) {
+  _inheritsLoose(NonRetryableError, _Error2);
+
+  function NonRetryableError(message) {
+    var _this4;
+
+    _this4 = _Error2.call(this, message) || this;
+    _this4.nonRetryable = true;
+    return _this4;
+  }
+
+  return NonRetryableError;
+}( /*#__PURE__*/_wrapNativeSuper(Error));
+
+var isNonRetryableError = function isNonRetryableError(obj) {
+  var key = 'nonRetryable';
+  return obj && obj[key];
+};
+
+function retry(functionToRetry, args, delayFn, attempt) {
+  if (attempt === void 0) {
+    attempt = 1;
+  }
+
+  if (typeof functionToRetry !== 'function') {
+    throw Error('functionToRetry must be a function');
+  }
+
+  logger.debug(functionToRetry.name + " attempt #" + attempt + " with args: " + JSON.stringify(args));
+  return functionToRetry.apply(void 0, args)["catch"](function (err) {
+    logger.debug("error on " + functionToRetry.name, err);
+
+    if (isNonRetryableError(err)) {
+      logger.debug(functionToRetry.name + " non retryable error", err);
+      throw err;
+    }
+
+    var retryIn = delayFn(attempt, args, err);
+    logger.debug(functionToRetry.name + " retrying in " + retryIn + " ms");
+
+    if (retryIn !== false) {
+      return new Promise(function (res) {
+        return setTimeout(res, retryIn);
+      }).then(function () {
+        return retry(functionToRetry, args, delayFn, attempt + 1);
+      });
+    } else {
+      throw err;
+    }
+  });
+}
+
+function jitteredBackoff(maxDelayMs) {
+  var BASE_TIME_MS = 100;
+  var JITTER_FACTOR = 100;
+  return function (attempt) {
+    var delay = Math.pow(2, attempt) * BASE_TIME_MS + JITTER_FACTOR * Math.random();
+    return delay > maxDelayMs ? false : delay;
+  };
+}
+
+var MAX_DELAY_MS = 5 * 60 * 1000;
+
+function jitteredExponentialRetry(functionToRetry, args, maxDelayMs) {
+  if (maxDelayMs === void 0) {
+    maxDelayMs = MAX_DELAY_MS;
+  }
+
+  return retry(functionToRetry, args, jitteredBackoff(maxDelayMs));
+}
+
+;
 
 /***/ }),
 /* 31 */
@@ -8233,8 +8443,72 @@ module.exports = self.fetch || (self.fetch = __webpack_require__(19).default || 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* unused harmony export Platform */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getUserAgent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__version__ = __webpack_require__(33);
+/*
+ * Copyright 2017-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with
+ * the License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/apache2.0/
+ *
+ * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
+ */
+
+var BASE_USER_AGENT = "aws-amplify/" + __WEBPACK_IMPORTED_MODULE_0__version__["a" /* version */];
+var Platform = {
+  userAgent: BASE_USER_AGENT + " js",
+  product: '',
+  navigator: null,
+  isReactNative: false
+};
+
+if (typeof navigator !== 'undefined' && navigator.product) {
+  Platform.product = navigator.product || '';
+  Platform.navigator = navigator || null;
+
+  switch (navigator.product) {
+    case 'ReactNative':
+      Platform.userAgent = BASE_USER_AGENT + " react-native";
+      Platform.isReactNative = true;
+      break;
+
+    default:
+      Platform.userAgent = BASE_USER_AGENT + " js";
+      Platform.isReactNative = false;
+      break;
+  }
+}
+
+var getUserAgent = function getUserAgent() {
+  return Platform.userAgent;
+};
+/**
+ * @deprecated use named import
+ */
+
+/* unused harmony default export */ var _unused_webpack_default_export = (Platform);
+
+/***/ }),
+/* 33 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return version; });
+// generated by genversion
+var version = '5.0.4';
+
+/***/ }),
+/* 34 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CookieStorage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_js_cookie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_js_cookie__);
 
 /** @class */
@@ -8369,7 +8643,7 @@ var CookieStorage = /*#__PURE__*/function () {
 
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!

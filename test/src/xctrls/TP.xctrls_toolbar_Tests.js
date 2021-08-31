@@ -2,6 +2,269 @@
 //  xctrls:toolbar
 //  ========================================================================
 
+TP.xctrls.toolbar.Type.describe('TP.xctrls.toolbar: rendering',
+function() {
+
+    var unloadURI,
+        loadURI,
+
+        windowContext;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            var loc;
+
+            TP.$$setupCommonObjectValues();
+
+            windowContext = this.getDriver().get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_toolbar.xhtml';
+            loadURI = TP.uc(loc);
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:toolbar - simple Array', function(test, options) {
+
+        var toolbar;
+
+        toolbar = TP.byId('toolbar1', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return toolbar.get('allItems').first();
+                },
+                TP.gid(toolbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    toolbar.get('allItems').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    toolbar.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    toolbar.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = toolbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:toolbar - Array of Pairs', function(test, options) {
+
+        var toolbar;
+
+        toolbar = TP.byId('toolbar2', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return toolbar.get('allItems').first();
+                },
+                TP.gid(toolbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    toolbar.get('allItems').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    toolbar.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    toolbar.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = toolbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:toolbar - multi-item Array', function(test, options) {
+
+        var toolbar;
+
+        toolbar = TP.byId('toolbar3', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return toolbar.get('allItems').first();
+                },
+                TP.gid(toolbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    toolbar.get('allItems').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    toolbar.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    toolbar.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = toolbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:toolbar - single-item Array with Hash', function(test, options) {
+
+        var toolbar;
+
+        toolbar = TP.byId('toolbar4', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return toolbar.get('allItems').first();
+                },
+                TP.gid(toolbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    toolbar.get('allItems').getSize(),
+                    1);
+                test.assert.isEqualTo(
+                    toolbar.get('data').getSize(),
+                    1);
+                test.assert.isEqualTo(
+                    toolbar.get('$dataKeys').getSize(),
+                    1);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = toolbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:toolbar - multi-item Array with Hashes', function(test, options) {
+
+        var toolbar;
+
+        toolbar = TP.byId('toolbar5', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return toolbar.get('allItems').first();
+                },
+                TP.gid(toolbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    toolbar.get('allItems').getSize(),
+                    2);
+                test.assert.isEqualTo(
+                    toolbar.get('data').getSize(),
+                    2);
+                test.assert.isEqualTo(
+                    toolbar.get('$dataKeys').getSize(),
+                    2);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = toolbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Brown');
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.toolbar.Type.describe('TP.xctrls.toolbar: manipulation',
 function() {
 
@@ -75,7 +338,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -110,7 +373,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -188,7 +451,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -245,7 +508,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -397,7 +660,7 @@ function() {
             var toolbar;
 
             //  Make sure that each test starts with a freshly reset item
-            toolbar = TP.byId('toolbar4', windowContext);
+            toolbar = TP.byId('toolbar6', windowContext);
             toolbar.deselectAll();
         });
 
@@ -423,7 +686,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        toolbar = TP.byId('toolbar4', windowContext);
+        toolbar = TP.byId('toolbar6', windowContext);
 
         //  undefined
         toolbar.set('value', testData.at(TP.UNDEF));
@@ -461,7 +724,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        toolbar = TP.byId('toolbar4', windowContext);
+        toolbar = TP.byId('toolbar6', windowContext);
 
         //  RegExp
         toolbar.set('value', testData.at('RegExp'));
@@ -499,7 +762,7 @@ function() {
         var toolbar,
             value;
 
-        toolbar = TP.byId('toolbar4', windowContext);
+        toolbar = TP.byId('toolbar6', windowContext);
 
         //  XMLDocument
         toolbar.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -572,7 +835,7 @@ function() {
 
         var itemIndices;
 
-        itemIndices = aTPElem.get('allItemContent').collect(
+        itemIndices = aTPElem.get('allItems').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -609,7 +872,7 @@ function() {
             var toolbar;
 
             //  Make sure that each test starts with a freshly reset item
-            toolbar = TP.byId('toolbar4', windowContext);
+            toolbar = TP.byId('toolbar6', windowContext);
             toolbar.deselectAll();
         });
 
@@ -631,7 +894,7 @@ function() {
 
         var toolbar;
 
-        toolbar = TP.byId('toolbar4', windowContext);
+        toolbar = TP.byId('toolbar6', windowContext);
 
         //  ---
 
@@ -659,7 +922,7 @@ function() {
 
         var toolbar;
 
-        toolbar = TP.byId('toolbar4', windowContext);
+        toolbar = TP.byId('toolbar6', windowContext);
 
         //  (property defaults to 'value')
         toolbar.deselectAll();
@@ -690,7 +953,7 @@ function() {
 
         var toolbar;
 
-        toolbar = TP.byId('toolbar4', windowContext);
+        toolbar = TP.byId('toolbar6', windowContext);
 
         toolbar.deselectAll();
         toolbar.select('bar');
@@ -709,7 +972,7 @@ function() {
 
         var toolbar;
 
-        toolbar = TP.byId('toolbar4', windowContext);
+        toolbar = TP.byId('toolbar6', windowContext);
 
         toolbar.deselectAll();
         toolbar.select(/ba/);
@@ -722,7 +985,7 @@ function() {
 
         var toolbar;
 
-        toolbar = TP.byId('toolbar4', windowContext);
+        toolbar = TP.byId('toolbar6', windowContext);
 
         toolbar.addSelection('foo');
         toolbar.deselect('bar');
@@ -737,7 +1000,7 @@ function() {
 
         var toolbar;
 
-        toolbar = TP.byId('toolbar4', windowContext);
+        toolbar = TP.byId('toolbar6', windowContext);
 
         toolbar.addSelection('foo');
         toolbar.deselect(/ba/);
@@ -797,7 +1060,7 @@ function() {
 
             modelObj;
 
-        toolbar = TP.byId('toolbar5', windowContext);
+        toolbar = TP.byId('toolbar7', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -819,7 +1082,7 @@ function() {
             modelObj,
             firsttoolbarItem;
 
-        toolbar = TP.byId('toolbar5', windowContext);
+        toolbar = TP.byId('toolbar7', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -827,7 +1090,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
+                    firsttoolbarItem = toolbar.get('allItems').first();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -849,6 +1112,79 @@ function() {
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_1')),
                     'foo');
+            });
+    });
+
+    this.it('xctrls:toolbar - change data and re-render', function(test, options) {
+
+        var toolbar,
+
+            modelURI,
+            firsttoolbarItem;
+
+        toolbar = TP.byId('toolbar7', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        //  Change the content via 'user' interaction
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firsttoolbarItem = toolbar.get('allItems').first();
+                    return firsttoolbarItem;
+                },
+                TP.gid(toolbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                var items;
+
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('fido', 'Fido'),
+                            TP.ac('lassie', 'Lassie'))));
+
+                items = toolbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    2);
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fido');
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'Lassie');
+            });
+
+        test.chain(
+            function() {
+                var modelObj,
+                    items;
+
+                modelObj = modelURI.getContent();
+
+                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+
+                modelURI.$changed();
+
+                items = toolbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    4);
+
+                test.assert.isEqualTo(
+                    items.at(0).getLabelText(),
+                    'Fluffy');
+                test.assert.isEqualTo(
+                    items.at(3).getLabelText(),
+                    'Tigger');
             });
     });
 
@@ -903,11 +1239,9 @@ function() {
 
             modelObj;
 
-        toolbar = TP.byId('toolbar6', windowContext);
+        toolbar = TP.byId('toolbar8', windowContext);
 
         modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
-
-        console.log('toolbar value: ' + toolbar.get('value'));
 
         test.assert.isEqualTo(
             toolbar.get('value'),
@@ -927,12 +1261,12 @@ function() {
             firsttoolbarItem,
             lasttoolbarItem;
 
-        toolbar = TP.byId('toolbar6', windowContext);
+        toolbar = TP.byId('toolbar8', windowContext);
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
-                    lasttoolbarItem = toolbar.get('allItemContent').last();
+                    firsttoolbarItem = toolbar.get('allItems').first();
+                    lasttoolbarItem = toolbar.get('allItems').last();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -961,18 +1295,18 @@ function() {
 
             localHandlerRan;
 
-        toolbar = TP.byId('toolbar6', windowContext);
+        toolbar = TP.byId('toolbar8', windowContext);
 
         modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
 
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        statictoolbarItem = toolbar.get('allItemContent').first();
+        statictoolbarItem = toolbar.get('allItems').last();
 
         test.andIfNotValidWaitFor(
                 function() {
-                    statictoolbarItem = toolbar.get('allItemContent').first();
+                    statictoolbarItem = toolbar.get('allItems').last();
                     statictoolbarItem.defineHandler(
                         'TestClick',
                         function() {
@@ -994,11 +1328,11 @@ function() {
             function() {
                 test.assert.isEqualTo(
                     toolbar.get('value'),
-                    'before');
+                    'after');
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_1')),
-                    'before');
+                    'after');
 
                 test.assert.isTrue(localHandlerRan);
             });
@@ -1053,9 +1387,11 @@ function() {
 
         var toolbar,
 
-            modelObj;
+            modelObj,
 
-        toolbar = TP.byId('toolbar7', windowContext);
+            items;
+
+        toolbar = TP.byId('toolbar9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1066,6 +1402,19 @@ function() {
         test.assert.isEqualTo(
             TP.val(modelObj.get('selection_set_2')),
             'foo');
+
+        items = toolbar.get('allItems');
+
+        test.assert.isEqualTo(
+            items.getSize(),
+            5);
+
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'FOO');
+        test.assert.isEqualTo(
+            items.at(1).getAttribute('foo'),
+            'Value was: FOO');
     });
 
     //  ---
@@ -1077,12 +1426,12 @@ function() {
             firsttoolbarItem,
             lasttoolbarItem;
 
-        toolbar = TP.byId('toolbar7', windowContext);
+        toolbar = TP.byId('toolbar9', windowContext);
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firsttoolbarItem = toolbar.get('allItemContent').first();
-                    lasttoolbarItem = toolbar.get('allItemContent').last();
+                    firsttoolbarItem = toolbar.get('allItems').first();
+                    lasttoolbarItem = toolbar.get('allItems').last();
                     return firsttoolbarItem;
                 },
                 TP.gid(toolbar),
@@ -1110,19 +1459,19 @@ function() {
             statictoolbarItem,
             dynamictoolbarItem;
 
-        toolbar = TP.byId('toolbar7', windowContext);
+        toolbar = TP.byId('toolbar9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        statictoolbarItem = toolbar.get('allItemContent').first();
+        statictoolbarItem = toolbar.get('allItems').first();
 
         test.andIfNotValidWaitFor(
                 function() {
-                    statictoolbarItem = toolbar.get('allItemContent').first();
-                    dynamictoolbarItem = toolbar.get('allItemContent').at(1);
+                    statictoolbarItem = toolbar.get('allItems').first();
+                    dynamictoolbarItem = toolbar.get('allItems').at(1);
 
                     return statictoolbarItem;
                 },
@@ -1163,6 +1512,79 @@ function() {
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_2')),
                     'foo');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:toolbar - change data and re-render', function(test, options) {
+
+        var toolbar,
+
+            modelURI,
+            firsttoolbarItem;
+
+        toolbar = TP.byId('toolbar9', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firsttoolbarItem = toolbar.get('allItems').first();
+                    return firsttoolbarItem;
+                },
+                TP.gid(toolbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                var items;
+
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('fido', 'Fido'),
+                            TP.ac('lassie', 'Lassie'))));
+
+                items = toolbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    4);
+
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'FIDO');
+                test.assert.isEqualTo(
+                    items.at(2).getLabelText(),
+                    'LASSIE');
+            });
+
+        test.chain(
+            function() {
+                var modelObj,
+                    items;
+
+                modelObj = modelURI.getContent();
+
+                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+
+                modelURI.$changed();
+
+                items = toolbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.getSize(),
+                    6);
+
+                test.assert.isEqualTo(
+                    items.at(1).getLabelText(),
+                    'FLUFFY');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'TIGGER');
             });
     });
 

@@ -1,0 +1,52 @@
+/*
+    CSS styles for 'xctrls:wayfinder' controls for the 'tpi' theme.
+*/
+
+@import url("~lib_src/xctrls/themes/TP.xctrls.wayfinder_all.css");
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The wayfinder */
+*|*[data-theme~="tpi"] xctrls|wayfinder {
+
+    background-color: var(--xctrls-wayfinder-background-color);
+
+    border-width: var(--xctrls-wayfinder-border-width);
+    border-style: var(--xctrls-wayfinder-border-style);
+    border-radius: var(--xctrls-wayfinder-border-radius);
+    border-color: var(--xctrls-wayfinder-border-color-normal);
+}
+
+/* Hovering over the wayfinder */
+*|*[data-theme~="tpi"] xctrls|wayfinder:hover {
+
+    border-color: var(--xctrls-wayfinder-border-color-hover);
+}
+
+/* Focusing on the wayfinder */
+*|*[data-theme~="tpi"] xctrls|wayfinder[pclass|focus] {
+
+    border-color: var(--xctrls-wayfinder-border-color-focus);
+}
+
+/* Clicking down on the wayfinder */
+*|*[data-theme~="tpi"] xctrls|wayfinder[pclass|active] {
+
+    border-color: var(--xctrls-wayfinder-border-color-active);
+}
+
+/* The wayfinder is disabled */
+*|*[data-theme~="tpi"] xctrls|wayfinder[pclass|disabled] {
+
+    border-color: var(--xctrls-wayfinder-border-color-disabled);
+}
+
+/* The wayfinder's background user message */
+*|*[data-theme~="tpi"] xctrls|wayfinder > xctrls|content > div.usermessage {
+
+    font-size: var(--xctrls-wayfinder-font-size);
+    font-family: var(--xctrls-wayfinder-font-family);
+    color: var(--xctrls-wayfinder-font-color-normal);
+}

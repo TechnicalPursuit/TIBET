@@ -2,6 +2,269 @@
 //  xctrls:pagerbar
 //  ========================================================================
 
+TP.xctrls.pagerbar.Type.describe('TP.xctrls.pagerbar: rendering',
+function() {
+
+    var unloadURI,
+        loadURI,
+
+        windowContext;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+
+            var loc;
+
+            TP.$$setupCommonObjectValues();
+
+            windowContext = this.getDriver().get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
+            loadURI = TP.uc(loc);
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - simple Array', function(test, options) {
+
+        var pagerbar;
+
+        pagerbar = TP.byId('pagerbar1', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return pagerbar.get('allItems').first();
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    pagerbar.get('allItems').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    pagerbar.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    pagerbar.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = pagerbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - Array of Pairs', function(test, options) {
+
+        var pagerbar;
+
+        pagerbar = TP.byId('pagerbar2', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return pagerbar.get('allItems').first();
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    pagerbar.get('allItems').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    pagerbar.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    pagerbar.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = pagerbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - multi-item Array', function(test, options) {
+
+        var pagerbar;
+
+        pagerbar = TP.byId('pagerbar3', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return pagerbar.get('allItems').first();
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    pagerbar.get('allItems').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    pagerbar.get('data').getSize(),
+                    10);
+                test.assert.isEqualTo(
+                    pagerbar.get('$dataKeys').getSize(),
+                    10);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = pagerbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.at(4).getLabelText(),
+                    'Brown');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Taylor');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - single-item Array with Hash', function(test, options) {
+
+        var pagerbar;
+
+        pagerbar = TP.byId('pagerbar4', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return pagerbar.get('allItems').first();
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    pagerbar.get('allItems').getSize(),
+                    1);
+                test.assert.isEqualTo(
+                    pagerbar.get('data').getSize(),
+                    1);
+                test.assert.isEqualTo(
+                    pagerbar.get('$dataKeys').getSize(),
+                    1);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = pagerbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - multi-item Array with Hashes', function(test, options) {
+
+        var pagerbar;
+
+        pagerbar = TP.byId('pagerbar5', windowContext);
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    return pagerbar.get('allItems').first();
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                test.assert.isEqualTo(
+                    pagerbar.get('allItems').getSize(),
+                    2);
+                test.assert.isEqualTo(
+                    pagerbar.get('data').getSize(),
+                    2);
+                test.assert.isEqualTo(
+                    pagerbar.get('$dataKeys').getSize(),
+                    2);
+            });
+
+        test.chain(
+            function() {
+                var items;
+
+                items = pagerbar.get('allItems');
+
+                test.assert.isEqualTo(
+                    items.first().getLabelText(),
+                    'Smith');
+                test.assert.isEqualTo(
+                    items.last().getLabelText(),
+                    'Brown');
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.pagerbar.Type.describe('TP.xctrls.pagerbar: manipulation',
 function() {
 
@@ -75,7 +338,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -110,7 +373,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -188,7 +451,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -245,7 +508,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -397,7 +660,7 @@ function() {
             var pagerbar;
 
             //  Make sure that each test starts with a freshly reset item
-            pagerbar = TP.byId('pagerbar4', windowContext);
+            pagerbar = TP.byId('pagerbar6', windowContext);
             pagerbar.deselectAll();
         });
 
@@ -423,7 +686,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        pagerbar = TP.byId('pagerbar4', windowContext);
+        pagerbar = TP.byId('pagerbar6', windowContext);
 
         //  undefined
         pagerbar.set('value', testData.at(TP.UNDEF));
@@ -463,7 +726,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        pagerbar = TP.byId('pagerbar4', windowContext);
+        pagerbar = TP.byId('pagerbar6', windowContext);
 
         //  RegExp
         pagerbar.set('value', testData.at('RegExp'));
@@ -505,7 +768,7 @@ function() {
         var pagerbar,
             value;
 
-        pagerbar = TP.byId('pagerbar4', windowContext);
+        pagerbar = TP.byId('pagerbar6', windowContext);
 
         //  XMLDocument
         pagerbar.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -592,7 +855,7 @@ function() {
 
         var itemIndices;
 
-        itemIndices = aTPElem.get('allItemContent').collect(
+        itemIndices = aTPElem.get('allItems').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -629,7 +892,7 @@ function() {
             var pagerbar;
 
             //  Make sure that each test starts with a freshly reset item
-            pagerbar = TP.byId('pagerbar4', windowContext);
+            pagerbar = TP.byId('pagerbar6', windowContext);
             pagerbar.deselectAll();
         });
 
@@ -651,7 +914,7 @@ function() {
 
         var pagerbar;
 
-        pagerbar = TP.byId('pagerbar4', windowContext);
+        pagerbar = TP.byId('pagerbar6', windowContext);
 
         //  ---
 
@@ -679,7 +942,7 @@ function() {
 
         var pagerbar;
 
-        pagerbar = TP.byId('pagerbar4', windowContext);
+        pagerbar = TP.byId('pagerbar6', windowContext);
 
         //  (property defaults to 'value')
         pagerbar.deselectAll();
@@ -710,7 +973,7 @@ function() {
 
         var pagerbar;
 
-        pagerbar = TP.byId('pagerbar4', windowContext);
+        pagerbar = TP.byId('pagerbar6', windowContext);
 
         pagerbar.deselectAll();
         pagerbar.select('bar');
@@ -729,7 +992,7 @@ function() {
 
         var pagerbar;
 
-        pagerbar = TP.byId('pagerbar4', windowContext);
+        pagerbar = TP.byId('pagerbar6', windowContext);
 
         pagerbar.deselectAll();
         pagerbar.select(/ba/);
@@ -742,7 +1005,7 @@ function() {
 
         var pagerbar;
 
-        pagerbar = TP.byId('pagerbar4', windowContext);
+        pagerbar = TP.byId('pagerbar6', windowContext);
 
         pagerbar.addSelection('foo');
         pagerbar.deselect('bar');
@@ -757,7 +1020,7 @@ function() {
 
         var pagerbar;
 
-        pagerbar = TP.byId('pagerbar4', windowContext);
+        pagerbar = TP.byId('pagerbar6', windowContext);
 
         pagerbar.addSelection('foo');
         pagerbar.deselect(/ba/);
@@ -817,7 +1080,7 @@ function() {
 
             modelObj;
 
-        pagerbar = TP.byId('pagerbar5', windowContext);
+        pagerbar = TP.byId('pagerbar7', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -836,14 +1099,14 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (binding)', function(test, options) {
 
         var pagerbar,
 
             modelObj,
             firstPagerbarItem;
 
-        pagerbar = TP.byId('pagerbar5', windowContext);
+        pagerbar = TP.byId('pagerbar7', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -851,7 +1114,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -877,6 +1140,47 @@ function() {
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_1')),
                     'foo');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - change data and re-render', function(test, options) {
+
+        var pagerbar,
+
+            modelURI,
+            firstPagerbarItem;
+
+        pagerbar = TP.byId('pagerbar7', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        //  Change the content via 'user' interaction
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstPagerbarItem = pagerbar.get('allItems').first();
+                    return firstPagerbarItem;
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('fido', 'Fido'),
+                            TP.ac('lassie', 'Lassie'))));
+
+                test.assert.isEqualTo(
+                    pagerbar.get('allItems').getSize(),
+                    2);
+                test.assert.isEqualTo(
+                    pagerbar.get('pageValue'),
+                    1);
             });
     });
 
@@ -931,7 +1235,7 @@ function() {
 
             modelObj;
 
-        pagerbar = TP.byId('pagerbar6', windowContext);
+        pagerbar = TP.byId('pagerbar8', windowContext);
 
         modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
 
@@ -953,12 +1257,12 @@ function() {
             firstpagerbarItem,
             lastpagerbarItem;
 
-        pagerbar = TP.byId('pagerbar6', windowContext);
+        pagerbar = TP.byId('pagerbar8', windowContext);
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstpagerbarItem = pagerbar.get('allItemContent').first();
-                    lastpagerbarItem = pagerbar.get('allItemContent').last();
+                    firstpagerbarItem = pagerbar.get('allItems').first();
+                    lastpagerbarItem = pagerbar.get('allItems').last();
                     return firstpagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -977,7 +1281,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (static)', function(test, options) {
 
         var pagerbar,
 
@@ -987,18 +1291,18 @@ function() {
 
             localHandlerRan;
 
-        pagerbar = TP.byId('pagerbar6', windowContext);
+        pagerbar = TP.byId('pagerbar8', windowContext);
 
         modelObj = TP.uc('urn:tibet:static_selection_test_data').getResource().get('result');
 
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        staticpagerbarItem = pagerbar.get('allItemContent').first();
+        staticpagerbarItem = pagerbar.get('allItems').first();
 
         test.andIfNotValidWaitFor(
                 function() {
-                    staticpagerbarItem = pagerbar.get('allItemContent').first();
+                    staticpagerbarItem = pagerbar.get('allItems').first();
                     staticpagerbarItem.defineHandler(
                         'TestClick',
                         function() {
@@ -1081,7 +1385,7 @@ function() {
 
             modelObj;
 
-        pagerbar = TP.byId('pagerbar7', windowContext);
+        pagerbar = TP.byId('pagerbar9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1108,12 +1412,12 @@ function() {
             firstPagerbarItem,
             lastPagerbarItem;
 
-        pagerbar = TP.byId('pagerbar7', windowContext);
+        pagerbar = TP.byId('pagerbar9', windowContext);
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
-                    lastPagerbarItem = pagerbar.get('allItemContent').last();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
+                    lastPagerbarItem = pagerbar.get('allItems').last();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -1132,7 +1436,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (mixed)', function(test, options) {
 
         var pagerbar,
 
@@ -1141,7 +1445,7 @@ function() {
             staticPagerItem,
             dynamicPagerItem;
 
-        pagerbar = TP.byId('pagerbar7', windowContext);
+        pagerbar = TP.byId('pagerbar9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1150,8 +1454,8 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    staticPagerItem = pagerbar.get('allItemContent').first();
-                    dynamicPagerItem = pagerbar.get('allItemContent').at(2);
+                    staticPagerItem = pagerbar.get('allItems').first();
+                    dynamicPagerItem = pagerbar.get('allItems').at(2);
                     return staticPagerItem;
                 },
                 TP.gid(pagerbar),
@@ -1199,6 +1503,47 @@ function() {
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_2')),
                     'bar');
+            });
+    });
+
+    //  ---
+
+    this.it('xctrls:pagerbar - change data and re-render', function(test, options) {
+
+        var pagerbar,
+
+            modelURI,
+            firstPagerbarItem;
+
+        pagerbar = TP.byId('pagerbar9', windowContext);
+
+        modelURI = TP.uc('urn:tibet:selection_test_data');
+
+        //  Change the content via 'user' interaction
+
+        test.andIfNotValidWaitFor(
+                function() {
+                    firstPagerbarItem = pagerbar.get('allItems').first();
+                    return firstPagerbarItem;
+                },
+                TP.gid(pagerbar),
+                'TP.sig.DidRenderData');
+
+        test.chain(
+            function() {
+                modelURI.setResource(
+                    TP.hc(
+                        'data',
+                        TP.ac(
+                            TP.ac('fido', 'Fido'),
+                            TP.ac('lassie', 'Lassie'))));
+
+                test.assert.isEqualTo(
+                    pagerbar.get('allItems').getSize(),
+                    4);
+                test.assert.isEqualTo(
+                    pagerbar.get('pageValue'),
+                    1);
             });
     });
 
@@ -1253,7 +1598,7 @@ function() {
 
             modelObj;
 
-        pagerbar = TP.byId('pagerbar8', windowContext);
+        pagerbar = TP.byId('pagerbar10', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1272,7 +1617,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (extra buttons)', function(test, options) {
 
         var pagerbar,
 
@@ -1284,7 +1629,7 @@ function() {
             nextPagerItem,
             endPagerItem;
 
-        pagerbar = TP.byId('pagerbar8', windowContext);
+        pagerbar = TP.byId('pagerbar10', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1293,11 +1638,11 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    startPagerItem = pagerbar.get('allItemContent').at(0);
-                    previousPagerItem = pagerbar.get('allItemContent').at(1);
-                    numTwoPagerItem = pagerbar.get('allItemContent').at(3);
-                    nextPagerItem = pagerbar.get('allItemContent').at(5);
-                    endPagerItem = pagerbar.get('allItemContent').at(6);
+                    startPagerItem = pagerbar.get('allItems').at(0);
+                    previousPagerItem = pagerbar.get('allItems').at(1);
+                    numTwoPagerItem = pagerbar.get('allItems').at(3);
+                    nextPagerItem = pagerbar.get('allItems').at(5);
+                    endPagerItem = pagerbar.get('allItems').at(6);
                     return startPagerItem;
                 },
                 TP.gid(pagerbar),
@@ -1448,18 +1793,18 @@ function() {
             nextPagerItem,
             endPagerItem;
 
-        pagerbar = TP.byId('pagerbar8', windowContext);
+        pagerbar = TP.byId('pagerbar10', windowContext);
 
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
         test.andIfNotValidWaitFor(
                 function() {
-                    startPagerItem = pagerbar.get('allItemContent').at(0);
-                    previousPagerItem = pagerbar.get('allItemContent').at(1);
-                    numTwoPagerItem = pagerbar.get('allItemContent').at(3);
-                    nextPagerItem = pagerbar.get('allItemContent').at(5);
-                    endPagerItem = pagerbar.get('allItemContent').at(6);
+                    startPagerItem = pagerbar.get('allItems').at(0);
+                    previousPagerItem = pagerbar.get('allItems').at(1);
+                    numTwoPagerItem = pagerbar.get('allItems').at(3);
+                    nextPagerItem = pagerbar.get('allItems').at(5);
+                    endPagerItem = pagerbar.get('allItems').at(6);
                     return startPagerItem;
                 },
                 TP.gid(pagerbar),
@@ -1555,7 +1900,7 @@ function() {
                 test.refute.isDisabled(endPagerItem);
             });
     });
-});
+}).skip();
 
 //  ------------------------------------------------------------------------
 
@@ -1606,13 +1951,13 @@ function() {
 
             modelObj;
 
-        pagerbar = TP.byId('pagerbar9', windowContext);
+        pagerbar = TP.byId('pagerbar11', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
         test.assert.isEqualTo(
             pagerbar.get('value'),
-            'davis');
+            'Brown');
 
         test.assert.isEqualTo(
             pagerbar.get('pageValue'),
@@ -1620,19 +1965,19 @@ function() {
 
         test.assert.isEqualTo(
             TP.val(modelObj.get('selection_set_4')),
-            'davis');
+            'Brown');
     });
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (paging)', function(test, options) {
 
         var pagerbar,
 
             modelObj,
             firstPagerbarItem;
 
-        pagerbar = TP.byId('pagerbar9', windowContext);
+        pagerbar = TP.byId('pagerbar11', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
@@ -1640,7 +1985,7 @@ function() {
 
         test.andIfNotValidWaitFor(
                 function() {
-                    firstPagerbarItem = pagerbar.get('allItemContent').first();
+                    firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
                 },
                 TP.gid(pagerbar),
@@ -1657,7 +2002,7 @@ function() {
             function() {
                 test.assert.isEqualTo(
                     pagerbar.get('value'),
-                    'smith');
+                    'Smith');
 
                 test.assert.isEqualTo(
                     pagerbar.get('pageValue'),
@@ -1665,7 +2010,7 @@ function() {
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('selection_set_4')),
-                    'smith');
+                    'Smith');
             });
     });
 

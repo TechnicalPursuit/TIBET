@@ -79,8 +79,8 @@ function(aRequest) {
     arg0 = shell.getArgument(aRequest, 'ARG0');
     arg1 = shell.getArgument(aRequest, 'ARG1');
 
-    isRemove = shell.getArgument(aRequest, 'tsh:remove', false);
-    isRemoveAll = shell.getArgument(aRequest, 'tsh:removeall', false);
+    isRemove = TP.bc(shell.getArgument(aRequest, 'tsh:remove', false));
+    isRemoveAll = TP.bc(shell.getArgument(aRequest, 'tsh:removeall', false));
 
     bookmarks = TP.uc('urn:tibet:lama_bookmarks').getResource().get('result');
 

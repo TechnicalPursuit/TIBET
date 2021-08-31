@@ -380,7 +380,7 @@ TP.boot.installPatches = function(aWindow) {
 
     var $$msg;
 
-    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'headless') {
+    if (TP.sys.cfg('log.hook') && !TP.sys.isHeadless()) {
         $$msg = 'TIBET hook installing window patches on ' + aWindow.name;
         TP.boot.$stdout($$msg, TP.INFO);
     }
@@ -1109,7 +1109,7 @@ TP.boot.installPatches = function(aWindow) {
 
     TP.boot.$$setupMetadata(aWindow);
 
-    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'headless') {
+    if (TP.sys.cfg('log.hook') && !TP.sys.isHeadless()) {
         $$msg = 'TIBET hook updated JavaScript metadata.';
         TP.boot.$stdout($$msg, TP.INFO);
     }
@@ -1499,6 +1499,9 @@ TP.boot.$$documentSetup = function(aDocument) {
     TP.boot.$$addUIHandler(aDocument,
                             'focus',
                             TP.$$handleFocus);
+    TP.boot.$$addUIHandler(aDocument,
+                            'select',
+                            TP.$$handleSelect);
 
     TP.boot.$$addUIHandler(aDocument,
                             'keydown',
@@ -1536,6 +1539,10 @@ TP.boot.$$documentSetup = function(aDocument) {
     TP.boot.$$addUIHandler(aDocument,
                             'animationend',
                             TP.$$handleAnimationEnd);
+
+    TP.boot.$$addUIHandler(aDocument,
+                            'selectionchange',
+                            TP.$$handleSelectionChange);
 
     TP.boot.$$addUIHandler(aDocument,
                             'submit',
@@ -1643,6 +1650,7 @@ TP.boot.$$documentTeardown = function(aDocument) {
 
     TP.boot.$$removeUIHandler(aDocument, 'blur');
     TP.boot.$$removeUIHandler(aDocument, 'focus');
+    TP.boot.$$removeUIHandler(aDocument, 'select');
 
     TP.boot.$$removeUIHandler(aDocument, 'keydown');
     TP.boot.$$removeUIHandler(aDocument, 'keypress');
@@ -1656,6 +1664,8 @@ TP.boot.$$documentTeardown = function(aDocument) {
     TP.boot.$$removeUIHandler(aDocument, 'scroll');
     TP.boot.$$removeUIHandler(aDocument, 'transitionend');
     TP.boot.$$removeUIHandler(aDocument, 'animationend');
+
+    TP.boot.$$removeUIHandler(aDocument, 'selectionchange');
 
     TP.boot.$$removeUIHandler(aDocument, 'submit');
     TP.boot.$$removeUIHandler(aDocument, 'reset');
@@ -1729,8 +1739,7 @@ TP.boot.initializeCanvasDocument = function(aDocument) {
                 'http://www.technicalpursuit.com/1999/tibet',
                 'canvasready')) {
 
-            if (TP.sys.cfg('log.hook') &&
-                TP.sys.cfg('boot.context') !== 'headless') {
+            if (TP.sys.cfg('log.hook') && !TP.sys.isHeadless()) {
 
                 $$msg = 'TIBET hook skipping re-instrumentation of ' +
                         name + ' document';
@@ -1769,8 +1778,7 @@ TP.boot.initializeCanvasWindow = function(aWindow) {
     win = aWindow;
 
     if (win.$$hooked === true) {
-        if (TP.sys.cfg('log.hook') &&
-                TP.sys.cfg('boot.context') !== 'headless') {
+        if (TP.sys.cfg('log.hook') && !TP.sys.isHeadless()) {
             $$msg = 'TIBET hook skipping re-instrumentation of window ' +
                     win.name;
             TP.boot.$stdout($$msg, TP.TRACE);

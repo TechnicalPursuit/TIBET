@@ -845,8 +845,8 @@ function(aDocument) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    //  Grab the current selection type. This returns
-    //  TP.SELECTION_NONE if the selection is null.
+    //  Grab the current selection type. This returns TP.SELECTION_NONE if the
+    //  selection is null.
     selectionType = TP.documentGetSelectionType(aDocument);
 
     //  If the selection type isn't a whole chunk of text, then bail out here by
@@ -1210,45 +1210,63 @@ function(anElement, aHandler, useTrackerElement) {
                 new ResizeObserver(
                 /* eslint-enable no-undef */
                     function(entries, observer) {
+                        if (!TP.sys.hasStarted()) {
+                            return;
+                        }
 
                         entries.forEach(
                             function(anEntry) {
                                 var target,
-                                    targetWin;
+
+                                    processFunc;
 
                                 //  The target will be the target Element that
                                 //  got resized. Make sure it's an Element and
                                 //  then run the callback functions defined on
                                 //  the Element.
                                 target = anEntry.target;
-                                targetWin = TP.nodeGetWindow(target);
 
                                 if (TP.isElement(target)) {
-                                    //  Note here how we put these into a
-                                    //  requestAnimationFrame. Otherwise, Chrome
-                                    //  (at least) has trouble with servicing
-                                    //  the ResizeObserver loop (it seems that
-                                    //  supposed recursion loop checks don't
-                                    //  work - or not with deep stacks, anyway).
-                                    targetWin.requestAnimationFrame(
-                                        function() {
-                                            var listeners;
 
-                                            listeners =
-                                                target[TP.RESIZE_LISTENERS];
-                                            if (TP.notValid(listeners)) {
-                                                TP.ifWarn() ?
-                                                    TP.warn('Can\'t find' +
-                                                            ' listeners for: ' +
-                                                            TP.str(target)) : 0;
-                                                return;
-                                            }
+                                    if (target.$$resizeTimeout) {
+                                        clearTimeout(target.$$resizeTimeout);
+                                        target.$$resizeTimeout = undefined;
+                                    }
 
-                                            listeners.forEach(
+                                    //  Define a Function that will be invoked
+                                    //  both directly and via a setTimeout.
+                                    processFunc = function() {
+                                        var listeners;
+
+                                        listeners =
+                                            target[TP.RESIZE_LISTENERS];
+                                        if (TP.notValid(listeners)) {
+                                            TP.ifWarn() ?
+                                                TP.warn('Can\'t find' +
+                                                        ' listeners for: ' +
+                                                        TP.str(target)) : 0;
+                                            return;
+                                        }
+
+                                        listeners.forEach(
                                             function(fn) {
                                                 fn.call(target);
                                             });
-                                        });
+
+                                        //  Define a setTimeout that will invoke
+                                        //  the handlers 250ms after the last
+                                        //  resize. This allows the GUI to
+                                        //  'catch up' with any last remaining
+                                        //  resizing.
+                                        target.$$resizeTimeout = setTimeout(
+                                            function() {
+                                                processFunc();
+                                                clearTimeout(
+                                                    target.$$resizeTimeout);
+                                            }, 250);
+                                    };
+
+                                    processFunc();
                                 }
                             });
                     });
@@ -1953,8 +1971,8 @@ function(anElement, aHandler) {
     //  Grab the Array of resize listeners from the target Element.
     listeners = anElement[TP.RESIZE_LISTENERS];
     if (TP.isEmpty(listeners)) {
-        TP.ifWarn() ?
-            TP.warn('Can\'t find listeners for: ' + TP.str(anElement)) : 0;
+        TP.ifDebug() ?
+            TP.debug('Can\'t find listeners for: ' + TP.str(anElement)) : 0;
 
         return;
     }
@@ -2095,7 +2113,7 @@ function(anElement, aClassName) {
     if (TP.notValid(aClassName)) {
         TP.elementRemoveAttribute(anElement, 'class');
     } else {
-        //  NB: We use native 'setAttribute' call here, or we'll recurse
+        //  NB: We use native setAttribute call here, or we'll recurse
         //  into TP.elementSetAttribute()
         anElement.setAttribute('class', aClassName);
     }

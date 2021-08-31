@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+
+<xctrls:menuitem class="item {{$SOURCE.(@class)}}">
+    <xctrls:image class="icon" name="{{$SOURCE.(@icon) .|| 'blank'}}"/>
+    {{$SOURCE.(./xctrls:label|./xctrls:value|./xctrls:hint)}}
+    <xctrls:image class="more" name="{{$SOURCE.(@more) .|| 'blank'}}"/>
+</xctrls:menuitem>

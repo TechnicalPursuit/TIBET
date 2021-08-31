@@ -955,36 +955,38 @@ TP.REQUIRED = function() {
 
 //  for native nodes
 //  NOTE: If this list is changed, the TP.nodeCopyTIBETExpandos() routine needs
-//  to be changed.
-TP.EVENT_IDS = 'tp_eventIds';
-TP.EVENT_BLOCKS = 'tp_eventBlocks';
-TP.GLOBAL_ID = 'tp_globalID';
-TP.SHOULD_SIGNAL_CHANGE = 'tp_shouldSignalChange';
-TP.SHOULD_SUSPEND_SIGNALING = 'tp_shouldSuspendSignaling';
-TP.WRAPPER = 'tp_wrapper';
-TP.GENERATOR = 'tp_generator';
-TP.IS_XHTML = 'tp_isXHTML';
-TP.IS_XML = 'tp_isXML';
-TP.SRC_LOCATION = 'tp_source_location';
-TP.OBSERVED_ATTRS = 'tp_observed_attrs';
-TP.NODE_TYPE = 'tp_nodetype';
-TP.BIND_INFO_REGISTRY = 'tp_bind_info_registry';
-TP.GENERATED = 'tp_generated';
-TP.AWAKENED = 'tp_awakened';
-TP.APPLIED_RULES = 'tp_applied_rules';
-TP.TIBET_PRIVATE = 'tp_tibet_private';
-TP.PREVIOUS_POSITION = 'tp_previous_position';
-TP.INSERTION_POSITION = 'tp_insertion_position';
-TP.RESIZE_LISTENERS = 'tp_resize_listeners';
-TP.LAMA_MUTATION = 'tp_lama_mutated';
-TP.OLD_OVERFLOW = 'tp_old_overflow';
-TP.BUSY_ELEMENT = 'tp_busy_element';
-TP.BUSY_MSG_ELEMENT = 'tp_busy_msg_element';
-TP.BUSY_BKGD_ELEMENT = 'tp_busy_bkgd_element';
-TP.BUSY_RESIZE_FUNC = 'tp_busy_resize_function';
-TP.REPEAT_SOURCE = 'tp_repeat_source';
-TP.REPEAT_INDEX = 'tp_repeat_index';
-TP.PSEUDO_INLINE_STYLE = 'tp_pseudo_inline_style';
+//  to be changed. 'done' indicates that this method has been updated to take
+//  that property into account. 'ignore' indicates that this method should
+//  ignore this property.
+TP.EVENT_IDS = 'tp_eventIds';                               //  ignore
+TP.EVENT_BLOCKS = 'tp_eventBlocks';                         //  ignore
+TP.GLOBAL_ID = 'tp_globalID';                               //  done
+TP.SHOULD_SIGNAL_CHANGE = 'tp_shouldSignalChange';          //  done
+TP.SHOULD_SUSPEND_SIGNALING = 'tp_shouldSuspendSignaling';  //  done
+TP.WRAPPER = 'tp_wrapper';                                  //  ignore
+TP.GENERATOR = 'tp_generator';                              //  done
+TP.IS_XHTML = 'tp_isXHTML';                                 //  done
+TP.IS_XML = 'tp_isXML';                                     //  done
+TP.SRC_LOCATION = 'tp_source_location';                     //  done
+TP.OBSERVED_ATTRS = 'tp_observed_attrs';                    //  ignore
+TP.NODE_TYPE = 'tp_nodetype';                               //  done
+TP.BIND_INFO_REGISTRY = 'tp_bind_info_registry';            //  ignore
+TP.GENERATED = 'tp_generated';                              //  done
+TP.AWAKENED = 'tp_awakened';                                //  ignore
+TP.APPLIED_RULES = 'tp_applied_rules';                      //  ignore
+TP.TIBET_PRIVATE = 'tp_tibet_private';                      //  done
+TP.PREVIOUS_POSITION = 'tp_previous_position';              //  ignore
+TP.INSERTION_POSITION = 'tp_insertion_position';            //  ignore
+TP.RESIZE_LISTENERS = 'tp_resize_listeners';                //  ignore
+TP.LAMA_MUTATION = 'tp_lama_mutated';                       //  ignore
+TP.OLD_OVERFLOW = 'tp_old_overflow';                        //  done
+TP.BUSY_ELEMENT = 'tp_busy_element';                        //  ignore
+TP.BUSY_MSG_ELEMENT = 'tp_busy_msg_element';                //  ignore
+TP.BUSY_BKGD_ELEMENT = 'tp_busy_bkgd_element';              //  ignore
+TP.BUSY_RESIZE_FUNC = 'tp_busy_resize_function';            //  ignore
+TP.REPEAT_SOURCE = 'tp_repeat_source';                      //  done
+TP.REPEAT_INDEX = 'tp_repeat_index';                        //  done
+TP.PSEUDO_INLINE_STYLE = 'tp_pseudo_inline_style';          //  ignore
 
 TP.BOUND_ATTR_COUNT = 'tp_bound_attr_count';
 TP.BOUND_ATTR_PROCESSED_COUNT = 'tp_bound_attr_processed_count';
@@ -993,6 +995,9 @@ TP.OLD_TOP = 'tp_top';
 TP.OLD_LEFT = 'tp_left';
 TP.OLD_HEIGHT = 'tp_oldheight';
 TP.OLD_WIDTH = 'tp_oldwidth';
+
+TP.DATA_KEY = 'datakey';
+TP.ITEM_NUM = 'itemnum';
 
 //  meta owners and their target objects
 
@@ -1387,6 +1392,7 @@ TP.TRANSFORM_LOG = 'transform';
 TP.ANY = 'ANY';
 TP.OBSERVER_FIRING = 'OBSERVER_FIRING';
 TP.DOM_FIRING = 'DOM_FIRING';
+TP.CONTROLLER_FIRING = 'CONTROLLER_FIRING';
 TP.RESPONDER_FIRING = 'RESPONDER_FIRING';
 TP.BIND_FIRING = 'BIND_FIRING';
 TP.EXCEPTION_FIRING = 'EXCEPTION_FIRING';
@@ -1410,6 +1416,7 @@ TP.PROXIED = 'Proxied';
 //  requests
 //  ---
 
+TP.REFRESH = 'shouldrefresh';
 TP.ONLOAD = 'onload';
 TP.ONSUCCESS = 'onsuccess';
 TP.ONFAIL = 'onfail';
@@ -1755,7 +1762,6 @@ TP.NEVER_SERIALIZED_TIBET_ATTRS = [
     'tibet:single',
     'tibet:flagchanges',
     'tibet:templateid',
-    'tibet:templateexpr',
     'tibet:textbinding'
 ];
 
@@ -1771,6 +1777,8 @@ TP.FOCUSABLE_QUERIES = [
     'html|iframe:not([disabled])',
     '*[tabindex]:not([tabindex="-1"]):not([disabled])'
 ];
+
+TP.DISABLED = 'disabled';
 
 //  ---
 //  encryption/security
@@ -3068,6 +3076,7 @@ TP.regex.ATTRIBUTE_NAME = /^[_$][a-zA-Z0-9_$]*$|^[A-Z]/;
 TP.regex.PUBLIC_SLOT = /^_/;
 TP.regex.PRIVATE_SLOT = /^\$[^$]/;
 TP.regex.INTERNAL_SLOT = /^\$\$|\$\$(Inst|Type)|^__(.*)__$/;
+TP.regex.INTERNAL_ID = /^element(Global|Local)ID$/;
 
 TP.regex.PRIVATE_OR_INTERNAL_SLOT = /^\$|\$\$(Inst|Type)|^__(.*)__$/;
 
@@ -3227,6 +3236,18 @@ TP.regex.MOUSE_EVENT = /^mouse|DOMMouse|DOMClick|DOMDblClick/;
 TP.regex.SIGNAL_PREFIX = /^(TP|APP)\.sig\./;
 TP.regex.HANDLER_NAME = /^handle([-_a-zA-Z0-9]+)$/;
 
+TP.regex.CHANGE_SIGNAL = /^((TP|APP)\.sig\.)?(\w)*Change(d)?$/;
+TP.regex.DOM_SIGNAL = /^((TP|APP)\.sig\.)?DOM[A-Z](\w)*$/;
+TP.regex.UI_SIGNAL = /^((TP|APP)\.sig\.)?UI[A-Z](\w)*$/;
+
+TP.regex.UI_ABLED_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(abled).*$/;
+TP.regex.UI_VALID_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(valid).*$/;
+TP.regex.UI_VALIDATION_SIGNAL = /^((TP|APP)\.sig\.)?.*(Optional|Readonly|Readwrite|Relevant|Required).*$/;
+
+TP.regex.UI_ACTIVATION_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(activate).*$/i;
+TP.regex.UI_FOCUSBLUR_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(Focus|Blur).*$/;
+TP.regex.UI_SELECTABLE_SIGNAL = /^((TP|APP)\.sig\.)?UI.*(elect).*$/;
+
 /* eslint-disable max-len */
 TP.regex.SPLIT_HANDLER_NAME =
     /^handle([A-Z0-9$][a-zA-Z0-9_]*?)(Capturing)*(From([A-Z][a-zA-Z0-9_]*?))*?(When([A-Z][a-zA-Z0-9_]*?))*?$/;
@@ -3285,15 +3306,15 @@ TP.regex.ACP_END_CONTROL_STATEMENT = /\{\{\/:(with|if|for)\}\}/;
 
 //  '$' followed by a word character (but *not* including '_') or '*' or '#'
 TP.regex.ACP_PATH_CONTAINS_VARIABLES =
-    /(TP\.|APP\.|\$)([a-zA-Z0-9]+|\*|#)/;
+    /(TP\.|APP\.|\$)([a-zA-Z0-9]+|#)/;
 
 TP.regex.ACP_VARIABLE_STATEMENT =
-    /(TP\.|APP\.|\$)(\w+|\*|#)/;
+    /(TP\.|APP\.|\$)(\w+|#)/;
 
 TP.regex.ACP_VARIABLE_FUNCTION_STATEMENT =
-    /((TP\.|APP\.|\$)(\w+|\*|#))(\.\w+\()/g;
+    /((TP\.|APP\.|\$)(\w+|#))(\.\w+\()/g;
 
-TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|\*|#)+)/;
+TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|#)+)/;
 
 //  Finds ACP expressions that have an 'id' construct along with '$SOURCE' for
 //  tag processing.
@@ -3356,6 +3377,10 @@ TP.regex.CALL_STACK_FORMAT = /(.*) \((.*)\)/;
 TP.regex.CALL_STACK_ID = /Function\$[0-9a-z]*($|([\s]))/g;  //  needs reset
 
 TP.regex.CALL_STACK_ENTRY_SPLITTER = /(.+)@(.+):(\d+):(\d+)/;
+
+TP.regex.DEBUGGER_IGNORED_MESSAGES = [
+    /ResizeObserver loop limit exceeded/
+];
 
 TP.regex.HAS_STDIN = /\$_/;
 TP.regex.ONLY_STDIN = /^\$_$/;
@@ -3570,16 +3595,6 @@ TP.regex.ANONYMOUS_NAME = /^\$\d/;
 TP.regex.IS_NAMEXP = /\*| /;
 
 //  ---
-//  number support
-//  ---
-
-TP.MAX_DOUBLE = 9007199254740991;
-
-//  The maximum timeout as supported by Mozilla. Roughly equivalent to 596.5
-//  hours or 24 days.
-TP.MAX_TIMEOUT = 2147483647;
-
-//  ---
 //  object support
 //  ---
 
@@ -3620,7 +3635,9 @@ TP.regex.TIBET_URL_SPLITTER =
 TP.regex.URL_SPLITTER =
                 /(?:.*):([^\/]*?)\/([^\/]*?)\/([^\/#]*)\/?(([^#]*)(.*))/;
 
+TP.regex.ANY_URN = /urn:(.+):|urn::/;
 TP.regex.TIBET_URN = /urn:tibet:|urn::/;
+TP.regex.ANY_URN_SPLITTER = /(urn:(.+):|urn::)(.*)/;
 TP.regex.TIBET_URN_SPLITTER = /(urn:tibet:|urn::)(.*)/;
 TP.regex.TIBET_COMPACT_URN = /urn::/;
 TP.TIBET_URN_PREFIX = 'urn:tibet:';
@@ -3880,6 +3897,25 @@ TP.sys[TP.TNAME] = 'Object';
 TP.sys.$$realBrowser = null;
 
 TP.sys.$LICENSE = TP.NULL_OID;
+
+//  ---
+//  collection member data type support
+//  ---
+
+TP.PAIR = 'pair';
+TP.HASH = 'hash';
+TP.POJO = 'pojo';
+TP.ARRAY = 'array';
+
+//  ---
+//  number support
+//  ---
+
+TP.MAX_DOUBLE = 9007199254740991;
+
+//  The maximum timeout as supported by Mozilla. Roughly equivalent to 596.5
+//  hours or 24 days.
+TP.MAX_TIMEOUT = 2147483647;
 
 //  ------------------------------------------------------------------------
 //  end
