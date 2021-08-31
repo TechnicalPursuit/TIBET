@@ -10,5 +10,8 @@
         "help": {
             "viewer": "man"
         }
+    },
+    "log": {
+        "missing_isresponderfor": false
     }
 }
