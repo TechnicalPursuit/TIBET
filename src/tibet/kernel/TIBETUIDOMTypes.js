@@ -4295,10 +4295,10 @@ function(receiverCompassPoint, alignmentCompassPoint, alignmentTPElement,
     //  right and top of the alignment element.
     alignmentCP = TP.ifInvalid(alignmentCompassPoint, TP.NORTHEAST);
 
-    //  Compute the global rect of the alignment element and get the 'edge
+    //  Compute the page rect of the alignment element and get the 'edge
     //  point' corresponding to the compass point on the alignment element that
     //  we're aligning to.
-    alignmentRect = alignmentTPElement.getGlobalRect();
+    alignmentRect = alignmentTPElement.getPageRect();
     alignmentPoint = alignmentRect.getEdgePoint(alignmentCP);
 
     //  Set our position using the computed alignment point.
