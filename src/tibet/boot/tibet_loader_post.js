@@ -539,12 +539,6 @@ TP.boot.installPatches = function(aWindow) {
 
                     var myTop,
 
-                        styleVals,
-                        elem,
-
-                        offsetParent,
-                        offsetParentTop,
-
                         retVal;
 
                     //  Fetch the top as the BCR sees it.
@@ -558,44 +552,12 @@ TP.boot.installPatches = function(aWindow) {
                         this.$$_oldTop = myTop;
                     }
 
-                    //  Iterate up the parent chain and turn off CSS tranforms
-                    //  for all elements.
-                    styleVals = TP.ac();
-                    /* eslint-disable consistent-this */
-                    elem = this;
-                    /* eslint-enable consistent-this */
-                    while (TP.isElement(elem)) {
-                        styleVals.push(TP.elementGetStyleObj(elem).transform);
-                        TP.elementGetStyleObj(elem).transform = 'none';
-                        elem = elem.parentNode;
-                    }
-
-                    //  We need to *refetch* the BCR top for the receiver, since
-                    //  we've now removed the transformations.
-                    myTop = this.getBoundingClientRect().top;
-
-                    //  Fetch the BCR top for the offset parent.
-                    offsetParent = this.offsetParent;
-                    if (offsetParent) {
-                        //  Fetch the BCR left for the offset parent.
-                        offsetParentTop =
-                            offsetParent.getBoundingClientRect().top;
-                    } else {
-                        offsetParentTop = 0;
-                    }
-
-                    //  Turn all of the CSS transforms back on.
-                    /* eslint-disable consistent-this */
-                    elem = this;
-                    /* eslint-enable consistent-this */
-                    while (TP.isElement(elem)) {
-                        TP.elementGetStyleObj(elem).transform = styleVals.pop();
-                        elem = elem.parentNode;
-                    }
+                    retVal =
+                        TP.elementGetComputedTransformMatrix(this, true)[1][2];
 
                     //  We round() since offset* properties always return whole
                     //  numbers.
-                    retVal = Math.round(myTop - offsetParentTop);
+                    retVal = Math.round(retVal);
 
                     //  Cache the value for use when the BCR top hasn't changed.
                     this.$$_oldOffsetTop = retVal;
@@ -613,12 +575,6 @@ TP.boot.installPatches = function(aWindow) {
 
                     var myLeft,
 
-                        styleVals,
-                        elem,
-
-                        offsetParent,
-                        offsetParentLeft,
-
                         retVal;
 
                     //  Fetch the left as the BCR sees it.
@@ -632,43 +588,12 @@ TP.boot.installPatches = function(aWindow) {
                         this.$$_oldLeft = myLeft;
                     }
 
-                    //  Iterate up the parent chain and turn off CSS tranforms
-                    //  for all elements.
-                    styleVals = TP.ac();
-                    /* eslint-disable consistent-this */
-                    elem = this;
-                    /* eslint-enable consistent-this */
-                    while (TP.isElement(elem)) {
-                        styleVals.push(TP.elementGetStyleObj(elem).transform);
-                        TP.elementGetStyleObj(elem).transform = 'none';
-                        elem = elem.parentNode;
-                    }
-
-                    //  We need to *refetch* the BCR left for the receiver,
-                    //  since we've now removed the transformations.
-                    myLeft = this.getBoundingClientRect().left;
-
-                    //  Fetch the BCR left for the offset parent.
-                    offsetParent = this.offsetParent;
-                    if (offsetParent) {
-                        offsetParentLeft =
-                            offsetParent.getBoundingClientRect().left;
-                    } else {
-                        offsetParentLeft = 0;
-                    }
-
-                    //  Turn all of the CSS transforms back on.
-                    /* eslint-disable consistent-this */
-                    elem = this;
-                    /* eslint-enable consistent-this */
-                    while (TP.isElement(elem)) {
-                        TP.elementGetStyleObj(elem).transform = styleVals.pop();
-                        elem = elem.parentNode;
-                    }
+                    retVal =
+                        TP.elementGetComputedTransformMatrix(this, true)[0][2];
 
                     //  We round() since offset* properties always return whole
                     //  numbers.
-                    retVal = Math.round(myLeft - offsetParentLeft);
+                    retVal = Math.round(retVal);
 
                     //  Cache the value for use when the BCR left hasn't
                     //  changed.
