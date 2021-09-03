@@ -4965,10 +4965,13 @@ function(anElement, partial, direction, wantsTransformed) {
 
     doc = TP.nodeGetDocument(anElement);
 
-    //  Get our own border box
+    //  Get our own border box. Note here how we force the call to return *non*
+    //  transformed coordinates. The built-in elementFromPoint call does *not*
+    //  use transformed coordinates to detect elements, so we don't want that
+    //  here.
     elementBox = TP.elementGetBorderBox(
                     anElement,
-                    wantsTransformed);
+                    false);
 
     ({top: elemTop, right: elemRight,
         bottom: elemBottom, left: elemLeft} = TP.obj(elementBox));
