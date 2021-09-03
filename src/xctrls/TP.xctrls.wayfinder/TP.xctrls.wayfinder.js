@@ -2790,8 +2790,12 @@ function(aDataObject, shouldSignal, isFiltered) {
         return this;
     }
 
-    //  Make sure to unwrap this from any TP.core.Content objects, etc.
-    dataObj = TP.val(aDataObject);
+    dataObj = this.$get('data');
+    if (TP.equal(dataObj, aDataObject)) {
+        return this;
+    }
+
+    dataObj = aDataObject;
 
     this.$set('data', dataObj, false);
 
