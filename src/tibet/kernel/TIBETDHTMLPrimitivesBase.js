@@ -1642,6 +1642,8 @@ function(anElement, wants2DMatrix) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
+    //  TODO: This need to take into account any transformOrigin point.
+
     identity = TP.matrixFromCSSString('matrix(1,0,0,1,0,0)');
 
     //  Start with the identity matrix

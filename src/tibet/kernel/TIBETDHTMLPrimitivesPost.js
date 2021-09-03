@@ -2331,11 +2331,18 @@ function(anElement, wantsTransformed) {
     //      b) the element is not transformed (because BCR is a faster way to
     //      obtain box coordinates than iterating through the offset ancestor
     //      hierarchy).
-    //  In other words, only if the caller has expressly said it doesn't want
-    //  transformed coordinates and the element is transformed do we use offset
-    //  ancestor iteration.
-    useBCR = TP.isTrue(wantsTransformed) ||
-                !TP.elementIsTransformed(anElement);
+    //  In other words, only if the caller has expressly said it wants
+    //  transformed coordinates or if the element is transformed do we use
+    //  offset ancestor iteration.
+
+    //  If the caller specified whether or not they wanted transformed
+    //  coordinates, then we use that value.
+    if (TP.isDefined(wantsTransformed)) {
+        useBCR = !wantsTransformed;
+    } else {
+        //  Otherwise, we detect whether the element is transformed or not.
+        useBCR = !TP.elementIsTransformed(anElement);
+    }
 
     if (!useBCR) {
 
