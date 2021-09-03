@@ -350,6 +350,7 @@ function(aDataObject, shouldSignal) {
     //  object, then there's no reason to re-render.
     pageData = this.$get('data');
     if (TP.equal(pageData, aDataObject)) {
+        this.finalizeContent();
         return this;
     }
 
