@@ -178,7 +178,7 @@ function(anElement) {
 
     doc = TP.nodeGetDocument(anElement);
 
-    //  Convert any text nodes containing '[[...]]' to span elements with
+    //  Convert any text nodes containing '[[...]]' to tibet:acp elements with
     //  'bind:in' attributes
 
     //  Grab any Text nodes under the supplied Element that have standalone
@@ -202,7 +202,7 @@ function(anElement) {
                 return false;
             });
 
-    //  Iterate over them, converting them into XHTML <span>s with 'bind:in'
+    //  Iterate over them, converting them into <tibet:acp>s with 'bind:in'
     //  binding attributes.
     boundTextNodes.forEach(
         function(aTextNode) {
@@ -212,7 +212,7 @@ function(anElement) {
                 tnStr,
                 index,
                 exprNode,
-                newSpan;
+                newElem;
 
             //  Start off with the supplied text node.
             nextNode = aTextNode;
@@ -268,15 +268,15 @@ function(anElement) {
                     tnStr = tnStr.quoted('\'');
                 }
 
-                //  Create a new span and set a 'bind:in' attribute on it,
-                //  binding it's 'content' property using the expression given
-                //  (minus the leading and trailing brackets).
-                newSpan = TP.documentConstructElement(
-                                        doc, 'span', TP.w3.Xmlns.XHTML);
+                //  Create a new 'tibet:acp' element and set a 'bind:in'
+                //  attribute on it, binding it's 'content' property using the
+                //  expression given (minus the leading and trailing brackets).
+                newElem = TP.documentConstructElement(
+                                        doc, 'tibet:acp', TP.w3.Xmlns.TIBET);
 
                 //  Construct a 'bind:in' attribute for this, binding it to the
                 //  'value' aspect.
-                TP.elementSetAttribute(newSpan,
+                TP.elementSetAttribute(newElem,
                                         'bind:in',
                                         '{value: ' + tnStr + '}',
                                         true);
@@ -285,12 +285,12 @@ function(anElement) {
                 //  aspect, meaning that it will try to convert any bound
                 //  'value' value that it is being updated to to a singular,
                 //  scalar value if possible.
-                TP.elementSetAttribute(newSpan,
+                TP.elementSetAttribute(newElem,
                                         'tibet:scalar',
                                         'value',
                                         true);
 
-                TP.elementSetAttribute(newSpan,
+                TP.elementSetAttribute(newElem,
                                         'tibet:textbinding',
                                         'true',
                                         true);
@@ -298,8 +298,8 @@ function(anElement) {
                 //  Replace that text node with the span, leaving the text nodes
                 //  to the left (the original) and to the right (created by the
                 //  2nd 'splitText' above).
-                newSpan = TP.nodeReplaceChild(aTextNode.parentNode,
-                                                newSpan,
+                newElem = TP.nodeReplaceChild(aTextNode.parentNode,
+                                                newElem,
                                                 exprNode,
                                                 false);
 

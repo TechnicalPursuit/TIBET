@@ -9140,7 +9140,7 @@ function() {
 
                 var fields;
 
-                fields = TP.byCSSPath('span[bind|in]');
+                fields = TP.byCSSPath('tibet|acp[bind|in]');
 
                 test.assert.isEqualTo(
                     fields.at(0).getValue(),
@@ -9177,7 +9177,7 @@ function() {
 
                 var fields;
 
-                fields = TP.byCSSPath('span[bind|in]');
+                fields = TP.byCSSPath('tibet|acp[bind|in]');
 
                 test.assert.isEqualTo(
                     fields.at(0).getValue(),
@@ -9214,7 +9214,7 @@ function() {
 
                 var fields;
 
-                fields = TP.byCSSPath('span[bind|in]');
+                fields = TP.byCSSPath('tibet|acp[bind|in]');
 
                 test.assert.isEqualTo(
                     fields.at(0).getValue(),
