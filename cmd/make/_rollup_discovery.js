@@ -18,7 +18,11 @@
 
         make.sh.cp(
             make.CLI.joinPaths('.', 'discovery.js'),
-            make.CLI.joinPaths('..', '..', '..', '..', 'deps', 'discovery', 'discovery-tpi.js'));
+            make.CLI.joinPaths('..', '..', '..', '..', 'deps', 'discovery', 'discovery-tpi.min.js'));
+
+        make.sh.cp(
+            make.CLI.joinPaths('.', 'discovery-preloader.js'),
+            make.CLI.joinPaths('..', '..', '..', '..', 'deps', 'discovery', 'discovery-preloader-tpi.min.js'));
 
         resolve();
     };
