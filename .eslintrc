@@ -16,7 +16,8 @@
         "Window": false,
         "self": false,
         "Proxy": false,
-        "Reflect": false
+        "Reflect": false,
+        "import": false
     },
     "rules": {
         "array-bracket-spacing": [1, "never"],
