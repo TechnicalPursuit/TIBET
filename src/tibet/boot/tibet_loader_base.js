@@ -9945,7 +9945,7 @@ TP.boot.$importComponents = async function(loadSync) {
 
         isECMAModule = nd.getAttribute('type') === 'module';
 
-        loadUsingSrcAttr = TP.sys.cfg('import.use_src_attr') && !isECMAModule;
+        loadUsingSrcAttr = TP.sys.cfg('import.use_src_attr');
 
         if ((srcpath = nd.getAttribute('src')) != null) {
             //  debuggers like Firebuggy have issues with script nodes that
