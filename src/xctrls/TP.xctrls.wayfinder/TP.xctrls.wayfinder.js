@@ -188,7 +188,7 @@ function(aRequest) {
 TP.xctrls.wayfinder.Inst.defineAttribute('$haloAddedTarget');
 TP.xctrls.wayfinder.Inst.defineAttribute('$lastHaloTargetGID');
 
-TP.xctrls.wayfinder.Inst.defineAttribute('$noFillerBaysWidth');
+TP.xctrls.wayfinder.Inst.defineAttribute('$minimumBayWidth');
 TP.xctrls.wayfinder.Inst.defineAttribute('$bayFillerContent');
 
 TP.xctrls.wayfinder.Inst.defineAttribute('$dataKeys');
@@ -362,6 +362,102 @@ function(bayContent, bayConfig, process) {
     this.configureBay(bay, bayConfig);
 
     this.signal('WayfinderDidAddBay');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.wayfinder.Inst.defineMethod('addFillerBaysIfNecessary',
+function() {
+
+    /**
+     * @method addFillerBaysIfNecessary
+     * @summary Adds filler bays to 'fill out' content if necessary. This makes
+     *     the wayfinder look 'full'.
+     * @returns {TP.xctrls.wayfinder} The receiver.
+     */
+
+    var wayfinderWidth,
+
+        baysWidth,
+
+        diff,
+        inspectorBays,
+
+        bayMinimumWidth,
+        inspectorItemsStyleSheetElem,
+
+        numToAdd,
+        bayConfig,
+
+        newTPElem,
+
+        i;
+
+    wayfinderWidth = this.getWidth();
+
+    //  Grab the sum total of all of the widths of the bays and set an instance
+    //  variable with the value, which we'll use for scrolling, etc. purposes.
+    baysWidth = this.getInspectorBaysWidth(true);
+
+    //  If the width of the 'real bays' is less than the screen width (more than
+    //  likely), then add 'filler' bays to 'fill out' the rest of the space.
+    if (baysWidth < wayfinderWidth) {
+
+        //  The difference between the screen width and the bays width.
+        diff = wayfinderWidth - baysWidth;
+
+        //  Grab the wayfinder bays (but not the filler bays).
+        inspectorBays = this.getInspectorBays();
+
+        //  This should never be empty (we should always have at least one 'real
+        //  bay'), but just in case.
+        if (TP.notEmpty(inspectorBays)) {
+
+            bayMinimumWidth = this.get('$minimumBayWidth');
+            if (!TP.isNumber(bayMinimumWidth)) {
+                //  Grab the style sheet element that contains the rule that
+                //  gives us our minimum width for wayfinder bays.
+                inspectorItemsStyleSheetElem =
+                    TP.styleSheetGetOwnerNode(
+                        inspectorBays.first().getStylesheetForStyleResource());
+
+                //  Query it for the custom CSS property that defines the
+                //  minimum bay width.
+                bayMinimumWidth = TP.cssElementGetCustomCSSPropertyValue(
+                                            inspectorItemsStyleSheetElem,
+                                            'xctrls|wayfinderitem',
+                                            '--xctrls-wayfinder-item-minwidth');
+                bayMinimumWidth = bayMinimumWidth.asNumber();
+                this.set('$minimumBayWidth', bayMinimumWidth);
+            }
+
+            //  Divide it and round up (it's better to add 1 more than be short
+            //  1 bay).
+            numToAdd = (diff / bayMinimumWidth).ceil();
+
+            bayConfig = TP.getConfigForTool(
+                        this,
+                        'wayfinder',
+                        TP.hc('pathParts', TP.ac('FILLER'),
+                                'targetAspect', null,
+                                'targetObject', null));
+
+            //  Generate a new element to be used as the bay filler.
+            newTPElem = this.generateBayFillerContent();
+
+            //  Iterate and add filler bays.
+            for (i = 0; i < numToAdd; i++) {
+                bayConfig.atPut('pathParts', TP.ac('FILLER_' + i));
+                this.addBay(newTPElem.clone(), bayConfig, false);
+            }
+
+            //  Do whatever post-addition is necessary to make those bays
+            //  'live'.
+            this.bayFillerContentAdded();
+        }
+    }
 
     return this;
 });
@@ -597,27 +693,11 @@ function(info) {
      * @returns {TP.xctrls.wayfinder} The receiver.
      */
 
-    var inspectorElem,
-
-        target,
+    var target,
 
         targetURI,
 
-        baysWidth,
-
-        screenWidthAndHeight,
-        screenWidth,
-
-        diff,
-        inspectorBays,
-        inspectorItemsStyleSheetElem,
-        inspectorBaySize,
-        numToAdd,
-        bayConfig,
-        newTPElem,
-        i;
-
-    inspectorElem = this.getNativeNode();
+        inspectorBays;
 
     target = info.at('targetObject');
 
@@ -627,71 +707,8 @@ function(info) {
         targetURI.setResource(target, TP.request('signalChange', false));
     }
 
-    //  Grab the sum total of all of the widths of the bays and set an instance
-    //  variable with the value, which we'll use for scrolling, etc. purposes.
-    baysWidth = this.getInspectorBaysWidth();
-    this.set('$noFillerBaysWidth', baysWidth);
-
-    //  Grab the screen width. We'll use this below to determine whether or not
-    //  we need 'filler bays'. Most of the time we will, since the user can
-    //  emlarge the window past the end of the last 'real' bay.
-    screenWidthAndHeight = TP.windowGetScreenWidthAndHeight(
-                            TP.nodeGetTopWindow(inspectorElem));
-    screenWidth = screenWidthAndHeight.first();
-
-    //  If the width of the 'real bays' is less than the screen width (more than
-    //  likely), then add 'filler' bays to 'fill out' the rest of the space.
-    if (baysWidth < screenWidth) {
-
-        //  The difference between the screen width and the bays width.
-        diff = screenWidth - baysWidth;
-
-        //  Grab the wayfinder bays (but not the filler bays).
-        inspectorBays = this.getInspectorBays();
-
-        //  This should never be empty (we should always have at least one 'real
-        //  bay'), but just in case.
-        if (TP.notEmpty(inspectorBays)) {
-
-            //  Grab the style sheet element that contains the rule that gives
-            //  us our minimum width for wayfinder bays.
-            inspectorItemsStyleSheetElem =
-                TP.styleSheetGetOwnerNode(
-                    inspectorBays.first().getStylesheetForStyleResource());
-
-            //  Query it for the custom CSS property that defines the minimum
-            //  bay width.
-            inspectorBaySize = TP.cssElementGetCustomCSSPropertyValue(
-                                        inspectorItemsStyleSheetElem,
-                                        'xctrls|wayfinderitem',
-                                        '--xctrls-wayfinder-item-minwidth');
-            inspectorBaySize = inspectorBaySize.asNumber();
-
-            //  Divide it and round up (it's better to add 1 more than be short
-            //  1 bay).
-            numToAdd = (diff / inspectorBaySize).ceil();
-
-            bayConfig = TP.getConfigForTool(
-                        this,
-                        'wayfinder',
-                        TP.hc('pathParts', TP.ac('FILLER'),
-                                'targetAspect', null,
-                                'targetObject', null));
-
-            //  Generate a new element to be used as the bay filler.
-            newTPElem = this.generateBayFillerContent();
-
-            //  Iterate and add filler bays.
-            for (i = 0; i < numToAdd; i++) {
-                bayConfig.atPut('pathParts', TP.ac('FILLER_' + i));
-                this.addBay(newTPElem.clone(), bayConfig, false);
-            }
-
-            //  Do whatever post-addition is necessary to make those bays
-            //  'live'.
-            this.bayFillerContentAdded();
-        }
-    }
+    //  Add filler bays if they're required.
+    this.addFillerBaysIfNecessary();
 
     (function() {
         //  Scroll them to the end (of the real bays).
@@ -1660,8 +1677,11 @@ function(aSignal) {
      * @returns {TP.xctrls.wayfinder} The receiver.
      */
 
+    //  Add filler bays if they're required.
+    this.addFillerBaysIfNecessary();
+
     //  Make sure to update the scroll buttons :-).
-    this.updateScrollButtons();
+    //  this.updateScrollButtons();
 
     return this;
 });
@@ -2181,7 +2201,7 @@ function(info, createHistoryEntry) {
 
         //  Put the targeted bay into the params and ask the target whether we
         //  can reuse the content from it and just refresh the data.
-        params.atPut('baywayfinderitem', targetBay);
+        params.atPut('bayWayfinderItem', targetBay);
 
         canReuseContent = TP.canReuseContentForTool(
                                 target,
@@ -2830,6 +2850,8 @@ function() {
 
     //  Selected items
     this.set('selectedItems', TP.ac());
+
+    this.toggleObservations(true);
 
     return this;
 });
