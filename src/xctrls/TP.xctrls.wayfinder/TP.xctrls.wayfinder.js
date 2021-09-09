@@ -2128,28 +2128,18 @@ function(info, createHistoryEntry) {
                     'targetObject', target,
                     'pathParts', selectedItems);
 
-    //  Finalize the target object that will be used. Note that the default here
-    //  is just to return the target itself.
-    target = TP.getFinalTargetForTool(
-                target,
-                'wayfinder',
-                params);
-
     //  If the target handed back null as the final target, it doesn't want to
     //  traverse so we end here.
     if (TP.notValid(target)) {
         return this;
     }
 
-    //  Make sure to reset the target in the info hash to the final one.
-    info.atPut('targetObject', target);
-
-    //  Grab the wayfinder data and set the resource of the bind location (i.e.
-    //  a URN pointing to a specific bay's data) to that data.
-    data = TP.getDataForTool(
-            target,
-            'wayfinder',
-            params);
+    //  Finalize the target object that will be used. Note that the default here
+    //  is just to return the target itself.
+    target = TP.getFinalTargetForTool(
+                target,
+                'wayfinder',
+                params);
 
     //  If there wasn't a valid target, then clean up/out any unused bays, let
     //  any observers know that we 'focused' (on null) and return.
@@ -2172,6 +2162,16 @@ function(info, createHistoryEntry) {
 
         return this;
     }
+
+    //  Make sure to reset the target in the info hash to the final one.
+    info.atPut('targetObject', target);
+
+    //  Grab the wayfinder data and set the resource of the bind location (i.e.
+    //  a URN pointing to a specific bay's data) to that data.
+    data = TP.getDataForTool(
+            target,
+            'wayfinder',
+            params);
 
     dataURI = TP.uc(bindLoc);
     dataURI.setResource(data, TP.request('signalChange', false));
