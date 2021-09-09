@@ -1958,37 +1958,19 @@ function(shouldIncludeFillers) {
 
     var includeFillers,
 
-        existingBays,
-
-        filteredBays,
-
-        len,
-        i;
+        existingBays;
 
     includeFillers = TP.ifInvalid(shouldIncludeFillers, false);
 
-    //  Grab all of the existing bays.
-    existingBays = TP.byCSSPath(' xctrls|wayfinderitem', this);
-
-    //  If we *are* including filler bays, just return the list here.
-    if (includeFillers) {
-        return existingBays;
+    if (!includeFillers) {
+        existingBays =
+            TP.byCSSPath(' xctrls|wayfinderitem:not(*[id*="FILLER"])', this);
+    } else {
+        existingBays =
+            TP.byCSSPath(' xctrls|wayfinderitem', this);
     }
 
-    //  Otherwise, iterate over all of the bays and filter out the fillers.
-
-    filteredBays = TP.ac();
-
-    len = existingBays.getSize();
-    for (i = 0; i < len; i++) {
-        if (existingBays.at(i).getLocalID().contains('FILLER')) {
-            continue;
-        }
-
-        filteredBays.push(existingBays.at(i));
-    }
-
-    return filteredBays;
+    return existingBays;
 });
 
 //  ------------------------------------------------------------------------
@@ -2015,18 +1997,19 @@ function(shouldIncludeFillers) {
 
     includeFillers = TP.ifInvalid(shouldIncludeFillers, false);
 
-    existingBays = TP.byCSSPath(' xctrls|wayfinderitem', this);
+    if (!includeFillers) {
+        existingBays =
+            TP.byCSSPath(' xctrls|wayfinderitem:not(*[id*="FILLER"])', this);
+    } else {
+        existingBays =
+            TP.byCSSPath(' xctrls|wayfinderitem', this);
+    }
 
     baysWidth = 0;
 
     //  Iterate over the bays and sum up their widths
-
     len = existingBays.getSize();
     for (i = 0; i < len; i++) {
-        if (existingBays.at(i).getLocalID().contains('FILLER') &&
-            !includeFillers) {
-            continue;
-        }
         baysWidth += existingBays.at(i).getWidth();
     }
 
