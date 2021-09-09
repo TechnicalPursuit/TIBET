@@ -189,6 +189,7 @@ TP.xctrls.wayfinder.Inst.defineAttribute('$haloAddedTarget');
 TP.xctrls.wayfinder.Inst.defineAttribute('$lastHaloTargetGID');
 
 TP.xctrls.wayfinder.Inst.defineAttribute('$noFillerBaysWidth');
+TP.xctrls.wayfinder.Inst.defineAttribute('$bayFillerContent');
 
 TP.xctrls.wayfinder.Inst.defineAttribute('$dataKeys');
 
@@ -1287,16 +1288,24 @@ function() {
      * @returns {TP.dom.ElementNode} The element to be used for 'bay filler'.
      */
 
-    var newTPElem;
+    var fillerContent,
+        newTPElem;
 
-    //  Create new 'filler' bay content bound to a common (blank data)
-    //  URI..
-    newTPElem = TP.tpelem('<xctrls:list id="fillerContent"' +
-                            ' bind:in="{data: urn:tibet:empty_array}"/>');
+    fillerContent = this.get('$bayFillerContent');
+    if (TP.notValid(fillerContent)) {
+        //  Create new 'filler' bay content bound to a common (blank data)
+        //  URI. Note here that this id will be replaced when the bay is added
+        //  to the receiver.
+        newTPElem = TP.tpelem('<xctrls:list id="fillerContent"' +
+                                ' bind:in="{data: urn:tibet:empty_array}"/>');
 
-    newTPElem.compile();
+        newTPElem.compile();
 
-    return newTPElem;
+        fillerContent = newTPElem;
+        this.set('$bayFillerContent', fillerContent);
+    }
+
+    return fillerContent;
 });
 
 //  ------------------------------------------------------------------------
