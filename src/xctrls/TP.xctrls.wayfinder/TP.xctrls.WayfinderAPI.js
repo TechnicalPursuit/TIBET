@@ -12,9 +12,9 @@
  * @type {TP.xctrls.WayfinderSource}
  */
 
-TP.lang.Object.defineSubtype('TP.xctrls.WayfinderAPI');
-
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  Primitives
+//  ========================================================================
 
 TP.definePrimitive('canReuseContentForTool',
 function(anObject, toolName, options) {
@@ -109,6 +109,12 @@ function(anObject, toolName, anID, options) {
 
     return null;
 });
+
+//  ========================================================================
+//  API Object
+//  ========================================================================
+
+TP.lang.Object.defineSubtype('TP.xctrls.WayfinderAPI');
 
 //  ------------------------------------------------------------------------
 
