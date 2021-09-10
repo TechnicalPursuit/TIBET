@@ -110,6 +110,18 @@ function(anObject, toolName, anID, options) {
     return null;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('refreshContentForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'refreshContentForTool')) {
+        return anObject.refreshContentForTool(toolName, options);
+    }
+
+    return false;
+});
+
 //  ========================================================================
 //  API Object
 //  ========================================================================
@@ -282,6 +294,27 @@ function(toolName, anID, options) {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.WayfinderAPI.Inst.defineMethod('refreshContentForTool',
+function(toolName, options) {
+
+    /**
+     * @method refreshContentForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'refreshContentFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
