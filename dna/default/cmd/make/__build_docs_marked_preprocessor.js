@@ -4,23 +4,33 @@
  * have already been run through the `tibet build_docs` routine.
  */
 
-var preproc = require('./__markdown_preproc.js');
+var preproc,
 
-var header = '<div class="ccm-page"><main>';
-var footer = '<main>\n</div>';
+    header,
+    footer,
 
-var readline = require('readline');
-var rl = readline.createInterface({
+    readline,
+    rl,
+    buffer;
+
+preproc = require('./__markdown_preproc.js');
+
+header = '<div class="ccm-page"><main>';
+footer = '<main>\n</div>';
+
+readline = require('readline');
+
+rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
   terminal: false
 });
 
-var buffer = '';
+buffer = '';
 
-rl.on('line', function(line){
+rl.on('line', function(line) {
     buffer += line + '\n';
-})
+});
 
 rl.on('close', function() {
     console.log(header + preproc(buffer) + footer);

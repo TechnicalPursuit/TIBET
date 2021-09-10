@@ -1,11 +1,14 @@
 (function() {
     'use strict';
 
+    var sechead,
+        secfoot;
+
     //  NOTE: this should be equivalent to the `sechead` and `secfoot` partials
-    var sechead = '<div class="container" markdown="1">\n' +
+    sechead = '<div class="container" markdown="1">\n' +
         '<div class="row justify-content-center" markdown="1">\n' +
         '<div class="col-12 col-md-12 col-lg-10 col-xl-8" markdown="1">';
-    var secfoot = '</div>\n</div>\n</div>';
+    secfoot = '</div>\n</div>\n</div>';
 
     module.exports = function(markdown) {
         var re,
@@ -43,5 +46,5 @@
         return result;
     };
 
-}())
+}());
 
