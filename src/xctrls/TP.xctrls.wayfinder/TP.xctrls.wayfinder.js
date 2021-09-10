@@ -306,7 +306,7 @@ function(bayContent, bayConfig, process) {
      *                                      placed in it.
      * @param {Boolean} [process=true] Whether or not to process the supplied
      *     content. The default is true.
-     * @returns {TP.xctrls.wayfinder} The receiver.
+     * @returns {TP.xctrls.wayfinderitem} The newly added bay.
      */
 
     var id,
@@ -363,7 +363,7 @@ function(bayContent, bayConfig, process) {
 
     this.signal('WayfinderDidAddBay');
 
-    return this;
+    return bay;
 });
 
 //  ------------------------------------------------------------------------
