@@ -709,7 +709,7 @@ function(info) {
     //  Repopulate the bays after the last bay that was populated. Note that
     //  this may reuse bays that have real content into bays that are filler
     //  bays.
-    this.repopulateBaysAfter(this.get('$lastBayPopulated'));
+    this.repopulateWithFillerBaysAfter(this.get('$lastBayPopulated'));
 
     //  Make sure to reset this attribute after this 'run' of navigation.
     this.set('$lastBayPopulated', null);
@@ -2455,12 +2455,13 @@ function(aBayNum) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.wayfinder.Inst.defineMethod('repopulateBaysAfter',
+TP.xctrls.wayfinder.Inst.defineMethod('repopulateWithFillerBaysAfter',
 function(aBay) {
 
     /**
-     * @method repopulateBaysAfter
-     * @summary Repopulates all of the bays that occur after the supplied bay.
+     * @method repopulateWithFillerBaysAfter
+     * @summary Repopulates all of the bays that occur after the supplied bay
+     *     with 'filler bay' content if they're not already filler bays.
      * @param {TP.xctrls.wayfinderitem} aBay The bay element to begin
      *     repopulating bays from.
      * @returns {TP.xctrls.wayfinder} The receiver.
