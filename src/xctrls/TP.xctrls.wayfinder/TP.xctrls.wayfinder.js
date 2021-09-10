@@ -188,6 +188,8 @@ function(aRequest) {
 TP.xctrls.wayfinder.Inst.defineAttribute('$haloAddedTarget');
 TP.xctrls.wayfinder.Inst.defineAttribute('$lastHaloTargetGID');
 
+TP.xctrls.wayfinder.Inst.defineAttribute('$lastBayPopulated');
+
 TP.xctrls.wayfinder.Inst.defineAttribute('$minimumBayWidth');
 TP.xctrls.wayfinder.Inst.defineAttribute('$bayFillerContent');
 
@@ -703,6 +705,14 @@ function(info) {
     if (targetURI !== TP.NO_RESULT) {
         targetURI.setResource(target, TP.request('signalChange', false));
     }
+
+    //  Repopulate the bays after the last bay that was populated. Note that
+    //  this may reuse bays that have real content into bays that are filler
+    //  bays.
+    this.repopulateBaysAfter(this.get('$lastBayPopulated'));
+
+    //  Make sure to reset this attribute after this 'run' of navigation.
+    this.set('$lastBayPopulated', null);
 
     //  Add filler bays if they're required.
     this.addFillerBaysIfNecessary();
@@ -2082,7 +2092,9 @@ function(info, createHistoryEntry) {
         data,
         dataURI,
 
-        bayContent;
+        bayContent,
+
+        newBay;
 
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
@@ -2094,9 +2106,13 @@ function(info, createHistoryEntry) {
     newBayNum = info.at('bayIndex');
 
     //  The bay we're actually going to put content into. Note that this might
-    //  *not* necessarily be the *last* bay - but we'll clear those out as part
+    //  *not* necessarily be the *last* bay - but we'll clear or refresh as part
     //  of filling this one.
     targetBay = existingBays.at(newBayNum);
+
+    //  Stash away the bay that we're populating. This will be used when
+    //  navigation is finalized to repopulate bays 'following' this one.
+    this.set('$lastBayPopulated', targetBay);
 
     selectedItems = this.get('selectedItems');
 
@@ -2244,9 +2260,18 @@ function(info, createHistoryEntry) {
             newBay.removeAttribute('filler');
         }
     } else {
+
         //  We're reusing content, so we didn't get new content for the existing
         //  bay, but we still need to set it's configuration.
         this.configureBay(targetBay, bayConfig);
+
+        bayConfig.atPut('bindLoc', bindLoc);
+        bayConfig.atPut('bayWayfinderItem', targetBay);
+
+        TP.refreshContentForTool(
+            target,
+            'wayfinder',
+            bayConfig);
     }
 
     //  Signal changed on the URI that we're using as our data source. The bay
@@ -2424,6 +2449,135 @@ function(aBayNum) {
     this.populateBayUsing(info);
 
     this.signal('WayfinderDidRepopulateBay');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.wayfinder.Inst.defineMethod('repopulateBaysAfter',
+function(aBay) {
+
+    /**
+     * @method repopulateBaysAfter
+     * @summary Repopulates all of the bays that occur after the supplied bay.
+     * @param {TP.xctrls.wayfinderitem} aBay The bay element to begin
+     *     repopulating bays from.
+     * @returns {TP.xctrls.wayfinder} The receiver.
+     */
+
+    var replacedWithFiller,
+
+        inspectorBays,
+
+        baysFollowingStartBay,
+
+        len,
+        i,
+
+        currentBay,
+
+        params,
+        target,
+
+        canReuseContent,
+
+        bayConfig,
+        bayContent;
+
+    if (TP.notValid(aBay)) {
+        return this;
+    }
+
+    replacedWithFiller = false;
+
+    //  Grab the wayfinder bays (*including* the filler bays).
+    inspectorBays = this.getInspectorBays(true);
+    if (TP.isEmpty(inspectorBays)) {
+        return this;
+    }
+
+    //  We grab the set of bay that *follow* the supplied bay.
+    baysFollowingStartBay =
+        inspectorBays.slice(inspectorBays.indexOf(aBay) + 1);
+
+    //  Iterate over the bays, turning the ones we can into 'filler bays',
+    //  either by reusing their content (probably an 'xctrls:list') or by
+    //  completing removing their current content and putting 'filler bay'
+    //  content into them.
+    len = baysFollowingStartBay.getSize();
+    for (i = 0; i < len; i++) {
+
+        currentBay = baysFollowingStartBay.at(i);
+
+        //  If the bay is configured as a 'filler bay', then we don't need to
+        //  continue - all of the bays after this will be 'filler bays'. Break
+        //  out and exit.
+        if (currentBay.hasAttribute('filler')) {
+            break;
+        }
+
+        if (TP.isValid(currentBay)) {
+
+            //  Grab the bay's configuration and target.
+            params = TP.copy(currentBay.get('config'));
+            target = params.at('targetObject');
+
+            if (TP.notValid(target)) {
+                continue;
+            }
+
+            //  Put the targeted bay into the params and ask the target whether
+            //  we can reuse the content from it and just refresh the data.
+            params.atPut('bayWayfinderItem', currentBay);
+
+            //  See if we can reuse the bay's content for filler.
+            canReuseContent = TP.canReuseContentForTool(
+                                    target,
+                                    'wayfinder',
+                                    params);
+
+            //  Grab the bay's config (for 'filler content').
+            bayConfig = TP.getConfigForTool(
+                        this,
+                        'wayfinder',
+                        TP.hc('targetAspect', null, 'targetObject', null));
+
+            //  Flip this flag so that we'll do a 'changed' on the Array
+            //  containing the 'filler content's 'data' so that the bay will
+            //  redraw (whether reusing the content or not).
+            replacedWithFiller = true;
+
+            //  The bay can reuse content (which means that it's probably an
+            //  'xctrls:list'), which means we can reuse it as a filler list.
+            if (canReuseContent) {
+                bayConfig.atPut('bindLoc', 'urn:tibet:empty_array');
+                bayConfig.atPut('bayWayfinderItem', currentBay);
+
+                TP.refreshContentForTool(
+                    target,
+                    'wayfinder',
+                    bayConfig);
+            } else {
+                //  Generate a new element to be used as the bay filler
+                //  (probably an 'xctrls:list').
+                bayContent = this.generateBayFillerContent();
+
+                //  Replace the bay's content with the generated filler content.
+                this.replaceBayContent(
+                        currentBay, bayContent.clone(), bayConfig);
+            }
+
+            currentBay.setAttribute('filler', 'true');
+
+            this.signal('WayfinderDidRefreshBay');
+        }
+    }
+
+    if (replacedWithFiller) {
+        //  Trigger a 'change' here so that the content redraws.
+        TP.uc('urn:tibet:empty_array').$changed();
+    }
 
     return this;
 });
