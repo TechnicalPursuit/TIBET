@@ -141,6 +141,69 @@ function(sourcePathParts, newSource) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.WayfinderSource.Inst.defineMethod('canReuseContentForWayfinder',
+function(options) {
+
+    /**
+     * @method canReuseContentForWayfinder
+     * @summary Returns whether or not content hosted in a wayfinder bay can be
+     *     'reused', even though the underlying data will change. If this
+     *     returns true, then the underlying content needs to be able to respond
+     *     to its data changing underneath it. It can leverage the TIBET data
+     *     binding system to do this.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     check the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':         The object being queried using the
+     *                                  targetAspect to produce the object being
+     *                                  displayed.
+     *          'targetAspect':         The property of the target object
+     *                                  currently being displayed.
+     *          'pathParts':            The Array of parts that make up the
+     *                                  currently selected path.
+     *          'bayWayfinderItem':     The element that is representing the bay
+     *                                  that is being queried for content reuse.
+     *          'resolver':             The object currently being used to
+     *                                  resolve object references for the
+     *                                  supplied bay wayfinder item.
+     *          TP.ATTR + '_childtype': The tag name of the content being put
+     *                                  into the bay.
+     * @returns {Boolean} Whether or not the current content can be reused even
+     *     though the underlying data is changing.
+     */
+
+    var bayWayfinderItem,
+
+        firstChildTPElem,
+
+        bayContentElementName;
+
+    //  Grab the TP.xctrls.wayfinderitem representing the bay. If there is none,
+    //  we can't proceed because we can't test.
+    bayWayfinderItem = options.at('bayWayfinderItem');
+    if (TP.notValid(bayWayfinderItem)) {
+        return false;
+    }
+
+    //  Grab the first child *element* under bay. If there is none, we can't
+    //  proceed because we can't test.
+    firstChildTPElem = bayWayfinderItem.getFirstChildElement();
+    if (!TP.isValid(firstChildTPElem)) {
+        return false;
+    }
+
+    //  Grab the element's full name. If it matches what the caller would be
+    //  generated as it's 'child type' element, then we can reuse content.
+    bayContentElementName = firstChildTPElem.getFullName();
+    if (bayContentElementName === options.at('attr_childtype')) {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.WayfinderSource.Inst.defineMethod('getConfigForWayfinder',
 function(options) {
 
@@ -332,6 +395,91 @@ function(aSourceName) {
     srcName = TP.stringUnescapeSlashes(aSourceName);
 
     return this.get('entries').at(srcName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.WayfinderSource.Inst.defineMethod('getResolverForWayfinder',
+function(anAspect, options) {
+
+    /**
+     * @method getResolverForWayfinder
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver. This type's method returns the source itself.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.WayfinderSource.Inst.defineMethod('refreshContentForWayfinder',
+function(options) {
+
+    /**
+     * @method refreshContentForWayfinder
+     * @summary Refreshes content that already exists in a particular bay. This
+     *     will only be called if 'canReuseContentForWayfinder' has returned
+     *     true for the bay in question. This leverages the TIBET data binding
+     *     system to change the data while reusing the bay content.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':         The object being queried using the
+     *                                  targetAspect to produce the object being
+     *                                  displayed.
+     *          'targetAspect':         The property of the target object
+     *                                  currently being displayed.
+     *          'pathParts':            The Array of parts that make up the
+     *                                  currently selected path.
+     *          'bindLoc':              The URI location where the data for the
+     *                                  content can be found.
+     *          'bayWayfinderItem':     The element that is representing the bay
+     *                                  that is being queried for content reuse.
+     *          TP.ATTR + '_childtype': The tag name of the content being put
+     *                                  into the bay.
+     * @returns {Object|null} The data that will be supplied to the content
+     *     hosted in a bay.
+     */
+
+    var bayWayfinderItem,
+
+        dataURI,
+        firstChildTPElem;
+
+    //  Grab the TP.xctrls.wayfinderitem representing the bay. If there is none,
+    //  we can't proceed because we can't test.
+    bayWayfinderItem = options.at('bayWayfinderItem');
+    if (TP.notValid(bayWayfinderItem)) {
+        return this;
+    }
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    //  Grab the first child *element* under bay. If there is none, we can't
+    //  proceed because we can't test.
+    firstChildTPElem = bayWayfinderItem.getFirstChildElement();
+    if (!TP.isValid(firstChildTPElem)) {
+        return this;
+    }
+
+    //  Set the 'bind:in' attribute to bind the elements 'data' aspect to the
+    //  data URI.
+    firstChildTPElem.setAttribute('bind:in',
+                                    '{data: ' + dataURI.asString() + '}');
+
+    //  Remove the attribute that would designate this bay as 'filler'.
+    bayWayfinderItem.removeAttribute('filler');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
