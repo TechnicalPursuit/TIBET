@@ -328,9 +328,6 @@ function(bayContent, bayConfig, process) {
     pathParts = bayConfig.at('pathParts');
     if (TP.notEmpty(pathParts)) {
         id += '_' + pathParts.join('_');
-    } else {
-        //  Otherwise, this must be the ROOT list.
-        id += '_' + 'ROOT';
     }
 
     //  Replace any invalid characters in the ID with '_'.
@@ -393,7 +390,9 @@ function() {
 
         newTPElem,
 
-        i;
+        i,
+
+        newBay;
 
     wayfinderWidth = this.getWidth();
 
@@ -440,17 +439,15 @@ function() {
             bayConfig = TP.getConfigForTool(
                         this,
                         'wayfinder',
-                        TP.hc('pathParts', TP.ac('FILLER'),
-                                'targetAspect', null,
-                                'targetObject', null));
+                        TP.hc('targetAspect', null, 'targetObject', null));
 
             //  Generate a new element to be used as the bay filler.
             newTPElem = this.generateBayFillerContent();
 
             //  Iterate and add filler bays.
             for (i = 0; i < numToAdd; i++) {
-                bayConfig.atPut('pathParts', TP.ac('FILLER_' + i));
-                this.addBay(newTPElem.clone(), bayConfig, false);
+                newBay = this.addBay(newTPElem.clone(), bayConfig, false);
+                newBay.setAttribute('filler', 'true');
             }
 
             //  Do whatever post-addition is necessary to make those bays
@@ -1313,7 +1310,7 @@ function() {
         //  Create new 'filler' bay content bound to a common (blank data)
         //  URI. Note here that this id will be replaced when the bay is added
         //  to the receiver.
-        newTPElem = TP.tpelem('<xctrls:list id="fillerContent"' +
+        newTPElem = TP.tpelem('<xctrls:list' +
                                 ' bind:in="{data: urn:tibet:empty_array}"/>');
 
         newTPElem.compile();
@@ -1993,7 +1990,7 @@ function(shouldIncludeFillers) {
 
     if (!includeFillers) {
         existingBays =
-            TP.byCSSPath(' xctrls|wayfinderitem:not(*[id*="FILLER"])', this);
+            TP.byCSSPath(' xctrls|wayfinderitem:not([filler])', this);
     } else {
         existingBays =
             TP.byCSSPath(' xctrls|wayfinderitem', this);
@@ -2028,7 +2025,7 @@ function(shouldIncludeFillers) {
 
     if (!includeFillers) {
         existingBays =
-            TP.byCSSPath(' xctrls|wayfinderitem:not(*[id*="FILLER"])', this);
+            TP.byCSSPath(' xctrls|wayfinderitem:not([filler])', this);
     } else {
         existingBays =
             TP.byCSSPath(' xctrls|wayfinderitem', this);
@@ -2240,10 +2237,10 @@ function(info, createHistoryEntry) {
         }
 
         //  If we already have at least the minimum number of bays, then replace
-        //  the item content in the target bay with the new content (clearing
-        //  all of the bays to the right of it in the process).
+        //  the item content in the target bay with the new content
         if (hasMinimumNumberOfBays) {
             this.replaceBayContent(targetBay, bayContent, bayConfig);
+            targetBay.removeAttribute('filler');
         } else {
             //  If we're creating the root bay, clear any content out of the
             //  core container.
@@ -2252,7 +2249,8 @@ function(info, createHistoryEntry) {
             }
 
             //  Otherwise, just add a bay with the new content.
-            this.addBay(bayContent, bayConfig);
+            newBay = this.addBay(bayContent, bayConfig);
+            newBay.removeAttribute('filler');
         }
     } else {
         //  We're reusing content, so we didn't get new content for the existing
@@ -2578,9 +2576,6 @@ function(aBay, bayContent, bayConfig) {
     pathParts = bayConfig.at('pathParts');
     if (TP.notEmpty(pathParts)) {
         id += '_' + pathParts.join('_');
-    } else {
-        //  Otherwise, this must be the ROOT list.
-        id += '_' + 'ROOT';
     }
 
     //  Replace any invalid characters in the ID with '_'.
