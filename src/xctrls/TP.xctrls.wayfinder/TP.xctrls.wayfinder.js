@@ -1855,15 +1855,9 @@ function(aSignal) {
 
     targetBay = TP.wrap(targetBay);
 
-    //  Remove any bays after (i.e. to the right of) the target bay.
-    this.removeBaysAfter(targetBay);
-
     //  TODO:   is this the right way to keep from having the entire wayfinder
     //  decide it should have display: none set?
     aSignal.preventDefault();
-
-    //  TODO:   AND THEN PUT BACK IN FILLER BAYS!!!
-
 
     return this;
 });
@@ -2192,9 +2186,6 @@ function(info, createHistoryEntry) {
     //  If we already have the minimum number of bays, then see if we can reuse
     //  the content that's already there.
     if (hasMinimumNumberOfBays) {
-
-        //  Remove any bays after (i.e. to the right of) the target bay.
-        this.removeBaysAfter(targetBay);
 
         //  Put the targeted bay into the params and ask the target whether we
         //  can reuse the content from it and just refresh the data.
@@ -2559,8 +2550,6 @@ function(aBay, bayContent, bayConfig) {
         id,
         childType,
         pathParts;
-
-    this.removeBaysAfter(aBay);
 
     id = this.getLocalID();
 
