@@ -7427,6 +7427,93 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('setAttrBindIn',
+function(attributeValue) {
+
+    /**
+     * @method setAttrBindIn
+     * @summary Sets the binding 'in' property that the receiver will use to
+     *     start observing for data changes.
+     * @param {String} attributeValue The value of the attribute to use for
+     *     binding 'in' data.
+     */
+
+    //  NB: Do this *before* resetting the value, so that we can find the proper
+    //  properties to remove from the cached info dictionary.
+    this.flushBindingInfoCacheFor('bind:in');
+
+    //  Now we set the attribute value so that if its not already a referenced
+    //  location, the refreshing call below can find it.
+    this.$setAttribute('bind:in', attributeValue, true);
+
+    //  Make sure that the URI in the attribute value has been registered with
+    //  the document as a 'referenced location'.
+    TP.bind.XMLNS.refreshReferencedLocations(this.getNativeNode());
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('setAttrBindIo',
+function(attributeValue) {
+
+    /**
+     * @method setAttrBindIo
+     * @summary Sets the binding 'io' property that the receiver will use to
+     *     start observing for data changes.
+     * @param {String} attributeValue The value of the attribute to use for
+     *     binding 'io' data.
+     */
+
+    //  NB: Do this *before* resetting the value, so that we can find the proper
+    //  properties to remove from the cached info dictionary.
+    this.flushBindingInfoCacheFor('bind:io');
+
+    //  Now we set the attribute value so that if its not already a referenced
+    //  location, the refreshing call below can find it.
+    this.$setAttribute('bind:io', attributeValue, true);
+
+    //  Make sure that the URI in the attribute value has been registered with
+    //  the document as a 'referenced location'.
+    TP.bind.XMLNS.refreshReferencedLocations(this.getNativeNode());
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('setAttrBindOut',
+function(attributeValue) {
+
+    /**
+     * @method setAttrBindOut
+     * @summary Sets the binding 'out' property that the receiver will use to
+     *     start observing for data changes.
+     * @param {String} attributeValue The value of the attribute to use for
+     *     binding 'out' data.
+     */
+
+    //  NB: Do this *before* resetting the value, so that we can find the proper
+    //  properties to remove from the cached info dictionary.
+    this.flushBindingInfoCacheFor('bind:out');
+
+    //  Now we set the attribute value so that if its not already a referenced
+    //  location, the refreshing call below can find it.
+    this.$setAttribute('bind:out', attributeValue, true);
+
+    //  Make sure that the URI in the attribute value has been registered with
+    //  the document as a 'referenced location'.
+    TP.bind.XMLNS.refreshReferencedLocations(this.getNativeNode());
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('setAttrBindRepeatindex',
 function(index) {
 
