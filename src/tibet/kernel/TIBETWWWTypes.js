@@ -1204,6 +1204,10 @@ TP.w3.Xmlns.Type.defineConstant(
         'http://www.technicalpursuit.com/2005/drag-and-drop');
 
 TP.w3.Xmlns.Type.defineConstant(
+        'ELECTRON',
+        'http://www.technicalpursuit.com/2020/electron');
+
+TP.w3.Xmlns.Type.defineConstant(
         'HTTP',
         'http://www.technicalpursuit.com/2020/http');
 
@@ -1494,6 +1498,11 @@ TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
                             'prefix', 'dnd',
                             'rootElement', '',
                             'defaultNodeType', 'dnd:info'),
+            TP.w3.Xmlns.ELECTRON,
+                    TP.hc('uri', TP.w3.Xmlns.ELECTRON,
+                            'mimetype', TP.ietf.mime.XML,
+                            'prefix', 'electron',
+                            'rootElement', ''),
             TP.w3.Xmlns.HTTP,
                     TP.hc('uri', TP.w3.Xmlns.HTTP,
                             'prefix', 'http'),
