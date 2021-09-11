@@ -15248,10 +15248,6 @@ function(aValue, shouldSignal) {
     //  we can just use 'setTextContent'. Otherwise, we have to use the full
     //  'setContent'.
     if (!TP.regex.CONTAINS_ELEM_MARKUP.test(newValueStr)) {
-        if (TP.isEmpty(newValueStr)) {
-            TP.ifWarn() ?
-                TP.warn('Clearing element content for: ' + TP.name(this)) : 0;
-        }
         didChange = this.setTextContent(newValueStr, shouldSignal);
     } else {
         this.setContent(newValue);
