@@ -9947,6 +9947,11 @@ TP.boot.$importComponents = async function(loadSync) {
 
         loadUsingSrcAttr = TP.sys.cfg('import.use_src_attr');
 
+        //  ECMA modules don't work with file:// URLs
+        if (isECMAModule && !TP.sys.isHTTPBased()) {
+            loadUsingSrcAttr = false;
+        }
+
         if ((srcpath = nd.getAttribute('src')) != null) {
             //  debuggers like Firebuggy have issues with script nodes that
             //  have inline source instead of file references (or they did
