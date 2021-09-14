@@ -15,7 +15,11 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
      * @method fetchScriptInfo
      * @summary Loads the uri provided (which should be a JavaScript uri) into
      *     the supplied document's context. Note that this call is done in a
-     *     synchronous fashion, even though a callback function may be provided.
+     *     asynchronous fashion, returning a Promise, although a callback
+     *     function may be provided in the optional request object. The callback
+     *     will have a single argument, either the script element that was
+     *     created for the fetched script or the ECMAScript Module object that
+     *     was defined.
      * @param {TP.uri.URI|String} aURI A TP.uri.URI or String referencing the
      *     script location.
      * @param {Document} [aDocument=document] The document to add the script
@@ -74,19 +78,18 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
     targetLoc = url.getLocation();
 
     //  If the script to be fetched is modeled as an ECMA6 module, then we use
-    //  the global 'import()' (added post-ECMA6 to support 'dynamic import').
+    //  the TIBET 'importModule' call, which is smart around inlined vs.
+    //  non-inlined and HTTP vs. non-HTTP loading.
     if (isECMAModule) {
         newPromise = TP.extern.Promise.construct(
             function(resolver, rejector) {
-                return import(targetLoc).then(
+                return TP.sys.importModule(targetLoc).then(
                     function(moduleObj) {
                         //  If the request provided a callback, then use it.
                         if (TP.isCallable(callback)) {
-                            callback();
                             callback(moduleObj);
                         }
 
-                        request.complete(null);
                         request.complete(moduleObj);
 
                         return resolver(moduleObj);
@@ -94,7 +97,7 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
             }).catch(
                 function(e) {
                     TP.ifError() ?
-                        TP.error('Error loading script: ' + targetLoc + ' ' +
+                        TP.error('Error loading module: ' + targetLoc + ' ' +
                                     TP.str(e)) : 0;
                 });
     } else {
