@@ -83,9 +83,11 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
                         //  If the request provided a callback, then use it.
                         if (TP.isCallable(callback)) {
                             callback();
+                            callback(moduleObj);
                         }
 
                         request.complete(null);
+                        request.complete(moduleObj);
 
                         return resolver(moduleObj);
                     });
