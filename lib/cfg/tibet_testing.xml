@@ -220,8 +220,11 @@
 </config>
 
 <config id="ecma">
-    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleNoImport.js"/>
+    <!-- NB: We load these 'out of order' because we want to force the first file to import the second using regular ECMAScript 'import' syntax.
+    -->
     <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleStandardImport.js"/>
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleNoImport.js"/>
+    <script src="~lib_test/src/tibet/modules/NativeModules_Tests.js"/>
     <!--
     <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleWholeNSImport.js"/>
     <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleMixedNSAndTypeImport.js"/>
