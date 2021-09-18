@@ -2379,7 +2379,12 @@ TP.boot.$$pathKeys = null;
 //  Cache for ECMA 6 module import URLs. We sometimes rewrite these into a Blob
 //  URL so that we can support 'file://'-based booting and/or concatenated
 //  files.
-TP.boot.$moduleURLs = {};
+TP.boot.$moduleBlobURLMap = {};
+
+//  A map of ECMA 6 module specifiers to URLs. This allows us to use 'bare
+//  specifiers' and leverages specifier information in TIBET's cfg XML to build
+//  a map.
+TP.boot.$moduleBareSpecMap = {};
 
 //  ----------------------------------------------------------------------------
 
@@ -9098,10 +9103,10 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
 //  IMPORT FUNCTIONS
 //  ============================================================================
 
-TP.boot.$moduleImportFile = async function(jsSrc, srcUrl) {
+TP.boot.$moduleImport = async function(jsSrc, srcUrl) {
 
     /**
-     * @method $moduleImportFile
+     * @method $moduleImport
      * @summary Loads an ECMA module (and, recursively, any ECMA modules that it
      *     depends on) from the *filesystem* when booting over file://.
      * @description This uses a mechanism that rewrites from/import statements
@@ -9116,7 +9121,8 @@ TP.boot.$moduleImportFile = async function(jsSrc, srcUrl) {
      *     used to create the 'original url to blob url' map.
      */
 
-    var replaceAsync;
+    var replaceAsync,
+        createModuleScript;
 
     //  A generic replace Function for use in a String replace call that can
     //  handle async operations.
@@ -9166,6 +9172,32 @@ TP.boot.$moduleImportFile = async function(jsSrc, srcUrl) {
         });
     };
 
+    createModuleScript = function(moduleText) {
+        var blob,
+            url,
+            elem;
+
+        blob = new Blob([moduleText],
+                        {type: 'application/javascript'});
+        url = URL.createObjectURL(blob);
+
+        elem = TP.boot.$$scriptTemplate.cloneNode(true);
+
+        elem.setAttribute('type', 'module');
+        elem.setAttribute('src', url);
+
+        elem.setAttribute('loadpkg', TP.boot.$$loadPackage);
+        elem.setAttribute('loadcfg', TP.boot.$$loadConfig);
+        elem.setAttribute('loadstage', TP.boot.$$stage);
+
+        elem.setAttribute('srcpkg', TP.boot.$$srcPackage);
+        elem.setAttribute('srccfg', TP.boot.$$srcConfig);
+
+        TP.boot.$nodeAppendChild(TP.boot.$$head, elem);
+
+        return url;
+    };
+
     //  Scan each module and, if we're not HTTP based (i.e. booting from a
     //  file:// URL) or the import is a 'TIBET module specifier' (i.e. a
     //  fake import URL that points to generated TIBET code representing
@@ -9175,8 +9207,10 @@ TP.boot.$moduleImportFile = async function(jsSrc, srcUrl) {
         jsSrc,
         // Find anything that looks like an import.
         /(from\s+|import\s+)['"](.+?)['"]/g,
-        async function(unmodified, action, importUrl) {
-            var hasTIBETModuleSpecifier,
+        async function(unmodified, action, originalSpecifier) {
+            var specifier,
+
+                hasTIBETModuleSpecifier,
 
                 fullUrl,
                 blobUrl,
@@ -9184,76 +9218,73 @@ TP.boot.$moduleImportFile = async function(jsSrc, srcUrl) {
                 namespaceURN,
                 namespace,
                 moduleText,
-                moduleBlob,
 
                 source;
 
+            specifier = originalSpecifier;
+
             //  Test to see if the module specifier is a TIBET URN
             //  representing a namespace (i.e. urn:tibet:TP.core).
-            hasTIBETModuleSpecifier = TP.regex.TIBET_URN.test(importUrl);
+            hasTIBETModuleSpecifier = TP.regex.TIBET_URN.test(specifier);
 
-            //  Compute the full URL of the import URL relative to the
-            //  file that is importing it.
-            fullUrl = TP.uriJoinPaths(
-                        srcUrl.slice(0, srcUrl.lastIndexOf('/') + 1),
-                        importUrl);
-
-            if (hasTIBETModuleSpecifier) {
-
-                //  See if we've already cached a Blob URL for that URL.
-                blobUrl = TP.boot.$moduleURLs[fullUrl];
-
-                if (blobUrl) {
-                    //  Found a Blob URL - replace it.
-                    return `${action}/* ${importUrl} */ '${blobUrl}'`;
-                } else if (hasTIBETModuleSpecifier) {
-                    //  Create a URI representing the namespace from the
-                    //  import URI.
-                    namespaceURN = TP.uc(importUrl);
-
-                    //  Try to grab the corresponding namespace object and,
-                    //  if it's real, cause it to build an ECMA6 module of
-                    //  its content and store that in the Blob URL.
-                    namespace = namespaceURN.getContent();
-                    if (TP.isNamespace(namespace)) {
-                        moduleText = namespace.generatePseudoNativeModule();
-
-                        moduleBlob = new Blob([moduleText],
-                                        {type: 'application/javascript'});
-                        blobUrl = URL.createObjectURL(moduleBlob);
-
-                        TP.boot.$moduleURLs[importUrl] = blobUrl;
-
-                        //  Generated a Blob URL - replace it.
-                        return `${action}/* ${importUrl} */ '${blobUrl}'`;
-                    }
-                } else {
-                    //  Didn't find a Blob URL - fetch the source text and
-                    //  recursively call ourself to process the import.
-                    source = await TP.boot.$uriLoad(fullUrl, TP.TEXT, 'source');
-                    await TP.boot.$moduleImportFile(source, fullUrl);
-
-                    blobUrl = TP.boot.$moduleURLs[fullUrl];
-
-                    return `${action}/* ${importUrl} */ '${blobUrl}'`;
+            //  If we didn't get a url as the specifier (and it's not a TIBET
+            //  module specifier), then check the 'bare specifier map' for an
+            //  entry. Note that the values of these entries contain already
+            //  'expanded' paths.
+            if (!hasTIBETModuleSpecifier && !TP.isURIString(specifier, true)) {
+                fullUrl = TP.boot.$moduleBareSpecMap[specifier];
+                if (TP.boot.$isEmpty(fullUrl)) {
+                    //  ERROR: Couldn't find a matching URL for the specifier.
+                    throw new Error('No concrete URL for: ' + specifier);
                 }
             } else {
-                //  We're booting over HTTP(S) and it's not a special TIBET
-                //  module specifier - just update with the fully expanded
-                //  URL so that the system can find it.
-                return `${action} '${fullUrl}'`;
+                //  Compute the full URL of the import URL relative to the
+                //  file that is importing it.
+                fullUrl = TP.uriJoinPaths(
+                            srcUrl.slice(0, srcUrl.lastIndexOf('/') + 1),
+                            specifier);
             }
-        }).then(
-            function(transformedSource) {
-                var blob,
-                    url;
 
-                blob = new Blob([transformedSource],
-                                {type: 'application/javascript'});
-                url = URL.createObjectURL(blob);
+            //  See if we've already cached a Blob URL for that URL.
+            blobUrl = TP.boot.$moduleBlobURLMap[fullUrl];
 
-                TP.boot.$moduleURLs[srcUrl] = url;
-            });
+            if (blobUrl) {
+                //  Found a Blob URL - replace it.
+                return `${action}/* ${specifier} */ '${blobUrl}'`;
+            } else if (hasTIBETModuleSpecifier) {
+                //  Create a URI representing the namespace from the
+                //  import URI.
+                namespaceURN = TP.uc(specifier);
+
+                //  Try to grab the corresponding namespace object and,
+                //  if it's real, cause it to build an ECMA6 module of
+                //  its content and store that in the Blob URL.
+                namespace = namespaceURN.getContent();
+                if (TP.isNamespace(namespace)) {
+                    moduleText = namespace.generatePseudoNativeModule();
+
+                    blobUrl = createModuleScript(moduleText);
+                    TP.boot.$moduleBlobURLMap[specifier] = blobUrl;
+
+                    //  Generated a Blob URL - replace it.
+                    return `${action}/* ${specifier} */ '${blobUrl}'`;
+                }
+            } else {
+                //  Didn't find a Blob URL - fetch the source text and
+                //  recursively call ourself to process the import.
+                source = await TP.boot.$uriLoad(fullUrl, TP.TEXT, 'source');
+                await TP.boot.$moduleImport(source, fullUrl);
+
+                blobUrl = TP.boot.$moduleBlobURLMap[fullUrl];
+
+                return `${action}/* ${specifier} */ '${blobUrl}'`;
+            }
+        }).then(function(transformedSource) {
+            var blobUrl;
+
+            blobUrl = createModuleScript(transformedSource);
+            TP.boot.$moduleBlobURLMap[srcUrl] = blobUrl;
+        });
 };
 
 //  ----------------------------------------------------------------------------
@@ -9533,7 +9564,7 @@ isECMAModule) {
                 if (hasTIBETModuleSpecifier) {
 
                     //  See if we've already cached a Blob URL for that URL.
-                    blobUrl = TP.boot.$moduleURLs[fullUrl];
+                    blobUrl = TP.boot.$moduleBlobURLMap[fullUrl];
 
                     if (blobUrl) {
                         //  Found a Blob URL - replace it.
@@ -9554,7 +9585,7 @@ isECMAModule) {
                                             {type: 'application/javascript'});
                             blobUrl = URL.createObjectURL(moduleBlob);
 
-                            TP.boot.$moduleURLs[importUrl] = blobUrl;
+                            TP.boot.$moduleBlobURLMap[importUrl] = blobUrl;
 
                             //  Generated a Blob URL - replace it.
                             return `${action}/* ${importUrl} */ '${blobUrl}'`;
@@ -9577,7 +9608,7 @@ isECMAModule) {
         blob = new Blob([src], {type: 'application/javascript'});
         url = URL.createObjectURL(blob);
 
-        TP.boot.$moduleURLs[srcUrl] = url;
+        TP.boot.$moduleBlobURLMap[srcUrl] = url;
     }
 
     //  ensure we keep track of the proper package/config information
@@ -10104,8 +10135,12 @@ TP.boot.$importComponents = async function(loadSync) {
 
         loadUsingSrcAttr = TP.sys.cfg('import.use_src_attr');
 
-        //  ECMA modules don't work with file:// URLs
-        if (isECMAModule && !TP.sys.isHTTPBased()) {
+        //  ECMA modules don't play nice with the TIBET config system (and don't
+        //  work over file:// URLs), so we have a special way of processing
+        //  them. This will recursively import the module and its dependent
+        //  modules and do all of the proper definitions so that things work
+        //  properly.
+        if (isECMAModule) {
             loadUsingSrcAttr = false;
         }
 
@@ -10125,10 +10160,6 @@ TP.boot.$importComponents = async function(loadSync) {
 
                 elem.setAttribute('srcpkg', TP.boot.$$srcPackage);
                 elem.setAttribute('srccfg', TP.boot.$$srcConfig);
-
-                if (isECMAModule) {
-                    elem.setAttribute('type', 'module');
-                }
 
                 TP.boot.$$loadNode = elem;
 
@@ -10176,12 +10207,14 @@ TP.boot.$importComponents = async function(loadSync) {
             }
         }
 
-        //  ECMA modules don't work with file:// URLs, so we use a special
-        //  method that we've built to recursively import the module and its
-        //  dependent modules over the filesystem.
-        if (isECMAModule && !TP.sys.isHTTPBased()) {
+        //  ECMA modules don't play nice with the TIBET config system (and don't
+        //  work over file:// URLs), so we have a special way of processing
+        //  them. This will recursively import the module and its dependent
+        //  modules and do all of the proper definitions so that things work
+        //  properly.
+        if (isECMAModule) {
             try {
-                await TP.boot.$moduleImportFile(source, srcpath);
+                await TP.boot.$moduleImport(source, srcpath);
             } finally {
                 TP.boot.$$loadNode = null;
             }
@@ -10289,6 +10322,8 @@ TP.boot.$$importPhase = async function() {
     TP.boot.$$workload = nodelist.length;
     TP.boot.$$totalwork += nodelist.length;
 
+    TP.boot.$$processModuleSpecifiers();
+
     await TP.boot.$importComponents();
 };
 
@@ -10334,6 +10369,45 @@ TP.boot.$$importPhaseTwo = async function(manifest) {
     TP.sys.setcfg('boot.phase_two', true);
 
     await TP.boot.$$importPhase();
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$$processModuleSpecifiers = function() {
+
+    /**
+     * @method $$processModuleSpecifiers
+     * @summary Processes any module 'specifiers' (i.e. aliasing names used by
+     *     ECMA modules) into a map that maps those to 'full paths'.
+     * @description Note that this is only used during loading when *not* in
+     *     inlined/packaged mode. No cfg XML will be around in that mode to be
+     *     scanned and these paths will have already been written into the
+     *     package by the 'tibet package' command (and those will be virtual
+     *     paths that are only used for 'unique naming' lookups).
+     */
+
+    //  Iterate over all of the boot nodes, looking for 'script' nodes that have
+    //  a 'module' identifier.
+    TP.boot.$$bootnodes.forEach(
+        function(aNode) {
+            var tn,
+                spec,
+                srcpath,
+                src;
+
+            tn = aNode.tagName.toLowerCase();
+
+            if (tn === 'script' && aNode.getAttribute('type') === 'module') {
+
+                //  If the module also has a 'specifier', then map it to the
+                //  fully expanded path.
+                if ((spec = aNode.getAttribute('specifier')) != null) {
+                    srcpath = aNode.getAttribute('src');
+                    src = TP.boot.$getFullPath(aNode, srcpath);
+                    TP.boot.$moduleBareSpecMap[spec] = src;
+                }
+            }
+        });
 };
 
 //  ============================================================================

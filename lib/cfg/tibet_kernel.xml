@@ -43,6 +43,9 @@
     <script>
         <![CDATA[
             TP.registerExternalObject('System', System);
+
+            //  ---
+
             TP.extern.System.shouldFetch = function() {
                 return false;
             };
@@ -50,13 +53,17 @@
             var systemJSPrototype;
             systemJSPrototype = TP.extern.System.constructor.prototype;
 
+            //  ---
+
             systemJSPrototype.oldInstantiate = systemJSPrototype.instantiate;
             systemJSPrototype.instantiate = function(url, firstParentUrl) {
 
+                //  If it's not a TIBET URN, then do what SystemJS normally does
+                //  to instantiate a module.
                 if (!TP.regex.TIBET_URN.test(url)) {
-                    return TP.extern.System.constructor.prototype.oldInstantiate.call(
-                            TP.extern.System,
-                            url, firstParentUrl);
+                    return TP.extern.System.constructor.
+                            prototype.oldInstantiate.call(
+                                TP.extern.System, url, firstParentUrl);
                 }
 
                 return new Promise(function(resolver, rejector) {
@@ -64,7 +71,8 @@
                         namespace,
                         moduleText;
 
-                    //  Create a URI representing the namespace from the import URI.
+                    //  Create a URI representing the namespace from the import
+                    //  URI.
                     namespaceURN = TP.uc(url);
 
                     //  Try to grab the corresponding namespace object and,
@@ -72,20 +80,21 @@
                     //  its content and store that in the Blob URL.
                     namespace = namespaceURN.getContent();
                     if (TP.isNamespace(namespace)) {
-                        TP.extern.System.register(url, [], function(_export, _context) {
-                            return {
-                                execute: function() {
-                                    var moduleObj;
+                        TP.extern.System.register(
+                            url, [], function(_export, _context) {
+                                return {
+                                    execute: function() {
+                                        var moduleObj;
 
-                                    moduleText =
-                                        namespace.generatePseudoNativeModule(
-                                                null, false);
-                                    moduleObj = eval(moduleText);
+                                        moduleText =
+                                            namespace.generatePseudoNativeModule(
+                                                    null, false);
+                                        moduleObj = eval(moduleText);
 
-                                    _export(moduleObj);
-                                    _export('default', moduleObj);
+                                        _export(moduleObj);
+                                        _export('default', moduleObj);
+                                    }
                                 }
-                            }
                         });
                     }
 
@@ -93,27 +102,40 @@
                 });
             };
 
-            systemJSPrototype.resolve = function(id) {
-                var newID,
-                    index;
+            //  ---
 
-                if (TP.regex.TIBET_URN.test(id)) {
-                    return id;
+            systemJSPrototype.oldResolve = systemJSPrototype.resolve;
+            systemJSPrototype.resolve = function(specifier, parentSpecifier) {
+                var url,
+                    parentUrl;
+
+                if (!TP.isURIString(specifier, true)) {
+                    url = TP.boot.$moduleBareSpecMap[specifier];
+                    if (!url) {
+                        throw new Error('No concrete URL for: ' + specifier);
+                    }
+                } else {
+                    url = specifier;
                 }
 
-                newID = id;
-
-                index = newID.lastIndexOf('.');
-                if (index !== -1) {
-                    newID = newID.slice(0, index);
+                //  TIBET URN? Return now - we don't want any path manipulation.
+                if (TP.regex.TIBET_URN.test(url)) {
+                    return url;
                 }
 
-                index = newID.lastIndexOf('/');
-                if (index !== -1) {
-                    newID = newID.slice(index + 1);
+                //  If the url is absolute or virtual, we don't want any path
+                //  manipulation.
+                if (TP.uriIsAbsolute(url) || TP.uriIsVirtual(url)) {
+                    return url;
                 }
 
-                return newID;
+                //  Must be a relative URL - turn into a URL relative to the
+                //  parent specifier and then virtualize.
+                parentUrl = TP.uriExpandPath(parentSpecifier);
+                url = TP.uriJoinPaths(TP.uriCollectionPath(parentUrl), url);
+                url = TP.uriInTIBETFormat(url);
+
+                return url;
             };
         ]]>
     </script>

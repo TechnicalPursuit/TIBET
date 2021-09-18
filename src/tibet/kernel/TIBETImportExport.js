@@ -809,37 +809,53 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('importModule',
-function(aURI, aRequest) {
+function(aSpecifier, aRequest) {
 
     /**
      * @method importModule
      * @summary Imports the uri provided (which should be an ECMAScript module
      *     uri) and returns the Module object in the Promise resolution
      *     callback.
-     * @param {TP.uri.URI|String} aURI A TP.uri.URI or String referencing the
-     *     module location.
+     * @param {TP.uri.URI|String} aSpecifier A TP.uri.URI or String referencing
+     *     the module location.
      * @param {TP.sig.Request|TP.core.Hash} [aRequest] A optional set of request
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
      * @returns {Promise} A promise which resolves based on success.
      */
 
-    var url,
+    var specifier,
+
+        url,
 
         targetLoc,
         blobUrl;
 
-    url = TP.uc(aURI);
+    specifier = TP.str(aSpecifier);
+
+    //  If we didn't get a URL here, try to find an entry in the 'bare spec
+    //  module map' that matches bare specifiers to URLs (our own version of the
+    //  poorly defined HTML5 module loader import maps).
+    if (!TP.isURIString(specifier, true)) {
+        url = TP.boot.$moduleBareSpecMap[specifier];
+        if (TP.boot.$isEmpty(url)) {
+            //  ERROR
+        }
+        url = TP.uc(url);
+    } else {
+        url = TP.uc(specifier);
+
+        //  Adjust the path per any rewrite rules in place for the URI. Note
+        //  that we only do this if the url is absolute.
+        if (TP.uriIsAbsolute(url.getLocation())) {
+            url = url.rewrite();
+        }
+    }
+
     if (TP.notValid(url)) {
         this.raise('TP.sig.InvalidURI');
 
         return TP.extern.Promise.reject(new Error('InvalidURI'));
-    }
-
-    //  Adjust the path per any rewrite rules in place for the URI. Note that we
-    //  only do this if the url is absolute.
-    if (TP.uriIsAbsolute(url.getLocation())) {
-        url = url.rewrite();
     }
 
     targetLoc = url.getLocation();
@@ -849,27 +865,27 @@ function(aURI, aRequest) {
     //  will have inlined any ECMA modules and SystemJS will handle any pathing
     //  issues itself.
     if (TP.uriIsInlined(targetLoc)) {
+        //  When the packages were built and the module content was inlined, the
+        //  bare spec module map was populated with virtual URIs. Since SystemJS
+        //  won't actually do expansion of those URIs and is just using them as
+        //  a name to do module lookup, we have to use the virtual location
+        //  here.
+        targetLoc = url.getVirtualLocation();
         return TP.extern.System.import(targetLoc);
     }
 
     //  If we're not running in an inlined (i.e. 'packaged') environment, then
-    //  we need to determine whether we're running in an HTTP-based environment
-    //  or not. If not then we need to use the module definitions that the TIBET
-    //  loader will have repackaged into 'blob' URLs.
-    if (!TP.sys.isHTTPBased()) {
-        blobUrl = TP.boot.$moduleURLs[targetLoc];
-        if (TP.isEmpty(blobUrl)) {
-            this.raise('TP.sig.URINotFound', targetLoc);
+    //  we need to use the module definitions that the TIBET loader will have
+    //  repackaged into 'blob' URLs.
+    blobUrl = TP.boot.$moduleBlobURLMap[targetLoc];
+    if (TP.isEmpty(blobUrl)) {
+        this.raise('TP.sig.URINotFound', targetLoc);
 
-            return TP.extern.Promise.reject(
-                    new Error('URINotFound: ' + targetLoc));
-        }
-
-        return import(blobUrl);
-    } else {
-        //  We're running over HTTP in an uninlined (unpackaged) environment
-        return import(targetLoc);
+        return TP.extern.Promise.reject(
+                new Error('URINotFound: ' + targetLoc));
     }
+
+    return import(blobUrl);
 });
 
 //  ------------------------------------------------------------------------
