@@ -191,9 +191,8 @@ Cmd.prototype.executeForEach = function(list) {
             usecache,
             result,
             code,
-            id,
-            index,
             virtual,
+            spec,
             cachename;
 
         //  If this doesn't work it's a problem for any 'script' output.
@@ -231,18 +230,7 @@ Cmd.prototype.executeForEach = function(list) {
                 !cmd.options.minify) {
                 code = CLI.sh.cat(src).toString();
                 if (item.getAttribute('type') === 'module') {
-                    id = src;
-                    index = id.lastIndexOf('.');
-                    if (index !== -1) {
-                        id = id.slice(0, index);
-                    }
-
-                    index = id.lastIndexOf('/');
-                    if (index !== -1) {
-                        id = id.slice(index + 1);
-                    }
-
-                    babelOpts.moduleId = id;
+                    babelOpts.moduleId = virtual;
                     code = babel.transform(code, babelOpts).code;
                 }
             } else {
@@ -252,18 +240,7 @@ Cmd.prototype.executeForEach = function(list) {
                     try {
                         code = CLI.sh.cat(src).toString();
                         if (item.getAttribute('type') === 'module') {
-                            id = src;
-                            index = id.lastIndexOf('.');
-                            if (index !== -1) {
-                                id = id.slice(0, index);
-                            }
-
-                            index = id.lastIndexOf('/');
-                            if (index !== -1) {
-                                id = id.slice(index + 1);
-                            }
-
-                            babelOpts.moduleId = id;
+                            babelOpts.moduleId = virtual;
                             code = babel.transform(code, babelOpts).code;
                         }
 
@@ -294,6 +271,15 @@ Cmd.prototype.executeForEach = function(list) {
                 pkg.log('TP.boot.$$srcConfig = \'' +
                         item.getAttribute('loadcfg') +
                         '\';');
+                if (item.getAttribute('type') === 'module') {
+                    spec = item.getAttribute('specifier');
+                    if (!CLI.isEmpty(spec)) {
+                        pkg.log('TP.boot.$moduleBareSpecMap' +
+                                   '[\'' + spec + '\'] = \'' +
+                                    pkg.getVirtualPath(src) +
+                                    '\';');
+                    }
+                }
             }
 
             if (cmd.options.debug !== true) {
