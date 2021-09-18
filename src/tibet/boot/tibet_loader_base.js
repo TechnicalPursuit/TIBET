@@ -9468,8 +9468,7 @@ TP.boot.$sourceUrlImport = function(scriptUrl, targetDoc, callback, shouldThrow)
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow,
-isECMAModule) {
+TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
 
     /**
      * @method $sourceImport
@@ -9485,18 +9484,12 @@ isECMAModule) {
      *     supplied.
      * @param {Boolean} shouldThrow True to cause errors to throw a native Error
      *     so outer catch blocks will trigger.
-     * @param {Boolean} isECMAModule Whether or not the source being imported is
-     *     an ECMAScript Module. If so, the script tag created to hold the
-     *     supplied script file or text will have a 'type="module"' attribute.
      * @returns {HTMLElement} The new 'script' element that was created to
      *     import the code.
      */
 
     var src,
         elem,
-        transformedSource,
-        blob,
-        url,
         result,
         scriptDoc,
         scriptHead,
@@ -9526,90 +9519,6 @@ isECMAModule) {
     //  load the source the 'DOM way' so we get commented source
     elem = TP.boot.$$scriptTemplate.cloneNode(true);
     TP.boot.$$loadNode = elem;
-
-    //  if this is an ECMA Module, set a 'type' of 'module' on the new script
-    //  element.
-    if (isECMAModule) {
-        elem.setAttribute('type', 'module');
-
-        //  Scan each module and, if we're not HTTP based (i.e. booting from a
-        //  file:// URL) or the import is a 'TIBET module specifier' (i.e. a
-        //  fake import URL that points to generated TIBET code representing
-        //  TIBET types proxied into ECMA classes), then process the content of
-        //  that import into a Blob URL and replace the URL in the module text.
-        transformedSource = src.replace(
-            // Find anything that looks like an import.
-            /(from\s+|import\s+)['"](.+?)['"]/g,
-            function(unmodified, action, importUrl) {
-                var hasTIBETModuleSpecifier,
-
-                    fullUrl,
-                    blobUrl,
-
-                    namespaceURN,
-                    namespace,
-                    moduleText,
-                    moduleBlob;
-
-                //  Test to see if the module specifier is a TIBET URN
-                //  representing a namespace (i.e. urn:tibet:TP.core).
-                hasTIBETModuleSpecifier = TP.regex.TIBET_URN.test(importUrl);
-
-                //  Compute the full URL of the import URL relative to the
-                //  file that is importing it.
-                fullUrl = TP.uriJoinPaths(
-                            srcUrl.slice(0, srcUrl.lastIndexOf('/') + 1),
-                            importUrl);
-
-                if (hasTIBETModuleSpecifier) {
-
-                    //  See if we've already cached a Blob URL for that URL.
-                    blobUrl = TP.boot.$moduleBlobURLMap[fullUrl];
-
-                    if (blobUrl) {
-                        //  Found a Blob URL - replace it.
-                        return `${action}/* ${importUrl} */ '${blobUrl}'`;
-                    } else if (hasTIBETModuleSpecifier) {
-                        //  Create a URI representing the namespace from the
-                        //  import URI.
-                        namespaceURN = TP.uc(importUrl);
-
-                        //  Try to grab the corresponding namespace object and,
-                        //  if it's real, cause it to build an ECMA6 module of
-                        //  its content and store that in the Blob URL.
-                        namespace = namespaceURN.getContent();
-                        if (TP.isNamespace(namespace)) {
-                            moduleText = namespace.generatePseudoNativeModule();
-
-                            moduleBlob = new Blob([moduleText],
-                                            {type: 'application/javascript'});
-                            blobUrl = URL.createObjectURL(moduleBlob);
-
-                            TP.boot.$moduleBlobURLMap[importUrl] = blobUrl;
-
-                            //  Generated a Blob URL - replace it.
-                            return `${action}/* ${importUrl} */ '${blobUrl}'`;
-                        }
-                    } else {
-                        //  Didn't find a Blob URL - just update with the fully
-                        //  expanded URL so that the system can find it.
-                        return `${action} '${fullUrl}'`;
-                    }
-                } else {
-                    //  We're booting over HTTP(S) and it's not a special TIBET
-                    //  module specifier - just update with the fully expanded
-                    //  URL so that the system can find it.
-                    return `${action} '${fullUrl}'`;
-                }
-            });
-
-        src = transformedSource;
-
-        blob = new Blob([src], {type: 'application/javascript'});
-        url = URL.createObjectURL(blob);
-
-        TP.boot.$moduleBlobURLMap[srcUrl] = url;
-    }
 
     //  ensure we keep track of the proper package/config information
     TP.boot.$$loadNode.setAttribute('loadpkg',
@@ -10222,8 +10131,7 @@ TP.boot.$importComponents = async function(loadSync) {
             //  if we were handling inline code then we can import it directly
             //  now.
             try {
-                TP.boot.$sourceImport(source, null, srcpath, false,
-                                        isECMAModule);
+                TP.boot.$sourceImport(source, null, srcpath, false);
             } finally {
                 TP.boot.$$loadNode = null;
             }
