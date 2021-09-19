@@ -5,6 +5,7 @@
 
 <config id="properties" if="boot.phase_one">
     <property name="boot.inlined" value="false"/>
+    <property name="boot.teamtibet" value="true"/>
     <property name="boot.use_login" value="false"/>
     <property name="lama.enabled" value="false"/>
     <property name="uri.source.watch_changes" value="false"/>
