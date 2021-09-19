@@ -7976,6 +7976,7 @@ function cryptoSecureRandomInt() {
 
 
 
+var USER_POOL_ID_MAX_LENGTH = 55;
 /** @class */
 
 var CognitoUserPool = /*#__PURE__*/function () {
@@ -8005,7 +8006,7 @@ var CognitoUserPool = /*#__PURE__*/function () {
       throw new Error('Both UserPoolId and ClientId are required.');
     }
 
-    if (!/^[\w-]+_.+$/.test(UserPoolId)) {
+    if (UserPoolId.length > USER_POOL_ID_MAX_LENGTH || !/^[\w-]+_[0-9a-zA-Z]+$/.test(UserPoolId)) {
       throw new Error('Invalid UserPoolId format.');
     }
 
