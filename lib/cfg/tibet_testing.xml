@@ -224,10 +224,14 @@
     -->
     <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleStandardImport.js"/>
     <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleNoImport.js"/>
+    <script type="module" specifier="BareSpecifierModule" src="~lib_test/src/tibet/modules/ECMAModuleBareSpecifier.js"/>
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleBareSpecifierImport.js"/>
+
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleWholeTIBETNSImport.js"/>
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleMixedTIBETNSAndTypeImport.js"/>
+    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleMixedTIBETNSAndTypeImportWithAlias.js"/>
+
     <script src="~lib_test/src/tibet/modules/NativeModules_Tests.js"/>
-    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleWholeNSImport.js"/>
-    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleMixedNSAndTypeImport.js"/>
-    <script type="module" src="~lib_test/src/tibet/modules/ECMAModuleMixedNSAndTypeImportWithAlias.js"/>
 </config>
 
 <config id="ev">
