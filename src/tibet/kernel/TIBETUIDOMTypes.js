@@ -4278,7 +4278,8 @@ function(receiverCompassPoint, alignmentCompassPoint, alignmentTPElement,
      *     coordinates of the GUI.
      * @param {TP.gui.Point[]} [avoidPoints] An Array of TP.gui.Points that the
      *     positioning machinery will try to 'avoid' when positioning the
-     *     receiver.
+     *     receiver. Note that these points should be expressed in terms of
+     *     *global* coordinates of the GUI.
      * @param {Number} [offsetX=0] Any offset that should be added to computed X
      *     position value before the constraining process takes place.
      * @param {Number} [offsetY=0] Any offset that should be added to computed Y
@@ -4295,10 +4296,10 @@ function(receiverCompassPoint, alignmentCompassPoint, alignmentTPElement,
     //  right and top of the alignment element.
     alignmentCP = TP.ifInvalid(alignmentCompassPoint, TP.NORTHEAST);
 
-    //  Compute the offset rect of the alignment element and get the 'edge
+    //  Compute the global rect of the alignment element and get the 'edge
     //  point' corresponding to the compass point on the alignment element that
     //  we're aligning to.
-    alignmentRect = alignmentTPElement.getOffsetRect();
+    alignmentRect = alignmentTPElement.getGlobalRect();
     alignmentPoint = alignmentRect.getEdgePoint(alignmentCP);
 
     //  Set our position using the computed alignment point.
@@ -5825,7 +5826,8 @@ function(initialPoint, receiverCompassPoint, alignmentCompassPoint,
      *     coordinates of the GUI.
      * @param {TP.gui.Point[]} [avoidPoints] An Array of TP.gui.Points that the
      *     positioning machinery will try to 'avoid' when positioning the
-     *     receiver.
+     *     receiver. Note that these points should be expressed in terms of
+     *     *global* coordinates of the GUI.
      * @param {Number} [offsetX=0] Any offset that should be added to computed X
      *     position value before the constraining process takes place.
      * @param {Number} [offsetY=0] Any offset that should be added to computed Y
