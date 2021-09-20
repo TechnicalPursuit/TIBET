@@ -292,6 +292,8 @@ function(aSignal) {
         triggerTPElem,
         triggerElem,
 
+        clickAway,
+
         shouldClose;
 
     targetElem = aSignal.getResolvedTarget();
@@ -308,31 +310,28 @@ function(aSignal) {
         }
     } else {
 
-        //  Since we're using the *resolved* target element here, it might be
-        //  opaque to the click and it might contain the actual trigger. In this
-        //  case, just make the trigger element *be* the target element.
         triggerElem = TP.unwrap(triggerTPElem);
-        if (targetElem.contains(triggerElem)) {
-            triggerElem = targetElem;
-        }
 
-        //  If the target element of the DOMClick isn't contained in ourself,
-        //  then check to see if the triggering element contains the target
-        //  element (or is the triggering element itself). Also, check to see if
-        //  this is *not* the triggering click. If any of those is the case,
-        //  then hide ourself.
+        //  If the target element of the DOMClick isn't contained in ourself
+        //  (the popup itself), then check to see if the triggering element
+        //  contains the target element (or is the triggering element itself).
+        //  Also, check to see if this is *not* the triggering click. If any of
+        //  those is the case, then hide ourself.
         if (!this.contains(targetElem)) {
 
-            //  We should close if the triggering element is *not* target
-            //  element and contains the target element, OR
-            //  is the target element itself OR
-            //  this is *not* the triggering click.
-            /* eslint-disable no-extra-parens */
-            shouldClose = (triggerElem !== targetElem &&
-                                !triggerElem.contains(targetElem)) ||
-                            triggerElem === targetElem ||
-                            !this.get('isTriggeringSignal');
-            /* eslint-enable no-extra-parens */
+            //  If the target element isn't the trigger element and the trigger
+            //  element doesn't contain the target element, then the user
+            //  'clicked away' from the trigger.
+            clickAway = (triggerElem !== targetElem &&
+                            !triggerElem.contains(targetElem));
+
+            if (this.get('isTriggeringSignal') && !clickAway) {
+                shouldClose = false;
+            } else {
+                /* eslint-disable no-extra-parens */
+                shouldClose = clickAway || triggerElem === targetElem;
+                /* eslint-enable no-extra-parens */
+            }
 
             if (shouldClose) {
                 this.setAttribute('closed', true);
