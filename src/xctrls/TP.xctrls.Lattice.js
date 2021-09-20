@@ -134,6 +134,41 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    //  Finalize content so that static items get keys, etc. If this is a bound
+    //  element, this will be called from the setData method.
+    if (!tpElem.isAspectBoundIn('data')) {
+        tpElem.finalizeContent();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -317,6 +352,67 @@ function() {
     }
 
     return adaptorType.getKeyFunction(this);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('getDescendantsForSerialization',
+function() {
+
+    /**
+     * @method getDescendantsForSerialization
+     * @summary Returns an Array of descendants of the receiver to include in
+     *     the receiver's serialization. Typically, these will be nodes that
+     *     will be 'slotted' into the receiver by the author and not nodes that
+     *     the template generated 'around' the slotted nodes.
+     * @returns {TP.dom.Node[]} An Array of descendant nodes to serialize.
+     */
+
+    var selectedDescendants;
+
+    selectedDescendants = this.get('./*[local-name() = \'template\']');
+
+    selectedDescendants = TP.expand(selectedDescendants);
+
+    return selectedDescendants;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('getValueData',
+function() {
+
+    /**
+     * @method getValueData
+     * @summary Returns the 'value data' of the receiver. This will be the data
+     *     'row' associated with the current value of the receiver.
+     * @returns {Object|null} The value data of the receiver.
+     */
+
+    var value,
+        item,
+        itemNum,
+
+        data;
+
+    value = this.get('value');
+    if (TP.isEmpty(value)) {
+        return null;
+    }
+
+    //  Grab the DOM 'item' associated with the current value
+    item = this.get('itemWithValue', value);
+    if (TP.notValid(item)) {
+        return null;
+    }
+
+    //  All DOM 'items' in an lattice have an item number. This will also be the
+    //  index into the data for that item.
+    itemNum = item.getAttribute(TP.ITEM_NUM);
+
+    data = this.get('data');
+
+    return data.at(itemNum);
 });
 
 //  ------------------------------------------------------------------------
@@ -741,6 +837,42 @@ function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
     }
 
     return hasChanged;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Lattice.Inst.defineMethod('removeOldContent',
+function(exitSelection) {
+
+    /**
+     * @method removeOldContent
+     * @summary Removes any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'exit selection'.
+     * @param {TP.extern.d3.selection} exitSelection The d3.js exit selection
+     *     that existing content should be altered in.
+     * @returns {TP.dom.D3Tag} The receiver.
+     */
+
+    var keys,
+        keyFunc;
+
+    //  Make sure to remove the keys of any 'exit selection' elements that are
+    //  going away from the '$dataKeys' Array to avoid pollution.
+
+    keys = this.get('$dataKeys');
+    if (TP.notEmpty(keys)) {
+        keyFunc = this.d3KeyFunction();
+
+        exitSelection.each(
+            function(data, index) {
+                var key;
+
+                key = TP.isCallable(keyFunc) ? keyFunc(data, index) : index;
+                keys.remove(key);
+            });
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
