@@ -1964,15 +1964,17 @@ function(exitSelection) {
     //  going away from the '$dataKeys' Array to avoid pollution.
 
     keys = this.get('$dataKeys');
-    keyFunc = this.d3KeyFunction();
+    if (TP.notEmpty(keys)) {
+        keyFunc = this.d3KeyFunction();
 
-    exitSelection.each(
-        function(data, index) {
-            var key;
+        exitSelection.each(
+            function(data, index) {
+                var key;
 
-            key = TP.isCallable(keyFunc) ? keyFunc(data, index) : index;
-            keys.remove(key);
-        });
+                key = TP.isCallable(keyFunc) ? keyFunc(data, index) : index;
+                keys.remove(key);
+            });
+    }
 
     return this.callNextMethod();
 });
