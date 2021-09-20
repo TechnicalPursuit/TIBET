@@ -7,7 +7,7 @@
     <div tibet:assembly="xctrls:table" class="scroller">
         <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
             <xctrls:content tibet:pelem="choices" class="noselect">
-            {{$SOURCE.(./*[local-name() != 'template'])}}
+            {{$SOURCE.(./*[local-name() != 'template' and not(@tibet:assembly = 'xctrls:table')])}}
             </xctrls:content>
         </tibet:group>
         {{$SOURCE.(./*[local-name() = 'template'])}}
