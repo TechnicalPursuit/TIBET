@@ -836,7 +836,10 @@ function(aSpecifier) {
     if (!TP.isURIString(specifier, true)) {
         url = TP.boot.$moduleBareSpecMap[specifier];
         if (TP.boot.$isEmpty(url)) {
-            //  ERROR
+            this.raise(
+                'TP.sig.URINotFound',
+                'No entry for bare specifier: ' + specifier);
+            return TP.extern.Promise.reject(new Error('InvalidURI'));
         }
         url = TP.uc(url);
     } else {
