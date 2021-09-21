@@ -809,7 +809,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('importModule',
-function(aSpecifier, aRequest) {
+function(aSpecifier) {
 
     /**
      * @method importModule
@@ -818,9 +818,6 @@ function(aSpecifier, aRequest) {
      *     callback.
      * @param {TP.uri.URI|String} aSpecifier A TP.uri.URI or String referencing
      *     the module location.
-     * @param {TP.sig.Request|TP.core.Hash} [aRequest] A optional set of request
-     *     parameters. The only meaningful one here is 'callback' which should
-     *     point to a function to call on complete.
      * @returns {Promise} A promise which resolves based on success.
      */
 
