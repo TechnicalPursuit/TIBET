@@ -9213,8 +9213,8 @@ TP.boot.$moduleImport = async function(jsSrc, srcUrl) {
     //  that import into a Blob URL and replace the URL in the module text.
     return replaceAsync(
         jsSrc,
-        // Find anything that looks like an import.
-        /(from\s+|import\s+)['"](.+?)['"]/g,
+        //  Find anything that looks like an import.
+        /(from\s+|import\s+)['"](.+?)['"](;|\r\n|\r|\n)/g,
         async function(unmodified, action, originalSpecifier) {
             var specifier,
 
