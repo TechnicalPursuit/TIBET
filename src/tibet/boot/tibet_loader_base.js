@@ -9124,6 +9124,14 @@ TP.boot.$moduleImport = async function(jsSrc, srcUrl) {
     var replaceAsync,
         createModuleScript;
 
+    //  If there is already an entry for the source URL in the blob URL map,
+    //  then it has already been imported. Return here.
+    //  NB: This is important! Otherwise, we end up with the same module
+    //  imported multiple times and that can cause real problems!
+    if (TP.boot.$moduleBlobURLMap[srcUrl]) {
+        return;
+    }
+
     //  A generic replace Function for use in a String replace call that can
     //  handle async operations.
     replaceAsync = function(sourceStr, re, callback) {
