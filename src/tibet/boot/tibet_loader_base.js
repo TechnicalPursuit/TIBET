@@ -9243,7 +9243,9 @@ TP.boot.$moduleImport = async function(jsSrc, srcUrl) {
                 fullUrl = TP.boot.$moduleBareSpecMap[specifier];
                 if (TP.boot.$isEmpty(fullUrl)) {
                     //  ERROR: Couldn't find a matching URL for the specifier.
-                    throw new Error('No concrete URL for: ' + specifier);
+                    throw new Error('No concrete URL for: ' +
+                                    specifier +
+                                    ' when importing: ' + srcUrl);
                 }
             } else {
                 //  Compute the full URL of the import URL relative to the
