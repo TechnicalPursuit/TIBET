@@ -536,6 +536,53 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.editor.Inst.defineMethod('setExtendedKeyMap',
+function(aKeyboardMap) {
+
+    /**
+     * @method setExtendedKeyMap
+     * @summary Sets the supplied keyboard map as the 'extended map' on the
+     *     editor.
+     * @param {Object[]} aKeyboardMap An Array of POJOs that describe the keys.
+     * @returns {TP.xctrls.editor} The receiver.
+     */
+
+    var modules,
+
+        tabKeyMap,
+
+        editorObj,
+        keymapCompartment;
+
+    //  Bring in the CodeMirror modules and grab the slots that matter to us.
+    modules = this.getType().get('$cmModules');
+
+    const {keymap} = modules.at('@codemirror/view');
+
+    editorObj = this.$get('$editorObj');
+    if (TP.isValid(editorObj)) {
+
+        //  Make sure that we have a valid keymap dynamic configuration
+        //  'compartment'.
+        keymapCompartment = this.$get('$keymapCompartment');
+        if (TP.isValid(keymapCompartment)) {
+
+            //  Grab our keymap that we set up to map the Tab key to insert
+            //  tabs. We consider this to be 'built-in' behavior.
+            tabKeyMap = this.$get('$tabKeyMap');
+
+            editorObj.dispatch({
+                effects: keymapCompartment.reconfigure(
+                                keymap.of([...aKeyboardMap, ...tabKeyMap]))
+            });
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.editor.Inst.defineMethod('setShowLineNumbers',
 function(shouldShow) {
 
@@ -806,53 +853,6 @@ function() {
     wholeTheme = TP.ac(theme, highlightStyle);
 
     return wholeTheme;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.editor.Inst.defineMethod('setExtendedKeyMap',
-function(aKeyboardMap) {
-
-    /**
-     * @method setExtendedKeyMap
-     * @summary Sets the supplied keyboard map as the 'extended map' on the
-     *     editor.
-     * @param {Object[]} aKeyboardMap An Array of POJOs that describe the keys.
-     * @returns {TP.xctrls.editor} The receiver.
-     */
-
-    var modules,
-
-        tabKeyMap,
-
-        editorObj,
-        keymapCompartment;
-
-    //  Bring in the CodeMirror modules and grab the slots that matter to us.
-    modules = this.getType().get('$cmModules');
-
-    const {keymap} = modules.at('@codemirror/view');
-
-    editorObj = this.$get('$editorObj');
-    if (TP.isValid(editorObj)) {
-
-        //  Make sure that we have a valid keymap dynamic configuration
-        //  'compartment'.
-        keymapCompartment = this.$get('$keymapCompartment');
-        if (TP.isValid(keymapCompartment)) {
-
-            //  Grab our keymap that we set up to map the Tab key to insert
-            //  tabs. We consider this to be 'built-in' behavior.
-            tabKeyMap = this.$get('$tabKeyMap');
-
-            editorObj.dispatch({
-                effects: keymapCompartment.reconfigure(
-                                keymap.of([...aKeyboardMap, ...tabKeyMap]))
-            });
-        }
-    }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
