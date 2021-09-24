@@ -63,7 +63,13 @@ function() {
     TP.sys.importModules(
         TP.ac(
             '@codemirror/basic-setup',
+            '@codemirror/lang-css',
+            '@codemirror/lang-html',
             '@codemirror/lang-javascript',
+            '@codemirror/lang-json',
+            '@codemirror/lang-markdown',
+            '@codemirror/lang-python',
+            '@codemirror/lang-xml',
             '@codemirror/highlight',
             '@codemirror/commands',
             '@codemirror/state',
@@ -152,8 +158,18 @@ function(textContent, language, callback) {
      *     of an instance of an editor to highlight the supplied String.
      * @param {String} textContent The content to 'mark up' with CodeMirror
      *     highlighting.
-     * @param {Language} language A CodeMirror language object. This will
-     *     default to JavaScript if one is not supplied.
+     * @param {Language|String} language A CodeMirror language object. If this
+     *     parameter one of the following Strings, this method will try to load
+     *     the proper language module for that module:
+     *          CSS
+     *          HTML
+     *          JAVASCRIPT
+     *          JSON
+     *          MARKDOWN
+     *          PYTHON
+     *          XML
+     *     This parameterm will default to the JavaScript language if this
+     *     parameter is null.
      * @param {Function} callback The callback function that will be invoked for
      *     each token.
      */
@@ -171,6 +187,39 @@ function(textContent, language, callback) {
 
     if (TP.notValid(language)) {
         ({javascriptLanguage: lang} = modules.at('@codemirror/lang-javascript'));
+    } else if (TP.isString(language)) {
+        switch (language) {
+            case 'CSS':
+                ({cssLanguage: lang} =
+                                modules.at('@codemirror/lang-css'));
+                break;
+            case 'HTML':
+                ({htmlLanguage: lang} =
+                                modules.at('@codemirror/lang-html'));
+                break;
+            case 'JAVASCRIPT':
+                ({javascriptLanguage: lang} =
+                                modules.at('@codemirror/lang-javascript'));
+                break;
+            case 'JSON':
+                ({jsonLanguage: lang} =
+                                modules.at('@codemirror/lang-json'));
+                break;
+            case 'MARKDOWN':
+                ({markdownLanguage: lang} =
+                                modules.at('@codemirror/lang-markdown'));
+                break;
+            case 'PYTHON':
+                ({pythonLanguage: lang} =
+                                modules.at('@codemirror/lang-python'));
+                break;
+            case 'XML':
+                ({xmlLanguage: lang} =
+                                modules.at('@codemirror/lang-xml'));
+                break;
+            default:
+                break;
+        }
     } else {
         lang = language;
     }

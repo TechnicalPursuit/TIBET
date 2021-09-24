@@ -38,7 +38,13 @@
     },
     "dependencies": {
         "@codemirror/basic-setup": "^0.19.0",
+        "@codemirror/lang-css": "^0.19.3",
+        "@codemirror/lang-html": "^0.19.3",
         "@codemirror/lang-javascript": "^0.19.2",
+        "@codemirror/lang-json": "^0.19.1",
+        "@codemirror/lang-markdown": "^0.19.1",
+        "@codemirror/lang-python": "^0.19.2",
+        "@codemirror/lang-xml": "^0.19.2",
         "@codemirror/panel": "^0.19.0",
         "@discoveryjs/discovery": "^1.0.0-beta.61",
         "ace-builds": "^1.4.12",

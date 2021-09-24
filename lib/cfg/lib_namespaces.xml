@@ -414,8 +414,6 @@
     <script type="module" specifier="crelt" src="~lib_npm/@codemirror/search/node_modules/crelt/index.es.js"/>
     <script type="module" specifier="@codemirror/search" src="~lib_npm/@codemirror/search/dist/index.js"/>
 
-    <script type="module" specifier="@codemirror/highlight" src="~lib_npm/@codemirror/highlight/dist/index.js"/>
-
     <script type="module" specifier="@codemirror/tooltip" src="~lib_npm/@codemirror/tooltip/dist/index.js"/>
     <script type="module" specifier="@codemirror/autocomplete" src="~lib_npm/@codemirror/autocomplete/dist/index.js"/>
     <script type="module" specifier="@codemirror/comment" src="~lib_npm/@codemirror/comment/dist/index.js"/>
@@ -423,8 +421,27 @@
     <script type="module" specifier="@codemirror/highlight" src="~lib_npm/@codemirror/highlight/dist/index.js"/>
     <script type="module" specifier="@codemirror/lint" src="~lib_npm/@codemirror/lint/dist/index.js"/>
 
+
+    <script type="module" specifier="@lezer/css" src="~lib_npm/@lezer/css/dist/index.es.js"/>
+    <script type="module" specifier="@codemirror/lang-css" src="~lib_npm/@codemirror/lang-css/dist/index.js"/>
+
+    <script type="module" specifier="@lezer/html" src="~lib_npm/@lezer/html/dist/index.es.js"/>
+    <script type="module" specifier="@codemirror/lang-html" src="~lib_npm/@codemirror/lang-html/dist/index.js"/>
+
     <script type="module" specifier="@lezer/javascript" src="~lib_npm/@lezer/javascript/dist/index.es.js"/>
     <script type="module" specifier="@codemirror/lang-javascript" src="~lib_npm/@codemirror/lang-javascript/dist/index.js"/>
+
+    <script type="module" specifier="@lezer/json" src="~lib_npm/@lezer/json/dist/index.es.js"/>
+    <script type="module" specifier="@codemirror/lang-json" src="~lib_npm/@codemirror/lang-json/dist/index.js"/>
+
+    <script type="module" specifier="@lezer/markdown" src="~lib_npm/@lezer/markdown/dist/index.js"/>
+    <script type="module" specifier="@codemirror/lang-markdown" src="~lib_npm/@codemirror/lang-markdown/dist/index.js"/>
+
+    <script type="module" specifier="@lezer/python" src="~lib_npm/@lezer/python/dist/index.es.js"/>
+    <script type="module" specifier="@codemirror/lang-python" src="~lib_npm/@codemirror/lang-python/dist/index.js"/>
+
+    <script type="module" specifier="@lezer/xml" src="~lib_npm/@lezer/xml/dist/index.es.js"/>
+    <script type="module" specifier="@codemirror/lang-xml" src="~lib_npm/@codemirror/lang-xml/dist/index.js"/>
 
     <script type="module" specifier="@codemirror/basic-setup" src="~lib_npm/@codemirror/basic-setup/dist/index.js"/>
 

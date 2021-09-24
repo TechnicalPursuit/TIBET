@@ -225,7 +225,7 @@ function(anObject, optFormat) {
         obj = anObject;
     }
 
-    if (TP.isValid(TP.extern.CodeMirror)) {
+    if (TP.isValid(TP.xctrls.editor)) {
         str = this.runJSModeOn(obj);
 
         str = str.replace(/\n/g, '<br/>');
@@ -327,7 +327,7 @@ function(anObject, optFormat) {
     }
 
     try {
-        if (TP.isValid(TP.extern.CodeMirror)) {
+        if (TP.isValid(TP.xctrls.editor)) {
             str = this.runXMLModeOn(anObject);
             str = str.replace(/\n/g, '<br/>');
 
@@ -746,7 +746,7 @@ function(anObject, optFormat) {
 TP.lama.pp.Type.defineMethod('fromTP_core_JSONContent',
 function(anObject, optFormat) {
 
-    if (TP.isValid(TP.extern.CodeMirror)) {
+    if (TP.isValid(TP.xctrls.editor)) {
         return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
                     ' class="lama_pp TP_core_JSONContent" tibet:no-compile="true">' +
                     this.runFormattedJSONModeOn(anObject) +
@@ -860,7 +860,7 @@ function(anObject, optFormat) {
         void 0;
     }
 
-    if (TP.isValid(TP.extern.CodeMirror)) {
+    if (TP.isValid(TP.xctrls.editor)) {
         str = this.runXMLModeOn(TP.unwrap(anObject));
         str = str.replace(/\n/g, '<br/>');
     } else {
@@ -1025,12 +1025,10 @@ function(anObject) {
     var str;
 
     str = '';
-    if (TP.isValid(TP.extern.CodeMirror)) {
-        TP.extern.CodeMirror.runMode(
+    if (TP.isValid(TP.xctrls.editor)) {
+        TP.xctrls.editor.runMode(
             TP.str(anObject),
-            {
-                name: 'css'
-            },
+            'CSS',
             function(text, style) {
 
                 if (style) {
@@ -1062,7 +1060,7 @@ function(anObject, optFormat) {
 
         plainText;
 
-    if (TP.isValid(TP.extern.CodeMirror)) {
+    if (TP.isValid(TP.xctrls.editor)) {
 
         str = '';
         level = 0;
@@ -1086,11 +1084,9 @@ function(anObject, optFormat) {
             plainText = false;
         }
 
-        TP.extern.CodeMirror.runMode(
+        TP.xctrls.editor.runMode(
             anObject.asString(),
-            {
-                name: 'css'
-            },
+            'CSS',
             function(text, style) {
 
                 //  Collapse a brace followed by a comma with a brace coming
@@ -1144,12 +1140,10 @@ function(anObject) {
     var str;
 
     str = '';
-    if (TP.isValid(TP.extern.CodeMirror)) {
-        TP.extern.CodeMirror.runMode(
+    if (TP.isValid(TP.xctrls.editor)) {
+        TP.xctrls.editor.runMode(
             TP.str(anObject),
-            {
-                name: 'javascript'
-            },
+            'JAVASCRIPT',
             function(text, style) {
 
                 if (style) {
@@ -1188,7 +1182,7 @@ function(anObject, optFormat, valueFunction) {
         shouldPushKey,
         shouldPopKey;
 
-    if (TP.isValid(TP.extern.CodeMirror)) {
+    if (TP.isValid(TP.xctrls.editor)) {
 
         //  Grab the supplied value function. If one isn't supplied, initialize
         //  one that just escapes what is handed to it and returns that.
@@ -1228,11 +1222,9 @@ function(anObject, optFormat, valueFunction) {
         shouldPushKey = true;
         shouldPopKey = true;
 
-        TP.extern.CodeMirror.runMode(
+        TP.xctrls.editor.runMode(
             anObject.asString(),
-            {
-                name: 'application/ld+json'
-            },
+            'JSON',
             function(text, style) {
 
                 //  Collapse a brace followed by a comma with a brace coming
@@ -1312,12 +1304,10 @@ function(anObject) {
     var str;
 
     str = '';
-    if (TP.isValid(TP.extern.CodeMirror)) {
-        TP.extern.CodeMirror.runMode(
+    if (TP.isValid(TP.xctrls.editor)) {
+        TP.xctrls.editor.runMode(
             TP.str(anObject),
-            {
-                name: 'application/xml'
-            },
+            'XML',
             function(text, style) {
 
                 if (style) {
