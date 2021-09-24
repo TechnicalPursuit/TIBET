@@ -388,6 +388,50 @@
     <package src="xctrls/TP.xctrls.tooltip/TP.xctrls.tooltip.xml" config="base"/>
     <package src="xctrls/TP.xctrls.wayfinder/TP.xctrls.wayfinder.xml" config="base"/>
 
+    <script type="module" specifier="@codemirror/rangeset" src="~lib_npm/@codemirror/rangeset/dist/index.js"/>
+    <script type="module" specifier="@codemirror/text" src="~lib_npm/@codemirror/text/dist/index.js"/>
+
+    <script type="module" specifier="style-mod" src="~lib_npm/@codemirror/view/node_modules/style-mod/src/style-mod.js"/>
+    <script type="module" specifier="w3c-keyname" src="~lib_npm/@codemirror/view/node_modules/w3c-keyname/index.es.js"/>
+    <script type="module" specifier="@codemirror/view" src="~lib_npm/@codemirror/view/dist/index.js"/>
+
+    <script type="module" specifier="@codemirror/state" src="~lib_npm/@codemirror/state/dist/index.js"/>
+
+    <script type="module" specifier="@codemirror/history" src="~lib_npm/@codemirror/history/dist/index.js"/>
+    <script type="module" specifier="@codemirror/fold" src="~lib_npm/@codemirror/fold/dist/index.js"/>
+
+    <script type="module" specifier="@lezer/common" src="~lib_npm/@lezer/common/dist/index.js"/>
+    <script type="module" specifier="@lezer/lr" src="~lib_npm/@lezer/lr/dist/index.js"/>
+    <script type="module" specifier="@codemirror/language" src="~lib_npm/@codemirror/language/dist/index.js"/>
+
+    <script type="module" specifier="@codemirror/gutter" src="~lib_npm/@codemirror/gutter/dist/index.js"/>
+    <script type="module" specifier="@codemirror/commands" src="~lib_npm/@codemirror/commands/dist/index.js"/>
+    <script type="module" specifier="@codemirror/matchbrackets" src="~lib_npm/@codemirror/matchbrackets/dist/index.js"/>
+    <script type="module" specifier="@codemirror/closebrackets" src="~lib_npm/@codemirror/closebrackets/dist/index.js"/>
+
+    <script type="module" specifier="@codemirror/panel" src="~lib_npm/@codemirror/panel/dist/index.js"/>
+
+    <script type="module" specifier="crelt" src="~lib_npm/@codemirror/search/node_modules/crelt/index.es.js"/>
+    <script type="module" specifier="@codemirror/search" src="~lib_npm/@codemirror/search/dist/index.js"/>
+
+    <script type="module" specifier="@codemirror/highlight" src="~lib_npm/@codemirror/highlight/dist/index.js"/>
+
+    <script type="module" specifier="@codemirror/tooltip" src="~lib_npm/@codemirror/tooltip/dist/index.js"/>
+    <script type="module" specifier="@codemirror/autocomplete" src="~lib_npm/@codemirror/autocomplete/dist/index.js"/>
+    <script type="module" specifier="@codemirror/comment" src="~lib_npm/@codemirror/comment/dist/index.js"/>
+    <script type="module" specifier="@codemirror/rectangular-selection" src="~lib_npm/@codemirror/rectangular-selection/dist/index.js"/>
+    <script type="module" specifier="@codemirror/highlight" src="~lib_npm/@codemirror/highlight/dist/index.js"/>
+    <script type="module" specifier="@codemirror/lint" src="~lib_npm/@codemirror/lint/dist/index.js"/>
+
+    <script type="module" specifier="@lezer/javascript" src="~lib_npm/@lezer/javascript/dist/index.es.js"/>
+    <script type="module" specifier="@codemirror/lang-javascript" src="~lib_npm/@codemirror/lang-javascript/dist/index.js"/>
+
+    <script type="module" specifier="@codemirror/basic-setup" src="~lib_npm/@codemirror/basic-setup/dist/index.js"/>
+
+    <script type="module" specifier="@codemirror/theme-one-dark" src="~lib_npm/@codemirror/theme-one-dark/dist/index.js"/>
+
+    <package src="xctrls/TP.xctrls.editor/TP.xctrls.editor.xml" config="base"/>
+
     <!-- BEGIN xctrls:codeeditor -->
 
     <script src="~lib_deps/codemirror/lib/codemirror.js" no-lint="no-lint" />

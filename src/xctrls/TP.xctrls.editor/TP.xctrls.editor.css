@@ -1,0 +1,19 @@
+/*
+    CSS styles for the 'xctrls:editor' control.
+*/
+
+@import url("../TP.xctrls_common.css");
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+
+xctrls|editor {
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
