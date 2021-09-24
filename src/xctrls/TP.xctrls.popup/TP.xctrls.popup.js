@@ -322,8 +322,8 @@ function(aSignal) {
             //  If the target element isn't the trigger element and the trigger
             //  element doesn't contain the target element, then the user
             //  'clicked away' from the trigger.
-            clickAway = (triggerElem !== targetElem &&
-                            !triggerElem.contains(targetElem));
+            clickAway = triggerElem !== targetElem &&
+                            !triggerElem.contains(targetElem);
 
             if (this.get('isTriggeringSignal') && !clickAway) {
                 shouldClose = false;
