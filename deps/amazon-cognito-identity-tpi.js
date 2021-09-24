@@ -8312,38 +8312,29 @@ var Client = /*#__PURE__*/function () {
       // eslint-disable-next-line no-underscore-dangle
 
       var code = (data.__type || data.code).split('#').pop();
-      var error = {
-        code: code,
-        name: code,
-        message: data.message || data.Message || null
-      };
+      var error = new Error(data.message || data.Message || null);
+      error.name = code;
+      error.code = code;
       return callback(error);
     })["catch"](function (err) {
       // first check if we have a service error
       if (response && response.headers && response.headers.get('x-amzn-errortype')) {
         try {
           var code = response.headers.get('x-amzn-errortype').split(':')[0];
-          var error = {
-            code: code,
-            name: code,
-            statusCode: response.status,
-            message: response.status ? response.status.toString() : null
-          };
+          var error = new Error(response.status ? response.status.toString() : null);
+          error.code = code;
+          error.name = code;
+          error.statusCode = response.status;
           return callback(error);
         } catch (ex) {
           return callback(err);
         } // otherwise check if error is Network error
 
       } else if (err instanceof Error && err.message === 'Network error') {
-        var _error = {
-          code: 'NetworkError',
-          name: err.name,
-          message: err.message
-        };
-        return callback(_error);
-      } else {
-        return callback(err);
+        err.code = 'NetworkError';
       }
+
+      return callback(err);
     });
   };
 
