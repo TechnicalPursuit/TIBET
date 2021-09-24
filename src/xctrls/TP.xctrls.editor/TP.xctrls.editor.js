@@ -67,7 +67,6 @@ function() {
         TP.ac(
             '@codemirror/basic-setup',
             '@codemirror/lang-javascript',
-            '@codemirror/theme-one-dark',
             '@codemirror/highlight',
             '@codemirror/commands',
             '@codemirror/state',
@@ -590,6 +589,7 @@ function() {
     var modules,
         tabKeyMap,
         keymapCompartment,
+        theme,
         editorObj;
 
     //  Bring in the CodeMirror modules and grab the slots that matter to us.
@@ -598,7 +598,6 @@ function() {
     const {EditorState, EditorView, basicSetup} =
                                     modules.at('@codemirror/basic-setup'),
             {javascript} = modules.at('@codemirror/lang-javascript'),
-            {oneDark} = modules.at('@codemirror/theme-one-dark'),
             {insertTab} = modules.at('@codemirror/commands'),
             {Compartment} = modules.at('@codemirror/state'),
             {keymap} = modules.at('@codemirror/view');
@@ -617,6 +616,8 @@ function() {
     keymapCompartment = new Compartment();
     this.$set('$keymapCompartment', keymapCompartment);
 
+    theme = this.setupTheme();
+
     //  Set up CodeMirror editor view and state.
     editorObj = new EditorView({
         state: EditorState.create({
@@ -624,7 +625,7 @@ function() {
                 basicSetup,
                 keymapCompartment.of(keymap.of(tabKeyMap)),
                 javascript(),
-                oneDark
+                theme
             ]
         }),
         root: this.getNativeDocument(),
@@ -642,6 +643,172 @@ function() {
     this.dispatch('TP.sig.DOMReady');
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.editor.Inst.defineMethod('setupTheme',
+function() {
+
+    /**
+     * @method setupTheme
+     * @summary Sets up an inline theme for use with CodeMirror.
+     * @returns {Object[]} An Array of POJOs in the format that CodeMirror likes
+     *     them that describe the style/theme.
+     */
+
+    var modules,
+
+        theme,
+        highlightStyle,
+
+        wholeTheme;
+
+    //  Bring in the CodeMirror modules and grab the slots that matter to us.
+    modules = this.getType().get('$cmModules');
+
+    const {EditorView} = modules.at('@codemirror/basic-setup'),
+            {HighlightStyle, tags} = modules.at('@codemirror/highlight');
+
+    theme = EditorView.theme({
+        '&': {
+            color: '#abb2bf',
+            backgroundColor: '#282c34'
+        },
+        '.cm-content': {
+            caretColor: '#528bff'
+        },
+        '&.cm-focused .cm-cursor': {
+            borderLeftColor: '#528bff'
+        },
+        '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
+            backgroundColor: '#3E4451'
+        },
+        '.cm-panels': {
+            backgroundColor: '#21252b', color: '#abb2bf'
+        },
+        '.cm-panels.cm-panels-top': {
+            borderBottom: '2px solid black'
+        },
+        '.cm-panels.cm-panels-bottom': {
+            borderTop: '2px solid black'
+        },
+        '.cm-searchMatch': {
+            backgroundColor: '#72a1ff59',
+            outline: '1px solid #457dff'
+        },
+        '.cm-searchMatch.cm-searchMatch-selected': {
+            backgroundColor: '#6199ff2f'
+        },
+        '.cm-activeLine': {
+            backgroundColor: '#2c313a'
+        },
+        '.cm-selectionMatch': {
+            backgroundColor: '#aafe661a'
+        },
+        '.cm-matchingBracket, .cm-nonmatchingBracket': {
+            backgroundColor: '#bad0f847',
+            outline: '1px solid #515a6b'
+        },
+        '.cm-gutters': {
+            backgroundColor: '#282c34',
+            color: '#7d8799',
+            border: 'none'
+        },
+        '.cm-activeLineGutter': {
+            backgroundColor: '#2c313a'
+        },
+        '.cm-foldPlaceholder': {
+            backgroundColor: 'transparent',
+            border: 'none',
+            color: '#ddd'
+        },
+        '.cm-tooltip': {
+            border: '1px solid #181a1f',
+            backgroundColor: '#21252b'
+        },
+        '.cm-tooltip-autocomplete': {
+            '& > ul > li[aria-selected]': {
+                backgroundColor: '#2c313a',
+                color: '#abb2bf'
+            }
+        }
+    }, {
+        dark: true
+    });
+
+    highlightStyle = HighlightStyle.define([
+        {
+            tag: tags.keyword,
+            color: '#c678dd'
+        },
+        {
+            tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
+            color: '#e06c75'
+        },
+        {
+            tag: [tags.function(tags.variableName), tags.labelName],
+            color: '#61afef'
+        },
+        {
+            tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+            color: '#d19a66'
+        },
+        {
+            tag: [tags.definition(tags.name), tags.separator],
+            color: '#abb2bf'
+        },
+        {
+            tag: [tags.typeName, tags.className, tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+            color: '#e5c07b'
+        },
+        {
+            tag: [tags.operator, tags.operatorKeyword, tags.url, tags.escape, tags.regexp, tags.link, tags.special(tags.string)],
+            color: '#56b6c2'
+        },
+        {
+            tag: [tags.meta, tags.comment],
+            color: '#7d8799'
+        },
+        {
+            tag: tags.strong,
+            fontWeight: 'bold'
+        },
+        {
+            tag: tags.emphasis,
+            fontStyle: 'italic'
+        },
+        {
+            tag: tags.strikethrough,
+            textDecoration: 'line-through'
+        },
+        {
+            tag: tags.link,
+            color: '#7d8799',
+            textDecoration: 'underline'
+        },
+        {
+            tag: tags.heading,
+            fontWeight: 'bold',
+            color: '#e06c75'
+        },
+        {
+            tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+            color: '#d19a66'
+        },
+        {
+            tag: [tags.processingInstruction, tags.string, tags.inserted],
+            color: '#98c379'
+        },
+        {
+            tag: tags.invalid,
+            color: '#ffffff'
+        }
+    ]);
+
+    wholeTheme = TP.ac(theme, highlightStyle);
+
+    return wholeTheme;
 });
 
 //  ------------------------------------------------------------------------

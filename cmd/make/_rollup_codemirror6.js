@@ -9,8 +9,6 @@
 
         make.sh.exec('npm install @codemirror/panel');
 
-        make.sh.exec('npm install @codemirror/theme-one-dark');
-
         //  ---
 
         npmdir = make.CLI.expandPath('~npm_dir');

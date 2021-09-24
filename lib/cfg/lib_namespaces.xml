@@ -428,8 +428,6 @@
 
     <script type="module" specifier="@codemirror/basic-setup" src="~lib_npm/@codemirror/basic-setup/dist/index.js"/>
 
-    <script type="module" specifier="@codemirror/theme-one-dark" src="~lib_npm/@codemirror/theme-one-dark/dist/index.js"/>
-
     <package src="xctrls/TP.xctrls.editor/TP.xctrls.editor.xml" config="base"/>
 
     <!-- BEGIN xctrls:codeeditor -->
