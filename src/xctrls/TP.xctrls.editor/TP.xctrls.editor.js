@@ -71,7 +71,7 @@ function() {
             '@codemirror/highlight',
             '@codemirror/commands',
             '@codemirror/state',
-            '@codemirror/view',
+            '@codemirror/view'
         )).then(
         function(modules) {
             this.set('$cmModules', modules);
@@ -193,7 +193,7 @@ function(textContent, language, callback) {
             pos = to;
         });
 
-    if (pos != tree.length) {
+    if (pos !== tree.length) {
         callback(textContent.slice(pos, tree.length), '', pos, tree.length);
     }
 });
@@ -601,7 +601,7 @@ function() {
             {oneDark} = modules.at('@codemirror/theme-one-dark'),
             {insertTab} = modules.at('@codemirror/commands'),
             {Compartment} = modules.at('@codemirror/state'),
-            {keymap, KeyBinding} = modules.at('@codemirror/view');
+            {keymap} = modules.at('@codemirror/view');
 
     //  Define a custom key map that inserts tabs when the Tab key is pressed.
     tabKeyMap = [
