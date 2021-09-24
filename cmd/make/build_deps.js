@@ -25,7 +25,7 @@
             '_rollup_aws_sdk',
             '_rollup_bluebird',
             '_rollup_codemirror',   //  For now, we need both of these
-            //  '_rollup_codemirror6',
+            '_rollup_codemirror6',
             '_rollup_cryptojs',
             '_rollup_d3',
             //  '_rollup_discovery',  For now, we use a manually-copied file
