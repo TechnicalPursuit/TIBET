@@ -12,6 +12,7 @@
 <config id="properties">
     <!-- put tag-specific property tags here -->
     <property name="path.TP.xctrls.editor.style" value="~TP.xctrls.editor/TP.xctrls.editor.css"/>
+    <property name="path.TP.xctrls.editor.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.editor_tpi.css"/>
 </config>
 
 <config id="scripts">

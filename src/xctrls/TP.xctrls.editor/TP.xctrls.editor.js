@@ -45,9 +45,6 @@ TP.xctrls.editor.defineAttribute('MAX_LINES', 1000);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  Note how this property is TYPE_LOCAL, by design.
-TP.xctrls.editor.defineAttribute('themeURI', TP.NO_RESULT);
-
 //  The set of CodeMirror modules that will be loaded to support our operation.
 TP.xctrls.editor.Type.defineAttribute('$cmModules');
 

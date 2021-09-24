@@ -230,6 +230,21 @@ xctrls|dialog {
     --xctrls-dialog-footer-background-color: #eee;
 }
 
+xctrls|editor {
+
+    /* xctrls|editor variables */
+
+    --xctrls-editor-border-width: 1px;
+    --xctrls-editor-border-style: solid;
+    --xctrls-editor-border-radius: 3px;
+
+    --xctrls-editor-background-color-normal: white;
+    --xctrls-editor-background-color-hover: cornsilk;
+    --xctrls-editor-background-color-focus: gold;
+    --xctrls-editor-background-color-active: gold;
+    --xctrls-editor-background-color-disabled: #eee;
+}
+
 xctrls|imageitem {
 
     /* xctrls|imageitem variables */

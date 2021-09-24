@@ -1,0 +1,43 @@
+/*
+    CSS styles for 'xctrls:editor' controls for the 'tpi' theme.
+*/
+
+@import url("~lib_src/xctrls/themes/TP.xctrls.editor_all.css");
+
+@namespace url("http://www.w3.org/1999/xhtml");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+
+/* The editor */
+*|*[data-theme~="tpi"] xctrls|editor {
+
+    border-width: var(--xctrls-editor-border-width);
+    border-style: var(--xctrls-editor-border-style);
+    border-radius: var(--xctrls-editor-border-radius);
+
+    background-color: var(--xctrls-editor-background-color-normal);
+}
+
+/* Hovering over the editor */
+*|*[data-theme~="tpi"] xctrls|editor:hover {
+
+    background-color: var(--xctrls-editor-background-color-hover);
+}
+
+/* Focusing on the editor */
+*|*[data-theme~="tpi"] xctrls|editor[pclass|focus] {
+
+    background-color: var(--xctrls-editor-background-color-focus);
+}
+
+/* Clicking down on the editor */
+*|*[data-theme~="tpi"] xctrls|editor[pclass|active] {
+
+    background-color: var(--xctrls-editor-background-color-active);
+}
+
+/* The editor is disabled */
+*|*[data-theme~="tpi"] xctrls|editor[pclass|disabled] {
+
+    background-color: var(--xctrls-editor-background-color-disabled);
+}
