@@ -165,6 +165,10 @@
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.dialog-TP.xctrls.dialog.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.dialog_all.css.js"/>
     <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.dialog_tpi.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.editor-TP.xctrls.editor.xhtml.js"/>
+    <script src="~lib_build/lib_src-xctrls-TP.xctrls.editor-TP.xctrls.editor.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-TP.xctrls.editor_all.css.js"/>
+    <script src="~lib_build/lib_src-xctrls-themes-tpi-TP.xctrls.editor_tpi.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.hint-TP.xctrls.hint.xhtml.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.hint-TP.xctrls.hint.css.js"/>
     <script src="~lib_build/lib_src-xctrls-TP.xctrls.imageitem-TP.xctrls.imageitem.xhtml.js"/>
