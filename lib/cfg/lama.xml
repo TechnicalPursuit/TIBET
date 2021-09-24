@@ -185,6 +185,15 @@
         ]]>
     </script>
 
+    <resource href="~lib_deps/ace/ace-tpi.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/mode-javascript.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/mode-json.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/worker-javascript.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/worker-json.js" no-inline="true"/>
+    <resource href="~lib_deps/ace/theme-dawn.js" no-inline="true"/>
+
+    <package src="~lib_src/xctrls/TP.xctrls.codeeditor/TP.xctrls.codeeditor.xml" config="base"/>
+
     <resource href="~ide_root/xhtml/lama_framing.xhtml"/>
     <resource href="~ide_root/xhtml/lama_console_templates.xhtml"/>
 

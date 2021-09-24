@@ -11473,7 +11473,7 @@ function() {
     name = this.getResourceTypeName();
     prefix = this.getNamespacePrefix().toLowerCase();
 
-    //  e.g. style.TP.xctrls.codeeditor.extension => 'css'
+    //  e.g. style.TP.xctrls.editor.extension => 'css'
     key = 'style.' + name + '.extension';
     ext = TP.sys.getcfg(key);
 
