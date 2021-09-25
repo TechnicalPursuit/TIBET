@@ -662,7 +662,8 @@ function(startBay) {
         len,
         i;
 
-    existingBays = TP.byCSSPath(' xctrls|wayfinderitem', this);
+    //  Grab the wayfinder bays (*including* the filler bays).
+    existingBays = this.getInspectorBays(true);
     if (TP.isEmpty(existingBays)) {
         return this;
     }
@@ -1593,6 +1594,7 @@ function(aBayNum) {
     var inspectorBayContentItems,
         bayNum;
 
+    //  Grab the wayfinder bay content itemss (*including* the filler bays).
     if (TP.notEmpty(inspectorBayContentItems =
                     TP.byCSSPath(' xctrls|wayfinderitem > *', this))) {
 
@@ -2662,7 +2664,8 @@ function(startBay) {
         len,
         i;
 
-    existingBays = TP.byCSSPath(' xctrls|wayfinderitem', this);
+    //  Grab the wayfinder bays (*including* the filler bays).
+    existingBays = this.getInspectorBays(true);
     if (TP.isEmpty(existingBays)) {
         return this;
     }
@@ -2905,8 +2908,12 @@ function(itemLabel, aBayNum) {
         bayNum,
         bayContent,
 
+        inspectorBays,
+        bay,
+
         label;
 
+    //  Grab the wayfinder bay content itemss (*including* the filler bays).
     if (TP.notEmpty(inspectorBayContentItems =
                     TP.byCSSPath(' xctrls|wayfinderitem > *', this))) {
 
@@ -2919,6 +2926,10 @@ function(itemLabel, aBayNum) {
         }
 
         bayContent = inspectorBayContentItems.at(bayNum);
+
+        //  Grab the wayfinder bays (but not the filler bays).
+        inspectorBays = this.getInspectorBays();
+        bay = inspectorBays.at(bayNum);
 
         //  Sometimes entries come in with escaped slashes. Unescape that.
         label = TP.stringUnescapeSlashes(itemLabel);
