@@ -360,7 +360,8 @@ function(bayContent, bayConfig, process) {
     //  Configure the bay.
     this.configureBay(bay, bayConfig);
 
-    this.signal('WayfinderDidAddBay');
+    this.signal('WayfinderDidAddBay',
+                TP.hc('bay', bay, 'pathParts', this.get('selectedItems')));
 
     return bay;
 });
@@ -637,7 +638,8 @@ function(aBay) {
 
     aBay.empty();
 
-    this.signal('WayfinderDidEmptyBay');
+    this.signal('WayfinderDidEmptyBay',
+                TP.hc('bay', aBay, 'pathParts', this.get('selectedItems')));
 
     return this;
 });
@@ -719,16 +721,22 @@ function(info) {
     this.addFillerBaysIfNecessary();
 
     (function() {
+        var focusedBay;
+
         //  Scroll them to the end (of the real bays).
         this.scrollBaysToEnd();
-
-        this.signal('WayfinderDidFocus');
 
         //  Grab the wayfinder bays (but not the filler bays).
         inspectorBays = this.getInspectorBays();
         if (TP.notEmpty(inspectorBays)) {
-            inspectorBays.last().focus();
+            focusedBay = inspectorBays.last();
+            focusedBay.focus();
         }
+
+        this.signal(
+            'WayfinderDidFocus',
+            TP.hc('bay', focusedBay, 'pathParts', this.get('selectedItems')));
+
     }.bind(this)).queueAfterNextRepaint(this.getNativeWindow());
 
     return this;
@@ -757,11 +765,10 @@ function() {
     //  action.
     this.populateBayUsing(info, false);
 
+    //  This will focus the proper bay.
     this.finishUpdateAfterNavigation(info);
 
     this.get('selectedItems').empty();
-
-    this.signal('WayfinderDidFocus');
 
     return this;
 });
@@ -911,8 +918,6 @@ function(anInfo) {
         this.populateBayUsing(info);
 
         this.finishUpdateAfterNavigation(info);
-
-        this.signal('WayfinderDidFocus');
         */
 
         return this;
@@ -948,9 +953,8 @@ function(anInfo) {
 
         this.populateBayUsing(info);
 
+        //  This will focus the proper bay.
         this.finishUpdateAfterNavigation(info);
-
-        this.signal('WayfinderDidFocus');
 
         return this;
     } else if (TP.isValid(target) && TP.isEmpty(targetPath)) {
@@ -1293,10 +1297,9 @@ function(anInfo) {
         this.populateBayUsing(info, false);
     }
 
-    //  Note here how we use the last populated 'info' object
+    //  Note here how we use the last populated 'info' object.
+    //  This will focus the proper bay.
     this.finishUpdateAfterNavigation(info);
-
-    this.signal('WayfinderDidFocus');
 
     return this;
 });
@@ -2177,9 +2180,8 @@ function(info, createHistoryEntry) {
         }
 
         //  Make sure to update our toolbar, etc.
+        //  This will focus the proper bay.
         this.finishUpdateAfterNavigation(info);
-
-        this.signal('WayfinderDidFocus');
 
         return this;
     }
@@ -2359,7 +2361,8 @@ function(aBayNum) {
 
     TP.uc(bindLoc).setResource(data);
 
-    this.signal('WayfinderDidRefreshBay');
+    this.signal('WayfinderDidRefreshBay',
+                TP.hc('bay', bay, 'pathParts', this.get('selectedItems')));
 
     return this;
 });
@@ -2382,8 +2385,6 @@ function(scrollToLastBay) {
     if (TP.notFalse(scrollToLastBay)) {
         this.scrollBaysToEnd();
     }
-
-    this.signal('WayfinderDidReloadBay');
 
     return this;
 });
@@ -2450,7 +2451,8 @@ function(aBayNum) {
 
     this.populateBayUsing(info);
 
-    this.signal('WayfinderDidRepopulateBay');
+    this.signal('WayfinderDidRepopulateBay',
+                TP.hc('bay', bay, 'pathParts', this.get('selectedItems')));
 
     return this;
 });
@@ -2573,7 +2575,9 @@ function(aBay) {
 
             currentBay.setAttribute('filler', 'true');
 
-            this.signal('WayfinderDidRefreshBay');
+            this.signal('WayfinderDidRefreshBay',
+                TP.hc('bay', currentBay,
+                        'pathParts', this.get('selectedItems')));
         }
     }
 
@@ -2639,7 +2643,8 @@ function(aBay) {
     natBay = aBay.getNativeNode();
     TP.nodeDetach(natBay);
 
-    this.signal('WayfinderDidRemoveBay');
+    this.signal('WayfinderDidRemoveBay',
+                TP.hc('bay', aBay, 'pathParts', this.get('selectedItems')));
 
     return this;
 });
@@ -2737,7 +2742,8 @@ function(aBay, bayContent, bayConfig) {
 
     this.configureBay(aBay, bayConfig);
 
-    this.signal('WayfinderDidReplaceBay');
+    this.signal('WayfinderDidReplaceBay',
+                TP.hc('bay', aBay, 'pathParts', this.get('selectedItems')));
 
     return this;
 });
@@ -2822,8 +2828,8 @@ function(direction) {
             if (currentBay.isVisible(true)) {
                 computedBay = currentBay;
                 break;
+            }
         }
-    }
 
         eastEdgeX = computedBay.getOffsetRect().getEdgePoint(TP.EAST).getX();
 
@@ -2848,7 +2854,8 @@ function(direction) {
         inspectorElem.scrollLeft = newEdge;
     }
 
-    this.signal('WayfinderDidScroll');
+    this.signal('WayfinderDidScroll',
+                TP.hc('pathParts', this.get('selectedItems')));
 
     return this;
 });
@@ -2882,7 +2889,8 @@ function() {
 
     this.getNativeNode().scrollLeft = eastEdgeX - this.getWidth();
 
-    this.signal('WayfinderDidScroll');
+    this.signal('WayfinderDidScroll',
+                TP.hc('pathParts', this.get('selectedItems')));
 
     return this;
 });
@@ -2943,7 +2951,10 @@ function(itemLabel, aBayNum) {
         }
     }
 
-    this.signal('WayfinderDidSelectItem');
+    this.signal('WayfinderDidSelectItem',
+                TP.hc('itemText', label,
+                        'bay', bay,
+                        'pathParts', this.get('selectedItems')));
 
     return this;
 });
@@ -3140,9 +3151,8 @@ function(pathParts) {
     }
 
     //  Note here how we use the last populated 'info' object
+    //  This will focus the proper bay.
     this.finishUpdateAfterNavigation(info);
-
-    this.signal('WayfinderDidFocus');
 
     return this;
 });
