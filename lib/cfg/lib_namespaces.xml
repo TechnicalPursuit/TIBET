@@ -447,24 +447,6 @@
 
     <package src="xctrls/TP.xctrls.editor/TP.xctrls.editor.xml" config="base"/>
 
-    <!-- BEGIN xctrls:codeeditor -->
-
-    <script src="~lib_deps/codemirror/lib/codemirror.js" no-lint="no-lint" />
-    <script src="~lib_deps/codemirror/addon/runmode/runmode.js" no-lint="no-lint" />
-
-    <script src="~lib_deps/codemirror/mode/xml/xml.js" no-lint="no-lint" />
-    <script src="~lib_deps/codemirror/mode/javascript/javascript.js" no-lint="no-lint" />
-    <script src="~lib_deps/codemirror/mode/css/css.js" no-lint="no-lint"/>
-    <script>
-        <![CDATA[
-        TP.registerExternalObject('CodeMirror', window.CodeMirror);
-        ]]>
-    </script>
-
-    <resource href="~lib_deps/codemirror/lib/codemirror.css" no-inline="true"/>
-
-    <!-- END xctrls:codeeditor -->
-
     <resource href="~lib_deps/discovery/discovery-tpi.min.js" no-inline="true"/>
     <resource href="~lib_deps/discovery/discovery.css" no-inline="true"/>
 
