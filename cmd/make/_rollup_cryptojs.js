@@ -9,6 +9,8 @@
             clonedir,
             cryptodepsdir;
 
+        make.log('\n\nrolling up CryptoJS...\n\n');
+
         CLI = make.CLI;
         sh = make.sh;
 

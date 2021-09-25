@@ -4,7 +4,11 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up d3...\n\n');
+
         npmdir = make.CLI.expandPath('~npm_dir');
+
+        make.sh.cd(npmdir);
 
         make.sh.exec('npm update d3-selection');
         make.sh.exec('npm update d3-interpolate');

@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up node-forge...\n\n');
+
         make.sh.exec('npm update node-forge');
 
         npmdir = make.CLI.expandPath('~npm_dir');

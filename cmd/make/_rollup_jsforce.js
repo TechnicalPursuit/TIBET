@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up jsforce...\n\n');
+
         make.sh.exec('npm update jsforce');
 
         npmdir = make.CLI.expandPath('~npm_dir');

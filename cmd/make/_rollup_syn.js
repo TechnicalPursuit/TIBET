@@ -7,6 +7,8 @@
             destPath,
             content;
 
+        make.log('\n\nrolling up syn...\n\n');
+
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.CLI.joinPaths(npmdir, 'syn'));
 

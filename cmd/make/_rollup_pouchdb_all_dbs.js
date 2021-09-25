@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up pouchdb-all-dbs...\n\n');
+
         make.sh.exec('npm update pouchdb-all-dbs');
 
         npmdir = make.CLI.expandPath('~npm_dir');

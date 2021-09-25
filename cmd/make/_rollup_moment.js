@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up moment...\n\n');
+
         npmdir = make.CLI.expandPath('~npm_dir');
         make.sh.cd(make.CLI.joinPaths(npmdir, 'moment'));
 

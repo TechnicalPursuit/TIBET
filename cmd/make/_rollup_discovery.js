@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up discoveryjs...\n\n');
+
         make.sh.exec('npm update @discoveryjs/discovery');
 
         npmdir = make.CLI.expandPath('~npm_dir');

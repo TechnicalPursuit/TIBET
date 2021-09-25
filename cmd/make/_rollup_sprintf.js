@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up sprintf-js...\n\n');
+
         make.sh.exec('npm update sprintf-js');
 
         npmdir = make.CLI.expandPath('~npm_dir');

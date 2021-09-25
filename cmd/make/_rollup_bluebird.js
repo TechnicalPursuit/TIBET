@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up Bluebird...\n\n');
+
         make.sh.exec('npm update bluebird');
 
         npmdir = make.CLI.expandPath('~npm_dir');

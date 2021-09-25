@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up CodeMirror...\n\n');
+
         make.sh.exec('npm install @codemirror/basic-setup');
         make.sh.exec('npm install @codemirror/lang-css');
         make.sh.exec('npm install @codemirror/lang-html');

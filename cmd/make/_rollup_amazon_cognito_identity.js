@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up AWS Cognito Identity...\n\n');
+
         make.sh.exec('npm update amazon-cognito-identity-js');
 
         npmdir = make.CLI.expandPath('~npm_dir');

@@ -4,6 +4,8 @@
     module.exports = function(make, resolve, reject) {
         var npmdir;
 
+        make.log('\n\nrolling up wicked-good-xpath...\n\n');
+
         make.sh.exec('npm update wicked-good-xpath');
 
         npmdir = make.CLI.expandPath('~npm_dir');
