@@ -54,7 +54,7 @@
         "aws-sdk": "^2.939.0",
         "bluebird": "^3.7.2",
         "chokidar": "^3.5.2",
-        "chrome-launcher": "^0.13.4",
+        "chrome-launcher": "^0.14.0",
         "codemirror": "github:TechnicalPursuit/codemirror",
         "cors": "^2.8.5",
         "d3-dispatch": "^3.0.1",
