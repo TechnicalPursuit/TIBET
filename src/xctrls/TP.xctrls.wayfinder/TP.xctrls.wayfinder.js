@@ -2307,7 +2307,7 @@ function(aBayNum) {
         bayNum,
 
         inspectorBays,
-        inspectorBay,
+        bay,
         resolver,
         data,
 
@@ -2330,14 +2330,14 @@ function(aBayNum) {
         return this;
     }
 
-    inspectorBay = inspectorBays.at(bayNum);
+    bay = inspectorBays.at(bayNum);
 
-    if (TP.notValid(inspectorBay)) {
+    if (TP.notValid(bay)) {
         //  TODO: Raise an exception - can't find a bay object
         return this;
     }
 
-    resolver = inspectorBay.get('config').at('resolver');
+    resolver = bay.get('config').at('resolver');
 
     if (TP.notValid(resolver)) {
         //  TODO: Raise an exception - can't find a bay resolver
@@ -2404,7 +2404,7 @@ function(aBayNum) {
         bayNum,
 
         inspectorBays,
-        inspectorBay,
+        bay,
 
         config,
 
@@ -2427,14 +2427,14 @@ function(aBayNum) {
         return this;
     }
 
-    inspectorBay = inspectorBays.at(bayNum);
+    bay = inspectorBays.at(bayNum);
 
-    if (TP.notValid(inspectorBay)) {
+    if (TP.notValid(bay)) {
         //  TODO: Raise an exception - can't find a bay object
         return this;
     }
 
-    config = inspectorBay.get('config');
+    config = bay.get('config');
 
     if (TP.notValid(config.at('targetObject'))) {
         //  TODO: Raise an exception - can't find a target object
