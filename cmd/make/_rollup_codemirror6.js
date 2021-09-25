@@ -17,17 +17,11 @@
 
         //  ---
 
-        npmdir = make.CLI.expandPath('~npm_dir');
-
-        make.sh.cd(make.CLI.joinPaths(npmdir, '@codemirror/view'));
-
         make.sh.exec('npm install style-mod');
         make.sh.exec('npm install w3c-keyname');
 
 
         //  ---
-
-        make.sh.cd(make.CLI.joinPaths('..', '..', '@codemirror/language'));
 
         make.sh.exec('npm install @lezer/common');
         make.sh.exec('npm install @lezer/lr');
@@ -41,8 +35,6 @@
         make.sh.exec('npm install @lezer/xml');
 
         //  ---
-
-        make.sh.cd(make.CLI.joinPaths('..', '..', '@codemirror/search'));
 
         make.sh.exec('npm install crelt');
 

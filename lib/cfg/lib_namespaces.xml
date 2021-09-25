@@ -391,8 +391,8 @@
     <script type="module" specifier="@codemirror/rangeset" src="~lib_npm/@codemirror/rangeset/dist/index.js"/>
     <script type="module" specifier="@codemirror/text" src="~lib_npm/@codemirror/text/dist/index.js"/>
 
-    <script type="module" specifier="style-mod" src="~lib_npm/@codemirror/view/node_modules/style-mod/src/style-mod.js"/>
-    <script type="module" specifier="w3c-keyname" src="~lib_npm/@codemirror/view/node_modules/w3c-keyname/index.es.js"/>
+    <script type="module" specifier="style-mod" src="~lib_npm/style-mod/src/style-mod.js"/>
+    <script type="module" specifier="w3c-keyname" src="~lib_npm/w3c-keyname/index.es.js"/>
     <script type="module" specifier="@codemirror/view" src="~lib_npm/@codemirror/view/dist/index.js"/>
 
     <script type="module" specifier="@codemirror/state" src="~lib_npm/@codemirror/state/dist/index.js"/>
@@ -411,7 +411,7 @@
 
     <script type="module" specifier="@codemirror/panel" src="~lib_npm/@codemirror/panel/dist/index.js"/>
 
-    <script type="module" specifier="crelt" src="~lib_npm/@codemirror/search/node_modules/crelt/index.es.js"/>
+    <script type="module" specifier="crelt" src="~lib_npm/crelt/index.es.js"/>
     <script type="module" specifier="@codemirror/search" src="~lib_npm/@codemirror/search/dist/index.js"/>
 
     <script type="module" specifier="@codemirror/tooltip" src="~lib_npm/@codemirror/tooltip/dist/index.js"/>
