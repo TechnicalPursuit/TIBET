@@ -438,7 +438,12 @@
         app.on('before-quit', function(event) {
             if (!appReadyToQuit) {
                 event.preventDefault();
-                mainContents.send('TP.sig.ApplicationWillExit');
+                try {
+                    mainContents.send('TP.sig.ApplicationWillExit');
+                } catch (e) {
+                    logger.system('Window Closed');
+                    appReadyToQuit = true;
+                }
             }
         });
 
@@ -447,7 +452,11 @@
          * have been closed.
          */
         app.on('quit', function(event) {
-            mainContents.send('TP.sig.ApplicationDidExit');
+            try {
+                mainContents.send('TP.sig.ApplicationDidExit');
+            } catch (e) {
+                logger.system('Application Shut Down');
+            }
         });
 
         //  ---
