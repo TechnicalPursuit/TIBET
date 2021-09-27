@@ -56,7 +56,7 @@
                 }
 
                 try {
-					obj = JSON.parse(data);
+                    obj = JSON.parse(data);
                 } catch (e) {
                     logger.error(e);
                     res.status(500);

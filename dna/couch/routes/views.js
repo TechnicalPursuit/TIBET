@@ -15,7 +15,6 @@
             logger,
             TDS,
             meta,
-            router,
             viewpath;
 
         //  Default references we'll need.
@@ -57,8 +56,7 @@
                         error: {
                             status: 404,
                             message: '/docs' + req.url + ' not found.'
-                        }
-                    });
+                    }});
                 }
             } else {
                 return next();

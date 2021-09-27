@@ -15,16 +15,12 @@
             logger,
             TDS,
             meta,
-            path,
-            router,
-            list;
+            router;
 
         //  Default references we'll need.
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
-
-        path = require('path');
 
         //  Router instance that will handle routes below this root location.
         router = require('express').Router();
@@ -36,14 +32,6 @@
         logger.system(
             TDS.colorize('loading route ', 'dim') +
             TDS.colorize('GET /docs', 'route'), meta);
-
-        //  First locate all HTML files below the doc directory, no matter how
-        //  deep they might be.
-        list = TDS.shell.find(TDS.expandPath('~app/docs')).filter(
-        function(fname) {
-            return path.basename(fname).match(/\.html$/);
-        });
-
 
         //  ---
         //  Route(s)
@@ -65,8 +53,7 @@
                 error: {
                     status: 404,
                     message: '/docs' + req.url + ' not found.'
-                }
-            });
+            }});
         });
 
         //  Return the router instance. The server will see this and

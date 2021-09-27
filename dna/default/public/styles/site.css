@@ -3,7 +3,9 @@
 
 @namespace svg url("http://www.w3.org/2000/svg");
 
-html,body,#background {
+html,
+body,
+#background {
     position: static;
     top: auto;
     right: auto;
@@ -91,7 +93,7 @@ em.attention {
 .ccm-page main pre {
     margin-bottom: 0;
     white-space: pre-wrap;
-	word-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .ccm-page main a {
@@ -331,7 +333,7 @@ em.attention {
     font-size: 100%;
     font-style: italic;
     width: 100%;
-    margin: .5em 0;
+    margin: 0.5em 0;
     text-align: center;
 }
 
@@ -379,7 +381,7 @@ em.attention {
 }
 
 .ccm-page h1 a {
-    opacity: 1.0;
+    opacity: 1;
 }
 
 .ccm-page main img.smallthumb {
@@ -413,7 +415,7 @@ em.attention {
     width: auto;
 }
 
-.ccm-page main img.wide{
+.ccm-page main img.wide {
     height: auto;
     width: 100%;
 }
@@ -439,10 +441,15 @@ em.attention {
     font-size: 93%;
     line-height: 1.5em;
     white-space: pre-wrap;
-	word-wrap: break-word;
+    word-wrap: break-word;
 }
 
-.ccm-page h1, .ccm-page h2, .ccm-page h3, .ccm-page h4, .ccm-page h5, .ccm-page h6 {
+.ccm-page h1,
+.ccm-page h2,
+.ccm-page h3,
+.ccm-page h4,
+.ccm-page h5,
+.ccm-page h6 {
     margin-top: 0;
     margin-bottom: 2rem;
     font-size: 1.25em;
@@ -474,7 +481,6 @@ em.attention {
 .ccm-page main .row .body .ccm-block-page-list-pages > *:last-child {
     margin-bottom: 2em;
 }
-
 
 .ccm-page main .row .body h2.first.hook {
     margin-top: 0;
@@ -566,12 +572,14 @@ em.attention {
     max-width: 70%;
 }
 
-.ccm-page main h3, .ccm-page main .h3 {
+.ccm-page main h3,
+.ccm-page main .h3 {
     margin: 2em 0 1em 0;
     font-size: 1.1em;
 }
 
-.ccm-page footer h3, .ccm-page footer .h3 {
+.ccm-page footer h3,
+.ccm-page footer .h3 {
     font-size: 1em;
     color: #999;
 }
@@ -586,10 +594,10 @@ em.attention {
     font-weight: bold;
     line-height: 2em;
     list-style: none;
-
 }
 
-.ccm-page .lead, .event-details .lead {
+.ccm-page .lead,
+.event-details .lead {
     font-size: 1.25em;
 }
 
@@ -659,19 +667,19 @@ em.attention {
 }
 
 .ccm-page nav.core-nav .social-nav a.github {
-    background-image: url(../media/icon-github.svg);
+    background-image: url("../media/icon-github.svg");
 }
 
 .ccm-page nav.core-nav .social-nav a.youtube {
-    background-image: url(../media/icon-youtube.svg);
+    background-image: url("../media/icon-youtube.svg");
 }
 
 .ccm-page nav.core-nav .navbar-brand {
-  color: #e6b700;
+    color: #e6b700;
 }
 
 .ccm-page nav.core-nav .navbar-nav .nav-link {
-  color: #e6b700;
+    color: #e6b700;
 }
 
 .ccm-page a[href*="//"]:not([href*="technicalpursuit.com"]) {
@@ -714,7 +722,7 @@ em.attention {
     background-color: #e6b700;
     color: #000;
 
-    padding: 5px .5em;
+    padding: 5px 0.5em;
     border-radius: 5px;
     box-shadow: 0 0 3px 3px #999;
 
@@ -727,19 +735,19 @@ em.attention {
     background: #910;
 }
 
-.cmm-page a[href $='.pdf'] {
+.cmm-page a[href$=".pdf"] {
     padding-right: 18px;
-    background: transparent url(/media/link_pdf.gif) no-repeat center right;
+    background: transparent url("/media/link_pdf.gif") no-repeat center right;
 }
 
-.ccm-page a[href $='.pdf'] {
+.ccm-page a[href$=".pdf"] {
     padding-right: 18px;
-    background: transparent url(/media/link_pdf.gif) no-repeat center right;
+    background: transparent url("/media/link_pdf.gif") no-repeat center right;
 }
 
-.ccm-page a[href ^="mailto:"] {
+.ccm-page a[href^="mailto:"] {
     padding-right: 20px;
-    background: transparent url(/media/link_mailto.gif) no-repeat center right;
+    background: transparent url("/media/link_mailto.gif") no-repeat center right;
 }
 
 .ccm-page .lead {
@@ -793,7 +801,7 @@ em.attention {
 }
 
 .ccm-page .site-footer .row div svg|svg[class~="twitter"] {
-    fill: #1DA1F2;
+    fill: #1da1f2;
 }
 
 .ccm-page .site-footer .row div a {
@@ -882,11 +890,12 @@ footer img.mascot {
 }
 
 .ccm-page.page-type-docs dl.toc.compact dt {
-    margin: 0 0 .25em 0;
+    margin: 0 0 0.25em 0;
     padding: 0;
 }
+
 .ccm-page.page-type-docs dl.toc.compact dd {
-    margin: 0 0 .5em 0;
+    margin: 0 0 0.5em 0;
     padding: 0;
 }
 
@@ -1047,10 +1056,10 @@ hr.section {
     color: #fff;
 }
 
-.page-type-docs td, .page-type-docs th {
+.page-type-docs td,
+.page-type-docs th {
     padding: 5px;
 }
-
 
 #north a {
     margin: 0 16px;
@@ -1080,11 +1089,10 @@ hr.section {
     color: #000;
 }
 
-
 #bizcase .issues {
     list-style: none;
     text-align: left;
-    display: inline-block
+    display: inline-block;
     margin: 0;
     padding: 0;
 }
@@ -1255,7 +1263,7 @@ span.menu-offset {
     margin-top: -6px;
 }
 
-@media only screen and (min-width : 320px) {
+@media only screen and (min-width: 320px) {
 
     #north a {
         margin: 0;
@@ -1308,25 +1316,25 @@ span.menu-offset {
     }
 
     .ccm-page .installnow {
-        margin: .25em;
+        margin: 0.25em;
         justify-content: flex-start;
     }
 
     .ccm-page .installnow .action {
-        margin: .25em;
+        margin: 0.25em;
         justify-content: flex-start;
     }
 
     .ccm-page .installnow .subtitle {
         justify-content: flex-start;
-        margin: .25em;
+        margin: 0.25em;
     }
 }
 
-@media only screen and (min-width : 360px) {
+@media only screen and (min-width: 360px) {
 }
 
-@media only screen and (min-width : 410px) {
+@media only screen and (min-width: 410px) {
 
     #whatsnew ul.posts li .lead {
         max-width: 14em;
@@ -1337,9 +1345,12 @@ span.menu-offset {
     }
 }
 
-@media only screen and (min-width : 740px) {
+@media only screen and (min-width: 740px) {
 
-    .ccm-page h2, .ccm-page .h2, .event-details h2, .event-details .h2 {
+    .ccm-page h2,
+    .ccm-page .h2,
+    .event-details h2,
+    .event-details .h2 {
         font-size: 1.5em;
     }
 
@@ -1396,7 +1407,7 @@ span.menu-offset {
 
     .ccm-page .installnow .subtitle {
         justify-content: flex-end;
-        margin: 2em 0 .5em 0;
+        margin: 2em 0 0.5em 0;
     }
 
     .ccm-page nav.core-nav .navbar {
@@ -1418,6 +1429,4 @@ span.menu-offset {
     .ccm-page .site-footer .row .links a {
         margin-left: 1em;
     }
-
 }
-

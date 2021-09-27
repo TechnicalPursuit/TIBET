@@ -2,7 +2,6 @@
     'use strict';
 
     module.exports = function(make, resolve, reject) {
-        var npmdir;
 
         make.log('\n\nrolling up CodeMirror...\n\n');
 
