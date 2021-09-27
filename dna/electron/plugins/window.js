@@ -209,6 +209,8 @@
                     y: windowInfo.top || null,
                     width: windowInfo.width || 1024,
                     height: windowInfo.height || 768,
+                    minWidth: 750,
+                    minHeight: 750,
                     backgroundColor: pkg.getcfg('electron.bgcolor', '#171717'),
                     webPreferences: {
                         preload: CLI.joinPaths(appdir, './preload.js'),

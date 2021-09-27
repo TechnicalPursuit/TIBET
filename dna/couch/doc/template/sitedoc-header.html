@@ -2,16 +2,38 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 
-{{> headbit}}
-
-<title>TIBET</title>
-<meta name="description" content="The TIBET Platform"/>
+\{{> headbit}}
+\{{> title}}
 
 </head>
 <body>
     <div id="background">
-        <div class="ccm-page page-type-page page-template-narrow page-type-docs page-{{page}}">
-        {{> header}}
-        {{> corenav}}
-        <main>
+        <div class="ccm-page page-type-page page-template-narrow page-type-docs page-\{{page}}">
+
+            \{{> header}}
+            \{{> corenav}}
+
+            <main>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <h1>Docs</h1>
+                            <hr class="header"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+
+                        <aside class="sidebar col-md-3">
+                            <ul class="topic-list">
+                                <li><a href="/docs/index.html">Overview</a></li>
+                                <li><a href="/docs/faq.html">FAQ</a></li>
+                                <li>&nbsp;</li>
+                            </ul>
+                        </aside>
+
+                        <div class="body col">
 

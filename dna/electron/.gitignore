@@ -23,6 +23,9 @@ build/Release
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules
 
+# TDS
+.tds_watch_since.json
+
 # Operational directories.
 tmp/
 lib/src
@@ -42,8 +45,14 @@ Icon?
 package-lock.json
 Thumbs.db
 /.tibetlint.json
+/.vscode
+/package-lock.json
 
 # TIBET
+/etc/https
+/etc/minica
+/public/build
+/public/TIBET-INF/tibet
 /build
 /TIBET-INF/tibet
 profile.json

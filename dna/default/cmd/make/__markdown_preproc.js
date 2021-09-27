@@ -6,8 +6,8 @@
 
     //  NOTE: this should be equivalent to the `sechead` and `secfoot` partials
     sechead = '<div class="container" markdown="1">\n' +
-        '<div class="row justify-content-center" markdown="1">\n' +
-        '<div class="col-12 col-md-12 col-lg-10 col-xl-8" markdown="1">';
+        '<div class="row" markdown="1">\n' +
+        '<div class="col" markdown="1">';
     secfoot = '</div>\n</div>\n</div>';
 
     module.exports = function(markdown) {

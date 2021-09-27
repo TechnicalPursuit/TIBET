@@ -31,10 +31,7 @@
 
         app.set('views', './views');
         app.engine('handlebars',
-            handlebars(
-                {
-                    defaultLayout: 'main'
-                }));
+            handlebars({}));    //  NOTE no default to avoid route issues
         app.set('view engine', 'handlebars');
     };
 

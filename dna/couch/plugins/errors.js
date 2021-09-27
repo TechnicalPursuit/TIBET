@@ -38,6 +38,7 @@
             res.status(err.status || 500).render(
                 'error',
                 {
+                    layout: 'main',
                     error: err
                 });
         });

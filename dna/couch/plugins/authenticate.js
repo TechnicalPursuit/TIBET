@@ -220,6 +220,7 @@
             //  Not parallel, login page only and require validation
             //  in the '/login' route to return index.html to boot.
             res.render('login', {
+                layout: 'main',
                 title: appname,
                 username: user
             });

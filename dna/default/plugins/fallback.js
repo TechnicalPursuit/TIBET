@@ -29,6 +29,7 @@
             res.status(404).render(
                 '404',
                 {
+                    layout: 'main',
                     error: err
                 });
         });

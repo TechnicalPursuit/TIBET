@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
 
-<title>\{{{title}}}</title>
-
-<link rel="shortcut icon" href="/media/favicon.ico" type="image/x-icon"/>
-<link rel="icon" href="/media/favicon.ico" type="image/x-icon"/>
-
-<link rel="stylesheet" type="text/css" href="/TIBET-INF/boot/styles/tibet_content.css"/>
-<link rel="stylesheet" type="text/css" href="/TIBET-INF/boot/styles/tibet_boot.css" />
-<link rel="stylesheet" type="text/css" href="/styles/app.css"/>
+\{{> headbit}}
+\{{> title}}
 
 </head>
 <body>
+<div id="background" class="ccm-page page-type-page page-template-narrow">
+\{{> header}}
+\{{> corenav}}
+<main>
+
     \{{{body}}}
+
+</main>
+\{{> footer}}
+</div>
 </body>
 </html>

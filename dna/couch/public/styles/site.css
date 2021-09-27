@@ -1,0 +1,1423 @@
+/* Override inherited TIBET styles so that our pages act more like 'documents'
+ * and things like scroll position is remembered */
+
+@namespace svg url("http://www.w3.org/2000/svg");
+
+html,body,#background {
+    position: static;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+    background-color: #171717;
+    color: #000;
+}
+
+.freeprivacypolicy-com---pc-overlay {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.freeprivacypolicy-com---pc-dialog {
+    border: 3px solid #e6b700;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.freeprivacypolicy-com---pc-dialog .cc-pc-container {
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.freeprivacypolicy-com---pc-dialog .cc-pc-container div:last-child {
+    border-radius: 0 0 8px 0;
+}
+
+.freeprivacypolicy-com---pc-dialog button {
+    margin: 1em;
+    border-radius: 4px;
+}
+
+.freeprivacypolicy-com---pc-dialog button:focus {
+    box-shadow: 0 0 0 2px #e6b700;
+}
+
+.freeprivacypolicy-com---nb-interstitial-overlay {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.freeprivacypolicy-com---nb-interstitial[role="dialog"] {
+    border: 3px solid #e6b700;
+    border-radius: 8px;
+}
+
+.freeprivacypolicy-com---nb-interstitial[role="dialog"] button {
+    margin: 1em;
+    border-radius: 4px;
+}
+
+.freeprivacypolicy-com---nb-interstitial[role="dialog"] button:focus {
+    box-shadow: 0 0 0 2px #e6b700;
+}
+
+p.section {
+}
+
+p.subsection {
+}
+
+em.attention {
+    color: #910;
+}
+
+.ccm-page #content {
+    position: relative;
+}
+
+.ccm-page {
+    font-size: 123.1%;
+    color: #000;
+}
+
+.ccm-page main {
+    background-color: #fff;
+    padding: 0;
+    min-height: 36em;
+    padding-bottom: 2em;
+}
+
+.ccm-page main pre {
+    margin-bottom: 0;
+    white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+.ccm-page main a {
+    color: #000;
+    border-bottom: 1px solid #e6b700;
+}
+
+.ccm-page main a:hover {
+    color: #e6b700;
+    border-bottom: 1px solid #e6b700;
+}
+
+.ccm-page main a.logo {
+    border: 0;
+}
+
+.ccm-page main a.logo img {
+    width: 128px;
+    height: auto;
+}
+
+.ccm-page main .intro {
+    width: 100%;
+    height: auto;
+    margin-bottom: 3em;
+    background-color: #f0f0f0;
+    color: #000;
+}
+
+.ccm-page main .container:first-child {
+}
+
+.ccm-page main blockquote.lead {
+    margin-top: 2em;
+    border-left: 0;
+}
+
+.ccm-page main blockquote.lead .lead {
+    font-size: 77%;
+    margin-bottom: 0.5em;
+}
+
+.ccm-page main blockquote.lead .attribution {
+    font-size: 77%;
+}
+
+.ccm-page main h1.title {
+    margin: 1em 0 0.5em 0;
+    font-size: 2em;
+    font-weight: bold;
+    color: #000;
+}
+
+.ccm-page main h2.coderants {
+    margin-top: 0;
+    border-bottom: 0;
+}
+
+.ccm-page main h2.coderants a {
+    color: #e6b700;
+}
+
+.ccm-page main h2.subtext {
+    margin: 1em 0 2em 0;
+    border: 0;
+    color: #000;
+}
+
+.ccm-page main h2.tagline {
+    font-size: 1.25em;
+    text-align: left;
+    color: #000;
+    margin-top: 0;
+    border: 0;
+}
+
+.ccm-page main h3.subtext {
+    margin: 1em 0 2em 0;
+    border: 0;
+    color: #000;
+}
+
+.ccm-page main h3.tagline {
+    font-size: 1em;
+    text-align: left;
+    color: #000;
+    margin-top: 0;
+    border: 0;
+}
+
+.ccm-page main hr.header {
+    border-bottom: 1px solid #e6b700;
+}
+
+.ccm-page main h3.product {
+    color: #000;
+}
+
+.ccm-page main h3.product a {
+    color: #000;
+}
+
+.ccm-page main a[href*="//"]:not([href*="technicalpursuit.com"]) {
+    padding-right: 0;
+}
+
+.ccm-page main h2.kickstart {
+    font-size: 1.25em;
+    text-align: left;
+    color: #910;
+    border: 0;
+}
+
+.ccm-page main h2.kickstart a {
+    text-decoration: underline;
+}
+
+.ccm-page main h3.kickstart a {
+    text-decoration: underline;
+}
+
+.ccm-page main h3.kickstart {
+    font-size: 1em;
+    text-align: left;
+    color: #910;
+    border: 0;
+}
+
+.ccm-page main h2.product {
+    font-size: 1.25em;
+    text-align: left;
+    color: #000;
+    border: 0;
+}
+
+.ccm-page main h3.product a {
+    text-decoration: underline;
+}
+
+.ccm-page main h3.product {
+    font-size: 1.1em;
+    text-align: left;
+    color: #000;
+    border: 0;
+}
+
+.ccm-page main h3.product a {
+    text-decoration: underline;
+}
+
+.ccm-page main h2.whatwedo {
+    font-size: 1.25em;
+    text-align: left;
+    color: #000;
+    border: 0;
+}
+
+.ccm-page main h3.calltoaction {
+    color: #910;
+}
+
+.ccm-page main .calltoaction a[href*="//"]:not([href*="technicalpursuit.com"]) {
+    line-height: inherit;
+    background: transparent;
+}
+
+.ccm-page main a.product {
+    color: #000;
+    text-decoration: underline;
+}
+
+.ccm-page main .container.doit {
+    margin-top: 1em;
+    margin-bottom: 5em;
+}
+
+.ccm-page main .row .col.doit {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.ccm-page main a.doit {
+    margin-top: 1em;
+    display: inline-block;
+    height: 3em;
+    line-height: 3em;
+    width: 10em;
+    background: #f0f0f0;
+    border-radius: 8px;
+    border: 4px solid #e6b700;
+    text-align: center;
+    color: #000;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.ccm-page main a.doit:hover {
+    background: #e6b700;
+}
+
+.ccm-page h3.calltoaction a {
+    text-decoration: underline;
+}
+
+.ccm-page main em {
+    color: #000;
+}
+
+.ccm-block-page-list-title {
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+.ccm-block-page-list-page-entry {
+    margin: 1em 0;
+}
+
+.ccm-page .sidebar {
+    font-size: 100%;
+}
+
+.ccm-page main .detail-topics {
+    font-size: 100%;
+    margin-left: 0;
+}
+
+.ccm-page main .posts-list {
+    margin: 2rem 0;
+}
+
+.ccm-page main caption {
+    margin: 1em 0;
+}
+
+.ccm-page main figcaption {
+    font-size: 100%;
+    font-style: italic;
+    width: 100%;
+    margin: .5em 0;
+    text-align: center;
+}
+
+.ccm-page main a > img {
+    margin: 1em 0;
+}
+
+.ccm-page main img.framing {
+    height: 192px;
+    width: auto;
+}
+
+.ccm-page main img.growl {
+    height: auto;
+    width: 100px;
+}
+
+.ccm-page main img.icon {
+    height: auto;
+    width: 32px;
+}
+
+.ccm-page main img.inlined {
+    height: 27px;
+    width: 27px;
+}
+
+.ccm-page main img.medium {
+    height: auto;
+    width: 75%;
+}
+
+.ccm-page main img.narrow {
+    height: auto;
+    width: 50%;
+}
+
+.ccm-page main img.quarter {
+    height: auto;
+    width: 25%;
+}
+
+.ccm-page h1 small.dark {
+    color: #000;
+}
+
+.ccm-page h1 a {
+    opacity: 1.0;
+}
+
+.ccm-page main img.smallthumb {
+    height: 15%;
+    width: 15%;
+    max-height: 96px;
+
+    margin-top: 1em;
+    border-radius: 8px;
+}
+
+.ccm-page main img.thumb {
+    height: auto;
+    width: 96px;
+    margin: 1em 0;
+    border-radius: 5px;
+}
+
+.ccm-page main img.thumb.tibet-logo {
+    height: 96px;
+    width: auto;
+}
+
+.ccm-page main img.thumb.osi-logo {
+    height: 96px;
+    width: auto;
+}
+
+.ccm-page main img.tofu {
+    height: 36px;
+    width: auto;
+}
+
+.ccm-page main img.wide{
+    height: auto;
+    width: 100%;
+}
+
+.ccm-page main img.widethumb {
+    height: 128px;
+    width: auto;
+    margin-top: 1em;
+    border-radius: 8px;
+}
+
+.ccm-page main img.world {
+    height: auto;
+    width: 256px;
+}
+
+.ccm-page main img.w3 {
+    height: 110px;
+    width: auto; /* 150px */
+}
+
+.ccm-page pre > code {
+    font-size: 93%;
+    line-height: 1.5em;
+    white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+.ccm-page h1, .ccm-page h2, .ccm-page h3, .ccm-page h4, .ccm-page h5, .ccm-page h6 {
+    margin-top: 0;
+    margin-bottom: 2rem;
+    font-size: 1.25em;
+}
+
+.ccm-page main h2 {
+    margin: 2em 0 1em 0;
+    color: #000;
+}
+
+.ccm-page main h2.list-block-h2 {
+    margin: 0 0 1em 0;
+}
+
+.ccm-page main aside h2 {
+    margin-top: 1.5em;
+    border-bottom: 0;
+}
+
+.ccm-page main h2.installfoot {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ccm-page main .row .body .ccm-block-page-list-pages > *:first-child {
+    margin-top: 0;
+}
+
+.ccm-page main .row .body .ccm-block-page-list-pages > *:last-child {
+    margin-bottom: 2em;
+}
+
+
+.ccm-page main .row .body h2.first.hook {
+    margin-top: 0;
+}
+
+.ccm-page main .row .body h2.hook {
+    margin-top: 1.5em;
+}
+
+.ccm-page main .file-list {
+    margin-left: 0;
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.ccm-page main h1.topic {
+    font-size: 2em;
+    font-weight: bold;
+    margin-top: 0;
+    padding: 0;
+    border: 0;
+}
+
+.ccm-page main h2.topic {
+    margin-top: 0;
+    padding: 0;
+    border: 0;
+}
+
+.ccm-page main h2.subtopic {
+    margin-top: 0;
+    padding: 0;
+    border: 0;
+}
+
+.ccm-page main hr.topic {
+    margin-bottom: 3em;
+    border-bottom: 1px solid #e6b700;
+}
+
+.ccm-page main img.topic {
+    width: 84px;
+    height: auto;
+    margin-top: 2em;
+    border-radius: 8px;
+}
+
+.ccm-page main img.subtopic {
+    width: 84px;
+    height: auto;
+    margin-top: 3em;
+    margin-bottom: 1em;
+    border-radius: 8px;
+}
+
+.ccm-page.page-type-docs main > div.container:first-child {
+    margin-top: 2em;
+}
+
+.ccm-page.page-type-docs aside.sidebar {
+    margin-right: 2em;
+}
+
+.ccm-page main ul.topic-list {
+    margin-left: 0;
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.ccm-page main ul.topic-list li {
+    line-height: 2em;
+}
+
+.ccm-page main ul.topic-list li span {
+    font-weight: bold;
+}
+
+.ccm-page main ul.topic-list a {
+    white-space: nowrap;
+}
+
+.ccm-page main ul.subtopic-list {
+    margin-left: 1em;
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.ccm-page.page-type-docs main .row .col.body {
+    max-width: 70%;
+}
+
+.ccm-page main h3, .ccm-page main .h3 {
+    margin: 2em 0 1em 0;
+    font-size: 1.1em;
+}
+
+.ccm-page footer h3, .ccm-page footer .h3 {
+    font-size: 1em;
+    color: #999;
+}
+
+.ccm-page main ul.problems {
+    margin: 0 0 1em 0;
+    padding: 0;
+}
+
+.ccm-page main ul.problems li {
+    font-size: 1em;
+    font-weight: bold;
+    line-height: 2em;
+    list-style: none;
+
+}
+
+.ccm-page .lead, .event-details .lead {
+    font-size: 1.25em;
+}
+
+.ccm-page main div.lead a {
+    font-weight: normal;
+    border-bottom: 0;
+}
+
+.ccm-page blockquote.lead {
+    margin: 1.5em 0 1em 0;
+    padding: 0 0 0 12px;
+}
+
+.ccm-page blockquote.lead.boot-stage {
+    margin-left: 150px;
+}
+
+.ccm-page blockquote.lead .lead {
+    font-size: 77%;
+}
+
+.ccm-page blockquote.lead .attribution {
+    font-size: 77%;
+    font-weight: bold;
+}
+
+.ccm-page lead.title {
+    margin-bottom: 0.5em;
+}
+
+.ccm-page h3.subtitle {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    color: #000;
+}
+
+.ccm-page .site-header .site-name {
+    height: 0;
+    margin: 0;
+}
+
+.ccm-page nav.core-nav {
+    background: #171717;
+}
+
+.ccm-page nav.core-nav .navbar {
+    padding: 0.5rem;
+}
+
+.ccm-page nav.core-nav .utility-nav {
+    position: absolute;
+    top: -5em;
+    right: 1em;
+}
+
+.ccm-page nav.core-nav .social-nav {
+    position: absolute;
+    top: 0;
+    right: 1em;
+}
+
+.ccm-page nav.core-nav .social-nav a {
+    font-size: 100%;
+    height: 24px;
+    width: 24px;
+    margin: 0.3em;
+}
+
+.ccm-page nav.core-nav .social-nav a.github {
+    background-image: url(../media/icon-github.svg);
+}
+
+.ccm-page nav.core-nav .social-nav a.youtube {
+    background-image: url(../media/icon-youtube.svg);
+}
+
+.ccm-page nav.core-nav .navbar-brand {
+  color: #e6b700;
+}
+
+.ccm-page nav.core-nav .navbar-nav .nav-link {
+  color: #e6b700;
+}
+
+.ccm-page a[href*="//"]:not([href*="technicalpursuit.com"]) {
+    /*
+    padding-right: 18px;
+    background: transparent url(/media/open_in_new-24px.svg) no-repeat center right;
+    background-size: 16px;
+    */
+}
+
+.ccm-page a.logo[href*="//"]:not([href*="technicalpursuit.com"]) {
+    background: initial;
+}
+
+.ccm-page .installnow {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ccm-page .installnow .action {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ccm-page .installnow .subtitle {
+    font-weight: bold;
+    margin-bottom: 1em;
+}
+
+.ccm-page .installnow .action a {
+    display: inline-block;
+    width: auto;
+    line-height: 1.5em;
+
+    font-size: 116%;
+    font-weight: normal;
+    text-decoration: none;
+
+    background-color: #e6b700;
+    color: #000;
+
+    padding: 5px .5em;
+    border-radius: 5px;
+    box-shadow: 0 0 3px 3px #999;
+
+    white-space: nowrap;
+    text-align: center;
+}
+
+.ccm-page .calltoaction a[href*="//"]:not([href*="technicalpursuit.com"]) {
+    line-height: 1.5em;
+    background: #910;
+}
+
+.cmm-page a[href $='.pdf'] {
+    padding-right: 18px;
+    background: transparent url(/media/link_pdf.gif) no-repeat center right;
+}
+
+.ccm-page a[href $='.pdf'] {
+    padding-right: 18px;
+    background: transparent url(/media/link_pdf.gif) no-repeat center right;
+}
+
+.ccm-page a[href ^="mailto:"] {
+    padding-right: 20px;
+    background: transparent url(/media/link_mailto.gif) no-repeat center right;
+}
+
+.ccm-page .lead {
+    text-align: left;
+}
+
+.ccm-page .site-footer {
+    background-color: #171717;
+    padding: 0;
+}
+
+.ccm-page .site-footer .row div {
+    display: flex;
+    justify-content: center;
+    font-size: 93%;
+    color: #999;
+    margin-bottom: 1em;
+}
+
+.ccm-page .site-footer .row div a {
+    margin: 0.5em;
+}
+
+.ccm-page .site-footer .row div p {
+    margin: 0.5em;
+}
+
+.ccm-page .site-footer .row div.legal {
+}
+
+.ccm-page .site-footer .row.social {
+    height: 2em;
+    margin: 1em 0;
+}
+
+.ccm-page nav.core-nav a.home {
+    border-radius: 100%;
+    background-color: #e6b700;
+    padding: 4px;
+}
+
+.ccm-page nav.core-nav a.home svg|svg {
+    height: 1.75em;
+}
+
+.ccm-page .site-footer .row div svg|svg[class~="social-icon"] {
+    width: 24px;
+    height: auto;
+    fill: #000;
+    margin: 0 1em;
+}
+
+.ccm-page .site-footer .row div svg|svg[class~="twitter"] {
+    fill: #1DA1F2;
+}
+
+.ccm-page .site-footer .row div a {
+    color: #999;
+}
+
+.ccm-page .testimonial-row {
+    padding: 0;
+}
+
+.ccm-page main .card-header {
+    background-color: #e6b700;
+    color: #000;
+}
+
+.ccm-page main .card-body {
+    text-align: center;
+    background-color: #fff;
+}
+
+.ccm-page main .card-body img.thumb {
+    border: 1px solid #aaa;
+}
+
+.ccm-page .card-row {
+    padding: 60px 0;
+}
+
+.ccm-page .whys-row {
+    padding-top: 0;
+}
+
+.ccm-page .youtube-row {
+    padding: 60px 0;
+}
+
+img.mascot {
+    width: 15%;
+    height: 15%;
+    margin-bottom: -1em;
+}
+
+footer img.mascot {
+    float: left;
+    height: 128px;
+    width: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.page-type-docs img.mascot {
+}
+
+.ccm-page.page-type-docs img.topic {
+    margin-top: 1em;
+}
+
+.ccm-page.page-type-docs main h1.topic {
+    margin-top: 0;
+}
+
+.ccm-page.page-type-docs main h2.topic {
+    margin-top: 0;
+}
+
+.page-type-docs dl.toc dt {
+    width: 30%;
+    display: inline-block;
+}
+
+.page-type-docs dl.manpages dt a.toc {
+    top: 0;
+}
+
+.page-type-docs dl.manpages dt {
+    width: 20%;
+    display: inline-block;
+}
+
+.ccm-page.page-type-docs dl.toc {
+}
+
+.ccm-page.page-type-docs dl.toc dd {
+    width: 65%;
+    display: inline-block;
+}
+
+.ccm-page.page-type-docs dl.toc.compact dt {
+    margin: 0 0 .25em 0;
+    padding: 0;
+}
+.ccm-page.page-type-docs dl.toc.compact dd {
+    margin: 0 0 .5em 0;
+    padding: 0;
+}
+
+/* per https://benmarshall.me/responsive-iframes/ */
+.youtubeBlock {
+    position: relative;
+    padding-top: 56.25%;
+}
+
+.youtubeBlock iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid #999;
+    height: 100%;
+    width: 100%;
+}
+
+body.docs #west .drawer ul {
+    padding: 0;
+    list-style: none;
+}
+
+a.home {
+    display: inline-block;
+    height: 2em;
+    width: 2em;
+    background-color: #171717;
+    border-radius: 100%;
+    margin-right: 1em;
+}
+
+.home img {
+    height: 2em;
+}
+
+.home img.logo {
+    height: 100%;
+    width: 100%;
+    padding: 3px;
+}
+
+hr.section {
+    margin: 4em auto;
+    max-width: 28em;
+    color: #999;
+}
+
+.page-type-manpage {
+    font-size: 123.1%;
+}
+
+.ccm-page.page-type-docs .toc {
+    position: relative;
+    max-height: 100%;
+}
+
+.ccm-page main .clients {
+    margin-top: 1em;
+}
+
+.ccm-page .clients img {
+    flex-basis: 10%;
+    height: 32px;
+    width: auto;
+    margin-top: 1em;
+}
+
+.page-type-manpage code {
+    font-size: 93%;
+}
+
+.page-type-manpage h1 {
+    font-size: 131%;
+    margin-top: 1em;
+}
+
+.page-type-manpage h2 {
+    font-size: 108%;
+}
+
+.page-type-manpage #version {
+    margin-bottom: 2rem;
+}
+
+.page-type-manpage #version code {
+    color: #000;
+    background-color: #fff;
+}
+
+.page-type-docs .container {
+}
+
+.page-type-docs .navbar.container {
+    margin-bottom: 0;
+}
+
+.ccm-page.page-type-docs main h1 {
+    font-size: 2em;
+}
+
+.ccm-page.page-type-docs main h2 {
+    font-size: 1.5em;
+
+    margin-top: 1.5em;
+    border-bottom: 0;
+}
+
+.ccm-page.page-type-docs main h3 {
+    font-size: 1.25em;
+
+    margin-top: 1.5em;
+}
+
+.ccm-page.page-type-docs main h4 {
+    font-size: 1.125em;
+    margin-top: 1.25em;
+}
+
+.ccm-page.page-type-docs main h5 {
+    color: #000;
+    font-size: 1em;
+    margin-top: 1em;
+}
+
+.ccm-page.page-type-docs main h6 {
+    font-size: 1em;
+    margin-top: 1em;
+}
+
+.ccm-page.page-type-docs main img.smallthumb {
+    width: 84px;
+    height: auto;
+    margin: 2em 0 0 0;
+}
+
+.ccm-page.page-type-docs main img.smallthumb:first-child {
+    margin-top: 0;
+}
+
+.ccm-page.page-type-docs main img.thumb {
+    width: 84px;
+    height: auto;
+    margin: 2em 0 0 0;
+}
+
+.ccm-page.page-type-docs main img.thumb:first-child {
+    margin-top: 0;
+}
+
+.page-type-docs table {
+    margin: 2em 0;
+    border: 1px solid #000;
+}
+
+.page-type-docs thead {
+    background-color: #999;
+    color: #fff;
+}
+
+.page-type-docs td, .page-type-docs th {
+    padding: 5px;
+}
+
+
+#north a {
+    margin: 0 16px;
+}
+
+#wrapper {
+    max-width: 35em;
+    margin: auto;
+}
+
+#bizcase {
+    margin: 24px auto;
+    font-size: 123.1%;
+    max-width: 32em;
+}
+
+#bizcase .subtitle {
+    font-weight: bold;
+    color: #000;
+}
+
+#bizcase .calltoaction {
+    line-height: 2em;
+    margin-top: 2em;
+    font-weight: bold;
+    font-size: 123.1%;
+    color: #000;
+}
+
+
+#bizcase .issues {
+    list-style: none;
+    text-align: left;
+    display: inline-block
+    margin: 0;
+    padding: 0;
+}
+
+#bizcase .issues li {
+    margin-top: 1em;
+}
+
+#whatsnew {
+    margin: 24px auto;
+    font-size: 123.1%;
+    max-width: 35em;
+}
+
+#whatsnew .lead {
+    font-size: 146.5%;
+    color: #000;
+}
+
+#whatsnew ul.posts {
+    float: left;
+    margin: 1.5em;
+    padding: 0;
+}
+
+#whatsnew ul.posts li {
+    float: left;
+    list-style: none;
+    text-align: left;
+    min-width: 64px;   /* img size */
+    margin-top: 2em;
+}
+
+#whatsnew ul.posts li a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+#whatsnew ul.posts li a:hover {
+    color: #000;
+}
+
+#whatsnew ul.posts li img {
+    float: left;
+    height: 64px;
+    width: 64px;
+    margin-right: 2em;
+    margin-bottom: 2em;
+}
+
+#whatsnew ul.posts li .lead {
+    float: left;
+    font-size: 123.1%;
+    margin-bottom: 0.25em;
+    text-align: left;
+}
+
+#whatsnew ul.posts li .subtitle {
+    float: left;
+    font-size: 100%;
+    text-align: left;
+}
+
+.navbar .product {
+    margin: 0;
+    color: #910;
+}
+
+.product {
+    margin-top: 0.5em;
+    color: #000;
+}
+
+.product span {
+    display: inline-block;
+}
+
+.product .pricing {
+    display: block;
+    width: 19em;
+    margin-bottom: 8px;
+}
+
+.product .pricing a {
+    margin-left: 64px;
+    float: right;
+}
+
+.purchase a {
+    float: right;
+    line-height: 1em;
+    font-weight: normal;
+    text-decoration: none;
+    color: #eee;
+
+    padding: 5px 15px;
+    background-color: #910;
+    border-radius: 5px;
+    box-shadow: 0 0 3px 3px #999;
+}
+
+.purchase a:hover {
+    box-shadow: 0 0 3px 3px #666;
+    color: #000;
+}
+
+.services ul.options {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 600px;
+}
+
+ul.options li a.image-link img {
+    width: 102px;
+    height: 102px;
+}
+
+ul.options li a {
+    text-decoration: none;
+}
+
+ul.options li a:hover {
+    display: inline-block;
+}
+
+span.menu-offset {
+    display: inline-block;
+    width: 3em;
+}
+
+.notice {
+    font-weight: bold;
+    float: left;
+    color: #333;
+}
+
+.hours {
+    float: left;
+    width: 6em;
+    color: #333;
+}
+
+.pricingmo {
+    float: left;
+    width: 6em;
+}
+
+.pricingyr {
+    float: left;
+}
+
+.cost {
+    float: right;
+}
+
+.detail-topics.pricing dd {
+    padding: 0;
+}
+
+.detail-topics.pricing .follow {
+    float: left;
+    font-size: 100%;
+}
+
+.detail-topics.pricing .follow.caveat {
+    margin-top: -6px;
+}
+
+@media only screen and (min-width : 320px) {
+
+    #north a {
+        margin: 0;
+    }
+
+    span.menu-offset {
+        display: none;
+    }
+
+    #bizcase {
+        margin: 24px;
+        font-size: 123.1%;
+    }
+
+    #whatsnew ul.posts {
+        margin: 24px;
+    }
+
+    #whatsnew ul.posts li img {
+        margin-bottom: 2em;
+    }
+
+    .services ul.options li {
+        width: 50%;
+    }
+
+    .detail-topics dd {
+        width: inherit;
+    }
+
+    /*
+    .detail-topics dt {
+        width: 100%;
+    }
+    */
+
+    .product .pricing {
+        width: auto;
+    }
+
+    .hours {
+        width: 5.5em;
+    }
+
+    .pricingmo {
+        width: 4.5em;
+    }
+
+    .pricingyr {
+    }
+
+    .ccm-page .installnow {
+        margin: .25em;
+        justify-content: flex-start;
+    }
+
+    .ccm-page .installnow .action {
+        margin: .25em;
+        justify-content: flex-start;
+    }
+
+    .ccm-page .installnow .subtitle {
+        justify-content: flex-start;
+        margin: .25em;
+    }
+}
+
+@media only screen and (min-width : 360px) {
+}
+
+@media only screen and (min-width : 410px) {
+
+    #whatsnew ul.posts li .lead {
+        max-width: 14em;
+    }
+
+    #whatsnew ul.posts li .subtitle {
+        max-width: 14em;
+    }
+}
+
+@media only screen and (min-width : 740px) {
+
+    .ccm-page h2, .ccm-page .h2, .event-details h2, .event-details .h2 {
+        font-size: 1.5em;
+    }
+
+    .ccm-page main img.thumb {
+        width: 84px;
+        height: auto;
+        margin: 2em 0 1em 0;
+    }
+
+    footer img.mascot {
+        float: right;
+    }
+
+    span.menu-offset {
+        display: inline-block;
+    }
+
+    #north a {
+        margin: 0 0.5em;
+    }
+
+    #wrapper {
+        max-width: 100%;
+        margin: auto;
+    }
+
+    #bizcase {
+        margin: 24px auto;
+    }
+
+    #whatsnew ul.posts li .lead {
+        max-width: 100%;
+    }
+
+    #whatsnew ul.posts li .subtitle {
+        max-width: 100%;
+    }
+
+    .services ul.options li {
+        display: inline-block;
+        width: 25%;
+        min-width: 128px;   /* img size */
+    }
+
+    .ccm-page .installnow {
+        margin: 0;
+        justify-content: flex-end;
+    }
+
+    .ccm-page .installnow .action {
+        justify-content: flex-end;
+        margin: 0 0 1.6em 0;
+    }
+
+    .ccm-page .installnow .subtitle {
+        justify-content: flex-end;
+        margin: 2em 0 .5em 0;
+    }
+
+    .ccm-page nav.core-nav .navbar {
+        padding: 0 1rem 0 0;
+    }
+
+    .ccm-page .site-footer .row .contact {
+        justify-content: flex-start;
+    }
+
+    .ccm-page .site-footer .row .contact a {
+        margin-right: 1em;
+    }
+
+    .ccm-page .site-footer .row .links {
+        justify-content: flex-end;
+    }
+
+    .ccm-page .site-footer .row .links a {
+        margin-left: 1em;
+    }
+
+}
+

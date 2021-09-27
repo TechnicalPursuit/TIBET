@@ -165,11 +165,11 @@
                                     eventArgs.unshift(eventName);
 
                                     mainContents = BrowserWindow.fromId(
-                                                options.mainid).webContents;
+                                                    options.mainid).webContents;
 
                                     //  Send the event over to TIBET.
-                                        mainContents.send.apply(mainContents,
-                                                                eventArgs);
+                                    mainContents.send.apply(mainContents,
+                                                            eventArgs);
                                 }
                             }
                         };

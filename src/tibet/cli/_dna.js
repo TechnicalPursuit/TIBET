@@ -677,7 +677,8 @@ Cmd.prototype.executeProcess = function() {
 
     working = options.tmpdir;
 
-    badexts = ['.bmp', '.png', '.gif', '.jpg', '.ico', '.jpeg', '.gz', '.br'];
+    badexts = ['.bmp', '.png', '.gif', '.jpg', '.ico', '.jpeg', '.gz', '.br',
+        '.woff', '.woff2'];
     badpaths = ['.DS_Store'];
 
     cmd.log('processing templates...');
@@ -696,6 +697,7 @@ Cmd.prototype.executeProcess = function() {
 
         if (badexts.indexOf(path.extname(filename)) !== -1 ||
             badpaths.indexOf(path.basename(filename)) !== -1) {
+console.log('skipping', filename);
             return false;
         }
 

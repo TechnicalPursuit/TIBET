@@ -1,0 +1,12 @@
+/**
+ * @overview Top-level css file which loads lib and app root css files.
+ */
+
+/* TODO: replace with a  template value */
+@import url("../TIBET-INF/boot/styles/tibet_content.css");
+@import url("../TIBET-INF/boot/styles/tibet_framing.css");
+@import url("../TIBET-INF/boot/styles/tibet_boot.css");
+
+@import url("app.css");
+@import url("themed.css");
+@import url("site.css");

@@ -45,6 +45,8 @@ Icon?
 package-lock.json
 Thumbs.db
 /.tibetlint.json
+/.vscode
+/package-lock.json
 
 # TIBET
 /etc/https
