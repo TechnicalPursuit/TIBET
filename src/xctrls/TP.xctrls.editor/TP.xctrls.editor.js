@@ -232,14 +232,14 @@ function(textContent, language, callback) {
         defaultHighlightStyle.match,
         function(from, to, classes) {
             if (from > pos) {
-                callback(textContent.slice(pos, from), '', pos, from);
+                callback(textContent.slice(pos, from), null, pos, from);
             }
             callback(textContent.slice(from, to), classes, from, to);
             pos = to;
         });
 
     if (pos !== tree.length) {
-        callback(textContent.slice(pos, tree.length), '', pos, tree.length);
+        callback(textContent.slice(pos, tree.length), null, pos, tree.length);
     }
 });
 
