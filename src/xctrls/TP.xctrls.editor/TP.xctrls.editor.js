@@ -259,12 +259,12 @@ TP.xctrls.editor.Inst.defineAttribute('$tabKeyMap');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.xctrls.editor.Type.defineMethod('tagAttachDOM',
+TP.xctrls.editor.Type.defineMethod('tagAttachStyle',
 function(aRequest) {
 
     /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest
+     * @method tagAttachStyle
+     * @summary Sets up runtime style for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
