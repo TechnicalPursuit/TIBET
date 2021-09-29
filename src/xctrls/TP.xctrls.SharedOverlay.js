@@ -648,6 +648,12 @@ function(contentInfo, overlayContent, afterLoadHandler) {
 
             TP.elementFromURI(contentURI).then(
                 function(resultElement) {
+
+                    if (!TP.isElement(resultElement)) {
+                        //  TODO: Raise an exception
+                        return this;
+                    }
+
                     //  Note the recursive call to this method, but this time
                     //  with content.
                     this.loadContent(

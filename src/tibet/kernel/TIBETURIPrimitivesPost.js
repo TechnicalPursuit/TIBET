@@ -27,7 +27,7 @@ function(aURI) {
 
     var uri,
         req,
-
+        value,
         extractElementFromResult;
 
     //  Make sure this is a URI.
@@ -50,7 +50,7 @@ function(aURI) {
             elem = result.getNativeNode();
         } else if (TP.isElement(result)) {
             elem = result;
-        } else {
+        } else if (TP.isValid(result)) {
             //  Rely on smart conversion here - Documents will return their
             //  documentElements, etc.
             elem = TP.elem(result);
@@ -69,8 +69,14 @@ function(aURI) {
     } else {
         //  Otherwise, fetching the content of the URI will be synchronous, so
         //  just extract the element from the result.
-        return TP.extern.Promise.resolve(
-                extractElementFromResult(uri.getResource(req).get('result')));
+        value = extractElementFromResult(uri.getResource(req).get('result'));
+        if (TP.isElement(value)) {
+            return TP.extern.Promise.resolve(value);
+        } else {
+            return TP.extern.Promise.resolve(value);
+            //  TODO: this should be used, not resolve().
+            // return TP.extern.Promise.reject(new Error('InvalidElement'));
+        }
     }
 });
 
