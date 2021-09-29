@@ -41,12 +41,103 @@ TP.xctrls.editor.Inst.resolveTraits(
 //  is over 1000, performance of the ACE editor can suffer.
 TP.xctrls.editor.defineAttribute('MAX_LINES', 1000);
 
+//  NB: The CSS variables in the various style sheet files should stay
+//  synchronized with this list.
+TP.xctrls.editor.defineAttribute('TOKEN_CSS_VARIABLE_NAMES',
+TP.ac(
+    '--xctrls-editor-comment-color',
+    '--xctrls-editor-name-color',
+    '--xctrls-editor-typeName-color',
+    '--xctrls-editor-propertyName-color',
+    '--xctrls-editor-literal-color',
+    '--xctrls-editor-string-color',
+    '--xctrls-editor-number-color',
+    '--xctrls-editor-content-color',
+    '--xctrls-editor-heading-color',
+    '--xctrls-editor-heading-font-weight',
+    '--xctrls-editor-keyword-color',
+    '--xctrls-editor-operator-color',
+    '--xctrls-editor-punctuation-color',
+    '--xctrls-editor-bracket-color',
+    '--xctrls-editor-meta-color',
+    '--xctrls-editor-lineComment-color',
+    '--xctrls-editor-blockComment-color',
+    '--xctrls-editor-docComment-color',
+    '--xctrls-editor-variableName-color',
+    '--xctrls-editor-tagName-color',
+    '--xctrls-editor-attributeName-color',
+    '--xctrls-editor-className-color',
+    '--xctrls-editor-labelName-color',
+    '--xctrls-editor-namespace-color',
+    '--xctrls-editor-macroName-color',
+    '--xctrls-editor-docString-color',
+    '--xctrls-editor-character-color',
+    '--xctrls-editor-attributeValue-color',
+    '--xctrls-editor-integer-color',
+    '--xctrls-editor-float-color',
+    '--xctrls-editor-bool-color',
+    '--xctrls-editor-regexp-color',
+    '--xctrls-editor-escape-color',
+    '--xctrls-editor-color-color',
+    '--xctrls-editor-url-color',
+    '--xctrls-editor-self-color',
+    '--xctrls-editor-null-color',
+    '--xctrls-editor-atom-color',
+    '--xctrls-editor-unit-color',
+    '--xctrls-editor-modifier-color',
+    '--xctrls-editor-operatorKeyword-color',
+    '--xctrls-editor-controlKeyword-color',
+    '--xctrls-editor-definitionKeyword-color',
+    '--xctrls-editor-derefOperator-color',
+    '--xctrls-editor-arithmeticOperator-color',
+    '--xctrls-editor-logicOperator-color',
+    '--xctrls-editor-bitwiseOperator-color',
+    '--xctrls-editor-compareOperator-color',
+    '--xctrls-editor-updateOperator-color',
+    '--xctrls-editor-definitionOperator-color',
+    '--xctrls-editor-typeOperator-color',
+    '--xctrls-editor-controlOperator-color',
+    '--xctrls-editor-separator-color',
+    '--xctrls-editor-angleBracket-color',
+    '--xctrls-editor-squareBracket-color',
+    '--xctrls-editor-paren-color',
+    '--xctrls-editor-brace-color',
+    '--xctrls-editor-heading1-color',
+    '--xctrls-editor-heading2-color',
+    '--xctrls-editor-heading3-color',
+    '--xctrls-editor-heading4-color',
+    '--xctrls-editor-heading5-color',
+    '--xctrls-editor-heading6-color',
+    '--xctrls-editor-contentSeparator-color',
+    '--xctrls-editor-list-color',
+    '--xctrls-editor-quote-color',
+    '--xctrls-editor-emphasis-color',
+    '--xctrls-editor-emphasis-font-style',
+    '--xctrls-editor-strong-color',
+    '--xctrls-editor-strong-font-weight',
+    '--xctrls-editor-link-color',
+    '--xctrls-editor-link-text-decoration',
+    '--xctrls-editor-monospace-color',
+    '--xctrls-editor-strikethrough-color',
+    '--xctrls-editor-strikethrough-text-decoration',
+    '--xctrls-editor-inserted-color',
+    '--xctrls-editor-deleted-color',
+    '--xctrls-editor-changed-color',
+    '--xctrls-editor-invalid-color',
+    '--xctrls-editor-documentMeta-color',
+    '--xctrls-editor-annotation-color',
+    '--xctrls-editor-processingInstruction-color',
+    '--xctrls-editor-special-color'
+));
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  The set of CodeMirror modules that will be loaded to support our operation.
 TP.xctrls.editor.Type.defineAttribute('$cmModules');
+
+TP.xctrls.editor.Type.defineAttribute('$highlighter');
 
 //  ------------------------------------------------------------------------
 //  TSH Execution Support
@@ -77,6 +168,7 @@ function() {
         )).then(
         function(modules) {
             this.set('$cmModules', modules);
+            this.setupHighlighter();
         }.bind(this));
 
     return;
@@ -149,6 +241,123 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.editor.Type.defineMethod('setupHighlighter',
+function() {
+
+    /**
+     * @method setupHighlighter
+     * @summary Sets up a CodeMirror highlighter using the CSS variable names
+     *     defined as a constant on the receiver.
+     */
+
+    var modules,
+
+        allDeclNames,
+        tagNameDict,
+
+        highlightDefinition,
+        highlightStyle;
+
+    //  Bring in the CodeMirror modules and grab the slots that matter to us.
+    modules = this.get('$cmModules');
+
+    const {HighlightStyle, tags} = modules.at('@codemirror/highlight');
+
+    allDeclNames = this.get('TOKEN_CSS_VARIABLE_NAMES');
+
+    tagNameDict = TP.hc();
+
+    //  Iterate over all of the declaration names and build up a list of CSS
+    //  property names from that. We can then hand that data structure to
+    //  CodeMirror to build a highlighter.
+    allDeclNames.forEach(
+        function(aDeclarationName) {
+            var matchResults,
+                tagName,
+                cssPropertyName,
+                propNames;
+
+            //  If the declaration name matches '--xctrls-editor-*-*', then it
+            //  will match
+            matchResults = /--xctrls-editor-([^-]+)-(.+)/.match(
+                                                    aDeclarationName);
+
+            if (TP.isValid(matchResults)) {
+                tagName = matchResults.at(1);
+                cssPropertyName = matchResults.at(2);
+
+                //  We make an Array of property names for each CodeMirror 'tag'
+                //  name  Note that these are *NOT* markup tags. CodeMirror call
+                //  different types of token names 'tag names'.
+                propNames = tagNameDict.at(tagName);
+                if (!TP.isArray(propNames)) {
+                    propNames = TP.ac();
+                    tagNameDict.atPut(tagName, propNames);
+                }
+
+                //  Note the conversion to the DOM equivalent here, because
+                //  that's what CodeMirror wants: 'font-weight' -> 'fontWeight'.
+                propNames.push(cssPropertyName.asDOMName());
+            }
+        });
+
+    //  Now, we build the final data structure that CodeMirror wants to describe
+    //  (CodeMirror) 'tags' mapped to CSS variables.
+    highlightDefinition = TP.ac();
+
+    //  Iterate over the 'tag' name hash key/value pairs.
+    tagNameDict.perform(
+        function(aPair) {
+            var tagName,
+                entry;
+
+            //  The 'tag' name will be the first in the pair.
+            tagName = aPair.first();
+
+            //  Make an entry POJO for CodeMirror that consists of the 'tag'
+            //  (using the tags data structure imported from CodeMirror) indexed
+            //  by the name.
+            entry = {
+                tag: tags[tagName]
+            };
+
+            //  The Array of CSS property names (in DOM format) will be last in
+            //  the pair.
+            aPair.last().forEach(
+                function(aCSSPropName) {
+
+                    //  Each CSS property name should have a corresponding CSS
+                    //  variable with a variable name consisting of the
+                    //  '--xctrls-editor-' prefix, followed by the CodeMirror
+                    //  'tag' name, followed by a '-', followed by the CSS
+                    //  property name in *CSS* format.
+                    entry[aCSSPropName] =
+                            'var(' +
+                            '--xctrls-editor-' +
+                            tagName +
+                            '-' +
+                            aCSSPropName.asCSSName() +
+                            ')';
+                });
+
+            //  Push the entry into the overall Array that we will hand to the
+            //  CodeMirror HighlightStyle class below.
+            highlightDefinition.push(entry);
+        });
+
+    //  Call CodeMirror's HighlightStyle class to build a highlighter from the
+    //  data structure that we built.
+    highlightStyle = HighlightStyle.define(highlightDefinition);
+
+    //  We capture the highlight style here so that we can use it in this type's
+    //  'run mode'
+    this.set('$highlighter', highlightStyle);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.editor.Type.defineMethod('runMode',
 function(textContent, language, callback) {
 
@@ -177,12 +386,14 @@ function(textContent, language, callback) {
     var modules,
         lang,
         pos,
-        tree;
+        tree,
+
+        highlighter;
 
     //  Bring in the CodeMirror modules and grab the slots that matter to us.
     modules = this.get('$cmModules');
 
-    const {highlightTree, defaultHighlightStyle} =
+    const {highlightTree} =
                 modules.at('@codemirror/highlight');
 
     if (TP.notValid(language)) {
@@ -226,10 +437,12 @@ function(textContent, language, callback) {
 
     tree = lang.parser.parse(textContent);
 
+    highlighter = this.get('$highlighter');
+
     pos = 0;
     highlightTree(
         tree,
-        defaultHighlightStyle.match,
+        highlighter.match,
         function(from, to, classes) {
             if (from > pos) {
                 callback(textContent.slice(pos, from), null, pos, from);
@@ -746,22 +959,19 @@ function() {
     /**
      * @method setupTheme
      * @summary Sets up an inline theme for use with CodeMirror.
-     * @returns {Object[]} An Array of POJOs in the format that CodeMirror likes
-     *     them that describe the style/theme.
+     * @returns {Object[]} An Array of CodeMirror-specific objects that describe
+     *     the style/theme.
      */
 
     var modules,
 
         theme,
-        highlightStyle,
-
         wholeTheme;
 
     //  Bring in the CodeMirror modules and grab the slots that matter to us.
     modules = this.getType().get('$cmModules');
 
-    const {EditorView} = modules.at('@codemirror/basic-setup'),
-            {HighlightStyle, tags} = modules.at('@codemirror/highlight');
+    const {EditorView} = modules.at('@codemirror/basic-setup');
 
     theme = EditorView.theme({
         '&': {
@@ -830,76 +1040,7 @@ function() {
         dark: true
     });
 
-    highlightStyle = HighlightStyle.define([
-        {
-            tag: tags.keyword,
-            color: '#c678dd'
-        },
-        {
-            tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
-            color: '#e06c75'
-        },
-        {
-            tag: [tags.function(tags.variableName), tags.labelName],
-            color: '#61afef'
-        },
-        {
-            tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
-            color: '#d19a66'
-        },
-        {
-            tag: [tags.definition(tags.name), tags.separator],
-            color: '#abb2bf'
-        },
-        {
-            tag: [tags.typeName, tags.className, tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
-            color: '#e5c07b'
-        },
-        {
-            tag: [tags.operator, tags.operatorKeyword, tags.url, tags.escape, tags.regexp, tags.link, tags.special(tags.string)],
-            color: '#56b6c2'
-        },
-        {
-            tag: [tags.meta, tags.comment],
-            color: '#7d8799'
-        },
-        {
-            tag: tags.strong,
-            fontWeight: 'bold'
-        },
-        {
-            tag: tags.emphasis,
-            fontStyle: 'italic'
-        },
-        {
-            tag: tags.strikethrough,
-            textDecoration: 'line-through'
-        },
-        {
-            tag: tags.link,
-            color: '#7d8799',
-            textDecoration: 'underline'
-        },
-        {
-            tag: tags.heading,
-            fontWeight: 'bold',
-            color: '#e06c75'
-        },
-        {
-            tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
-            color: '#d19a66'
-        },
-        {
-            tag: [tags.processingInstruction, tags.string, tags.inserted],
-            color: '#98c379'
-        },
-        {
-            tag: tags.invalid,
-            color: '#ffffff'
-        }
-    ]);
-
-    wholeTheme = TP.ac(theme, highlightStyle);
+    wholeTheme = TP.ac(theme, this.getType().get('$highlighter'));
 
     return wholeTheme;
 });
