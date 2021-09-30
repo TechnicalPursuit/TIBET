@@ -73,9 +73,7 @@ function(aURI) {
         if (TP.isElement(value)) {
             return TP.extern.Promise.resolve(value);
         } else {
-            return TP.extern.Promise.resolve(value);
-            //  TODO: this should be used, not resolve().
-            // return TP.extern.Promise.reject(new Error('InvalidElement'));
+            return TP.extern.Promise.reject(new Error('InvalidElement'));
         }
     }
 });

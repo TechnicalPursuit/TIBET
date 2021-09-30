@@ -426,6 +426,10 @@ function(info) {
                 return TP.elementFromURI(template).then(
                         function(resultElement) {
                             displayHandler(TP.str(resultElement));
+                        }).catch(
+                            function(e) {
+                                TP.ifError() ? TP.error(
+                                        'Invalid element ' + TP.str(e)) : 0;
                         });
             }
         } else if (TP.notValid(template)) {
@@ -439,6 +443,9 @@ function(info) {
             return TP.elementFromURI(template).then(
                     function(resultElement) {
                         displayHandler(TP.str(resultElement));
+                    }).catch(function(e) {
+                        TP.ifError() ?
+                            TP.error('Invalid element ' + TP.str(e)) : 0;
                     });
         }
 
