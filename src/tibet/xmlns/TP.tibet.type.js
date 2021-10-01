@@ -18,6 +18,14 @@
 TP.dom.NonNativeUIElementNode.defineSubtype('tibet:type');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  This tag has no associated CSS. Note how this property iis TYPE_LOCAL, by
+//  design.
+TP.tibet.type.defineAttribute('styleURI', TP.NO_RESULT);
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -369,6 +377,14 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.dom.NonNativeUIElementNode.defineSubtype('tibet:aspect');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  This tag has no associated CSS. Note how this property iis TYPE_LOCAL, by
+//  design.
+TP.tibet.aspect.defineAttribute('styleURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  end

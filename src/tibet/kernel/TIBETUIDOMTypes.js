@@ -9544,7 +9544,7 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.defineSubtype('dom.NonNativeUIElementNode');
+TP.dom.UIElementNode.defineSubtype('dom.NonNativeUIElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
