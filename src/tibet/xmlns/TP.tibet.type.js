@@ -387,5 +387,77 @@ TP.dom.NonNativeUIElementNode.defineSubtype('tibet:aspect');
 TP.tibet.aspect.defineAttribute('styleURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
+
+TP.tibet.aspect.Inst.defineMethod('getAttrReadonly',
+function() {
+
+    /**
+     * @method getAttrReadonly
+     * @summary The getter for the receiver's description of a readonly state.
+     * @description Because for aspect elements, this is not really whether the
+     *     element *itself* is readonly but whether its describing that state
+     *     for bound components, we need to get the value directly.
+     * @returns {Boolean} Whether the receiver's state is describing a readonly
+     *     state.
+     */
+
+    return this.$getAttribute('readonly');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.aspect.Inst.defineMethod('getAttrRelevant',
+function() {
+
+    /**
+     * @method getAttrRelevant
+     * @summary The getter for the receiver's description of a relevant state.
+     * @description Because for aspect elements, this is not really whether the
+     *     element *itself* is relevant but whether its describing that state
+     *     for bound components, we need to get the value directly.
+     * @returns {Boolean} Whether the receiver's state is describing a relevant
+     *     state.
+     */
+
+    return this.$getAttribute('relevant');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.aspect.Inst.defineMethod('getAttrRequired',
+function() {
+
+    /**
+     * @method getAttrRequired
+     * @summary The getter for the receiver's description of a required state.
+     * @description Because for aspect elements, this is not really whether the
+     *     element *itself* is required but whether its describing that state
+     *     for bound components, we need to get the value directly.
+     * @returns {Boolean} Whether the receiver's state is describing a required
+     *     state.
+     */
+
+    return this.$getAttribute('required');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.aspect.Inst.defineMethod('getAttrValid',
+function() {
+
+    /**
+     * @method getAttrValid
+     * @summary The getter for the receiver's description of a valid state.
+     * @description Because for aspect elements, this is not really whether the
+     *     element *itself* is valid but whether its describing that state for
+     *     bound components, we need to get the value directly.
+     * @returns {Boolean} Whether the receiver's state is describing a valid
+     *     state.
+     */
+
+    return this.$getAttribute('valid');
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
