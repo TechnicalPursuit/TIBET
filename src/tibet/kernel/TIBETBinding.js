@@ -7779,10 +7779,6 @@ function(aValue, ignoreBidiInfo) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var elem,
-
-        attrName;
-
     //  If we're part of a chain that started with refreshing the bind machinery
     //  (i.e. the bind machinery called setValue(), which is calling us), then
     //  just bail out here.
@@ -7790,28 +7786,7 @@ function(aValue, ignoreBidiInfo) {
         return this;
     }
 
-    elem = this.getNativeNode();
-
-    //  NB: 'bind:in' doesn't matter here - that goes 'in', these go 'out'.
-
-    if (TP.elementHasAttribute(elem, 'bind:io', true)) {
-        attrName = 'bind:io';
-    } else if (TP.elementHasAttribute(elem, 'bind:out', true)) {
-        attrName = 'bind:out';
-    }
-
-    if (TP.isEmpty(attrName)) {
-        return this;
-    }
-
-    //  Call setBoundAspect, using the supplied value and assuming our binding
-    //  scope values and the value of the found binding attribute.
-    this.setBoundAspect(attrName,
-                        'value',
-                        aValue,
-                        this.getBindingScopeValues(),
-                        this.getAttribute(attrName),
-                        ignoreBidiInfo);
+    this.setOutboundAspect('value', aValue, ignoreBidiInfo);
 
     return this;
 });
@@ -8382,6 +8357,90 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('setInboundAspect',
+function(aspectName, aValue, ignoreBidiInfo) {
+
+    /**
+     * @method setInboundAspect
+     * @summary Sets the value of the 'inbound aspect' named aspectName. Inbound
+     *     aspects are those bound to the receiver using either 'bind:in' or
+     *     'bind:io'.
+     * @param {String} aspectName The name of the aspect that the caller wants
+     *     to set the bound value for.
+     * @param {Object} aValue The value to set onto the model.
+     * @param {Boolean} [ignoreBidiInfo=false] Whether or not to ignore the
+     *     receiver's bidirectional attribute information. If this parameter is
+     *     true, this method will always set the bound value whether or not the
+     *     bound attribute is considered to be both a getter and setter.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var bindingInfo,
+
+        keys,
+        len,
+        i,
+
+        bindEntry,
+        bindAspectName;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:in', this.getAttribute('bind:in'));
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.at('bindingAspect');
+
+        if (bindAspectName === aspectName) {
+            this.setBoundAspect('bind:in',
+                                    aspectName,
+                                    aValue,
+                                    this.getBindingScopeValues(),
+                                    this.getAttribute('bind:in'),
+                                    ignoreBidiInfo);
+
+            return this;
+        }
+    }
+
+    //  It might not have been in the 'bind:in', so we do it again with
+    //  'bind:io'
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:io', this.getAttribute('bind:io'));
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.at('bindingAspect');
+
+        if (bindAspectName === aspectName) {
+            this.setBoundAspect('bind:io',
+                                    aspectName,
+                                    aValue,
+                                    this.getBindingScopeValues(),
+                                    this.getAttribute('bind:io'),
+                                    ignoreBidiInfo);
+            return this;
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('setInitialValue',
 function(aValue) {
 
@@ -8398,6 +8457,90 @@ function(aValue) {
      */
 
     this.setBoundValueIfBound(aValue);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('setOutboundAspect',
+function(aspectName, aValue, ignoreBidiInfo) {
+
+    /**
+     * @method setOutboundAspect
+     * @summary Sets the value of the 'outbound aspect' named aspectName.
+     *     Outbound aspects are those bound to the receiver using either
+     *     'bind:io' or 'bind:out'.
+     * @param {String} aspectName The name of the aspect that the caller wants
+     *     to set the bound value for.
+     * @param {Object} aValue The value to set onto the model.
+     * @param {Boolean} [ignoreBidiInfo=false] Whether or not to ignore the
+     *     receiver's bidirectional attribute information. If this parameter is
+     *     true, this method will always set the bound value whether or not the
+     *     bound attribute is considered to be both a getter and setter.
+     * @returns {TP.dom.ElementNode} The receiver.
+     */
+
+    var bindingInfo,
+
+        keys,
+        len,
+        i,
+
+        bindEntry,
+        bindAspectName;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:io', this.getAttribute('bind:io'));
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.at('bindingAspect');
+
+        if (bindAspectName === aspectName) {
+            this.setBoundAspect('bind:io',
+                                    aspectName,
+                                    aValue,
+                                    this.getBindingScopeValues(),
+                                    this.getAttribute('bind:io'),
+                                    ignoreBidiInfo);
+
+            return this;
+        }
+    }
+
+    //  It might not have been in the 'bind:io', so we do it again with
+    //  'bind:out'
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:out', this.getAttribute('bind:out'));
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.at('bindingAspect');
+
+        if (bindAspectName === aspectName) {
+            this.setBoundAspect('bind:out',
+                                    aspectName,
+                                    aValue,
+                                    this.getBindingScopeValues(),
+                                    this.getAttribute('bind:out'),
+                                    ignoreBidiInfo);
+            return this;
+        }
+    }
 
     return this;
 });
