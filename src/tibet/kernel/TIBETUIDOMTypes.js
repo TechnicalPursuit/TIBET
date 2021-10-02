@@ -3027,6 +3027,32 @@ function(wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('getGlobalX',
+function(wantsTransformed) {
+
+    /**
+     * @method getGlobalX
+     * @summary Returns the receiver's X coordinate of the global position as a
+     *     Number. The global position is the element's position relative to its
+     *     overall *top level* window.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {Number} The receiver's X coordinate of the global position.
+     */
+
+    var coords;
+
+    coords = TP.elementGetGlobalXY(this.getNativeNode(),
+                                    TP.BORDER_BOX,
+                                    null,
+                                    wantsTransformed);
+
+    return TP.pc(coords).getX();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('getGlobalRect',
 function(wantsTransformed) {
 
@@ -3049,6 +3075,32 @@ function(wantsTransformed) {
                                     wantsTransformed);
 
     return TP.rtc(coords);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('getGlobalY',
+function(wantsTransformed) {
+
+    /**
+     * @method getGlobalY
+     * @summary Returns the receiver's Y coordinate of the global position as a
+     *     Number. The global position is the element's position relative to its
+     *     overall *top level* window.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {Number} The receiver's Y coordinate of the global position.
+     */
+
+    var coords;
+
+    coords = TP.elementGetGlobalXY(this.getNativeNode(),
+                                    TP.BORDER_BOX,
+                                    null,
+                                    wantsTransformed);
+
+    return TP.pc(coords).getY();
 });
 
 //  ------------------------------------------------------------------------
@@ -3357,6 +3409,32 @@ function(wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('getOffsetX',
+function(wantsTransformed) {
+
+    /**
+     * @method getOffsetX
+     * @summary Returns the receiver's X coordinate of the offset position as a
+     *     Number. The offset position is the element's position relative to its
+     *     offset parent.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {Number} The receiver's X coordinate of the offset position.
+     */
+
+    var coords;
+
+    coords = TP.elementGetOffsetXY(this.getNativeNode(),
+                                    TP.BORDER_BOX,
+                                    null,
+                                    wantsTransformed);
+
+    return TP.pc(coords).getX();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('getOffsetRect',
 function(wantsTransformed) {
 
@@ -3378,6 +3456,32 @@ function(wantsTransformed) {
                                     wantsTransformed);
 
     return TP.rtc(coords);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('getOffsetY',
+function(wantsTransformed) {
+
+    /**
+     * @method getOffsetY
+     * @summary Returns the receiver's Y coordinate of the offset position as a
+     *     Number. The offset position is the element's position relative to its
+     *     offset parent.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {Number} The receiver's Y coordinate of the offset position.
+     */
+
+    var coords;
+
+    coords = TP.elementGetOffsetXY(this.getNativeNode(),
+                                    TP.BORDER_BOX,
+                                    null,
+                                    wantsTransformed);
+
+    return TP.pc(coords).getY();
 });
 
 //  ------------------------------------------------------------------------
@@ -3407,6 +3511,32 @@ function(wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('getPageX',
+function(wantsTransformed) {
+
+    /**
+     * @method getPageX
+     * @summary Returns the receiver's X coordinate of the page position as a
+     *     Number. The page position is the element's position relative to its
+     *     overall page.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {Number} The receiver's X coordinate of the page position.
+     */
+
+    var coords;
+
+    coords = TP.elementGetPageXY(this.getNativeNode(),
+                                    TP.BORDER_BOX,
+                                    null,
+                                    wantsTransformed);
+
+    return TP.pc(coords).getX();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('getPageRect',
 function(wantsTransformed) {
 
@@ -3429,6 +3559,32 @@ function(wantsTransformed) {
                                     wantsTransformed);
 
     return TP.rtc(coords);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('getPageY',
+function(wantsTransformed) {
+
+    /**
+     * @method getPageY
+     * @summary Returns the receiver's Y coordinate of the page position as a
+     *     Number. The page position is the element's position relative to its
+     *     overall page.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {Number} The receiver's Y coordinate of the page position.
+     */
+
+    var coords;
+
+    coords = TP.elementGetPageXY(this.getNativeNode(),
+                                    TP.BORDER_BOX,
+                                    null,
+                                    wantsTransformed);
+
+    return TP.pc(coords).getY();
 });
 
 //  ------------------------------------------------------------------------
