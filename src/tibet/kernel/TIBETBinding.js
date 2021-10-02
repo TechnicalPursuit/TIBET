@@ -3221,8 +3221,7 @@ function(aspectName) {
         i,
 
         bindEntry,
-        bindAspectName,
-        bindVal;
+        bindAspectName;
 
     result = null;
 
@@ -3239,12 +3238,10 @@ function(aspectName) {
     for (i = 0; i < len; i++) {
 
         bindEntry = bindingInfo.at(keys.at(i));
-        bindAspectName = bindEntry.first();
+        bindAspectName = bindEntry.at('bindingAspect');
 
         if (bindAspectName === aspectName) {
-            bindVal = bindEntry.last();
-
-            result = this.$computeValueForBoundAspect(bindVal, scopeValues);
+            result = this.$computeValueForBoundAspect(bindEntry, scopeValues);
 
             return result;
         }
@@ -3264,12 +3261,10 @@ function(aspectName) {
     for (i = 0; i < len; i++) {
 
         bindEntry = bindingInfo.at(keys.at(i));
-        bindAspectName = bindEntry.first();
+        bindAspectName = bindEntry.at('bindingAspect');
 
         if (bindAspectName === aspectName) {
-            bindVal = bindEntry.last();
-
-            result = this.$computeValueForBoundAspect(bindVal, scopeValues);
+            result = this.$computeValueForBoundAspect(bindEntry, scopeValues);
 
             return result;
         }
