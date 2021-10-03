@@ -216,6 +216,25 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.item.Inst.defineMethod('getItemHolder',
+function() {
+
+    /**
+     * @method getItemHolder
+     * @summary Returns the element holding the set of items (of which the
+     *     receiver should be one).
+     * @returns {TP.xctrls.Element} The element holding the receiver and its
+     *     sibling items.
+     */
+
+    return TP.wrap(
+                TP.nodeDetectAncestorMatchingCSS(
+                    this.getNativeNode(),
+                    '*[class~="itemholder"]'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.item.Inst.defineMethod('getLabelText',
 function() {
 

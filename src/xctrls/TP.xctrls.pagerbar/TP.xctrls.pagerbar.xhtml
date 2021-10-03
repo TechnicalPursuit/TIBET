@@ -3,7 +3,8 @@
 <xctrls:pagerbar
         id="{{$SOURCE.(@id)}}"
         tibet:no-mutations="true"
-        tibet:opaque="bind">
+        tibet:opaque="bind"
+        class="itemholder {{$SOURCE.(@class)}}">
     <span tibet:assembly="xctrls:pagerbar">
         <tibet:group focuswrap="true" id="{{$SOURCE.(@id)}}_group">
             <xctrls:content tibet:pelem="choices" class="noselect">
