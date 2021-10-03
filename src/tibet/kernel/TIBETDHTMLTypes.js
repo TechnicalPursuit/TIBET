@@ -33,6 +33,10 @@ TP.dnd.DragResponder.isAbstract(true);
 //  Type Constants
 //  ------------------------------------------------------------------------
 
+//  ------------------------------------------------------------------------
+//  Constraining functions
+//  ------------------------------------------------------------------------
+
 TP.dnd.DragResponder.Type.defineConstant(
 'LOCK_X_TO_ELEMENT_X',
 function(aDragResponder, aSignal, xyPoint) {
@@ -409,6 +413,23 @@ function(aDragResponder, aSignal, xyPoint) {
     }
 
     xyPoint.clampToRect(clampRect);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Worker functions
+//  ------------------------------------------------------------------------
+
+TP.dnd.DragResponder.Type.defineConstant(
+'REPORT_COORDINATES',
+function(anElement, styleObj, computedVals, infoAttrs) {
+
+    TP.info('Computed left: ', computedVals.at('left'));
+    TP.info('Computed top: ', computedVals.at('top'));
+
+    styleObj.top = computedVals.at('top') + 'px';
+    styleObj.left = computedVals.at('left') + 'px';
 
     return;
 });
@@ -1349,6 +1370,9 @@ function(aSignal) {
     actionElem = this.get('actionElement');
 
     if (TP.notValid(currentSignal) || !TP.isElement(actionElem)) {
+        //  Since we share this method with subtypes, we need to make sure that
+        //  both a current signal and action element exist on the individual
+        //  singletons. If not for this singleton, return here.
         return this;
     }
 
