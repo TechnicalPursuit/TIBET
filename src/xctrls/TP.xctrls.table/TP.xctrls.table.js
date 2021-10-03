@@ -1082,7 +1082,9 @@ function(enterSelection) {
 
         numCols,
 
-        rowNum;
+        rowNum,
+
+        thisref;
 
     //  We share this key function with d3. This will invoke 'getKeyFunction' on
     //  any adaptor that we define or the item type.
@@ -1152,6 +1154,11 @@ function(enterSelection) {
     numCols = this.getAttribute('colcount').asNumber();
 
     rowNum = 0;
+
+    //  We capture 'this' into 'thisref' here, because we'll also want to use
+    //  the 'this' reference inside of the Function (it points to the DOM
+    //  Element that is being updated).
+    thisref = this;
 
     newContent.each(
         function(data, index) {
@@ -1264,6 +1271,9 @@ function(enterSelection) {
             if (index === numCols - 1) {
                 rowNum++;
             }
+
+            //  Build any additional content onto the newly created element.
+            thisref.buildAdditionalContent(this);
         });
 
     //  Make sure that the stylesheet for the item tag is loaded. This is
@@ -1631,7 +1641,9 @@ function(updateSelection) {
         labelFunc,
         valueFunc,
 
-        columns;
+        columns,
+
+        thisref;
 
     numCols = this.getAttribute('colcount').asNumber();
 
@@ -1639,6 +1651,11 @@ function(updateSelection) {
     valueFunc = this.getValueFunction();
 
     columns = this.get('columns');
+
+    //  We capture 'this' into 'thisref' here, because we'll also want to use
+    //  the 'this' reference inside of the Function (it points to the DOM
+    //  Element that is being updated).
+    thisref = this;
 
     updateSelection.each(
         function(data, index) {
@@ -1741,6 +1758,9 @@ function(updateSelection) {
                         return '__VALUE__' + index + '__' + i;
                     }
                 );
+
+                //  Update any additional content on the element.
+                thisref.updateAdditionalContent(this);
             }
 
             /* eslint-enable no-loop-func */

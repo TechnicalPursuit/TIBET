@@ -1429,7 +1429,9 @@ function(enterSelection) {
         itemSelectionInfo,
         newContent,
 
-        shouldConstructTooltips;
+        shouldConstructTooltips,
+
+        thisref;
 
     //  We share this key function with d3. This will invoke 'getKeyFunction' on
     //  any adaptor that we define or the item type.
@@ -1447,6 +1449,11 @@ function(enterSelection) {
                     itemSelectionInfo.first(), itemSelectionInfo.last());
 
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
+
+    //  We capture 'this' into 'thisref' here, because we'll also want to use
+    //  the 'this' reference inside of the Function (it points to the DOM
+    //  Element that is being updated).
+    thisref = this;
 
     newContent.each(
         function(data, index) {
@@ -1554,6 +1561,9 @@ function(enterSelection) {
                 TP.xctrls.hint.setupHintOn(
                     this, hintElement, TP.hc('triggerPoint', TP.MOUSE));
             }
+
+            //  Build any additional content onto the newly created element.
+            thisref.buildAdditionalContent(this);
         });
 
     //  Make sure that the stylesheet for the item tag is loaded. This is
@@ -1992,12 +2002,20 @@ function(updateSelection) {
 
     var labelFunc,
         valueFunc,
-        shouldConstructTooltips;
+
+        shouldConstructTooltips,
+
+        thisref;
 
     labelFunc = this.getLabelFunction();
     valueFunc = this.getValueFunction();
 
     shouldConstructTooltips = TP.bc(this.getAttribute('tooltips'));
+
+    //  We capture 'this' into 'thisref' here, because we'll also want to use
+    //  the 'this' reference inside of the Function (it points to the DOM
+    //  Element that is being updated).
+    thisref = this;
 
     updateSelection.each(
         function(data, index) {
@@ -2098,6 +2116,9 @@ function(updateSelection) {
                     }
                 );
             }
+
+            //  Update any additional content on the element.
+            thisref.updateAdditionalContent(this);
         });
 
     return updateSelection;

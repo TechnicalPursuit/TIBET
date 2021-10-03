@@ -171,6 +171,8 @@ function(enterSelection) {
 
         allData,
 
+        thisref,
+
         newContent;
 
     itemSelectionInfo = this.getItemSelectionInfo();
@@ -242,6 +244,8 @@ function(enterSelection) {
 
     allData = this.get('data');
 
+    thisref = this;
+
     //  Append new content by cloning the template content element and updating
     //  that clone with data from the d3.js append() call and ourself.
     newContent = enterSelection.append(
@@ -251,7 +255,7 @@ function(enterSelection) {
 
             newElem = TP.nodeCloneNode(compiledTemplateContent);
 
-            this.updateTemplatedItemContent(
+            thisref.updateTemplatedItemContent(
                         newElem,
                         datum,
                         index,
@@ -271,12 +275,33 @@ function(enterSelection) {
 
             TP.elementBubbleXMLNSAttributesOnDescendants(newElem);
 
+            //  Build any additional content onto the newly created element.
+            thisref.buildAdditionalContent(newElem);
+
             return newElem;
-        }.bind(this)).attr(
+        }).attr(
             itemSelectionInfo.first(),
             itemSelectionInfo.last());
 
     return newContent;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.D3Tag.Inst.defineMethod('buildAdditionalContent',
+function(anElement) {
+
+    /**
+     * @method buildAdditionalContent
+     * @summary Builds additional content onto the supplied element, which will
+     *     be an individual item when rendering *new* repeating content in the
+     *     receiver's rendering pipeline.
+     * @param {Element} anElement The newly created item element. Note that this
+     *     will *already* have been placed in the visual DOM.
+     * @returns {TP.dom.D3Tag} The receiver.
+     */
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -920,6 +945,24 @@ function(exitSelection) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.D3Tag.Inst.defineMethod('updateAdditionalContent',
+function(anElement) {
+
+    /**
+     * @method updateAdditionalContent
+     * @summary Updates additional content onto the supplied element, which will
+     *     be an individual item when rendering *existing* repeating content in
+     *     the receiver's rendering pipeline.
+     * @param {Element} anElement The existing item element. Note that this will
+     *     *already* have been placed in the visual DOM.
+     * @returns {TP.dom.D3Tag} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.D3Tag.Inst.defineMethod('updateExistingContent',
 function(updateSelection) {
 
@@ -982,6 +1025,9 @@ function(updateSelection) {
                     groupIndex,
                     allData,
                     registry);
+
+            //  Update any additional content on the element.
+            thisref.updateAdditionalContent(this);
         });
 
     return updateSelection;
