@@ -1426,6 +1426,9 @@ function(aSignal) {
         insetLeft,
 
         startPoint,
+
+        scrollOffsets,
+
         startX,
         startY,
 
@@ -1473,8 +1476,14 @@ function(aSignal) {
     //  element and exit.
 
     startPoint = this.get('startPoint');
-    startX = startPoint.getX();
-    startY = startPoint.getY();
+
+    //  Adjust the start point by the scroll offset (of the document) before we
+    //  test whether the point is in the overlay element. The scroll offset is
+    //  already taken into account when dragging, but needs to occur here when
+    //  the engine is first starting up.
+    scrollOffsets = TP.elementGetScrollOffsetFromAncestor(actionElem);
+    startX = startPoint.getX() - scrollOffsets.at(0);
+    startY = startPoint.getY() - scrollOffsets.at(1);
 
     if (!TP.elementContainsPoint(overlayElem, startX, startY)) {
         aSignal.stopPropagation();
@@ -2706,6 +2715,9 @@ function(aSignal) {
         insetLeft,
 
         startPoint,
+
+        scrollOffsets,
+
         startX,
         startY,
 
@@ -2752,8 +2764,14 @@ function(aSignal) {
     //  exit.
 
     startPoint = this.get('startPoint');
-    startX = startPoint.getX();
-    startY = startPoint.getY();
+
+    //  Adjust the start point by the scroll offset (of the document) before we
+    //  test whether the point is in the overlay element. The scroll offset is
+    //  already taken into account when dragging, but needs to occur here when
+    //  the engine is first starting up.
+    scrollOffsets = TP.elementGetScrollOffsetFromAncestor(actionElem);
+    startX = startPoint.getX() - scrollOffsets.at(0);
+    startY = startPoint.getY() - scrollOffsets.at(1);
 
     if (!TP.elementContainsPoint(overlayElem, startX, startY)) {
         aSignal.stopPropagation();
