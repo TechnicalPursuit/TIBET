@@ -295,6 +295,26 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.itemset.Inst.defineMethod('itemWasTemplated',
+function(anItem) {
+
+    /**
+     * @method itemIsTemplated
+     * @summary Returns whether or not the item was templated into the receiver
+     *     (i.e. if it was generated from a data binding).
+     * @param {TP.xctrls.item} anItem The item to check.
+     * @returns {Boolean} Whether or not the item was templated.
+     */
+
+    var parentTPElem;
+
+    parentTPElem = anItem.getParentNode();
+
+    return parentTPElem.hasClass('templated');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.itemset.Inst.defineMethod('getDescendantsForSerialization',
 function() {
 
