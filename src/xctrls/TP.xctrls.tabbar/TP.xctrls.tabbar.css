@@ -7,6 +7,9 @@
 
 xctrls|tabbar {
 
+    display: inline-block;
+    position: relative;
+
     user-select: none;
 }
 

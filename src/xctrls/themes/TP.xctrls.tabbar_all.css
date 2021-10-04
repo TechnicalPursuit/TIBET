@@ -11,6 +11,18 @@
 
 }
 
+*|*[data-theme] xctrls|tabbar xctrls|content {
+
+    width: 100%;
+    height: 100%;
+}
+
+*|*[data-theme] xctrls|tabbar[orientation="vertical"] xctrls|content {
+
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
 *|*[data-theme] xctrls|tabbar xctrls|tabitem {
 
     display: flex;

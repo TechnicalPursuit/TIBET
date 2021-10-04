@@ -148,7 +148,13 @@
     tabbar #1:
     <br/>
     A standard XControls tabbar showing dynamic content of a single item Array:
-    <xctrls:tabbar id="tabbar1" bind:in="{data: urn:tibet:single_item_array#tibet(names)}" itemLabel="0"/>
+    <xctrls:tabbar id="tabbar1" bind:in="{data: urn:tibet:single_item_array#tibet(names)}" itemLabel="0" draggable="true"/>
+
+    <br/>
+    tabbar #1v:
+    <br/>
+    A vertical XControls tabbar showing dynamic content of a single item Array:
+    <xctrls:tabbar id="tabbar1v" orientation="vertical" bind:in="{data: urn:tibet:single_item_array#tibet(names)}" itemLabel="0" draggable="true"/>
 
     <br/>
     <br/>
@@ -157,7 +163,7 @@
     tabbar #2:
     <br/>
     A standard XControls tabbar showing dynamic content of a pair item Array:
-    <xctrls:tabbar id="tabbar2" bind:io="{data: urn:tibet:pair_item_array#tibet(names), value: urn:tibet:selection_scratch_data#tibet(data)}"/>
+    <xctrls:tabbar id="tabbar2" bind:io="{data: urn:tibet:pair_item_array#tibet(names), value: urn:tibet:selection_scratch_data#tibet(data)}" draggable="true"/>
 
     <br/>
     <br/>
@@ -166,7 +172,7 @@
     tabbar #3:
     <br/>
     A standard XControls tabbar showing dynamic content of a multi-item Array:
-    <xctrls:tabbar id="tabbar3" bind:io="{data: urn:tibet:multi_item_array#tibet(names), value: urn:tibet:selection_scratch_data#tibet(data)}" itemLabel="0" itemValue="2"/>
+    <xctrls:tabbar id="tabbar3" bind:io="{data: urn:tibet:multi_item_array#tibet(names), value: urn:tibet:selection_scratch_data#tibet(data)}" itemLabel="0" itemValue="2" draggable="true"/>
 
     <br/>
     <br/>
@@ -184,7 +190,7 @@
     tabbar #5:
     <br/>
     A standard XControls tabbar showing dynamic content of an Array of Object hashes:
-    <xctrls:tabbar id="tabbar5" bind:in="{data: urn:tibet:object_hash_array#tibet(info)}" itemKey="last_name" itemLabel="last_name"/>
+    <xctrls:tabbar id="tabbar5" bind:in="{data: urn:tibet:object_hash_array#tibet(info)}" itemKey="last_name" itemLabel="last_name" draggable="true"/>
 
     <br/>
     <br/>
@@ -194,7 +200,7 @@
     <br/>
 
     A standard XControls tabbar enabled showing dynamic content:
-    <xctrls:tabbar id="tabbar6" bind:io="{data: urn:tibet:selection_test_data#tibet(data)}"/>
+    <xctrls:tabbar id="tabbar6" bind:io="{data: urn:tibet:selection_test_data#tibet(data)}" draggable="true"/>
 
     <br/>
     <br/>
@@ -204,7 +210,7 @@
     <br/>
 
     A standard XControls tabbar enabled showing dynamic content and value bound to a selection model:
-    <xctrls:tabbar id="tabbar7" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}"/>
+    <xctrls:tabbar id="tabbar7" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}" draggable="true"/>
 
     <br/>
     <br/>
@@ -233,7 +239,7 @@
     <br/>
 
     A standard XControls tabbar enabled showing static and templated content and value bound to a selection model:
-    <xctrls:tabbar id="tabbar9" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}">
+    <xctrls:tabbar id="tabbar9" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}" draggable="true">
         <xctrls:tabitem tabindex="0">
             <xctrls:label>Before Content</xctrls:label>
             <xctrls:value>before</xctrls:value>
