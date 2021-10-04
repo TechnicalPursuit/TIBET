@@ -4041,7 +4041,12 @@ function(aTargetElem, anEvent) {
     var dragStateMachine,
 
         responder,
-        targetElement;
+        targetElement,
+
+        wasMover,
+        wasResizer,
+
+        evtTargetTPElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -4068,15 +4073,19 @@ function(aTargetElem, anEvent) {
     //  to the responders
     responder = TP.bySystemId('MoveService');
     targetElement = responder.get('targetElement');
+    wasMover = true;
 
     if (!TP.isElement(targetElement)) {
         responder = TP.bySystemId('ResizeService');
         targetElement = responder.get('targetElement');
+        wasMover = false;
+        wasResizer = true;
     }
 
     if (!TP.isElement(targetElement)) {
         responder = TP.bySystemId('DNDService');
         targetElement = responder.get('targetElement');
+        wasMover = false;
     }
 
     dragStateMachine.transition('idle');
@@ -4087,6 +4096,18 @@ function(aTargetElem, anEvent) {
     //  element or the body or some other element), we want to reset it to the
     //  target element.
     anEvent.$$_resolvedTarget = targetElement;
+
+    //  Grab the event target element and wrap it
+    evtTargetTPElem = TP.wrap(targetElement);
+
+    //  Depending on whether it was the mover or the resizer service that acted
+    //  upon the element, we message the element to tell it that. Note that we
+    //  do *not* do this for the DND service.
+    if (wasMover) {
+        evtTargetTPElem.didMove(anEvent);
+    } else if (wasResizer) {
+        evtTargetTPElem.didResize(anEvent);
+    }
 
     if (TP.isElement(targetElement)) {
         return this.onmouseup(targetElement, anEvent);
@@ -4190,6 +4211,40 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('didMove',
+function(normalizedEvent) {
+
+    /**
+     * @method didMove
+     * @summary Informs the receiver that it did move as part of a drag
+     *     operation.
+     * @param {Event} normalizedEvent The native event containing the signal's
+     *     raw data.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('didResize',
+function(normalizedEvent) {
+
+    /**
+     * @method didMove
+     * @summary Informs the receiver that it did resize as part of a drag
+     *     operation.
+     * @param {Event} normalizedEvent The native event containing the signal's
+     *     raw data.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.dom.UIElementNode.Inst.defineMethod('getDragInfo',
