@@ -4083,6 +4083,11 @@ function(aTargetElem, anEvent) {
 
     dragStateMachine.deactivate();
 
+    //  No matter what element the drag ended on (whether it was the overlay
+    //  element or the body or some other element), we want to reset it to the
+    //  target element.
+    anEvent.$$_resolvedTarget = targetElement;
+
     if (TP.isElement(targetElement)) {
         return this.onmouseup(targetElement, anEvent);
     }
