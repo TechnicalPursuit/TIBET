@@ -7975,11 +7975,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.CollectionNode.Inst.defineMethod('getValues',
-function() {
+function(deconstructPairs) {
 
     /**
      * @method getValues
      * @summary
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item. This parameter is not used in this version of this method.
      * @returns {TP.dom.CollectionNode} The receiver.
      */
 

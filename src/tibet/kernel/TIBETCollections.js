@@ -3279,7 +3279,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Map.Inst.defineMethod('getValues',
-function() {
+function(deconstructPairs) {
     return Array.ECMAfrom(this.values());
 });
 
@@ -3454,7 +3454,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Set.Inst.defineMethod('getValues',
-function() {
+function(deconstructPairs) {
     return Array.ECMAfrom(this.values());
 });
 
@@ -7317,12 +7317,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('getValues',
-function() {
+function(deconstructPairs) {
 
     /**
      * @method getValues
      * @summary Returns an array containing the values for the objects'
      *     attributes.
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item. This parameter is not used in this version of this method.
      * @returns {Object[]} An array of the values for the receiver's keys.
      */
 

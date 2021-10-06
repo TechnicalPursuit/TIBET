@@ -3733,12 +3733,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getValues',
-function() {
+function(deconstructPairs) {
 
     /**
      * @method getValues
      * @summary Returns an array containing the values for the objects'
      *     attributes.
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item. This parameter is not used in this version of this method.
      * @returns {Object[]} An array of the values for the receiver's keys.
      */
 
@@ -3759,26 +3762,47 @@ function() {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('getValues',
-function() {
+function(deconstructPairs) {
 
     /**
      * @method getValues
      * @summary Top-level value-getter. For Arrays the values are contained in
      *     the array itself.
+     * @description If deconstructPairs is true, then the second item in each
+     *     pair will be used as the value for that item. For example, assume:
+     *          myArr = [['olive', 'green'],['cherry', 'red']]
+     *     then:
+     *          myArr.getValues() -> [['olive', 'green'],['cherry', 'red']]
+     *     but:
+     *          myArr.getValues(true) -> ['green, 'red']
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item.
      * @returns {Object[]} An array containing the receiver's values.
      */
 
-    return this;
+    if (TP.isTrue(deconstructPairs) && TP.isPair(this[0])) {
+        return this.map(
+                function(item) {
+                    return item[1];
+                });
+    }
+
+    //  Otherwise, just return a copy.
+    return this.slice(0, this.length);
 });
 
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('getValues',
-function() {
+function(deconstructPairs) {
 
     /**
      * @method getValues
      * @summary Returns an array containing the characters in the receiver.
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item. This parameter is not used in this version of this method.
      * @returns {String[]} An array of characters.
      */
 
