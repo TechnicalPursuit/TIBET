@@ -3313,6 +3313,52 @@ TP.definePrimitive('keys', TP.objectKeys);
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('objectValues',
+function(anObject, deconstructPairs) {
+
+    /**
+     * @method objectValues
+     * @alias values
+     * @summary Returns the values of the object.
+     * @description This function is used to avoid type checking an object or
+     *     duplicating test code when you're not sure of the return type of some
+     *     function but need the object's values.
+     *     If deconstructPairs is true, then the second item in each
+     *     pair will be used as the value for that item. For example, assume:
+     *          myArr = [['olive', 'green'],['cherry', 'red']]
+     *     then:
+     *          myArr.getValues() -> [['olive', 'green'],['cherry', 'red']]
+     *     but:
+     *          myArr.getValues(true) -> ['green, 'red']
+     * @param {Object} anObject The object to return the values for.
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item.
+     * @returns {Object[]} The object's values.
+     */
+
+    //  no valid source object means no work
+    if (TP.notValid(anObject)) {
+        return [];
+    }
+
+    if (TP.canInvoke(anObject, 'getValues')) {
+        return anObject.getValues(deconstructPairs);
+    }
+
+    if (TP.isPlainObject(anObject)) {
+        return Object.values(anObject);
+    }
+
+    return [];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('values', TP.objectValues);
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('objectLocation',
 function(anObject) {
 
