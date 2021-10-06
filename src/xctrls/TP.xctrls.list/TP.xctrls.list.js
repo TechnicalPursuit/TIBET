@@ -1138,6 +1138,13 @@ function(aDataObject, shouldSignal, isFiltered) {
     //  one, with the data set that we've computed for it.
     if (this.hasAttribute('filter')) {
         if (TP.notTrue(isFiltered)) {
+            //  Note how we pass 'true' here to deconstruct pairs and give us
+            //  back the second item as the values.
+            filteringSource = TP.values(dataObj, true).map(
+                                function(anItem) {
+                                    return TP.tostr(anItem);
+                                });
+
             this.$set('$wholeData', dataObj, false);
 
             searcher = this.get('$filterSearcher');
