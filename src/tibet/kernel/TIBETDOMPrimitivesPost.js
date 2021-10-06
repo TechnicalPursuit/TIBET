@@ -7706,6 +7706,19 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
     thePathType = aPathType;
     if (TP.notValid(thePathType)) {
         thePathType = TP.getAccessPathType(aPath);
+
+        //  If the computed path type was TP.TIBET_PATH_TYPE, it could just be
+        //  an alphanum path (but *not* numeric only or a 'simple numeric' path)
+        //  and that method cannot distinguish between that and a TIBET path. If
+        //  that's the case, reset to being a CSS path.
+        if (thePathType === TP.TIBET_PATH_TYPE) {
+            if (!TP.regex.ONLY_NUM.test(path) &&
+                !TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
+                thePathType = TP.CSS_PATH_TYPE;
+            } else {
+                return null;
+            }
+        }
     }
 
     switch (thePathType) {
