@@ -2064,6 +2064,59 @@ function(fromElement, toElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementEntitifyNodesMatching',
+function(anElement, query) {
+
+    /**
+     * @method elementEntitifyNodesMatching
+     * @summary Entitify any nodes under the supplied element that match the
+     *     supplied query. This will take the entire chunk of DOM that matches
+     *     that query and encode it as a single Text node with the content of
+     *     that node as an entitified String.
+     * @description Note that this method will do this *as shallowly as
+     *     possible*. Nodes that are nested under direct children might very
+     *     well be entitified.
+     * @param {Element} anElement The element node to query for nodes to
+     *     entitify.
+     * @param {String} query The query to use to select the nodes to entitify.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     */
+
+    var queriedNodes,
+        doc;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    queriedNodes = TP.nodeEvaluatePath(anElement, query, null, false);
+    if (TP.isEmpty(queriedNodes)) {
+        return;
+    }
+
+    //  We only want the roots out of this node set - that'll give us the 'most
+    //  shallow' nodes that matched the query.
+    queriedNodes = TP.nodesGetRoots(queriedNodes);
+
+    doc = TP.doc(anElement);
+
+    queriedNodes.forEach(
+        function(aNode) {
+            var str,
+                newNode;
+
+            str = TP.xmlLiteralsToEntities(TP.str(aNode));
+            newNode = doc.createTextNode(str);
+
+            TP.nodeReplaceChild(aNode.parentNode, newNode, aNode, false);
+        });
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementFlagChange',
 function(anElement, locationPath, action, shouldOverwrite) {
 
