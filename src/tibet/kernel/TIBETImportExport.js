@@ -12,7 +12,7 @@ TP.sys.defineMethod('fetchScriptInto',
 function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
 
     /**
-     * @method fetchScriptInfo
+     * @method fetchScriptInto
      * @summary Loads the uri provided (which should be a JavaScript uri) into
      *     the supplied document's context. Note that this call is done in a
      *     asynchronous fashion, returning a Promise, although a callback
