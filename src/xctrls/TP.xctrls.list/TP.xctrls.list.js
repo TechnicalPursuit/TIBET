@@ -1481,9 +1481,7 @@ function(enterSelection) {
                     var val,
 
                         labelVal,
-
-                        preIndex,
-                        postIndex;
+                        labelSpan;
 
                     val = valueFunc(data, index);
 
@@ -1498,15 +1496,24 @@ function(enterSelection) {
                     }
 
                     if (/match_result">/g.test(labelVal)) {
-                        preIndex = labelVal.indexOf('<span');
-                        postIndex = labelVal.indexOf('</span>') + 7;
 
-                        labelVal =
-                            TP.xmlLiteralsToEntities(
-                                labelVal.slice(0, preIndex)) +
-                            labelVal.slice(preIndex, postIndex) +
-                            TP.xmlLiteralsToEntities(
-                                labelVal.slice(postIndex));
+                        labelSpan = TP.elem('<span>' + labelVal + '</span>');
+
+                        //  Entitify any direct children of the span that are
+                        //  either text nodes or elements that do *not* have a
+                        //  class of 'match_result" that we created from the
+                        //  label text. This will leave any content under nested
+                        //  spans with a class of 'match_result' alone.
+                        TP.elementEntitifyNodesMatching(
+                                labelSpan,
+                                './text()|./*[not(@class = "match_result")]');
+
+                        //  Grab all of the child nodes under our created label
+                        //  span as a document fragment and grab the String
+                        //  representation of that fragment.
+                        labelVal = TP.str(
+                                    TP.nodeListAsFragment(
+                                        labelSpan.childNodes));
 
                     } else {
                         labelVal = TP.xmlLiteralsToEntities(labelVal);
@@ -2036,9 +2043,7 @@ function(updateSelection) {
                 function(d, i) {
                     var val,
                         labelVal,
-
-                        preIndex,
-                        postIndex;
+                        labelSpan;
 
                     val = valueFunc(data, index);
 
@@ -2053,15 +2058,23 @@ function(updateSelection) {
                     }
 
                     if (/match_result">/g.test(labelVal)) {
-                        preIndex = labelVal.indexOf('<span');
-                        postIndex = labelVal.indexOf('</span>') + 7;
+                        labelSpan = TP.elem('<span>' + labelVal + '</span>');
 
-                        labelVal =
-                            TP.xmlLiteralsToEntities(
-                                labelVal.slice(0, preIndex)) +
-                            labelVal.slice(preIndex, postIndex) +
-                            TP.xmlLiteralsToEntities(
-                                labelVal.slice(postIndex));
+                        //  Entitify any direct children of the span that are
+                        //  either text nodes or elements that do *not* have a
+                        //  class of 'match_result" that we created from the
+                        //  label text. This will leave any content under nested
+                        //  spans with a class of 'match_result' alone.
+                        TP.elementEntitifyNodesMatching(
+                                labelSpan,
+                                './text()|./*[not(@class = "match_result")]');
+
+                        //  Grab all of the child nodes under our created label
+                        //  span as a document fragment and grab the String
+                        //  representation of that fragment.
+                        labelVal = TP.str(
+                                    TP.nodeListAsFragment(
+                                        labelSpan.childNodes));
 
                     } else {
                         labelVal = TP.xmlLiteralsToEntities(labelVal);
