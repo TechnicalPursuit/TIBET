@@ -12,7 +12,7 @@ xctrls|list {
 
     display: inline-block;
 
-    overflow-y: auto;
+    overflow-y: hidden;
 
     user-select: none;
 }

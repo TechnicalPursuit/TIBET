@@ -24,8 +24,6 @@ lama|inspector#LamaInspector lama|inspectoritem > xctrls|list {
     line-height: 1.5em;
 
     border: none;
-
-    overflow-y: auto;
 }
 
 lama|inspector#LamaInspector lama|inspectoritem > xctrls|list xctrls|content[tibet|pelem="choices"] {
@@ -61,8 +59,6 @@ lama|inspector#LamaInspector lama|inspectoritem > xctrls|table {
     line-height: 1.5em;
 
     border: none;
-
-    overflow-y: auto;
 }
 
 lama|inspector#LamaInspector lama|inspectoritem > xctrls|table xctrls|content[tibet|pelem="choices"] {
@@ -237,8 +233,6 @@ xctrls|list#TSHCompleterList {
     border: 1px solid #999;
     border-radius: 0;
     box-shadow: 2px 2px 1px rgba(128, 128, 128, 0.3);
-
-    overflow-y: auto;
 
     z-index: var(--tibet-CONTEXT-MENU-TIER);
 }

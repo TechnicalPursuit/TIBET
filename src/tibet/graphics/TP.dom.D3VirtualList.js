@@ -42,6 +42,8 @@ TP.dom.D3VirtualList.Inst.defineAttribute('$startOffset');
 TP.dom.D3VirtualList.Inst.defineAttribute('$endOffset');
 TP.dom.D3VirtualList.Inst.defineAttribute('$computedRowCount');
 
+TP.dom.D3VirtualList.Inst.defineAttribute('scrollFactor');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -488,6 +490,315 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.D3VirtualList.Inst.defineHandler('DOMMouseWheel',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseWheel
+     * @summary Handles notifications of mouse wheel signals.
+     * @param {TP.sig.DOMMouseWheel} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.dom.D3VirtualList} The receiver.
+     */
+
+    var elem,
+        nativeWindow,
+
+        scrollRendering,
+
+        scrollFactor,
+
+        thisref,
+
+        performRender;
+
+    elem = this.getNativeNode();
+    nativeWindow = this.getNativeWindow();
+
+    scrollRendering = false;
+
+    scrollFactor = this.get('scrollFactor');
+
+    thisref = this;
+
+    performRender =
+        function() {
+            if (!scrollRendering) {
+                nativeWindow.requestAnimationFrame(
+                    function() {
+                        elem.scrollTop +=
+                            aSignal.getWheelDelta() * scrollFactor;
+                        thisref.$internalRender();
+                        scrollRendering = false;
+                    });
+                scrollRendering = true;
+            }
+        };
+
+    performRender();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.D3VirtualList.Inst.defineMethod('$internalRender',
+function(desiredScrollTop) {
+
+    /**
+     * @method $internalRender
+     * @summary This method contains the actual machinery of rendering the
+     *     virtual list.
+     * @param {Number} [desiredScrollTop] The value of where the receiver's
+     *     scrolling element's 'scrollTop' should be. This will default to the
+     *     receiver's scrolling element's current scrollTop value.
+     * @returns {TP.dom.D3VirtualList} The receiver.
+     */
+
+    var rowHeight,
+        bumpRowCount,
+
+        scrollerElem,
+        viewportElem,
+
+        container,
+
+        itemSelectionInfo,
+
+        computedRowCount,
+
+        selectionData,
+
+        totalRows,
+
+        allData,
+
+        finalRowCount,
+
+        scroller,
+        scrollTop,
+
+        totalHeight,
+        minHeight,
+
+        position,
+
+        startOffset,
+        endOffset,
+
+        oldStartOffset,
+        oldEndOffset,
+        oldComputedRowCount,
+
+        d3UpdateFunc,
+
+        thisref,
+
+        rowSelector,
+
+        d3EnterFunc,
+        d3ExitFunc,
+        d3DataIdFunc;
+
+    rowHeight = this.getRowHeight();
+    bumpRowCount = this.$get('$bumpRowCount');
+
+    scrollerElem = this.getScrollingContainer();
+
+    //  The element that forms the outer viewport
+    viewportElem = this.getNativeNode();
+
+    //  The content that will actually be scrolled.
+    container = TP.extern.d3.select(this.getSelectionContainer());
+    if (TP.notValid(container.node()) ||
+        TP.notValid(container.node().style)) {
+        return;
+    }
+
+    computedRowCount = this.computeGeneratedRowCount();
+
+    //  Give the list 50% more rows that whatever it is we're displaying to give
+    //  some overlap for less flicker.
+    computedRowCount *= 1.5;
+
+    //  The d3 selection data.
+    selectionData = this.computeSelectionData();
+
+    //  The number of total rows of data.
+    totalRows = selectionData.getSize();
+
+    allData = TP.ifEmpty(selectionData, TP.ac());
+
+    finalRowCount = totalRows;
+    if (bumpRowCount > 0) {
+        finalRowCount -= bumpRowCount;
+    }
+
+    //  The element that will perform the scrolling.
+    scroller = TP.extern.d3.select(scrollerElem);
+
+    scrollTop = TP.ifInvalid(desiredScrollTop, viewportElem.scrollTop);
+
+    minHeight = this.getComputedStyleProperty('min-height', true);
+    if (!TP.isNumber(minHeight)) {
+        minHeight = 0;
+    }
+
+    /* eslint-disable no-extra-parens */
+    totalHeight = Math.max(minHeight, (finalRowCount * rowHeight));
+    /* eslint-enable no-extra-parens */
+
+    //  both style and attr height values seem to be respected
+    scroller.style('height', totalHeight + 'px');
+
+    position = Math.floor(scrollTop / rowHeight);
+
+    finalRowCount = totalRows;
+
+    //  Calculate the start offset (if there are 'bump rows', add them
+    //  and then 1 to offset 0 position vs totalRow count diff)
+    if (bumpRowCount > 0) {
+        finalRowCount -= 1;
+        startOffset = Math.max(
+        0,
+        Math.min(
+            position,
+            finalRowCount - computedRowCount + bumpRowCount + 1));
+
+        endOffset = startOffset + computedRowCount + bumpRowCount + 1;
+    } else {
+        startOffset = Math.max(
+        0,
+        Math.min(
+            position,
+            finalRowCount - computedRowCount));
+
+        endOffset = startOffset + computedRowCount;
+    }
+
+    oldStartOffset = this.$get('$startOffset');
+    oldEndOffset = this.$get('$endOffset');
+    oldComputedRowCount = this.$get('$computedRowCount');
+
+    d3UpdateFunc = this.d3Update.bind(this);
+
+    thisref = this;
+
+    if (oldStartOffset === startOffset &&
+        oldEndOffset === endOffset &&
+        oldComputedRowCount === computedRowCount) {
+
+        container.each(
+            function() {
+                var rowUpdateSelection,
+                    newData;
+
+                //  do not update .transitioning elements
+                rowUpdateSelection =
+                    container.selectAll('.row:not(.transitioning)');
+
+                //  compute the new data slice
+                newData = allData.slice(
+                            startOffset,
+                            Math.min(endOffset, finalRowCount));
+
+                //  Just update the individual datums for each row.
+                rowUpdateSelection.each(
+                    function(oldData, index) {
+                        var val;
+
+                        //  Grab the new value. If it doesn't exist,
+                        //  then ask the control to create a blank row
+                        //  for the row at our index.
+                        val = newData[index];
+                        if (TP.notValid(val)) {
+                            val = thisref.createBlankRowData(index);
+                        }
+
+                        //  Select ourself as the element and set the
+                        //  individual datum.
+                        TP.extern.d3.select(this).datum(val);
+                    });
+
+                rowUpdateSelection.call(d3UpdateFunc);
+            });
+    } else {
+
+        /* eslint-disable no-extra-parens */
+        container.style(
+                'transform',
+                'translate(0px, ' +
+                            (position * rowHeight) + 'px)');
+        /* eslint-enable no-extra-parens */
+
+        this.$set('$startOffset', startOffset, false);
+        this.$set('$endOffset', endOffset, false);
+        this.$set('$computedRowCount', computedRowCount, false);
+
+        //  Row 'selection' criteria - an Array with the name of the attribute as
+        //  the first value and the value of the attribute as the second value.
+        itemSelectionInfo = this.getItemSelectionInfo();
+
+        //  build a selector that will be used to 'select' rows.
+        rowSelector = '*[' + itemSelectionInfo.first() +
+                        '~=' +
+                        '"' + itemSelectionInfo.last() + '"' +
+                        ']';
+
+        d3EnterFunc = this.d3Enter.bind(this);
+        d3ExitFunc = this.d3Exit.bind(this);
+
+        d3DataIdFunc = this.d3KeyFunction();
+
+        //  slice out visible rows from data and display
+        container.each(
+            function() {
+                var newData,
+
+                    rowSelection,
+                    rowUpdateSelection;
+
+                //  compute the new data slice
+                newData = allData.slice(
+                            startOffset,
+                            Math.min(endOffset, finalRowCount));
+
+                rowSelection = container.selectAll(rowSelector).
+                                data(newData, d3DataIdFunc);
+
+                rowSelection.exit().call(d3ExitFunc).remove();
+
+                rowSelection.enter().call(d3EnterFunc);
+                rowSelection.order();
+
+                //  do not position .transitioning elements
+                rowUpdateSelection =
+                    container.selectAll('.row:not(.transitioning)');
+
+                rowUpdateSelection.call(d3UpdateFunc);
+
+                rowUpdateSelection.each(
+                    function(d, i) {
+                        TP.extern.d3.select(this).style(
+                                'transform',
+                                function() {
+                                    /* eslint-disable no-extra-parens */
+                                    return 'translate(0px,' +
+                                            (i * rowHeight) + 'px)';
+                                    /* eslint-enable no-extra-parens */
+                                });
+                    });
+            });
+    }
+
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRenderData');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.D3VirtualList.Inst.defineMethod('isReadyToRender',
 function() {
 
@@ -513,14 +824,7 @@ function() {
      * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
-    var containerSelection,
-
-        selectionData,
-
-        rowHeight,
-        totalRows,
-
-        virtualScroller;
+    var containerSelection;
 
     //  If we're not ready to render, then don't. Another process will have to
     //  re-trigger the rendering process.
@@ -550,37 +854,7 @@ function() {
         return this;
     }
 
-    //  Compute the number of rows we need to generate *before* we try to
-    //  compute the data that will be the d3 selection data.
-    this.computeGeneratedRowCount();
-
-    //  The d3 selection data.
-    selectionData = this.computeSelectionData();
-
-    //  The number of total rows of data.
-    totalRows = selectionData.getSize();
-
-    //  The current row height.
-    rowHeight = this.getRowHeight();
-    if (!TP.isNumber(rowHeight)) {
-        return this.raise('TP.sig.InvalidNumber');
-    }
-
-    //  Grab the virtual scroller object.
-    virtualScroller = this.get('$virtualScroller');
-
-    //  Reset the dynamic properties of the virtual scroller object. The static
-    //  properties of this object were set up when it was allocated &
-    //  initialized.
-    virtualScroller.
-        rowHeight(rowHeight).
-        totalRows(totalRows).
-        data(selectionData, this.d3KeyFunction());
-
-    //  Call it's render() to redraw. This is the same method that the virtual
-    //  scroller object itself will call when we scroll and provides the
-    //  'infinite scroll' capability.
-    virtualScroller.render();
+    this.$internalRender();
 
     return this;
 });
@@ -596,56 +870,20 @@ function() {
      * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
-    var scrollingContent,
-        scrollerElem,
-        viewportElem,
-
-        itemSelectionInfo,
-
-        virtualScroller;
-
-    if (TP.isValid(this.get('$virtualScroller'))) {
-        return this;
-    }
-
-    //  The content that will actually be scrolled.
-    scrollingContent = this.getSelectionContainer();
-
-    //  The element that will perform the scrolling.
-    scrollerElem = this.getScrollingContainer();
+    var elem;
 
     //  The element that forms the outer viewport
-    viewportElem = this.getNativeNode();
+    elem = this.getNativeNode();
 
-    //  Row 'selection' criteria - an Array with the name of the attribute as
-    //  the first value and the value of the attribute as the second value.
-    itemSelectionInfo = this.getItemSelectionInfo();
-
-    //  Allocate and initialize a virtual scroller with a variety of information
-    //  about the receiver, including bound versions of the d3 enter/update/exit
-    //  functions, the elements acting as our scroller and viewport, etc.
-    virtualScroller = TP.extern.d3.VirtualScroller();
-    virtualScroller.
-        enter(this.d3Enter.bind(this)).
-        update(this.d3Update.bind(this)).
-        exit(this.d3Exit.bind(this)).
-        scroller(TP.extern.d3.select(scrollerElem)).
-        viewport(TP.extern.d3.select(viewportElem)).
-        target(viewportElem).
-        selectionInfo(itemSelectionInfo).
-        control(this);
-
-    //  Call the virtual scroller method to set up the scrolling event listener.
-    TP.extern.d3.select(scrollingContent).call(virtualScroller);
-
-    //  Cache the virtual scroller object for use during render.
-    this.set('$virtualScroller', virtualScroller);
+    this.observe(this, 'TP.sig.DOMMouseWheel');
 
     //  Register ourself as a 'mousewheel' capturer. Since all we're doing is
     //  scrolling when the mousewheel is spun, we don't want the regular
     //  'invokeObservers' machinery to run in the event system. This helps with
     //  scrolling performance and flicker.
-    TP.$mousewheel_capturer_cache.push(viewportElem);
+    TP.$mousewheel_capturer_cache.push(elem);
+
+    this.set('scrollFactor', 5);
 
     return this;
 });
@@ -662,466 +900,19 @@ function() {
      * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
-    var viewportElem;
+    var elem;
 
     //  The element that forms the outer viewport
-    viewportElem = this.getNativeNode();
+    elem = this.getNativeNode();
+
+    this.ignore(this, 'TP.sig.DOMMouseWheel');
 
     //  Remove ourself as a 'mousewheel capturer'.
     TP.$mousewheel_capturer_cache.splice(
-        TP.$mousewheel_capturer_cache.indexOf(viewportElem), 1);
+        TP.$mousewheel_capturer_cache.indexOf(elem), 1);
 
     return this;
 });
-
-//  ------------------------------------------------------------------------
-
-TP.extern.d3.VirtualScroller = function() {
-
-    var enter,
-        update,
-        exit,
-        allData,
-        dataid,
-        scroller,
-        viewport,
-        totalRows,
-        position,
-        rowHeight,
-        totalHeight,
-        minHeight,
-        computedRowCount,
-        target,
-        selectionInfo,
-        delta,
-        control,
-        dispatch,
-
-        lastScrollTop,
-
-        scrollerFunc;
-
-    enter = null;
-    update = null;
-    exit = null;
-    allData = TP.ac();
-    dataid = null;
-    scroller = null;
-    viewport = null;
-    totalRows = 0;
-    position = 0;
-    rowHeight = 0;
-    totalHeight = 0;
-    minHeight = 0;
-    computedRowCount = 0;
-    target = null;
-    selectionInfo = null;
-    delta = 0;
-    control = null;
-    dispatch = TP.extern.d3.dispatch('pageDown', 'pageUp');
-
-    lastScrollTop = 0;
-
-    scrollerFunc = function(container) {
-
-        var bumpRowCount,
-
-            render,
-            scrollRenderFrame;
-
-        render = function() {
-
-            var scrollTop,
-                finalRowCount,
-                lastPosition;
-
-            if (TP.notValid(container.node()) ||
-                TP.notValid(container.node().style)) {
-                return;
-            }
-
-            computedRowCount = control.computeGeneratedRowCount();
-
-            bumpRowCount = control.$get('$bumpRowCount');
-
-            scrollTop = viewport.node().scrollTop;
-
-            finalRowCount = totalRows;
-            if (bumpRowCount > 0) {
-                finalRowCount -= bumpRowCount;
-            }
-
-            /* eslint-disable no-extra-parens */
-            totalHeight = Math.max(minHeight, (finalRowCount * rowHeight));
-            /* eslint-enable no-extra-parens */
-
-            //  both style and attr height values seem to be respected
-            scroller.style('height', totalHeight + 'px');
-
-            lastPosition = position;
-            position = Math.floor(scrollTop / rowHeight);
-
-            delta = position - lastPosition;
-
-            //  If there was no difference in scroll position, then we're
-            //  probably re-rendering because something like a selection has
-            //  changed. We do that directly right here.
-            if (Math.abs(scrollTop - lastScrollTop) === 0) {
-                scrollRenderFrame(position);
-
-                //  Signal to observers that this control has rendered.
-                control.signal('TP.sig.DidRenderData');
-            } else {
-                //  Otherwise, there was a change in scroll position.
-                scrollRenderFrame(position);
-
-                //  Signal to observers that this control has rendered.
-                control.signal('TP.sig.DidRenderData');
-            }
-
-            lastScrollTop = scrollTop;
-        };
-
-        control.$internalRender = render;
-
-        scrollRenderFrame = function(scrollPosition) {
-
-            var finalRowCount,
-
-                startOffset,
-                endOffset,
-
-                oldStartOffset,
-                oldEndOffset,
-                oldComputedRowCount,
-
-                rowSelector;
-
-            finalRowCount = totalRows;
-
-            //  Calculate the start offset (if there are 'bump rows', add them
-            //  and then 1 to offset 0 position vs totalRow count diff)
-            if (bumpRowCount > 0) {
-                finalRowCount -= 1;
-                startOffset = Math.max(
-                0,
-                Math.min(
-                    scrollPosition,
-                    finalRowCount - computedRowCount + bumpRowCount + 1));
-
-                endOffset = startOffset + computedRowCount + bumpRowCount + 1;
-            } else {
-                startOffset = Math.max(
-                0,
-                Math.min(
-                    scrollPosition,
-                    finalRowCount - computedRowCount));
-
-                endOffset = startOffset + computedRowCount;
-            }
-
-            oldStartOffset = control.$get('$startOffset');
-            oldEndOffset = control.$get('$endOffset');
-            oldComputedRowCount = control.$get('$computedRowCount');
-
-            if (oldStartOffset === startOffset &&
-                oldEndOffset === endOffset &&
-                oldComputedRowCount === computedRowCount) {
-
-                container.each(
-                    function() {
-                        var rowUpdateSelection,
-                            newData;
-
-                        //  do not update .transitioning elements
-                        rowUpdateSelection =
-                            container.selectAll('.row:not(.transitioning)');
-
-                        //  compute the new data slice
-                        newData = allData.slice(
-                                    startOffset,
-                                    Math.min(endOffset, finalRowCount));
-
-                        //  Just update the individual datums for each row.
-                        rowUpdateSelection.each(
-                            function(oldData, index) {
-                                var val;
-
-                                //  Grab the new value. If it doesn't exist,
-                                //  then ask the control to create a blank row
-                                //  for the row at our index.
-                                val = newData[index];
-                                if (TP.notValid(val)) {
-                                    val = control.createBlankRowData(index);
-                                }
-
-                                //  Select ourself as the element and set the
-                                //  individual datum.
-                                TP.extern.d3.select(this).datum(val);
-                            });
-
-                        rowUpdateSelection.call(update);
-                    });
-            } else {
-
-                /* eslint-disable no-extra-parens */
-                container.style(
-                        'transform',
-                        'translate(0px, ' +
-                                    (scrollPosition * rowHeight) + 'px)');
-                /* eslint-enable no-extra-parens */
-
-                control.$set('$startOffset', startOffset, false);
-                control.$set('$endOffset', endOffset, false);
-                control.$set('$computedRowCount', computedRowCount, false);
-
-                //  build a selector that will be used to 'select' rows.
-                rowSelector = '*[' + selectionInfo.first() +
-                                '~=' +
-                                '"' + selectionInfo.last() + '"' +
-                                ']';
-
-                //  slice out visible rows from data and display
-                container.each(
-                    function() {
-                        var newData,
-
-                            rowSelection,
-                            rowUpdateSelection;
-
-                        //  compute the new data slice
-                        newData = allData.slice(
-                                    startOffset,
-                                    Math.min(endOffset, finalRowCount));
-
-                        rowSelection = container.selectAll(rowSelector).
-                                        data(newData, dataid);
-
-                        rowSelection.exit().call(exit).remove();
-
-                        rowSelection.enter().call(enter);
-                        rowSelection.order();
-
-                        //  do not position .transitioning elements
-                        rowUpdateSelection =
-                            container.selectAll('.row:not(.transitioning)');
-
-                        rowUpdateSelection.call(update);
-
-                        rowUpdateSelection.each(
-                            function(d, i) {
-                                TP.extern.d3.select(this).style(
-                                        'transform',
-                                        function() {
-                                            /* eslint-disable no-extra-parens */
-                                            return 'translate(0px,' +
-                                                    (i * rowHeight) + 'px)';
-                                            /* eslint-enable no-extra-parens */
-                                        });
-                            });
-                    });
-            }
-
-            //  dispatch events
-            /* eslint-disable no-extra-parens */
-            if (endOffset > (allData.length - computedRowCount)) {
-            /* eslint-enable no-extra-parens */
-                dispatch.call('pageDown', {delta: delta});
-            } else if (startOffset < computedRowCount) {
-                dispatch.call('pageUp', {delta: delta});
-            }
-        };
-
-        //  make render function publicly visible
-        scrollerFunc.render = render;
-
-        //  call render on scrolling event
-        viewport.on('scroll.scrollerFunc', render);
-        viewport.on('mousewheel.scrollerFunc', render);
-    };
-
-    scrollerFunc.control = function(_) {
-
-        if (!arguments.length) {
-            return control;
-        }
-
-        control = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.data = function(_, __) {
-
-        if (!arguments.length) {
-            return allData;
-        }
-
-        allData = _;
-        dataid = __;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.dataid = function(_) {
-
-        if (!arguments.length) {
-            return dataid;
-        }
-
-        dataid = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.enter = function(_) {
-
-        if (!arguments.length) {
-            return enter;
-        }
-
-        enter = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.update = function(_) {
-
-        if (!arguments.length) {
-            return update;
-        }
-
-        update = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.exit = function(_) {
-
-        if (!arguments.length) {
-            return exit;
-        }
-
-        exit = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.totalRows = function(_) {
-
-        if (!arguments.length) {
-            return totalRows;
-        }
-
-        totalRows = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.rowHeight = function(_) {
-
-        if (!arguments.length) {
-            return rowHeight;
-        }
-
-        rowHeight = Number(_);
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.totalHeight = function(_) {
-
-        if (!arguments.length) {
-            return totalHeight;
-        }
-
-        totalHeight = Number(_);
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.minHeight = function(_) {
-
-        if (!arguments.length) {
-            return minHeight;
-        }
-
-        minHeight = Number(_);
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.position = function(_) {
-
-        if (!arguments.length) {
-            return position;
-        }
-
-        position = Number(_);
-        if (viewport) {
-            viewport.node().scrollTop = position;
-        }
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.scroller = function(_) {
-
-        if (!arguments.length) {
-            return scroller;
-        }
-
-        scroller = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.viewport = function(_) {
-
-        if (!arguments.length) {
-            return viewport;
-        }
-
-        viewport = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.target = function(_) {
-
-        if (!arguments.length) {
-            return target;
-        }
-
-        target = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.selectionInfo = function(_) {
-
-        if (!arguments.length) {
-            return selectionInfo;
-        }
-
-        selectionInfo = _;
-
-        return scrollerFunc;
-    };
-
-    scrollerFunc.delta = function() {
-        return delta;
-    };
-
-    scrollerFunc.on = function() {
-        var value;
-
-        value = dispatch.on.apply(dispatch, arguments);
-        return value === dispatch ? scrollerFunc : value;
-    };
-
-    return scrollerFunc;
-};
 
 //  ------------------------------------------------------------------------
 //  end
