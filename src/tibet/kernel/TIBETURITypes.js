@@ -2083,6 +2083,13 @@ function(anObject, aRequest, collapse) {
     resultType = request.at('resultType');
 
     if (TP.isValid(anObject)) {
+        //  If we got a TIBET (or native) *type* object back, then just return
+        //  the object to avoid problems with conversion to other types of
+        //  objects.
+        if (TP.isType(anObject)) {
+            return anObject;
+        }
+
         switch (resultType) {
             case TP.DOM:
 
