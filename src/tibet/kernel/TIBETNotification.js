@@ -6036,10 +6036,10 @@ function(anOrigin, aSignal, aPayload, aType) {
     //  we're bubbling... we're bubbling...
     sig.setPhase(TP.BUBBLING);
 
-    if (TP.notEmpty(responders)) {
+    //  Rescan for responders based on the new phase...
+    responders = TP.nodeGetResponderChain(target, sig);
 
-        //  convert back to target-to-ancestor ordering for bubbling phase.
-        responders.reverse();
+    if (TP.notEmpty(responders)) {
 
         //  if the signal bubbles then we continue, otherwise we'll stop
         if (!sig.isBubbling()) {
