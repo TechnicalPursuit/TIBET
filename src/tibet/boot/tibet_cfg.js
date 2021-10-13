@@ -1548,7 +1548,7 @@
     TP.sys.setcfg('log.load_signals', false);
 
     //  should we log warnings about isResponderFor misses during chain lookup?
-    TP.sys.setcfg('log.missing_isresponderfor', true);
+    TP.sys.setcfg('log.missing_isresponderfor', false);
 
     //  Turns on/off warnings regarding detached nodes in DOM traversal
     //  routines. The default is true since this implies a true bug.
