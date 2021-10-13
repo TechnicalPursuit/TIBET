@@ -266,9 +266,10 @@ function() {
         }
 
         if (TP.notEmpty(resourceStr)) {
-            //  A bit strange to remove content into string form only to set it
-            //  again, but the setContent step forces interpretation of the data
-            //  into our URI, triggers the right change notifications etc.
+            //  A bit strange to remove content and convert it into string form
+            //  only to set it again, but the setContent step forces
+            //  interpretation of the data into our URI, triggers the right
+            //  change notifications etc.
             this.setContent(resourceStr);
         }
     } else {
@@ -391,7 +392,8 @@ function(aContentObject, aRequest) {
         TP.ifWarn() ?
             TP.warn('Computed a content type of text/plain for' +
                     ' <tibet:data/> with id: ' +
-                    this.getAttribute('id') + '.') : 0;
+                    this.getAttribute('id') +
+                    ' setting content of: ' + namedHref) : 0;
     }
 
     //  Obtain a MIME type for the result and use it to obtain a result type.
