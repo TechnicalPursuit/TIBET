@@ -2670,6 +2670,34 @@ function(anObject, aFormat, formatParams) {
         obj = TP.collapse(obj);
     }
 
+    //  If it's a plain object, then we need to invoke these manually.
+    if (TP.isPlainObject(obj)) {
+        switch (aFormat) {
+            case 'HTMLNode':
+                return TP.htmlnode(obj);
+            case 'HTMLString':
+                return TP.htmlstr(obj);
+            case 'KvPairs':
+                return TP.entries(obj);
+            case 'XHTMLNode':
+                return TP.xhtmlnode(obj);
+            case 'XHTMLString':
+                return TP.xhtmlstr(obj);
+            case 'XMLNode':
+                return TP.xmlnode(obj);
+            case 'XMLString':
+                return TP.xmlstr(obj);
+            case 'DumpString':
+                return TP.dump(obj);
+            case 'PrettyString':
+                return TP.pretty(obj);
+            case 'JSONSource':
+                return TP.jsonsrc(obj);
+            default:
+                return anObject;
+        }
+    }
+
     //  as() leads to format() in many cases, so we start with that given
     //  that it's the common TIBET entry point
     if (TP.canInvoke(obj, 'as')) {
@@ -5380,7 +5408,7 @@ function(anObject) {
 
     //  NB: We do *not* wrap POJOs (to become TP.core.Hashes) here since
     //  wrapping the 'big 8' doesn't do anything (and a POJO is, after all, a
-    //  'new Object()'
+    //  'new Object()').
 
     //  fail on null/undefined content...although it would have been fun to
     //  return a TP.lang.Null or TP.lang.Undefined wouldn't it ;)
