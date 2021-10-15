@@ -3365,12 +3365,14 @@ function(branchExpr, initialVal, initialPathType) {
         branchValReq =
             TP.request('shouldCollapse', false, 'signalChange', false);
 
-        if (branchURI.hasFragment()) {
+        if (TP.isURI(branchURI)) {
             branchVal = branchURI.getContent(branchValReq);
-        } else if (TP.isValid(theVal)) {
+        }
+
+        //  If we couldn't obtain a branch value from the URI, then we just set
+        //  it to the supplied value.
+        if (TP.notValid(branchVal) && TP.isValid(theVal)) {
             branchVal = theVal;
-        } else {
-            branchVal = branchURI.getContent(branchValReq);
         }
 
         //  Try to detect the type of path based on tasting the
