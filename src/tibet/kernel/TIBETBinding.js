@@ -5461,6 +5461,10 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                     //  interested in an Array of key,value pairs).
                     branchVal = this.$normalizeRepeatValue(branchVal);
 
+                    //  Unwrap the value in case it was a collection embedded in
+                    //  some sort Content type or some such.
+                    branchVal = TP.unwrap(branchVal);
+
                     //  Make sure that branchVal is a collection.
                     if (TP.isCollection(branchVal)) {
 
