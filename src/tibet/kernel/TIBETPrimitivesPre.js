@@ -486,7 +486,8 @@ TP.makeStartUpper = function(anObj) {
      *     uppercased.
      */
 
-    return anObj[0].toUpperCase() + anObj.slice(1);
+    //  NOTE we test for equality not identity (String vs. string "types)
+    return anObj == '' ? '' : anObj[0].toUpperCase() + anObj.slice(1);
 };
 
 //  Manual setup
@@ -11196,7 +11197,8 @@ function() {
      * @returns {String}
      */
 
-    return this[0].toLowerCase() + this.substring(1);
+    //  NOTE we test for equality not identity (String vs. string "types)
+    return this == '' ? '' : this[0].toLowerCase() + this.substring(1);
 });
 
 //  ------------------------------------------------------------------------
