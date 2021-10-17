@@ -5150,6 +5150,81 @@ function(traitType, propName, track) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('$computePropertyResolution',
+function(propertyName, track) {
+
+    /**
+     * @method $computePropertyResolution
+     * @summary Computes the resolution on the receiver for the supplied
+     *     property and track.
+     * @param {String} propertyName The property name to compute the resolution
+     *     for.
+     * @param {String} track The track that the property is for, instance or
+     *     type.
+     * @exception TP.sig.InvalidTrackRequest This is raised when a track is
+     *     supplied that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
+     * @returns {TP.lang.RootObject} The receiving type.
+     */
+
+    var resolutions,
+        entry,
+
+        traitTypes,
+        len,
+        i;
+
+    if (track === TP.TYPE_TRACK) {
+        resolutions = this.$get('$traitsTypeResolutions');
+    } else if (track === TP.INST_TRACK) {
+        resolutions = this.$get('$traitsInstResolutions');
+    } else {
+        return this.raise('TP.sig.InvalidTrackRequest', track);
+    }
+
+    //  Grab all of the type's traits, make a copy and reverse them. We
+    //  reverse them so that we have an Array of the *least specific* ones
+    //  first and will resolve to the *most specific* one if it has the
+    //  slot.
+    traitTypes = TP.copy(this.getAllTraits());
+    traitTypes.reverse();
+
+    //  Set the flag so that during composition and resolution we won't
+    //  recurse, but we'll stop short above and just return the original
+    //  value.
+    TP.$$no_exec_trait_resolution = true;
+
+    try {
+        //  Iterate over them and compose this traited property using the
+        //  main type and the individual trait type. This will cause a
+        //  dictionary of 'trait resolutions' to be created for this slot.
+        len = traitTypes.getSize();
+        for (i = 0; i < len; i++) {
+            this.$computePossibleSourceType(
+                                    traitTypes.at(i),
+                                    propertyName,
+                                    track);
+        }
+
+        //  Resolve the traited property using the trait resolution that was
+        //  computed above. We do not use the return value here since we
+        //  don't actually want the value - we just want it to resolve.
+        this.$resolveTraitedProperty(propertyName, track);
+
+        //  Try to refetch the resolution from the map.
+        entry = resolutions.at(propertyName);
+    } finally {
+        //  Now that composition and resolution are done, flip the flag back
+        //  off.
+        TP.$$no_exec_trait_resolution = false;
+    }
+
+    resolutions.atPut(propertyName, entry);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('computeC3Linearization',
 function() {
 
@@ -8719,16 +8794,25 @@ function(attributeName, includeSupertypes) {
     //  true.
     if (TP.notFalse(includeSupertypes) && TP.notValid(entry)) {
 
-        //  Since supertype names are always reported from most-to-least
-        //  specific, this will properly find any overrides on descriptors from
-        //  higher-level supertypes.
-        names = this.getSupertypeNames();
-        len = names.getSize();
-        for (i = 0; i < len; i++) {
-            tname = names.at(i);
-            if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
-                            tname + '_Type_' + attributeName))) {
-                break;
+        //  If the type has traits, then we cannot just look at the supertype
+        //  chain - we have to let the MI system compute it and then try to
+        //  refetch it from the map.
+        if (this.hasTraits()) {
+            this.$computePropertyResolution(attributeName, TP.TYPE_TRACK);
+            entry = TP.sys.$$meta_attributes.at(
+                                this.getName() + '_Type_' + attributeName);
+        } else {
+            //  Since supertype names are always reported from most-to-least
+            //  specific, this will properly find any overrides on descriptors
+            //  from higher-level supertypes.
+            names = this.getSupertypeNames();
+            len = names.getSize();
+            for (i = 0; i < len; i++) {
+                tname = names.at(i);
+                if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
+                                tname + '_Type_' + attributeName))) {
+                    break;
+                }
             }
         }
     }
@@ -8770,16 +8854,25 @@ function(attributeName, includeSupertypes) {
     //  true.
     if (TP.notFalse(includeSupertypes) && TP.notValid(entry)) {
 
-        //  Since supertype names are always reported from most-to-least
-        //  specific, this will properly find any overrides on descriptors from
-        //  higher-level supertypes.
-        names = this.getSupertypeNames();
-        len = names.getSize();
-        for (i = 0; i < len; i++) {
-            tname = names.at(i);
-            if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
-                            tname + '_Inst_' + attributeName))) {
-                break;
+        //  If the type has traits, then we cannot just look at the supertype
+        //  chain - we have to let the MI system compute it and then try to
+        //  refetch it from the map.
+        if (this.hasTraits()) {
+            this.$computePropertyResolution(attributeName, TP.INST_TRACK);
+            entry = TP.sys.$$meta_attributes.at(
+                                this.getName() + '_Inst_' + attributeName);
+        } else {
+            //  Since supertype names are always reported from most-to-least
+            //  specific, this will properly find any overrides on descriptors
+            //  from higher-level supertypes.
+            names = this.getSupertypeNames();
+            len = names.getSize();
+            for (i = 0; i < len; i++) {
+                tname = names.at(i);
+                if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
+                                tname + '_Inst_' + attributeName))) {
+                    break;
+                }
             }
         }
     }
