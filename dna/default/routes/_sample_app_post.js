@@ -36,7 +36,7 @@
                 --header "Content-Type: application/json" \
                 --data "@../mocks/mockjson_post.json"
          */
-        app.post('/forminput', function(req, res) {
+        app.post('/forminput', options.parsers.json, function(req, res) {
 
             //  Replace this with "real work" for the route.
             logger.info(TDS.beautify(req.body));
