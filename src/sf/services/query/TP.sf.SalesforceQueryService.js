@@ -120,7 +120,7 @@ function(queryRequest) {
                 function(result) {
                     request.complete(result);
                 }).catch(function(err) {
-                    request.fail(err);
+                    request.fail(err.message, err);
                 });
         }.bind(this));
 

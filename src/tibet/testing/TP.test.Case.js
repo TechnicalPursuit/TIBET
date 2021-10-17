@@ -1067,7 +1067,7 @@ function(options) {
                                     if (err instanceof AssertionFailed) {
                                         testcase.fail(err);
                                     } else if (err instanceof Error) {
-                                        testcase.error(err);
+                                        testcase.fail(err.message, err);
                                     } else {
                                         testcase.fail(err);
                                     }
@@ -1153,7 +1153,7 @@ function(options) {
                                     if (err instanceof AssertionFailed) {
                                         testcase.fail(err);
                                     } else if (err instanceof Error) {
-                                        testcase.error(err);
+                                        testcase.fail(err.message, err);
                                     } else {
                                         testcase.fail(err);
                                     }
@@ -1202,7 +1202,7 @@ function(options) {
                                     if (err instanceof AssertionFailed) {
                                         testcase.fail(err);
                                     } else if (err instanceof Error) {
-                                        testcase.error(err);
+                                        testcase.fail(err.message, err);
                                     } else {
                                         testcase.fail(err);
                                     }
@@ -1216,9 +1216,9 @@ function(options) {
                     }
                 } catch (e) {
                     if (e instanceof AssertionFailed) {
-                        testcase.fail(e);
+                        testcase.fail(e.message, e);
                     } else {
-                        testcase.error(e);
+                        testcase.error(e.message, e);
                     }
                 }
             }).timeout(timeout);
@@ -1243,6 +1243,8 @@ function(options) {
                 } else {
                     return testcase.fail('Test case timed out', TP.TIMED_OUT);
                 }
+            } else if (err instanceof Error) {
+                return testcase.error(err.message, err);
             } else {
                 return testcase.error(err);
             }

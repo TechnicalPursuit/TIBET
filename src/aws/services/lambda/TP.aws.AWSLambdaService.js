@@ -99,7 +99,7 @@ function(lambdaRequest) {
                     jsResults = TP.json2js(result);
                     request.complete(jsResults);
                 }).catch(function(err) {
-                    request.fail(err);
+                    request.fail(err.message, err);
                 });
         }.bind(this));
 

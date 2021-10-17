@@ -179,7 +179,11 @@ function(aRequest) {
                 karma.complete();
             },
             function(error) {
-                aRequest.fail(error);
+                if (error instanceof Error) {
+                    aRequest.fail(error.message, error);
+                } else {
+                    aRequest.fail(error);
+                }
                 karma.complete();
             }
         );
@@ -202,7 +206,11 @@ function(aRequest) {
                 karma.complete();
             },
             function(error) {
-                aRequest.fail(error);
+                if (error instanceof Error) {
+                    aRequest.fail(error.message, error);
+                } else {
+                    aRequest.fail(error);
+                }
                 karma.complete();
             }
         );
@@ -292,7 +300,11 @@ function(aRequest) {
                         karma.complete();
                     },
                     function(error) {
-                        aRequest.fail(error);
+                        if (error instanceof Error) {
+                            aRequest.fail(error.message, error);
+                        } else {
+                            aRequest.fail(error);
+                        }
                         karma.complete();
                     }
                 );
@@ -320,7 +332,11 @@ function(aRequest) {
                 karma.complete();
             },
             function(error) {
-                aRequest.fail(error);
+                if (error instanceof Error) {
+                    aRequest.fail(error.message, error);
+                } else {
+                    aRequest.fail(error);
+                }
                 karma.complete();
             }
         );

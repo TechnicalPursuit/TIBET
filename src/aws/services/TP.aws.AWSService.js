@@ -245,7 +245,7 @@ function(serviceName) {
             }).catch(
             function(err) {
                 //  We failed to authenticate - fail the request with the error.
-                authRequest.fail(err);
+                authRequest.fail(err.message, err);
             });
     };
 

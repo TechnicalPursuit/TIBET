@@ -818,7 +818,7 @@ function(options) {
                         '# error in describe(' + suite.getSuiteName() +
                         '): ' + e.message);
 
-                    suite.error(e);
+                    suite.error(e.message, e);
                 }
             });
         /* eslint-enable consistent-this */
@@ -1507,7 +1507,11 @@ function(options) {
                         //  particular test case, but in the process of running
                         //  a test case, error out the currently executing test
                         //  case with the error object.
-                        current.error(err);
+                        if (err instanceof Error) {
+                            current.error(err.message, err);
+                        } else {
+                            current.error(err);
+                        }
                     });
             }, firstPromise);
 

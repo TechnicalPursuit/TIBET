@@ -8455,7 +8455,7 @@ function(aRequest, filterResult) {
         result = $$result;
     } catch (e) {
         msg = TP.sc('Error acquiring resource via: ') + str;
-        request.fail(msg);
+        request.fail(msg, e);
         result = TP.ec(e, msg);
     }
 
@@ -9634,7 +9634,7 @@ function(aRequest, filterResult) {
                         TP.join(TP.sc('URI access produced error for: '),
                                 this.asString()));
                 this.raise('TP.sig.URIException', err);
-                request.fail(err);
+                request.fail(err, e);
 
                 return this.$getResourceResult(request,
                                                 undefined,

@@ -1561,7 +1561,7 @@ function(aRequest) {
                         TP.error(message + '\n' +
                             TP.getStackInfo(e).join('\n'));
 
-                        return aRequest.fail(TP.ec(e, message));
+                        return aRequest.fail(message, e);
                     }
                 }
 
@@ -1752,7 +1752,7 @@ function(aRequest) {
 
                     TP.error(message + '\n' + TP.getStackInfo(e).join('\n'));
 
-                    return aRequest.fail(TP.ec(e, message));
+                    return aRequest.fail(message, e);
                 }
 
                 if (TP.isArray(result)) {
@@ -2368,7 +2368,7 @@ function(aRequest) {
                                     }
                                 } catch (e) {
                                     aRequest.stderr(result);
-                                    aRequest.fail(result);
+                                    aRequest.fail(result, e);
                                 }
                             });
 
@@ -3017,8 +3017,7 @@ function(aRequest) {
                 TP.boot.$sourceImport(src, null, file, true);
 
             } catch (e) {
-                aRequest.fail(
-                    TP.ec(e, 'tsh:source failed to eval ' + file));
+                aRequest.fail('tsh:source failed to eval ' + file, e);
 
                 continue;
             } finally {

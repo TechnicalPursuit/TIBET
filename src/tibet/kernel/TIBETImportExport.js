@@ -156,7 +156,7 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
 
                 if (TP.notValid(scriptElem) || TP.isError(scriptElem)) {
                     err = new Error('Error fetching source URL: ' + targetLoc);
-                    request.fail(err);
+                    request.fail(err.message, err);
 
                     return rejector(err);
                 }
@@ -1165,7 +1165,7 @@ function(aURI, aRequest) {
             //  Make sure to fail our request in case it didn't get properly
             //  failed. If it's already completed this will be a no-op.
             if (TP.isValid(request)) {
-                request.fail(err);
+                request.fail(err, err);
             }
 
             //  Be sure to throw here or invoking items like importPackage won't
@@ -1251,7 +1251,7 @@ function(targetUrl) {
             //  Make sure to fail our request in case it didn't get properly
             //  failed. If it's already completed this will be a no-op.
             if (TP.isValid(request)) {
-                request.fail(err);
+                request.fail(err, err);
             }
 
             //  Be sure to throw here or invoking items like importPackage won't

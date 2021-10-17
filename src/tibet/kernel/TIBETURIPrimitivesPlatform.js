@@ -140,7 +140,7 @@ TP.hc(
                     TP.raise(this, 'TP.sig.URIException', TP.ec(e, message));
 
                     retVal = false;
-                    request.fail(message);
+                    request.fail(message, e);
 
                     return;
                 }
@@ -314,7 +314,7 @@ TP.hc(
             httpObj.open(TP.HTTP_GET, path, false);
             httpObj.send(null);
         } catch (e) {
-            request.fail(e);
+            request.fail(e.message, e);
 
             return false;
         }
@@ -367,7 +367,7 @@ TP.hc(
         } catch (e) {
             //  It threw an exception, which means that it definitely didn't
             //  find it so we always return false if we get here.
-            request.fail(e);
+            request.fail(e.message, e);
 
             return false;
         }
@@ -487,7 +487,7 @@ TP.hc(
             } catch (e) {
                 //  It threw an exception, which means that it definitely didn't
                 //  find it so we always return false if we get here.
-                request.fail(e);
+                request.fail(e.message, e);
 
                 return false;
             }
@@ -590,7 +590,7 @@ TP.hc(
                 TP.raise(this, 'TP.sig.PrivilegeViolation',
                             TP.ec(e, msg));
 
-                request.fail(msg);
+                request.fail(msg, e);
 
                 return;
             }
@@ -613,7 +613,7 @@ TP.hc(
                 TP.raise(this, 'TP.sig.IOException',
                             TP.ec(e, msg));
 
-                request.fail(msg);
+                request.fail(msg, e);
 
                 return;
             }
@@ -641,7 +641,7 @@ TP.hc(
                 TP.raise(this, 'TP.sig.PrivilegeViolation',
                             TP.ec(e, msg));
 
-                request.fail(msg);
+                request.fail(msg, e);
 
                 return;
             }
@@ -660,7 +660,7 @@ TP.hc(
                 msg = TP.sc('Unable to locate: ', path);
                 TP.ifInfo() ? TP.info(msg) : 0;
 
-                request.fail(msg);
+                request.fail(msg, e);
 
                 return null;
             }
@@ -722,7 +722,7 @@ TP.hc(
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg) : 0;
 
-            request.fail(msg);
+            request.fail(msg, e);
 
             return;
         }
@@ -853,7 +853,7 @@ TP.hc(
                 msg = TP.sc('Unable to locate: ', path);
                 TP.ifInfo() ? TP.info(msg) : 0;
 
-                request.fail(msg);
+                request.fail(msg, e);
 
                 return;
             }
@@ -1000,7 +1000,7 @@ TP.hc(
                                 TP.ec(e, msg));
 
                     retVal = false;
-                    request.fail(msg);
+                    request.fail(msg, e);
 
                     return retVal;
                 }
@@ -1030,7 +1030,7 @@ TP.hc(
                                         TP.ec(e, msg));
 
                             retVal = false;
-                            request.fail(msg);
+                            request.fail(msg, e);
 
                             return retVal;
                         }
@@ -1098,7 +1098,7 @@ TP.hc(
                     msg = TP.sc('Unable to access: ', fname);
                     TP.raise(this, 'AccessViolation', TP.ec(e, msg));
 
-                    request.fail(msg);
+                    request.fail(msg, e);
                 }
 
                 retVal = false;

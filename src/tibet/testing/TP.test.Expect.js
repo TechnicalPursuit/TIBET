@@ -452,7 +452,7 @@ function() {
                 this[chainName]();
             } catch (e) {
                 if (TP.isValid(testCase = this.get('testCase'))) {
-                    testCase.error(e);
+                    testCase.error(e.message, e);
                 }
 
                 //  Make sure to rethrow the Error so that handlers 'higher up'
