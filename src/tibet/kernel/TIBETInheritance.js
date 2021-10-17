@@ -5449,6 +5449,86 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('getPropertyResolutionChain',
+function(propertyName, track) {
+
+    /**
+     * @method getPropertyResolutionChain
+     * @summary Returns a list of types that constitute the 'chain' that the
+     *     system will follow when trying to resolve the property on the
+     *     receiver. If the receiver is not traited, then the list of 'simple'
+     *     supertypes is returned.
+     * @param {String} propertyName The property name to return the resolution
+     *     chain for.
+     * @param {String} track The track that the property is for, instance or
+     *     type.
+     * @exception TP.sig.InvalidTrackRequest This is raised when a track is
+     *     supplied that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
+     * @returns {TP.meta.lang.RootObject[]} Array of types.
+     */
+
+    var entry,
+        types,
+        typeNames;
+
+    entry = this.getPropertyResolutionEntry(propertyName, track);
+    if (TP.isValid(entry)) {
+        types = entry.at('sourceTypes');
+        typeNames = types.map(
+                    function(aType) {
+                        return aType.getName();
+                    });
+
+        //  We reverse this to make the order consistent with getSupertypeNames
+        typeNames = typeNames.reverse();
+    } else {
+        typeNames = this.getSupertypeNames();
+    }
+
+    return typeNames;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getPropertyResolutionEntry',
+function(propertyName, track) {
+
+    /**
+     * @method getPropertyResolutionEntry
+     * @summary Returns the entry representing the 'resolution' of the property
+     *     on the receiver. This is meta information about how the property got
+     *     resolved up the traits inheritance chain.
+     * @param {String} propertyName The property name to return the resolution
+     *     for.
+     * @param {String} track The track that the property is for, instance or
+     *     type.
+     * @exception TP.sig.InvalidTrackRequest This is raised when a track is
+     *     supplied that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
+     * @returns {TP.core.Hash} The resolution entry.
+     */
+
+    var resolutions,
+        entry;
+
+    if (track === TP.TYPE_TRACK) {
+        resolutions = this.$get('$traitsTypeResolutions');
+    } else if (track === TP.INST_TRACK) {
+        resolutions = this.$get('$traitsInstResolutions');
+    } else {
+        return this.raise('TP.sig.InvalidTrackRequest', track);
+    }
+
+    entry = resolutions.at(propertyName);
+    if (TP.notValid(entry)) {
+        this.$computePropertyResolution(propertyName, track);
+        entry = resolutions.at(propertyName);
+    }
+
+    return entry;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('hasTraits',
 function() {
 
