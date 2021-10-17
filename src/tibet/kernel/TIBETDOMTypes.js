@@ -9308,7 +9308,8 @@ function(aRequest, replaceNode, alternateNode) {
      *     produced*. It will *not*, however, replace it's old node in that
      *     node's hierarchy unless the 'replaceNode' flag is true (or unless the
      *     receiver's compilation process has already done it).
-     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @param {TP.sig.Request} [aRequest] A request containing control
+     *     parameters.
      * @param {Boolean} [replaceNode=false] Whether or not this method will
      *     replace its native node in that node's hierarchy. Note that,
      *     depending on the receiver's compilation process, this might have

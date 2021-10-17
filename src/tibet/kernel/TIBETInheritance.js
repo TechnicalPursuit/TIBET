@@ -5460,7 +5460,7 @@ function(entry, installName, targetObject, track) {
      *     type.
      * @exception TP.sig.InvalidTrack This is raised when a track is supplied
      *     that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
-     * @returns
+     * @returns {Object|null} The finalized value of the traited property.
      */
 
     var resolution,
@@ -6187,7 +6187,7 @@ function(propName, track) {
      * @param {String} track The track to locate the property on.
      * @exception TP.sig.InvalidTrack This is raised when a track is supplied
      *     that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
-     * @returns {TP.lang.RootObject|undefined} The receiving type.
+     * @returns {Object|null} The finalized value of the traited property.
      */
 
     var resolutions,

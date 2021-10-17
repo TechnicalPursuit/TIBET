@@ -4149,8 +4149,8 @@ function(aspectName, facetName, facetValue, shouldSignal) {
         //  NOTE: We ignore the shouldSignal flag here on purpose - the resource
         //  will decide if it wants to signal change.
 
-        //  If this isn't a primary URI, then we won't use any supplied aspect, but
-        //  we'll use the fragment text instead.
+        //  If this isn't a primary URI, then we won't use any supplied aspect,
+        //  but we'll use the fragment text instead.
         if (!this.isPrimaryURI()) {
 
             //  NB: We assume 'async' of false here
@@ -4160,7 +4160,8 @@ function(aspectName, facetName, facetValue, shouldSignal) {
 
             //  Make sure we have a real content object - if not, stub it in.
             //  NB: We assume 'async' of false here
-            if (TP.notValid(resourceContent = this.getResource().get('result'))) {
+            if (TP.notValid(resourceContent =
+                            this.getResource().get('result'))) {
                 //  Stub out new content.
                 this.stubResourceContent();
                 //  Get that new content.
@@ -4350,7 +4351,8 @@ function(aResource, aRequest, shouldSignal) {
             this.isLoaded(false);
             this.isDirty(false, true);
 
-            //  We always signal since whatever value was there is now undefined.
+            //  We always signal since whatever value was there is now
+            //  undefined.
             shouldSignalChange = true;
             break;
         default:
@@ -4362,7 +4364,8 @@ function(aResource, aRequest, shouldSignal) {
 
     if (shouldSignalChange) {
         if (TP.sys.hasStarted()) {
-            // console.log('signaling secondaries via primary for ' + this.getLocation());
+            // console.log('signaling secondaries via primary for ' +
+            // this.getLocation());
         }
         this.$sendSecondaryURINotifications(oldResource, newResource);
     }
@@ -5788,7 +5791,8 @@ function(aResource, aRequest, shouldSignal) {
             this.isLoaded(false);
             this.isDirty(false, true);
 
-            //  We always signal since whatever value was there is now undefined.
+            //  We always signal since whatever value was there is now
+            //  undefined.
             shouldSignalChange = true;
             break;
         default:
