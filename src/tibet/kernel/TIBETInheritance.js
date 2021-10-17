@@ -6213,10 +6213,15 @@ function(propName, track) {
         resolutions = this.$get('$traitsTypeResolutions');
         mainTypeTarget = this.Type;
     } else if (track === TP.INST_TRACK) {
-        resolutions = this.get('$traitsInstResolutions');
+        resolutions = this.$get('$traitsInstResolutions');
         mainTypeTarget = this.Inst;
     } else {
         return this.raise('TP.sig.InvalidTrackRequest', track);
+    }
+
+    //  No resolutions at all? Exit here.
+    if (TP.notValid(resolutions)) {
+        return;
     }
 
     //  Get the resolution entry for this property
@@ -6229,6 +6234,11 @@ function(propName, track) {
         entry = resolutions.at(actualPropName);
     } else {
         actualPropName = propName;
+    }
+
+    //  No entry for this property name? Exit here.
+    if (TP.notValid(entry)) {
+        return;
     }
 
     //  If the trait wasn't manually resolved via 'resolveTrait()', then we can
