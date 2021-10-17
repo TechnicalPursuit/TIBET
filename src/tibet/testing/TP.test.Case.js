@@ -160,7 +160,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     info = TP.hc(aFaultInfo);
 
     if (TP.isError(info.at('error'))) {
-        TP.sys.logTest(info.at('error'));
+        TP.sys.logTest(info.at('error').stack);
     }
 
     return this;
