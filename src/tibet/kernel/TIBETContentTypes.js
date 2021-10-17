@@ -6695,7 +6695,7 @@ function(targetObj, varargs) {
     if (TP.canInvoke(targetObj, 'get')) {
         retVal = targetObj.get(path);
     } else {
-        TP.ifWarn() ? TP.warn('targetObj not an encapsulated data object.'): 0;
+        TP.ifWarn() ? TP.warn('targetObj not an encapsulated data object.') : 0;
         retVal = targetObj[path];
     }
 
@@ -6862,7 +6862,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     if (TP.canInvoke(targetObj, 'set')) {
         retVal = targetObj.set(path, attributeValue, false);
     } else {
-        TP.ifWarn() ? TP.warn('targetObj not an encapsulated data object.'): 0;
+        TP.ifWarn() ? TP.warn('targetObj not an encapsulated data object.') : 0;
         targetObj[path] = attributeValue;
         retVal = attributeValue;
     }
