@@ -618,7 +618,7 @@ function() {
 
     /**
      * @method on
-     * @summary Sets the receiver's selected state to 'true'.
+     * @summary Sets the receiver's selected state to true.
      * @returns {TP.html.option} The receiver.
      */
 
@@ -1793,7 +1793,7 @@ function() {
      * @returns {TP.html.inputClickable} The receiver.
      */
 
-    this.setAttribute('disabled', 'true');
+    this.setAttribute('disabled', true);
 
     return this;
 });
@@ -3864,7 +3864,7 @@ function() {
      * @returns {TP.html.button} The receiver.
      */
 
-    this.setAttribute('disabled', 'true');
+    this.setAttribute('disabled', true);
 
     return this;
 });
