@@ -6785,7 +6785,7 @@ function(attributeName, facetName, originalPath) {
 
         pathVal = this.getFacetSettingFor(attributeName, facetName);
 
-        if (TP.isValid(pathVal) && pathVal.isAccessPath()) {
+        if (TP.canInvoke(pathVal, 'isAccessPath') && pathVal.isAccessPath()) {
             this.$$attrnames_to_paths[internalSlotName] = pathVal;
         } else {
             this.$$attrnames_to_paths[internalSlotName] = null;
