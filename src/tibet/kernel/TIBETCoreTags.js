@@ -574,6 +574,21 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
 //  ------------------------------------------------------------------------
 
+TP.tag.ComputedTag.Type.defineMethod('isDOMCacheable',
+function() {
+
+    /**
+     * @method isDOMCacheable
+     * @summary Can nodes of this type be cached in the DOM cache?  The default
+     *     is true. Computed tags are not cacheable.
+     * @returns {Boolean} The cacheable status.
+     */
+
+    return false;
+})
+
+//  ------------------------------------------------------------------------
+
 TP.tag.ComputedTag.Type.defineMethod('tagCompile',
 function(aRequest) {
 

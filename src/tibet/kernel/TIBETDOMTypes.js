@@ -3716,6 +3716,21 @@ TP.dom.CollectionNode.Inst.defineAttribute('preppedReps');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.dom.CollectionNode.Type.defineMethod('isDOMCacheable',
+function() {
+
+    /**
+     * @method isDOMCacheable
+     * @summary Can nodes of this type be cached in the DOM cache?  The default
+     *     is true. Computed tags are not cacheable.
+     * @returns {Boolean} The cacheable status.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.CollectionNode.Type.defineMethod('refreshInstances',
 function(aDocument) {
 
@@ -4431,6 +4446,21 @@ function() {
     }
 
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.CollectionNode.Inst.defineMethod('isDOMCacheable',
+function() {
+
+    /**
+     * @method isDOMCacheable
+     * @summary Can nodes of this type be cached in the DOM cache?  The default
+     *     is true. Computed tags are not cacheable.
+     * @returns {Boolean} The cacheable status.
+     */
+
+    return this.getType().isDOMCacheable();
 });
 
 //  ------------------------------------------------------------------------
@@ -9361,11 +9391,12 @@ function(aRequest, replaceNode, alternateNode) {
         if (TP.elementHasAttribute(node, 'tibet:no-compile', true)) {
             shouldProcess = false;
         } else {
-            //  Otherwise, retrieve or compute a local ID for the node and check
-            //  with our compiled document cache.
-            nodeLID = TP.lid(node);
-            newNode = TP.$compiled_doc_cache.at(nodeLID);
-
+            if (this.isDOMCacheable()) {
+                //  Otherwise, retrieve or compute a local ID for the node and check
+                //  with our compiled document cache.
+                nodeLID = TP.lid(node);
+                newNode = TP.$compiled_doc_cache.at(nodeLID);
+            }
             //  If we have a cached node, but we're recasting, then remove the
             //  cache entry and set newNode to null so that we go back through
             //  the tag compiler.
@@ -9456,7 +9487,7 @@ function(aRequest, replaceNode, alternateNode) {
         //  If we successfully retrieved or computed a local ID above, that must
         //  mean that the source node was an Element. Cache it here under that
         //  local ID.
-        if (TP.notEmpty(nodeLID)) {
+        if (this.isDOMCacheable() && TP.notEmpty(nodeLID)) {
             TP.$compiled_doc_cache.atPut(nodeLID, newNode);
         }
     } else if (!foundCached) {
