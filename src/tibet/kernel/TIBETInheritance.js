@@ -8842,19 +8842,16 @@ function(aPath, includeSupertypes) {
 //  Attribute Property Descriptors
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('getDescriptorFor',
-function(attributeName, includeSupertypes) {
+TP.lang.RootObject.Type.defineMethod('getDescriptor',
+function(attributeName) {
 
     /**
-     * @method getDescriptorFor
+     * @method getDescriptor
      * @summary Returns the property descriptor, if any, for the type attribute
      *     provided. See the 'TP.sys.addMetadata()' call for more information
      *     about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
-     * @param {Boolean} includeSupertypes Whether or not to include the
-     *     receiver's supertypes when looking for property descriptors. The
-     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
@@ -8868,11 +8865,9 @@ function(attributeName, includeSupertypes) {
     entry = TP.sys.$$meta_attributes.at(
                         this.getName() + '_Type_' + attributeName);
 
-    //  If we didn't find an entry in for the type itself, and the flag doesn't
-    //  prevent us with checking with the supertypes, then do so.
-    //  Note the explicit 'notFalse' check here - by default, this parameter is
-    //  true.
-    if (TP.notFalse(includeSupertypes) && TP.notValid(entry)) {
+    //  If we didn't find a valid entry, try to find one in the traits system
+    //  (if the type is traited) or in the 'simple' supertype chain.
+    if (TP.notValid(entry)) {
 
         //  If the type has traits, then we cannot just look at the supertype
         //  chain - we have to let the MI system compute it and then try to
@@ -8902,19 +8897,16 @@ function(attributeName, includeSupertypes) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('getInstDescriptorFor',
-function(attributeName, includeSupertypes) {
+TP.lang.RootObject.Type.defineMethod('getInstDescriptor',
+function(attributeName) {
 
     /**
-     * @method getInstDescriptorFor
+     * @method getInstDescriptor
      * @summary Returns the property descriptor, if any, for the instance
      *     attribute provided. See the 'TP.sys.addMetadata()' call for more
      *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
-     * @param {Boolean} includeSupertypes Whether or not to include the
-     *     receiver's supertypes when looking for property descriptors. The
-     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
@@ -8928,11 +8920,9 @@ function(attributeName, includeSupertypes) {
     entry = TP.sys.$$meta_attributes.at(
                         this.getName() + '_Inst_' + attributeName);
 
-    //  If we didn't find an entry in for the type itself, and the flag doesn't
-    //  prevent us with checking with the supertypes, then do so.
-    //  Note the explicit 'notFalse' check here - by default, this parameter is
-    //  true.
-    if (TP.notFalse(includeSupertypes) && TP.notValid(entry)) {
+    //  If we didn't find a valid entry, try to find one in the traits system
+    //  (if the type is traited) or in the 'simple' supertype chain.
+    if (TP.notValid(entry)) {
 
         //  If the type has traits, then we cannot just look at the supertype
         //  chain - we have to let the MI system compute it and then try to
@@ -9054,25 +9044,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Inst.defineMethod('getDescriptorFor',
-function(attributeName, includeSupertypes) {
+TP.lang.RootObject.Inst.defineMethod('getDescriptor',
+function(attributeName) {
 
     /**
-     * @method getDescriptorFor
+     * @method getDescriptor
      * @summary Returns the property descriptor, if any, for the instance
      *     attribute provided. See the 'TP.sys.addMetadata()' call for more
      *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
-     * @param {Boolean} includeSupertypes Whether or not to include the
-     *     receiver's supertypes when looking for property descriptors. The
-     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
 
-    return this.getType().getInstDescriptorFor(attributeName,
-                                                includeSupertypes);
+    return this.getType().getInstDescriptor(attributeName);
 });
 
 //  ------------------------------------------------------------------------
@@ -9444,7 +9430,7 @@ function() {
     //  Next filter out slots that don't have property descriptors.
     aspects = aspects.select(
             function(aspectName) {
-                return TP.isValid(thisType.getInstDescriptorFor(aspectName));
+                return TP.isValid(thisType.getInstDescriptor(aspectName));
             });
 
     //  Cache the computed set of aspects locally on this instance.

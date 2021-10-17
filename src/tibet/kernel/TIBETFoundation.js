@@ -6760,7 +6760,7 @@ function(attributeName, facetName, originalPath) {
 
     //  This method gets called from every getter & setter in the whole system.
     //  When we look up descriptors, by default this occurs 'up' the entire type
-    //  hierarchy of the receiver (see the getDescriptorFor() methods). These
+    //  hierarchy of the receiver (see the getDescriptor() methods). These
     //  descriptors contain the access path settings for a particular attribute.
 
     //  Therefore, to avoid that lookup overhead we cache any access path for a
@@ -6819,7 +6819,7 @@ function(aPath) {
 
     //  This method gets called from every getter & setter in the whole system.
     //  When we look up descriptors, by default this occurs 'up' the entire type
-    //  hierarchy of the receiver (see the getDescriptorFor() methods). These
+    //  hierarchy of the receiver (see the getDescriptor() methods). These
     //  descriptors contain the access path settings for a particular attribute.
 
     //  Therefore, to avoid that lookup overhead we cache any attribute name for
@@ -6968,19 +6968,16 @@ function(prefix, attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('getDescriptorFor',
-function(attributeName, includeSupertypes) {
+TP.defineMetaInstMethod('getDescriptor',
+function(attributeName) {
 
     /**
-     * @method getDescriptorFor
+     * @method getDescriptor
      * @summary Returns the property descriptor, if any, for the type
      *     attribute provided. See the 'TP.sys.addMetadata()' call for more
      *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
-     * @param {Boolean} includeSupertypes Whether or not to include the
-     *     receiver's supertypes when looking for property descriptors. The
-     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
@@ -6992,19 +6989,16 @@ function(attributeName, includeSupertypes) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('getInstDescriptorFor',
-function(attributeName, includeSupertypes) {
+TP.defineMetaInstMethod('getInstDescriptor',
+function(attributeName) {
 
     /**
-     * @method getInstDescriptorFor
+     * @method getInstDescriptor
      * @summary Returns the property descriptor, if any, for the instance
      *     attribute provided. See the 'TP.sys.addMetadata()' call for more
      *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
-     * @param {Boolean} includeSupertypes Whether or not to include the
-     *     receiver's supertypes when looking for property descriptors. The
-     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
@@ -7034,7 +7028,7 @@ function(attributeName, facetName) {
 
     var descriptor;
 
-    descriptor = this.getDescriptorFor(attributeName);
+    descriptor = this.getDescriptor(attributeName);
     //  NB: We use primitive property access here since descriptors are
     //  primitive object.
     if (TP.isValid(descriptor)) {
@@ -7064,7 +7058,7 @@ function(attributeName, facetName) {
 
     var descriptor;
 
-    descriptor = this.getInstDescriptorFor(attributeName);
+    descriptor = this.getInstDescriptor(attributeName);
     //  NB: We use primitive property access here since descriptors are
     //  primitive object.
     if (TP.isValid(descriptor)) {

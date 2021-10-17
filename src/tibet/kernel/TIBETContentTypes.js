@@ -1050,7 +1050,7 @@ function(attributeName, attributeValue, shouldSignal) {
             attrName !== 'buildout') {
 
             //  We only do this if this instance attribute has a descriptor.
-            if (TP.isValid(this.getType().getInstDescriptorFor(attrName))) {
+            if (TP.isValid(this.getType().getInstDescriptor(attrName))) {
                 this.checkFacets(attrName);
             }
         }
