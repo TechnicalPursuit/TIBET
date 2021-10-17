@@ -6692,7 +6692,12 @@ function(targetObj, varargs) {
         path = path.slice(1, -1);
     }
 
-    retVal = targetObj.get(path);
+    if (TP.canInvoke(targetObj, 'get')) {
+        retVal = targetObj.get(path);
+    } else {
+        TP.ifWarn() ? TP.warn('targetObj not an encapsulated data object.'): 0;
+        retVal = targetObj[path];
+    }
 
     this.getType().endObservedAddress(retVal, addressRecord);
 
@@ -6853,7 +6858,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     if (!TP.isKindOf(targetObj, TP.core.Hash)) {
         targetObj.defineAttribute(path);
     }
-    retVal = targetObj.set(path, attributeValue, false);
+
+    if (TP.canInvoke(targetObj, 'set')) {
+        retVal = targetObj.set(path, attributeValue, false);
+    } else {
+        TP.ifWarn() ? TP.warn('targetObj not an encapsulated data object.'): 0;
+        targetObj[path] = attributeValue;
+        retVal = attributeValue;
+    }
 
     thisType.endChangedAddress();
 
