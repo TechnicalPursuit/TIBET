@@ -4400,7 +4400,8 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         //  Set the handler as our newly created URI's resource. Note here how
         //  we pass a request that tells the setResource to *not* signal
         //  change, since we're really just setting things up.
-        urn.setResource(aHandler, TP.request('signalChange', false));
+        urn.setResource(aHandler,
+            TP.request('signalChange', false, 'registration', true));
     }
 
     root.listeners.push(entry);

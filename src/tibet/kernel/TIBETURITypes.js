@@ -4402,6 +4402,7 @@ function(aResource, aRequest) {
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
     if (this.isPrimaryURI() ||
+        request.at('registration') === true ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
         return this.$setPrimaryResource(aResource, request);
