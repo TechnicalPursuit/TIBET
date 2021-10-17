@@ -4964,8 +4964,8 @@ function(traitType, propName, track) {
      * @param {String} propName The property name of the conflicted trait.
      * @param {String} track The track that the property is for, instance or
      *     type.
-     * @exception TP.sig.InvalidTrack This is raised when a track is supplied
-     *     that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
+     * @exception TP.sig.InvalidTrackRequest This is raised when a track is
+     *     supplied that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
@@ -5458,8 +5458,6 @@ function(entry, installName, targetObject, track) {
      *     instance prototype) that the resolved property will be put on.
      * @param {String} track The track that the property is for, instance or
      *     type.
-     * @exception TP.sig.InvalidTrack This is raised when a track is supplied
-     *     that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
      * @returns {Object|null} The finalized value of the traited property.
      */
 
@@ -6185,8 +6183,8 @@ function(propName, track) {
      *     trait compositions computed for it.
      * @param {String} propName The name of the property to resolve.
      * @param {String} track The track to locate the property on.
-     * @exception TP.sig.InvalidTrack This is raised when a track is supplied
-     *     that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
+     * @exception TP.sig.InvalidTrackRequest This is raised when a track is
+     *     supplied that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
      * @returns {Object|null} The finalized value of the traited property.
      */
 
