@@ -173,6 +173,7 @@ function() {
     TP.lang.Object.defineSubtype('test.Equality');
 
     TP.test.Equality.Inst.defineAttribute('doesDiffer', TP.REQUIRED);
+    TP.test.Equality.Inst.defineAttribute('equalityValue', TP.jpc('$.EqualityEqVal'));
 
     //  Methods inside of TP.test.Equality 'require' that a type that it
     //  is mixed into supply an implementation of that method
@@ -215,6 +216,7 @@ function() {
     TP.test.Circle.addTraits(TP.test.Magnitude);
 
     TP.test.Circle.Inst.defineAttribute('doesDiffer', true);
+    TP.test.Circle.Inst.defineAttribute('equalityValue', TP.jpc('$.CircleEqualityVal'));
 
     TP.test.Circle.Inst.defineMethod('area',
             function() {
@@ -242,6 +244,7 @@ function() {
     TP.lang.Object.defineSubtype('test.Color');
 
     TP.test.Color.Inst.defineAttribute('doesDiffer', false);
+    TP.test.Color.Inst.defineAttribute('equalityValue', TP.jpc('$.ColorEqualityVal'));
 
     TP.test.Color.Inst.defineMethod('getRgb', function() {
         TP.test.OOTester.set(
@@ -263,6 +266,8 @@ function() {
             'rgbDataGetRGBCount',
                 TP.test.OOTester.get('rgbDataGetRGBCount') + 1);
     });
+
+    TP.test.RGBData.Inst.defineAttribute('equalityValue', TP.jpc('$.RGBEqualityVal'));
 });
 
 //  ------------------------------------------------------------------------
@@ -5840,11 +5845,19 @@ function() {
             TP.sc('The count for "circleEqualsCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
+
+        //  ---
+
+        //  Also, the access path should be equal to the value defined on
+        //  TP.test.Circle
+        test.assert.isEqualTo(
+            TP.str(obj.getAccessPathFor('equalityValue', 'value')),
+            '$.CircleEqualityVal');
     });
 
     //  ---
 
-    this.it('TIBET instance addTraits - conflicted method traits - simple manual resolution', function(test, options) {
+    this.it('TIBET instance addTraits - conflicted method/attribute traits - simple manual resolution', function(test, options) {
 
         var obj,
 
@@ -5919,6 +5932,18 @@ function() {
             TP.sc('The count for "colorGetRGBCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
+
+        //  ---
+
+        //  The 'equalityValue' slot is also in conflict. Resolve it in favor of
+        //  TP.test.Color
+        TP.test.Square.Inst.resolveTrait('equalityValue', TP.test.Color);
+
+        //  Also, the access path should be equal to the value defined on
+        //  TP.test.Color
+        test.assert.isEqualTo(
+            TP.str(obj.getAccessPathFor('equalityValue', 'value')),
+            '$.ColorEqualityVal');
 
         //  ---
         //  Resolving to an alternate value given on the resolveTrait() call.
@@ -6851,12 +6876,14 @@ function() {
 
     //  ---
 
-    this.it('TIBET instance addTraits - method traits - add more trait types', function(test, options) {
+    this.it('TIBET instance addTraits - method/attribute traits - add more trait types', function(test, options) {
 
         var obj,
 
             val,
-            correctVal;
+            correctVal,
+
+            obj2;
 
         //  ---
 
@@ -6912,6 +6939,14 @@ function() {
 
         //  ---
 
+        //  Also, the access path should be equal to the value defined on
+        //  TP.test.Equality
+        test.assert.isEqualTo(
+            TP.str(obj.getAccessPathFor('equalityValue', 'value')),
+            '$.EqualityEqVal');
+
+        //  ---
+
         //  Now add TP.test.RGBData as another trait type.
         TP.test.Rhombus.addTraits(TP.test.RGBData);
 
@@ -6952,16 +6987,38 @@ function() {
             TP.sc('The count for "rgbDataGetRGBCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
+
+        //  ---
+
+        //  The 'equalityValue' slot is also in conflict. Resolve it in favor of
+        //  TP.test.RGBData
+        TP.test.Rhombus.Inst.resolveTrait('equalityValue', TP.test.RGBData);
+
+        //  Because object attributes are resolved at access time and they
+        //  cannot be rewired, like a method, 'equalityValue' will have
+        //  already been resolved due to our obtaining the 'equalityValue' on
+        //  obj above. Therefore, we need to create a new instance to allow
+        //  'equalityValue' to resolve to the value now traited in from
+        //  TP.test.RGBData.
+        obj2 = TP.test.Rhombus.construct();
+
+        //  Also, the access path should be equal to the value defined on
+        //  TP.test.Equality
+        test.assert.isEqualTo(
+            TP.str(obj2.getAccessPathFor('equalityValue', 'value')),
+            '$.RGBEqualityVal');
     });
 
     //  ---
 
-    this.it('TIBET instance addTraits - method traits - re-resolve trait', function(test, options) {
+    this.it('TIBET instance addTraits - method/attribute traits - re-resolve trait', function(test, options) {
 
         var obj,
 
             val,
-            correctVal;
+            correctVal,
+
+            obj2;
 
         //  Turn off auto resolution here
         TP.sys.setcfg('oo.$$traits_autoresolve', false);
@@ -6999,6 +7056,14 @@ function() {
         test.refute.isDefined(
             obj.getRgb,
             TP.sc('The "getRgb" method on "TP.test.Nonagon" should not be defined'));
+
+        //  ---
+
+        //  Also, the access path should be equal to the value defined on
+        //  TP.test.Equality
+        test.assert.isEqualTo(
+            TP.str(obj.getAccessPathFor('equalityValue', 'value')),
+            '$.ColorEqualityVal');
 
         //  ---
 
@@ -7073,6 +7138,26 @@ function() {
             TP.sc('The count for "rgbDataGetRGBCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
+
+        //  ---
+
+        //  The 'equalityValue' slot is also in conflict. Resolve it in favor of
+        //  TP.test.RGBData
+        TP.test.Nonagon.Inst.resolveTrait('equalityValue', TP.test.RGBData);
+
+        //  Because object attributes are resolved at access time and they
+        //  cannot be rewired, like a method, 'equalityValue' will have
+        //  already been resolved due to our obtaining the 'equalityValue' on
+        //  obj above. Therefore, we need to create a new instance to allow
+        //  'equalityValue' to resolve to the value now traited in from
+        //  TP.test.RGBData.
+        obj2 = TP.test.Nonagon.construct();
+
+        //  Also, the access path should be equal to the value defined on
+        //  TP.test.Equality
+        test.assert.isEqualTo(
+            TP.str(obj2.getAccessPathFor('equalityValue', 'value')),
+            '$.RGBEqualityVal');
     });
 
     //  ---
@@ -7155,6 +7240,15 @@ function() {
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
+        //  Resolve the conflict in favor of TP.test.Circle
+        TP.test.Hectogon.Inst.resolveTrait('equalityValue', TP.test.Circle);
+
+        //  Also, the access path should be equal to the value defined on
+        //  TP.test.Color
+        test.assert.isEqualTo(
+            TP.str(obj.getAccessPathFor('equalityValue', 'value')),
+            '$.CircleEqualityVal');
+
         //  ---
         //  Resolving to an alternate value given on the resolveTrait() call.
         //  ---
@@ -7171,6 +7265,10 @@ function() {
         test.refute.isDefined(
             obj.get('doesDiffer'),
             TP.sc('The "doesDiffer" attribute on "TP.test.Digon" should not be defined'));
+
+        test.refute.isDefined(
+            obj.get('equalityValue'),
+            TP.sc('The "equalityValue" attribute on "TP.test.Digon" should not be defined'));
 
         //  ---
 
@@ -7195,6 +7293,18 @@ function() {
             TP.sc('The count for "doesDiffer"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
+
+        //  ---
+
+        //  The 'equalityValue' slot is also in conflict. Resolve it in favor of
+        //  TP.test.RGBData
+        TP.test.Digon.Inst.resolveTrait('equalityValue', TP.test.Circle);
+
+        //  Also, the access path should be equal to the value defined on
+        //  TP.test.Equality
+        test.assert.isEqualTo(
+            TP.str(obj.getAccessPathFor('equalityValue', 'value')),
+            '$.CircleEqualityVal');
     });
 
     //  ---
@@ -7333,6 +7443,12 @@ function() {
             TP.sc('The count for "doesDiffer"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
+
+        //  Also, the access path should be equal to the value defined on
+        //  TP.test.Circle
+        test.assert.isEqualTo(
+            TP.str(obj.getAccessPathFor('equalityValue', 'value')),
+            '$.CircleEqualityVal');
     });
 
     //  ---
