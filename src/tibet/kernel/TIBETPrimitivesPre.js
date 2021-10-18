@@ -487,7 +487,9 @@ TP.makeStartUpper = function(anObj) {
      */
 
     //  NOTE we test for equality not identity (String vs. string "types)
+    /* eslint-disable */
     return anObj == '' ? '' : anObj[0].toUpperCase() + anObj.slice(1);
+    /* eslint-enable */
 };
 
 //  Manual setup
@@ -11198,7 +11200,9 @@ function() {
      */
 
     //  NOTE we test for equality not identity (String vs. string "types)
+    /* eslint-disable */
     return this == '' ? '' : this[0].toLowerCase() + this.substring(1);
+    /* eslint-enable */
 });
 
 //  ------------------------------------------------------------------------
