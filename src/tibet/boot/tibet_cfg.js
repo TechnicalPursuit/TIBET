@@ -1547,6 +1547,11 @@
     //  should signals sent prior to signaling system installation be logged?
     TP.sys.setcfg('log.load_signals', false);
 
+    //  should we log native methods we're overlaying? default is false because
+    //  it tends to give a poor impression in the boot log without providing
+    //  any real alternative... TIBET works how it works.
+    TP.sys.setcfg('log.method_replacements', false);
+
     //  should we log warnings about isResponderFor misses during chain lookup?
     TP.sys.setcfg('log.missing_isresponderfor', false);
 
