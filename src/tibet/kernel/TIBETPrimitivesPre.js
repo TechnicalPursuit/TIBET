@@ -487,9 +487,9 @@ TP.makeStartUpper = function(anObj) {
      */
 
     //  NOTE we test for equality not identity (String vs. string "types)
-    /* eslint-disable */
+    /* eslint-disable eqeqeq */
     return anObj == '' ? '' : anObj[0].toUpperCase() + anObj.slice(1);
-    /* eslint-enable */
+    /* eslint-enable eqeqeq */
 };
 
 //  Manual setup
@@ -2500,7 +2500,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     if (!TP.isCallable(realMethod) ||
         !TP.isCallable(realMethod.asMethod)) {
 
-        //  If the initalMethod is TP.REQUIRED, then it isn't a method as such,
+        //  If the realMethod is TP.REQUIRED, then it isn't a method as such,
         //  but a placeholder to note that this method is required. This is
         //  normally used during traits multiple-inheritance composition.
         if (realMethod === TP.REQUIRED) {
@@ -11200,9 +11200,9 @@ function() {
      */
 
     //  NOTE we test for equality not identity (String vs. string "types)
-    /* eslint-disable */
+    /* eslint-disable eqeqeq */
     return this == '' ? '' : this[0].toLowerCase() + this.substring(1);
-    /* eslint-enable */
+    /* eslint-enable eqeqeq */
 });
 
 //  ------------------------------------------------------------------------
