@@ -2498,7 +2498,7 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     if (!TP.isCallable(realMethod) ||
         !TP.isCallable(realMethod.asMethod)) {
 
-        //  If the initalMethod is TP.REQUIRED, then it isn't a method as such,
+        //  If the realMethod is TP.REQUIRED, then it isn't a method as such,
         //  but a placeholder to note that this method is required. This is
         //  normally used during traits multiple-inheritance composition.
         if (realMethod === TP.REQUIRED) {
