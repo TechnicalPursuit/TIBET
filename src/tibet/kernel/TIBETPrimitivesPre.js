@@ -487,7 +487,7 @@ TP.makeStartUpper = function(anObj) {
      */
 
     //  NOTE we test for equality not identity (String vs. string "types)
-    return anObj == '' ? '' : anObj[0].toUpperCase() + anObj.slice(1);
+    return anObj === '' ? '' : anObj[0].toUpperCase() + anObj.slice(1);
 };
 
 //  Manual setup
@@ -11198,7 +11198,7 @@ function() {
      */
 
     //  NOTE we test for equality not identity (String vs. string "types)
-    return this == '' ? '' : this[0].toLowerCase() + this.substring(1);
+    return this === '' ? '' : this[0].toLowerCase() + this.substring(1);
 });
 
 //  ------------------------------------------------------------------------
