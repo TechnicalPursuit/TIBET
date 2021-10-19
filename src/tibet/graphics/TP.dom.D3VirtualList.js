@@ -34,7 +34,7 @@ TP.dom.D3VirtualList.Type.set('shouldOrder', false);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.dom.D3VirtualList.Inst.defineAttribute('$virtualScroller');
+TP.dom.D3VirtualList.Inst.defineAttribute('$scrollTop');
 
 TP.dom.D3VirtualList.Inst.defineAttribute('$bumpRowCount');
 
@@ -501,8 +501,7 @@ function(aSignal) {
      * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
-    var elem,
-        nativeWindow,
+    var nativeWindow,
 
         scrollRendering,
 
@@ -512,7 +511,6 @@ function(aSignal) {
 
         performRender;
 
-    elem = this.getNativeNode();
     nativeWindow = this.getNativeWindow();
 
     scrollRendering = false;
@@ -526,9 +524,20 @@ function(aSignal) {
             if (!scrollRendering) {
                 nativeWindow.requestAnimationFrame(
                     function() {
-                        elem.scrollTop +=
-                            aSignal.getWheelDelta() * scrollFactor;
-                        thisref.$internalRender();
+                        var scrollTop,
+                            finalScrollTop;
+
+                        scrollTop = thisref.$get('$scrollTop') +
+                                        aSignal.getWheelDelta() * scrollFactor;
+
+                        finalScrollTop = thisref.$internalRender(scrollTop);
+
+                        thisref.$set('$scrollTop', finalScrollTop);
+
+                        //  Signal to observers that this control has rendered
+                        //  its data.
+                        thisref.signal('TP.sig.DidRenderData');
+
                         scrollRendering = false;
                     });
                 scrollRendering = true;
@@ -791,10 +800,7 @@ function(desiredScrollTop) {
             });
     }
 
-    //  Signal to observers that this control has rendered.
-    this.signal('TP.sig.DidRenderData');
-
-    return this;
+    return viewportElem.scrollTop;
 });
 
 //  ------------------------------------------------------------------------
@@ -824,7 +830,8 @@ function() {
      * @returns {TP.dom.D3VirtualList} The receiver.
      */
 
-    var containerSelection;
+    var containerSelection,
+        finalScrollTop;
 
     //  If we're not ready to render, then don't. Another process will have to
     //  re-trigger the rendering process.
@@ -854,7 +861,11 @@ function() {
         return this;
     }
 
-    this.$internalRender();
+    finalScrollTop = this.$internalRender(this.$get('$scrollTop'));
+    this.$set('$scrollTop', finalScrollTop);
+
+    //  Signal to observers that this control has rendered its data.
+    this.signal('TP.sig.DidRenderData');
 
     return this;
 });
@@ -884,6 +895,7 @@ function() {
     TP.$mousewheel_capturer_cache.push(elem);
 
     this.set('scrollFactor', 5);
+    this.$set('$scrollTop', 0);
 
     return this;
 });
