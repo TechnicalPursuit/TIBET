@@ -271,8 +271,9 @@ function(aSignal) {
         content.focus();
     }).observe(content, 'TP.sig.DidRender');
 
-    //  Refresh the content - by passing true here, this will force it to
-    //  re-render.
+    //  Refresh the content in case it's data bound. Note here that we pass
+    //  true to force a re-render in case the data didn't actually change.
+    //  We may still want the content to render itself.
     content.refresh(true);
 
     return this;

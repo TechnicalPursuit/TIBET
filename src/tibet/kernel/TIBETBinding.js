@@ -4748,26 +4748,26 @@ function(shouldRender) {
         didProcess = true;
         attrNode = TP.elementGetAttributeNode(elem, 'bind:in');
         valChanged = this.$refreshLocalBindings('value',
-                                        scopedVal,
-                                        TP.ALL,
-                                        attrNode,
-                                        pathType,
-                                        this,
-                                        null,
-                                        NaN);
+                                                scopedVal,
+                                                TP.ALL,
+                                                attrNode,
+                                                pathType,
+                                                this,
+                                                null,
+                                                NaN);
     }
 
     if (TP.elementHasAttribute(elem, 'bind:io', true)) {
         didProcess = true;
         attrNode = TP.elementGetAttributeNode(elem, 'bind:io');
         valChanged = this.$refreshLocalBindings('value',
-                                        scopedVal,
-                                        TP.ALL,
-                                        attrNode,
-                                        pathType,
-                                        this,
-                                        null,
-                                        NaN);
+                                                scopedVal,
+                                                TP.ALL,
+                                                attrNode,
+                                                pathType,
+                                                this,
+                                                null,
+                                                NaN);
     }
 
     //  If this element has a bind:scope, then refresh our bound descendants.
