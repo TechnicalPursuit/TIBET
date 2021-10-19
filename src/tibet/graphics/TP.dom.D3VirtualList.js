@@ -646,7 +646,15 @@ function(desiredScrollTop) {
     //  The element that will perform the scrolling.
     scroller = TP.extern.d3.select(scrollerElem);
 
-    scrollTop = TP.ifInvalid(desiredScrollTop, viewportElem.scrollTop);
+    //  If we were handed a desired scroll top, capture it for use below and
+    //  scroll our viewport to it.
+    if (TP.isNumber(desiredScrollTop)) {
+        scrollTop = desiredScrollTop;
+        viewportElem.scrollTop = desiredScrollTop;
+    } else {
+        //  Otherwise, just capture it for use below.
+        scrollTop = viewportElem.scrollTop;
+    }
 
     minHeight = this.getComputedStyleProperty('min-height', true);
     if (!TP.isNumber(minHeight)) {
