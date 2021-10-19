@@ -4682,7 +4682,6 @@ function(shouldRender) {
         didProcess,
 
         attrNode,
-        attrVal,
 
         valChanged,
 
@@ -4781,11 +4780,6 @@ function(shouldRender) {
         //  just call render() and return.
         this.render();
 
-        return valChanged;
-    }
-
-    //  If there is no attribute value, then just return
-    if (TP.isEmpty(attrVal)) {
         return valChanged;
     }
 
