@@ -4876,6 +4876,12 @@ function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
             }
         }
     } else {
+        //  If we're not refreshing bindings but our shouldRender flag is true,
+        //  then we should re-render here.
+        if (TP.isTrue(shouldRender)) {
+            this.render();
+        }
+
         retVal = false;
     }
 
