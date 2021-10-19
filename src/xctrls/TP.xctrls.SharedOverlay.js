@@ -775,8 +775,10 @@ function(contentInfo, overlayContent, afterLoadHandler) {
             contentInfo.at('$afterLoadHandler')(tpContent);
         }
 
-        //  Refresh the content in case it's data bound.
-        tpContent.refresh();
+        //  Refresh the content in case it's data bound. Note here that we pass
+        //  true to force a re-render in case the data didn't actually change.
+        //  We may still want the content to render itself.
+        tpContent.refresh(true);
     };
 
     handler.observe(tpContent, 'TP.sig.AttachComplete');
