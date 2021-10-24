@@ -212,7 +212,7 @@ Cmd.prototype.execute = function() {
         delete json.path.lib_root;
     }
 
-    //  SAVE the file (note the 'to()' call here...
+    //  SAVE the file (note the 'to()' call here...)
     str = CLI.beautify(JSON.stringify(json));
     new sh.ShellString(str).to(file);
 

@@ -296,7 +296,7 @@ function(aName) {
      * @method setAttrName
      * @summary Sets the 'name' value for the receiver. This will cause the
      *     receiver to reregister it's content under the new name URI.
-     * @param {String} anHref The value to set the 'href' to.
+     * @param {String} aName The value to set the 'name' to.
      */
 
     var oldName,
