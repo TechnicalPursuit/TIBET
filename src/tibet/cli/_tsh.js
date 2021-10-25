@@ -257,8 +257,8 @@ Cmd.prototype.execute = function() {
     //  resource processing.
     finalTimeout = this.finalizeTimeout(arglist);
 
-    // Push root path values since headless can't properly determine that based
-    // on where it loads (app vs. lib, tibet_pub or not, etc).
+    //  Push root path values since headless can't properly determine that based
+    //  on where it loads (app vs. lib, tibet_pub or not, etc).
     arglist.push('--app-head=\'' + CLI.expandPath('~') + '\'');
     arglist.push('--app-root=\'' + CLI.expandPath('~app') + '\'');
     arglist.push('--lib-root=\'' + CLI.expandPath('~lib') + '\'');
@@ -973,7 +973,11 @@ Cmd.prototype.getBootProfileConfig = function() {
 
     //  NOTE the majority of commands should load the full suite of code to
     //  ensure proper operation.
-    config = config || 'reflection';
+    if (this.options.interactive) {
+        config = config || 'interactive';
+    } else {
+        config = config || 'reflection';
+    }
 
     return config;
 };

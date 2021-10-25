@@ -21,6 +21,11 @@
     <package src="~lib_cfg/TIBET.xml" config="testing"/>
 </config>
 
+<config id="interactive">
+    <config ref="properties"/>
+    <package src="~lib_cfg/TIBET.xml" config="testing"/>
+</config>
+
 <config id="selftest">
     <config ref="properties"/>
     <package src="~lib_cfg/TIBET.xml" config="developer"/>
