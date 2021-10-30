@@ -455,7 +455,7 @@
          * Event emitted by TIBET when it wants to show the Lama Devtools
          * extension.
          */
-        ipcMain.handle('TP.sig.ShowLamaExtension',
+        ipcMain.on('TP.sig.ShowLamaExtension',
             function(event, payload) {
                 launchDevTools(true);
             });
@@ -466,7 +466,7 @@
          * Event emitted by TIBET when it wants to focus the Devtools DOM
          * inspect on the element at the supplied coordinates.
          */
-        ipcMain.handle('TP.sig.FocusRendererElement',
+        ipcMain.on('TP.sig.FocusRendererElement',
             function(event, elementCoords) {
                 var focusElement;
 
@@ -500,7 +500,7 @@
          * TODO: This method should share/reuse logic that is already written
          * for robustness and clarity.
          */
-        ipcMain.handle('TP.sig.LoadTIBETProject',
+        ipcMain.on('TP.sig.LoadTIBETProject',
             function(event, payload) {
 
                 var appdir,
@@ -535,7 +535,7 @@
          * Event emitted by TIBET when it wants to launch a debugger on the
          * main process.
          */
-        ipcMain.handle('TP.sig.ToggleMainDebugger',
+        ipcMain.on('TP.sig.ToggleMainDebugger',
             function(event, payload) {
                 //  TODO: Launch page with 'chrome://inspect/#devices' link.
             });
@@ -565,7 +565,7 @@
         /**
          * Event emitted when the user wants to show the devtools panel.
          */
-        app.on('TIBET-Show-Devtools',
+        app.on('APP.sherpa.ShowDevtools',
                 function() {
                     //  Open the DevTools without the Lama.
                     launchDevTools(false);
@@ -575,7 +575,7 @@
          * Event emitted when the user wants to show the devtools panel with the
          * Lama loaded.
          */
-        app.on('TIBET-Show-Devtools-On-Devtools',
+        app.on('APP.sherpa.ShowDevtoolsOnDevtools',
                 function() {
                     //  Open the DevTools with the Lama.
                     launchDevTools(true);
@@ -585,7 +585,7 @@
         //  Command line arguments
         //  ---
 
-        app.on('TIBET-Main-Loaded',
+        app.on('APP.sherpa.MainLoaded',
             function(event) {
                 //  NOTE this is a TIBET-specific if block. The `tibet electron`
                 //  command will pass --devtools along so this flag is set,

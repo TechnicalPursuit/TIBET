@@ -130,7 +130,7 @@
          * Event emitted when TIBET wants to check to see if updates are
          * available.
          */
-        ipcMain.handle('TP.sig.CheckForUpdates',
+        ipcMain.on('TP.sig.CheckForUpdates',
             function(event, payload) {
                 //  check to see if there are any available updates using
                 //  autoUpdater.
@@ -143,7 +143,7 @@
          * Event emitted when TIBET wants to download the latest application
          * version.
          */
-        ipcMain.handle('TP.sig.DownloadUpdate',
+        ipcMain.on('TP.sig.DownloadUpdate',
             function(event, payload) {
                 autoUpdater.downloadUpdate();
             });
@@ -154,7 +154,7 @@
          * Event emitted when TIBET wants to install the latest version and
          * restart the application.
          */
-        ipcMain.handle('TP.sig.InstallUpdateAndRestart',
+        ipcMain.on('TP.sig.InstallUpdateAndRestart',
             function(event, payload) {
                 autoUpdater.quitAndInstall();
             });
@@ -165,7 +165,7 @@
          * Event emitted when TIBET has determined that the app has started and
          * is ready.
          */
-        ipcMain.handle('TP.sig.AppDidStart',
+        ipcMain.on('TP.sig.AppDidStart',
             function(event, payload) {
 
                 //  By default we do *not* check for updates on startup.

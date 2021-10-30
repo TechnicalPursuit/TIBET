@@ -44,7 +44,7 @@
         /**
          * Event emitted when TIBET wants to log some data to the console.
          */
-        ipcMain.handle('TP.sig.LogMessage',
+        ipcMain.on('TP.sig.LogMessage',
             function(event, logData) {
                 console.log(logData);
             });

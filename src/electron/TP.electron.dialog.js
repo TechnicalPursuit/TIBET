@@ -72,7 +72,7 @@ function(aRequest) {
                                 'properties');
             configPOJO = this.buildConfigObjectFromAttributes(elem, attrList);
 
-            TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeOpenDialog',
+            TP.electron.ElectronMain.invokeMain('TIBET-ShowNativeOpenDialog',
                 configPOJO).then(
                 function(dialogResult) {
                     var filePaths;
@@ -93,7 +93,7 @@ function(aRequest) {
                                 'properties');
             configPOJO = this.buildConfigObjectFromAttributes(elem, attrList);
 
-            TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeSaveDialog',
+            TP.electron.ElectronMain.invokeMain('TIBET-ShowNativeSaveDialog',
                 configPOJO).then(
                 function(dialogResult) {
                     var filePath;
@@ -125,7 +125,7 @@ function(aRequest) {
             buttonTPElems = tpElem.get(TP.cpc(' button',
                                         TP.hc('shouldCollapse', false)));
 
-            TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeErrorDialog',
+            TP.electron.ElectronMain.invokeMain('TIBET-ShowNativeErrorDialog',
                 configPOJO);
 
             break;
@@ -162,7 +162,7 @@ function(aRequest) {
                     });
             }
 
-            TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
+            TP.electron.ElectronMain.invokeMain('TIBET-ShowNativeDialog',
                 configPOJO).then(
                 function(dialogResult) {
                     var buttonIndex;

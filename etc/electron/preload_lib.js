@@ -37,6 +37,8 @@
 
             addListenerForMainEvent,
             removeListenerForMainEvent,
+
+            invokeMethodOnMain,
             sendEventToMain,
 
             commandSpawn;
@@ -323,20 +325,37 @@
         //  ---
 
         /**
-         * @method sendEventToMain
-         * @summary Sends an event to the main process.
-         * @param {Array} eventArgs The event arguments to send to the main
+         * @method invokeMethodOnMain
+         * @summary Invokes a method on the main process and returns a Promise
+         *     that will be fulfilled by that method.
+         * @param {Array} methodArgs The method arguments to send to the main
          *     process. This array should always have one item in it, which
-         *     should be the event name.
+         *     should be the method name.
          * @returns {Promise} A Promise returned from sending the event to
          *     the main process. When this Promise is resolved its value will be
          *     whatever value that method returned (limited by the rules of the
          *     Structured Clone Algorithm).
          */
 
-        sendEventToMain = function(eventArgs) {
+        invokeMethodOnMain = function(methodArgs) {
 
             return electron.ipcRenderer.invoke.apply(electron.ipcRenderer,
+                                                        methodArgs);
+        };
+
+        //  ---
+
+        /**
+         * @method sendEventToMain
+         * @summary Sends an event to the main process.
+         * @param {Array} eventArgs The event arguments to send to the main
+         *     process. This array should always have one item in it, which
+         *     should be the event name.
+         */
+
+        sendEventToMain = function(eventArgs) {
+
+            return electron.ipcRenderer.send.apply(electron.ipcRenderer,
                                                         eventArgs);
         };
 
@@ -354,6 +373,7 @@
 
             addListenerForMainEvent: addListenerForMainEvent,
             removeListenerForMainEvent: removeListenerForMainEvent,
+            invokeMethodOnMain: invokeMethodOnMain,
             sendEventToMain: sendEventToMain
         };
     };

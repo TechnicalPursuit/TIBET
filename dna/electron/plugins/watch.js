@@ -297,7 +297,7 @@
         /**
          * Event emitted when the watcher should be activated.
          */
-        ipcMain.handle('TP.sig.ActivateWatcher',
+        ipcMain.on('TP.sig.ActivateWatcher',
             function(event, payload) {
                 activateWatcher();
             });
@@ -307,7 +307,7 @@
         /**
          * Event emitted when the watcher should be deactivated.
          */
-        ipcMain.handle('TP.sig.DeactivateWatcher',
+        ipcMain.on('TP.sig.DeactivateWatcher',
             function(event, payload) {
                 deactivateWatcher();
             });

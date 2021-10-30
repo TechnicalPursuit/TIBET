@@ -403,7 +403,7 @@ process.on('uncaughtException', function(err) {
 /**
  * Event emitted when TIBET wants the application version.
  */
-ipcMain.handle('TP.sig.getAppVersion',
+ipcMain.on('TP.sig.getAppVersion',
     function() {
         return app.getVersion();
     });

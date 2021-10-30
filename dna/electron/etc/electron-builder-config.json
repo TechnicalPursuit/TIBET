@@ -1,28 +1,19 @@
 {
     "appId": "org.electronjs.{{appname}}",
-    "asar": false,
-    "extraResources": [
-        {
-            "from": "./TIBET-INF/tibet/node_modules",
-            "to": "./app/TIBET-INF/tibet/node_modules",
-            "filter": ["!puppeteer/*"]
-        },
-        {
-            "from": "./build",
-            "to": "./app/build"
-        },
-        {
-            "from": "./TIBET-INF/tibet/lib/tibet_standalone.js",
-            "to": "./app/node_modules/tibet.js"
-        }
+    "files": [
+        "**/*",
+        "./build/**/*",
+        "!src${/*}",
+        "!**/TIBET-INF/tibet/node_modules/puppeteer/**"
     ],
+    "asar": true,
+    "includeSubNodeModules": true,
     "mac": {
         "entitlements": "./etc/mac_build_files/entitlements.mac.plist",
         "entitlementsInherit": "./etc/mac_build_files/entitlements.mac.plist",
         "gatekeeperAssess": false,
         "hardenedRuntime": true,
         "signIgnore": ".*\\.app$",
-        "strictVerify": false,
-        "target": ["dmg", "zip"]
+        "strictVerify": false
     }
 }

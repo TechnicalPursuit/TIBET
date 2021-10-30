@@ -114,9 +114,10 @@ function(aSignal) {
     delete profileData.atPut;
     delete profileData.getKeys;
 
-    //  Signal the main process that TIBET wants to save profile data.
-    TP.electron.ElectronMain.signalMain(
-                            'TP.sig.SaveProfile',
+    //  Invoke a method on the main process that TIBET wants to save profile
+    //  data.
+    TP.electron.ElectronMain.invokeMain(
+                            'TIBET-SaveProfile',
                             {
                                 data: profileData
                             });
@@ -136,8 +137,9 @@ function(aSignal) {
      * @returns {TP.electron.Application} The receiver.
      */
 
-    //  Signal the main process that TIBET wants to load profile data.
-    TP.electron.ElectronMain.signalMain('TP.sig.LoadProfile').then(
+    //  Invoke a method on the main process that TIBET wants to load profile
+    //  data.
+    TP.electron.ElectronMain.invokeMain('TIBET-LoadProfile').then(
         function(profileData) {
             var data;
 
@@ -223,7 +225,7 @@ function(aSignal) {
     //  If we have an update that has been downloaded, then just go ahead and
     //  ask the user whether they want us to install it or not.
     if (TP.isTrue(this.get('updateDownloaded'))) {
-        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
+        TP.electron.ElectronMain.invokeMain('TIBET-ShowNativeDialog',
             {
                 type: 'info',
                 title: 'Updates Available',
@@ -283,7 +285,7 @@ function(aSignal) {
     //  If we're not being 'silent', then prompt the user to the fact that an
     //  update is available and ask whether we should download it or not.
     if (!this.get('isSilent')) {
-        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
+        TP.electron.ElectronMain.invokeMain('TIBET-ShowNativeDialog',
             {
                 type: 'info',
                 title: 'Updates Available',
@@ -340,7 +342,7 @@ function(aSignal) {
     //  update is ready to be installed and ask whether we should install it or
     //  not.
     if (!this.get('isSilent')) {
-        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
+        TP.electron.ElectronMain.invokeMain('TIBET-ShowNativeDialog',
             {
                 type: 'info',
                 title: 'Install Updates',
@@ -396,7 +398,7 @@ function(aSignal) {
     if (!this.get('isSilent')) {
         errMsg = TP.str(aSignal.getPayload().at(0).message);
 
-        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeErrorDialog',
+        TP.electron.ElectronMain.invokeMain('TIBET-ShowNativeErrorDialog',
             {
                 title: 'Error during the update',
                 message: 'Application couldn\'t be updated:\n' +
@@ -433,7 +435,7 @@ function(aSignal) {
     //  If we're not being 'silent', then tell the user that there were no
     //  updates to be installed.
     if (!this.get('isSilent')) {
-        TP.electron.ElectronMain.signalMain('TP.sig.ShowNativeDialog',
+        TP.electron.ElectronMain.invokeMain('TIBET-ShowNativeDialog',
             {
                 type: 'info',
                 title: 'No Updates Available',

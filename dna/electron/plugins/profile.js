@@ -143,21 +143,21 @@
         //  ---
 
         /**
-         * Event emitted when TIBET wants to save the user profile. The profile
+         * Method called when TIBET wants to save the user profile. The profile
          * is represented as a block of JSON under the 'profile' key in the
          * profile.json file.
          */
-        ipcMain.handle('TP.sig.SaveProfile',
+        ipcMain.handle('TIBET-SaveProfile',
             function(event, profileInfo) {
                 saveProfile(profileInfo.data);
             });
 
         /**
-         * Event emitted when TIBET wants to load the user profile. The profile
+         * Method called when TIBET wants to load the user profile. The profile
          * is represented as a block of JSON under the 'profile' key in the
          * profile.json file.
          */
-        ipcMain.handle('TP.sig.LoadProfile',
+        ipcMain.handle('TIBET-LoadProfile',
             function(event) {
                 var data;
 

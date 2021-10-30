@@ -97,7 +97,14 @@
                 paramStr,
                 bootOpts;
 
-            appdir = pkg.expandPath('~app');
+            //  Use the Electron provided app path here to get things going.
+
+            //  NOTE: We *MUST* use the app path here as the machinery around
+            //  'current directory' (i.e. process.cwd()) won't return good
+            //  values until the window is load.
+            //  This may be an Electron bug and needs to be investigated
+            //  further.
+            appdir = app.getAppPath();
 
             //  ---
 
@@ -305,7 +312,7 @@
             //  process event that the TIBET application has loaded.
             mainWindow.loadURL(launchUrl).then(
                 function() {
-                    app.emit('TIBET-Main-Loaded');
+                    app.emit('APP.sherpa.Loaded');
                 }).catch(
                 function(e) {
                     console.log(e);
@@ -466,7 +473,7 @@
         /**
          * Event emitted by TIBET when it is really ready to exit.
          */
-        ipcMain.handle('TP.sig.CompleteExit',
+        ipcMain.on('TP.sig.CompleteExit',
             function(event) {
                 //  Flip the flag to really allow the app to quit and then call
                 //  'quit' manually.
@@ -477,7 +484,7 @@
         /**
          * Event emitted by TIBET when it wants to show a native notification.
          */
-        ipcMain.handle('TP.sig.ShowNativeNotification',
+        ipcMain.on('TP.sig.ShowNativeNotification',
             function(event, notificationConfig) {
                 var notifier;
 
@@ -493,9 +500,9 @@
         //  ---
 
         /**
-         * Event emitted by TIBET when it wants to show a native dialog.
+         * Method called by TIBET when it wants to show a native dialog.
          */
-        ipcMain.handle('TP.sig.ShowNativeDialog',
+        ipcMain.handle('TIBET-ShowNativeDialog',
             async function(event, dialogConfig) {
                 var dialogResult;
 
@@ -519,9 +526,9 @@
         //  ---
 
         /**
-         * Event emitted by TIBET when it wants to show a native error dialog.
+         * Method called by TIBET when it wants to show a native error dialog.
          */
-        ipcMain.handle('TP.sig.ShowNativeErrorDialog',
+        ipcMain.handle('TIBET-ShowNativeErrorDialog',
             function(event, dialogConfig) {
                 //  No return value here.
                 dialog.showErrorBox(dialogConfig.title, dialogConfig.message);
@@ -530,9 +537,9 @@
         //  ---
 
         /**
-         * Event emitted by TIBET when it wants to show a native open dialog.
+         * Method called by TIBET when it wants to show a native open dialog.
          */
-        ipcMain.handle('TP.sig.ShowNativeOpenDialog',
+        ipcMain.handle('TIBET-ShowNativeOpenDialog',
             async function(event, dialogConfig) {
                 var dialogResult;
 
@@ -555,9 +562,9 @@
         //  ---
 
         /**
-         * Event emitted by TIBET when it wants to show a native save dialog.
+         * Method called by TIBET when it wants to show a native save dialog.
          */
-        ipcMain.handle('TP.sig.ShowNativeSaveDialog',
+        ipcMain.handle('TIBET-ShowNativeSaveDialog',
             async function(event, dialogConfig) {
                 var dialogResult;
 

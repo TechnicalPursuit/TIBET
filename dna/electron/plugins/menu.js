@@ -144,7 +144,7 @@
                             //  process it.
                             if (targetItem.eventInfo) {
 
-                                //  eventInfo: ['main/TIBET-Show-Devtools']
+                                //  eventInfo: ['main/APP.sherpa.ShowDevtools']
                                 //  eventInfo: ['TIBET/TP.sig.CheckForUpdate',
                                 //                  false]
 
@@ -405,7 +405,7 @@
         /**
          * Event emitted when TIBET wants to add a menu item.
          */
-        ipcMain.handle('TP.sig.AddMenuItem',
+        ipcMain.on('TP.sig.AddMenuItem',
             function(event, menuItemInfo) {
                 var appMenuTemplate,
 
@@ -460,7 +460,7 @@
         /**
          * Event emitted when TIBET wants to delete a menu item.
          */
-        ipcMain.handle('TP.sig.RemoveMenuItem',
+        ipcMain.on('TP.sig.RemoveMenuItem',
             function(event, menuItemInfo) {
 
                 var appMenuTemplate,
@@ -499,7 +499,7 @@
          * Event emitted when TIBET wants to change some part of the state of a
          * menu item.
          */
-        ipcMain.handle('TP.sig.UpdateMenuItem',
+        ipcMain.on('TP.sig.UpdateMenuItem',
             function(event, menuItemInfo) {
                 var appMenuTemplate,
 

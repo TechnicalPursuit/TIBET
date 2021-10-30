@@ -252,6 +252,58 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
+TP.electron.ElectronMain.Type.defineMethod('invokeMain',
+function(aMethodName, varargs) {
+
+    /**
+     * @method invokeMain
+     * @summary Invokes the specified method on Electron's 'main' process.
+     * @param {String} aMethodName The method name to invoke on the main
+     *     process.
+     * @param {arguments} varargs Optional additional arguments for the
+     *     constructor.
+     * @returns {Promise} A Promise returned from invoking the method on the
+     *     main process. When this Promise is resolved its value will be
+     *     whatever value that method returned (limited by the rules of the
+     *     Structured Clone Algorithm).
+     */
+
+    var args,
+
+        methodArgs,
+
+        len,
+        i;
+
+    //  If we're running in headless mode, just return a resolved Promise.
+    if (TP.sys.isHeadless()) {
+        return Promise.resolve();
+    }
+
+    if (TP.sys.cfg('boot.context') !== 'electron') {
+        return this.raise('UnsupportedOperation');
+    }
+
+    //  Grab all of the arguments into an Array and build a new Array of the
+    //  '(plain) object representation' of those arguments. This is needed to
+    //  serialize properly over the wire.
+
+    args = TP.ac(arguments);
+
+    methodArgs = TP.ac();
+
+    len = args.getSize();
+    for (i = 0; i < len; i++) {
+        methodArgs.push(TP.obj(args.at(i)));
+    }
+
+    //  NB: We just pass along all arguments here - this call will 'do the right
+    //  thing'.
+    return TP.extern.electron_lib_utils.invokeMethodOnMain(methodArgs);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.electron.ElectronMain.Type.defineMethod('signalMain',
 function(aSignal, varargs) {
 
@@ -261,10 +313,6 @@ function(aSignal, varargs) {
      * @param {String} aSignal The signal name to send to the main process.
      * @param {arguments} varargs Optional additional arguments for the
      *     constructor.
-     * @returns {Promise} A Promise returned from sending the event to
-     *     the main process. When this Promise is resolved its value will be
-     *     whatever value that method returned (limited by the rules of the
-     *     Structured Clone Algorithm).
      */
 
     var args,

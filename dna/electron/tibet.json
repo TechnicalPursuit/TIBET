@@ -51,12 +51,12 @@
                 "id": "devtools",
                 "label": "Launch DevTools",
                 "accelerator": "CommandOrControl+Alt+i",
-                "eventInfo": ["main/TIBET-Show-Devtools"]
+                "eventInfo": ["main/APP.sherpa.ShowDevtools"]
             }, {
                 "id": "lama",
                 "label": "Launch Devtools on Devtools",
                 "accelerator": "CommandOrControl+Alt+Shift+i",
-                "eventInfo": ["main/TIBET-Show-Devtools-On-Devtools"]
+                "eventInfo": ["main/APP.sherpa.ShowDevtoolsOnDevtools"]
             }, {
                 "type": "separator"
             }, {

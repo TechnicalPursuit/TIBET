@@ -6,7 +6,7 @@
  * 'tibet deploy electron <environment>'.
  *
  * This subcommand expects the following fields, shown here as a set of
- * configuration parameters in the project's 'tds.json' file:
+ * configuration parameters in the project's 'tibet.json' file:
  *
  *      "deploy": {
  *          "electron": {
@@ -15,6 +15,7 @@
  *              "updateURL": "https://myUpdateURL" (not used here - bound into app image by build process),
  *              "distdir": "aDistDir", (defaults to 'dist')
  *              "channel": "beta", (defaults to 'latest')
+ *              "notarize": true, (defaults to true)
  *              "provider": "s3",
  *              "s3": {
  *                  "bucket": "helloelectron",
@@ -72,6 +73,8 @@
                 options,
 
                 providerparams,
+
+                msg,
 
                 packager,
                 publishManager,
@@ -135,6 +138,10 @@
             params.distdir = params.distdir || './dist';
             params.channel = params.channel || 'latest';
 
+            if (CLI.notValid(params.notarize)) {
+                params.notarize = cmd.options.notarize;
+            }
+
             //  ---
             //  Determine provider
             //  ---
@@ -194,6 +201,16 @@
                     publisherInfo.region = providerparams.region;
                     publisherInfo.bucket = providerparams.bucket;
 
+                    if (CLI.isEmpty(process.env.AWS_ACCESS_KEY_ID)) {
+                        msg = 'No AWS key ID. $ export AWS_ACCESS_KEY_ID="{awsaccesskeyid}"';
+                        throw new Error(msg);
+                    }
+
+                    if (CLI.isEmpty(process.env.AWS_SECRET_ACCESS_KEY)) {
+                        msg = 'No AWS key ID. $ export AWS_SECRET_ACCESS_KEY="{awssecretaccesskey}"';
+                        throw new Error(msg);
+                    }
+
                     break;
                 case 'github':
                     cmd.log('Provider is GitHub');
@@ -229,19 +246,18 @@
             projectName = params.projectname;
 
             try {
-                if (process.platform === 'darwin') {
-                    cmd.log('Building for Mac image. Notarizing...');
+                if (process.platform === 'darwin' &&
+                    params.notarize === true) {
+                    cmd.log('Mac image. Notarizing...');
 
                     if (cmd.options['dry-run']) {
                         cmd.log('DRY RUN: notarizing with' +
                                 ' path: ' + distPath +
                                 ' project name: ' + projectName);
                     } else {
-                        if (cmd.options.notarize) {
                             await this.notarizeMac(distPath, projectName);
                         }
                     }
-                }
 
                 cmd.log('Uploading application images to provider...');
                 if (cmd.options['dry-run']) {
@@ -251,13 +267,16 @@
                             ' channel: ' + params.channel +
                             ' version: ' + params.projectversion);
                 } else {
-                await this.upload(publishManager, publisherInfo,
-                            distPath, projectName,
-                            params.channel, params.projectversion);
+                    await this.upload(publishManager, publisherInfo,
+                                distPath, projectName,
+                                params.channel, params.projectversion);
                 }
             } catch (err) {
                 packager.cancellationToken.cancel();
                 publishManager.cancelTasks();
+
+                //  Throw this 'up' to report it.
+                throw err;
             }
         };
 
@@ -269,7 +288,10 @@
                 appleIdPassword,
 
                 configPath,
-                packConfig;
+                packConfig,
+
+                appPath,
+                promise;
 
             appleId = process.env.APPLEID;
             if (CLI.isEmpty(appleId)) {
@@ -290,12 +312,52 @@
 
             packConfig = require(configPath);
 
-            return Notarizer.notarize({
-                appBundleId: packConfig.appId,
-                appPath: CLI.joinPaths(distPath, 'mac', projectName) + '.app',
-                appleId: appleId,
-                appleIdPassword: appleIdPassword
-            });
+            promise = Promise.resolve();
+
+            //  First, check to see if we have a Mac universal binary. If so,
+            //  queue up a notarization.
+            appPath =
+                CLI.joinPaths(distPath, 'mac-universal', projectName) + '.app';
+            if (CLI.sh.test('-e', appPath)) {
+                promise = promise.then(function() {
+                        return Notarizer.notarize({
+                            appBundleId: packConfig.appId,
+                            appPath: appPath,
+                            appleId: appleId,
+                            appleIdPassword: appleIdPassword
+                        });
+                });
+            }
+
+            //  Then do the same for a Mac ARM64 binary.
+            appPath =
+                CLI.joinPaths(distPath, 'mac-arm64', projectName) + '.app';
+            if (CLI.sh.test('-e', appPath)) {
+                promise = promise.then(function() {
+                        return Notarizer.notarize({
+                            appBundleId: packConfig.appId,
+                            appPath: appPath,
+                            appleId: appleId,
+                            appleIdPassword: appleIdPassword
+                        });
+                });
+            }
+
+            //  Then do the same for a Mac x64 binary.
+            appPath =
+                CLI.joinPaths(distPath, 'mac', projectName) + '.app';
+            if (CLI.sh.test('-e', appPath)) {
+                promise = promise.then(function() {
+                            return Notarizer.notarize({
+                                appBundleId: packConfig.appId,
+                                            appPath: appPath,
+                                appleId: appleId,
+                                appleIdPassword: appleIdPassword
+                            });
+                });
+            }
+
+            return promise;
         };
 
         cmdType.prototype.upload = function(publishManager, publisherInfo,
