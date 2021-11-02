@@ -144,7 +144,7 @@
                             //  process it.
                             if (targetItem.eventInfo) {
 
-                                //  eventInfo: ['main/APP.sherpa.ShowDevtools']
+                                //  eventInfo: ['main/APP.{{appname}}.ShowDevtools']
                                 //  eventInfo: ['TIBET/TP.sig.CheckForUpdate',
                                 //                  false]
 

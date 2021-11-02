@@ -565,7 +565,7 @@
         /**
          * Event emitted when the user wants to show the devtools panel.
          */
-        app.on('APP.sherpa.ShowDevtools',
+        app.on('APP.{{appname}}.ShowDevtools',
                 function() {
                     //  Open the DevTools without the Lama.
                     launchDevTools(false);
@@ -575,7 +575,7 @@
          * Event emitted when the user wants to show the devtools panel with the
          * Lama loaded.
          */
-        app.on('APP.sherpa.ShowDevtoolsOnDevtools',
+        app.on('APP.{{appname}}.ShowDevtoolsOnDevtools',
                 function() {
                     //  Open the DevTools with the Lama.
                     launchDevTools(true);
@@ -585,7 +585,7 @@
         //  Command line arguments
         //  ---
 
-        app.on('APP.sherpa.MainLoaded',
+        app.on('APP.{{appname}}.MainLoaded',
             function(event) {
                 //  NOTE this is a TIBET-specific if block. The `tibet electron`
                 //  command will pass --devtools along so this flag is set,

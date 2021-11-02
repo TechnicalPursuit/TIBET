@@ -312,7 +312,7 @@
             //  process event that the TIBET application has loaded.
             mainWindow.loadURL(launchUrl).then(
                 function() {
-                    app.emit('APP.sherpa.Loaded');
+                    app.emit('APP.{{appname}}.MainLoaded');
                 }).catch(
                 function(e) {
                     console.log(e);
