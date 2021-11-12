@@ -4019,6 +4019,9 @@ TP.sys.getWindowById = function(anID, aWindow) {
         arr,
         current,
         frame,
+        screenNum,
+        cfgname,
+
         doc,
         win,
         next,
@@ -4062,14 +4065,16 @@ TP.sys.getWindowById = function(anID, aWindow) {
             break;
     }
 
-    //  shortcut for UIROOT and UIROOT.SCREEN_0 which are common lookups based
-    //  on the canvas in either standard or lama-enabled operation.
+    //  shortcut for other window names, IDs of iframe elements that have
+    //  windows or UIROOT.SCREEN_X which are common lookups based on the canvas
+    //  in either standard or lama-enabled operation.
     if (TP.boot.$isWindow(context[anID])) {
         return context[anID];
     } else if (TP.boot.$isElement(context[anID])) {
         return context[anID].contentWindow;
-    } else if (/UIROOT.SCREEN_0/.test(anID)) {
-        return context.UIROOT && context.UIROOT.SCREEN_0;
+    } else if (context.UIROOT && /^UIROOT.SCREEN_(\d+)$/.test(anID)) {
+        screenNum = anID.slice(anID.lastIndexOf('_') + 1);
+        return context.UIROOT['SCREEN_' + screenNum];
     }
 
     //  if we got a TIBET URI then we've got to split out the canvas ID.
