@@ -403,7 +403,7 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.dom.HTMLDocumentNode of the current UI canvas - extra tibet://uicanvas/', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.dom.HTMLDocumentNode of the current UI canvas', function(test, options) {
 
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#document').getResource(params).get('result'),
