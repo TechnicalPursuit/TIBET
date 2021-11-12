@@ -3600,7 +3600,7 @@ function() {
     this.it('Retrieve top-level window using \'top\'', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById('top')),
+            TP.sys.getWindowById('top'),
             top,
             TP.sc('TP.sys.getWindowById(\'top\') should find the top-level Window.'));
     });
@@ -3610,7 +3610,7 @@ function() {
     this.it('Retrieve top-level window using name', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById(top.name)),
+            TP.sys.getWindowById(top.name),
             top,
             TP.sc('TP.sys.getWindowById(\'' + top.name + '\') should find the top-level Window.'));
     });
@@ -3620,7 +3620,7 @@ function() {
     this.it('Retrieve top-level window using path', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById(TP.$$topWindowPath)),
+            TP.sys.getWindowById(TP.$$topWindowPath),
             top,
             TP.sc('TP.sys.getWindowById(...top window path...) should find the top-level Window.'));
     });
@@ -3630,7 +3630,7 @@ function() {
     this.it('Retrieve UIROOT window using \'UIROOT\'', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById('UIROOT')),
+            TP.sys.getWindowById('UIROOT'),
             top.frames[0],
             TP.sc('TP.sys.getWindowById(\'UIROOT\') should find the UIROOT Window.'));
     });
@@ -3640,7 +3640,7 @@ function() {
     this.it('Retrieve UIROOT window using path starting with \'top\'', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById('top.UIROOT')),
+            TP.sys.getWindowById('top.UIROOT'),
             top.frames[0],
             TP.sc('TP.sys.getWindowById(\'top.UIROOT\') should find the UIROOT Window.'));
     });
@@ -3650,7 +3650,7 @@ function() {
     this.it('Retrieve UIROOT window using path starting with top-level window\'s name', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById(top.name + '.UIROOT')),
+            TP.sys.getWindowById(top.name + '.UIROOT'),
             top.frames[0],
             TP.sc('TP.sys.getWindowById(\'' + top.name + '.UIROOT\') should find the UIROOT Window.'));
     });
@@ -3660,7 +3660,7 @@ function() {
     this.it('Retrieve UICANVAS window using \'UICANVAS\'', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById('UICANVAS')),
+            TP.sys.getWindowById('UICANVAS'),
             top.frames[0],
             TP.sc('TP.sys.getWindowById(\'UICANVAS\') should find the UICANVAS Window.'));
     });
@@ -3670,7 +3670,7 @@ function() {
     this.it('Retrieve UICANVAS window using \'UIROOT.UICANVAS\'', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById('UIROOT.UICANVAS')),
+            TP.sys.getWindowById('UIROOT.UICANVAS'),
             top.frames[0],
             TP.sc('TP.sys.getWindowById(\'UIROOT.UICANVAS\') should find the UICANVAS Window.'));
     });
@@ -3680,7 +3680,7 @@ function() {
     this.it('Retrieve UICANVAS window using path starting with \'top\'', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById('top.UIROOT.UICANVAS')),
+            TP.sys.getWindowById('top.UIROOT.UICANVAS'),
             top.frames[0],
             TP.sc('TP.sys.getWindowById(\'top.UIROOT.UICANVAS\') should find the UICANVAS Window.'));
     });
@@ -3690,7 +3690,7 @@ function() {
     this.it('Retrieve UICANVAS window using path starting with top-level window\'s name', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.unwrap(TP.sys.getWindowById(top.name + '.UIROOT.UICANVAS')),
+            TP.sys.getWindowById(top.name + '.UIROOT.UICANVAS'),
             top.frames[0],
             TP.sc('TP.sys.getWindowById(\'' + top.name + '.UIROOT.UICANVAS\') should find the UICANVAS Window.'));
     });
