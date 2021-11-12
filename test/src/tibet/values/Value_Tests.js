@@ -3524,5 +3524,179 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.bySystemId.describe('core tests',
+function() {
+
+    this.it('Retrieve global objects', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.bySystemId('TP'),
+            TP,
+            TP.sc('TP.bySystemId(\'TP\') named instance "TP".'));
+    });
+
+    //  ---
+
+    this.it('Retrieve namespace object', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.bySystemId('TP.sig'),
+            TP.sig,
+            TP.sc('TP.bySystemId(\'TP.sig\') should find the namespace TP.sig.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve type object', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.bySystemId('TP.sig.Signal'),
+            TP.sig.Signal,
+            TP.sc('TP.bySystemId(\'TP.sig.Signal\') should find the named type TP.sig.Signal'));
+    });
+
+    //  ---
+
+    this.it('Retrieve registered object', function(test, options) {
+
+        var foo;
+
+        foo = TP.ac(1, 2, 3);
+        TP.sys.registerObject(foo, 'FOO', true);
+
+        test.assert.isIdenticalTo(
+            TP.bySystemId('FOO'),
+            foo,
+            TP.sc('TP.bySystemId(\'FOO\') should refer to the FOO object in the code frame.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve top-level window', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.bySystemId('top')),
+            top,
+            TP.sc('TP.bySystemId(\'top\') should find the top-level Window.'));
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.getWindowById.describe('core tests',
+function() {
+
+    this.before(
+        function(suite, options) {
+
+            //  Set up a temporary reference to the top-level window path
+            TP.$$topWindowPath = TP.sys.cfg('tibet.top_win_path');
+        });
+
+    //  ---
+
+    this.it('Retrieve top-level window using \'top\'', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById('top')),
+            top,
+            TP.sc('TP.sys.getWindowById(\'top\') should find the top-level Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve top-level window using name', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById(top.name)),
+            top,
+            TP.sc('TP.sys.getWindowById(\'' + top.name + '\') should find the top-level Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve top-level window using path', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById(TP.$$topWindowPath)),
+            top,
+            TP.sc('TP.sys.getWindowById(...top window path...) should find the top-level Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve UIROOT window using \'UIROOT\'', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById('UIROOT')),
+            top.frames[0],
+            TP.sc('TP.sys.getWindowById(\'UIROOT\') should find the UIROOT Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve UIROOT window using path starting with \'top\'', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById('top.UIROOT')),
+            top.frames[0],
+            TP.sc('TP.sys.getWindowById(\'top.UIROOT\') should find the UIROOT Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve UIROOT window using path starting with top-level window\'s name', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById(top.name + '.UIROOT')),
+            top.frames[0],
+            TP.sc('TP.sys.getWindowById(\'' + top.name + '.UIROOT\') should find the UIROOT Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve UICANVAS window using \'UICANVAS\'', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById('UICANVAS')),
+            top.frames[0],
+            TP.sc('TP.sys.getWindowById(\'UICANVAS\') should find the UICANVAS Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve UICANVAS window using \'UIROOT.UICANVAS\'', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById('UIROOT.UICANVAS')),
+            top.frames[0],
+            TP.sc('TP.sys.getWindowById(\'UIROOT.UICANVAS\') should find the UICANVAS Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve UICANVAS window using path starting with \'top\'', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById('top.UIROOT.UICANVAS')),
+            top.frames[0],
+            TP.sc('TP.sys.getWindowById(\'top.UIROOT.UICANVAS\') should find the UICANVAS Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve UICANVAS window using path starting with top-level window\'s name', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.unwrap(TP.sys.getWindowById(top.name + '.UIROOT.UICANVAS')),
+            top.frames[0],
+            TP.sc('TP.sys.getWindowById(\'' + top.name + '.UIROOT.UICANVAS\') should find the UICANVAS Window.'));
+    });
+
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
