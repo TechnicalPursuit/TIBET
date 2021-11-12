@@ -9284,10 +9284,18 @@ function() {
      * @returns {String} The receiver's location.
      */
 
+    var concreteURI;
+
     //  TIBET URLs with no canvas are effectively simply aliases to the
     //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getConcreteURI().getLocation();
+        concreteURI = this.getConcreteURI();
+        if (TP.isURI(concreteURI)) {
+            return concreteURI.getLocation();
+        }
+
+        //  No canvas name and no concrete URI - can't do anything.
+        return '';
     }
 
     //  supertype will compute a decent default value as an alternative.
@@ -9843,8 +9851,32 @@ function(aRequest) {
      *     content set as its result.
      */
 
+    var concreteURI,
+
+        request,
+        response;
+
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getConcreteURI().getResource(aRequest);
+        concreteURI = this.getConcreteURI();
+        if (TP.isURI(concreteURI)) {
+            return concreteURI.getResource(aRequest);
+        }
+
+        request = this.constructRequest(aRequest);
+
+        //  No canvas name and no concrete URI - can't do anything.
+        //  Track initial state so we can properly process flags/results.
+        request.atPutIfAbsent('operation', 'get');
+        request.atPutIfAbsent('loaded', true);
+
+        //  synchronous? complete any request we might actually have.
+        if (TP.canInvoke(request, 'complete')) {
+            request.complete(null);
+        }
+
+        response = request.getResponse(null);
+
+        return response;
     }
 
     return this.callNextMethod();
@@ -10242,7 +10274,12 @@ function() {
      * @summary Registers the instance under a common key.
      */
 
-    TP.uri.URI.registerInstance(this, TP.uriInTIBETFormat(this.getLocation()));
+    var tibetURI;
+
+    tibetURI = TP.uriInTIBETFormat(this.getLocation());
+    if (TP.notEmpty(tibetURI)) {
+        TP.uri.URI.registerInstance(this, tibetURI);
+    }
 
     return this;
 });
