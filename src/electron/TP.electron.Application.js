@@ -32,27 +32,78 @@ TP.electron.Application.Inst.defineAttribute('updateDownloaded');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.electron.Application.Inst.defineMethod('loadProfile',
+function() {
+
+    /**
+     * @method loadProfile
+     * @summary Load the application's profile file content and configure it.
+     * @returns {TP.electron.Application} The receiver.
+     */
+
+    TP.electron.ElectronMain.invokeMain('TIBET-LoadProfile').then(
+        function(profileData) {
+            var data;
+
+            data = TP.ifInvalid(profileData, {});
+
+            TP.boot.$configureOptions(data);
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.electron.Application.Inst.defineMethod('saveProfile',
+function() {
+
+    /**
+     * @method saveProfile
+     * @summary Saves the current profile data (window location/size etc) so
+     *     it persists as part of the application's profile file.
+     * @return {TP.electron.Application} The receiver.
+     */
+
+    var profileData;
+
+    //  Grab the profile. Note how we pass true as the last parameter to get a
+    //  nested POJO back.
+    profileData = TP.sys.getcfg('profile', {}, true);
+
+    //  NB: We need to remove these keys before we send this data to Electron.
+    //  They point to Function objects and the Structured Clone Algorithm has
+    //  issues with that.
+    delete profileData.at;
+    delete profileData.atPut;
+    delete profileData.getKeys;
+
+    //  Invoke a method on the main process that TIBET wants to save profile
+    //  data.
+    TP.electron.ElectronMain.invokeMain(
+                            'TIBET-SaveProfile',
+                            {
+                                data: profileData
+                            });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Handlers
+//  ------------------------------------------------------------------------
+
 TP.electron.Application.Inst.defineHandler('AppDidStart',
 function(aSignal) {
 
     /**
      * @method handleAppDidStart
+     * @summary Responds to notifications that the application has fully
+     *     started.
      * @param {TP.sig.AppDidStart} aSignal The signal that caused this handler
      *     trip.
      * @returns {TP.electron.Application} The receiver.
      */
-
-    this.observe(TP.electron.ElectronMain,
-                    TP.ac('ApplicationWillExit',
-                            'ApplicationDidExit',
-                            'CheckForUpdate',
-                            'CheckingForUpdate',
-                            'UpdateError',
-                            'UpdateAvailable',
-                            'UpdateNotAvailable',
-                            'UpdateDownloaded',
-                            'WindowMoved',
-                            'WindowResized'));
 
     this.set('isSilent', true);
     this.set('updateDownloaded', false);
@@ -101,26 +152,7 @@ function(aSignal) {
      * @returns {TP.electron.Application} The receiver.
      */
 
-    var profileData;
-
-    //  Grab the profile. Note how we pass true as the last parameter to get a
-    //  nested POJO back.
-    profileData = TP.sys.getcfg('profile', {}, true);
-
-    //  NB: We need to remove these keys before we send this data to Electron.
-    //  They point to Function objects and the Structured Clone Algorithm has
-    //  issues with that.
-    delete profileData.at;
-    delete profileData.atPut;
-    delete profileData.getKeys;
-
-    //  Invoke a method on the main process that TIBET wants to save profile
-    //  data.
-    TP.electron.ElectronMain.invokeMain(
-                            'TIBET-SaveProfile',
-                            {
-                                data: profileData
-                            });
+    this.saveProfile();
 
     return this;
 });
@@ -137,16 +169,37 @@ function(aSignal) {
      * @returns {TP.electron.Application} The receiver.
      */
 
-    //  Invoke a method on the main process that TIBET wants to load profile
-    //  data.
-    TP.electron.ElectronMain.invokeMain('TIBET-LoadProfile').then(
-        function(profileData) {
-            var data;
+    this.loadProfile();
 
-            data = TP.ifInvalid(profileData, {});
+    return this;
+});
 
-            TP.boot.$configureOptions(data);
-        });
+//  ------------------------------------------------------------------------
+
+TP.electron.Application.Inst.defineHandler('AppWillStart',
+function(aSignal) {
+
+    /**
+     * @method handleAppDidStart
+     * @param {TP.sig.AppDidStart} aSignal The signal that caused this handler
+     *     trip.
+     * @returns {TP.electron.Application} The receiver.
+     */
+
+    this.observe(TP.electron.ElectronMain,
+                    TP.ac('ApplicationWillExit',
+                            'ApplicationDidExit',
+                            'CheckForUpdate',
+                            'CheckingForUpdate',
+                            'UpdateError',
+                            'UpdateAvailable',
+                            'UpdateNotAvailable',
+                            'UpdateDownloaded',
+                            'WindowMoved',
+                            'WindowResized'));
+
+    //  Signal the main process that the TIBET application has started.
+    TP.electron.ElectronMain.signalMain('TP.sig.AppWillStart');
 
     return this;
 });
@@ -473,6 +526,8 @@ function(aSignal) {
     TP.sys.setcfg(windowCfgKey + 'width', windowInfo.width);
     TP.sys.setcfg(windowCfgKey + 'height', windowInfo.height);
 
+    this.saveProfile();
+
     return this;
 });
 
@@ -502,6 +557,8 @@ function(aSignal) {
     TP.sys.setcfg(windowCfgKey + 'left', windowInfo.left);
     TP.sys.setcfg(windowCfgKey + 'width', windowInfo.width);
     TP.sys.setcfg(windowCfgKey + 'height', windowInfo.height);
+
+    this.saveProfile();
 
     return this;
 });
