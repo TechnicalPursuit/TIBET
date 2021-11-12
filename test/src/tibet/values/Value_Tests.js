@@ -3657,6 +3657,26 @@ function() {
 
     //  ---
 
+    this.it('Retrieve UICANVAS window using \'tibet://\'', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.sys.getWindowById('tibet://'),
+            top.frames[0],
+            TP.sc('TP.sys.getWindowById(\'tibet://\') should find the UICANVAS Window.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve UICANVAS window using \'tibet://uicanvas\'', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.sys.getWindowById('tibet://uicanvas'),
+            top.frames[0],
+            TP.sc('TP.sys.getWindowById(\'tibet://uicanvas\') should find the UICANVAS Window.'));
+    });
+
+    //  ---
+
     this.it('Retrieve UICANVAS window using \'UICANVAS\'', function(test, options) {
 
         test.assert.isIdenticalTo(
