@@ -4096,16 +4096,25 @@ TP.sys.getWindowById = function(anID, aWindow) {
 
     //  UICANVAS is special since it's a virtual name for another window. We
     //  need the actual window name.
-    if (id === 'uicanvas' || id === 'UICANVAS') {
+    if (id.toLowerCase().endsWith('uicanvas')) {
         if (typeof TP.sys.getUICanvasName === 'function') {
             id = TP.sys.getUICanvasName();
         } else {
-            //  Not booted yet. No real way to know but we can guess UIBOOT.
-            win = TP.boot.getUIBoot();
-            if (TP.boot.$isWindow(win)) {
-                return win;
+            cfgname = TP.sys.cfg('tibet.uicanvas');
+            if (TP.notValid(cfgname)) {
+                cfgname = TP.sys.cfg('boot.canvas');
             }
-            return;
+
+            if (cfgname) {
+                id = cfgname;
+            } else {
+                //  Not booted yet. No real way to know but we can guess UIBOOT.
+                win = TP.boot.getUIBoot();
+                if (TP.boot.$isWindow(win)) {
+                    return win;
+                }
+                return;
+            }
         }
     }
 
