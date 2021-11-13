@@ -5747,6 +5747,50 @@ function(anObject, varargs) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('parsedVal',
+function(anObject) {
+
+    /**
+     * @method parsedVal
+     * @summary Returns the 'parsed value' of the supplied object.
+     * @description This method takes a String and tries to return the value in
+     *     JS. For instance, 'false' will return false, '42' will return 42,
+     *     etc. It can also process Array literals and Object literals.
+     * @param {String|null} anObject The object to parse.
+     * @returns {Object|null} The result of parsing the supplied String into
+     *     some sort of JavaScript object.
+     */
+
+    var result;
+
+    if (TP.notValid(anObject)) {
+        return null;
+    }
+
+    //  Filter all of the 'internal' keys that aren't really
+    //  arguments.
+    if (anObject === 'true' || anObject === 'false') {
+        //  Handle Booleans
+        result = TP.bc(anObject);
+    } else if (TP.regex.REGEX_LITERAL_STRING.test(anObject)) {
+        //  Handle RegExps
+        reParts = anObject.split('/');
+        reText = reParts.at(1);
+        result = TP.rc(reText, reParts.at(2));
+    } else if (TP.regex.ANY_NUMBER.test(anObject) ||
+                TP.regex.PERCENTAGE.test(anObject)) {
+        result = anObject.asNumber();
+    } else if (anObject.charAt(0) === '{' || anObject.charAt(0) === '[') {
+        result = TP.$tokenizedConstruct(anObject);
+    } else {
+        result = anObject;
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
 //  Paths
 //  ------------------------------------------------------------------------
 
