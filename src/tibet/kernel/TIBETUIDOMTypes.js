@@ -5090,7 +5090,9 @@ function(attributeName, attributeValue, shouldSignal) {
      *     setAttribute.
      */
 
-    var node,
+    var boolAttrs,
+
+        node,
 
         hadAttribute,
 
@@ -5108,6 +5110,13 @@ function(attributeName, attributeValue, shouldSignal) {
 
         id,
         attrURI;
+
+    if (TP.notEmpty(boolAttrs = this.getType().get('booleanAttrs')) &&
+        boolAttrs.containsString(attributeName) &&
+        TP.isFalsey(attributeValue)) {
+
+        return this.removeAttribute(attributeName);
+    }
 
     node = this.getNativeNode();
 
