@@ -4473,6 +4473,102 @@ function(receiverCompassPoint, alignmentCompassPoint, alignmentTPElement,
 
 //  ------------------------------------------------------------------------
 
+TP.dom.UIElementNode.Inst.defineMethod('$removeAttribute',
+function(attributeName, shouldSignal) {
+
+    /**
+     * @method removeAttribute
+     * @summary Removes the named attribute. This version is a wrapper around
+     *     the native element node removeAttribute call which attempts to handle
+     *     standard change notification semantics for native nodes as well as
+     *     proper namespace management.
+     * @param {String} attributeName The attribute name to remove.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     */
+
+    var attrNode,
+        node,
+
+        flag,
+
+        attrTPNode,
+        attrFlag,
+
+        id,
+        attrURI;
+
+    node = this.getNativeNode();
+
+    //  work from the attribute node so we can be more accurate. this helps
+    //  ensure that environments which don't preserve the concept of a
+    //  namespace URI consistently (html) won't end up with two attributes
+    //  of the same name but different namespace URIs
+
+    if (TP.regex.NS_QUALIFIED.test(attributeName)) {
+        //  Note here the usage of our own call which will attempt to divine
+        //  the namespace URI if the checkAttrNSURIs flag is true.
+        attrNode = TP.$elementGetPrefixedAttributeNode(node,
+                                                    attributeName,
+                                                    true);
+    } else {
+        attrNode = node.getAttributeNode(attributeName);
+    }
+
+    //  no node? nothing to remove then
+    if (TP.notValid(attrNode)) {
+        return;
+    }
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    //  NB: We don't flag changes for internal 'tibet:' attributes
+    //  (presuming change flagging is on)
+    if (this.shouldFlagChanges() &&
+        !TP.regex.TIBET_SCHEME.test(attributeName)) {
+        TP.elementFlagChange(node, TP.ATTR + attributeName, TP.DELETE);
+    }
+
+    //  rip out the attribute itself
+    TP.elementRemoveAttribute(node, attributeName, true);
+
+    if (flag) {
+        this.$changed('@' + attributeName, TP.DELETE);
+
+        //  Now, in case anyone is bound to this attribute, wrap it, configure
+        //  it to signal Change and send it.
+        attrTPNode = TP.wrap(attrNode);
+
+        //  Capture the value of whether the attribute node is configured to
+        //  signal changes and then configure it to definitely signal a Change.
+        attrFlag = attrTPNode.shouldSignalChange();
+        attrTPNode.shouldSignalChange(true);
+
+        //  Signal the Change
+        attrTPNode.$changed('value', TP.DELETE);
+
+        //  If the attribute is on an Element that's in the UICANVAS, then
+        //  build a URI from it and signal a 'change' from that URI, for any
+        //  data bindings that are using 'direct to GUI' binding.
+        if (TP.nodeGetWindow(attrNode) === TP.sys.getUICanvas(true)) {
+            id = this.getLocalID();
+            attrURI = TP.uc('tibet://uicanvas#' + id + '@' + attributeName);
+            attrURI.$changed();
+        }
+
+        //  Put the 'should signal change' value back to whatever it was.
+        attrTPNode.shouldSignalChange(attrFlag);
+    }
+
+    //  removeAttribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.UIElementNode.Inst.defineMethod('removeAttrActive',
 function() {
 
