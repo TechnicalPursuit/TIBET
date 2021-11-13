@@ -8,6 +8,15 @@
  */
 //  ========================================================================
 
+//  ------------------------------------------------------------------------
+//  Test Tag Types
+//  ------------------------------------------------------------------------
+
+TP.tag.CustomTag.defineSubtype('test:person');
+TP.test.person.Type.set('booleanAttrs', TP.ac('ismale'));
+TP.test.person.defineAttribute('styleURI', TP.NO_RESULT);
+TP.test.person.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ========================================================================
 //  bind:
 //  ========================================================================
@@ -8207,6 +8216,204 @@ function() {
     });
 
 }).timeout(45000);
+
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: inline bind expressions to attributes',
+function() {
+
+    var unloadURI,
+        loadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function(suite, options) {
+            this.getDriver().showTestGUI();
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function(test, options) {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+
+    this.it('partial attribute expression, multi-level fragment, qualified binding - XML data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeToAttributeMultiFragmentXML.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+
+                    personElem1,
+                    personElem2;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
+
+                personElem1 = TP.byId('person1', windowContext);
+                personElem2 = TP.byId('person2', windowContext);
+
+                test.assert.isEqualTo(
+                    personElem1.getAttribute('lastname'),
+                    'Professional');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[4]/lastname')),
+                    'Professional');
+
+                test.refute.hasAttribute(
+                    personElem1,
+                    'ismale');
+
+                test.assert.isEqualTo(
+                    personElem2.getAttribute('lastname'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[1]/lastname')),
+                    'Smith');
+
+                test.assert.hasAttribute(
+                    personElem2,
+                    'ismale');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    this.it('partial attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeToAttributeMultiFragmentJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+
+                    personElem1,
+                    personElem2;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
+
+                personElem1 = TP.byId('person1', windowContext);
+                personElem2 = TP.byId('person2', windowContext);
+
+                test.assert.isEqualTo(
+                    personElem1.getAttribute('lastname'),
+                    'Professional');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[3].lastname')),
+                    'Professional');
+
+                test.refute.hasAttribute(
+                    personElem1,
+                    'ismale');
+
+                test.assert.isEqualTo(
+                    personElem2.getAttribute('lastname'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].lastname')),
+                    'Smith');
+
+                test.assert.hasAttribute(
+                    personElem2,
+                    'ismale');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    this.it('partial attribute expression, multi-level fragment, qualified binding - JavaScript Object data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeToAttributeMultiFragmentJSObj.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+
+                    personElem1,
+                    personElem2;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
+
+                personElem1 = TP.byId('person1', windowContext);
+                personElem2 = TP.byId('person2', windowContext);
+
+                test.assert.isEqualTo(
+                    personElem1.getAttribute('lastname'),
+                    'Professional');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[3].lastname')),
+                    'Professional');
+
+                test.refute.hasAttribute(
+                    personElem1,
+                    'ismale');
+
+                test.assert.isEqualTo(
+                    personElem2.getAttribute('lastname'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[0].lastname')),
+                    'Smith');
+
+                test.assert.hasAttribute(
+                    personElem2,
+                    'ismale');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+});
 
 //  ------------------------------------------------------------------------
 

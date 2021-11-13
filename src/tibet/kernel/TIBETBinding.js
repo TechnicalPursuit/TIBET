@@ -8343,6 +8343,24 @@ function(aspect, exprs, outerScopeValue, updatedAspects, aFacet, transformFunc, 
         didRefresh = this.setValue(finalVal);
         TP.$$settingFromBindMachinery = false;
     } else if (aspect[0] === '@') {
+        //  We always try to collapse the value before handing it to the
+        //  setAttribute machinery. If it is truly is more than 1 value, then
+        //  the setAttribute call will have to handle it.
+        finalVal = TP.collapse(finalVal);
+
+        //  Then, in case the value is some sort of Element (because the binding
+        //  was to XML), then we grab it's text value.
+        isXMLResource = TP.isXMLNode(TP.unwrap(finalVal));
+        if (isXMLResource) {
+            finalVal = TP.val(finalVal);
+        }
+
+        //  Finally, in case the value was a String (i.e. 'false'), we get its
+        //  parsed value (i.e. false);
+        if (TP.isString(finalVal)) {
+            finalVal = TP.parsedVal(finalVal);
+        }
+
         TP.$$settingFromBindMachinery = true;
         this.setAttribute(aspect.slice(1), finalVal);
         didRefresh = false;
