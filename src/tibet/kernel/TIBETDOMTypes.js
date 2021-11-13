@@ -15048,7 +15048,7 @@ function(attributeName, attributeValue, shouldSignal) {
         name,
         url;
 
-    if (TP.notEmpty(boolAttrs = this.get('booleanAttrs')) &&
+    if (TP.notEmpty(boolAttrs = this.getType().get('booleanAttrs')) &&
         boolAttrs.containsString(attributeName) &&
         TP.isFalsey(attributeValue)) {
 
