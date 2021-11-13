@@ -5762,7 +5762,9 @@ function(anObject) {
      *     some sort of JavaScript object.
      */
 
-    var result;
+    var result,
+        reParts,
+        reText;
 
     if (TP.notValid(anObject)) {
         return null;
