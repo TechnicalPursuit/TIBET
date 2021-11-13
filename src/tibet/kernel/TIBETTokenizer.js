@@ -1507,8 +1507,12 @@ function(src, ops, tsh, exp, alias, args) {
                 if (token && !TP.$is_whitespace(token.name) &&
                         token.name !== 'operator') {
                     //  Try to get the best version of each token.
-                    obj = shell.resolveObjectReference(token.value);
-                    parts.push(TP.ifUndefined(obj, token.value));
+                    if (TP.isValid(shell)) {
+                        obj = shell.resolveObjectReference(token.value);
+                        parts.push(TP.ifUndefined(obj, token.value));
+                    } else {
+                        parts.push(token.value);
+                    }
                 }
                 token = tokens.shift();
             }
@@ -1564,8 +1568,13 @@ function(src, ops, tsh, exp, alias, args) {
 
                 if (token && !TP.$is_whitespace(token.name) &&
                         token.name !== 'operator') {
-                    obj = shell.resolveObjectReference(token.value);
-                    parts.push(TP.ifUndefined(obj, token.value));
+                    //  Try to get the best version of each token.
+                    if (TP.isValid(shell)) {
+                        obj = shell.resolveObjectReference(token.value);
+                        parts.push(TP.ifUndefined(obj, token.value));
+                    } else {
+                        parts.push(token.value);
+                    }
                 }
                 token = tokens.shift();
             }
