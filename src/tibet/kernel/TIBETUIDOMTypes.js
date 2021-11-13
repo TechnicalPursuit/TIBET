@@ -7287,7 +7287,7 @@ function(stateAttribute, stateFlag, shouldSignal) {
             //  if the attribute is namespace qualified, we 'start upper' each
             //  piece.
             //  e.g. 'foo:bar' -> 'FooBar'
-            if (TP.regex.HAS_COLON.test(stateAttribute)) {
+            if (TP.regex.NS_QUALIFIED.test(stateAttribute)) {
                 parts = stateAttribute.split(/:/);
                 attrName = TP.makeStartUpper(parts.first()) +
                             TP.makeStartUpper(parts.last());

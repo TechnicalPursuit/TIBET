@@ -13101,7 +13101,7 @@ function(aPrefix, anAttributeName) {
 
     //  if the attribute is namespace qualified, we 'start upper' each piece.
     //  e.g. 'foo:bar' -> 'FooBar'
-    if (TP.regex.HAS_COLON.test(attrName)) {
+    if (TP.regex.NS_QUALIFIED.test(attrName)) {
         parts = attrName.split(/:/);
         attrName = TP.makeStartUpper(parts.first()) +
                     TP.makeStartUpper(parts.last());
@@ -14116,7 +14116,7 @@ function(attributeName, shouldSignal) {
     //  namespace URI consistently (html) won't end up with two attributes
     //  of the same name but different namespace URIs
 
-    if (TP.regex.HAS_COLON.test(attributeName)) {
+    if (TP.regex.NS_QUALIFIED.test(attributeName)) {
         //  Note here the usage of our own call which will attempt to divine
         //  the namespace URI if the checkAttrNSURIs flag is true.
         attr = TP.$elementGetPrefixedAttributeNode(node,
@@ -15064,7 +15064,7 @@ function(attributeName, attributeValue, shouldSignal) {
     //  namespace URI consistently (html) won't end up with two attributes
     //  of the same name but different namespace URIs
 
-    if (TP.regex.HAS_COLON.test(attributeName)) {
+    if (TP.regex.NS_QUALIFIED.test(attributeName)) {
         //  Note here the usage of our own call which will attempt to divine
         //  the namespace URI if the checkAttrNSURIs flag is true.
         attr = TP.$elementGetPrefixedAttributeNode(node,

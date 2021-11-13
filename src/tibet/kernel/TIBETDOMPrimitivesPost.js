@@ -1521,7 +1521,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
     //  If the newXmlns is empty, see if the new tag name has a prefix. If
     //  so, try to derive a namespaceURI from that.
     if (TP.isEmpty(toXMLNS = newXmlns)) {
-        if (TP.regex.HAS_COLON.test(tagName)) {
+        if (TP.regex.NS_QUALIFIED.test(tagName)) {
             prefix = tagName.split(':').first();
 
             //  First, try to get the namespace declaration from the element
@@ -2501,7 +2501,7 @@ function(anElement, attributeName, checkAttrNSURI) {
         //  we can speed things up quite a bit if we avoid work related to
         //  namespaces as much as possible. In this case, test to see if the
         //  attribute name has a colon in it.
-        qualified = TP.regex.HAS_COLON.test(attributeName);
+        qualified = TP.regex.NS_QUALIFIED.test(attributeName);
         if (!qualified) {
             return '';
         }
@@ -3362,7 +3362,7 @@ function(anElement, ignoreSourcetag) {
     //  Moz, but TIBET gives us the right answer ;-).
     tag = TP.elementGetLocalName(anElement);
 
-    if (TP.regex.HAS_COLON.test(tag)) {
+    if (TP.regex.NS_QUALIFIED.test(tag)) {
         return tag;
     }
 
@@ -3740,7 +3740,7 @@ function(anElement, attributeName, checkAttrNSURI) {
         //  we can speed things up quite a bit if we avoid work related to
         //  namespaces as much as possible. In this case, test to see if the
         //  attribute name has a colon in it.
-        qualified = TP.regex.HAS_COLON.test(attributeName);
+        qualified = TP.regex.NS_QUALIFIED.test(attributeName);
         if (!qualified) {
             return false;
         }
@@ -4283,7 +4283,7 @@ function(anElement, attributeName, checkAttrNSURI) {
     //  we can speed things up quite a bit if we avoid work related to
     //  namespaces as much as possible. In this case, test to see if the
     //  attribute name has a colon in it.
-    qualified = TP.regex.HAS_COLON.test(attributeName);
+    qualified = TP.regex.NS_QUALIFIED.test(attributeName);
     if (!qualified) {
         return anElement.removeAttribute(attributeName);
     } else {
@@ -4639,7 +4639,7 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
     //  we can speed things up quite a bit if we avoid work related to
     //  namespaces as much as possible. In this case, test to see if the
     //  attribute name has a colon in it.
-    qualified = TP.regex.HAS_COLON.test(attributeName);
+    qualified = TP.regex.NS_QUALIFIED.test(attributeName);
     if (!qualified) {
         return anElement.setAttribute(attributeName, attributeValue);
     } else {
