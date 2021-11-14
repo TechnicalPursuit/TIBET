@@ -2053,6 +2053,49 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Window.Inst.defineMethod('getScreenSize',
+function() {
+
+    /**
+     * @method getScreenSize
+     * @summary Returns a hash containing the available width and height of
+     *     screen.
+     * screen @returns {TP.core.Hash}
+     */
+
+    var win;
+
+    win = this.getNativeWindow();
+
+    return TP.hc(
+        'width', win.screen.availWidth,
+        'height', win.screen.availHeight
+    );
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Window.Inst.defineMethod('getSize',
+function() {
+
+    /**
+     * @method getSize
+     * @summary Returns a hash containing the width and height of the window.
+     * @returns {TP.core.Hash}
+     */
+
+    var win;
+
+    win = this.getNativeWindow();
+
+    return TP.hc(
+        'width', win.innerWidth,
+        'height', win.innerHeight
+    );
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Window.Inst.defineMethod('getWindow',
 function() {
 
