@@ -440,6 +440,23 @@ function(anElement, targetDoc, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentGetCSSVariable',
+function(aDocument, variableName) {
+
+    /**
+     * @method documentGetCSSVariable
+     * @summary Returns the value of a CSS variable from the document.
+     * @param {Document|DocumentElement} aDocument The document or document
+     *     element to query.
+     * @param {String} variableName The full variable name to query for.
+     * @returns {Object} The value of the named variable.
+     */
+
+    return TP.elementGetComputedStyleProperty(TP.elem(aDocument), variableName);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentGetNativeCSSElements',
 function(aDocument) {
 
@@ -1052,6 +1069,26 @@ function(aDocument, anHref, shouldSignal) {
                                 'operation', TP.UPDATE));
         }
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('documentSetCSSVariable',
+function(aDocument, variableName, aValue) {
+
+    /**
+     * @method documentSetCSSVariable
+     * @summary Sets the value of a CSS variable on the target document.
+     * @param {Document|DocumentElement} aDocument The document or document
+     *     element to update.
+     * @param {String} variableName The full variable name to update.
+     * @param {Object} aValue The value to set.
+     * @returns {Object} The value of the named variable.
+     */
+
+    TP.elementSetStyleProperty(TP.elem(aDocument), variableName, aValue);
 
     return;
 });
