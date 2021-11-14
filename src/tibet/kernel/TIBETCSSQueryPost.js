@@ -641,7 +641,8 @@ function(aWindow, queryStr, watchFunction) {
      *     'removeListener' method with the supplied handler Function.
      */
 
-    var queryResult;
+    var query,
+        queryResult;
 
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
@@ -656,14 +657,15 @@ function(aWindow, queryStr, watchFunction) {
                         'Invalid or empty query');
     }
 
-    queryResult = aWindow.matchMedia(queryStr);
+    query = queryStr.replace(/@media/, '').trim();
+    queryResult = aWindow.matchMedia(query);
 
     if (!TP.isMediaQueryList(queryResult)) {
         return null;
     }
 
     if (TP.isCallable(watchFunction)) {
-        queryResult.addListener(watchFunction);
+        queryResult.addEventListener('change', watchFunction);
     }
 
     return queryResult;
