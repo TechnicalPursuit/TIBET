@@ -1733,7 +1733,7 @@ function(query, win) {
 
     source = win;
     if (TP.notValid(source)) {
-        source = TP.getUICanvas().getNativeWindow();
+        source = TP.sys.getUICanvas().getNativeWindow();
     }
 
     if (!TP.isWindow(source)) {
@@ -1779,7 +1779,7 @@ function(aSignal, aHandler, aPolicy) {
     }
 
     count = this.$get('$count');
-    this.$set('count', count + 1);
+    this.$set('$count', count + 1);
 
     origin = this.$get('$window');
     query = this.$get('$query');
@@ -1788,9 +1788,9 @@ function(aSignal, aHandler, aPolicy) {
     //  depending on whether the query matches or not.
     handler = function(aQuery) {
         if (aQuery.matches) {
-            TP.signal(origin, 'TP.sig.CSSMediaActive', aQuery.media);
+            TP.signal(origin, 'TP.sig.CSSMediaActive', aQuery.media, TP.INHERITANCE_FIRING);
         } else {
-            TP.signal(origin, 'TP.sig.CSSMediaInactive', aQuery.media);
+            TP.signal(origin, 'TP.sig.CSSMediaInactive', aQuery.media, TP.INHERITANCE_FIRING);
         }
     };
     this.$set('$hook', handler);
@@ -1834,7 +1834,7 @@ function(aSignal, aHandler, aPolicy) {
         return true;
     }
 
-    this.$set('count', count - 1);
+    this.$set('$count', count - 1);
     if (count > 0) {
         return true;
     }
