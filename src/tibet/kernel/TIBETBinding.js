@@ -1791,7 +1791,7 @@ function(anExpression, stdinIsSpecial) {
                                 '$INDEX', index,
                                 '$FIRST', index === 1,
                                 '$MIDDLE', index > 1 && index < last,
-                                '$LAST', index !== last,
+                                '$LAST', index === last,
                                 '$EVEN', index % 2 === 0,
                                 '$ODD', index % 2 !== 0,
                                 '$#', index);
@@ -1817,7 +1817,7 @@ function(anExpression, stdinIsSpecial) {
                                 '$INDEX', index,
                                 '$FIRST', index === 0,
                                 '$MIDDLE', index > 0 && index < last,
-                                '$LAST', index !== last,
+                                '$LAST', index === last,
                                 '$EVEN', index % 2 === 0,
                                 '$ODD', index % 2 !== 0,
                                 '$#', index);
@@ -4379,7 +4379,7 @@ function(indexes, aCollection) {
                         '$INDEX', scopeIndex,
                         '$FIRST', scopeIndex === 1,
                         '$MIDDLE', scopeIndex > 1 && scopeIndex < last,
-                        '$LAST', scopeIndex !== last,
+                        '$LAST', scopeIndex === last,
                         '$EVEN', scopeIndex % 2 === 0,
                         '$ODD', scopeIndex % 2 !== 0,
                         '$#', scopeIndex);
@@ -4405,7 +4405,7 @@ function(indexes, aCollection) {
                         '$INDEX', scopeIndex,
                         '$FIRST', scopeIndex === 0,
                         '$MIDDLE', scopeIndex > 0 && scopeIndex < last,
-                        '$LAST', scopeIndex !== last,
+                        '$LAST', scopeIndex === last,
                         '$EVEN', scopeIndex % 2 === 0,
                         '$ODD', scopeIndex % 2 !== 0,
                         '$#', scopeIndex);
@@ -6496,7 +6496,7 @@ function(regenerateIfNecessary) {
                                         '$FIRST', dataIndex === 1,
                                         '$MIDDLE',
                                             dataIndex > 1 && dataIndex < last,
-                                        '$LAST', dataIndex !== last,
+                                        '$LAST', dataIndex === last,
                                         '$EVEN', dataIndex % 2 === 0,
                                         '$ODD', dataIndex % 2 !== 0,
                                         '$#', dataIndex);
@@ -6520,7 +6520,7 @@ function(regenerateIfNecessary) {
                                         '$FIRST', dataIndex === 0,
                                         '$MIDDLE',
                                             dataIndex > 0 && dataIndex < last,
-                                        '$LAST', dataIndex !== last,
+                                        '$LAST', dataIndex === last,
                                         '$EVEN', dataIndex % 2 === 0,
                                         '$ODD', dataIndex % 2 !== 0,
                                         '$#', dataIndex);
@@ -6698,7 +6698,7 @@ function(regenerateIfNecessary) {
                                         '$FIRST', dataIndex === 1,
                                         '$MIDDLE',
                                             dataIndex > 1 && dataIndex < last,
-                                        '$LAST', dataIndex !== last,
+                                        '$LAST', dataIndex === last,
                                         '$EVEN', dataIndex % 2 === 0,
                                         '$ODD', dataIndex % 2 !== 0,
                                         '$#', dataIndex);
@@ -6722,7 +6722,7 @@ function(regenerateIfNecessary) {
                                         '$FIRST', dataIndex === 0,
                                         '$MIDDLE',
                                             dataIndex > 0 && dataIndex < last,
-                                        '$LAST', dataIndex !== last,
+                                        '$LAST', dataIndex === last,
                                         '$EVEN', dataIndex % 2 === 0,
                                         '$ODD', dataIndex % 2 !== 0,
                                         '$#', dataIndex);
@@ -7026,7 +7026,7 @@ function(aCollection, elems) {
                         '$INDEX', scopeIndex,
                         '$FIRST', scopeIndex === 1,
                         '$MIDDLE', scopeIndex > 1 && scopeIndex < last,
-                        '$LAST', scopeIndex !== last,
+                        '$LAST', scopeIndex === last,
                         '$EVEN', scopeIndex % 2 === 0,
                         '$ODD', scopeIndex % 2 !== 0,
                         '$#', scopeIndex);
@@ -7052,7 +7052,7 @@ function(aCollection, elems) {
                         '$INDEX', scopeIndex,
                         '$FIRST', scopeIndex === 0,
                         '$MIDDLE', scopeIndex > 0 && scopeIndex < last,
-                        '$LAST', scopeIndex !== last,
+                        '$LAST', scopeIndex === last,
                         '$EVEN', scopeIndex % 2 === 0,
                         '$ODD', scopeIndex % 2 !== 0,
                         '$#', scopeIndex);
