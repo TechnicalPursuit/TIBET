@@ -84,8 +84,10 @@ function(ownerElement) {
 
             if (TP.canInvoke(d, 'at')) {
                 return d.at(slotName);
-            } else {
+            } else if (TP.canInvoke(d, 'get')) {
                 return d.get(slotName);
+            } else {
+                return i;
             }
         };
     } else {
@@ -188,8 +190,10 @@ function(ownerElement) {
 
         if (TP.canInvoke(d, 'at')) {
             return d.at(slotName);
-        } else {
+        } else if (TP.canInvoke(d, 'get')) {
             return d.get(slotName);
+        } else {
+            return i;
         }
     };
 
