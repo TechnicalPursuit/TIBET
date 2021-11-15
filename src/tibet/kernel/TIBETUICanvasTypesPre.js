@@ -2022,7 +2022,7 @@ function(attributeName) {
      * @method getProperty
      * @summary Returns the value of the named attribute.
      * @param {String} attributeName The attribute to get.
-     * @returns {Object}
+     * @returns {Object} The value of the named attribute.
      */
 
     var win,
@@ -2060,7 +2060,7 @@ function() {
      * @method getScreenSize
      * @summary Returns a hash containing the available width and height of
      *     screen.
-     * screen @returns {TP.core.Hash}
+     * @returns {TP.core.Hash} A hash containing the keys 'width' and 'height'.
      */
 
     var win;
@@ -2080,8 +2080,8 @@ function() {
 
     /**
      * @method getSize
-     * @summary Returns a hash containing the width and height of the window.
-     * @returns {TP.core.Hash}
+     * @summary Returns a hash containing the width and height of the receiver.
+     * @returns {TP.core.Hash} A hash containing the keys 'width' and 'height'.
      */
 
     var win;
