@@ -7021,7 +7021,7 @@ function(aCollection, elems) {
                                     getCurrentFocusedValue.
                                     bind(newTPElem),
                         '$TARGET', targetTPDoc,
-                        '$_', aCollection.at(scopeIndex),
+                        '$_', aCollection.at(scopeIndex - 1),
                         '$INPUT', aCollection,
                         '$INDEX', scopeIndex,
                         '$FIRST', scopeIndex === 1,
