@@ -1067,6 +1067,8 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
 
         controlScopeValues,
 
+        wrappedDatum,
+
         len,
 
         i,
@@ -1096,6 +1098,12 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
     ind = this.adjustIterationIndex(index);
 
     controlScopeValues = this.getBindingScopeValues();
+
+    if (TP.isPlainObject(datum)) {
+        wrappedDatum = TP.hc(datum);
+    } else {
+        wrappedDatum = datum;
+    }
 
     //  Loop over all of the elements that were found.
     len = elems.getSize();
@@ -1139,7 +1147,8 @@ function(itemElement, datum, index, groupIndex, allData, registry) {
                     record = kvPair.last();
 
                     finalVal = this.$computeValueForBoundAspect(
-                                    record, scopeValues, datum, allData, ind);
+                                    record, scopeValues, wrappedDatum,
+                                    allData, ind);
 
                     //  If the key is 'value', set the text content of the owner
                     //  element to the transformed value. Otherwise, set the
