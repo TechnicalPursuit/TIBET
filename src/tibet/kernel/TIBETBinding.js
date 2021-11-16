@@ -2004,7 +2004,8 @@ function(aspectName, anExpression) {
     //  transformation Function to process them properly. The expression
     //  might or might not have surrounding '[[...]]', but we take care of
     //  that here.
-    if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(fullExpr)) {
+    if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(fullExpr) &&
+        !TP.regex.TIBET_URN.test(fullExpr)) {
 
         //  If the expression doesn't start with '[[' AND end with ']]',
         //  then we fix that here.
