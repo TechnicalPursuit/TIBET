@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Bind from source pointed to by virtual path</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a 'simple binding' between the fields and an piece of JSON data, pointed to by a virtual path.
+    <br/>
+    <br/>
+
+    <label for="projectNameField">Project name: </label>
+    <input type="text" id="projectNameField" bind:io="{value: ~app/tibet.json#jpath($.project.name)}" tabindex="0"/><br/>
+
+    <h2>Bind from source pointed to by a type</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a 'simple binding' between the fields and TIBET type pointed to by a urn.
+    <br/>
+    <br/>
+
+    <label for="typeNameField">Type name: </label>
+    <input type="text" id="typeNameField" bind:io="{value: urn:tibet:TP.test.testtype#tibet(name)}" tabindex="0"/><br/>
+
+    <br/>
+    <br/>
+
+    <label for="typeAttrField">Type attr val: </label>
+    <input type="text" id="typeAttrField" bind:io="{value: urn:tibet:TP.test.testtype#tibet(typeAttr)}" tabindex="0"/><br/>
+
+    <br/>
+    <br/>
+
+    <label for="typeMethodField">Type method val: </label>
+    <input type="text" id="typeMethodField" bind:io="{value: urn:tibet:TP.test.testtype#tibet(typeMethodVal)}" tabindex="0"/><br/>
+
+</body>
+</html>

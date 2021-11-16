@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_person_xml">
+        <person xmlns="">
+            <lastname>Smith</lastname>
+            <firstname>Joe</firstname>
+        </person>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_person_json">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_person_jsobj" content="TP.core.Hash">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_people_xml">
+        <people xmlns="">
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+                <color>red</color>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+                <color>green</color>
+            </person>
+            <person>
+                <lastname>Homemaker</lastname>
+                <firstname>Billy</firstname>
+                <color>blue</color>
+            </person>
+            <person>
+                <lastname>Professional</lastname>
+                <firstname>Pamela</firstname>
+                <color>yellow</color>
+            </person>
+        </people>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_people_json">
+        <![CDATA[
+            {"people": [
+                {"lastname": "Smith", "firstname": "Joe", "color": "red"},
+                {"lastname": "Jones", "firstname": "John", "color": "green"},
+                {"lastname": "Homemaker", "firstname": "Billy", "color": "blue"},
+                {"lastname": "Professional", "firstname": "Pamela", "color": "yellow"}
+            ]}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_people_jsobj" content="TP.core.Hash">
+        <![CDATA[
+            {"people": [
+                {"lastname": "Smith", "firstname": "Joe", "color": "red"},
+                {"lastname": "Jones", "firstname": "John", "color": "green"},
+                {"lastname": "Homemaker", "firstname": "Billy", "color": "blue"},
+                {"lastname": "Professional", "firstname": "Pamela", "color": "yellow"}
+            ]}
+        ]]>
+    </tibet:data>
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Bind expressions with variables - literal content</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a test where elements bound with 'bind:io' attributes that have binding expressions in them with variables are used. There is surrounding literal content and formatting expressions. There are also bindings to an attribute via a 'bind:in'.
+    <br/>
+    <br/>
+    Since these expressions use variables they will be re-evaluated when their data source changes.
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    The $TAG variable (attributes and content):
+    <br/>
+    <br/>
+
+    <label for="xmlBindTagAttr">$TAG variable bound to XML data:</label>
+    <input type="text" id="xmlBindTagAttr" bind:in="{@foo: 'The canonical name lowercased (XML): [[$TAG.canonicalName]]'}" bind:io="{value: 'The canonical name uppercased (XML): [[$TAG.canonicalName .% upperCase]]'}" tabindex="0"/><br/>
+    <br/>
+    <br/>
+
+    <label for="jsonBindTagAttr">$TAG variable bound to JSON data:</label>
+    <input type="text" id="jsonBindTagAttr" bind:in="{@foo: 'The canonical name lowercased (JSON): [[$TAG.canonicalName]]'}" bind:io="{value: 'The canonical name uppercased (JSON): [[$TAG.canonicalName .% upperCase]]'}" tabindex="0"/><br/>
+    <br/>
+    <br/>
+
+    <label for="jsobjBindTagAttr">$TAG variable bound to JavaScript Object data:</label>
+    <input type="text" id="jsobjBindTagAttr" bind:in="{@foo: 'The canonical name lowercased (JSObj): [[$TAG.canonicalName]]'}" bind:io="{value: 'The canonical name uppercased (JSObj): [[$TAG.canonicalName .% upperCase]]'}" tabindex="0"/><br/>
+
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    The $_ variable (attributes and content):
+    <br/>
+    <br/>
+
+    <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
+    <input type="text" id="xmlBindStdinAttr" bind:in="{@foo: 'The data source\'s last name field value lowercased (XML): [[urn:tibet:test_person_xml#tibet($_.(.//lastname).value) .% lowerCase]]'}" bind:io="{value: 'The data source\'s last name field value uppercased (XML): [[urn:tibet:test_person_xml#tibet($_.(.//lastname).value) .% upperCase]]'}" tabindex="0"/><br/>
+    <br/>
+    <br/>
+
+    <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
+    <input type="text" id="jsonBindStdinAttr" bind:in="{@foo: 'The data source\'s last name field value lowercased (JSON): [[urn:tibet:test_person_json#tibet($_.($.person.lastname).value) .% lowerCase]]'}" bind:io="{value: 'The data source\'s last name field value uppercased (JSON): [[urn:tibet:test_person_json#tibet($_.($.person.lastname).value) .% upperCase]]'}" tabindex="0"/><br/>
+    <br/>
+    <br/>
+
+    <label for="jsobjBindStdinAttr">Binding to JavaScript Object data with $_ variable reference:</label>
+    <input type="text" id="jsobjBindStdinAttr" bind:in="{@foo: 'The data source\'s last name field value lowercased (JSObj): [[urn:tibet:test_person_jsobj#tibet($_.person.lastname) .% lowerCase]]'}" bind:io="{value: 'The data source\'s last name field value uppercased (JSObj): [[urn:tibet:test_person_jsobj#tibet($_.person.lastname) .% upperCase]]'}" tabindex="0"/><br/>
+
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    <span>Standalone binding expressions (absolute, non-scoped)</span>
+
+    <br/>
+    <br/>
+
+    <span id="xmlBindStandaloneExpression">
+        Binding XML data with $_ variable reference: [[urn:tibet:test_person_xml#tibet($_.(.//lastname).value) .% upperCase]]
+    </span>
+
+    <br/>
+    <br/>
+
+    <span id="jsonBindStandaloneExpression">
+        Binding JSON data with $_ variable reference: [[urn:tibet:test_person_json#tibet($_.($.person.lastname).value) .% upperCase]]
+    </span>
+
+    <br/>
+    <br/>
+
+    <span id="jsobjBindStandaloneExpression">
+        Binding JavaScript Object data with $_ variable reference: [[urn:tibet:test_person_jsobj#tibet($_.person.lastname) .% upperCase]]
+    </span>
+
+    <br/>
+    <br/>
+
+    <span>Standalone binding expressions (relative, scoped)</span>
+
+    <br/>
+    <br/>
+
+    <span id="xmlBindStandaloneScopedExpression" bind:scope="urn:tibet:test_person_xml">
+        Binding XML data with $_ variable reference: [[$_.(.//lastname).value .% lowerCase]]
+    </span>
+
+    <br/>
+    <br/>
+
+    <span id="jsonBindStandaloneScopedExpression" bind:scope="urn:tibet:test_person_json">
+        Binding JSON data with $_ variable reference: [[$_.($.person.lastname).value .% lowerCase]]
+    </span>
+
+    <br/>
+    <br/>
+
+    <span id="jsobjBindStandaloneScopedExpression" bind:scope="urn:tibet:test_person_jsobj">
+        Binding JavaScript Object data with $_ variable reference: [[$_.person.lastname .% lowerCase]]
+    </span>
+
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    Binding XML data with formatting expressions in a templated control.
+    <br/>
+    <br/>
+
+    <xctrls:itempack id="xmlPackNoScope" bind:in="{data: urn:tibet:test_people_xml#xpath1(//person)}">
+        <tibet:template>
+            <xctrls:textitem>
+                <xctrls:label>[[$_.(.//lastname).value .% upperCase]]</xctrls:label>
+                <xctrls:value>[[$_.(.//firstname).value .% upperCase]]</xctrls:value>
+            </xctrls:textitem>
+        </tibet:template>
+    </xctrls:itempack>
+
+    <br/>
+    <br/>
+
+    <br/>
+    <br/>
+    Binding XML data with formatting expressions in a templated control with an embedded absolute scope.
+    <br/>
+    <br/>
+
+    <xctrls:itempack id="xmlPackEmbeddedScope" bind:in="{data: urn:tibet:test_people_xml#xpath1(//person)}">
+        <tibet:template>
+            <xctrls:textitem bind:scope="urn:tibet:test_person_json#tibet()">
+                <xctrls:label>[[$_.($.person.lastname).value .% lowerCase]]</xctrls:label>
+                <xctrls:value>[[$_.($.person.firstname).value .% lowerCase]]</xctrls:value>
+            </xctrls:textitem>
+        </tibet:template>
+    </xctrls:itempack>
+
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    Binding JSON data with formatting expressions in a templated control.
+    <br/>
+    <br/>
+
+    <xctrls:itempack id="jsonPackNoScope" bind:in="{data: urn:tibet:test_people_json#jpath($.people)}">
+        <tibet:template>
+            <xctrls:textitem>
+                <xctrls:label>[[$_.lastname .% upperCase]]</xctrls:label>
+                <xctrls:value>[[$_.firstname .% upperCase]]</xctrls:value>
+            </xctrls:textitem>
+        </tibet:template>
+    </xctrls:itempack>
+
+    <br/>
+    <br/>
+
+    <br/>
+    <br/>
+    Binding JSON data with formatting expressions in a templated control with an embedded absolute scope.
+    <br/>
+    <br/>
+
+    <xctrls:itempack id="jsonPackEmbeddedScope" bind:in="{data: urn:tibet:test_people_json#jpath($.people)}">
+        <tibet:template>
+            <xctrls:textitem bind:scope="urn:tibet:test_person_json#tibet()">
+                <xctrls:label>[[$_.($.person.lastname).value .% lowerCase]]</xctrls:label>
+                <xctrls:value>[[$_.($.person.firstname).value .% lowerCase]]</xctrls:value>
+            </xctrls:textitem>
+        </tibet:template>
+    </xctrls:itempack>
+
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    Binding JavaScript Object data with formatting expressions in a templated control.
+    <br/>
+    <br/>
+
+    <xctrls:itempack id="jsObjPackNoScope" bind:in="{data: urn:tibet:test_people_jsobj#tibet(people)}">
+        <tibet:template>
+            <xctrls:textitem>
+                <xctrls:label>[[$_.lastname .% upperCase]]</xctrls:label>
+                <xctrls:value>[[$_.firstname .% upperCase]]</xctrls:value>
+            </xctrls:textitem>
+        </tibet:template>
+    </xctrls:itempack>
+
+    <br/>
+    <br/>
+
+    <br/>
+    <br/>
+    Binding JavaScript Object data with formatting expressions in a templated control with an embedded absolute scope.
+    <br/>
+    <br/>
+
+    <xctrls:itempack id="jsObjPackEmbeddedScope" bind:in="{data: urn:tibet:test_people_jsobj#tibet(people)}">
+        <tibet:template>
+            <xctrls:textitem bind:scope="urn:tibet:test_person_json#tibet()">
+                <xctrls:label>[[$_.($.person.lastname).value .% lowerCase]]</xctrls:label>
+                <xctrls:value>[[$_.($.person.firstname).value .% lowerCase]]</xctrls:value>
+            </xctrls:textitem>
+        </tibet:template>
+    </xctrls:itempack>
+
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    Binding XML data with bind:repeat
+    <br/>
+    <br/>
+
+    <span id="xmlRepeater" bind:repeat="urn:tibet:test_people_xml#xpath1(//person)">
+        <span>Index: {{$INDEX}}</span>
+        <br/>
+        <span>First name: {{$_.(.//firstname).value}}</span>
+        <br/>
+        <span>Last name: {{$_.(.//lastname).value}}</span>
+        <br/>
+        <code>XML Structure: {{$_ .% escapedXML}}</code>
+        <br/>
+        <span>Is First: {{$FIRST}}</span>
+        <br/>
+        <span>Is In Middle: {{$MIDDLE}}</span>
+        <br/>
+        <span>Is Last: {{$LAST}}</span>
+        <br/>
+        <span>Is Even: {{$EVEN}}</span>
+        <br/>
+        <span>Is Odd: {{$ODD}}</span>
+        <br/>
+        <code>Whole Structure: {{$INPUT .% escapedXML}}</code>
+        <br/>
+        <span>***********************</span>
+        <br/>
+    </span>
+
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    Binding JSON data with bind:repeat
+    <br/>
+    <br/>
+
+    <span id="jsonRepeater" bind:repeat="urn:tibet:test_people_json#jpath($.people)">
+        <span>Index: {{$INDEX}}</span>
+        <br/>
+        <span>First name: {{$_.firstname}}</span>
+        <br/>
+        <span>Last name: {{$_.lastname}}</span>
+        <br/>
+        <code>JSON Structure: {{$_ .% JSONSource}}</code>
+        <br/>
+        <span>Is First: {{$FIRST}}</span>
+        <br/>
+        <span>Is In Middle: {{$MIDDLE}}</span>
+        <br/>
+        <span>Is Last: {{$LAST}}</span>
+        <br/>
+        <span>Is Even: {{$EVEN}}</span>
+        <br/>
+        <span>Is Odd: {{$ODD}}</span>
+        <br/>
+        <code>Whole Structure: {{$INPUT .% JSONSource}}</code>
+        <br/>
+        <span>***********************</span>
+        <br/>
+    </span>
+
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    Binding Javascript Object data with bind:repeat
+    <br/>
+    <br/>
+
+    <span id="jsobjRepeater" bind:repeat="urn:tibet:test_people_jsobj#tibet(people)">
+        <span>Index: {{$INDEX}}</span>
+        <br/>
+        <span>First name: {{$_.firstname}}</span>
+        <br/>
+        <span>Last name: {{$_.lastname}}</span>
+        <br/>
+        <code>JSON Structure: {{$_ .% JSONSource}}</code>
+        <br/>
+        <span>Is First: {{$FIRST}}</span>
+        <br/>
+        <span>Is In Middle: {{$MIDDLE}}</span>
+        <br/>
+        <span>Is Last: {{$LAST}}</span>
+        <br/>
+        <span>Is Even: {{$EVEN}}</span>
+        <br/>
+        <span>Is Odd: {{$ODD}}</span>
+        <br/>
+        <code>Whole Structure: {{$INPUT .% JSONSource}}</code>
+        <br/>
+        <span>***********************</span>
+        <br/>
+    </span>
+
+    <br/>
+    <br/>
+
+    <hr/>
+
+    <br/>
+    <br/>
+    The $SELECTION variable:
+    <br/>
+    <br/>
+
+    <label for="BindSelectionAttr1">$SELECTION variable:</label>
+    <input type="text" id="bindSelectionAttr1" bind:io="{value: 'The selection: [[$SELECTION]]'}" tabindex="0"/><br/>
+
+    <br/>
+    <br/>
+    The $FOCUS variable:
+    <br/>
+    <br/>
+
+    <label for="BindFocusedAttr1">$FOCUS variable:</label>
+    <input type="text" id="bindFocusedAttr1" bind:io="{value: 'The focus: [[$FOCUS]]'}" tabindex="0"/><br/>
+
+</body>
+</html>

@@ -9,6 +9,33 @@
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
+//  Test Types
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('test.testtype');
+
+TP.test.testtype.Type.defineAttribute('typeAttr', 'typeAttrVal');
+TP.test.testtype.Inst.defineAttribute('instAttr', 'instAttrVal');
+
+//  ------------------------------------------------------------------------
+
+TP.test.testtype.Type.defineMethod(
+'getTypeMethodVal',
+function() {
+
+    return 'test.testtype.typeMethod val';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.testtype.Inst.defineMethod(
+'getInstMethodVal',
+function() {
+
+    return 'test.testtype.instMethod val';
+});
+
+//  ------------------------------------------------------------------------
 //  Test Tag Types
 //  ------------------------------------------------------------------------
 
