@@ -202,7 +202,10 @@ Cmd.prototype.configureStylelintOptions = function() {
  * linters.
  */
 Cmd.prototype.constructResults = function() {
-    return {
+    var data,
+        results;
+
+    results = {
         linty: 0,
         errors: 0,
         warnings: 0,
@@ -211,6 +214,13 @@ Cmd.prototype.constructResults = function() {
         filtered: 0,
         files: 0
     };
+
+    data = this.getLastRunData();
+    if (CLI.isValid(data) && CLI.notEmpty(data.recheck)) {
+        results.recheck = data.recheck;
+    }
+
+    return results;
 };
 
 
@@ -310,6 +320,9 @@ Cmd.prototype.execute = function() {
         this.options.nodes = false;
 
         list = this.getScannedAssetList();
+
+        CLI.debug('scanned asset list');
+        CLI.debug(list);
     } else {
 
         // Verify that the package files are in decent shape before we attempt
@@ -324,12 +337,23 @@ Cmd.prototype.execute = function() {
 
         this.verbose('reading package list...');
         list = this.getPackageAssetList();
+
+        CLI.debug('package asset list');
+        CLI.debug(list);
     }
 
     result.files = list.length;
     list = this.filterAssetList(list);
+
+    CLI.debug('filtered asset list');
+    CLI.debug(list);
+
     result.filtered = result.files - list.length;
     list = this.filterUnchangedAssets(list);
+
+    CLI.debug('changed/dirty asset list');
+    CLI.debug(list);
+
     result.unchanged = result.files - result.filtered - list.length;
 
     // Once we have a list we need to pull it apart into lists we can pass to
@@ -527,6 +551,9 @@ Cmd.prototype.filterAssetList = function(list) {
     }
 
     if (CLI.notEmpty(filter)) {
+        //  Clear the scan flag. If we're filtering using an explicit filter we
+        //  can't rely on the scanned state to say all files were being checked.
+        this.options.scan = false;
 
         cwd = CLI.getCurrentDirectory();
 
@@ -640,27 +667,18 @@ Cmd.prototype.filterUnchangedAssets = function(list) {
 
     //  If we're not forcing lint we can skip files not changed since the last
     //  run...if we know when the last run occurred.
-    lastpath = CLI.expandPath(CLI.getcfg('cli.lint.cachefile'));
-    if (sh.test('-e', lastpath)) {
-        data = sh.cat(lastpath);
-        if (data) {
-            data = data.toString();
-            try {
-                data = JSON.parse(data);
-
-                //  If the last run 'stopped early', then we need to relint
-                //  everything. In this case, there will only be one file in the
-                //  'line cache file' and there very well may be more invalid
-                //  files.
-                if (data.stopped || this.options.scan && !data.scanned) {
-                    return list;
-                }
-                lastrun = data.lastrun;
-            } catch (e) {
-                CLI.error('Unable to parse last run info: ' + e.message);
-                lastrun = 0;
-            }
+    data = this.getLastRunData();
+    if (data) {
+        //  If the last run 'stopped early', then we need to relint
+        //  everything. In this case, there will only be one file in the
+        //  'line cache file' and there very well may be more invalid
+        //  files.
+        if (data.stopped || this.options.scan && !data.scanned) {
+            return list;
         }
+
+        lastrun = data.lastrun;
+        lastpath = CLI.expandPath(CLI.getcfg('cli.lint.cachefile'));
 
         //  If we're going to be checking against a lastrun date recall
         //  each linter has source files it depends on which determine
@@ -845,6 +863,28 @@ Cmd.prototype.finalizePackageOptions = function() {
     this.trace('pkgOpts: ' + CLI.beautify(this.pkgOpts));
 };
 
+/**
+ * Load, parse, and return any cache file information from the last run.
+ */
+Cmd.prototype.getLastRunData = function() {
+    var lastpath,
+        data;
+
+    lastpath = CLI.expandPath(CLI.getcfg('cli.lint.cachefile'));
+    if (sh.test('-e', lastpath)) {
+        data = sh.cat(lastpath);
+        if (data) {
+            data = data.toString();
+            try {
+                data = JSON.parse(data);
+            } catch (e) {
+                CLI.error('Unable to parse last run info: ' + e.message);
+            }
+        }
+    }
+
+    return data || {};
+};
 
 /**
  * Handles output for an ESLint CLIEngine result object.
@@ -1072,6 +1112,26 @@ Cmd.prototype.processStylelintResult = function(result) {
 
 
 /**
+ * Remove an item from an array. This is used to clear files from the recheck
+ * list prior to testing them. The result is if they pass the recheck list is
+ * accurate, if they fail they get pushed back in as they normally would.
+ * @param {Array} array The array to alter if the item is found.
+ * @param {Object} item The item to search for and remove. If the item's index
+ *     is valid (and not -1) the item is removed.
+ * @returns {Array} The array with the item removed (if found).
+ */
+Cmd.prototype.removeArrayItem = function(array, item) {
+    var index;
+
+    index = array.indexOf(item);
+    if (index !== -1) {
+        array.splice(index, 1);
+    }
+
+    return array;
+};
+
+/**
  * Outputs summary information about how the overall lint run ran.
  * @param {Object} results A container with error 'count' and 'files' count.
  * @returns {Number} A return code. Non-zero indicates an error.
@@ -1111,6 +1171,12 @@ Cmd.prototype.summarize = function(results) {
         this.log(msg);
     }
 
+    // Unique the recheck list since we're concat'ing onto a
+    // potentially non-empty list from previous run(s).
+    results.recheck = results.recheck.filter((item, index, array) => {
+        return array.indexOf(item) === index;
+    });
+
     //  Track whether we scanned or not
     results.scanned = this.options.scan;
 
@@ -1121,6 +1187,9 @@ Cmd.prototype.summarize = function(results) {
     lastpath = CLI.expandPath(CLI.getcfg('cli.lint.cachefile'));
 
     str = CLI.beautify(JSON.stringify(results));
+
+    CLI.debug(str);
+
     new sh.ShellString(str).to(lastpath);
 
     //  If any errors the ultimate return value will be non-zero.
@@ -1215,6 +1284,9 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
             cmd.verbose('');
             cmd.verbose(file, 'lintpass');
 
+            //  clear from recheck list prior to testing
+            cmd.removeArrayItem(res.recheck, file);
+
             if (!CLI.exists(file)) {
                 cmd.warn('File not found: ' + file);
                 res.recheck.push(file);
@@ -1295,6 +1367,9 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
                 if (engine.isPathIgnored(file)) {
                     return false;
                 }
+
+                //  clear from recheck list prior to testing
+                cmd.removeArrayItem(res.recheck, file);
 
                 if (!CLI.exists(file)) {
                     cmd.warn('File not found: ' + file);
@@ -1391,6 +1466,9 @@ Cmd.prototype.validateStyleFiles = function(files, results) {
             return;
         }
 
+        //  clear from recheck list prior to testing
+        cmd.removeArrayItem(res.recheck, file);
+
         if (!CLI.exists(file)) {
             cmd.warn('File not found: ' + file);
             res.recheck.push(file);
@@ -1466,6 +1544,9 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
 
             cmd.verbose('');
             cmd.verbose(file, 'lintpass');
+
+            //  clear from recheck list prior to testing
+            cmd.removeArrayItem(res.recheck, file);
 
             if (!CLI.exists(file)) {
                 cmd.warn('File not found: ' + file);
