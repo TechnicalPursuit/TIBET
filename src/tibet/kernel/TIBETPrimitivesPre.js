@@ -3735,6 +3735,34 @@ function(anObj) {
         return type.$$isReferenceType();
     }
 
+    if (TP.isNativeType(anObj)) {
+        return true;
+    }
+
+    if (TP.isWindow(anObj) || TP.isDocument(anObj) || TP.isNode(anObj)) {
+        return true;
+    }
+
+    if (TP.isNodeList(anObj) || TP.isNamedNodeMap(anObj)) {
+        return true;
+    }
+
+    if (TP.isStyleDeclaration(anObj) ||
+        TP.isStyleRule(anObj) ||
+        TP.isStyleSheet(anObj)) {
+        return true;
+    }
+
+    if (TP.isError(anObj) ||
+        TP.isEvent(anObj) ||
+        TP.isXHR(anObj)) {
+        return true;
+    }
+
+    if (anObj instanceof TP.boot.Annotation) {
+        return true;
+    }
+
     //  If it's not an Array and neither it or it's type can answer to
     //  '$$isReferenceType', then only return true if its a plain Object.
     return anObj.constructor === Object;

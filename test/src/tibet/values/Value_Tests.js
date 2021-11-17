@@ -2613,6 +2613,19 @@ function() {
 TP.isReferenceType.describe('core reference type tests',
 function() {
 
+    var thisref,
+
+        testData,
+        testKeys,
+        len,
+        i,
+
+        testKey,
+        val,
+
+        correctValues,
+        correctVal;
+
     this.it('non mutable values - primitives', function(test, options) {
 
         test.assert.isFalse(TP.isReferenceType(42));
@@ -2651,6 +2664,169 @@ function() {
 
         test.assert.isTrue(TP.isReferenceType(TP.lang.Object.construct()));
     });
+
+    TP.$$setupCommonObjectValues();
+
+    thisref = this;
+
+    testData = TP.$$commonObjectValues;
+    testKeys = testData.getKeys();
+
+    /* eslint-disable no-multi-spaces */
+    correctValues = TP.hc(
+        TP.UNDEF,                               false,
+        TP.NULL,                                false,
+        'Boolean',                              false,
+        'String',                               false,
+        'Number',                               false,
+        'RegExp',                               false,
+        'Date',                                 false,
+        'InvalidDate',                          false,
+        'Array',                                true,
+        'Object',                               true,
+        'Function',                             false,
+        'NaN',                                  false,
+        'NativeType',                           true,
+        'NativeFunction',                       false,
+
+        'Window',                               true,
+        'IFrameWindow',                         true,
+
+        // 'Node',                                 'Node',
+        'HTMLDocument',                         true,
+        'HTMLElement',                          true,
+
+        'XMLDocument',                          true,
+        'XMLElement',                           true,
+
+        'AttributeNode',                        true,
+        'TextNode',                             true,
+        'CDATASectionNode',                     true,
+        'PINode',                               true,
+        'CommentNode',                          true,
+        'DocumentFragmentNode',                 true,
+
+        'NodeList',                             true,
+        'NamedNodeMap',                         true,
+
+        'CSSStyleSheet',                        true,
+        'CSSStyleRule',                         true,
+        'CSSStyleDeclaration',                  true,
+
+        'Error',                                true,
+        'Event',                                true,
+        'XHR',                                  true,
+
+        'TIBETType',                            true,
+        'TP.lang.Object',                       true,
+        'TP.core.Hash',                         true,
+        'TP.sig.Signal',                        true,
+        'TP.sig.Exception',                     true,
+
+        'TP.core.Window',                       true,
+        'TP.dom.HTMLDocumentNode',              true,
+        'TP.dom.HTMLElementNode',               true,
+
+        'TP.dom.XMLDocumentNode',               true,
+        'TP.dom.XMLElementNode',                true,
+
+        'TP.dom.DocumentFragmentNode',          true,
+        'TP.dom.AttributeNode',                 true,
+        'TP.dom.TextNode',                      true,
+        'TP.dom.CDATASectionNode',              true,
+        'TP.dom.ProcessingInstructionNode',     true,
+        'TP.dom.CommentNode',                   true,
+
+        'TP.path.SimpleTIBETPath',              true,
+        'TP.path.ComplexTIBETPath',             true,
+        'TP.path.ElementPath',                  true,
+        'TP.path.XTensionPath',                 true,
+        'TP.path.XPathPath',                    true,
+
+        'TP.sig.Request',                       true,
+        'TP.sig.Response',                      true,
+
+        'TP.uri.TIBETURN',                      true,
+        'TP.uri.HTTPURL',                       true,
+        'TP.uri.FileURL',                       true,
+        /* eslint-disable no-script-url */
+        'TP.uri.JSURI',                         true,
+        /* eslint-enable no-script-url */
+        'TP.uri.WSURL',                         true,
+        'TP.uri.TIBETURL',                      true,
+        'TP.uri.CookieURL',                     true,
+
+        'TP.w3.DocType',                        true,
+
+        'TP.gui.Point',                         true,
+        'TP.gui.Rect',                          true,
+        'TP.gui.Matrix',                        true,
+        'TP.gui.Color',                         true,
+
+        'TP.gui.LinearGradient',                true,
+        'TP.gui.RadialGradient',                true,
+
+        'TP.gui.Pattern',                       true,
+        'TP.gui.Path',                          true,
+
+        'TP.core.Job',                          true,
+        'TP.core.Browser_TYPE',                 true,
+
+        'TP.boot.Annotation',                   true,
+        'TP.core.Annotation',                   true
+        );
+    /* eslint-enable no-multi-spaces */
+
+    //  ---
+
+    this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.isReferenceType(): ' +
+                                        diffKeys.asString(', '));
+
+        test.assert.isEqualTo(
+            testKeys.getSize(),
+            correctValues.getKeys().getSize(),
+            'There are missing test values for TP.isReferenceType(): ' +
+                                        diffKeys.asString(', '));
+    });
+
+    len = testKeys.getSize();
+    for (i = 0; i < len; i++) {
+
+        testKey = testKeys.at(i);
+
+        val = testData.at(testKey);
+        correctVal = correctValues.at(testKey);
+
+        //  ---
+
+        /* eslint-disable no-loop-func */
+        (function() {
+
+            var testFunc;
+
+            if (TP.isBoolean(correctVal)) {
+                testFunc =
+                    function(test, options) {
+                        test.assert.isEqualTo(
+                            TP.isReferenceType(testFunc.val),
+                            testFunc.correctVal);
+                    };
+                testFunc.val = val;
+                testFunc.correctVal = correctVal;
+            }
+
+            thisref.it('isReferenceType of: ' + testKey, testFunc);
+        }());
+        /* eslint-disable no-loop-func */
+    }
 });
 
 //  ------------------------------------------------------------------------
