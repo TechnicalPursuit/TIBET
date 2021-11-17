@@ -257,7 +257,7 @@ function(enterSelection) {
 
             thisref.updateTemplatedItemContent(
                         newElem,
-                        datum,
+                        TP.wrap(datum),
                         index,
                         group,
                         allData,
