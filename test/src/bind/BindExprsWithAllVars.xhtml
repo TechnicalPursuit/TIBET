@@ -202,7 +202,7 @@
     <br/>
     <br/>
 
-    <xctrls:itempack id="xmlPackNoScope" bind:in="{data: urn:tibet:test_people_xml#xpath1(//person)}">
+    <xctrls:itempack id="xmlPackNoScope" bind:in="{data: urn:tibet:test_people_xml#xpath1(//person)}" itemKey="(.//lastname).value">
         <tibet:template>
             <xctrls:textitem>
                 <xctrls:label>[[$_.(.//lastname).value .% upperCase]]</xctrls:label>
@@ -220,7 +220,7 @@
     <br/>
     <br/>
 
-    <xctrls:itempack id="xmlPackEmbeddedScope" bind:in="{data: urn:tibet:test_people_xml#xpath1(//person)}">
+    <xctrls:itempack id="xmlPackEmbeddedScope" bind:in="{data: urn:tibet:test_people_xml#xpath1(//person)}" itemKey="(.//lastname).value">
         <tibet:template>
             <xctrls:textitem bind:scope="urn:tibet:test_person_json#tibet()">
                 <xctrls:label>[[$_.($.person.lastname).value .% lowerCase]]</xctrls:label>
