@@ -1022,9 +1022,20 @@ function(aRequest) {
         elem,
         frag,
 
+        resultNode,
+
         attrs,
         len,
-        j;
+        i,
+        j,
+
+        descendants,
+        descendant,
+        type,
+
+        lenj,
+        attrNode,
+        val;
 
     //  Make sure that we have a node to work from.
     if (!TP.isNode(node = aRequest.at('node'))) {
@@ -1046,8 +1057,9 @@ function(aRequest) {
     info.atPut('shouldEcho', false);
     info.atPut('annotateMarkup', this.shouldWrapACPOutput());
 
-    //  We want to remove attributes if their values are empty.
-    info.atPut('removeAttrIfEmpty', true);
+    //  We want to remove attributes if their values are empty (unless the
+    //  caller has specified otherwise).
+    info.atPutIfAbsent('removeAttrIfEmpty', true);
 
     //  Make sure that any required data (i.e. 'id' attributes and others) are
     //  defined. id attributes, in particular, because they can be dynamically
@@ -1060,8 +1072,8 @@ function(aRequest) {
     //  in the attributes themselves.
     attrs = TP.elementGetAttributeNodes(node);
     len = attrs.getSize();
-    for (j = 0; j < len; j++) {
-        tpNode.transformAttributeNode(attrs.at(j), info);
+    for (i = 0; i < len; i++) {
+        tpNode.transformAttributeNode(attrs.at(i), info);
     }
 
     //  Grab the best representation text. This may contain ACP templating
@@ -1098,11 +1110,49 @@ function(aRequest) {
                 if (TP.isCollectionNode(frag)) {
                     TP.elementSetContent(node, frag, null, false);
                 }
+
+                resultNode = node;
             } else if (TP.notEmpty(result)) {
                 //  Otherwise, it was just a straight templated value (or it
                 //  contained further ACP templating expressions) - just set the
                 //  original node's text content.
                 tpNode.setTextContent(result);
+
+                resultNode = tpNode.getNativeNode();
+            }
+
+            //  If we had a result node and we're configured to remove
+            //  attributes if their values are empty, then do so.
+            if (TP.isNode(resultNode) &&
+                info.at('removeAttrIfEmpty') === true) {
+
+                descendants = TP.nodeGetDescendantElements(resultNode);
+                len = descendants.getSize();
+
+                for (i = 0; i < len; i++) {
+                    descendant = descendants.at(i);
+                    type = TP.wrap(descendant).getType();
+                    attrs = TP.elementGetAttributeNodes(descendant);
+
+                    lenj = attrs.getSize();
+                    for (j = 0; j < lenj; j++) {
+                        attrNode = attrs.at(j);
+
+                        val = TP.val(attrNode);
+
+                        //  If we had an empty value and the type of the
+                        //  descendant has a 'booleanAttrs' slot with that
+                        //  attribute name in it, then we remove it.
+                        if (TP.isEmpty(val) &&
+                            type.get('booleanAttrs').contains(
+                            TP.attributeGetLocalName(attrNode))) {
+                            TP.elementRemoveAttribute(
+                                descendants.at(i),
+                                TP.attributeGetLocalName(attrNode),
+                                true);
+                        }
+                    }
+                }
             }
         }
     }
@@ -15393,7 +15443,10 @@ function(attrNode, info) {
      */
 
     var str,
-        result;
+        result,
+        ownerElem,
+        attrName,
+        type;
 
     //  Grab the text content of the Attribute node.
     str = TP.nodeGetTextContent(attrNode);
@@ -15403,10 +15456,13 @@ function(attrNode, info) {
         result = str.transform(this, info);
 
         if (TP.isEmpty(result) && TP.isTrue(info.at('removeAttrIfEmpty'))) {
-            TP.elementRemoveAttribute(
-                TP.attributeGetOwnerElement(attrNode),
-                TP.attributeGetLocalName(attrNode),
-                true);
+            ownerElem = TP.attributeGetOwnerElement(attrNode);
+            attrName = TP.attributeGetLocalName(attrNode);
+            type = TP.wrap(ownerElem).getType();
+
+            if (type.get('booleanAttrs').contains(attrName)) {
+                TP.elementRemoveAttribute(ownerElem, attrName, true);
+            }
         } else {
             if (result !== str) {
                 TP.nodeSetTextContent(attrNode, result);
