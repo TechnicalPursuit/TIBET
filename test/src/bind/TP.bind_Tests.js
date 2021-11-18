@@ -9323,6 +9323,738 @@ function() {
                                             loadURI.getLocation()));
             });
     });
+
+    //  ---
+
+    this.it('bind attributes - all variables', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsWithAllVars.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function() {
+
+                var windowContext,
+
+                    xmlField,
+                    jsonField,
+                    jsobjField,
+
+                    items;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                xmlField = TP.byId('xmlBindTagAttr', windowContext);
+                jsonField = TP.byId('jsonBindTagAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindTagAttr', windowContext);
+
+                test.assert.isEqualTo(
+                    xmlField.getAttribute('foo'),
+                    'The canonical name lowercased (XML): html:input');
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The canonical name uppercased (XML): HTML:INPUT');
+                test.assert.isEqualTo(
+                    jsonField.getAttribute('foo'),
+                    'The canonical name lowercased (JSON): html:input');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The canonical name uppercased (JSON): HTML:INPUT');
+                test.assert.isEqualTo(
+                    jsobjField.getAttribute('foo'),
+                    'The canonical name lowercased (JSObj): html:input');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    'The canonical name uppercased (JSObj): HTML:INPUT');
+
+                //  ---
+
+                xmlField = TP.byId('xmlBindStdinAttr', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindStdinAttr', windowContext);
+
+                test.assert.isEqualTo(
+                    xmlField.getAttribute('foo'),
+                    'The data source\'s last name field value lowercased (XML): smith');
+                test.assert.isEqualTo(
+                    xmlField.getValue(),
+                    'The data source\'s last name field value uppercased (XML): SMITH');
+                test.assert.isEqualTo(
+                    jsonField.getAttribute('foo'),
+                    'The data source\'s last name field value lowercased (JSON): smith');
+                test.assert.isEqualTo(
+                    jsonField.getValue(),
+                    'The data source\'s last name field value uppercased (JSON): SMITH');
+                test.assert.isEqualTo(
+                    jsobjField.getAttribute('foo'),
+                    'The data source\'s last name field value lowercased (JSObj): smith');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    'The data source\'s last name field value uppercased (JSObj): SMITH');
+
+                //  ---
+
+                xmlField = TP.byId('xmlBindStandaloneExpression', windowContext);
+                jsonField = TP.byId('jsonBindStandaloneExpression', windowContext);
+                jsobjField = TP.byId('jsobjBindStandaloneExpression', windowContext);
+                test.assert.isEqualTo(
+                    TP.trim(xmlField.getTextContent()),
+                    'Binding XML data with $_ variable reference: SMITH');
+                test.assert.isEqualTo(
+                    TP.trim(jsonField.getTextContent()),
+                    'Binding JSON data with $_ variable reference: SMITH');
+                test.assert.isEqualTo(
+                    TP.trim(jsobjField.getTextContent()),
+                    'Binding JavaScript Object data with $_ variable reference: SMITH');
+
+                //  ---
+
+                xmlField = TP.byId('xmlBindStandaloneScopedExpression', windowContext);
+                jsonField = TP.byId('jsonBindStandaloneScopedExpression', windowContext);
+                jsobjField = TP.byId('jsobjBindStandaloneScopedExpression', windowContext);
+                test.assert.isEqualTo(
+                    TP.trim(xmlField.getTextContent()),
+                    'Binding XML data with $_ variable reference: smith');
+                test.assert.isEqualTo(
+                    TP.trim(jsonField.getTextContent()),
+                    'Binding JSON data with $_ variable reference: smith');
+                test.assert.isEqualTo(
+                    TP.trim(jsobjField.getTextContent()),
+                    'Binding JavaScript Object data with $_ variable reference: smith');
+
+                //  ---
+
+                xmlField = TP.byId('xmlPackNoScope', windowContext);
+                items = xmlField.getAllItems();
+
+                test.assert.isEqualTo(
+                    items.at(0).get('labelText'),
+                    'SMITH');
+
+                test.assert.isEqualTo(
+                    items.at(1).get('labelText'),
+                    'JONES');
+
+                test.assert.isEqualTo(
+                    items.at(2).get('labelText'),
+                    'HOMEMAKER');
+
+                test.assert.isEqualTo(
+                    items.at(3).get('labelText'),
+                    'PROFESSIONAL');
+
+                //  ---
+
+                xmlField = TP.byId('xmlPackEmbeddedScope', windowContext);
+                items = xmlField.getAllItems();
+
+                //  These will all have the same value because of the absolute
+                //  binding expression that's injected.
+
+                test.assert.isEqualTo(
+                    items.at(0).get('labelText'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    items.at(1).get('labelText'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    items.at(2).get('labelText'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    items.at(3).get('labelText'),
+                    'smith');
+                //  ---
+
+                jsonField = TP.byId('jsonPackNoScope', windowContext);
+                items = jsonField.getAllItems();
+
+                test.assert.isEqualTo(
+                    items.at(0).get('labelText'),
+                    'SMITH');
+
+                test.assert.isEqualTo(
+                    items.at(1).get('labelText'),
+                    'JONES');
+
+                test.assert.isEqualTo(
+                    items.at(2).get('labelText'),
+                    'HOMEMAKER');
+
+                test.assert.isEqualTo(
+                    items.at(3).get('labelText'),
+                    'PROFESSIONAL');
+
+                //  ---
+
+                jsonField = TP.byId('jsonPackEmbeddedScope', windowContext);
+                items = jsonField.getAllItems();
+
+                //  These will all have the same value because of the absolute
+                //  binding expression that's injected.
+
+                test.assert.isEqualTo(
+                    items.at(0).get('labelText'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    items.at(1).get('labelText'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    items.at(2).get('labelText'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    items.at(3).get('labelText'),
+                    'smith');
+
+                //  ---
+
+                jsobjField = TP.byId('jsObjPackNoScope', windowContext);
+                items = jsobjField.getAllItems();
+
+                test.assert.isEqualTo(
+                    items.at(0).get('labelText'),
+                    'SMITH');
+
+                test.assert.isEqualTo(
+                    items.at(1).get('labelText'),
+                    'JONES');
+
+                test.assert.isEqualTo(
+                    items.at(2).get('labelText'),
+                    'HOMEMAKER');
+
+                test.assert.isEqualTo(
+                    items.at(3).get('labelText'),
+                    'PROFESSIONAL');
+
+                //  ---
+
+                jsobjField = TP.byId('jsObjPackEmbeddedScope', windowContext);
+                items = jsobjField.getAllItems();
+
+                //  These will all have the same value because of the absolute
+                //  binding expression that's injected.
+
+                test.assert.isEqualTo(
+                    items.at(0).get('labelText'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    items.at(1).get('labelText'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    items.at(2).get('labelText'),
+                    'smith');
+
+                test.assert.isEqualTo(
+                    items.at(3).get('labelText'),
+                    'smith');
+
+                //  ---
+
+                xmlField = TP.byId('xmlRepeater', windowContext);
+
+                items = xmlField.get('.item[bind|scope="[1]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '1');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'Joe');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Smith');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'true');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'false');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'false');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'false');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'true');
+
+                //  Number 9 is this record's structure
+
+                items = xmlField.get('.item[bind|scope="[2]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '2');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'John');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Jones');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'false');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'true');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'false');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'true');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'false');
+
+                //  Number 9 is this record's structure
+
+                items = xmlField.get('.item[bind|scope="[3]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '3');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'Billy');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Homemaker');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'false');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'true');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'false');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'false');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'true');
+
+                //  Number 9 is this record's structure
+
+                items = xmlField.get('.item[bind|scope="[4]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '4');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'Pamela');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Professional');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'false');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'false');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'true');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'true');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'false');
+
+                //  Number 9 is this record's structure
+
+                //  ---
+
+                jsonField = TP.byId('jsonRepeater', windowContext);
+
+                items = jsonField.get('.item[bind|scope="[0]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '0');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'Joe');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Smith');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'true');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'false');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'false');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'true');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'false');
+
+                //  Number 9 is this record's structure
+
+                items = jsonField.get('.item[bind|scope="[1]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '1');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'John');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Jones');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'false');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'true');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'false');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'false');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'true');
+
+                //  Number 9 is this record's structure
+
+                items = jsonField.get('.item[bind|scope="[2]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '2');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'Billy');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Homemaker');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'false');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'true');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'false');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'true');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'false');
+
+                //  Number 9 is this record's structure
+
+                items = jsonField.get('.item[bind|scope="[3]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '3');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'Pamela');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Professional');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'false');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'false');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'true');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'false');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'true');
+
+                //  Number 9 is this record's structure
+
+                //  ---
+
+                jsobjField = TP.byId('jsobjRepeater', windowContext);
+
+                items = jsobjField.get('.item[bind|scope="[0]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '0');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'Joe');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Smith');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'true');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'false');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'false');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'true');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'false');
+
+                //  Number 9 is this record's structure
+
+                items = jsobjField.get('.item[bind|scope="[1]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '1');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'John');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Jones');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'false');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'true');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'false');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'false');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'true');
+
+                //  Number 9 is this record's structure
+
+                items = jsobjField.get('.item[bind|scope="[2]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '2');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'Billy');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Homemaker');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'false');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'true');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'false');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'true');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'false');
+
+                //  Number 9 is this record's structure
+
+                items = jsobjField.get('.item[bind|scope="[3]"] tibet|acp');
+
+                //  $INDEX
+                test.assert.isEqualTo(
+                    items.at(0).getTextContent(),
+                    '3');
+                //  First name
+                test.assert.isEqualTo(
+                    items.at(1).getTextContent(),
+                    'Pamela');
+                //  Last name
+                test.assert.isEqualTo(
+                    items.at(2).getTextContent(),
+                    'Professional');
+
+                //  Number 3 is this record's structure
+
+                //  $FIRST
+                test.assert.isEqualTo(
+                    items.at(4).getTextContent(),
+                    'false');
+                //  $MIDDLE
+                test.assert.isEqualTo(
+                    items.at(5).getTextContent(),
+                    'false');
+                //  $LAST
+                test.assert.isEqualTo(
+                    items.at(6).getTextContent(),
+                    'true');
+                //  $EVEN
+                test.assert.isEqualTo(
+                    items.at(7).getTextContent(),
+                    'false');
+                //  $ODD
+                test.assert.isEqualTo(
+                    items.at(8).getTextContent(),
+                    'true');
+
+                //  Number 9 is this record's structure
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
 });
 
 //  ------------------------------------------------------------------------
