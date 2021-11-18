@@ -89,8 +89,8 @@ function(anElement, aSignal, signalNames) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.imageitem.Inst.defineAttribute('valuePElem',
-    TP.cpc('> *[tibet|pelem="value"]', TP.hc('shouldCollapse', true)));
+TP.xctrls.imageitem.Inst.defineAttribute('imageElem',
+    TP.cpc('> xctrls|image', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -170,16 +170,16 @@ function(beDisabled) {
      * @returns {Boolean} Whether the receiver's state is disabled.
      */
 
-    var valuePElem;
+    var imageElem;
 
-    valuePElem = this.get('valuePElem');
+    imageElem = this.get('imageElem');
 
     if (TP.isTrue(beDisabled)) {
-        valuePElem.$setAttribute('disabled', true, false);
-        valuePElem.$setAttribute('pclass:disabled', 'true', false);
+        imageElem.$setAttribute('disabled', true, false);
+        imageElem.$setAttribute('pclass:disabled', 'true', false);
     } else {
-        valuePElem.removeAttribute('disabled');
-        valuePElem.removeAttribute('pclass:disabled');
+        imageElem.removeAttribute('disabled');
+        imageElem.removeAttribute('pclass:disabled');
     }
 
     return this.callNextMethod();

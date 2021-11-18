@@ -46,11 +46,6 @@
 
 }
 
-/* All themed 'xctrls:imageitem' controls ::value pseudo-element */
-*|*[data-theme] xctrls|imageitem > *[tibet|pelem="value"] {
-
-}
-
 /* All themed, non-disabled 'xctrls:imageitem' controls */
 *|*[data-theme] xctrls|imageitem:not([pclass|disabled]) {
 

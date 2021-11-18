@@ -26,17 +26,8 @@ xctrls|imageitem xctrls|image {
     height: 100%;
 }
 
-/* The imageitem's value */
-xctrls|imageitem > *[tibet|pelem="value"] {
-
-}
-
 /* Hovering over the imageitem */
 xctrls|imageitem:hover {
-
-}
-
-xctrls|imageitem:hover > *[tibet|pelem="value"] {
 
 }
 
@@ -50,37 +41,13 @@ xctrls|imageitem[pclass|active] {
 
 }
 
-xctrls|imageitem[pclass|active] > *[tibet|pelem="value"] {
-
-}
-
-xctrls|imageitem[pclass|active][pclass|selected] > *[tibet|pelem="value"] {
-
-}
-
 /* The imageitem is disabled */
 xctrls|imageitem[pclass|disabled] {
 
 }
 
-xctrls|imageitem[pclass|disabled] > *[tibet|pelem="value"] {
-
-}
-
-xctrls|imageitem[pclass|disabled][pclass|active] > *[tibet|pelem="value"] {
-
-}
-
-xctrls|imageitem[pclass|disabled][pclass|active][pclass|selected] > *[tibet|pelem="value"] {
-
-}
-
 /* The imageitem is selected */
 xctrls|imageitem[pclass|selected] {
-
-}
-
-xctrls|imageitem[pclass|selected] > *[tibet|pelem="value"] {
 
 }
 
