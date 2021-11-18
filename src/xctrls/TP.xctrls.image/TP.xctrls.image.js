@@ -31,6 +31,8 @@ TP.xctrls.image.defineAttribute('themeURI', TP.NO_RESULT);
 //  This type captures no signals - it lets all signals pass through.
 TP.xctrls.image.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
+TP.xctrls.image.Type.set('booleanAttrs', TP.ac('src', 'name'));
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
