@@ -381,7 +381,8 @@ function(targetURI, aRequest) {
         return response;
     }
 
-    if (TP.notValid(theDB = new TP.extern.PouchDB(dbName))) {
+    if (TP.notValid(
+            theDB = new TP.extern.PouchDB(dbName, {adapter: 'indexeddb'}))) {
         request.fail(
                 TP.sc('Cannot open pouchDB database named: ' + dbName));
 

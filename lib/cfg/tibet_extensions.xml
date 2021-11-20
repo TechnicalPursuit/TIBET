@@ -87,6 +87,12 @@
     <script src="~lib_deps/pouchdb-tpi.js"
         unless="boot.minified" no-lint="no-lint" />
 
+    <script src="~lib_deps/pouchdb-indexeddb-tpi.min.js"
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
+
+    <script src="~lib_deps/pouchdb-indexeddb-tpi.js"
+        unless="boot.minified" no-lint="no-lint" />
+
     <script src="~lib_deps/pouchdb.all-dbs-tpi.min.js"
         if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
 
