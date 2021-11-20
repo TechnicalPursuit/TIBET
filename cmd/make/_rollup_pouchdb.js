@@ -2,40 +2,66 @@
     'use strict';
 
     module.exports = function(make, resolve, reject) {
-        /*
-        NOTE: Since we switched packages to 'pouchdb-browser', these build
-        instructions are no longer relevant. SEE BELOW.
+        var CLI,
+            sh,
 
-        var npmdir;
+            clonedir,
+            pouchdbdepsdir;
 
-        make.sh.exec('npm update pouchdb');
+        make.log('\n\nrolling up PouchDB...\n\n');
 
-        npmdir = make.CLI.expandPath('~npm_dir');
-        make.sh.cd(make.CLI.joinPaths(npmdir, 'pouchdb'));
+        CLI = make.CLI;
+        sh = make.sh;
 
-        make.sh.exec('cp -f dist/pouchdb.js ../../deps/pouchdb-tpi.js');
-        make.sh.exec('cp -f dist/pouchdb.min.js ../../deps/pouchdb-tpi.min.js');
+        clonedir = sh.tempdir();
+        sh.cd(clonedir);
 
-        Unfortunately, the prebuilt pouchdb-browser package doesn't have a
-        prebuild 'dist' directory and has no mechanism for building one.
-        Therefore, it is necessary to follow these steps *OUTSIDE* of any
-        'node_modules' directory:
+        sh.rm('-rf', 'pouchdb');
 
-        # Clone the main PouchBD repository
-        git clone https://github.com/pouchdb/pouchdb
+        make.log('\n\ncloning PouchDB repository...\n\n');
 
-        # cd into pouchdb
-        cd pouchdb
+        sh.exec('git clone https://github.com/pouchdb/pouchdb.git');
+        sh.cd('pouchdb');
 
-        # Run npm install. This will build the dist packages for PouchDB.
-        npm install
+        make.log('\n\nbuilding PouchDB release...\n\n');
 
-        # Copy the packages meant for the browser from the 'packages' directory
-        # into the TIBET deps directory. NOTE: You may have to adjust the target
-        # directory to point to your TIBET repository.
-        cp ./packages/node_modules/pouchdb/dist/pouchdb.js /usr/local/src/TPI/TIBET/deps/pouchdb-tpi.js
-        cp ./packages/node_modules/pouchdb/dist/pouchdb.min.js /usr/local/src/TPI/TIBET/deps/pouchdb-tpi.min.js
-        */
+        sh.exec('npm install');
+
+        clonedir = sh.pwd().toString();
+
+        pouchdbdepsdir = CLI.joinPaths(CLI.getLibRoot(), 'deps');
+
+        if (!sh.test('-d', pouchdbdepsdir)) {
+            sh.mkdir(pouchdbdepsdir);
+        }
+
+        sh.cp(
+            '-R',
+            CLI.joinPaths(clonedir,
+                            'packages', 'node_modules', 'pouchdb', 'dist',
+                            'pouchdb.js'),
+            CLI.joinPaths(pouchdbdepsdir, 'pouchdb-tpi.js'));
+
+        sh.cp(
+            '-R',
+            CLI.joinPaths(clonedir,
+                            'packages', 'node_modules', 'pouchdb', 'dist',
+                            'pouchdb.min.js'),
+            CLI.joinPaths(pouchdbdepsdir, 'pouchdb-tpi.min.js'));
+
+        sh.cp(
+            '-R',
+            CLI.joinPaths(clonedir,
+                            'packages', 'node_modules', 'pouchdb', 'dist',
+                            'pouchdb.indexeddb.js'),
+            CLI.joinPaths(pouchdbdepsdir, 'pouchdb-indexeddb-tpi.js'));
+
+        sh.cp(
+            '-R',
+            CLI.joinPaths(clonedir,
+                            'packages', 'node_modules', 'pouchdb', 'dist',
+                            'pouchdb.indexeddb.min.js'),
+            CLI.joinPaths(pouchdbdepsdir, 'pouchdb-indexeddb-tpi.min.js'));
 
         resolve();
     };
