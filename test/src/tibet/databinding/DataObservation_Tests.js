@@ -1547,6 +1547,67 @@ function() {
         TP.sys.unregisterObject(modelObj);
     });
 
+    this.it('change notification - URI reference, non-mutable value', function(test, options) {
+
+        var modelObj,
+            modelURI,
+            observerObj,
+
+            handlerFunc;
+
+        modelURI = TP.uc('urn:tibet:testdata');
+
+        modelObj = 42;
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        TP.observe(
+            modelURI,
+            'Change',
+            handlerFunc = function(aSignal) {
+
+                var newValue;
+
+                test.assert.isIdenticalTo(aSignal.getTarget(), modelObj);
+                test.assert.isEqualTo(aSignal.getAspect(), 'value');
+                test.assert.isEqualTo(aSignal.getAction(), TP.UPDATE);
+
+                newValue = aSignal.getValue();
+
+                observerObj.set('salary', newValue);
+            });
+
+        //  This automatically sets the ID of modelObj to 'urn:tibet:testdata'
+        //  because it didn't have an existing ID and was assigned as the
+        //  resource to the URI defined above.
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
+
+        test.assert.isEqualTo(
+                    modelObj,
+                    observerObj.get('salary'));
+
+        modelObj = 45;
+        modelURI.setResource(modelObj);
+
+        test.assert.isEqualTo(
+                    modelObj,
+                    observerObj.get('salary'));
+
+        TP.ignore(modelURI, 'Change', handlerFunc);
+
+        modelObj = 47;
+        modelURI.setResource(modelObj);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 45 set above.
+        test.assert.isEqualTo(
+                    45,
+                    observerObj.get('salary'));
+
+        modelURI.unregister();
+    });
+
     this.it('change notification - URI reference, simple aspect', function(test, options) {
 
         var modelObj,
