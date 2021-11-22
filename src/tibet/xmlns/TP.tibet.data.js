@@ -249,6 +249,7 @@ function() {
         if (TP.notEmpty(cdatas)) {
             //  The string we'll use is from the first CDATA.
             resourceStr = TP.nodeGetTextContent(cdatas.first());
+            resourceStr = TP.trim(resourceStr);
         } else {
             children = TP.nodeGetChildElements(elem);
 
