@@ -11,19 +11,22 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data id="Data1" name="urn:tibet:Data1_person">
-        <person xmlns="">
-            <lastname>Smith</lastname>
-            <firstname>Joe</firstname>
-            <age>48</age>
-            <address>
-                <street_address>111 Main St.</street_address>
-                <city>Anytown</city>
-                <state>CA</state>
-            </address>
-            <gender>male</gender>
-            <SSN>555-55-5555</SSN>
-        </person>
+    <tibet:data id="Data1_boolean" name="urn:tibet:Data1_boolean">
+    <![CDATA[
+    true
+    ]]>
+    </tibet:data>
+
+    <tibet:data id="Data1_number" name="urn:tibet:Data1_number">
+    <![CDATA[
+    42
+    ]]>
+    </tibet:data>
+
+    <tibet:data id="Data1_string" name="urn:tibet:Data1_string">
+    <![CDATA[
+    'Hi there'
+    ]]>
     </tibet:data>
 
 </head>
@@ -34,7 +37,7 @@
 
     <br/>
     <br/>
-    This test sets up a &lt;tibet:data&gt; tag that makes data in the page available as under a particular named URI. It doesn't have a data type assigned, but since it's XML data, it will use a 'TP.core.XMLContent' type as it's data type.
+    This test sets up multiple &lt;tibet:data&gt; tags that makes data in the page available as particular named URIs. They don't have data types assigned, but since they're populated with boolean, number or string data, it will use 'Boolean', `Number` or `String` type as their data type, respectively.
     <br/>
     A variety of signals are thrown by the various objects involved.
     <br/>

@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data id="Data3" name="urn:tibet:Data3_person" content="TP.test.DataTestMarkupEmployee">
+    <tibet:data id="Data3" name="urn:tibet:Data3_person">
         <person xmlns="">
             <lastname>Smith</lastname>
             <firstname>Joe</firstname>
@@ -34,7 +34,7 @@
 
     <br/>
     <br/>
-    This test sets up a &lt;tibet:data&gt; tag that makes data in the page available as under a particular named URI. It has a data type assigned of 'TP.test.DataTestMarkupEmployee' type as it's data type.
+    This test sets up a &lt;tibet:data&gt; tag that makes data in the page available as under a particular named URI. It doesn't have a data type assigned, but since it's XML data, it will use a 'TP.core.XMLContent' type as it's data type.
     <br/>
     A variety of signals are thrown by the various objects involved.
     <br/>

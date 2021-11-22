@@ -11,7 +11,11 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data id="Data8" name="urn:tibet:Data8_person" buildout="true" content="TP.core.JSONContent"/>
+    <tibet:data id="Data8" name="urn:tibet:Data8_person" buildout="true">
+        <![CDATA[
+        {"person": {"lastname": "Jones", "firstname": "Jane", "description": "Ms. Jones is a great lady", "gender": "f", "pet": "cat", "color": "blue"}}
+        ]]>
+    </tibet:data>
 
 </head>
 
@@ -22,8 +26,6 @@
     <br/>
     <br/>
     This test sets up a &lt;tibet:data&gt; tag that makes data in the page available as under a particular named URI. It has 'buildout' set to 'true' so that when a 'set' is executed against the data that it is holding and there is no existing 'structure' for that data, that it is auto-created.
-    <br/>
-    In this test, there is no pre-existing structure at all, which tests 'multi-level' structure building from a root.
     <br/>
     A variety of signals are thrown by the various objects involved.
     <br/>

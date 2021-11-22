@@ -84,7 +84,7 @@ function() {
 
     //  ---
 
-    this.it('No specific result type - XML content', function(test, options) {
+    this.it('No specific result type - non-mutable content', function(test, options) {
 
         loadURI = TP.uc('~lib_test/src/tibet/data/Data1.xhtml');
 
@@ -96,9 +96,155 @@ function() {
                     srcURI,
                     dataResource;
 
-                dataTPElem = TP.byId('Data1',
+                dataTPElem = TP.byId('Data1_boolean',
                                         test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data1_person');
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataTPElem = TP.byId('Data1_number',
+                                        test.getDriver().get('windowContext'));
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataTPElem = TP.byId('Data1_string',
+                                        test.getDriver().get('windowContext'));
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                //  ---
+
+                srcURI = TP.uc('urn:tibet:Data1_boolean');
+                dataResource = srcURI.getResource().get('result');
+                test.assert.isMemberOf(dataResource, Boolean);
+
+                srcURI = TP.uc('urn:tibet:Data1_number');
+                dataResource = srcURI.getResource().get('result');
+                test.assert.isMemberOf(dataResource, Number);
+
+                srcURI = TP.uc('urn:tibet:Data1_string');
+                dataResource = srcURI.getResource().get('result');
+                test.assert.isMemberOf(dataResource, String);
+
+                //  ---
+
+                test.getDriver().setLocation(unloadURI);
+
+                //  ---
+
+                //  NB: By chain()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
+                dataTPElem = TP.byId('Data1_boolean',
+                                        test.getDriver().get('windowContext'));
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
+
+                dataTPElem = TP.byId('Data1_number',
+                                        test.getDriver().get('windowContext'));
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
+
+                dataTPElem = TP.byId('Data1_string',
+                                        test.getDriver().get('windowContext'));
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('Specific result type - non-mutable content', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data2.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function(result) {
+                var dataTPElem,
+                    srcURI,
+                    dataResource;
+
+                dataTPElem = TP.byId('Data2_boolean',
+                                        test.getDriver().get('windowContext'));
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataTPElem = TP.byId('Data2_number',
+                                        test.getDriver().get('windowContext'));
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataTPElem = TP.byId('Data2_string',
+                                        test.getDriver().get('windowContext'));
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                //  ---
+
+                srcURI = TP.uc('urn:tibet:Data2_boolean');
+                dataResource = srcURI.getResource().get('result');
+                test.assert.isMemberOf(dataResource, Boolean);
+
+                srcURI = TP.uc('urn:tibet:Data2_number');
+                dataResource = srcURI.getResource().get('result');
+                test.assert.isMemberOf(dataResource, Number);
+
+                srcURI = TP.uc('urn:tibet:Data2_string');
+                dataResource = srcURI.getResource().get('result');
+                test.assert.isMemberOf(dataResource, String);
+
+                //  ---
+
+                test.getDriver().setLocation(unloadURI);
+
+                //  ---
+
+                //  NB: By chain()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
+                dataTPElem = TP.byId('Data2_boolean',
+                                        test.getDriver().get('windowContext'));
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
+
+                dataTPElem = TP.byId('Data2_number',
+                                        test.getDriver().get('windowContext'));
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
+
+                dataTPElem = TP.byId('Data2_string',
+                                        test.getDriver().get('windowContext'));
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('No specific result type - XML content', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data3.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function(result) {
+                var dataTPElem,
+                    srcURI,
+                    dataResource;
+
+                dataTPElem = TP.byId('Data3',
+                                        test.getDriver().get('windowContext'));
+                srcURI = TP.uc('urn:tibet:Data3_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
@@ -125,50 +271,9 @@ function() {
 
     //  ---
 
-    this.it('No specific result type - JSON content', function(test, options) {
-
-        loadURI = TP.uc('~lib_test/src/tibet/data/Data2.xhtml');
-
-        test.getDriver().setLocation(loadURI);
-
-        test.chain(
-            function(result) {
-                var dataTPElem,
-                    srcURI,
-                    dataResource;
-
-                dataTPElem = TP.byId('Data2',
-                                        test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data2_person');
-
-                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
-
-                dataResource = srcURI.getResource().get('result');
-
-                test.assert.isMemberOf(dataResource, TP.core.JSONContent);
-
-                test.getDriver().setLocation(unloadURI);
-
-                //  ---
-
-                //  NB: By chain()ing this, it gets invoked *after* this test's
-                //  afterEach() method, which unloads the URI and which should
-                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
-                test.chain(function() {
-                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
-                });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
-    });
-
-    //  ---
-
     this.it('Specific result type - XML content', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/data/Data3.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data4.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -178,9 +283,9 @@ function() {
                     srcURI,
                     dataResource;
 
-                dataTPElem = TP.byId('Data3',
+                dataTPElem = TP.byId('Data4',
                                         test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data3_person');
+                srcURI = TP.uc('urn:tibet:Data4_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
@@ -208,9 +313,9 @@ function() {
 
     //  ---
 
-    this.it('Specific result type - JSON content', function(test, options) {
+    this.it('No specific result type - JSON content', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/data/Data4.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data5.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -220,9 +325,50 @@ function() {
                     srcURI,
                     dataResource;
 
-                dataTPElem = TP.byId('Data4',
+                dataTPElem = TP.byId('Data5',
                                         test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data4_person');
+                srcURI = TP.uc('urn:tibet:Data5_person');
+
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataResource = srcURI.getResource().get('result');
+
+                test.assert.isMemberOf(dataResource, TP.core.JSONContent);
+
+                test.getDriver().setLocation(unloadURI);
+
+                //  ---
+
+                //  NB: By chain()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
+                test.chain(function() {
+                    test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('Specific result type - JSON content', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data6.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function(result) {
+                var dataTPElem,
+                    srcURI,
+                    dataResource;
+
+                dataTPElem = TP.byId('Data6',
+                                        test.getDriver().get('windowContext'));
+                srcURI = TP.uc('urn:tibet:Data6_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
@@ -302,7 +448,7 @@ function() {
 
     this.it('No specific result type - XML content then resetting via setContent()', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/data/Data1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data3.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -312,9 +458,9 @@ function() {
                     srcURI,
                     dataResource;
 
-                dataTPElem = TP.byId('Data1',
+                dataTPElem = TP.byId('Data3',
                                         test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data1_person');
+                srcURI = TP.uc('urn:tibet:Data3_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
@@ -380,7 +526,7 @@ function() {
 
     this.it('No specific result type - JSON content then resetting via setContent()', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/data/Data2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data5.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -390,9 +536,9 @@ function() {
                     srcURI,
                     dataResource;
 
-                dataTPElem = TP.byId('Data2',
+                dataTPElem = TP.byId('Data5',
                                         test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data2_person');
+                srcURI = TP.uc('urn:tibet:Data5_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
@@ -505,7 +651,7 @@ function() {
 
     this.it('Auto-creation within existing structure - XML content', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/data/Data5.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data7.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -518,9 +664,9 @@ function() {
                     testPath,
                     val;
 
-                dataTPElem = TP.byId('Data5',
+                dataTPElem = TP.byId('Data7',
                                         test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data5_person');
+                srcURI = TP.uc('urn:tibet:Data7_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
@@ -547,7 +693,7 @@ function() {
 
     this.it('Auto-creation within existing structure - JSON content', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/data/Data6.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data8.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -560,9 +706,9 @@ function() {
                     testPath,
                     val;
 
-                dataTPElem = TP.byId('Data6',
+                dataTPElem = TP.byId('Data8',
                                         test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data6_person');
+                srcURI = TP.uc('urn:tibet:Data8_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
@@ -589,7 +735,7 @@ function() {
 
     this.it('Auto-creation into no existing structure - XML content', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/data/Data7.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data9.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -602,9 +748,9 @@ function() {
                     testPath,
                     val;
 
-                dataTPElem = TP.byId('Data7',
+                dataTPElem = TP.byId('Data9',
                                         test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data7_person');
+                srcURI = TP.uc('urn:tibet:Data9_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
@@ -635,7 +781,7 @@ function() {
 
     this.it('Auto-creation into no existing structure - JSON content', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/tibet/data/Data8.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data10.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -648,9 +794,9 @@ function() {
                     testPath,
                     val;
 
-                dataTPElem = TP.byId('Data8',
+                dataTPElem = TP.byId('Data10',
                                         test.getDriver().get('windowContext'));
-                srcURI = TP.uc('urn:tibet:Data8_person');
+                srcURI = TP.uc('urn:tibet:Data10_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
