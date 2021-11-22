@@ -362,6 +362,8 @@ function(aContentObject, aRequest) {
         mimeType,
         contentType,
 
+        contentTypeAttrVal,
+
         newResource,
         strResource,
 
@@ -390,17 +392,33 @@ function(aContentObject, aRequest) {
     //  probably went wrong (i.e. the data couldn't be parsed) and so we warn
     //  about that.
     if (TP.notNull(aContentObject) && mimeType === TP.PLAIN_TEXT_ENCODED) {
-        TP.ifWarn() ?
-            TP.warn('Computed a content type of text/plain for' +
-                    ' <tibet:data/> with id: ' +
-                    this.getAttribute('id') +
-                    ' setting content of: ' + namedHref) : 0;
-    }
+        //  See if the user has define a 'content' attribute on us. If so, try
+        //  to see if TIBET really has a Type matching that.
+        if (TP.notEmpty(contentTypeAttrVal = this.getAttribute('content'))) {
+            contentType = TP.sys.getTypeByName(contentTypeAttrVal);
+        }
 
-    //  Obtain a MIME type for the result and use it to obtain a result type.
-    //  Note that there might not be either a 'type' or 'content' attribute
-    //  on the receiver, in which case we'll just get a String result type here.
-    contentType = this.getContentType(mimeType);
+        //  Set the newResource directly here, avoiding Stringifying it and
+        //  re-parsing it below.
+        newResource = TP.parsedVal(aContentObject.unquoted());
+
+        //  We don't have a type for the result - derive it from the data.
+        if (!TP.isType(contentType)) {
+            contentType = TP.type(newResource);
+        }
+
+        if (TP.type(newResource) !== contentType) {
+            newResource = contentType.from(newResource);
+        }
+    } else {
+        //  Obtain a MIME type for the result and use it to obtain a result
+        //  type. Note that there might not be either a 'type' or 'content'
+        //  attribute on the receiver, in which case we'll just get a String
+        //  result type here. Note that this call also looks at the receiver for
+        //  an attribute of 'content' (as above), but will also consider the
+        //  supplied MIME type.
+        contentType = this.getContentType(mimeType);
+    }
 
     //  If the new resource result is a content object of some sort (highly
     //  likely) then we should initialize it with both the content String and
@@ -412,7 +430,7 @@ function(aContentObject, aRequest) {
             newResource.set('buildout',
                             TP.bc(this.getAttribute('buildout')));
         }
-    } else {
+    } else if (TP.notValid(newResource)) {
         strResource = TP.str(aContentObject);
         if (contentType === String) {
             newResource = strResource;
