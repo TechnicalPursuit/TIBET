@@ -865,7 +865,7 @@ function(aSignal) {
      */
 
     var tabItem,
-        tabValue;
+        tabValueKey;
 
     //  The tab item will be the parent of the signal's target (which is the
     //  'div' with the close mark on it).
@@ -873,8 +873,8 @@ function(aSignal) {
 
     //  Grab its value.
     if (TP.isValid(tabItem)) {
-        tabValue = tabItem.get('value');
-        this.removeConsoleTabPanel(tabValue);
+        tabValueKey = tabItem.getAttribute(TP.DATA_KEY);
+        this.removeConsoleTabPanel(tabValueKey);
     }
 
     return this;
