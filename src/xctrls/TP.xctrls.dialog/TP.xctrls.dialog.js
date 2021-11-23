@@ -298,6 +298,8 @@ function(info) {
      *          dialog in the system.
      *          {Boolean} [isModal=true] Whether or not this dialog is modal
      *          (i.e. will have an event-trapping curtain behind it).
+     *          {TP.core.Hash} [dialogAttrs] A hash of attributes to put on
+     *          the dialog markup.
      *          {String} templateContent The actual markup content to put into
      *          the dialog.
      *          {TP.uri.URI} [templateURI] If the templateContent parameter is
@@ -390,8 +392,8 @@ function(info) {
                     //  If the caller provided an attribute hash, then copy
                     //  that. Otherwise, create a new one. We'll populate it
                     //  with the 'id' and 'curtainID' below.
-                    if (TP.isValid(info.at('attrs'))) {
-                        attrHash = TP.copy(info.at('attrs'));
+                    if (TP.isValid(info.at('dialogAttrs'))) {
+                        attrHash = TP.copy(info.at('dialogAttrs'));
                     } else {
                         attrHash = TP.hc();
                     }
