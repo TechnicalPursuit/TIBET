@@ -440,19 +440,22 @@ function(anElement, targetDoc, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentGetCSSVariable',
-function(aDocument, variableName) {
+TP.definePrimitive('documentGetStyleProperty',
+function(aDocument, aProperty) {
 
     /**
-     * @method documentGetCSSVariable
+     * @method documentGetStyleProperty
      * @summary Returns the value of a CSS variable from the document.
+     * @summary Gets the style property named by the supplied property name on
+     *     the *document element* of the style of the supplied element.
      * @param {Document|DocumentElement} aDocument The document or document
-     *     element to query.
-     * @param {String} variableName The full variable name to query for.
-     * @returns {Object} The value of the named variable.
+     *     element to get the style property from.
+     * @param {String} aProperty The name of the style property to get.
+     * @returns {String} The current value of the style property named by
+     *     aProperty on the *document element* of the supplied document.
      */
 
-    return TP.elementGetComputedStyleProperty(TP.elem(aDocument), variableName);
+    return TP.elementGetStyleProperty(TP.elem(aDocument), aProperty);
 });
 
 //  ------------------------------------------------------------------------
@@ -1075,20 +1078,22 @@ function(aDocument, anHref, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentSetCSSVariable',
-function(aDocument, variableName, aValue) {
+TP.definePrimitive('documentSetStyleProperty',
+function(aDocument, aProperty, aPropertyValue) {
 
     /**
-     * @method documentSetCSSVariable
-     * @summary Sets the value of a CSS variable on the target document.
+     * @method documentSetStyleProperty
+     * @summary Sets the style property named by the supplied property name on
+     *     the style of the *document element* of the supplied document using
+     *     the supplied property value.
      * @param {Document|DocumentElement} aDocument The document or document
-     *     element to update.
-     * @param {String} variableName The full variable name to update.
-     * @param {Object} aValue The value to set.
-     * @returns {Object} The value of the named variable.
+     *     element to set the style property on.
+     * @param {String} aProperty The name of the style property to set.
+     * @param {String|Number} aPropertyValue The value to set the style property
+     *     to.
      */
 
-    TP.elementSetStyleProperty(TP.elem(aDocument), variableName, aValue);
+    TP.elementSetStyleProperty(TP.elem(aDocument), aProperty, aPropertyValue);
 
     return;
 });
