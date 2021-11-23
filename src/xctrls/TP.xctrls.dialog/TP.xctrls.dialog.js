@@ -485,6 +485,8 @@ function(info) {
                 //  Call the Promise's resolver with the created
                 //  TP.xctrls.dialog object.
                 resolver(dialogTPElem);
+
+                return null;
             };
 
             template = info.at('templateContent');
@@ -495,7 +497,7 @@ function(info) {
                     //  This returns a Promise.
                     return TP.elementFromURI(template).then(
                             function(resultElement) {
-                                displayHandler(TP.str(resultElement));
+                                return displayHandler(TP.str(resultElement));
                             }).catch(
                                 function(e) {
                                     TP.ifError() ? TP.error(
@@ -512,7 +514,7 @@ function(info) {
                 //  This returns a Promise.
                 return TP.elementFromURI(template).then(
                         function(resultElement) {
-                            displayHandler(TP.str(resultElement));
+                            return displayHandler(TP.str(resultElement));
                         }).catch(function(e) {
                             TP.ifError() ?
                                 TP.error('Invalid element ' + TP.str(e)) : 0;
@@ -521,7 +523,7 @@ function(info) {
 
             //  A URI wasn't supplied, so there must've been a String in the
             //  templateContent.
-            displayHandler(template);
+            return displayHandler(template);
         });
 
     return promise;
