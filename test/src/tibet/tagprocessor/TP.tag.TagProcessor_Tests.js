@@ -547,7 +547,7 @@ function() {
 
                 testElem = result.firstElementChild;
 
-                test.refute.hasAttribute(testElem, 'foo');
+                test.assert.hasAttribute(testElem, 'foo');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
