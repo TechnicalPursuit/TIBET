@@ -20,52 +20,6 @@ TP.lama.TemplatedTag.defineSubtype('menucontent');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.lama.menucontent.Type.defineMethod('tagAttachComplete',
-function(aRequest) {
-
-    /**
-     * @method tagAttachComplete
-     * @summary Executes once the tag has been fully processed and its
-     *     attachment phases are fully complete.
-     * @description Because tibet:data tag content drives binds and we need to
-     *     notify even without a full page load, we notify from here once the
-     *     attachment is complete (instead of during tagAttachData).
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    if (tpElem.isReadyToRender()) {
-
-        //  If we are a bound element, then refresh ourselves from any bound
-        //  data source we may have. This will re-render if the data actually
-        //  changed.
-        if (tpElem.isBoundElement()) {
-            //  Note here how we don't force the rendering behavior - if the
-            //  data has changed, the content will re-render.
-            tpElem.refresh();
-        } else {
-            tpElem.render();
-        }
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.lama.menucontent.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
