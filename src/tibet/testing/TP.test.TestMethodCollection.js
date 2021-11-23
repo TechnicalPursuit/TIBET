@@ -111,6 +111,41 @@ function(anArgArray, aCount, aComment) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.TestMethodCollection.Inst.defineMethod('assertValidArgument',
+function(anArgument, aComment) {
+
+    /**
+     * @method assertValidArgument
+     * @summary Asserts that the supplied argument is valid.
+     * @param {Object} anArgument The argument to check for validity.
+     * @param {String} aComment The comment to use when reporting that the
+     *     argument is not valid.
+     * @returns {Boolean} True if the supplied argument is valid.
+     */
+
+    var comment;
+
+    //  Like JSUnit a comment is optional, but unlike that framework ours
+    //  is always the last argument, when present. This approach means its
+    //  much harder for an assertion to mistake a comment for a valid input
+    //  and implies that the count provided to this method is effectively a
+    //  "minimum" count.
+
+    if (TP.isValid(anArgument)) {
+        return true;
+    }
+
+    comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
+
+    this.get('currentTestCase').fail(
+        TP.join(comment,
+                TP.sc('Expected argument to be valid.')));
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.TestMethodCollection.Inst.defineMethod('assert',
 function(aCondition, aComment, aFaultString) {
 
@@ -203,6 +238,8 @@ function(anObject, aType, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.validate(anObject, aType),
             aComment,
@@ -219,6 +256,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isEnhanced(anObject),
             aComment,
@@ -231,6 +270,14 @@ TP.test.TestMethodCollection.defineAssertion('isKindOf',
 function(anObject, aType, aComment) {
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    //  NB: No 'anObject' parameter check here - it might not be valid.
+
+    if (!this.assertValidArgument(
+        aType,
+        TP.sc('Can\'t check for \'isKindOf\' since type is not valid.'))) {
         return false;
     }
 
@@ -250,6 +297,14 @@ function(anObject, aType, aComment) {
         return false;
     }
 
+    //  NB: No 'anObject' parameter check here - it might not be valid.
+
+    if (!this.assertValidArgument(
+        aType,
+        TP.sc('Can\'t check for \'isMemberOf\' since type is not valid.'))) {
+        return false;
+    }
+
     return this.assert(
             TP.isMemberOf(anObject, aType),
             aComment,
@@ -266,6 +321,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isMutable(anObject),
             aComment,
@@ -280,6 +337,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isNamespace(anObject),
@@ -296,6 +355,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isNativeType(anObject),
             aComment,
@@ -310,6 +371,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isPrototype(anObject),
@@ -326,6 +389,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isReferenceType(anObject),
             aComment,
@@ -340,6 +405,8 @@ function(anObject, aType, aComment) {
     if (!this.assertMinArguments(arguments, 2)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isSubtypeOf(anObject, aType),
@@ -357,6 +424,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isType(anObject),
             aComment,
@@ -372,6 +441,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isTypeName(anObject),
             aComment,
@@ -386,6 +457,14 @@ TP.test.TestMethodCollection.defineAssertion('canInvoke',
 function(anObject, aMethodName, aComment) {
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    //  NB: No 'anObject' parameter check here - it might not be valid.
+
+    if (!this.assertValidArgument(
+        aMethodName,
+        TP.sc('Can\'t check for \'canInvoke\' since method name is not valid.'))) {
         return false;
     }
 
@@ -405,6 +484,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isCallable(anObject),
             aComment,
@@ -419,6 +500,8 @@ function(anObject, anAttributeName, aComment) {
     if (!this.assertMinArguments(arguments, 2)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isProperty(anObject, anAttributeName) &&
@@ -436,6 +519,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isGlobal(anObject),
             aComment,
@@ -450,6 +535,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isGlobalMethod(anObject),
@@ -466,6 +553,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isInstMethod(anObject),
             aComment,
@@ -480,6 +569,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isLocalMethod(anObject),
@@ -496,6 +587,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isMethod(anObject),
             aComment,
@@ -510,6 +603,8 @@ function(anObject, aPropertyName, aComment) {
     if (!this.assertMinArguments(arguments, 2)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isOwnProperty(anObject, aPropertyName),
@@ -527,6 +622,8 @@ function(anObject, aPropertyName, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isProperty(anObject, aPropertyName),
             aComment,
@@ -542,6 +639,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isTypeMethod(anObject),
@@ -560,6 +659,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isArgArray(anObject),
             aComment,
@@ -576,6 +677,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isArray(anObject),
             aComment,
@@ -590,6 +693,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isBoolean(anObject),
@@ -606,6 +711,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isCollection(anObject),
             aComment,
@@ -620,6 +727,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isDate(anObject),
@@ -636,6 +745,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isError(anObject),
             aComment,
@@ -650,6 +761,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isEvent(anObject),
@@ -666,6 +779,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isFunction(anObject),
             aComment,
@@ -680,6 +795,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isIFrameWindow(anObject),
@@ -696,6 +813,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isHash(anObject),
             aComment,
@@ -710,6 +829,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isMediaQueryList(anObject),
@@ -726,6 +847,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isNaN(anObject),
             aComment,
@@ -740,6 +863,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isNumber(anObject),
@@ -756,6 +881,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isPair(anObject),
             aComment,
@@ -770,6 +897,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isPlainObject(anObject),
@@ -786,6 +915,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isRegExp(anObject),
             aComment,
@@ -800,6 +931,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isString(anObject),
@@ -816,6 +949,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isStyleDeclaration(anObject),
             aComment,
@@ -830,6 +965,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isStyleRule(anObject),
@@ -846,6 +983,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isStyleSheet(anObject),
             aComment,
@@ -860,6 +999,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isURI(anObject),
@@ -876,6 +1017,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isWindow(anObject),
             aComment,
@@ -890,6 +1033,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isXHR(anObject),
@@ -908,6 +1053,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isFalse(anObject),
             aComment,
@@ -922,6 +1069,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isFalsey(anObject),
@@ -938,6 +1087,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isTrue(anObject),
             aComment,
@@ -952,6 +1103,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isTruthy(anObject),
@@ -970,6 +1123,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isDefined(anObject),
             aComment,
@@ -984,6 +1139,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isEmpty(anObject),
@@ -1000,6 +1157,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isNull(anObject),
             aComment,
@@ -1014,6 +1173,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.isValid(anObject),
@@ -1032,6 +1193,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isBlank(anObject),
             aComment,
@@ -1047,6 +1210,8 @@ function(anObject, someContent, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.contains(anObject, someContent),
             aComment,
@@ -1060,6 +1225,18 @@ TP.test.TestMethodCollection.defineAssertion('hasKey',
 function(anObject, aKeyName, aComment) {
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'hasKey\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aKeyName,
+        TP.sc('Can\'t check for \'hasKey\' since key name is not valid.'))) {
         return false;
     }
 
@@ -1079,6 +1256,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No 'anObject' parameter check here - it might not be valid.
+
     return this.assert(
             TP.isEmpty(anObject),
             aComment,
@@ -1094,6 +1273,18 @@ function(anObject, aCount, aComment) {
         return false;
     }
 
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isSizeOf\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aCount,
+        TP.sc('Can\'t check for \'isSizeOf\' since count is not valid.'))) {
+        return false;
+    }
+
     return this.assert(
             TP.equal(TP.size(anObject), aCount),
             aComment,
@@ -1106,6 +1297,18 @@ TP.test.TestMethodCollection.defineAssertion('matches',
 function(anObject, aValue, aComment) {
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'matches\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'matches\' since value is not valid.'))) {
         return false;
     }
 
@@ -1126,6 +1329,8 @@ function(anObject, aValue, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.equal(anObject, aValue),
             aComment,
@@ -1141,6 +1346,8 @@ function(anObject, aValue, aComment) {
     if (!this.assertMinArguments(arguments, 2)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     return this.assert(
             TP.identical(anObject, aValue),
@@ -1160,6 +1367,24 @@ function(anObject, attrName, aValue, aComment) {
         val;
 
     if (!this.assertMinArguments(arguments, 3)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isAttributeEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        attrName,
+        TP.sc('Can\'t check for \'isAttributeEqualTo\' since attribute name is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isAttributeEqualTo\' since value is not valid.'))) {
         return false;
     }
 
@@ -1186,6 +1411,18 @@ function(anObject, aValue, aComment) {
         return false;
     }
 
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isHashEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isHashEqualTo\' since value is not valid.'))) {
+        return false;
+    }
+
     return this.assert(
             TP.equal(val, aValue),
             aComment,
@@ -1202,6 +1439,18 @@ function(anObject, aValue, aComment) {
     val = TP.htmlstr(anObject);
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isHTMLEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isHTMLEqualTo\' since value is not valid.'))) {
         return false;
     }
 
@@ -1224,6 +1473,18 @@ function(anObject, aValue, aComment) {
         return false;
     }
 
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isJSONEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isJSONEqualTo\' since value is not valid.'))) {
+        return false;
+    }
+
     return this.assert(
             TP.equal(val, aValue),
             aComment,
@@ -1240,6 +1501,18 @@ function(anObject, aValue, aComment) {
     val = TP.src(anObject);
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isSrcEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isSrcEqualTo\' since value is not valid.'))) {
         return false;
     }
 
@@ -1262,6 +1535,18 @@ function(anObject, aValue, aComment) {
         return false;
     }
 
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isStrEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isStrEqualTo\' since value is not valid.'))) {
+        return false;
+    }
+
     return this.assert(
         TP.equal(val, aValue),
         aComment,
@@ -1278,6 +1563,18 @@ function(anObject, aValue, aComment) {
     val = TP.uc(TP.str(anObject));
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isURIEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isURIEqualTo\' since value is not valid.'))) {
         return false;
     }
 
@@ -1300,6 +1597,18 @@ function(anObject, aValue, aComment) {
         return false;
     }
 
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isValEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isValEqualTo\' since value is not valid.'))) {
+        return false;
+    }
+
     return this.assert(
             TP.equal(val, aValue),
             aComment,
@@ -1316,6 +1625,18 @@ function(anObject, aValue, aComment) {
     val = TP.xhtmlstr(anObject);
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isXHTMLEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isXHTMLEqualTo\' since value is not valid.'))) {
         return false;
     }
 
@@ -1338,6 +1659,18 @@ function(anObject, aValue, aComment) {
         return false;
     }
 
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isXMLEqualTo\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for \'isXMLEqualTo\' since value is not valid.'))) {
+        return false;
+    }
+
     return this.assert(
             TP.equal(val, aValue),
             aComment,
@@ -1354,6 +1687,18 @@ function(anObject, anAttributeName, aComment) {
     var obj;
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'hasAttribute\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anAttributeName,
+        TP.sc('Can\'t check for \'hasAttribute\' since attribute name is not valid.'))) {
         return false;
     }
 
@@ -1377,6 +1722,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Just in case we got handed a TP.dom.AttributeNode.
     obj = TP.unwrap(anObject);
     return this.assert(
@@ -1396,6 +1743,18 @@ function(anObject, anotherObject, aComment) {
         childNodes;
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isChildNodeOf\' since object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anotherObject,
+        TP.sc('Can\'t check for \'isChildNodeOf\' since another object is not valid.'))) {
         return false;
     }
 
@@ -1422,6 +1781,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Just in case we got handed a TP.dom.CommentNode.
     obj = TP.unwrap(anObject);
     return this.assert(
@@ -1440,6 +1801,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     //  Just in case we got handed a TP.dom.CDATASectionNode.
     obj = TP.unwrap(anObject);
@@ -1460,6 +1823,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Just in case we got handed a TP.core.* (CollectionNode of some sort)
     obj = TP.unwrap(anObject);
     return this.assert(
@@ -1478,6 +1843,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     //  Just in case we got handed a TP.dom.DocumentNode
     obj = TP.unwrap(anObject);
@@ -1498,6 +1865,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Just in case we got handed a TP.dom.ElementNode.
     obj = TP.unwrap(anObject);
     return this.assert(
@@ -1516,6 +1885,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     //  Just in case we got handed a TP.dom.DocumentFragmentNode.
     obj = TP.unwrap(anObject);
@@ -1546,6 +1917,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Just in case we got handed a TP.dom.HTMLDocumentNode
     obj = TP.unwrap(anObject);
     return this.assert(
@@ -1565,6 +1938,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Just in case we got handed a TP.core.* (HTML Node of some sort)
     obj = TP.unwrap(anObject);
     return this.assert(
@@ -1582,6 +1957,8 @@ function(aString, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     return this.assert(
             TP.isJSONString(aString),
             aComment,
@@ -1596,6 +1973,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     //  Strict test - we don't unwrap here.
 
@@ -1614,6 +1993,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Strict test - we don't unwrap here.
 
     return this.assert(
@@ -1630,6 +2011,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     //  Strict test - we don't unwrap here.
 
@@ -1650,6 +2033,8 @@ function(anObject, aNodeType, aComment) {
     if (!this.assertMinArguments(arguments, 2)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     //  Strict test - we don't unwrap here.
 
@@ -1675,6 +2060,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Strict test - we don't unwrap here.
 
     return this.assert(
@@ -1693,6 +2080,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Strict test - we don't unwrap here.
 
     return this.assert(
@@ -1709,6 +2098,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     //  Strict test - we don't unwrap here.
 
@@ -1739,6 +2130,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Just in case we got handed a TP.dom.XMLDocumentNode
     obj = TP.unwrap(anObject);
     return this.assert(
@@ -1757,6 +2150,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     //  Just in case we got handed a TP.core.* (HTML Node of some sort)
     obj = TP.unwrap(anObject);
@@ -1787,6 +2182,8 @@ function(anObject, aComment) {
         return false;
     }
 
+    //  NB: No param checks here - it's ok that parameters might not be valid.
+
     //  Just in case we got handed a TP.dom.HTMLDocumentNode
     obj = TP.unwrap(anObject);
     return this.assert(
@@ -1805,6 +2202,8 @@ function(anObject, aComment) {
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
+
+    //  NB: No param checks here - it's ok that parameters might not be valid.
 
     //  Just in case we got handed a TP.core.* (HTML Node of some sort)
     obj = TP.unwrap(anObject);
@@ -1829,6 +2228,18 @@ function(aTarget, aSignal, aComment) {
         any;
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aTarget,
+        TP.sc('Can\'t check for signaling since target is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aSignal,
+        TP.sc('Can\'t check for signaling since signal is not valid.'))) {
         return false;
     }
 
@@ -2007,6 +2418,12 @@ function(aFunction, anException) {
         return false;
     }
 
+    if (!this.assertValidArgument(
+        aFunction,
+        TP.sc('Can\'t check for \'raises\' since function is not valid.'))) {
+        return false;
+    }
+
     if (TP.isValid(anException)) {
         name = TP.isString(anException) ? anException : TP.name(anException);
     }
@@ -2082,6 +2499,12 @@ function(aFunction, aSignal) {
         retVal;
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aFunction,
+        TP.sc('Can\'t check for \'throws\' since function is not valid.'))) {
         return false;
     }
 
@@ -2162,6 +2585,12 @@ function(aFunction, anError) {
         retVal;
 
     if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aFunction,
+        TP.sc('Can\'t check for \'throws\' since function is not valid.'))) {
         return false;
     }
 
@@ -2311,6 +2740,12 @@ function(anObject, aComment) {
         return false;
     }
 
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isDisabled\' since object is not valid.'))) {
+        return false;
+    }
+
     //  Just in case we got handed a TP.dom.ElementNode.
     obj = TP.unwrap(anObject);
 
@@ -2337,6 +2772,12 @@ function(anObject, aComment) {
         isDisplayed;
 
     if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isDisplayed\' since object is not valid.'))) {
         return false;
     }
 
@@ -2522,6 +2963,12 @@ function(anObject, aComment) {
         return false;
     }
 
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for \'isVisible\' since object is not valid.'))) {
+        return false;
+    }
+
     //  Just in case we got handed a TP.dom.ElementNode.
     obj = TP.unwrap(anObject);
 
@@ -2604,6 +3051,27 @@ function(anObject, aProperty, aValue, aComment) {
         val;
 
     if (!this.assertMinArguments(arguments, 3)) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        anObject,
+        TP.sc('Can\'t check for computed style property since' +
+                ' object is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aProperty,
+        TP.sc('Can\'t check for computed style property since' +
+                ' property is not valid.'))) {
+        return false;
+    }
+
+    if (!this.assertValidArgument(
+        aValue,
+        TP.sc('Can\'t check for computed style property since' +
+                ' value is not valid.'))) {
         return false;
     }
 
