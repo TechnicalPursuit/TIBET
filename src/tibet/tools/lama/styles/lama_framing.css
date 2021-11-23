@@ -489,7 +489,7 @@ hr.clear {
     pointer-events: none;
 }
 
-#commonTileLayer > * {
+#commonTileLayer > *|* {
 
     /* Turn pointer events back on for children (and therefore descendants,
     since its an inherited property) of the common tile layer. */

@@ -261,7 +261,7 @@ lama|count[class~="contentrefreshed"] {
     display: none;
 }
 
-#background:not(.edge-east-open) .framing.corner:not([pclass|closed]) lama|changes > .header > * {
+#background:not(.edge-east-open) .framing.corner:not([pclass|closed]) lama|changes > .header > *|* {
 
     display: block;
 }

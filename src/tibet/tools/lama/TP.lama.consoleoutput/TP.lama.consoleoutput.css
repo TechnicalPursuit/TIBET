@@ -187,7 +187,7 @@ lama|consoleoutput .flex-item > .header {
     font-size: inherit;
 }
 
-lama|consoleoutput .flex-item > .header > * {
+lama|consoleoutput .flex-item > .header > *|* {
 
     /* line-height: 30px; */
 
