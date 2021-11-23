@@ -296,6 +296,7 @@ function(info) {
      *     dialog. Valid keys for this hash include:
      *          {String} [dialogID=systemDialog] The id to use for the overall
      *          dialog in the system.
+     *          {Window} [dialogWindow=uiwin] The window to use for the dialog.
      *          {Boolean} [isModal=true] Whether or not this dialog is modal
      *          (i.e. will have an event-trapping curtain behind it).
      *          {TP.core.Hash} [dialogAttrs] A hash of attributes to put on
@@ -371,23 +372,12 @@ function(info) {
 
                 isModal = info.atIfInvalid('isModal', true);
 
-                win = TP.sys.uiwin(true);
+                win = TP.ifInvalid(info.at('dialogWindow'), TP.sys.uiwin(true));
 
                 //  Grab the dialog and create one if one isn't present.
                 dialogTPElem = TP.byId(dialogID, win);
 
-                //  If we couldn't find the dialog element and we're running the
-                //  Lama, then we can try to find it in the UIROOT window.
-                if (TP.notValid(dialogTPElem) && TP.sys.hasFeature('lama')) {
-                    win = TP.sys.getUIRoot();
-                    dialogTPElem = TP.byId(dialogID, win);
-                }
-
                 if (TP.notValid(dialogTPElem)) {
-
-                    //  Reset win to uiwin (not getUIRoot from lama-based
-                    //  search).
-                    win = TP.sys.uiwin(true);
 
                     //  If the caller provided an attribute hash, then copy
                     //  that. Otherwise, create a new one. We'll populate it
