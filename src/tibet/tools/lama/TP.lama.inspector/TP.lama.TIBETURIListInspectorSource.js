@@ -28,7 +28,8 @@ TP.lama.TIBETURIListInspectorSource.Inst.defineHandler(
 function(aSignal) {
 
     TP.prompt('Enter URI address:',
-                'urn:tibet:').then(
+                'urn:tibet:',
+                TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
         function(userValue) {
 
             var inspector,

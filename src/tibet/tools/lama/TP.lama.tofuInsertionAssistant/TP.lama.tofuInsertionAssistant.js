@@ -73,6 +73,7 @@ function(assistantData) {
     dialogPromise = TP.dialog(
         TP.hc(
             'dialogID', 'TofuAssistantDialog',
+            'dialogWindow', TP.sys.getUIRoot(),
             'isModal', true,
             'title', 'Insert New Tag',
             'templateContent', assistantContentTPElem));
@@ -358,7 +359,8 @@ function(anObject) {
                 TP.alert('Type matching tag: ' +
                             tagName +
                             ' is not an Element.' +
-                            ' Element not inserted.');
+                            ' Element not inserted.',
+                    TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
                 return this;
             }

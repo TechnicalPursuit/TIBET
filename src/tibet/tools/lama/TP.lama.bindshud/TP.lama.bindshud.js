@@ -112,7 +112,8 @@ function(aSignal) {
      * @returns {TP.lama.bindshud} The receiver.
      */
 
-    TP.alert('Called addIO');
+    TP.alert('Called addIO',
+        TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
     return this;
 });
@@ -131,7 +132,8 @@ function(aSignal) {
      * @returns {TP.lama.bindshud} The receiver.
      */
 
-    TP.alert('Called addScope');
+    TP.alert('Called addScope',
+        TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
     return this;
 });
@@ -487,7 +489,8 @@ function(aSignal) {
                             TP.w3.Xmlns.BIND);
 
     //  Make sure to confirm this operation, since it's destructive.
-    TP.confirm('Really delete all data bindings of the halo\'ed element?').then(
+    TP.confirm('Really delete all data bindings of the halo\'ed element?',
+            TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
         function(shouldDelete) {
 
             var bindingExprs;
@@ -772,7 +775,8 @@ function(aSignal) {
 
     TP.documentCopyTextToClipboard(this.getNativeDocument(), finalPath);
 
-    TP.alert('Path copied to clipboard');
+    TP.alert('Path copied to clipboard',
+        TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
     return this;
 });

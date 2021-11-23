@@ -101,7 +101,8 @@ function(aTargetTPElem, aSignal) {
 
                     } else {
                         TP.alert('Invalid "position" property value: ' +
-                                    positionVal);
+                                    positionVal,
+                            TP.hc('dialogWindow', TP.sys.getUIRoot()));
                     }
                 });
             }

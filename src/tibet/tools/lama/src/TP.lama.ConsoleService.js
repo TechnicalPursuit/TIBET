@@ -865,7 +865,9 @@ function(aSignal) {
             aSignal.atPut('messageType', 'prompt');
         }
 
-        TP.prompt(aSignal.at('query'), aSignal.at('default')).then(
+        TP.prompt(aSignal.at('query'),
+                aSignal.at('default'),
+                TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
             function(retVal) {
 
                 //  If the value came back empty, then cancel the request. This

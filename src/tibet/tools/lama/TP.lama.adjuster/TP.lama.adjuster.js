@@ -193,13 +193,16 @@ function(aSignal) {
     TP.promptWithChoices(
         'Choose one of the following CSS properties:',
         currentlySupportedProps,
-        'background-color').then(
+        'background-color',
+        TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
         function(cssPropName) {
             if (TP.isEmpty(cssPropName)) {
                 return;
             }
 
-            TP.prompt('Enter a value for <b>' + cssPropName + '</b>:').then(
+            TP.prompt('Enter a value for <b>' + cssPropName + '</b>:',
+                        null,
+                        TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
                 function(cssPropValue) {
 
                     var haloTPElem,

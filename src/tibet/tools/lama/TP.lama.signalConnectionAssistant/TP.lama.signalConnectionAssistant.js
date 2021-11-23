@@ -71,6 +71,7 @@ function(assistantData) {
     dialogPromise = TP.dialog(
         TP.hc(
             'dialogID', 'ConnectionAssistantDialog',
+            'dialogWindow', TP.sys.getUIRoot(),
             'isModal', true,
             'title', 'Make a signaling connection',
             'templateContent', assistantContentTPElem));

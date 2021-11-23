@@ -2546,7 +2546,8 @@ function(insertionPointElement, insertionPosition) {
                 //  'http:service' element with that href.
                 TP.alert('A http:service tag with a remote URI of: ' +
                             insertedLoc +
-                            ' already exists within this custom element.');
+                            ' already exists within this custom element.',
+                    TP.hc('dialogWindow', TP.sys.getUIRoot()));
             }
 
             break;

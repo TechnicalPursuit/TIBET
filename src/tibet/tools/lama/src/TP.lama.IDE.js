@@ -1246,6 +1246,7 @@ function(aSignal) {
         dialogPromise = TP.dialog(
             TP.hc(
                 'dialogID', 'CmdAssistantDialog',
+                'dialogWindow', TP.sys.getUIRoot(),
                 'isModal', true,
                 'title', aSignal.getPayload().at('title'),
                 'templateContent', assistantContentTPElem));
@@ -5528,11 +5529,12 @@ function() {
     //  For now, we only run the Lama on Chrome
     if (!TP.sys.isUA('chrome')) {
         TP.alert(
-            'The TIBET Lama technology preview is not supported on this' +
-            ' platform.<br/>' +
-            'Please use Google Chrome.<br/>' +
-            'More information can be found here:<br/>' +
-            'www.technicalpursuit.com/docs/faq.html#platforms');
+                'The TIBET Lama technology preview is not supported on this' +
+                ' platform.<br/>' +
+                'Please use Google Chrome.<br/>' +
+                'More information can be found here:<br/>' +
+                'www.technicalpursuit.com/docs/faq.html#platforms',
+            TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
         return this;
     }

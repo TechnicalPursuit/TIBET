@@ -105,7 +105,8 @@ function(aSignal) {
      * @returns {TP.lama.domhud} The receiver.
      */
 
-    TP.alert('Called addChild');
+    TP.alert('Called addChild',
+        TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
     return this;
 });
@@ -124,7 +125,8 @@ function(aSignal) {
      * @returns {TP.lama.domhud} The receiver.
      */
 
-    TP.alert('Called addSibling');
+    TP.alert('Called addSibling',
+        TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
     return this;
 });
@@ -615,7 +617,8 @@ function(aSignal) {
 
     TP.documentCopyTextToClipboard(this.getNativeDocument(), finalPath);
 
-    TP.alert('Path copied to clipboard');
+    TP.alert('Path copied to clipboard',
+        TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
     return this;
 });

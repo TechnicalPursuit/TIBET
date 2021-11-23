@@ -717,7 +717,8 @@ function(aSignal) {
 
     var cmdVal;
 
-    TP.confirm('Build Application Packages?').then(
+    TP.confirm('Build Application Packages?',
+                TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
         function(shouldBuild) {
             if (TP.notTrue(shouldBuild)) {
                 TP.info('Build cancelled.');
@@ -807,7 +808,8 @@ function(aSignal) {
      * @returns {TP.lama.workbench} The receiver.
      */
 
-    TP.confirm('Run Application Test Suites?').then(
+    TP.confirm('Run Application Test Suites?',
+            TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
         function(shouldTest) {
             var cmdVal,
                 shell;

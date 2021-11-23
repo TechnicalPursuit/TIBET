@@ -441,7 +441,8 @@ function(aSignal) {
         //  to the empty value.
         if (!allowChange) {
             TP.alert('Cannot change: ' + name + ' as, for this element, TIBET' +
-                        ' is already using this attribute internally');
+                        ' is already using this attribute internally',
+                    TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
             modelObj.set('jpath($.info.tagAttrs[' +
                             lastIndex +

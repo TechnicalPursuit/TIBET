@@ -808,7 +808,8 @@ function(aSignal) {
     //  are different, but then again that just means that the editor is dirty.
     if (this.isDirty()) {
 
-        TP.confirm('Remote content changed. Abandon local changes?').then(
+        TP.confirm('Remote content changed. Abandon local changes?',
+            TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
             function(abandonChanges) {
 
                 if (abandonChanges) {
@@ -1131,7 +1132,8 @@ function() {
             //  loaded.
             TP.alert(TP.sc('The content at: ',
                             sourceLoc,
-                            ' could not be loaded.')).then(
+                            ' could not be loaded.'),
+                        TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
                     function() {
                         var lamaConsole,
                             tabHasValue;
@@ -1145,7 +1147,8 @@ function() {
                         tabHasValue = lamaConsole.hasTabForValue(sourceLoc);
 
                         if (tabHasValue) {
-                            TP.confirm('Remove tabbed editor entry?').then(
+                            TP.confirm('Remove tabbed editor entry?',
+                                TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
                                 function(shouldRemove) {
 
                                     //  Message the Lama console object to

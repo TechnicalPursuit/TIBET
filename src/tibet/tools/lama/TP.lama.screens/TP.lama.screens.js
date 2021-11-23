@@ -31,7 +31,8 @@ function(aSignal) {
      */
 
     TP.prompt('Enter URI address for the new location:',
-                '~app/').then(
+                '~app/',
+                TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
         function(userValue) {
 
             if (TP.isEmpty(userValue) || userValue === '~app/') {
@@ -40,7 +41,8 @@ function(aSignal) {
 
             //  Pass true here since we don't care if the URI has a scheme.
             if (!TP.isURIString(userValue, true)) {
-                TP.alert('Invalid URI string');
+                TP.alert('Invalid URI string',
+                        TP.hc('dialogWindow', TP.sys.getUIRoot()));
                 return;
             }
 

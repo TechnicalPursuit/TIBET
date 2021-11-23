@@ -73,6 +73,7 @@ function(assistantData) {
     dialogPromise = TP.dialog(
         TP.hc(
             'dialogID', 'FormBuilderAssistantDialog',
+            'dialogWindow', TP.sys.getUIRoot(),
             'isModal', true,
             'title', 'Build a form',
             'templateContent', assistantContentTPElem));

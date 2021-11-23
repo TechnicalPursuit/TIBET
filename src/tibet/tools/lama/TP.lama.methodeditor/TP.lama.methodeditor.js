@@ -201,7 +201,8 @@ function(aSignal) {
     //  the underlying resource and what is currently displayed in the editor
     //  are different, but then again that just means that the editor is dirty.
     if (this.isDirty()) {
-        TP.confirm('Remote content changed. Abandon local changes?').then(
+        TP.confirm('Remote content changed. Abandon local changes?',
+                TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
             function(abandonChanges) {
 
                 if (abandonChanges) {

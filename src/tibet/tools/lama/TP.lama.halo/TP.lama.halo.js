@@ -274,13 +274,15 @@ function() {
 
         TP.alert('The halo\'ed element \'&lt;' +
                     currentTargetTPElem.getFullName() +
-                    '/&gt;\' cannot be deleted');
+                    '/&gt;\' cannot be deleted',
+                TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
         return TP.TSH_NO_VALUE;
     }
 
     //  Make sure to confirm this operation, since it's destructive.
-    TP.confirm('Really delete the halo\'ed element?').then(
+    TP.confirm('Really delete the halo\'ed element?',
+            TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
         function(shouldDelete) {
 
             if (shouldDelete) {
@@ -323,13 +325,15 @@ function() {
 
         TP.alert('The halo\'ed element \'&lt;' +
                     currentTargetTPElem.getFullName() +
-                    '/&gt;\' cannot be emptied');
+                    '/&gt;\' cannot be emptied',
+                TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
         return TP.TSH_NO_VALUE;
     }
 
     //  Make sure to confirm this operation, since it's destructive.
-    TP.confirm('Really empty the halo\'ed element?').then(
+    TP.confirm('Really empty the halo\'ed element?',
+            TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
         function(shouldEmpty) {
 
             if (shouldEmpty) {
@@ -1634,7 +1638,8 @@ function(aspectPathParts) {
     if (!TP.isURI(uri)) {
         TP.alert('The halo\'ed element \'&lt;' +
                     currentTargetTPElem.getFullName() +
-                    '/&gt;\' has no external URI for aspect: ' + aspect);
+                    '/&gt;\' has no external URI for aspect: ' + aspect,
+                TP.hc('dialogWindow', TP.sys.getUIRoot()));
 
         return TP.TSH_NO_VALUE;
     }

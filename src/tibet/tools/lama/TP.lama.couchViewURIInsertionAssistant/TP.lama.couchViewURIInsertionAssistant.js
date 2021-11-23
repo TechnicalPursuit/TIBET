@@ -59,6 +59,7 @@ function(assistantData) {
     dialogPromise = TP.dialog(
         TP.hc(
             'dialogID', 'CouchViewURIAssistantDialog',
+            'dialogWindow', TP.sys.getUIRoot(),
             'isModal', true,
             'title', 'Insert Data Table',
             'templateContent', assistantContentTPElem));
