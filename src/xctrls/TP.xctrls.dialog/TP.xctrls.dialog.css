@@ -30,6 +30,14 @@ xctrls|dialog > xctrls|content {
     flex-direction: column;
 }
 
+/* If the dialog doesn't have a 'modal' attribute, then it needs to be
+ * positioned absolute because it can be dragged around.
+ */
+xctrls|dialog > xctrls|content:not([modal]) {
+
+    position: absolute;
+}
+
 /* Hovering over the dialog */
 xctrls|dialog > xctrls|content:hover {
 
