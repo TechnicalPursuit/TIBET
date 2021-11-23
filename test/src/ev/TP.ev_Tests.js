@@ -364,9 +364,6 @@ function() {
                         test.refute.isEqualTo(
                             TP.byId('fooField', windowContext, false).value,
                             'ABCDE');
-                        test.assert.didSignal(
-                            TP.byId('fooDiv', windowContext, false),
-                            'TP.sig.DOMKeyPress');
                     });
 
                 driver.constructSequence().
