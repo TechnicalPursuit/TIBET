@@ -585,6 +585,8 @@ function(aMessage, info) {
      *                          the standard template.
      *          dialogID:       The ID to use for the dialog. This defaults to
      *                          'sharedCommonDialog'.
+     *          dialogWindow:   The window to use for the dialog. This defaults
+     *                          to the UI canvas.
      * @example Notify the user of some event:
      *     <code>
      *          TP.alert('TIBET Rocks!');
@@ -596,6 +598,7 @@ function(aMessage, info) {
 
     var templateURI,
         dialogID,
+        dialogWindow,
 
         promise;
 
@@ -606,9 +609,11 @@ function(aMessage, info) {
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_alert.xhtml'));
         dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
+        dialogWindow = info.atIfInvalid('dialogWindow', TP.sys.uiwin(true));
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_alert.xhtml');
         dialogID = 'sharedCommonDialog';
+        dialogWindow = TP.sys.uiwin(true);
     }
 
     //  Call the TP.dialog() method with that data and specifying that the panel
@@ -616,6 +621,7 @@ function(aMessage, info) {
     promise = TP.dialog(
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
+                            'dialogWindow', dialogWindow,
                             'isModal', true,
                             'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', aMessage)));
@@ -692,6 +698,7 @@ function(anAction, info) {
 
     var templateURI,
         dialogID,
+        dialogWindow,
 
         promise;
 
@@ -702,9 +709,11 @@ function(anAction, info) {
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_confirm.xhtml'));
         dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
+        dialogWindow = info.atIfInvalid('dialogWindow', TP.sys.uiwin(true));
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_confirm.xhtml');
         dialogID = 'sharedCommonDialog';
+        dialogWindow = TP.sys.uiwin(true);
     }
 
     //  Call the TP.dialog() method with that data and specifying that the panel
@@ -712,6 +721,7 @@ function(anAction, info) {
     promise = TP.dialog(
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
+                            'dialogWindow', dialogWindow,
                             'isModal', true,
                             'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', anAction)));
@@ -779,6 +789,8 @@ function(aQuestion, aDefaultAnswer, info) {
      *                          the standard template.
      *          dialogID:       The ID to use for the dialog. This defaults to
      *                          'sharedCommonDialog'.
+     *          dialogWindow:   The window to use for the dialog. This defaults
+     *                          to the UI canvas.
      *          secure:         Whether or not the field should be secure (i.e.
      *                          the content should not be visible to the user).
      * @example Obtain an answer from the user:
@@ -792,6 +804,7 @@ function(aQuestion, aDefaultAnswer, info) {
 
     var templateURI,
         dialogID,
+        dialogWindow,
 
         isSecure,
 
@@ -804,10 +817,12 @@ function(aQuestion, aDefaultAnswer, info) {
                         'templateURI',
                         TP.uc('~TP.xctrls.dialog/system_prompt.xhtml'));
         dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
+        dialogWindow = info.atIfInvalid('dialogWindow', TP.sys.uiwin(true));
         isSecure = info.atIfInvalid('secure', false);
     } else {
         templateURI = TP.uc('~TP.xctrls.dialog/system_prompt.xhtml');
         dialogID = 'sharedCommonDialog';
+        dialogWindow = TP.sys.uiwin(true);
         isSecure = false;
     }
 
@@ -816,6 +831,7 @@ function(aQuestion, aDefaultAnswer, info) {
     promise = TP.dialog(
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
+                            'dialogWindow', dialogWindow,
                             'isModal', true,
                             'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', aQuestion)));
@@ -890,6 +906,8 @@ function(aQuestion, choices, aDefaultAnswer, info) {
      *                              of the standard template.
      *          dialogID:           The ID to use for the dialog. This defaults
      *                              to 'sharedCommonDialog'.
+     *          dialogWindow:       The window to use for the dialog. This
+     *                              defaults to the UI canvas.
      *          multiple:           Whether or not the set of choices should be
      *                              presented such that the user can choose
      *                              multiple values.
@@ -923,6 +941,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
 
     var templateURI,
         dialogID,
+        dialogWindow,
 
         isMultiple,
         isOpen,
@@ -941,6 +960,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
                 'templateURI',
                 TP.uc('~TP.xctrls.dialog/system_prompt_with_choices.xhtml'));
         dialogID = info.atIfInvalid('dialogID', 'sharedCommonDialog');
+        dialogWindow = info.atIfInvalid('dialogWindow', TP.sys.uiwin(true));
 
         isMultiple = info.atIfInvalid('multiple', false);
         isOpen = info.atIfInvalid('open', false);
@@ -959,6 +979,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
         templateURI =
             TP.uc('~TP.xctrls.dialog/system_prompt_with_choices.xhtml');
         dialogID = 'sharedCommonDialog';
+        dialogWindow = TP.sys.uiwin(true);
         isMultiple = false;
         isOpen = false;
         selectThreshold = 5;
@@ -1039,6 +1060,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
     promise = TP.dialog(
                     TP.hc('templateURI', templateURI,
                             'dialogID', dialogID,
+                            'dialogWindow', dialogWindow,
                             'isModal', true,
                             'dialogTypeName', 'xctrls:okcanceldialog',
                             'templateData', TP.hc('message', aQuestion)));
