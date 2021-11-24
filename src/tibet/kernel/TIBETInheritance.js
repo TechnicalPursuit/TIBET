@@ -3320,12 +3320,12 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         try {
             throw new Error();
         } catch (e) {
-            stackInfo = TP.getStackInfo(e);
+            stackInfo = TP.errorFormatStack(e, ' \u00BB ');
         }
 
         TP.sys.logInference(anOrigin.getTypeName() + ' ' +
                 orgid + ' triggered DNU ' + aMethodName + ' at ' +
-                stackInfo.join(' \u00BB '),
+                stackInfo,
                 TP.DEBUG);
     }
 

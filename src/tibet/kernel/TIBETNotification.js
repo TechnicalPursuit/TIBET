@@ -2675,7 +2675,7 @@ function(depth, level) {
     err = this.at('error');
     if (TP.isError(err)) {
         msg = TP.str(err) || err.toString();
-        msg += TP.getStackInfo(err).join('\n');
+        msg += TP.errorFormatStack(err);
     } else if (TP.isValid(err)) {
         msg = TP.str(err) || err.toString();
     } else {

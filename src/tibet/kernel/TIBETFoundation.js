@@ -2345,7 +2345,7 @@ function(shouldNotify, shouldThrow, stackDepth) {
     } catch (e) {
         stack = e.stack || [];
         if (doNotify) {
-            stackInfo = TP.getStackInfo(e);
+            stackInfo = TP.errorFormatStack(e);
         }
     }
 
@@ -2407,7 +2407,7 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         str += ' in file: ' + path + ' line: ' + line + ' column: ' + column;
 
         if (TP.sys.shouldLogStack() && TP.isError(errorObj)) {
-            str += '\nSTACK:\n' + TP.getStackInfo(errorObj).join('\n');
+            str += '\nSTACK:\n' + TP.errorFormatStack(errorObj);
         }
 
         //  If we're still booting errors that are uncaught are considered FATAL.
