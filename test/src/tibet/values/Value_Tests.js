@@ -2831,6 +2831,66 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.registerObject.describe('core object registration tests',
+function() {
+
+    var thisref,
+
+        testData,
+        testKeys,
+        len,
+        i,
+
+        testKey,
+
+        correctVal;
+
+    TP.$$setupCommonObjectValues();
+
+    thisref = this;
+
+    testData = TP.$$commonObjectValues;
+    testKeys = testData.getKeys();
+
+    //  ---
+
+    this.it('Correct values for each test', function(test, options) {
+
+        test.assert.isTrue(true);
+    });
+
+    len = testKeys.getSize();
+    for (i = 0; i < len; i++) {
+
+        testKey = testKeys.at(i);
+
+        correctVal = testData.at(testKey);
+
+        //  ---
+
+        /* eslint-disable no-loop-func */
+        (function() {
+
+            var testFunc;
+
+            testFunc =
+                function(test, options) {
+                    test.assert.isIdenticalTo(
+                        TP.bySystemId(testFunc.valID),
+                        testFunc.correctVal);
+                };
+            testFunc.valID = testKey + '__TEST__';
+            testFunc.correctVal = correctVal;
+            TP.sys.registerObject(correctVal, testFunc.valID, true);
+
+            thisref.it('registerObject: ' + testKey, testFunc);
+        }());
+        /* eslint-disable no-loop-func */
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 //  TP.isSubtypeOf()
 //  TP.keys()
 //  TP.loc()
