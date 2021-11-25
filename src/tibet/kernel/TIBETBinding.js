@@ -4830,21 +4830,25 @@ function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
         allRefreshedElements;
 
-    if (TP.isValid(localRefreshInfo) && this.isBoundElement()) {
-        retVal = this.$refreshLocalBindings(
-                    localRefreshInfo.at('facet'),
-                    localRefreshInfo.at('initialVal'),
-                    localRefreshInfo.at('updatedAspects'),
-                    localRefreshInfo.at('bindingAttr'),
-                    localRefreshInfo.at('pathType'),
-                    localRefreshInfo.at('changeSource'),
-                    localRefreshInfo.at('repeatSource'),
-                    localRefreshInfo.at('repeatIndex'));
-        if (TP.notFalse(shouldRender) && retVal) {
-            this.render();
-        }
+    if (TP.isValid(localRefreshInfo)) {
+        if (this.isBoundElement()) {
+            retVal = this.$refreshLocalBindings(
+                        localRefreshInfo.at('facet'),
+                        localRefreshInfo.at('initialVal'),
+                        localRefreshInfo.at('updatedAspects'),
+                        localRefreshInfo.at('bindingAttr'),
+                        localRefreshInfo.at('pathType'),
+                        localRefreshInfo.at('changeSource'),
+                        localRefreshInfo.at('repeatSource'),
+                        localRefreshInfo.at('repeatIndex'));
+            if (TP.notFalse(shouldRender) && retVal) {
+                this.render();
+            }
 
-        return retVal;
+            return retVal;
+        } else {
+            return false;
+        }
     }
 
     //  First, call refresh on all of the *direct children* of the receiver,
