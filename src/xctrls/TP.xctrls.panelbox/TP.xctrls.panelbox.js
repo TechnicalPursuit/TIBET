@@ -228,13 +228,13 @@ function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
     selectedPanel = this.get('selectedItem');
 
-    if (TP.notValid(selectedPanel)) {
-        return this.callNextMethod();
+    if (TP.isValid(selectedPanel)) {
+        selectedPanel.refresh(shouldRender,
+                                shouldRefreshBindings,
+                                localRefreshInfo);
     }
 
-    return selectedPanel.refresh(shouldRender,
-                                    shouldRefreshBindings,
-                                    localRefreshInfo);
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
