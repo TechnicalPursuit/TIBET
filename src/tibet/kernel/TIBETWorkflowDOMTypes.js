@@ -1732,7 +1732,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(TP.ec(e,
-                        'Error in ' +
+                        this.getLocalName() + ' error in: ' +
                         type.getTypeName() + ' for: ' + TP.str(node))) : 0;
         }
 
