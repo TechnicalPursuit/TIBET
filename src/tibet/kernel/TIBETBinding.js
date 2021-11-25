@@ -4830,7 +4830,7 @@ function(shouldRender, shouldRefreshBindings, localRefreshInfo) {
 
         allRefreshedElements;
 
-    if (TP.isValid(localRefreshInfo)) {
+    if (TP.isValid(localRefreshInfo) && this.isBoundElement()) {
         retVal = this.$refreshLocalBindings(
                     localRefreshInfo.at('facet'),
                     localRefreshInfo.at('initialVal'),
