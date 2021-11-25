@@ -9576,6 +9576,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('getAppTag',
+function() {
+
+    /**
+     * @method getAppTag
+     * @summary Retrieves the application tag wrapper instance.
+     * @returns {TP.dom.ElementNode} The app tag wrapper instance.
+     */
+
+    return TP.byId('app');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('getHistory',
 function() {
 
@@ -9668,6 +9682,20 @@ function() {
      */
 
     return TP.sys.getApplication();
+});
+
+//  ------------------------------------------------------------------------
+
+APP.defineMethod('getAppTag',
+function() {
+
+    /**
+     * @method getAppTag
+     * @summary Retrieves the application tag wrapper instance.
+     * @returns {TP.dom.ElementNode} The app tag wrapper instance.
+     */
+
+    return TP.sys.getAppTag();
 });
 
 //  ------------------------------------------------------------------------
