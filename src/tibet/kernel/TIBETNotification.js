@@ -2545,18 +2545,28 @@ function(anError, aMessage) {
     /**
      * @method ec
      * @summary Constructs a new TP.sig.Exception using anError as the key
-     *     element of the payload. An optional message augmenting the Error's
-     *     native message can also be provided.
-     * @param {Error} anError The Error object to use as the key element of the
-     *     payload.
+     *     element of the payload. An optional "context" message augmenting the
+     *     Error's low-level native message can also be provided. If no context
+     *     is provided the current stack is used to define context.
+     * @param {Error} anError The Error object being reported/augmented.
      * @param {String} aMessage The message to use as the message of the
-     *     TP.sig.Exception. If this message is empty, the message from the
-     *     Error object is used.
+     *     TP.sig.Exception. If this message is empty the current stack is
+     *     dumped and the message is pulled from the stack to determine the
+     *     context of the error.
+     * @returns {TP.sig.Exception} A new Exception instance.
      */
 
     var msg;
 
-    msg = TP.isEmpty(aMessage) ? anError.message : aMessage;
+    if (!TP.isError(anError)) {
+        return;
+    }
+
+    if (TP.isEmpty(aMessage)) {
+        msg = TP.getStackInfo().at(0).join(' ');
+    } else {
+        msg = aMessage;
+    }
 
     return TP.sig.Exception.construct(TP.hc('error', anError,
                                             'message', msg));
@@ -2612,14 +2622,8 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('error');
-    if (TP.isError(err)) {
-        msg = err.message || err.toString();
-    } else if (TP.isValid(err)) {
-        msg = TP.str(err) || err.toString();
-    } else {
-        msg = this.getMessage();
-    }
+    msg = this.getMessage();
+    err = this.getError();
 
     try {
         str = this.getTypeName() + '.construct(' +
@@ -2672,14 +2676,14 @@ function(depth, level) {
     }
     this[marker] = true;
 
-    err = this.at('error');
+    msg = this.getMessage();
+    err = this.getError();
+
     if (TP.isError(err)) {
-        msg = TP.str(err) || err.toString();
+        msg += ' !! ' + TP.str(err) || err.toString();
         msg += TP.errorFormatStack(err);
     } else if (TP.isValid(err)) {
-        msg = TP.str(err) || err.toString();
-    } else {
-        msg = this.getMessage();
+        msg += ' !! ' + TP.str(err) || err.toString();
     }
 
     str = '[' + this.getSignalName() + ' :: ';
@@ -2718,30 +2722,23 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('error');
-    if (TP.isValid(err)) {
-        msg = TP.str(err) || err.toString();
-    } else {
-        msg = this.getMessage();
-    }
+    msg = this.getMessage();
+    err = this.getError();
 
     try {
-        if (TP.isValid(err)) {
-            str = '<span class="TP_sig_Exception ' +
-                    TP.escapeTypeName(TP.tname(this)) + '">' +
-                        '<span data-name="payload">' +
+        str = '<span class="TP_sig_Exception ' +
+            TP.escapeTypeName(TP.tname(this)) + '">' +
+                '<span data-name="payload">' +
+                    TP.isValid(err) ?
+                        '<span data-name="error">' +
                             TP.htmlstr(err) +
-                         '</span>' +
-                     '</span>';
-        } else {
-            str = '<span class="TP_sig_Exception ' +
-                    TP.escapeTypeName(TP.tname(this)) + '">' +
-                        '<span data-name="payload"><span data-name="message">' +
-                            TP.htmlstr(msg) +
-                         '</span></span>' +
-                     '</span>';
-        }
-
+                        '</span>' :
+                        '' +
+                    '<span data-name="message">' +
+                        TP.htmlstr(msg) +
+                     '</span>' +
+                '</span>' +
+             '</span>';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -2774,30 +2771,21 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('error');
-    if (TP.isValid(err)) {
-        msg = TP.str(err) || err.toString();
-    } else {
-        msg = this.getMessage();
-    }
+    msg = this.getMessage();
+    err = this.getError();
 
     try {
-        if (TP.isValid(err)) {
-            str = '{"type":' + this.getTypeName().quoted('"') + ',' +
-                    '"data":{' +
-                        '"signame":' +
-                             this.getSignalName().quoted('"') + ',' +
-                        '"payload":' + TP.jsonsrc(err) +
-                    '}}';
-        } else {
-            str = '{"type":' + this.getTypeName().quoted('"') + ',' +
-                    '"data":{' +
-                        '"signame":' +
-                             this.getSignalName().quoted('"') + ',' +
-                        '"payload":{"message":' + TP.jsonsrc(msg) + '}' +
-                    '}}';
-        }
-
+        str = '{"type":' + this.getTypeName().quoted('"') + ',' +
+                '"data":{' +
+                    '"signame":' +
+                         this.getSignalName().quoted('"') + ',' +
+                    '"payload":{' +
+                        TP.isValid(err) ?
+                            TP.jsonsrc(err) :
+                            '' +
+                    '"message":' + TP.jsonsrc(msg) +
+                    '}' +
+                '}}';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -2832,34 +2820,22 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('error');
+    msg = this.getMessage();
+    err = this.getError();
+
     if (TP.isValid(err)) {
-        msg = TP.str(err) || err.toString();
-    } else {
-        msg = this.getMessage();
+        msg += ' !! ' + TP.str(err) || err.toString();
     }
 
     try {
-        if (TP.isValid(err)) {
-            str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) +
-                            '">' +
-                        '<dt>Type name</dt>' +
-                        '<dd class="pretty typename">' +
-                            this.getTypeName() +
-                        '</dd>' +
-                        TP.pretty(err) +
-                        '</dl>';
-        } else {
-            str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) +
-                            '">' +
-                        '<dt>Type name</dt>' +
-                        '<dd class="pretty typename">' +
-                            this.getTypeName() +
-                        '</dd>' +
-                        TP.pretty(msg) +
-                        '</dl>';
-        }
-
+        str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) +
+                '">' +
+            '<dt>Type name</dt>' +
+            '<dd class="pretty typename">' +
+                this.getTypeName() +
+            '</dd>' +
+            TP.pretty(msg) +
+            '</dl>';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -2901,11 +2877,11 @@ function(verbose) {
     }
     this[marker] = true;
 
-    err = this.at('error');
+    msg = this.getMessage();
+    err = this.getError();
+
     if (TP.isValid(err)) {
-        msg = TP.str(err) || err.toString();
-    } else {
-        msg = this.getMessage();
+        msg += ' !! ' + TP.str(err) || err.toString();
     }
 
     try {
@@ -2944,28 +2920,22 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('error');
-    if (TP.isValid(err)) {
-        msg = TP.str(err) || err.toString();
-    } else {
-        msg = this.getMessage();
-    }
+    msg = this.getMessage();
+    err = this.getError();
 
     try {
-        if (TP.isValid(err)) {
-            str = '<instance type="' + TP.tname(this) + '">' +
-                        '<payload>' +
-                            TP.xmlstr(err) +
-                         '</payload>' +
-                     '</instance>';
-        } else {
-            str = '<instance type="' + TP.tname(this) + '">' +
-                        '<payload><message>' +
-                            TP.xmlstr(msg) +
-                         '</message></payload>' +
-                     '</instance>';
-        }
-
+        str = '<instance type="' + TP.tname(this) + '">' +
+                    '<payload>' +
+                    TP.isValid(err) ?
+                        '<error>' +
+                        TP.xmlstr(err) +
+                        '</error>' :
+                        '' +
+                    '<message>' +
+                        TP.xmlstr(msg) +
+                    '</message>' +
+                 '</payload>' +
+             '</instance>';
     } catch (e) {
         str = this.toString();
     } finally {
