@@ -749,7 +749,6 @@ function(aTPElem) {
         tileTPElem = TP.bySystemId('Lama').makeTile('DOMInfo_Tile');
 
         newContentTPElem = tileTPElem.setContent(newBodyElem);
-        newContentTPElem.awaken();
 
         tileTPElem.get('footer').setContent(newFooterElem);
 
@@ -765,7 +764,6 @@ function(aTPElem) {
 
         if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
             newContentTPElem = tileTPElem.setContent(newBodyElem);
-            newContentTPElem.awaken();
         }
         if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
             tileTPElem.get('footer').setContent(newFooterElem);
@@ -774,15 +772,15 @@ function(aTPElem) {
 
     tileTPElem.setHeaderText('DOM Info - ' + sourceTPElem.getFullName());
 
-    modelURI.setResource(
-        sourceTPElem,
-        TP.hc('observeResource', false, 'signalChange', true));
-
     //  Position the tile
     tileTPElem.setPagePosition(TP.pc(centerElemPageRect.getX(),
                                         itemElemPageRect.getY()));
 
     (function() {
+        modelURI.setResource(
+            sourceTPElem,
+            TP.hc('observeResource', false, 'signalChange', true));
+
         tileTPElem.get('body').focusAutofocusedOrFirstFocusableDescendant();
     }).queueAfterNextRepaint(tileTPElem.getNativeWindow());
 

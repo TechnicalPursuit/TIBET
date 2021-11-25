@@ -222,7 +222,6 @@ function(aSignal) {
         tileTPElem.setHeaderText('Rule Properties');
 
         newContentTPElem = tileTPElem.setContent(newBodyElem);
-        newContentTPElem.awaken();
 
         tileTPElem.get('footer').setContent(newFooterElem);
 
@@ -236,7 +235,6 @@ function(aSignal) {
 
         if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
             newContentTPElem = tileTPElem.setContent(newBodyElem);
-            newContentTPElem.awaken();
         }
         if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
             tileTPElem.get('footer').setContent(newFooterElem);
@@ -248,14 +246,14 @@ function(aSignal) {
     //  Grab the current rule source.
     modelURI = TP.uc('urn:tibet:styleshud_rule_source');
 
-    //  Set the model's URI's resource and signal change. This will
-    //  cause the properties to update.
-    modelURI.setResource(itemData, setResourceParams);
-
     //  Position the tile
     tileTPElem.setPagePosition(positioningPoint);
 
     (function() {
+        //  Set the model's URI's resource and signal change. This will
+        //  cause the properties to update.
+        modelURI.setResource(itemData, setResourceParams);
+
         tileTPElem.get('body').focusAutofocusedOrFirstFocusableDescendant();
     }).queueAfterNextRepaint(tileTPElem.getNativeWindow());
 
