@@ -312,7 +312,6 @@ function(aSignal) {
                                     sourceTPElem,
                                     'RespondersHUDTileBody',
                                     TP.hc('dataURI', dataURI)));
-        newContentTPElem.awaken();
 
         tileTPElem.get('footer').setContent(
                                 TP.getContentForTool(
@@ -360,9 +359,11 @@ function(aSignal) {
     tileTPElem.setPagePosition(
                 TP.pc(xCoord, targetElemPageRect.getY()));
 
-    //  Set the model's URI's resource and signal change. This will
-    //  cause the properties to update.
-    dataURI.setResource(methods, TP.hc('signalChange', true));
+    (function() {
+        //  Set the model's URI's resource and signal change. This will
+        //  cause the properties to update.
+        dataURI.setResource(methods, TP.hc('signalChange', true));
+    }).queueAfterNextRepaint(tileTPElem.getNativeWindow());
 
     return this;
 });

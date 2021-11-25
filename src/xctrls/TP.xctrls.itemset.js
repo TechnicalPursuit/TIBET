@@ -124,6 +124,8 @@ function(aRequest) {
     var elem,
         tpElem,
 
+        templatedContent,
+
         templateStandinElem,
 
         templateTPElem,
@@ -144,6 +146,13 @@ function(aRequest) {
     }
 
     tpElem = TP.wrap(elem);
+
+    //  If the itemset already has templated *content* (not just a template),
+    //  then that means it has already been awakened. Exit here.
+    templatedContent = tpElem.get('templatedItemContent');
+    if (TP.isValid(templatedContent)) {
+        return;
+    }
 
     //  If we're disabled, make sure our group is too - that's what the focus
     //  management system is going to be looking at.
