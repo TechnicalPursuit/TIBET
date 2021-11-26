@@ -62,11 +62,8 @@ function() {
             panelTrigger,
             fooItem,
             barItem,
-            bazItem,
 
             selectedValue;
-
-        debugger;
 
         modelURI =
             TP.uc('urn:tibet:bound_selection_test_data#tibet(selection_set_1)');
@@ -78,7 +75,6 @@ function() {
 
         fooItem = TP.byId('select_panel_0', windowContext);
         barItem = TP.byId('select_panel_1', windowContext);
-        bazItem = TP.byId('select_panel_2', windowContext);
 
         //  ---
 
