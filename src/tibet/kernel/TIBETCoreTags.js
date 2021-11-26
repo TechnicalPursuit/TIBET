@@ -806,8 +806,10 @@ function(aRequest) {
      */
 
     var elem,
-        name,
-        tag,
+
+        projectName,
+        tagName,
+
         newElem;
 
     //  Make sure that we have an element to work from.
@@ -815,25 +817,25 @@ function(aRequest) {
         return;
     }
 
-    name = TP.sys.cfg('project.name');
-    tag = TP.sys.cfg('tibet.apptag') || 'APP.' + name + ':app';
+    projectName = TP.sys.cfg('project.name');
+    tagName = TP.sys.cfg('tibet.apptag') || 'APP.' + projectName + '|app';
 
     newElem = TP.xhtmlnode(
     '<div tibet:tag="tibet:app" class="tag-defaulted">' +
         '<h1 class="tag-defaulted">' +
-            'Application tag for ' + name + ' failed to render. ' +
+            'Application tag for ' + projectName + ' failed to render. ' +
             'Defaulted to &lt;tibet:app/&gt;' +
         '</h1>' +
 
         '<p>' +
         'If you are seeing this error message it usually means either:<br/><br/>' +
-        '- The tag specified for your application (' + tag + ') is missing; or<br/>' +
+        '- The tag specified for your application (' + tagName + ') is missing; or<br/>' +
         '- <b>The specified tag type has a syntax error or failed to load.</b>' +
         '</p>' +
 
         '<p>Source for that tag would typically be found in:</p>' +
 
-        '<p><code>src/tags/' + tag.replace(/:/g, '.') + '.js</code></p>' +
+        '<p><code>src/tags/' + tagName.replace(/:/g, '.') + '.js</code></p>' +
 
         '<p>' +
         'Check that file for syntax errors if it is the right file, or check' +
