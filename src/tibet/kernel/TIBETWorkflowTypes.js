@@ -9576,16 +9576,38 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('getAppTag',
+TP.sys.defineMethod('getAppElement',
 function() {
 
     /**
-     * @method getAppTag
-     * @summary Retrieves the application tag wrapper instance.
-     * @returns {TP.dom.ElementNode} The app tag wrapper instance.
+     * @method getAppElement
+     * @summary Retrieves the application element wrapper instance.
+     * @returns {TP.dom.ElementNode} The app element.
      */
 
-    return TP.byId('app');
+    var appTagName,
+
+        tagSelector,
+
+        tpElem;
+
+    appTagName = TP.sys.cfg('tibet.apptag');
+    if (TP.notEmpty(appTagName)) {
+        tagSelector = appTagName.replace(':', '|');
+    } else {
+        tagSelector = TP.sys.cfg('project.name') + '|app';
+    }
+
+    //  Try first by using a selector that should match the app tag name. If it
+    //  cannot be found this way, then use an id of 'app'. The first is
+    //  preferable since the author may reset the app element's id to another
+    //  id.
+    tpElem = TP.byCSSPath(tagSelector, TP.sys.getUICanvas(true), true);
+    if (TP.notValid(tpElem)) {
+        tpElem = TP.byId('app');
+    }
+
+    return tpElem;
 });
 
 //  ------------------------------------------------------------------------
@@ -9686,16 +9708,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-APP.defineMethod('getAppTag',
+APP.defineMethod('getAppElement',
 function() {
 
     /**
-     * @method getAppTag
-     * @summary Retrieves the application tag wrapper instance.
-     * @returns {TP.dom.ElementNode} The app tag wrapper instance.
+     * @method getAppElement
+     * @summary Retrieves the application element wrapper instance.
+     * @returns {TP.dom.ElementNode} The app element.
      */
 
-    return TP.sys.getAppTag();
+    return TP.sys.getAppElement();
 });
 
 //  ------------------------------------------------------------------------
