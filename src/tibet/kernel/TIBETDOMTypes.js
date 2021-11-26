@@ -11956,6 +11956,11 @@ function(anElement, nodesAdded) {
             continue;
         }
 
+        //  Text nodes cannot be processed.
+        if (TP.isTextNode(root)) {
+            continue;
+        }
+
         //  Check to make sure this isn't a 'generated node'. If so we want to
         //  exit.
         if (root[TP.GENERATED]) {
@@ -12142,6 +12147,11 @@ function(anElement, nodesRemoved) {
     for (i = 0; i < len; i++) {
 
         root = rootNodesRemoved.at(i);
+
+        //  Text nodes cannot be processed.
+        if (TP.isTextNode(root)) {
+            continue;
+        }
 
         //  Check to make sure this isn't a 'generated node'. If so we want to
         //  exit.
