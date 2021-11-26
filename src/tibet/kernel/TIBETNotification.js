@@ -2727,16 +2727,14 @@ function() {
 
     try {
         str = '<span class="TP_sig_Exception ' +
-            TP.escapeTypeName(TP.tname(this)) + '">' +
-                '<span data-name="payload">' +
-                    TP.isValid(err) ?
-                        '<span data-name="error">' +
-                            TP.htmlstr(err) +
-                        '</span>' :
-                        '' +
-                    '<span data-name="message">' +
-                        TP.htmlstr(msg) +
-                     '</span>' +
+                TP.escapeTypeName(TP.tname(this)) + '">' +
+                    '<span data-name="payload">';
+
+        if (TP.isValid(err)) {
+            str += '<span data-name="error">' + TP.htmlstr(err) + '</span>';
+        }
+
+        str += '<span data-name="message">' + TP.htmlstr(msg) + '</span>' +
                 '</span>' +
              '</span>';
     } catch (e) {
@@ -2779,11 +2777,13 @@ function() {
                 '"data":{' +
                     '"signame":' +
                          this.getSignalName().quoted('"') + ',' +
-                    '"payload":{' +
-                        TP.isValid(err) ?
-                            TP.jsonsrc(err) :
-                            '' +
-                    '"message":' + TP.jsonsrc(msg) +
+                    '"payload":{';
+
+        if (TP.isValid(err)) {
+            str += TP.jsonsrc(err);
+        }
+
+        str += '"message":' + TP.jsonsrc(msg) +
                     '}' +
                 '}}';
     } catch (e) {
@@ -2925,15 +2925,13 @@ function() {
 
     try {
         str = '<instance type="' + TP.tname(this) + '">' +
-                    '<payload>' +
-                    TP.isValid(err) ?
-                        '<error>' +
-                        TP.xmlstr(err) +
-                        '</error>' :
-                        '' +
-                    '<message>' +
-                        TP.xmlstr(msg) +
-                    '</message>' +
+                    '<payload>';
+
+        if (TP.isValid(err)) {
+            str += '<error>' + TP.xmlstr(err) + '</error>';
+        }
+
+        str += '<message>' + TP.xmlstr(msg) + '</message>' +
                  '</payload>' +
              '</instance>';
     } catch (e) {
