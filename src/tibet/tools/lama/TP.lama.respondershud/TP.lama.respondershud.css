@@ -97,13 +97,13 @@ lama|respondershud > ul.content > li[type="controller"] {
  * https://github.com/stylelint/stylelint/issues/2711
  */
 
-#ResponderSummary_Tile {
+lama|tile#ResponderSummary_Tile {
 
     min-width: 400px;
     min-height: 270px;
 }
 
-#ResponderSummary_Tile > .body {
+lama|tile#ResponderSummary_Tile > .body {
 
     font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-size: 100%;
@@ -112,22 +112,22 @@ lama|respondershud > ul.content > li[type="controller"] {
     padding: 0;
 }
 
-#ResponderSummary_Tile > .header {
+lama|tile#ResponderSummary_Tile > .header {
 
     background: #c2d7cd;
 }
 
-#ResponderSummary_Tile > .header > .minimize_mark {
+lama|tile#ResponderSummary_Tile > .header > .minimize_mark {
 
     visibility: hidden;
 }
 
-#ResponderSummary_Tile > .footer {
+lama|tile#ResponderSummary_Tile > .footer {
 
     background: #f9f9f9;
 }
 
-#ResponderSummary_Tile > .body > #ResponderMethodList {
+lama|tile#ResponderSummary_Tile > .body > xctrls|list#ResponderMethodList {
 
     position: absolute;
 
@@ -151,7 +151,7 @@ lama|respondershud > ul.content > li[type="controller"] {
     --xctrls-item-border-height: 2px;
 }
 
-#ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem {
+lama|tile#ResponderSummary_Tile > .body > xctrls|list#ResponderMethodList xctrls|textitem {
 
     position: relative;
 
@@ -160,10 +160,10 @@ lama|respondershud > ul.content > li[type="controller"] {
     transform: none;
 }
 
-#ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem[grouping] {
+lama|tile#ResponderSummary_Tile > .body > xctrls|list#ResponderMethodList xctrls|textitem[grouping] {
 }
 
-#ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem xctrls|label {
+lama|tile#ResponderSummary_Tile > .body > xctrls|list#ResponderMethodList xctrls|textitem xctrls|label {
 
     display: block;
 
@@ -177,7 +177,7 @@ lama|respondershud > ul.content > li[type="controller"] {
     padding-left: 12px;
 }
 
-#ResponderSummary_Tile > .body > #ResponderMethodList xctrls|textitem[grouping] xctrls|label {
+lama|tile#ResponderSummary_Tile > .body > xctrls|list#ResponderMethodList xctrls|textitem[grouping] xctrls|label {
 
     padding-left: 6px;
 }

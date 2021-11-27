@@ -1,6 +1,7 @@
 @namespace url("http://www.w3.org/1999/xhtml");
 @namespace lama url("http://www.technicalpursuit.com/2020/lama");
 @namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 lama|tofuInsertionAssistant {
 
@@ -138,7 +139,7 @@ lama|tofuInsertionAssistant > .body .typeChooserFieldGroup > input {
     margin-right: 0;
 }
 
-lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_TagTypes {
+lama|tofuInsertionAssistant > .body xctrls|list#tofuInsertionAssistant_TagTypes {
 
     grid-area: type_chooser_list;
 
@@ -194,7 +195,7 @@ lama|tofuInsertionAssistant > .body .attributesGroup {
     left: 5px;
 }
 
-lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries {
+lama|tofuInsertionAssistant > .body tibet|group#tofuInsertionAssistant_AttributeEntries {
 
     top: 0;
     right: 0;
@@ -206,14 +207,14 @@ lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries {
     overflow-y: auto;
 }
 
-lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries > span {
+lama|tofuInsertionAssistant > .body tibet|group#tofuInsertionAssistant_AttributeEntries > span {
 
     display: flex;
 
     width: 100%;
 }
 
-lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries > span input {
+lama|tofuInsertionAssistant > .body tibet|group#tofuInsertionAssistant_AttributeEntries > span input {
 
     width: auto;
     height: 1em;
@@ -223,7 +224,7 @@ lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries > s
     margin-bottom: 2px;
 }
 
-lama|tofuInsertionAssistant > .body #tofuInsertionAssistant_AttributeEntries .deleter {
+lama|tofuInsertionAssistant > .body tibet|group#tofuInsertionAssistant_AttributeEntries .deleter {
 
     width: 24px;
     height: 24px;

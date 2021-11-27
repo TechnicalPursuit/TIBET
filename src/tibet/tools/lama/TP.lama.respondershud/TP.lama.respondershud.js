@@ -325,7 +325,7 @@ function(aSignal) {
         sheet = this.getStylesheetForStyleResource();
         mainRule = TP.styleSheetGetStyleRulesMatching(
                             sheet,
-                            '#ResponderSummary_Tile').first();
+                            'lama|tile#ResponderSummary_Tile').first();
 
         tileWidth = mainRule.style.minWidth.asNumber() + 2;
 
