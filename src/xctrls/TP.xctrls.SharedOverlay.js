@@ -552,6 +552,13 @@ function(signalToCheck) {
     var lastContent,
         currentContent;
 
+    //  If the caller is forcing a refresh, then we set $lastContent to null and
+    //  just return true.
+    if (TP.isTrue(signalToCheck.at('forceRefresh'))) {
+        this.set('$$lastContent', null, false);
+        return true;
+    }
+
     lastContent = this.$get('$lastContent');
 
     currentContent = signalToCheck.at('contentURI');
