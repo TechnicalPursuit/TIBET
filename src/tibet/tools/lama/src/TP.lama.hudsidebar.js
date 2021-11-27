@@ -23,6 +23,12 @@ TP.lama.hudsidebar.isAbstract(true);
 TP.lama.hudsidebar.addTraits(TP.dom.D3Tag);
 
 //  ------------------------------------------------------------------------
+//  Type Local Attributes
+//  ------------------------------------------------------------------------
+
+TP.lama.hudsidebar.defineAttribute('$lastContextMenuTag');
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -319,7 +325,11 @@ function(aSignal) {
      */
 
     var triggerSignal,
-        contentTag;
+
+        contentTag,
+
+        lastContentTag,
+        forceRefresh;
 
     //  Grab the 'trigger signal' - this will be the DOM-level 'context menu'
     //  signal.
@@ -336,6 +346,12 @@ function(aSignal) {
     if (TP.isEmpty(contentTag)) {
         return this;
     }
+
+    lastContentTag = TP.lama.hudsidebar.get('$lastContextMenuTag');
+    if (TP.notEmpty(lastContentTag)) {
+        forceRefresh = lastContentTag !== contentTag;
+    }
+    TP.lama.hudsidebar.set('$lastContextMenuTag', contentTag);
 
     //  Capture the signal that triggered the context menu.
     this.set('$lastContextMenuSignal', aSignal);
@@ -356,7 +372,8 @@ function(aSignal) {
             'trigger', triggerSignal,
             'triggerTPDocument', this.getDocument(),
             'triggerPoint', TP.MOUSE,
-            'sticky', true));
+            'sticky', true,
+            'forceRefresh', forceRefresh));
 
     return this;
 });
