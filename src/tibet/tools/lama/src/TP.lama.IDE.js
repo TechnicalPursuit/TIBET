@@ -2424,7 +2424,8 @@ function(aSignal) {
     TP.promptWithChoices(
         'Group these elements under a common parent:',
         TP.ac('html:span', 'html:div'),
-        'html:span').then(
+        'html:span',
+        TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
         function(groupingTagName) {
 
             var halo,

@@ -86,7 +86,8 @@ function(aTargetTPElem, aSignal) {
                         'table-cell',
                         'run-in'
                 ),
-                'block').then(
+                'block',
+                TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
                 function(displayVal) {
                     var modifyingRule;
 

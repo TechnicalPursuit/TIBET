@@ -77,7 +77,8 @@ function(aTargetTPElem, aSignal) {
                 '<b>' + currentPositionVal + '</b>' +
                 ' and needs one of the following values to be moveable:',
                 TP.ac('relative', 'absolute', 'fixed'),
-                'relative').then(
+                'relative',
+                TP.hc('dialogWindow', TP.sys.getUIRoot())).then(
                 function(positionVal) {
                     var modifyingRule;
 
