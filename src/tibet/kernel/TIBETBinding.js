@@ -5794,8 +5794,34 @@ function(primarySource, aFacet, initialVal, needsRefreshElems, aPathType, pathPa
                                     attrVal = '$.' + attrVal;
                                     branchVal = theVal.get(attrVal);
                                     pathType = TP.JSON_PATH_TYPE;
-                                } else {
+                                } else if (TP.isKindOf(
+                                        theVal, TP.core.XMLContent)) {
                                     branchVal = theVal.get(attrVal);
+                                    pathType = TP.XPATH_PATH_TYPE;
+                                } else {
+
+                                    if (TP.isArray(theVal) &&
+                                        theVal.getSize() === 1 &&
+                                        (TP.isPlainObject(theVal.first()) ||
+                                            TP.isHash(theVal.first()))) {
+
+                                            theVal = TP.collapse(theVal);
+
+                                            if (TP.canInvoke(theVal, 'get')) {
+                                                branchVal = theVal.get(attrVal);
+                                            } else {
+                                                branchVal = theVal[attrVal];
+                                            }
+                                        } else if (TP.isHash(theVal)) {
+                                            branchVal = theVal.get(attrVal);
+                                        } else if (pathAction !== TP.CREATE &&
+                                                    pathAction !== TP.INSERT &&
+                                                    TP.isArray(theVal)) {
+                                            branchVal = theVal.get(attrVal);
+                                        } else {
+                                            branchVal = theVal;
+                                        }
+
                                     pathType = TP.ifInvalid(aPathType,
                                                             TP.TIBET_PATH_TYPE);
                                 }

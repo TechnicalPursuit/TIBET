@@ -10302,6 +10302,10 @@ function() {
                         //  The lastname and firstname of the first row
                         test.assert.isEmpty(fields.at(0).get('value'));
                         test.assert.isEmpty(fields.at(1).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(2).get('value'));
+                        test.refute.isEmpty(fields.at(3).get('value'));
                     });
 
                 //  Insert empty row after the first row
@@ -10320,6 +10324,10 @@ function() {
                         //  The lastname and firstname of the second row
                         test.assert.isEmpty(fields.at(2).get('value'));
                         test.assert.isEmpty(fields.at(3).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(4).get('value'));
+                        test.refute.isEmpty(fields.at(5).get('value'));
                     });
 
                 //  Insert empty row before the last row
@@ -10335,9 +10343,13 @@ function() {
                         fields = TP.byCSSPath('#repeater input[type="text"]',
                                                 windowContext);
 
-                        //  The lastname and firstname of the fifth row
+                        //  The lastname and firstname of the next to last row
                         test.assert.isEmpty(fields.at(8).get('value'));
                         test.assert.isEmpty(fields.at(9).get('value'));
+
+                        //  The lastname and firstname of the last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
                     });
 
                 //  Insert empty row after the last row
@@ -10353,9 +10365,144 @@ function() {
                         fields = TP.byCSSPath('#repeater input[type="text"]',
                                                 windowContext);
 
-                        //  The lastname and firstname of the seventh row
+                        //  The lastname and firstname of the last row
                         test.assert.isEmpty(fields.at(12).get('value'));
                         test.assert.isEmpty(fields.at(13).get('value'));
+
+                        //  The lastname and firstname of the next to last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
+    this.it('insert into repeat - XML data source - multi-fragment', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLInsertMultiFragment.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function() {
+                var windowContext,
+
+                    insertBeforeBeginButton,
+                    insertAfterBeginButton,
+                    insertBeforeEndButton,
+                    insertAfterEndButton;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_people'),
+                        'TP.sig.ValueChange');
+
+                insertBeforeBeginButton =
+                    TP.byId('insertBeforeBegin', windowContext);
+
+                insertAfterBeginButton =
+                    TP.byId('insertAfterBegin', windowContext);
+
+                insertBeforeEndButton =
+                    TP.byId('insertBeforeEnd', windowContext);
+
+                insertAfterEndButton =
+                    TP.byId('insertAfterEnd', windowContext);
+
+                //  NB: We start with 3 rows
+
+                //  Insert empty row before the first row
+
+                test.getDriver().constructSequence().
+                    click(insertBeforeBeginButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(0).get('value'));
+                        test.assert.isEmpty(fields.at(1).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(2).get('value'));
+                        test.refute.isEmpty(fields.at(3).get('value'));
+                    });
+
+                //  Insert empty row after the first row
+
+                test.getDriver().constructSequence().
+                    click(insertAfterBeginButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the second row
+                        test.assert.isEmpty(fields.at(2).get('value'));
+                        test.assert.isEmpty(fields.at(3).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(4).get('value'));
+                        test.refute.isEmpty(fields.at(5).get('value'));
+                    });
+
+                //  Insert empty row before the last row
+
+                test.getDriver().constructSequence().
+                    click(insertBeforeEndButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the next to last row
+                        test.assert.isEmpty(fields.at(8).get('value'));
+                        test.assert.isEmpty(fields.at(9).get('value'));
+
+                        //  The lastname and firstname of the last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
+                    });
+
+                //  Insert empty row after the last row
+
+                test.getDriver().constructSequence().
+                    click(insertAfterEndButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the last row
+                        test.assert.isEmpty(fields.at(12).get('value'));
+                        test.assert.isEmpty(fields.at(13).get('value'));
+
+                        //  The lastname and firstname of the next to last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
                     });
             },
             function(error) {
@@ -10417,6 +10564,10 @@ function() {
                         //  The lastname and firstname of the first row
                         test.assert.isEmpty(fields.at(0).get('value'));
                         test.assert.isEmpty(fields.at(1).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(2).get('value'));
+                        test.refute.isEmpty(fields.at(3).get('value'));
                     });
 
                 //  Insert empty row after the first row
@@ -10432,9 +10583,13 @@ function() {
                         fields = TP.byCSSPath('#repeater input[type="text"]',
                                                 windowContext);
 
-                        //  The lastname and firstname of the first row
+                        //  The lastname and firstname of the second row
                         test.assert.isEmpty(fields.at(2).get('value'));
                         test.assert.isEmpty(fields.at(3).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(4).get('value'));
+                        test.refute.isEmpty(fields.at(5).get('value'));
                     });
 
                 //  Insert empty row before the last row
@@ -10450,9 +10605,13 @@ function() {
                         fields = TP.byCSSPath('#repeater input[type="text"]',
                                                 windowContext);
 
-                        //  The lastname and firstname of the first row
+                        //  The lastname and firstname of the next to last row
                         test.assert.isEmpty(fields.at(8).get('value'));
                         test.assert.isEmpty(fields.at(9).get('value'));
+
+                        //  The lastname and firstname of the last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
                     });
 
                 //  Insert empty row after the last row
@@ -10468,9 +10627,144 @@ function() {
                         fields = TP.byCSSPath('#repeater input[type="text"]',
                                                 windowContext);
 
-                        //  The lastname and firstname of the first row
+                        //  The lastname and firstname of the last row
                         test.assert.isEmpty(fields.at(12).get('value'));
                         test.assert.isEmpty(fields.at(13).get('value'));
+
+                        //  The lastname and firstname of the next to last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
+    this.it('insert into repeat - JSON data source - multi-fragment', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONInsertMultiFragment.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function() {
+                var windowContext,
+
+                    insertBeforeBeginButton,
+                    insertAfterBeginButton,
+                    insertBeforeEndButton,
+                    insertAfterEndButton;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_people'),
+                        'TP.sig.ValueChange');
+
+                insertBeforeBeginButton =
+                    TP.byId('insertBeforeBegin', windowContext);
+
+                insertAfterBeginButton =
+                    TP.byId('insertAfterBegin', windowContext);
+
+                insertBeforeEndButton =
+                    TP.byId('insertBeforeEnd', windowContext);
+
+                insertAfterEndButton =
+                    TP.byId('insertAfterEnd', windowContext);
+
+                //  NB: We start with 3 rows
+
+                //  Insert empty row before the first row
+
+                test.getDriver().constructSequence().
+                    click(insertBeforeBeginButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(0).get('value'));
+                        test.assert.isEmpty(fields.at(1).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(2).get('value'));
+                        test.refute.isEmpty(fields.at(3).get('value'));
+                    });
+
+                //  Insert empty row after the first row
+
+                test.getDriver().constructSequence().
+                    click(insertAfterBeginButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the second row
+                        test.assert.isEmpty(fields.at(2).get('value'));
+                        test.assert.isEmpty(fields.at(3).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(4).get('value'));
+                        test.refute.isEmpty(fields.at(5).get('value'));
+                    });
+
+                //  Insert empty row before the last row
+
+                test.getDriver().constructSequence().
+                    click(insertBeforeEndButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the next to last row
+                        test.assert.isEmpty(fields.at(8).get('value'));
+                        test.assert.isEmpty(fields.at(9).get('value'));
+
+                        //  The lastname and firstname of the last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
+                    });
+
+                //  Insert empty row after the last row
+
+                test.getDriver().constructSequence().
+                    click(insertAfterEndButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the last row
+                        test.assert.isEmpty(fields.at(12).get('value'));
+                        test.assert.isEmpty(fields.at(13).get('value'));
+
+                        //  The lastname and firstname of the next to last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
                     });
             },
             function(error) {
@@ -10532,6 +10826,10 @@ function() {
                         //  The lastname and firstname of the first row
                         test.assert.isEmpty(fields.at(0).get('value'));
                         test.assert.isEmpty(fields.at(1).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(2).get('value'));
+                        test.refute.isEmpty(fields.at(3).get('value'));
                     });
 
                 //  Insert empty row after the first row
@@ -10547,9 +10845,13 @@ function() {
                         fields = TP.byCSSPath('#repeater input[type="text"]',
                                                 windowContext);
 
-                        //  The lastname and firstname of the first row
+                        //  The lastname and firstname of the second row
                         test.assert.isEmpty(fields.at(2).get('value'));
                         test.assert.isEmpty(fields.at(3).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(4).get('value'));
+                        test.refute.isEmpty(fields.at(5).get('value'));
                     });
 
                 //  Insert empty row before the last row
@@ -10565,9 +10867,13 @@ function() {
                         fields = TP.byCSSPath('#repeater input[type="text"]',
                                                 windowContext);
 
-                        //  The lastname and firstname of the first row
+                        //  The lastname and firstname of the next to last row
                         test.assert.isEmpty(fields.at(8).get('value'));
                         test.assert.isEmpty(fields.at(9).get('value'));
+
+                        //  The lastname and firstname of the last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
                     });
 
                 //  Insert empty row after the last row
@@ -10583,9 +10889,144 @@ function() {
                         fields = TP.byCSSPath('#repeater input[type="text"]',
                                                 windowContext);
 
-                        //  The lastname and firstname of the first row
+                        //  The lastname and firstname of the last row
                         test.assert.isEmpty(fields.at(12).get('value'));
                         test.assert.isEmpty(fields.at(13).get('value'));
+
+                        //  The lastname and firstname of the next to last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
+    this.it('insert into repeat - JavaScript Object data source - multi-fragment', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjInsertMultiFragment.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.chain(
+            function() {
+                var windowContext,
+
+                    insertBeforeBeginButton,
+                    insertAfterBeginButton,
+                    insertBeforeEndButton,
+                    insertAfterEndButton;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_people'),
+                        'TP.sig.ValueChange');
+
+                insertBeforeBeginButton =
+                    TP.byId('insertBeforeBegin', windowContext);
+
+                insertAfterBeginButton =
+                    TP.byId('insertAfterBegin', windowContext);
+
+                insertBeforeEndButton =
+                    TP.byId('insertBeforeEnd', windowContext);
+
+                insertAfterEndButton =
+                    TP.byId('insertAfterEnd', windowContext);
+
+                //  NB: We start with 3 rows
+
+                //  Insert empty row before the first row
+
+                test.getDriver().constructSequence().
+                    click(insertBeforeBeginButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(0).get('value'));
+                        test.assert.isEmpty(fields.at(1).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(2).get('value'));
+                        test.refute.isEmpty(fields.at(3).get('value'));
+                    });
+
+                //  Insert empty row after the first row
+
+                test.getDriver().constructSequence().
+                    click(insertAfterBeginButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the second row
+                        test.assert.isEmpty(fields.at(2).get('value'));
+                        test.assert.isEmpty(fields.at(3).get('value'));
+
+                        //  The lastname and firstname of the next row
+                        test.refute.isEmpty(fields.at(4).get('value'));
+                        test.refute.isEmpty(fields.at(5).get('value'));
+                    });
+
+                //  Insert empty row before the last row
+
+                test.getDriver().constructSequence().
+                    click(insertBeforeEndButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the next to last row
+                        test.assert.isEmpty(fields.at(8).get('value'));
+                        test.assert.isEmpty(fields.at(9).get('value'));
+
+                        //  The lastname and firstname of the last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
+                    });
+
+                //  Insert empty row after the last row
+
+                test.getDriver().constructSequence().
+                    click(insertAfterEndButton).
+                    run();
+
+                test.chain(
+                    function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the last row
+                        test.assert.isEmpty(fields.at(12).get('value'));
+                        test.assert.isEmpty(fields.at(13).get('value'));
+
+                        //  The lastname and firstname of the next to last row
+                        test.refute.isEmpty(fields.at(10).get('value'));
+                        test.refute.isEmpty(fields.at(11).get('value'));
                     });
             },
             function(error) {
