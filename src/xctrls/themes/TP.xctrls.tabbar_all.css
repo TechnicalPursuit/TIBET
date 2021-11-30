@@ -29,13 +29,23 @@
 
     text-align: center;
 
-    padding: 0.1em 1em;
-
-    margin-left: -1px;
-
     z-index: 1;
 
     cursor: pointer;
+}
+
+*|*[data-theme] xctrls|tabbar xctrls|tabitem {
+
+    padding: 1em 0.1em;
+
+    margin-top: -1px;
+}
+
+*|*[data-theme] xctrls|tabbar:not([orientation="vertical"]) xctrls|tabitem {
+
+    padding: 0.1em 1em;
+
+    margin-left: -1px;
 }
 
 *|*[data-theme] xctrls|tabbar xctrls|tabitem:first-of-type {
