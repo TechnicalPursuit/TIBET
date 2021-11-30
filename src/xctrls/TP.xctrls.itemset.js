@@ -175,8 +175,13 @@ function(aRequest) {
         //  child.
         assemblyElem = tpElem.get(' span[tibet|assembly="' +
                         tpElem.getCanonicalName() +
-                        '"]').getNativeNode();
-        TP.nodeAppendChild(assemblyElem, templateElem, false);
+                        '"]');
+
+        if (!TP.isValid(assemblyElem)) {
+            return;
+        }
+
+        TP.nodeAppendChild(assemblyElem.getNativeNode(), templateElem, false);
     } else {
         //  Otherwise, there was no authored tibet:template element, but we
         //  still need the standin since other machinery in this type uses that
@@ -188,12 +193,17 @@ function(aRequest) {
         //  expressions), then use that to place the standin. Otherwise, just
         //  use the content element.
         if (TP.isValid(contentTemplateTPElem)) {
-            templateParentElem = contentTemplateTPElem.getNativeNode();
+            templateParentElem = contentTemplateTPElem;
         } else {
-            templateParentElem = tpElem.get('contentElement').getNativeNode();
+            templateParentElem = tpElem.get('contentElement');
         }
 
-        TP.nodeAppendChild(templateParentElem, templateStandinElem);
+        if (!TP.isValid(templateParentElem)) {
+            return;
+        }
+
+        TP.nodeAppendChild(templateParentElem.getNativeNode(),
+                            templateStandinElem);
     }
 
     //  Finalize content so that static items get keys, etc. If this is a bound
