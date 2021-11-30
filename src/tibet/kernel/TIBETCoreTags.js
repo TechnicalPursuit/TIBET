@@ -574,6 +574,45 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
 //  ------------------------------------------------------------------------
 
+TP.tag.ComputedTag.Type.defineMethod('getComputedSource',
+function(tpElement, aRequest) {
+
+    /**
+     * @method getComputedSource
+     * @summary Returns a String of computed source for the receiver.
+     * @param {TP.dom.ElementNode} tpElement The element being processed.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {String|Array} A String containing the markup to replace the
+     *     element being processed or an Array containing the String in the
+     *     first position and a constant of TP.REPLACE (the default) or
+     *     TP.UPDATE which tells the caller whether to replace the element being
+     *     processed or to leave it in place but replace its entire content.
+     */
+
+    var str;
+
+    if (TP.sys.hasFeature('lama')) {
+        str = '<a onclick="TP.bySystemId(\'LamaConsoleService\')' +
+                '.sendConsoleRequest(\':inspect ' +
+                this.getID().replace(':', '.') + '.Type.tagCompile' +
+                '\'); return false;" href="#" tibet:tag="' +
+                this.getCanonicalName() + '" tibet:no-rewrite="true">' +
+                '&lt;' + this.getCanonicalName() + '/&gt;' +
+                '</a>';
+    } else {
+        str = '<a onclick="alert(\'Edit ' + this.getID() +
+                '.Type.tagCompile.\')" href="#" tibet:tag="' +
+                this.getCanonicalName() + '" tibet:no-rewrite="true">' +
+                '&lt;' + this.getCanonicalName() + '/&gt;' +
+                '</a>';
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tag.ComputedTag.Type.defineMethod('isDOMCacheable',
 function() {
 
@@ -600,39 +639,57 @@ function(aRequest) {
      * @returns {Element} The new element.
      */
 
-    var str,
-        elem,
-        newElem;
+    var elem,
+        tpElem,
+
+        result,
+
+        str,
+        action,
+
+        newNode;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
-    if (TP.sys.hasFeature('lama')) {
-        str = '<a onclick="TP.bySystemId(\'LamaConsoleService\')' +
-                '.sendConsoleRequest(\':inspect ' +
-                this.getID().replace(':', '.') + '.Type.tagCompile' +
-                '\'); return false;" href="#" tibet:tag="' +
-                this.getCanonicalName() + '" tibet:no-rewrite="true">' +
-                '&lt;' + this.getCanonicalName() + '/&gt;' +
-                '</a>';
+    tpElem = TP.wrap(elem);
+    result = this.getComputedSource(tpElem, aRequest);
+
+    if (TP.isPair(result)) {
+        str = result.first();
+        action = result.last();
+    } else if (TP.isString(result)) {
+        str = result;
     } else {
-        str = '<a onclick="alert(\'Edit ' + this.getID() +
-                '.Type.tagCompile.\')" href="#" tibet:tag="' +
-                this.getCanonicalName() + '" tibet:no-rewrite="true">' +
-                '&lt;' + this.getCanonicalName() + '/&gt;' +
-                '</a>';
+        str = '<!-- ' + TP.xmlstr(elem) + ' -->';
     }
 
-    newElem = TP.xhtmlnode(str);
+    newNode = TP.xhtmlnode(str);
 
     //  Note here how we return the *result* of this method due to node
     //  importing, etc.
-    newElem = TP.elementReplaceWith(elem, newElem);
+    switch (action) {
+        case TP.UPDATE:
+            //  Replace the element's content.
+            newNode = TP.nodeSetContent(elem, newNode);
+            break;
+        case TP.REPLACE:
+            //  Fallthrough
+        default:
+            //  Replace the whole element.
+            newNode = TP.elementReplaceWith(elem, newNode);
+            break;
+    }
 
-    TP.elementSetGenerator(newElem);
+    //  TODO: Need to review. Should we be doing all of the stuff that Templated
+    //  Tag does at the end of its tagCompile??
 
-    return newElem;
+    if (TP.isElement(newNode)) {
+        TP.elementSetGenerator(newNode);
+    }
+
+    return newNode;
 });
 
 //  ========================================================================
