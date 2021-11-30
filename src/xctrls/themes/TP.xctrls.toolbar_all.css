@@ -9,8 +9,6 @@
 /* All themed 'xctrls:toolbar' controls */
 *|*[data-theme] xctrls|toolbar {
 
-    width: 100%;
-    height: 100%;
 }
 
 *|*[data-theme] xctrls|toolbar xctrls|content {
