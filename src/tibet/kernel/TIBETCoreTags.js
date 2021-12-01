@@ -654,7 +654,12 @@ function(aRequest) {
     }
 
     tpElem = TP.wrap(elem);
-    result = this.getComputedSource(tpElem, aRequest);
+    try {
+        result = this.getComputedSource(tpElem, aRequest);
+    } catch (e) {
+        TP.ifError() ? TP.error(
+            TP.ec(e, `Error in ${this.getName()}.Type.getComputedSource`)) : 0;
+    }
 
     if (TP.isPair(result)) {
         str = result.first();
