@@ -1637,6 +1637,8 @@ function(aNode, aProcessor, aRequest, allowDetached) {
 
         result,
 
+        msg,
+
         subPhases,
         subProcessor,
         subProcessingRequest,
@@ -1725,15 +1727,18 @@ function(aNode, aProcessor, aRequest, allowDetached) {
 
         processingRequest.atPut('node', node);
 
+        //  Make sure to set this to null for next pass.
+        result = null;
+
         try {
             //  Do the deed, invoking the target method against the wrapper type
             //  and supplying the request.
             result = type[methodName](processingRequest);
         } catch (e) {
-            TP.ifError() ?
-                TP.error(TP.ec(e,
-                        this.getLocalName() + ' error in: ' +
-                        type.getTypeName() + ' for: ' + TP.str(node))) : 0;
+            msg = this.getLocalName() + ' error in: ' +
+                        type.getTypeName() + ' for: ' + TP.str(node);
+
+            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
         }
 
         //  If we got a node we need to inspect that node and compare to result
