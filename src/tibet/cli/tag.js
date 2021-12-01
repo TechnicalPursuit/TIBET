@@ -73,7 +73,7 @@ Cmd.Parent.prototype.PARSE_OPTIONS);
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet tag [[--name] [<root>.][<namespace>(.|:)]]<typename> [--action|--compiled|--info|--templated] [--supertype <typename>] [--dna <template>] [--dir <dirname>] [--package <package>] [--config <cfgname>]';
+    'tibet tag [[--name] [<root>.][<namespace>(.|:)]]<typename> [--action|--computed|--info|--templated] [--supertype <typename>] [--dna <template>] [--dir <dirname>] [--package <package>] [--config <cfgname>]';
 
 //  ---
 //  Instance Methods
@@ -154,8 +154,8 @@ Cmd.prototype.configureDNA = function() {
         return 'actiontag';
     }
 
-    if (options.compiled) {
-        return 'compiledtag';
+    if (options.computed) {
+        return 'computedtag';
     }
 
     if (options.info) {
@@ -188,8 +188,8 @@ Cmd.prototype.configureSupertype = function() {
         return 'TP.tag.ActionTag';
     }
 
-    if (dna === 'compiledtag') {
-        return 'TP.tag.CompiledTag';
+    if (dna === 'computedtag') {
+        return 'TP.tag.ComputedTag';
     }
 
     if (dna === 'infotag') {

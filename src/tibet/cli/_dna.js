@@ -714,7 +714,7 @@ console.log('skipping', filename);
             fullpath,   //  Complete file name.
             content,    //  File content after template injection.
             data,       //  File data.
-            template,   //  The compiled template content.
+            template,   //  The template content.
             fileparam;  //  adjusted filename for template params.
 
         filename = file.toString();
