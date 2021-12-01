@@ -6750,7 +6750,7 @@ function(attributeName, facetName, originalPath) {
      * @param {TP.core.AccessPath} [originalPath] An optional access path that
      *     the attribute name might have been derived from. Sometimes it is
      *     useful to have access to the original path.
-     * @returns {Object} Any access path value of the supplied facet of the
+     * @returns {Object|null} Any access path value of the supplied facet of the
      *     supplied attribute. If there is no access path, this method returns
      *     null.
      */
@@ -6784,12 +6784,15 @@ function(attributeName, facetName, originalPath) {
     if (TP.notDefined(pathVal = this.$$attrnames_to_paths[internalSlotName])) {
 
         pathVal = this.getFacetSettingFor(attributeName, facetName);
+        if (TP.notValid(pathVal)) {
+            return null;
+        }
 
         if (TP.canInvoke(pathVal, 'isAccessPath') && pathVal.isAccessPath()) {
             this.$$attrnames_to_paths[internalSlotName] = pathVal;
         } else {
             this.$$attrnames_to_paths[internalSlotName] = null;
-            pathVal = null;
+            return null;
         }
     }
 
