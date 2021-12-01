@@ -7022,8 +7022,8 @@ function(attributeName, facetName) {
      *     value for.
      * @param {String} facetName The name of the facet to get the facet value
      *     for.
-     * @returns {Object} The value of the supplied facet of the supplied
-     *     attribute.
+     * @returns {Object|undefined} The value of the supplied facet of the
+     *     supplied attribute.
      */
 
     var descriptor;
@@ -7035,7 +7035,7 @@ function(attributeName, facetName) {
         return descriptor[facetName];
     }
 
-    return null;
+    return;
 });
 
 //  ------------------------------------------------------------------------
