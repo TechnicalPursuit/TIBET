@@ -647,7 +647,11 @@ function(aRequest) {
         str,
         action,
 
-        newNode;
+        newNode,
+
+        isFragment,
+
+        result;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
@@ -672,29 +676,39 @@ function(aRequest) {
 
     newNode = TP.xhtmlnode(str);
 
+    isFragment = TP.isFragment(newNode);
+
     //  Note here how we return the *result* of this method due to node
     //  importing, etc.
     switch (action) {
         case TP.UPDATE:
             //  Replace the element's content.
-            newNode = TP.nodeSetContent(elem, newNode);
+            if (isFragment) {
+                //  NB: nodeSetContent will return the first child that was
+                //  appended, but that's not sufficient here.
+                TP.nodeSetContent(elem, newNode);
+                newNode = elem;
+                result = TP.ac(newNode.childNodes);
+            } else {
+                newNode = TP.nodeSetContent(elem, newNode);
+                result = newNode;
+            }
             break;
         case TP.REPLACE:
             //  Fallthrough
         default:
             //  Replace the whole element.
             newNode = TP.elementReplaceWith(elem, newNode);
+            result = newNode;
             break;
     }
 
     //  TODO: Need to review. Should we be doing all of the stuff that Templated
     //  Tag does at the end of its tagCompile??
 
-    if (TP.isElement(newNode)) {
-        TP.elementSetGenerator(newNode);
-    }
+    TP.elementSetGenerator(newNode);
 
-    return newNode;
+    return result;
 });
 
 //  ========================================================================
