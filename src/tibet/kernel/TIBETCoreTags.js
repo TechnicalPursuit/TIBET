@@ -651,7 +651,7 @@ function(aRequest) {
 
         isFragment,
 
-        result;
+        retVal;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
@@ -688,10 +688,10 @@ function(aRequest) {
                 //  appended, but that's not sufficient here.
                 TP.nodeSetContent(elem, newNode);
                 newNode = elem;
-                result = TP.ac(newNode.childNodes);
+                retVal = TP.ac(newNode.childNodes);
             } else {
                 newNode = TP.nodeSetContent(elem, newNode);
-                result = newNode;
+                retVal = newNode;
             }
             break;
         case TP.REPLACE:
@@ -699,7 +699,7 @@ function(aRequest) {
         default:
             //  Replace the whole element.
             newNode = TP.elementReplaceWith(elem, newNode);
-            result = newNode;
+            retVal = newNode;
             break;
     }
 
@@ -708,7 +708,7 @@ function(aRequest) {
 
     TP.elementSetGenerator(newNode);
 
-    return result;
+    return retVal;
 });
 
 //  ========================================================================
