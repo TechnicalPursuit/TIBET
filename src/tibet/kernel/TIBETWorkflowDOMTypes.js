@@ -1632,6 +1632,8 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         len,
         i,
 
+        priorGenerator,
+
         node,
         type,
 
@@ -1730,6 +1732,11 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         //  Make sure to set this to null for next pass.
         result = null;
 
+        //  Capture the generator as it exists now for comparison to the result.
+        //  We need to do this because we might get the same node back but it
+        //  might have had a different generator populated onto it.
+        priorGenerator = node[TP.GENERATOR];
+
         try {
             //  Do the deed, invoking the target method against the wrapper type
             //  and supplying the request.
@@ -1752,8 +1759,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                 //  If the node had a generator and it's not the same as the one
                 //  for our result node we've got outstanding work to do due to
                 //  the generator change, otherwise we're done here.
-                if (TP.isValid(node[TP.GENERATOR]) &&
-                    node[TP.GENERATOR] !== result[TP.GENERATOR]) {
+                if (priorGenerator !== result[TP.GENERATOR]) {
                     void 0;
                 } else {
                     //  If we were to reprocess here the likely result is an
@@ -1761,8 +1767,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                     //  first time through.
                     continue;
                 }
-            } else if (TP.isValid(node[TP.GENERATOR]) &&
-                node[TP.GENERATOR] === result[TP.GENERATOR]) {
+            } else if (priorGenerator === result[TP.GENERATOR]) {
                 //  Otherwise, if the node had a generator and it *is* the same
                 //  as the one for our result node, we have no more outstanding
                 //  work to do. Continue on to the next node.
