@@ -1807,6 +1807,19 @@ function(aNode, aProcessor, aRequest, allowDetached) {
             }
 
             producedEntries.push(TP.ac(result, node));
+        } else if (TP.isArray(result)) {
+            /* eslint-disable no-loop-func */
+            result.forEach(
+                function(aResult) {
+                    //  Filter any descendants out of the original node list, if
+                    //  necessary.
+                    if (TP.isElement(aResult)) {
+                        noCompileFilter(aResult);
+                    }
+
+                    producedEntries.push(TP.ac(aResult, node));
+                });
+            /* eslint-enable no-loop-func */
         }
     }
 
