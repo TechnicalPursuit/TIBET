@@ -1639,6 +1639,8 @@ function(aNode, aProcessor, aRequest, allowDetached) {
 
         result,
 
+        noCompileFilter,
+
         msg,
 
         subPhases,
@@ -1748,6 +1750,23 @@ function(aNode, aProcessor, aRequest, allowDetached) {
             TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
         }
 
+        /* eslint-disable no-loop-func */
+        noCompileFilter = function(aResultElem) {
+            //  If the result element stamped 'tibet:no-compile' on itself,
+            //  then we need to clear out any following nodes from the 'to
+            //  be processed' list that are contained by the *original*
+            //  node.
+            if (TP.elementGetAttribute(
+                        aResultElem, 'tibet:no-compile', true) === 'true') {
+                nodes = nodes.filter(
+                    function(possibleDescendant) {
+                        return node === possibleDescendant ||
+                                        !node.contains(possibleDescendant);
+                    });
+            }
+        };
+        /* eslint-enable no-loop-func */
+
         //  If we got a node we need to inspect that node and compare to result
         //  to determine the right action to take.
         if (TP.isNode(result)) {
@@ -1772,38 +1791,19 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                 //  as the one for our result node, we have no more outstanding
                 //  work to do. Continue on to the next node.
 
-                //  If the result element stamped 'tibet:no-compile' on itself,
-                //  then we need to clear out any following nodes from the 'to
-                //  be processed' list that are contained by the *original*
-                //  node.
-                if (TP.isElement(result) &&
-                    TP.elementGetAttribute(
-                            result, 'tibet:no-compile', true) === 'true') {
-                    /* eslint-disable no-loop-func */
-                    nodes = nodes.filter(
-                        function(possibleDescendant) {
-                            return node === possibleDescendant ||
-                                            !node.contains(possibleDescendant);
-                        });
-                    /* eslint-enable no-loop-func */
+                //  Filter any descendants out of the original node list, if
+                //  necessary.
+                if (TP.isElement(result)) {
+                    noCompileFilter(result);
                 }
 
                 continue;
             }
 
-            //  If the result element stamped 'tibet:no-compile' on itself, then
-            //  we need to clear out any following nodes from the 'to be
-            //  processed' list that are contained by the *original* node.
-            if (TP.isElement(result) &&
-                TP.elementGetAttribute(
-                        result, 'tibet:no-compile', true) === 'true') {
-                /* eslint-disable no-loop-func */
-                nodes = nodes.filter(
-                    function(possibleDescendant) {
-                        return node === possibleDescendant ||
-                                        !node.contains(possibleDescendant);
-                    });
-                /* eslint-enable no-loop-func */
+            //  Filter any descendants out of the original node list, if
+            //  necessary.
+            if (TP.isElement(result)) {
+                noCompileFilter(result);
             }
 
             producedEntries.push(TP.ac(result, node));
