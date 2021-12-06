@@ -595,16 +595,16 @@ function(tpElement, aRequest) {
     if (TP.sys.hasFeature('lama')) {
         str = '<a onclick="TP.bySystemId(\'LamaConsoleService\')' +
                 '.sendConsoleRequest(\':inspect ' +
-                this.getID().replace(':', '.') + '.Type.tagCompile' +
+                tpElement.getID().replace(':', '.') + '.Type.tagCompile' +
                 '\'); return false;" href="#" tibet:tag="' +
-                this.getCanonicalName() + '" tibet:no-rewrite="true">' +
-                '&lt;' + this.getCanonicalName() + '/&gt;' +
+                tpElement.getCanonicalName() + '" tibet:no-rewrite="true">' +
+                '&lt;' + tpElement.getCanonicalName() + '/&gt;' +
                 '</a>';
     } else {
-        str = '<a onclick="alert(\'Edit ' + this.getID() +
+        str = '<a onclick="alert(\'Edit ' + tpElement.getID() +
                 '.Type.tagCompile.\')" href="#" tibet:tag="' +
-                this.getCanonicalName() + '" tibet:no-rewrite="true">' +
-                '&lt;' + this.getCanonicalName() + '/&gt;' +
+                tpElement.getCanonicalName() + '" tibet:no-rewrite="true">' +
+                '&lt;' + tpElement.getCanonicalName() + '/&gt;' +
                 '</a>';
     }
 
