@@ -23,6 +23,24 @@ TP.test.elem.defineAttribute('themeURI', TP.NO_RESULT);
 TP.bind.XMLNS.Type.describe('inbound bind info',
 function() {
 
+    this.it('uses explicit attribute value', function(test, options) {
+        var tpElem,
+            info;
+
+        tpElem = TP.tpelem(`
+<test:elem xmlns:bind="http://www.technicalpursuit.com/2005/binding"
+    foo="[[attr]]"
+/>
+`);
+        test.assert.isValid(tpElem, 'element not valid');
+
+        info = tpElem.getInboundBindingEntryFor('foo');
+        test.assert.isValid(info, 'info not valid');
+
+        test.assert.isEqualTo(info.at('dataExprs').first(), 'attr');
+    });
+
+
     this.it('uses explicit attribute value before bind:in', function(test, options) {
         var tpElem,
             info;
