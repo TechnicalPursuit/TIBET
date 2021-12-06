@@ -783,7 +783,7 @@ function(anObject, prevProps, prevState) {
     }
 
     this.set('$$updating', true);
-    this.setBoundValueIfBound(anObject.state.value, true);
+    this.setBoundAspect('value', anObject.state.value, true);
     this.set('$$updating', false);
 
     this.changed('value', TP.UPDATE);

@@ -81,7 +81,7 @@ function(aRequest) {
                         filePaths = dialogResult.filePaths;
 
                         //  If the element is bound, then update its bound value.
-                        tpElem.setBoundValueIfBound(filePaths);
+                        tpElem.setBoundAspect('value', filePaths);
                     }
                 });
 
@@ -102,7 +102,7 @@ function(aRequest) {
                         filePath = dialogResult.filePath;
 
                         //  If the element is bound, then update its bound value.
-                        tpElem.setBoundValueIfBound(filePath);
+                        tpElem.setBoundAspect('value', filePath);
                     }
                 });
 
@@ -171,7 +171,7 @@ function(aRequest) {
 
                     if (TP.isNumber(buttonIndex)) {
                         //  If the element is bound, then update its bound value.
-                        tpElem.setBoundValueIfBound(buttonIndex);
+                        tpElem.setBoundAspect('value', buttonIndex);
                     }
                 });
 
