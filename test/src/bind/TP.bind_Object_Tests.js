@@ -38,7 +38,7 @@ function() {
         info = tpElem.getInboundBindingEntryFor('foo');
         test.assert.isValid(info, 'info not valid');
 
-        test.assert.isEqualTo(info.at('dataExprs').first(), 'foo');
+        test.assert.isEqualTo(info.at('dataExprs').first(), 'attr');
     });
 
 
@@ -48,7 +48,7 @@ function() {
 
         tpElem = TP.tpelem(`
 <test:elem xmlns:bind="http://www.technicalpursuit.com/2005/binding"
-    foo="{value: foo}"
+    foo="[[attr]]"
     bind:io="{foo: bindio, bar: bar}"
 />
 `);
@@ -57,7 +57,7 @@ function() {
         info = tpElem.getInboundBindingEntryFor('foo');
         test.assert.isValid(info, 'info not valid');
 
-        test.assert.isEqualTo(info.at('dataExprs').first(), 'foo');
+        test.assert.isEqualTo(info.at('dataExprs').first(), 'attr');
     });
 
 
