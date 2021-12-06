@@ -196,8 +196,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                     //  (Number, Boolean, RegExp, etc.), then we do that here
                     //  *before* we call the transformation function.
                     if (TP.isString(newVal) &&
-                        TP.isValid(parsedVal =
-                                    TP.getParsedPrimitiveValue(newVal))) {
+                        TP.isValid(parsedVal = TP.parsedVal(newVal))) {
                         newVal = parsedVal;
                     }
 
