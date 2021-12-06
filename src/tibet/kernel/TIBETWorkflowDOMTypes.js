@@ -1235,12 +1235,13 @@ TP.tag.TagProcessor.Type.defineConstant(
     'TP.tag.IncludesPhase',        //  xi:includes, CSS @imports, etc.
     'TP.tag.InstructionsPhase',    //  ?tibet, ?xsl-stylesheet, etc.
     'TP.tag.PrecompilePhase',      //  conversion to computable form
-    'TP.tag.CompilePhase',         //  tag/macro expansion (ACT)
+    'TP.tag.CompilePhase',         //  generate compiled template
+    'TP.tag.ExpandPhase',          //  tag/macro expansion
     'TP.tag.TidyPhase',            //  move non-DTD content out of html:head
-                                    //  etc.
+                                   //  etc.
 
     'TP.tag.ResolvePhase',         //  resolve xml:base TP.uri.URI references,
-                                    //  decode etc.
+                                   //  decode etc.
 
     'TP.tag.LocalizePhase',        //  adjust for browser, lang, etc.
     'TP.tag.CompileCompletePhase'
@@ -1262,6 +1263,24 @@ TP.tag.TagProcessor.Type.defineConstant(
         'descendant-or-self::*[not(ancestor::*[@tibet:no-compile])]' +
         ' | ' +
         'descendant-or-self::*[not(ancestor::*[@tibet:no-compile])]/@*[' +
+        'namespace-uri() != ""' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.XML + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.XML_EVENTS + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.ON + '"' +
+        ']');
+
+//  A version of the expression that filters out elements that have an ancestor
+//  with an attribute of 'tibet:no-expand'.
+TP.tag.TagProcessor.Type.defineConstant(
+    'CUSTOM_NODES_QUERY_NO_EXPAND',
+        'descendant-or-self::*[not(ancestor::*[@tibet:no-expand])]' +
+        ' | ' +
+        'descendant-or-self::*[not(ancestor::*[@tibet:no-expand])]/@*[' +
         'namespace-uri() != ""' +
         ' and ' +
         'namespace-uri() != "' + TP.w3.Xmlns.XML + '"' +
@@ -2218,6 +2237,75 @@ function(aNode) {
 
     //  See the type constants for a description of this query.
     query = TP.tag.TagProcessor.CUSTOM_NODES_QUERY_NO_COMPILE;
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.tag.ExpandPhase
+//  ========================================================================
+
+/**
+ * @type {TP.tag.ExpandPhase}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.tag.TagProcessorPhase.defineSubtype('tag.ExpandPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.tag.ExpandPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagExpand';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tag.ExpandPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Node[]} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  If aNode is not a collection node, then the query will have no impact
+    //  (and may error, depending on platform). Just return an empty Array.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
+
+    //  See the type constants for a description of this query.
+    query = TP.tag.TagProcessor.CUSTOM_NODES_QUERY_NO_EXPAND;
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
