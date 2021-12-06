@@ -214,7 +214,7 @@ function(normalizedEvent) {
         //  directly will cause the comparison machinery in the change
         //  notification system to be looking at the same Array and none of the
         //  dependents will be notified.
-        data = TP.copy(tabbar.getBoundValue('data'));
+        data = TP.copy(tabbar.getBoundAspect('data'));
 
         //  Splice out the item at its old index. This returns an Array.
         item = data.splice(currentIndex, 1).first();

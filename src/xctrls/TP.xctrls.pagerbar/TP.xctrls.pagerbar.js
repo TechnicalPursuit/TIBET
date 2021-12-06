@@ -307,7 +307,7 @@ function(aSignal) {
                         TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
 
         //  If the element is bound, then update its bound value.
-        this.setBoundValueIfBound(newValue);
+        this.setBoundAspect('value', newValue);
 
         this.shouldSignalChange(wasSignalingChange);
 

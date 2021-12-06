@@ -2163,14 +2163,14 @@ function(attributeName, aspectName, expression) {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Inst.defineMethod('$computeValueForBoundAspect',
-function(bindInfo, scopeValues, dataSource, repeatDataSource, repeatDataIndex) {
+function(bindEntry, scopeValues, dataSource, repeatDataSource, repeatDataIndex) {
 
     /**
      * @method $computeValueForBoundAspect
      * @summary Computes the bound value for a particular bound aspect of the
      *     receiver.
-     * @param {TP.core.Hash} bindInfo The hash of binding information for the
-     *     particular bound aspect that we want a value for.
+     * @param {TP.core.Hash} bindEntry The hash of binding information for the
+     *     particular bound aspect that we want to get a value for.
      * @param {String[]} scopeValues The list of scoping values (i.e. parts
      *     that, when combined, make up the entire bind scoping path).
      * @param {Object} [dataSource] An optional data source that will be used if
@@ -2208,10 +2208,10 @@ function(bindInfo, scopeValues, dataSource, repeatDataSource, repeatDataIndex) {
         isXMLResource;
 
     //  There will be 1...n data expressions here.
-    dataExprs = bindInfo.at('dataExprs');
+    dataExprs = bindEntry.at('dataExprs');
     len = dataExprs.getSize();
 
-    transformFunc = bindInfo.at('transformFunc');
+    transformFunc = bindEntry.at('transformFunc');
     resultsForTransform = TP.ac();
 
     for (i = 0; i < len; i++) {
@@ -3200,75 +3200,25 @@ function(wantsShallowScope) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('getBoundValue',
+TP.dom.ElementNode.Inst.defineMethod('getBoundAspect',
 function(aspectName) {
 
     /**
-     * @method getBoundValue
+     * @method getBoundAspect
      * @summary Returns the bound value of the aspect on the receiver.
      * @param {String} aspectName The name of the aspect that the caller wants
      *     the bound value for.
      * @returns {Object} The value of the bound aspect.
      */
 
-    var result,
+    var scopeValues,
+        bindEntry;
 
-        scopeValues,
+        scopeValues = this.getBindingScopeValues();
 
-        bindingInfo,
-
-        keys,
-        len,
-        i,
-
-        bindEntry,
-        bindAspectName;
-
-    result = null;
-
-    scopeValues = this.getBindingScopeValues();
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(
-                    'bind:in', this.getAttribute('bind:in'));
-
-    keys = bindingInfo.getKeys();
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-
-        bindEntry = bindingInfo.at(keys.at(i));
-        bindAspectName = bindEntry.at('bindingAspect');
-
-        if (bindAspectName === aspectName) {
-            result = this.$computeValueForBoundAspect(bindEntry, scopeValues);
-
-            return result;
-        }
-    }
-
-    //  It might not have been in the 'bind:in', so we do it again with
-    //  'bind:io'
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(
-                    'bind:io', this.getAttribute('bind:io'));
-
-    keys = bindingInfo.getKeys();
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-
-        bindEntry = bindingInfo.at(keys.at(i));
-        bindAspectName = bindEntry.at('bindingAspect');
-
-        if (bindAspectName === aspectName) {
-            result = this.$computeValueForBoundAspect(bindEntry, scopeValues);
-
-            return result;
-        }
+    bindEntry = this.getInboundBindingEntryFor(aspectName);
+    if (TP.isValid(bindEntry)) {
+        return this.$computeValueForBoundAspect(bindEntry, scopeValues);
     }
 
     return null;
@@ -4664,45 +4614,11 @@ function(aspectName) {
      *     the receiver.
      */
 
-    var bindingInfo,
+    var bindEntry;
 
-        keys,
-        len,
-        i;
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(
-                    'bind:in', this.getAttribute('bind:in'));
-
-    //  This info is keyed by aspect. If one of the keys matches the aspect,
-    //  return true.
-    keys = bindingInfo.getKeys();
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-        if (keys.at(i) === aspectName) {
-            return true;
-        }
-    }
-
-    //  It might not have been in the 'bind:in', so we do it again with
-    //  'bind:io'
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(
-                    'bind:io', this.getAttribute('bind:io'));
-
-    //  This info is keyed by aspect. If one of the keys matches the aspect,
-    //  return true.
-    keys = bindingInfo.getKeys();
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-        if (keys.at(i) === aspectName) {
-            return true;
-        }
+    bindEntry = this.getInboundBindingEntryFor(aspectName);
+    if (TP.isValid(bindEntry)) {
+        return true;
     }
 
     return false;
@@ -4723,26 +4639,11 @@ function(aspectName) {
      *     the receiver.
      */
 
-    var bindingInfo,
+    var bindEntry;
 
-        keys,
-        len,
-        i;
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(
-                    'bind:out', this.getAttribute('bind:out'));
-
-    //  This info is keyed by aspect. If one of the keys matches the aspect,
-    //  return true.
-    keys = bindingInfo.getKeys();
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-        if (keys.at(i) === aspectName) {
-            return true;
-        }
+    bindEntry = this.getOutboundBindingEntryFor(aspectName);
+    if (TP.isValid(bindEntry)) {
+        return true;
     }
 
     return false;
@@ -7731,24 +7632,20 @@ function(size) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('setBoundAspect',
-function(attributeName, anAspect, aValue, scopeVals, bindingInfoValue,
-ignoreBidiInfo) {
+TP.dom.ElementNode.Inst.defineMethod('setBindingUsingEntry',
+function(bindEntry, anAspect, aValue, scopeVals, ignoreBidiInfo) {
 
     /**
-     * @method setBoundAspect
+     * @method setBindingUsingEntry
      * @summary Sets the bound aspect of the receiver to the supplied value.
      *     This takes the supplied aspect and value and sets that value onto the
      *     model under that aspect.
-     * @param {String} attributeName The name of the attribute to find the
-     *     binding information that we're setting.
+     * @param {TP.core.Hash} bindEntry The hash of binding information for the
+     *     particular bound aspect that we want to set a value for.
      * @param {String} anAspect The aspect of model that we're going to set
      * @param {Object} aValue The value to set onto the model.
      * @param {String[]} scopeVals The list of scoping values (i.e. parts that,
      *     when combined, make up the entire bind scoping path).
-     * @param {String} bindingInfoValue A String, usually in a JSON-like format,
-     *     that details the binding information for the receiver. That is, the
-     *     bounds aspects of the receiver and what they're bound to.
      * @param {Boolean} [ignoreBidiInfo=false] Whether or not to ignore the
      *     receiver's bidirectional attribute information. If this parameter is
      *     true, this method will always set the bound value whether or not the
@@ -7756,13 +7653,22 @@ ignoreBidiInfo) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var bindingInfo,
-        bidiAttrs;
+    var bidiAttrs,
 
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(attributeName, bindingInfoValue);
+        dataExprs,
+        i,
+        dataExpr,
+
+        allVals,
+        fullExpr,
+
+        wholeURI,
+        primaryURI,
+
+        frag,
+
+        result,
+        newValue;
 
     if (TP.notTrue(ignoreBidiInfo)) {
         //  Grab the list of our 'bidirectional' instance (not DOM) attributes.
@@ -7781,162 +7687,130 @@ ignoreBidiInfo) {
         }
     }
 
-    //  Iterate over each binding expression in the binding information.
-    bindingInfo.perform(
-        function(bindEntry) {
+    //  If the attribute isn't one of the bidi attributes, then we can
+    //  just exit here (i.e. its not an attribute that we can 'set' from
+    //  the UI)
+    if (TP.notTrue(ignoreBidiInfo) && !bidiAttrs.contains(anAspect)) {
+        return;
+    }
 
-            var boundAspect,
+    //  There will be 1...n data expressions here. Iterate over them and
+    //  compute a model reference.
+    dataExprs = bindEntry.at('dataExprs');
 
-                bindVal,
+    for (i = 0; i < dataExprs.getSize(); i++) {
+        dataExpr = TP.trim(dataExprs.at(i));
 
-                dataExprs,
-                i,
-                dataExpr,
+        if (TP.isEmpty(dataExpr)) {
+            continue;
+        }
 
-                allVals,
-                fullExpr,
+        if (TP.notEmpty(scopeVals)) {
+            //  Concatenate the binding value onto the scope values
+            //  array (thereby creating a new Array) and use it to
+            //  join all of the values together.
+            allVals = scopeVals.concat(dataExpr);
+            fullExpr = TP.uriJoinFragments.apply(TP, allVals);
 
-                wholeURI,
-                primaryURI,
+            //  If we weren't able to compute a real URI from the
+            //  fully expanded URI value, then raise an exception
+            //  and return here.
+            if (!TP.isURIString(fullExpr)) {
+                this.raise('TP.sig.InvalidURI');
 
-                frag,
-
-                result,
-                newValue;
-
-            boundAspect = bindEntry.first();
-
-            //  If the bound aspect that we're processing doesn't match the
-            //  aspect name that was supplied to this method, then we skip it.
-            if (boundAspect !== anAspect) {
-                return;
+                break;
             }
 
-            //  If the attribute isn't one of the bidi attributes, then we can
-            //  just exit here (i.e. its not an attribute that we can 'set' from
-            //  the UI)
-            if (TP.notTrue(ignoreBidiInfo) &&
-                !bidiAttrs.contains(boundAspect)) {
-                return;
+            wholeURI = TP.uc(fullExpr);
+        } else {
+            //  Scope values is empty - this is (hopefully) a fully
+            //  qualified binding expression.
+
+            //  If we weren't able to compute a real URI from the
+            //  fully expanded URI value, then raise an exception
+            //  and return here.
+            dataExpr = TP.trim(dataExpr);
+            if (!TP.isURIString(dataExpr) &&
+                    !TP.regex.URI_FRAGMENT.test(dataExpr)) {
+                this.raise('TP.sig.InvalidURI');
+                break;
             }
 
-            bindVal = bindEntry.last();
+            wholeURI = TP.uc(dataExpr);
+        }
 
-            //  There will be 1...n data expressions here. Iterate over them and
-            //  compute a model reference.
-            dataExprs = bindVal.at('dataExprs');
-            for (i = 0; i < dataExprs.getSize(); i++) {
-                dataExpr = TP.trim(dataExprs.at(i));
+        if (!TP.isURI(wholeURI)) {
+            this.raise('TP.sig.InvalidURI');
 
-                if (TP.isEmpty(dataExpr)) {
-                    continue;
-                }
+            break;
+        }
 
-                if (TP.notEmpty(scopeVals)) {
-                    //  Concatenate the binding value onto the scope values
-                    //  array (thereby creating a new Array) and use it to
-                    //  join all of the values together.
-                    allVals = scopeVals.concat(dataExpr);
-                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+        primaryURI = wholeURI.getPrimaryURI();
+        frag = wholeURI.getFragment();
 
-                    //  If we weren't able to compute a real URI from the
-                    //  fully expanded URI value, then raise an exception
-                    //  and return here.
-                    if (!TP.isURIString(fullExpr)) {
-                        this.raise('TP.sig.InvalidURI');
+        //  Grab the result from the 'primary URI'. If the value can't
+        //  be retrieved, then create a TP.lang.ValueHolder object and
+        //  set it's 'value' value to the value that we're trying to
+        //  set. Then set that as the 'whole resource' of the primary
+        //  URI.
+        //  Note here how we specifically tell the URI to *not* signal
+        //  change if it has to fetch new content.
+        if (TP.notValid(result = primaryURI.getContent(
+                                TP.request('signalChange', false)))) {
 
-                        break;
-                    }
+            newValue = TP.lang.ValueHolder.construct(aValue);
 
-                    wholeURI = TP.uc(fullExpr);
+            //  NB: This will mark the primaryURI as dirty.
+            primaryURI.setResource(
+                newValue, TP.hc('observeResource', true,
+                                'signalChange', true));
+        } else {
+
+            //  Since we have a reference to the portion of the data
+            //  referenced by primaryURI, we have to manually mark it as
+            //  dirty here (and send a notification).
+            primaryURI.isDirty(true, true);
+
+            //  If no fragment could be computed, then we set the 'whole
+            //  value'.
+            if (TP.isEmpty(frag)) {
+                result.set('value', aValue);
+            } else {
+                //  If we got a Window wrapper as the result from the
+                //  primary URI, then we're a 'direct to GUI' binding.
+                //  Use the *whole* URI to get a reference to the
+                //  (wrapped) element and set its value.
+                //  Note here how we specifically tell the URI to *not*
+                //  signal change if it has to fetch new content.
+                if (TP.isKindOf(result, TP.core.Window)) {
+                    result = wholeURI.getContent(
+                                TP.request('signalChange', false));
+                    result.set('value', aValue);
                 } else {
-                    //  Scope values is empty - this is (hopefully) a fully
-                    //  qualified binding expression.
-
-                    //  If we weren't able to compute a real URI from the
-                    //  fully expanded URI value, then raise an exception
-                    //  and return here.
-                    dataExpr = TP.trim(dataExpr);
-                    if (!TP.isURIString(dataExpr) &&
-                            !TP.regex.URI_FRAGMENT.test(dataExpr)) {
-                        this.raise('TP.sig.InvalidURI');
-                        break;
-                    }
-
-                    wholeURI = TP.uc(dataExpr);
-                }
-
-                if (!TP.isURI(wholeURI)) {
-                    this.raise('TP.sig.InvalidURI');
-
-                    break;
-                }
-
-                primaryURI = wholeURI.getPrimaryURI();
-                frag = wholeURI.getFragment();
-
-                //  Grab the result from the 'primary URI'. If the value can't
-                //  be retrieved, then create a TP.lang.ValueHolder object and
-                //  set it's 'value' value to the value that we're trying to
-                //  set. Then set that as the 'whole resource' of the primary
-                //  URI.
-                //  Note here how we specifically tell the URI to *not* signal
-                //  change if it has to fetch new content.
-                if (TP.notValid(result = primaryURI.getContent(
-                                        TP.request('signalChange', false)))) {
-
-                    newValue = TP.lang.ValueHolder.construct(aValue);
-
-                    //  NB: This will mark the primaryURI as dirty.
-                    primaryURI.setResource(
-                        newValue, TP.hc('observeResource', true,
-                                        'signalChange', true));
-                } else {
-
-                    //  Since we have a reference to the portion of the data
-                    //  referenced by primaryURI, we have to manually mark it as
-                    //  dirty here (and send a notification).
-                    primaryURI.isDirty(true, true);
-
-                    //  If no fragment could be computed, then we set the 'whole
-                    //  value'.
-                    if (TP.isEmpty(frag)) {
-                        result.set('value', aValue);
-                    } else {
-                        //  If we got a Window wrapper as the result from the
-                        //  primary URI, then we're a 'direct to GUI' binding.
-                        //  Use the *whole* URI to get a reference to the
-                        //  (wrapped) element and set its value.
-                        //  Note here how we specifically tell the URI to *not*
-                        //  signal change if it has to fetch new content.
-                        if (TP.isKindOf(result, TP.core.Window)) {
-                            result = wholeURI.getContent(
-                                        TP.request('signalChange', false));
-                            result.set('value', aValue);
-                        } else {
-                            result.set(TP.apc(frag), aValue);
-                        }
-                    }
+                    result.set(TP.apc(frag), aValue);
                 }
             }
-        }.bind(this));
+        }
+    }
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('setBoundValueIfBound',
-function(aValue, ignoreBidiInfo) {
+TP.dom.ElementNode.Inst.defineMethod('setBoundAspect',
+function(anAspect, aValue, ignoreBidiInfo) {
 
     /**
-     * @method setBoundValueIfBound
+     * @method setBoundAspect
      * @summary Sets the bound value of the receiver to the supplied value if
      *     the receiver is bound. This takes the supplied value and sets that
      *     value onto the model.
-     * @description This method is a convenience wrapper for setBoundAspect
+     * @description This method is a convenience wrapper for setBindingUsingEntry
      *     that assumes an aspect of 'value' and that the receiver's binding
      *     scope values and binding attribute value will be used.
+     * @param {String} aspectName The name of the aspect that the caller wants
+     *     to set the bound value for.
      * @param {Object} aValue The value to set onto the model.
      * @param {Boolean} [ignoreBidiInfo=false] Whether or not to ignore the
      *     receiver's bidirectional attribute information. If this parameter is
@@ -7952,7 +7826,7 @@ function(aValue, ignoreBidiInfo) {
         return this;
     }
 
-    this.setOutboundAspect('value', aValue, ignoreBidiInfo);
+    this.setOutboundAspect(anAspect, aValue, ignoreBidiInfo);
 
     return this;
 });
@@ -8559,65 +8433,18 @@ function(aspectName, aValue, ignoreBidiInfo) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var bindingInfo,
+    var scopeValues,
+        bindEntry;
 
-        keys,
-        len,
-        i,
+    scopeValues = this.getBindingScopeValues();
 
-        bindEntry,
-        bindAspectName;
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(
-                    'bind:in', this.getAttribute('bind:in'));
-
-    keys = bindingInfo.getKeys();
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-
-        bindEntry = bindingInfo.at(keys.at(i));
-        bindAspectName = bindEntry.at('bindingAspect');
-
-        if (bindAspectName === aspectName) {
-            this.setBoundAspect('bind:in',
+    bindEntry = this.getInboundBindingEntryFor(aspectName);
+    if (TP.isValid(bindEntry)) {
+        this.setBindingUsingEntry(bindEntry,
                                     aspectName,
                                     aValue,
-                                    this.getBindingScopeValues(),
-                                    this.getAttribute('bind:in'),
+                                    scopeValues,
                                     ignoreBidiInfo);
-
-            return this;
-        }
-    }
-
-    //  It might not have been in the 'bind:in', so we do it again with
-    //  'bind:io'
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(
-                    'bind:io', this.getAttribute('bind:io'));
-
-    keys = bindingInfo.getKeys();
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-
-        bindEntry = bindingInfo.at(keys.at(i));
-        bindAspectName = bindEntry.at('bindingAspect');
-
-        if (bindAspectName === aspectName) {
-            this.setBoundAspect('bind:io',
-                                    aspectName,
-                                    aValue,
-                                    this.getBindingScopeValues(),
-                                    this.getAttribute('bind:io'),
-                                    ignoreBidiInfo);
-            return this;
-        }
     }
 
     return this;
@@ -8640,7 +8467,7 @@ function(aValue) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    this.setBoundValueIfBound(aValue);
+    this.setBoundAspect('value', aValue);
 
     return this;
 });
@@ -8665,65 +8492,18 @@ function(aspectName, aValue, ignoreBidiInfo) {
      * @returns {TP.dom.ElementNode} The receiver.
      */
 
-    var bindingInfo,
+    var scopeValues,
+        bindEntry;
 
-        keys,
-        len,
-        i,
+    scopeValues = this.getBindingScopeValues();
 
-        bindEntry,
-        bindAspectName;
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(
-                    'bind:io', this.getAttribute('bind:io'));
-
-    keys = bindingInfo.getKeys();
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-
-        bindEntry = bindingInfo.at(keys.at(i));
-        bindAspectName = bindEntry.at('bindingAspect');
-
-        if (bindAspectName === aspectName) {
-            this.setBoundAspect('bind:io',
+    bindEntry = this.getOutboundBindingEntryFor(aspectName);
+    if (TP.isValid(bindEntry)) {
+        this.setBindingUsingEntry(bindEntry,
                                     aspectName,
                                     aValue,
-                                    this.getBindingScopeValues(),
-                                    this.getAttribute('bind:io'),
+                                    scopeValues,
                                     ignoreBidiInfo);
-
-            return this;
-        }
-    }
-
-    //  It might not have been in the 'bind:io', so we do it again with
-    //  'bind:out'
-
-    //  Extract the binding information from the supplied binding information
-    //  value String. This may have already been parsed and cached, in which
-    //  case we get the cached values back.
-    bindingInfo = this.getBindingInfoFrom(
-                    'bind:out', this.getAttribute('bind:out'));
-
-    keys = bindingInfo.getKeys();
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-
-        bindEntry = bindingInfo.at(keys.at(i));
-        bindAspectName = bindEntry.at('bindingAspect');
-
-        if (bindAspectName === aspectName) {
-            this.setBoundAspect('bind:out',
-                                    aspectName,
-                                    aValue,
-                                    this.getBindingScopeValues(),
-                                    this.getAttribute('bind:out'),
-                                    ignoreBidiInfo);
-            return this;
-        }
     }
 
     return this;
@@ -9003,13 +8783,7 @@ function(aSignal) {
         //  Wrap the element that we're really setting the value for and set its
         //  bound value.
         boundTPElem = TP.wrap(boundElem);
-        boundTPElem.setBoundAspect(
-                        'bind:in',
-                        'value',
-                        newText,
-                        boundTPElem.getBindingScopeValues(),
-                        boundTPElem.getAttribute('bind:in'),
-                        true);
+        boundTPElem.setInboundAspect('value', newText, true);
     };
 
     //  A Function that moves the editor to the supplied Element

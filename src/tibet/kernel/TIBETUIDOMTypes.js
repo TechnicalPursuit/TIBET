@@ -1417,8 +1417,8 @@ function(aTargetElem, anEvent) {
         //  There are 3 possible values for 'ui:incremental' - 'control',
         //  'model' and 'both'. We handle 'model' and 'both' here.
         if (incrementalVal === 'model' || incrementalVal === 'both') {
-            evtTargetTPElem.setBoundValueIfBound(
-                                    evtTargetTPElem.getValue());
+            evtTargetTPElem.setBoundAspect('value',
+                                            evtTargetTPElem.getValue());
         }
     }
 

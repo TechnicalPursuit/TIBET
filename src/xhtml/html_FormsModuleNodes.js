@@ -1184,7 +1184,7 @@ function(aValue, shouldSignal) {
         }
 
         //  If the element is bound, then update its bound value.
-        this.setBoundValueIfBound(this.getValue());
+        this.setBoundAspect('value', this.getValue());
     }
 
     return true;
@@ -1870,6 +1870,8 @@ function(aTargetElem, anEvent) {
 
         val,
 
+        bindingInfo,
+
         attrName;
 
     tpElem = TP.wrap(aTargetElem);
@@ -1933,12 +1935,15 @@ function(aTargetElem, anEvent) {
         //  Set our bound value, but using the binding information found on one
         //  of our 'value elements' (which might be the targeted element, but
         //  might not be).
-        tpElem.setBoundAspect(
+        bindingInfo = bindInfoTPElem.getBindingInfoFrom(
                         attrName,
+                        bindInfoTPElem.getAttribute(attrName));
+
+        tpElem.setBindingUsingEntry(
+                        bindingInfo.at('checked'),
                         'checked',
                         val,
-                        bindInfoTPElem.getBindingScopeValues(),
-                        bindInfoTPElem.getAttribute('bind:io'));
+                        bindInfoTPElem.getBindingScopeValues());
     }
 
     if (TP.isValid(tpElem)) {
@@ -2276,7 +2281,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    tpElem.setBoundValueIfBound(tpElem.getValue());
+    tpElem.setBoundAspect('value', tpElem.getValue());
 
     if (TP.isValid(tpElem)) {
         tpElem.changed('value', TP.UPDATE);
@@ -3000,7 +3005,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    tpElem.setBoundValueIfBound(tpElem.getValue());
+    tpElem.setBoundAspect('value', tpElem.getValue());
 
     if (TP.isValid(tpElem)) {
         tpElem.changed('value', TP.UPDATE);
@@ -3588,7 +3593,7 @@ function(aValue, shouldSignal) {
         }
 
         //  If the element is bound, then update its bound value.
-        this.setBoundValueIfBound(this.getValue());
+        this.setBoundAspect('value', this.getValue());
     }
 
     return this;
@@ -3704,7 +3709,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    tpElem.setBoundValueIfBound(tpElem.getValue());
+    tpElem.setBoundAspect('value', tpElem.getValue());
 
     if (TP.isValid(tpElem)) {
         tpElem.changed('value', TP.UPDATE);

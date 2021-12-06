@@ -430,7 +430,7 @@ function(aSignal) {
                             TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
 
             //  If the element is bound, then update its bound value.
-            this.setBoundValueIfBound(this.getValue());
+            this.setBoundAspect('value', this.getValue());
 
             this.shouldSignalChange(wasSignalingChange);
         }
@@ -869,7 +869,7 @@ function(aValue) {
 
     columns = this.get('columns');
     if (TP.notValid(columns)) {
-        columns = this.getBoundValue('columns');
+        columns = this.getBoundAspect('columns');
     }
 
     //  If the value is an String, split it on the separator and then wrap that

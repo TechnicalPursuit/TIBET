@@ -1077,7 +1077,7 @@ function(aValue, shouldSignal) {
         }
 
         //  If the element is bound, then update its bound value.
-        this.setBoundValueIfBound(this.getValue());
+        this.setBoundAspect('value', this.getValue());
     }
 
     return true;

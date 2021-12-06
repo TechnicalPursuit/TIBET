@@ -419,7 +419,7 @@ function(aValue, shouldSignal) {
         //  both our content element (a list, etc.) up-to-date as well as
         //  ourself.
         TP.$$settingFromBindMachinery = false;
-        this.setBoundValueIfBound(this.getValue());
+        this.setBoundAspect('value', this.getValue());
         TP.$$settingFromBindMachinery = true;
     }
 
