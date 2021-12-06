@@ -1215,11 +1215,16 @@ function(options) {
                         }
                     }
                 } catch (e) {
+                    //  First, fail or error the testcase.
                     if (e instanceof AssertionFailed) {
                         testcase.fail(e.message, e);
                     } else {
                         testcase.error(e.message, e);
                     }
+
+                    //  Then, throw the error 'up' so that it's caught by the
+                    //  chained error rejector below.
+                    throw e;
                 }
             }).timeout(timeout);
            /* eslint-enable new-cap */
