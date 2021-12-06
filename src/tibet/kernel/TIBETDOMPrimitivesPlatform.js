@@ -196,8 +196,8 @@ TP.hc(
             //  Loop over all of the attributes of the owner Element, looking to
             //  see if they're named 'bind:in'/'bind:io' or if they're named
             //  'in'/'io' with a namespaceURI of TP.w3.Xmlns.BIND. This means
-            //  that we have an existing bind:io attribute that we should just
-            //  add to.
+            //  that we have an existing bind:in/bind:io attribute that we
+            //  should just add to.
             for (j = 0; j < ownerElem.attributes.length; j++) {
                 ownerElemAttr = ownerElem.attributes[j];
 
@@ -262,6 +262,9 @@ TP.hc(
                         srcAttr.name);
             } else {
                 //  Already have a bind:in/bind:io attribute - add to it.
+                //  By appending, because of ES6 behavior, this will override
+                //  any previous value specified directly in the
+                //  bind:in/bind:io.
                 bindAttr.nodeValue =
                     bindAttr.nodeValue.slice(
                         0, bindAttr.nodeValue.lastIndexOf('}')) +
@@ -270,9 +273,16 @@ TP.hc(
                     ': ' +
                     val +
                     '}';
-                desugaredAttrsAttr =
-                    ownerElem.attributes['tibet:desugared'];
-                desugaredAttrsAttr.nodeValue += ' ' + srcAttr.name;
+
+                desugaredAttrsAttr = ownerElem.attributes['tibet:desugared'];
+                if (TP.notValid(desugaredAttrsAttr)) {
+                    ownerElem.setAttributeNS(
+                            TP.w3.Xmlns.TIBET,
+                            'tibet:desugared',
+                            srcAttr.name);
+                } else {
+                    desugaredAttrsAttr.nodeValue += ' ' + srcAttr.name;
+                }
             }
 
             //  Remove the original Attribute node containing the '[[...]]'
