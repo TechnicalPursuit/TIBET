@@ -3671,6 +3671,73 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getInboundBindingEntryFor',
+function(aspectName, flushCache) {
+
+    /**
+     * @method getInboundBindingEntryFor
+     * @summary Gets the 'inbound' binding information for the supplied aspect
+     *     on the receiver. This is information for bindings that set values on
+     *     the receiver.
+     * @param {String} aspectName The name of the aspect that binding
+     *     information is being retrieved for.
+     * @param {Boolean} [flushCache=false] Whether or not to flush any currently
+     *     cached binding info that the aspect may have generated.
+     * @returns {TP.core.Hash} A hash of binding information keyed by the aspect
+     *     name.
+     */
+
+    var bindingInfo,
+
+        keys,
+        len,
+        i,
+
+        bindEntry,
+        bindAspectName;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:in', this.getAttribute('bind:in'), flushCache);
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.at('bindingAspect');
+
+        if (bindAspectName === aspectName) {
+            return bindEntry;
+        }
+    }
+
+    //  It might not have been in the 'bind:in', so we do it again with
+    //  'bind:io'
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:io', this.getAttribute('bind:io'), flushCache);
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.at('bindingAspect');
+
+        if (bindAspectName === aspectName) {
+            return bindEntry;
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('$getNearestRepeatIndex',
 function() {
 
@@ -3722,6 +3789,73 @@ function() {
     }
 
     return repeatIndex;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.ElementNode.Inst.defineMethod('getOutboundBindingEntryFor',
+function(aspectName, flushCache) {
+
+    /**
+     * @method getOutboundBindingEntryFor
+     * @summary Gets the 'outbound' binding information for the supplied aspect
+     *     on the receiver. This is information for bindings that get values
+     *     from the receiver.
+     * @param {String} aspectName The name of the aspect that binding
+     *     information is being retrieved for.
+     * @param {Boolean} [flushCache=false] Whether or not to flush any currently
+     *     cached binding info that the aspect may have generated.
+     * @returns {TP.core.Hash} A hash of binding information keyed by the aspect
+     *     name.
+     */
+
+    var bindingInfo,
+
+        keys,
+        len,
+        i,
+
+        bindEntry,
+        bindAspectName;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:out', this.getAttribute('bind:out'), flushCache);
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.at('bindingAspect');
+
+        if (bindAspectName === aspectName) {
+            return bindEntry;
+        }
+    }
+
+    //  It might not have been in the 'bind:out', so we do it again with
+    //  'bind:io'
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(
+                    'bind:io', this.getAttribute('bind:io'), flushCache);
+
+    keys = bindingInfo.getKeys();
+    len = keys.getSize();
+    for (i = 0; i < len; i++) {
+        bindEntry = bindingInfo.at(keys.at(i));
+        bindAspectName = bindEntry.at('bindingAspect');
+
+        if (bindAspectName === aspectName) {
+            return bindEntry;
+        }
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
