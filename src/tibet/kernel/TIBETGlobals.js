@@ -987,6 +987,7 @@ TP.BUSY_RESIZE_FUNC = 'tp_busy_resize_function';            //  ignore
 TP.REPEAT_SOURCE = 'tp_repeat_source';                      //  done
 TP.REPEAT_INDEX = 'tp_repeat_index';                        //  done
 TP.PSEUDO_INLINE_STYLE = 'tp_pseudo_inline_style';          //  ignore
+TP.PROCESSOR_HINT = 'tp_processor_hint';                    //  done
 
 TP.BOUND_ATTR_COUNT = 'tp_bound_attr_count';
 TP.BOUND_ATTR_PROCESSED_COUNT = 'tp_bound_attr_processed_count';

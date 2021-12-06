@@ -1790,25 +1790,66 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         //  to determine the right action to take.
         if (TP.isNode(result)) {
 
-            //  Compare result. If identical or equal we essentially have an
-            //  "unprocessed" variation of the original node as our result.
-            if (result === node || TP.nodeEqualsNode(result, node)) {
+            if (TP.isValid(result[TP.PROCESSOR_HINT])) {
+                switch(result[TP.PROCESSOR_HINT]) {
+                    case TP.DESCEND:
+                        TP.nodeGetChildNodes(result).forEach(
+                            function(aResult) {
+                                //  Filter any descendants out of the original
+                                //  node list, if necessary.
+                                if (TP.isElement(aResult)) {
+                                    noCompileFilter(aResult);
+                                }
 
-                //  If the node had a generator and it's not the same as the one
-                //  for our result node we've got outstanding work to do due to
-                //  the generator change, otherwise we're done here.
-                if (priorGenerator !== result[TP.GENERATOR]) {
-                    void 0;
-                } else {
-                    //  If we were to reprocess here the likely result is an
-                    //  endless recursion since we got back matching content the
-                    //  first time through.
+                                producedEntries.push(TP.ac(aResult, node));
+                            });
+                        break;
+                    case TP.REPEAT:
+                        if (TP.isElement(result)) {
+                            noCompileFilter(result);
+                        }
+
+                        producedEntries.push(TP.ac(result, node));
+                        break;
+                    case TP.BREAK:
+                        //  Fallthrough
+                    case TP.CONTINUE:
+                        break;
+                    default:
+                        TP.ifWarn() ?
+                            TP.warn('Invalid processor hint: ' +
+                                        result[TP.PROCESSOR_HINT] + '.') : 0;
+                        break;
+                }
+            } else {
+                //  Compare result. If identical or equal we essentially have an
+                //  "unprocessed" variation of the original node as our result.
+                if (result === node || TP.nodeEqualsNode(result, node)) {
+
+                    //  If the node had a generator and it's not the same as the one
+                    //  for our result node we've got outstanding work to do due to
+                    //  the generator change, otherwise we're done here.
+                    if (priorGenerator !== result[TP.GENERATOR]) {
+                        void 0;
+                    } else {
+                        //  If we were to reprocess here the likely result is an
+                        //  endless recursion since we got back matching content the
+                        //  first time through.
+                        continue;
+                    }
+                } else if (priorGenerator === result[TP.GENERATOR]) {
+                    //  Otherwise, if the node had a generator and it *is* the same
+                    //  as the one for our result node, we have no more outstanding
+                    //  work to do. Continue on to the next node.
+
+                    //  Filter any descendants out of the original node list, if
+                    //  necessary.
+                    if (TP.isElement(result)) {
+                        noCompileFilter(result);
+                    }
+
                     continue;
                 }
-            } else if (priorGenerator === result[TP.GENERATOR]) {
-                //  Otherwise, if the node had a generator and it *is* the same
-                //  as the one for our result node, we have no more outstanding
-                //  work to do. Continue on to the next node.
 
                 //  Filter any descendants out of the original node list, if
                 //  necessary.
@@ -1816,16 +1857,8 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                     noCompileFilter(result);
                 }
 
-                continue;
+                producedEntries.push(TP.ac(result, node));
             }
-
-            //  Filter any descendants out of the original node list, if
-            //  necessary.
-            if (TP.isElement(result)) {
-                noCompileFilter(result);
-            }
-
-            producedEntries.push(TP.ac(result, node));
         } else if (TP.isArray(result)) {
             /* eslint-disable no-loop-func */
             result.forEach(
