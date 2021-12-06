@@ -209,6 +209,7 @@
 
 <config id="bind">
     <script src="~lib_test/src/bind/TP.bind_Tests.js"/>
+    <script src="~lib_test/src/bind/TP.bind_Object_Tests.js"/>
 </config>
 
 <config id="dhtml">
