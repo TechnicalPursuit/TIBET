@@ -6260,7 +6260,7 @@ function(attributeName, attributeValue, attributeDescriptor) {
     return TP.defineAttributeSlot(
             target, attributeName, attributeValue, track,
             attributeDescriptor, owner);
-}, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineAttribute');
+}, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineAttribute', Function);
 
 //  ------------------------------------------------------------------------
 
@@ -6311,7 +6311,7 @@ function(constantName, constantValue, constantDescriptor) {
     return TP.defineConstantSlot(
             target, constantName, constantValue, track,
             constantDescriptor, owner);
-}, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineConstant');
+}, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineConstant', Function);
 
 //  ------------------------------------------------------------------------
 
@@ -6369,7 +6369,7 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
             target, methodName, methodBody, track, methodDescriptor,
             display, owner, $isHandler);
 
-}, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineMethod');
+}, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineMethod', Function);
 
 //  ------------------------------------------------------------------------
 //  TP.lang.RootObject - TYPE DEFINITION
@@ -6406,7 +6406,11 @@ function(attributeName, attributeValue, attributeDescriptor) {
     return TP.defineAttributeSlot(
                 this, attributeName, attributeValue, track,
                 attributeDescriptor, owner);
-}, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineAttribute');
+},
+TP.TYPE_TRACK,
+null,
+'TP.lang.RootObject.Type.defineAttribute',
+TP.lang.RootObject);
 
 //  ------------------------------------------------------------------------
 
@@ -6441,7 +6445,11 @@ function(constantName, constantValue, constantDescriptor) {
     return TP.defineConstantSlot(
                 this, constantName, constantValue, track,
                 constantDescriptor, owner);
-}, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineConstant');
+},
+TP.TYPE_TRACK,
+null,
+'TP.lang.RootObject.Type.defineConstant',
+TP.lang.RootObject);
 
 //  ------------------------------------------------------------------------
 
@@ -6496,7 +6504,11 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
         this, methodName, methodBody, track, methodDescriptor, display,
         owner, $isHandler);
 
-}, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineMethod');
+},
+TP.TYPE_TRACK,
+null,
+'TP.lang.RootObject.Type.defineMethod',
+TP.lang.RootObject);
 
 //  ------------------------------------------------------------------------
 
@@ -6531,7 +6543,11 @@ function(attributeName, attributeValue, attributeDescriptor) {
     return TP.defineAttributeSlot(
                 this, attributeName, attributeValue, track,
                 attributeDescriptor, owner);
-}, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineAttribute');
+},
+TP.TYPE_TRACK,
+null,
+'TP.lang.RootObject.Inst.defineAttribute',
+TP.lang.RootObject);
 
 //  ------------------------------------------------------------------------
 
@@ -6566,7 +6582,11 @@ function(constantName, constantValue, constantDescriptor) {
     return TP.defineConstantSlot(
                 this, constantName, constantValue, track,
                 constantDescriptor, owner);
-}, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineConstant');
+},
+TP.TYPE_TRACK,
+null,
+'TP.lang.RootObject.Inst.defineConstant',
+TP.lang.RootObject);
 
 //  ------------------------------------------------------------------------
 
@@ -6621,7 +6641,11 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
         this, methodName, methodBody, track, methodDescriptor, display,
         owner, $isHandler);
 
-}, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineMethod');
+},
+TP.TYPE_TRACK,
+null,
+'TP.lang.RootObject.Inst.defineMethod',
+TP.lang.RootObject);
 
 //  ------------------------------------------------------------------------
 //  Window TYPE DEFINITION
