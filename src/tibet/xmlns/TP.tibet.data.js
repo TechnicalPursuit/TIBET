@@ -404,7 +404,15 @@ function(aContentObject, aRequest) {
 
         //  We don't have a type for the result - derive it from the data.
         if (!TP.isType(contentType)) {
-            contentType = TP.type(newResource);
+
+            //  If the resource is mutable, then it's fine to use the type we
+            //  can compute from it. If not (e.g. it's a String, Number or
+            //  Boolean), we have to use a TP.lang.ValueHolder.
+            if (TP.isMutable(newResource)) {
+                contentType = TP.type(newResource);
+            } else {
+                contentType = TP.lang.ValueHolder;
+            }
         }
 
         if (TP.type(newResource) !== contentType) {
