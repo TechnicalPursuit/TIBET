@@ -4849,7 +4849,13 @@ function(propName, sources, track) {
                 for (i = 0; i < sources.getSize(); i++) {
                     candidateIndex =
                         c3TypeList.indexOf(sources.at(i).getName());
-                    lowestIndex = Math.min(lowestIndex, candidateIndex);
+                    if (candidateIndex !== TP.NOT_FOUND) {
+                        lowestIndex = Math.min(lowestIndex, candidateIndex);
+                    } else {
+                        TP.ifWarn() ?
+                            TP.warn('Unable to find ' + sources.at(i).getName() +
+                                ' in trait lookup list') : 0;
+                    }
                 }
 
                 //  Try to get a matching type for the type name we computed.
