@@ -427,9 +427,9 @@ function(aString, defaultNS, shouldReport) {
      *     'html:'). To use the 'null' namespace (i.e. xmlns=""), supply
      *     the empty String ('') here. To not specify any default namespace
      *     value and let the parser do what it does natively, supply null here.
-     * @param {Boolean} shouldReport False to turn off exception reporting so
-     *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown. This is true by default.
+     * @param {Boolean} [shouldReport=true] False to turn off exception
+     *     reporting so strings can be tested for XML compliance without
+     *     causing exceptions to be thrown.
      * @exception TP.sig.DOMParseException
      * @returns {TP.dom.Node|undefined} The newly constructed TP.dom.Node.
      */
@@ -571,12 +571,14 @@ function(aNode) {
 //  ------------------------------------------------------------------------
 
 TP.dom.Node.Type.defineMethod('getConcreteType',
-function(aNode) {
+function(aNode, shouldReport) {
 
     /**
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided.
      * @param {Node} aNode The native node to wrap.
+     * @param {Boolean} [shouldReport=false] True to turn on reporting of
+     *     'fallback' to default element type (if receiver is an Element).
      * @exception TP.sig.InvalidNode
      * @returns {TP.meta.dom.Node} A TP.dom.Node subtype type object.
      */
@@ -589,11 +591,11 @@ function(aNode) {
     switch (aNode.nodeType) {
         case Node.ELEMENT_NODE:
 
-            return TP.dom.ElementNode.getConcreteType(aNode);
+            return TP.dom.ElementNode.getConcreteType(aNode, shouldReport);
 
         case Node.DOCUMENT_NODE:
 
-            return TP.dom.DocumentNode.getConcreteType(aNode);
+            return TP.dom.DocumentNode.getConcreteType(aNode, shouldReport);
 
         case Node.DOCUMENT_FRAGMENT_NODE:
 
@@ -601,7 +603,7 @@ function(aNode) {
 
         case Node.ATTRIBUTE_NODE:
 
-            return TP.dom.AttributeNode.getConcreteType(aNode);
+            return TP.dom.AttributeNode.getConcreteType(aNode, shouldReport);
 
         case Node.TEXT_NODE:
 
@@ -613,7 +615,8 @@ function(aNode) {
 
         case Node.PROCESSING_INSTRUCTION_NODE:
 
-            return TP.dom.ProcessingInstructionNode.getConcreteType(aNode);
+            return TP.dom.ProcessingInstructionNode.getConcreteType(
+                                                        aNode, shouldReport);
 
         case Node.ENTITY_REFERENCE_NODE:
 
@@ -9443,8 +9446,8 @@ function(aRequest, replaceNode, alternateNode) {
             shouldProcess = false;
         } else {
             if (this.isDOMCacheable()) {
-                //  Otherwise, retrieve or compute a local ID for the node and check
-                //  with our compiled document cache.
+                //  Otherwise, retrieve or compute a local ID for the node and
+                //  check with our compiled document cache.
                 nodeLID = TP.lid(node);
                 newNode = TP.$compiled_doc_cache.at(nodeLID);
             }
@@ -10908,7 +10911,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Type.defineMethod('getConcreteType',
-function(aNode) {
+function(aNode, shouldReport) {
 
     /**
      * @method getConcreteType
@@ -10934,6 +10937,8 @@ function(aNode) {
      *     'defaultNodeType' name registered under that namespace and attempts
      *     to obtain a matching type.
      * @param {Node} aNode The native node to wrap.
+     * @param {Boolean} [shouldReport=false] True to turn on reporting of
+     *     'fallback' to default element type (if receiver is an Element).
      * @returns {TP.meta.dom.ElementNode} A TP.dom.ElementNode subtype type
      *     object.
      */
@@ -10970,7 +10975,7 @@ function(aNode) {
             //  then invoke that and use the return value.
             if (type.Type !== this.Type &&
                 TP.owns(type.Type, 'getConcreteType')) {
-                type = type.getConcreteType(aNode);
+                type = type.getConcreteType(aNode, shouldReport);
             }
 
             if (!type.isAbstract()) {
@@ -10988,7 +10993,8 @@ function(aNode) {
             if (TP.notEmpty(prefix = name.match(/(.*):/)[1])) {
                 //  If that namespace has a 'prefix' associated with it,
                 //  we'll try to find a type named '<prefix>:Element'
-                if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element')) &&
+                if (TP.isType(
+                        type = TP.sys.getTypeByName(prefix + ':Element')) &&
                     !type.isAbstract()) {
                     //  Only set the slot if its an HTML node... see above.
                     TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
@@ -11001,8 +11007,8 @@ function(aNode) {
                                     TP.w3.Xmlns.get('info').at(url))) {
                         if (TP.notEmpty(defaultType =
                                             info.at('defaultNodeType'))) {
-                            if (TP.isType(type =
-                                            TP.sys.getTypeByName(defaultType))) {
+                            if (TP.isType(
+                                    type = TP.sys.getTypeByName(defaultType))) {
 
                                 //  If the type's Type prototype is not the same
                                 //  as this one's Type prototype and it owns a
@@ -11012,7 +11018,16 @@ function(aNode) {
                                 //  the return value.
                                 if (type.Type !== this.Type &&
                                     TP.owns(type.Type, 'getConcreteType')) {
-                                    type = type.getConcreteType(aNode);
+                                    type = type.getConcreteType(
+                                                        aNode, shouldReport);
+                                }
+
+                                if (shouldReport) {
+                                    TP.ifWarn() ?
+                                        TP.warn('Using defaultNodeType: ' +
+                                                TP.name(type) +
+                                                ' for missing element type: ' +
+                                                name) : 0;
                                 }
 
                                 if (!type.isAbstract()) {
@@ -11052,7 +11067,7 @@ function(aNode) {
             //  then invoke that and use the return value.
             if (type.Type !== this.Type &&
                 TP.owns(type.Type, 'getConcreteType')) {
-                type = type.getConcreteType(aNode);
+                type = type.getConcreteType(aNode, shouldReport);
             }
 
             if (!type.isAbstract()) {
@@ -11080,7 +11095,7 @@ function(aNode) {
         //  invoke that and use the return value.
         if (type.Type !== this.Type &&
             TP.owns(type.Type, 'getConcreteType')) {
-            type = type.getConcreteType(aNode);
+            type = type.getConcreteType(aNode, shouldReport);
         }
 
         if (!type.isAbstract()) {
@@ -11112,7 +11127,7 @@ function(aNode) {
                     //  use the return value.
                     if (type.Type !== this.Type &&
                         TP.owns(type.Type, 'getConcreteType')) {
-                        type = type.getConcreteType(aNode);
+                        type = type.getConcreteType(aNode, shouldReport);
                     }
 
                     if (!type.isAbstract()) {
@@ -11136,7 +11151,15 @@ function(aNode) {
                     //  use the return value.
                     if (type.Type !== this.Type &&
                         TP.owns(type.Type, 'getConcreteType')) {
-                        type = type.getConcreteType(aNode);
+                        type = type.getConcreteType(aNode, shouldReport);
+                    }
+
+                    if (shouldReport) {
+                        TP.ifWarn() ?
+                            TP.warn('Using defaultNodeType: ' +
+                                    TP.name(type) +
+                                    ' for missing element type: ' +
+                                    name) : 0;
                     }
 
                     if (!type.isAbstract()) {
@@ -15936,7 +15959,7 @@ TP.dom.Node.defineSubtype('AttributeNode');
 //  ------------------------------------------------------------------------
 
 TP.dom.AttributeNode.Type.defineMethod('getConcreteType',
-function(aNode) {
+function(aNode, shouldReport) {
 
     /**
      * @method getConcreteType
@@ -15945,6 +15968,8 @@ function(aNode) {
      *     TP.dom.AttributeNode itself. The lookup process calculates a type
      *     name by acquiring the attribute's 'full name' (it's prefix + local
      *     name), and looking up a type based on that.
+     * @param {Boolean} [shouldReport=false] True to turn on reporting of
+     *     'fallback' to default element type (if receiver is an Element).
      * @returns {TP.meta.dom.AttributeNode} A TP.dom.AttributeNode subtype type
      *     object.
      */
@@ -16336,7 +16361,7 @@ TP.dom.ProcessingInstructionNode.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.dom.ProcessingInstructionNode.Type.defineMethod('getConcreteType',
-function(aNode) {
+function(aNode, shouldReport) {
 
     /**
      * @method getConcreteType
@@ -16350,6 +16375,9 @@ function(aNode) {
      *     punctuation. It then uses that name with a suffix of 'PINode'. For
      *     example, a PI of the form '<?tibet-stylesheet?>' will search for
      *     TP.dom.TibetStylesheetPINode.
+     * @param {Node} aNode The native node to wrap.
+     * @param {Boolean} [shouldReport=false] True to turn on reporting of
+     *     'fallback' to default element type (if receiver is an Element).
      * @returns {TP.meta.dom.ProcessingInstructionNode} A
      *     TP.dom.ProcessingInstructionNode subtype type object.
      */
@@ -16666,13 +16694,15 @@ TP.dom.DocumentNode.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.dom.DocumentNode.Type.defineMethod('getConcreteType',
-function(aNode) {
+function(aNode, shouldReport) {
 
     /**
      * @method getConcreteType
      * @summary Returns the subtype to use for the node provided. In this case
      *     the node is always some form of Document node (type 9).
      * @param {Node} aNode The native node to wrap.
+     * @param {Boolean} [shouldReport=false] True to turn on reporting of
+     *     'fallback' to default element type (if receiver is an Element).
      * @returns {TP.meta.dom.DocumentNode} A TP.dom.DocumentNode subtype type
      *     object.
      */
@@ -16707,7 +16737,8 @@ function(aNode) {
         name = prefix + 'DocumentNode';
 
         //  use require to see if we can find that document type and use it
-        if (TP.isType(type = TP.sys.getTypeByName(name)) && !type.isAbstract()) {
+        if (TP.isType(type = TP.sys.getTypeByName(name)) &&
+            !type.isAbstract()) {
             return type;
         }
     }

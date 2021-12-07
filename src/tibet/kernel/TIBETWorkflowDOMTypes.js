@@ -1553,7 +1553,7 @@ function(aNode, aProcessor) {
 
             //  If we can't get a concrete type at all, then we just return
             //  false. Can't do anything from here.
-            if (!TP.isType(type = TP.dom.Node.getConcreteType(node))) {
+            if (!TP.isType(type = TP.dom.Node.getConcreteType(node, true))) {
                 return false;
             }
 
@@ -1742,10 +1742,10 @@ function(aNode, aProcessor, aRequest, allowDetached) {
 
             if (!TP.isType(type = tagTypeDict.at(
                                     TP.elementComputeTIBETTypeKey(node)))) {
-                type = TP.dom.Node.getConcreteType(node);
+                type = TP.dom.Node.getConcreteType(node, true);
             }
         } else {
-            type = TP.dom.Node.getConcreteType(node);
+            type = TP.dom.Node.getConcreteType(node, true);
         }
 
         processingRequest.atPut('node', node);
