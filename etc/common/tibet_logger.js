@@ -82,6 +82,16 @@
 
 
     /**
+     * A list of regex patterns/strings which should be used to filter out
+     * unwanted messages.
+     * @type {Array.<RegExp|String>}
+     */
+    Logger.FILTERS = [
+        /highlightNode failed/      //  Electron.js DevTools non-window nodes
+    ];
+
+
+    /**
      *
      */
     Logger.prototype.activateColor = function() {
@@ -170,7 +180,8 @@
      * @param {Number|String} [level=Logger.INFO] The level to filter by.
      */
     Logger.prototype.log = function(msg, spec, level) {
-        var lvl,
+        var ignore,
+            lvl,
             str,
             method,
             date;
@@ -214,6 +225,10 @@
         //  NodeJS buffering behavior when writing out to a local terminal. The
         //  console.* methods will add one as automatic behavior.
         str = str.replace(/\n$/, '');
+
+        if (Logger.FILTERS.some(function(filter) { return filter.test(str) })) {
+            return;
+        }
 
         return console[method](str);
     };
