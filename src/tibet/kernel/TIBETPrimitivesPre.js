@@ -10395,6 +10395,10 @@ function(anObj) {
         return anObj === '';
     }
 
+    if (type === 'symbol') {
+        return false;
+    }
+
     //  if its a boolean, it can't be empty.
     if (type === 'boolean') {
         return false;
