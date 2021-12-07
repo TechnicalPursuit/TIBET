@@ -13058,6 +13058,25 @@ function() {
 TP.lang.Object.defineSubtype('lang.ValueHolder');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.lang.ValueHolder.Type.defineMethod('parse',
+function(aString) {
+
+    /**
+     * @method parse
+     * @summary Parses aString into a ValueHolder. In general, ValueHolders are
+     *     only used for scalar types (e.g. String, Number, Boolean).
+     * @param {String} aString The content string to parse.
+     * @returns {TP.lang.ValueHolder} The result of the parse. Note that the
+     *     parsed value could be null or undefined and that's ok.
+     */
+
+    return this.construct(TP.parsedVal(aString));
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
