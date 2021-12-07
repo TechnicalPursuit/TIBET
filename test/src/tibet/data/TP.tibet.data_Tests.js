@@ -112,15 +112,15 @@ function() {
 
                 srcURI = TP.uc('urn:tibet:Data1_boolean');
                 dataResource = srcURI.getResource().get('result');
-                test.assert.isMemberOf(dataResource, Boolean);
+                test.assert.isMemberOf(TP.val(dataResource), Boolean);
 
                 srcURI = TP.uc('urn:tibet:Data1_number');
                 dataResource = srcURI.getResource().get('result');
-                test.assert.isMemberOf(dataResource, Number);
+                test.assert.isMemberOf(TP.val(dataResource), Number);
 
                 srcURI = TP.uc('urn:tibet:Data1_string');
                 dataResource = srcURI.getResource().get('result');
-                test.assert.isMemberOf(dataResource, String);
+                test.assert.isMemberOf(TP.val(dataResource), String);
 
                 //  ---
 
@@ -185,15 +185,15 @@ function() {
 
                 srcURI = TP.uc('urn:tibet:Data2_boolean');
                 dataResource = srcURI.getResource().get('result');
-                test.assert.isMemberOf(dataResource, Boolean);
+                test.assert.isMemberOf(TP.val(dataResource), Boolean);
 
                 srcURI = TP.uc('urn:tibet:Data2_number');
                 dataResource = srcURI.getResource().get('result');
-                test.assert.isMemberOf(dataResource, Number);
+                test.assert.isMemberOf(TP.val(dataResource), Number);
 
                 srcURI = TP.uc('urn:tibet:Data2_string');
                 dataResource = srcURI.getResource().get('result');
-                test.assert.isMemberOf(dataResource, String);
+                test.assert.isMemberOf(TP.val(dataResource), String);
 
                 //  ---
 
