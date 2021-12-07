@@ -4635,8 +4635,8 @@ TP.lang.RootObject$$Type[TP.OWNER] = TP.lang.RootObject;
 TP.lang.RootObject$$Inst[TP.OWNER] = TP.lang.RootObject;
 
 //  identification of the prototype instances
-TP.lang.RootObject$$Type.prototype[TP.ID] = 'TypePrototype';
-TP.lang.RootObject$$Inst.prototype[TP.ID] = 'InstPrototype';
+TP.lang.RootObject$$Type.prototype[TP.ID] = 'TP.lang.RootObject.Type';
+TP.lang.RootObject$$Inst.prototype[TP.ID] = 'TP.lang.RootObject.Inst';
 
 //  hook to the type object at the root of the TIBET type chain
 TP.lang.RootObject$$Inst.prototype[TP.TYPE] = TP.lang.RootObject;
