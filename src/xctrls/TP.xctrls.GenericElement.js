@@ -17,6 +17,10 @@
 
 TP.xctrls.Element.defineSubtype('GenericElement');
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.xctrls.GenericElement.defineAttribute('styleURI', TP.NO_RESULT);
+TP.xctrls.GenericElement.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
