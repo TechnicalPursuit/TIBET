@@ -1791,10 +1791,10 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         if (TP.isNode(result)) {
 
             if (TP.isValid(result[TP.PROCESSOR_HINT])) {
-                switch(result[TP.PROCESSOR_HINT]) {
+                switch (result[TP.PROCESSOR_HINT]) {
                     case TP.DESCEND:
-                        TP.nodeGetChildNodes(result).forEach(
-                            function(aResult) {
+                        /* eslint-disable */
+                        TP.nodeGetChildNodes(result).forEach((aResult) => {
                                 //  Filter any descendants out of the original
                                 //  node list, if necessary.
                                 if (TP.isElement(aResult)) {
@@ -1803,6 +1803,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
 
                                 producedEntries.push(TP.ac(aResult, node));
                             });
+                        /* eslint-enable */
                         break;
                     case TP.REPEAT:
                         if (TP.isElement(result)) {
