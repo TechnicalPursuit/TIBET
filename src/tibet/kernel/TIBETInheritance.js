@@ -4532,6 +4532,9 @@ function(varargs) {
         mainTypeTarget,
         resolutions,
 
+        mainSupertypeTypeTarget,
+        traitSupertypeTypeTarget,
+
         len,
         i,
 
@@ -4620,6 +4623,10 @@ function(varargs) {
         this.$set('$traitsTypeResolutions', resolutions);
     }
 
+    //  Cache the Type prototype for the *supertype* of the mainTypeTarget here
+    //  for use below.
+    mainSupertypeTypeTarget = mainTypeTarget[TP.OWNER].getSupertype().Type;
+
     /* eslint-disable no-loop-func */
     len = allTraits.getSize();
     for (i = 0; i < len; i++) {
@@ -4627,6 +4634,11 @@ function(varargs) {
         traitType = allTraits.at(i);
 
         traitTypeTarget = traitType.getPrototype();
+
+        //  Cache the Type prototype for the *supertype* of the traitTypeTarget
+        //  here for use below.
+        traitSupertypeTypeTarget =
+            traitTypeTarget[TP.OWNER].getSupertype().Type;
 
         //  If the trait type interface isn't represented in the quick reference
         //  POJO, make an entry for it by asking the trait type's 'type' side
@@ -4654,7 +4666,7 @@ function(varargs) {
             //  supertype's Type prototype has a property descriptor with a
             //  'getter' that is also a trap.
             desc = Object.getOwnPropertyDescriptor(
-                        mainTypeTarget[TP.OWNER].getSupertype().Type,
+                        mainSupertypeTypeTarget,
                         propName);
 
             //  If it has a descriptor that has a 'get' and that 'get' is a
@@ -4670,7 +4682,7 @@ function(varargs) {
             //  Do all of that again for the trait type
 
             desc = Object.getOwnPropertyDescriptor(
-                        traitTypeTarget[TP.OWNER].getSupertype().Type,
+                        traitSupertypeTypeTarget,
                         propName);
 
             if (desc && desc.get && desc.get.isTraitTrap) {
@@ -4744,6 +4756,10 @@ function(varargs) {
         this.$set('$traitsInstResolutions', resolutions);
     }
 
+    //  Cache the Inst prototype for the *supertype* of the mainTypeTarget here
+    //  for use below.
+    mainSupertypeTypeTarget = mainTypeTarget[TP.OWNER].getSupertype().Inst;
+
     /* eslint-disable no-loop-func */
     len = allTraits.getSize();
     for (i = 0; i < len; i++) {
@@ -4751,6 +4767,11 @@ function(varargs) {
         traitType = allTraits.at(i);
 
         traitTypeTarget = traitType.getInstPrototype();
+
+        //  Cache the Inst prototype for the *supertype* of the traitTypeTarget
+        //  here for use below.
+        traitSupertypeTypeTarget =
+            traitTypeTarget[TP.OWNER].getSupertype().Inst;
 
         //  If the trait instance interface isn't represented in the quick
         //  reference POJO, make an entry for it by asking the trait type's
@@ -4778,7 +4799,7 @@ function(varargs) {
             //  supertype's Inst prototype has a property descriptor with a
             //  'getter' that is also a trap.
             desc = Object.getOwnPropertyDescriptor(
-                        mainTypeTarget[TP.OWNER].getSupertype().Inst,
+                        mainSupertypeTypeTarget,
                         propName);
 
             //  If it has a descriptor that has a 'get' and that 'get' is a
@@ -4794,7 +4815,7 @@ function(varargs) {
             //  Do all of that again for the trait type
 
             desc = Object.getOwnPropertyDescriptor(
-                        traitTypeTarget[TP.OWNER].getSupertype().Inst,
+                        traitSupertypeTypeTarget,
                         propName);
 
             if (desc && desc.get && desc.get.isTraitTrap) {
