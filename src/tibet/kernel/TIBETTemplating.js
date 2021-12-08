@@ -106,6 +106,10 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, 
 
         shouldEcho,
 
+        errMsg,
+        errStart,
+        errEnd,
+
         func,
 
         tokens,
@@ -164,12 +168,21 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, 
         try {
             tokens = TP.$templateParser.parse(str);
         } catch (e) {
+
+            errMsg = 'Template failure';
+            if (e.location) {
+                errStart = e.location.start;
+                errEnd = e.location.end;
+                if (errStart && errEnd) {
+                    errMsg += ' line: ' + errStart.line;
+                    errMsg += ' offset: ' + errStart.offset;
+                }
+            }
+            errMsg += ' in template: ' + templateName;
+
             return this.raise(
                     'TP.sig.TemplateTokenizationFailed',
-                    TP.ec(e,
-                        TP.sc('Tokenization failed at: ', e.line || 'unknown',
-                                ' in template named: ', templateName,
-                                ' with source: ' + str)));
+                    TP.ec(e, TP.sc(errMsg)));
         }
 
         //  If the invoker hasn't explicitly set annotateMarkup to false, and
