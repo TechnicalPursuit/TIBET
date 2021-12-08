@@ -4133,7 +4133,7 @@ TP.definePrimitive('val', TP.objectValue);
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('objectXHTMLNode',
-function(anObject, aDocument) {
+function(anObject, aDocument, shouldReport) {
 
     /**
      * @method objectXHTMLNode
@@ -4147,6 +4147,9 @@ function(anObject, aDocument) {
      * @param {Object} anObject The object to format as XHTML.
      * @param {XMLDocument} aDocument The document which should own the result
      *     node. Defaults to the XML document TP.XML_FACTORY_DOCUMENT.
+     * @param {Boolean} shouldReport False to turn off exception reporting so
+     *     strings can be tested for XML compliance without causing exceptions
+     *     to be thrown. This is true by default.
      * @returns {Node} The best-possible XHTML node for the Object.
      */
 
@@ -4161,7 +4164,7 @@ function(anObject, aDocument) {
     //  that the default namespace for any non-prefixed elements that don't
     //  already have their own default namespace should be the XHTML namespace.
     if (TP.isString(anObject)) {
-        return TP.node(anObject, TP.w3.Xmlns.XHTML);
+        return TP.node(anObject, TP.w3.Xmlns.XHTML, shouldReport);
     }
 
     //  If its already an XML node, we just return it.
