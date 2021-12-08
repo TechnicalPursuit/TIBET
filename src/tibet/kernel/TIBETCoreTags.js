@@ -67,7 +67,7 @@ TP.dom.UIElementNode.defineSubtype('TP.tag.CustomTag');
 TP.tag.CustomTag.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.tag.CustomTag.Type.resolveTrait(
-        'tagCompile',
+        'tagExpand',
         TP.dom.UIElementNode);
 
 TP.tag.CustomTag.Inst.resolveTraits(
@@ -563,9 +563,11 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     retVal = this.callNextMethod();
 
-    //  If we're redefining the 'tagCompile' method and the system has started,
-    //  then we need to refresh all of the existing instances.
-    if (methodName === 'tagCompile' && TP.sys.hasStarted()) {
+    //  If we're redefining the 'tagCompile' or 'tagExpand' method and the
+    //  system has started, then we need to refresh all of the existing
+    //  instances.
+    if ((methodName === 'tagCompile' || methodName === 'tagExpand') &&
+        TP.sys.hasStarted()) {
         this[TP.OWNER].refreshInstances();
     }
 
@@ -595,14 +597,14 @@ function(tpElement, aRequest) {
     if (TP.sys.hasFeature('lama')) {
         str = '<a onclick="TP.bySystemId(\'LamaConsoleService\')' +
                 '.sendConsoleRequest(\':inspect ' +
-                tpElement.getID().replace(':', '.') + '.Type.tagCompile' +
+                tpElement.getID().replace(':', '.') + '.Type.tagExpand' +
                 '\'); return false;" href="#" tibet:tag="' +
                 tpElement.getCanonicalName() + '" tibet:no-rewrite="true">' +
                 '&lt;' + tpElement.getCanonicalName() + '/&gt;' +
                 '</a>';
     } else {
         str = '<a onclick="alert(\'Edit ' + tpElement.getID() +
-                '.Type.tagCompile.\')" href="#" tibet:tag="' +
+                '.Type.tagExpand.\')" href="#" tibet:tag="' +
                 tpElement.getCanonicalName() + '" tibet:no-rewrite="true">' +
                 '&lt;' + tpElement.getCanonicalName() + '/&gt;' +
                 '</a>';
@@ -628,12 +630,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tag.ComputedTag.Type.defineMethod('tagCompile',
+TP.tag.ComputedTag.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert instances of the tag into their HTML representation.
+     * @method tagExpand
+     * @summary Expand instances of the tag into their HTML representation.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      * @returns {Element} The new element.
@@ -704,7 +706,7 @@ function(aRequest) {
     }
 
     //  TODO: Need to review. Should we be doing all of the stuff that Templated
-    //  Tag does at the end of its tagCompile??
+    //  Tag does at the end of its tagExpand??
 
     TP.elementSetGenerator(newNode);
 
@@ -726,7 +728,7 @@ TP.tag.CustomTag.defineSubtype('TP.tag.TemplatedTag');
 //  Mix in templating behavior, resolving computation in favor of templating.
 TP.tag.TemplatedTag.addTraits(TP.dom.TemplatedNode);
 
-TP.tag.TemplatedTag.Type.resolveTrait('tagCompile', TP.dom.TemplatedNode);
+TP.tag.TemplatedTag.Type.resolveTrait('tagExpand', TP.dom.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -866,12 +868,12 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.app.Type.defineMethod('tagCompile',
+TP.tibet.app.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @description In this type, this method generates either a 'tibet:app' or
      *     a 'tibet:lama' tag, depending on whether or not the current boot
@@ -1091,12 +1093,12 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.root.Type.defineMethod('tagCompile',
+TP.tibet.root.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @description In this type, if the Lama is 'active' (not just loaded but
      *     active) this method converts the receiver (a 'tibet:root' tag) into a
@@ -1289,12 +1291,12 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tag.InfoTag.Type.defineMethod('tagCompile',
+TP.tag.InfoTag.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -1306,7 +1308,11 @@ function(aRequest) {
     //  Default for info tags is to not be transformed, but to have a
     //  'tibet-info' CSS class added to their markup.
 
-    elem = aRequest.at('node');
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
     TP.elementAddClass(elem, 'tibet-info');
 
     elem = TP.nodeCloneNode(elem);
@@ -1702,12 +1708,12 @@ function(aSignal, aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.tag.ActionTag.Type.defineMethod('tagCompile',
+TP.tag.ActionTag.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.

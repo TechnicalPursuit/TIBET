@@ -18457,12 +18457,12 @@ TP.dom.TemplatedNode.Type.defineAttribute('wantsTemplateWrapper');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.dom.TemplatedNode.Type.defineMethod('tagCompile',
+TP.dom.TemplatedNode.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM. This type replaces the current node with the result of
      *     executing its template content.
      * @param {TP.sig.Request} aRequest A request containing processing

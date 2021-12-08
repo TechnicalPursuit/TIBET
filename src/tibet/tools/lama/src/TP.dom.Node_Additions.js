@@ -2280,15 +2280,15 @@ function(anAspect, options) {
 
         case 'Structure':
 
-            //  See if the tag has a type-local tagCompile method. If so, return
+            //  See if the tag has a type-local tagExpand method. If so, return
             //  it.
-            if (TP.owns(thisType, 'tagCompile')) {
-                return thisType.tagCompile;
+            if (TP.owns(thisType, 'tagExpand')) {
+                return thisType.tagExpand;
             }
 
-            //  See if the tag has a type tagCompile method. If so, return it.
-            if (TP.owns(thisType.Type, 'tagCompile')) {
-                return thisType.Type.tagCompile;
+            //  See if the tag has a type tagExpand method. If so, return it.
+            if (TP.owns(thisType.Type, 'tagExpand')) {
+                return thisType.Type.tagExpand;
             }
 
             return null;

@@ -18,7 +18,7 @@ TP.lama.Element.defineSubtype('hud');
 
 TP.lama.hud.addTraits(TP.dom.TemplatedNode);
 
-TP.lama.hud.Type.resolveTrait('tagCompile', TP.dom.TemplatedNode);
+TP.lama.hud.Type.resolveTrait('tagExpand', TP.dom.TemplatedNode);
 
 TP.lama.hud.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),

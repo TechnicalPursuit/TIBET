@@ -1292,12 +1292,12 @@ TP.lama.CSSSlotEditor.Inst.defineAttribute(
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.lama.CSSSlotEditor.Type.defineMethod('tagCompile',
+TP.lama.CSSSlotEditor.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -1455,12 +1455,12 @@ TP.lama.CSSColorSlotEditor.Inst.defineAttribute(
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.lama.CSSColorSlotEditor.Type.defineMethod('tagCompile',
+TP.lama.CSSColorSlotEditor.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -1783,12 +1783,12 @@ TP.lama.CSSDimensionSlotEditor.Inst.defineAttribute(
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.lama.CSSDimensionSlotEditor.Type.defineMethod('tagCompile',
+TP.lama.CSSDimensionSlotEditor.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -1923,12 +1923,12 @@ TP.lama.CSSSlotEditor.defineSubtype('CSSIdentifierSlotEditor');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.lama.CSSIdentifierSlotEditor.Type.defineMethod('tagCompile',
+TP.lama.CSSIdentifierSlotEditor.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -2194,12 +2194,12 @@ TP.lama.CSSDraggableSlotEditor.defineSubtype('CSSPercentageSlotEditor');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.lama.CSSPercentageSlotEditor.Type.defineMethod('tagCompile',
+TP.lama.CSSPercentageSlotEditor.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.

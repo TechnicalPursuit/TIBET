@@ -134,12 +134,12 @@ function(aRequest) {
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.dom.ReactElement.Type.defineMethod('tagCompile',
+TP.dom.ReactElement.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @description This method operates differently depending on a variety of
      *     factors:

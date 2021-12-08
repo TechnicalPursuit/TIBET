@@ -18,12 +18,12 @@
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-{{nsroot}}.{{nsname}}.{{typename}}.Type.defineMethod('tagCompile',
+{{nsroot}}.{{nsname}}.{{typename}}.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert instances of the tag into their XHTML form.
+     * @method tagExpand
+     * @summary Expand instances of the tag into their XHTML form.
      * @param {TP.sig.Request} aRequest A request containing the tag element
      *     to convert along with other optional processing parameters.
      * @returns {Element|Array<Element>} The element(s) to replace the inbound

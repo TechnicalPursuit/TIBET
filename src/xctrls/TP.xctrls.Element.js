@@ -23,7 +23,7 @@ TP.xctrls.Element.isAbstract(true);
 TP.xctrls.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.xctrls.Element.Type.resolveTrait(
-        'tagCompile',
+        'tagExpand',
         TP.dom.UIElementNode);
 
 TP.xctrls.Element.Inst.resolveTraits(
@@ -108,12 +108,12 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Element.Type.defineMethod('tagCompile',
+TP.xctrls.Element.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -212,10 +212,10 @@ function(aStyleTPElem) {
 TP.tag.ComputedTag.defineSubtype('xctrls.ComputedTag');
 TP.xctrls.ComputedTag.addTraits(TP.xctrls.Element);
 
-//  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
+//  Resolve the 'tagExpand' method in favor of TP.xctrls.Element, but go ahead
 //  and execute the one inherited from TP.tag.ComputedTag afterwards as well.
 TP.xctrls.ComputedTag.Type.resolveTrait(
-                                'tagCompile', TP.xctrls.Element, TP.BEFORE);
+                                'tagExpand', TP.xctrls.Element, TP.BEFORE);
 
 //  ========================================================================
 //  TP.xctrls.TemplatedTag
@@ -233,10 +233,10 @@ TP.tag.TemplatedTag.defineSubtype('xctrls.TemplatedTag');
 
 TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
 
-//  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
+//  Resolve the 'tagExpand' method in favor of TP.xctrls.Element, but go ahead
 //  and execute the one inherited from TP.tag.TemplatedTag afterwards as well.
 TP.xctrls.TemplatedTag.Type.resolveTrait(
-                                'tagCompile', TP.xctrls.Element, TP.BEFORE);
+                                'tagExpand', TP.xctrls.Element, TP.BEFORE);
 
 //  ------------------------------------------------------------------------
 //  Instance Method

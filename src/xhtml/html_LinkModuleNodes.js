@@ -79,12 +79,12 @@ function(aTargetElem) {
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.html.link.Type.defineMethod('tagCompile',
+TP.html.link.Type.defineMethod('tagExpand',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
+     * @method tagExpand
+     * @summary Expand the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.

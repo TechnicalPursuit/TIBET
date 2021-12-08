@@ -2234,7 +2234,8 @@ function() {
      *     the target content.
      */
 
-    return '$tagCompileAndRegister';
+    //return '$tagCompileAndRegister';
+    return 'tagCompile';
 });
 
 //  ------------------------------------------------------------------------

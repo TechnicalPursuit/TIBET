@@ -19,7 +19,7 @@ TP.dom.UIElementNode.defineSubtype('electron.Element');
 TP.electron.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.electron.Element.Type.resolveTrait(
-        'tagCompile',
+        'tagExpand',
         TP.dom.UIElementNode);
 
 TP.electron.Element.Inst.resolveTraits(
@@ -81,10 +81,10 @@ TP.tag.ActionTag.defineSubtype('electron.ActionTag');
 
 TP.electron.ActionTag.addTraits(TP.electron.Element);
 
-//  Resolve the 'tagCompile' method in favor of TP.electron.Element, but go ahead
+//  Resolve the 'tagExpand' method in favor of TP.electron.Element, but go ahead
 //  and execute the one inherited from TP.tag.ActionTag afterwards as well.
 TP.electron.ActionTag.Type.resolveTrait(
-                                'tagCompile', TP.electron.Element, TP.BEFORE);
+                                'tagExpand', TP.electron.Element, TP.BEFORE);
 
 //  ------------------------------------------------------------------------
 //  end

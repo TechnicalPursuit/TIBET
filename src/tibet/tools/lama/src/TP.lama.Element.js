@@ -19,7 +19,7 @@ TP.dom.UIElementNode.defineSubtype('lama.Element');
 TP.lama.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.lama.Element.Type.resolveTrait(
-        'tagCompile',
+        'tagExpand',
         TP.dom.UIElementNode);
 
 TP.lama.Element.Inst.resolveTraits(
@@ -121,7 +121,7 @@ TP.tag.TemplatedTag.defineSubtype('lama.TemplatedTag');
 TP.lama.TemplatedTag.addTraits(TP.lama.Element);
 
 TP.lama.TemplatedTag.Type.resolveTrait(
-        'tagCompile',
+        'tagExpand',
         TP.tag.TemplatedTag);
 
 //  ------------------------------------------------------------------------
