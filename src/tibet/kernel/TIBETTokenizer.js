@@ -1099,7 +1099,7 @@ function(src, ops, tsh, exp, alias, args) {
                         str += c;
                     }
 
-                    if (!tsh) {
+                    if (!tsh && !quote === '`') {
                         TP.boot.$stderr('Unterminated string: ' +
                             TP.boot.$stringify(new_token('string', str), ', '));
 
