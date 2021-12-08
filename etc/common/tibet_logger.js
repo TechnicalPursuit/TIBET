@@ -180,8 +180,7 @@
      * @param {Number|String} [level=Logger.INFO] The level to filter by.
      */
     Logger.prototype.log = function(msg, spec, level) {
-        var ignore,
-            lvl,
+        var lvl,
             str,
             method,
             date;
@@ -226,9 +225,11 @@
         //  console.* methods will add one as automatic behavior.
         str = str.replace(/\n$/, '');
 
+        /* eslint-disable brace-style, max-statements-per-line, semi */
         if (Logger.FILTERS.some(function(filter) { return filter.test(str) })) {
             return;
         }
+        /* eslint-enable brace-style, max-statements-per-line, semi */
 
         return console[method](str);
     };
