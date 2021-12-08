@@ -4474,6 +4474,7 @@ function(target, targetPropName, track, initialValue, wantsImmediate) {
     traitTrapGetter.finalVal = undefined;
     traitTrapGetter.targetPropName = targetPropName;
     traitTrapGetter.targetTrack = track;
+    traitTrapGetter.isTraitTrap = true;
 
     //  If the caller wants this in immediate mode, we just resolve it
     //  immediately here and set the slot.
@@ -4642,6 +4643,42 @@ function(varargs) {
 
             propName = traitProps[j];
 
+            //  Before we go poking around at the targets, we need to make sure
+            //  that if *they* had any trait traps, that those are executed,
+            //  thereby resolving the proper value at their level. Then we can
+            //  make sure that we're using the proper values for ourself.
+
+            //  The trait trap getter will have been installed using a
+            //  Object.defineProperty with a descriptor. See if the type
+            //  target's *owner's* (the actual type, not the Type prototype)
+            //  supertype's Type prototype has a property descriptor with a
+            //  'getter' that is also a trap.
+            desc = Object.getOwnPropertyDescriptor(
+                        mainTypeTarget[TP.OWNER].getSupertype().Type,
+                        propName);
+
+            //  If it has a descriptor that has a 'get' and that 'get' is a
+            //  trap, execute the trap. Note here how we turn off the 'don't
+            //  execute the trait resolution' flag so that the trait resolution
+            //  machinery actually executes, even if there is an initial value.
+            if (desc && desc.get && desc.get.isTraitTrap) {
+                TP.$$no_exec_trait_resolution = false;
+                desc.get();
+                TP.$$no_exec_trait_resolution = true;
+            }
+
+            //  Do all of that again for the trait type
+
+            desc = Object.getOwnPropertyDescriptor(
+                        traitTypeTarget[TP.OWNER].getSupertype().Type,
+                        propName);
+
+            if (desc && desc.get && desc.get.isTraitTrap) {
+                TP.$$no_exec_trait_resolution = false;
+                desc.get();
+                TP.$$no_exec_trait_resolution = true;
+            }
+
             //  If the mainTypeTarget has this property, then we need to check
             //  whether the traitTypeTarget has it too *and that the values
             //  exactly match* (i.e. they are the same object/value). In that
@@ -4729,6 +4766,42 @@ function(varargs) {
         for (j = 0; j < len2; j++) {
 
             propName = traitProps[j];
+
+            //  Before we go poking around at the targets, we need to make sure
+            //  that if *they* had any trait traps, that those are executed,
+            //  thereby resolving the proper value at their level. Then we can
+            //  make sure that we're using the proper values for ourself.
+
+            //  The trait trap getter will have been installed using a
+            //  Object.defineProperty with a descriptor. See if the type
+            //  target's *owner's* (the actual type, not the Inst prototype)
+            //  supertype's Inst prototype has a property descriptor with a
+            //  'getter' that is also a trap.
+            desc = Object.getOwnPropertyDescriptor(
+                        mainTypeTarget[TP.OWNER].getSupertype().Inst,
+                        propName);
+
+            //  If it has a descriptor that has a 'get' and that 'get' is a
+            //  trap, execute the trap. Note here how we turn off the 'don't
+            //  execute the trait resolution' flag so that the trait resolution
+            //  machinery actually executes, even if there is an initial value.
+            if (desc && desc.get && desc.get.isTraitTrap) {
+                TP.$$no_exec_trait_resolution = false;
+                desc.get();
+                TP.$$no_exec_trait_resolution = true;
+            }
+
+            //  Do all of that again for the trait type
+
+            desc = Object.getOwnPropertyDescriptor(
+                        traitTypeTarget[TP.OWNER].getSupertype().Inst,
+                        propName);
+
+            if (desc && desc.get && desc.get.isTraitTrap) {
+                TP.$$no_exec_trait_resolution = false;
+                desc.get();
+                TP.$$no_exec_trait_resolution = true;
+            }
 
             //  If the mainTypeTarget has this property, then we need to check
             //  whether the traitTypeTarget has it too *and that the values
