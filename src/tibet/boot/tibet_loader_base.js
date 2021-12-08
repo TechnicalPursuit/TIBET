@@ -625,7 +625,6 @@ TP.boot.$$log = function(argList, aLogLevel) {
      */
 
     var level,
-        message,
         i;
 
     //  Get level in numeric form so we can test leveling below.
@@ -636,16 +635,12 @@ TP.boot.$$log = function(argList, aLogLevel) {
 
     level = TP.boot[level.toUpperCase()];
 
-    message = [];
     for (i = 0; i < argList.length; i++) {
-        message.push(TP.boot.$stringify(argList[i]));
-    }
-    message = message.join(' ');
-
-    if (level >= TP.boot.ERROR && level < TP.boot.SYSTEM) {
-        return TP.boot.$stderr(message, level);
-    } else {
-        return TP.boot.$stdout(message, level);
+        if (level >= TP.boot.ERROR && level < TP.boot.SYSTEM) {
+            TP.boot.$stderr(argList[i], level);
+        } else {
+            TP.boot.$stdout(argList[i], level);
+        }
     }
 };
 
