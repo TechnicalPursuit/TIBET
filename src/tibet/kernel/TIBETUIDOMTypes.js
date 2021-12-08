@@ -1720,7 +1720,7 @@ function(aRequest) {
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We may have gotten here because the tag processing system was able to
@@ -9855,7 +9855,7 @@ function(aRequest) {
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     elem = TP.nodeCloneNode(elem);

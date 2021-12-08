@@ -58,8 +58,7 @@ function(aRequest) {
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  Obtain the (or compute a unique) ID for the produced element.

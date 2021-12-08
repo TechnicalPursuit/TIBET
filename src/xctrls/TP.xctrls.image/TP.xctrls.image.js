@@ -65,8 +65,7 @@ function(aRequest) {
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  First, see if the image has a 'real path'
@@ -82,7 +81,8 @@ function(aRequest) {
     url = TP.uc(imagePath);
     if (!TP.isURI(url)) {
         TP.ifWarn() ?
-            TP.warn('Expected valid URI in src or name attribute: ' + imagePath) : 0;
+            TP.warn('Expected valid URI in src or name attribute: ' +
+                                                            imagePath) : 0;
     }
 
     //  If the image path points to an SVG, then we inline it.

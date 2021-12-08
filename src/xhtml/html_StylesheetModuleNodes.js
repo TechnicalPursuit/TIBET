@@ -91,7 +91,10 @@ function(aRequest) {
     var elem,
         type;
 
-    elem = aRequest.at('node');
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return this.raise('TP.sig.InvalidNode');
+    }
 
     //  Grab the type and, if it's a 'TIBET CSS' type of styling, then change
     //  the original element into a 'tibet:style' tag.

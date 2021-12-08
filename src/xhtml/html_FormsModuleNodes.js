@@ -3830,7 +3830,7 @@ function(aRequest) {
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     typeVal = TP.elementGetAttribute(elem, 'type', true);

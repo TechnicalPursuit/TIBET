@@ -656,7 +656,7 @@ function(aRequest) {
         retVal;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     tpElem = TP.wrap(elem);
@@ -892,7 +892,7 @@ function(aRequest) {
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     projectName = TP.sys.cfg('project.name');
@@ -1114,7 +1114,7 @@ function(aRequest) {
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  If the Lama is configured to be on (and we've actually loaded the
@@ -1725,7 +1725,11 @@ function(aRequest) {
     //  Default for action tags is to not be transformed, but to have a
     //  'tibet-action' CSS class added to their markup.
 
-    elem = aRequest.at('node');
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
     TP.elementAddClass(elem, 'tibet-action');
 
     elem = TP.nodeCloneNode(elem);

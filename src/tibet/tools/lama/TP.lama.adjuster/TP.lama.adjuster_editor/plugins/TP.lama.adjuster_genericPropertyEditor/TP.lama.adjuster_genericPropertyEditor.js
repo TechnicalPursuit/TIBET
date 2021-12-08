@@ -1309,8 +1309,9 @@ function(aRequest) {
         str,
         newFrag;
 
+    //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     str = '<span part="value">' +
@@ -1474,8 +1475,9 @@ function(aRequest) {
         str,
         newFrag;
 
+    //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     val = TP.nodeGetTextContent(elem);
@@ -1800,8 +1802,9 @@ function(aRequest) {
         str,
         newFrag;
 
+    //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     str = '<span part="value" on:dragdown="StartAdjusting">' +
@@ -1940,8 +1943,9 @@ function(aRequest) {
         str,
         newFrag;
 
+    //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     /*
@@ -2211,8 +2215,9 @@ function(aRequest) {
         str,
         newFrag;
 
+    //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     str = '<span part="value" on:dragdown="StartAdjusting">' +
