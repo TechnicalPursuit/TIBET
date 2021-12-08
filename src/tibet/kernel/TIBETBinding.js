@@ -7765,11 +7765,6 @@ function(bindEntry, anAspect, aValue, scopeVals, ignoreBidiInfo) {
                                 'signalChange', true));
         } else {
 
-            //  Since we have a reference to the portion of the data
-            //  referenced by primaryURI, we have to manually mark it as
-            //  dirty here (and send a notification).
-            primaryURI.isDirty(true, true);
-
             //  If no fragment could be computed, then we set the 'whole
             //  value'.
             if (TP.isEmpty(frag)) {
