@@ -691,9 +691,10 @@ TP.hc(
         //  as this method gets used early in the booting process.
 
         //  String without valid markup? Not XML then.
-        if (aString === '' ||
-            !/^[\s\w]*</.test(aString) ||
-            aString.length < '<a/>'.length) {
+        if (!TP.regex.HAS_ELEMENT.test(aString)) {
+            if (shouldReport) {
+                TP.error('No element syntax in ' + str);
+            }
             return;
         }
 
