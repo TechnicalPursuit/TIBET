@@ -3199,11 +3199,11 @@ function(wantsShallowScope) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('getBoundAspect',
+TP.dom.ElementNode.Inst.defineMethod('getInboundAspect',
 function(aspectName) {
 
     /**
-     * @method getBoundAspect
+     * @method getInboundAspect
      * @summary Returns the bound value of the aspect on the receiver.
      * @param {String} aspectName The name of the aspect that the caller wants
      *     the bound value for.
@@ -3215,7 +3215,7 @@ function(aspectName) {
 
         scopeValues = this.getBindingScopeValues();
 
-    bindEntry = this.getInboundBindingEntryFor(aspectName);
+    bindEntry = this.getInboundAspectEntry(aspectName);
     if (TP.isValid(bindEntry)) {
         return this.$computeValueForBoundAspect(bindEntry, scopeValues);
     }
@@ -3620,11 +3620,11 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('getInboundBindingEntryFor',
+TP.dom.ElementNode.Inst.defineMethod('getInboundAspectEntry',
 function(aspectName, flushCache) {
 
     /**
-     * @method getInboundBindingEntryFor
+     * @method getInboundAspectEntry
      * @summary Gets the 'inbound' binding information for the supplied aspect
      *     on the receiver. This is information for bindings that set values on
      *     the receiver.
@@ -3742,11 +3742,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('getOutboundBindingEntryFor',
+TP.dom.ElementNode.Inst.defineMethod('getOutboundAspectEntry',
 function(aspectName, flushCache) {
 
     /**
-     * @method getOutboundBindingEntryFor
+     * @method getOutboundAspectEntry
      * @summary Gets the 'outbound' binding information for the supplied aspect
      *     on the receiver. This is information for bindings that get values
      *     from the receiver.
@@ -4601,11 +4601,11 @@ function(indexes, aCollection) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('isAspectBoundIn',
+TP.dom.ElementNode.Inst.defineMethod('isInboundAspect',
 function(aspectName) {
 
     /**
-     * @method isAspectBoundIn
+     * @method isInboundAspect
      * @summary Returns whether or not the aspect is bound 'in' on the receiver.
      * @param {String} aspectName The name of the aspect that the caller wants
      *     to check the binding for.
@@ -4613,23 +4613,16 @@ function(aspectName) {
      *     the receiver.
      */
 
-    var bindEntry;
-
-    bindEntry = this.getInboundBindingEntryFor(aspectName);
-    if (TP.isValid(bindEntry)) {
-        return true;
-    }
-
-    return false;
+    return TP.isValid(this.getInboundAspectEntry(aspectName));
 });
 
 //  ------------------------------------------------------------------------
 
-TP.dom.ElementNode.Inst.defineMethod('isAspectBoundOut',
+TP.dom.ElementNode.Inst.defineMethod('isOutboundAspect',
 function(aspectName) {
 
     /**
-     * @method isAspectBoundOut
+     * @method isOutboundAspect
      * @summary Returns whether or not the aspect is bound 'out' on the
      *     receiver.
      * @param {String} aspectName The name of the aspect that the caller wants
@@ -4638,14 +4631,7 @@ function(aspectName) {
      *     the receiver.
      */
 
-    var bindEntry;
-
-    bindEntry = this.getOutboundBindingEntryFor(aspectName);
-    if (TP.isValid(bindEntry)) {
-        return true;
-    }
-
-    return false;
+    return TP.isValid(this.getOutboundAspectEntry(aspectName));
 });
 
 //  ------------------------------------------------------------------------
@@ -4664,8 +4650,8 @@ function() {
     elem = this.getNativeNode();
 
     return TP.elementHasAttribute(elem, 'bind:in', true) ||
-            TP.elementHasAttribute(elem, 'bind:out', true) ||
-            TP.elementHasAttribute(elem, 'bind:io', true);
+            TP.elementHasAttribute(elem, 'bind:io', true) ||
+            TP.elementHasAttribute(elem, 'bind:out', true);
 });
 
 //  ------------------------------------------------------------------------
@@ -8416,7 +8402,8 @@ function(aspectName, aValue, ignoreBidiInfo) {
      * @method setInboundAspect
      * @summary Sets the value of the 'inbound aspect' named aspectName. Inbound
      *     aspects are those bound to the receiver using either 'bind:in' or
-     *     'bind:io'.
+     *     'bind:io'. Note that if the binding here was a bind:in this method
+     *     will warn (since setting a value should have implied a bind:io).
      * @param {String} aspectName The name of the aspect that the caller wants
      *     to set the bound value for.
      * @param {Object} aValue The value to set onto the model.
@@ -8432,7 +8419,7 @@ function(aspectName, aValue, ignoreBidiInfo) {
 
     scopeValues = this.getBindingScopeValues();
 
-    bindEntry = this.getInboundBindingEntryFor(aspectName);
+    bindEntry = this.getInboundAspectEntry(aspectName);
     if (TP.isValid(bindEntry)) {
         this.setBindingUsingEntry(bindEntry,
                                     aspectName,
@@ -8491,7 +8478,7 @@ function(aspectName, aValue, ignoreBidiInfo) {
 
     scopeValues = this.getBindingScopeValues();
 
-    bindEntry = this.getOutboundBindingEntryFor(aspectName);
+    bindEntry = this.getOutboundAspectEntry(aspectName);
     if (TP.isValid(bindEntry)) {
         this.setBindingUsingEntry(bindEntry,
                                     aspectName,

@@ -161,7 +161,7 @@ function(aRequest) {
 
     //  Finalize content so that static items get keys, etc. If this is a bound
     //  element, this will be called from the setData method.
-    if (!tpElem.isAspectBoundIn('data')) {
+    if (!tpElem.isInboundAspect('data')) {
         tpElem.finalizeContent();
     }
 

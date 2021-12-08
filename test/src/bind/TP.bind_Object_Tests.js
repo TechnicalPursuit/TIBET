@@ -34,7 +34,7 @@ function() {
 `);
         test.assert.isValid(tpElem, 'element not valid');
 
-        info = tpElem.getInboundBindingEntryFor('foo');
+        info = tpElem.getInboundAspectEntry('foo');
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'attr');
@@ -53,7 +53,7 @@ function() {
 `);
         test.assert.isValid(tpElem, 'element not valid');
 
-        info = tpElem.getInboundBindingEntryFor('foo');
+        info = tpElem.getInboundAspectEntry('foo');
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'attr');
@@ -72,7 +72,7 @@ function() {
 `);
         test.assert.isValid(tpElem, 'element not valid');
 
-        info = tpElem.getInboundBindingEntryFor('foo');
+        info = tpElem.getInboundAspectEntry('foo');
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'attr');
@@ -91,7 +91,7 @@ function() {
 `);
         test.assert.isValid(tpElem, 'element not valid');
 
-        info = tpElem.getInboundBindingEntryFor('foo');
+        info = tpElem.getInboundAspectEntry('foo');
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'bindin');
@@ -109,7 +109,7 @@ function() {
 `);
         test.assert.isValid(tpElem, 'element not valid');
 
-        info = tpElem.getInboundBindingEntryFor('foo');
+        info = tpElem.getInboundAspectEntry('foo');
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'bindio');
@@ -135,7 +135,7 @@ function() {
 `);
         test.assert.isValid(tpElem, 'element not valid');
 
-        info = tpElem.getOutboundBindingEntryFor('foo');
+        info = tpElem.getOutboundAspectEntry('foo');
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'foo');
@@ -154,7 +154,7 @@ function() {
 `);
         test.assert.isValid(tpElem, 'element not valid');
 
-        info = tpElem.getOutboundBindingEntryFor('foo');
+        info = tpElem.getOutboundAspectEntry('foo');
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'foo');
@@ -173,7 +173,7 @@ function() {
 `);
         test.assert.isValid(tpElem, 'element not valid');
 
-        info = tpElem.getOutboundBindingEntryFor('foo');
+        info = tpElem.getOutboundAspectEntry('foo');
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'bindin');
@@ -191,7 +191,7 @@ function() {
 `);
         test.assert.isValid(tpElem, 'element not valid');
 
-        info = tpElem.getOutboundBindingEntryFor('foo');
+        info = tpElem.getOutboundAspectEntry('foo');
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'bindio');

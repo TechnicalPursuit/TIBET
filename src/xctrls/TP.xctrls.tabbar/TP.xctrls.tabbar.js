@@ -214,7 +214,7 @@ function(normalizedEvent) {
         //  directly will cause the comparison machinery in the change
         //  notification system to be looking at the same Array and none of the
         //  dependents will be notified.
-        data = TP.copy(tabbar.getBoundAspect('data'));
+        data = TP.copy(tabbar.getInboundAspect('data'));
 
         //  Splice out the item at its old index. This returns an Array.
         item = data.splice(currentIndex, 1).first();
@@ -223,7 +223,7 @@ function(normalizedEvent) {
         data.splice(newIndex, 0, item);
 
         //  Set the 'data' 'inbound aspect'. This means 'data' was bound using
-        //  'data:in' or 'data:io'.
+        //  ':io' (:in may work but may warn).
         tabbar.setInboundAspect('data', data, true);
 
         if (tabbar.getAttribute('orientation') === 'vertical') {

@@ -869,7 +869,7 @@ function(aValue) {
 
     columns = this.get('columns');
     if (TP.notValid(columns)) {
-        columns = this.getBoundAspect('columns');
+        columns = this.getInboundAspect('columns');
     }
 
     //  If the value is an String, split it on the separator and then wrap that
