@@ -6431,7 +6431,6 @@ console.log('triangle.equals');
 
             val,
             correctVal;
-debugger;
         //  ---
 
         //  Diamond Definition
@@ -6808,11 +6807,15 @@ console.log('dimsquare.equals');
         //  trait types but executing the one on TP.test.DimensionedQuadrangle.
         //  ---
 
+debugger;
+
         //  DimensionedQuadrangle Definition
         TP.lang.Object.defineSubtype('test.DimensionedQuadrangle');
 
         TP.test.DimensionedQuadrangle.addTraits(
                 TP.test.AnotherMagnitude, TP.test.AnotherDimension);
+
+console.log(TP.json(TP.test.DimensionedQuadrangle.getC3ResolutionOrder()));
 
         //  Satisfies 'smaller' from TP.test.Magnitude
         TP.test.DimensionedQuadrangle.Inst.defineMethod(
@@ -6835,8 +6838,6 @@ console.log('dimquad.equals');
             'equals', TP.test.AnotherMagnitude, TP.BEFORE);
 
         obj = TP.test.DimensionedQuadrangle.construct();
-
-console.log(TP.json(TP.test.DimensionedQuadrangle.getC3ResolutionOrder()));
 
         //  Set the test counts and invoke the method
         dimensionEqualsCount = 0;
@@ -6961,7 +6962,7 @@ console.log(TP.json(TP.test.DimensionedQuadrangle.getC3ResolutionOrder()));
         //  TP.test.Equality
         test.assert.isEqualTo(
             TP.str(obj.getAccessPathFor('equalityValue', 'value')),
-            '$.EqualityEqVal');
+            '$.ColorEqualityVal');
 
         //  ---
 
@@ -7450,10 +7451,10 @@ console.log(TP.json(TP.test.DimensionedQuadrangle.getC3ResolutionOrder()));
 
         //  ---
 
-        //  When we 'get' doesDiffer, it should be the value 'true', since we
-        //  resolved it using TP.test.Circle's value.
+        //  When we 'get' doesDiffer, it should be the value 'false', since we
+        //  added the Color trait last
         val = obj.get('doesDiffer');
-        correctVal = true;
+        correctVal = false;
 
         test.assert.isEqualTo(
             val,
