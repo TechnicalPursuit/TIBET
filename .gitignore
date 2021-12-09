@@ -49,3 +49,4 @@ Thumbs.db
 /package-lock.json
 /yarn.lock
 /.vscode
+/.tshDebugPrefs
