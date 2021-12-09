@@ -225,7 +225,6 @@ function() {
 
     //  Satisfies 'equals' from TP.test.Equality
     TP.test.Circle.Inst.defineMethod('equals', function() {
-console.log('circle.equals');
         TP.test.OOTester.set(
             'circleEqualsCount',
                 TP.test.OOTester.get('circleEqualsCount') + 1);
@@ -253,7 +252,6 @@ console.log('circle.equals');
                 TP.test.OOTester.get('colorGetRGBCount') + 1);
     });
     TP.test.Color.Inst.defineMethod('equals', function() {
-console.log('color.equals');
         TP.test.OOTester.set(
             'colorEqualsCount',
                 TP.test.OOTester.get('colorEqualsCount') + 1);
@@ -5762,7 +5760,6 @@ function() {
         TP.test.Triangle.Inst.defineMethod(
             'equals',
             function() {
-console.log('triangle.equals');
                 return true;
             });
 
@@ -6504,7 +6501,6 @@ console.log('triangle.equals');
 
         //  Define an 'equals' method on it
         TP.test.Dimension.Inst.defineMethod('equals', function() {
-console.log('dim.equals');
             dimensionEqualsCount = 1;
         });
 
@@ -6513,7 +6509,6 @@ console.log('dim.equals');
 
         //  Define an 'equals' method on it - calling 'up' to its supertype
         TP.test.AnotherDimension.Inst.defineMethod('equals', function() {
-console.log('anotherdim.equals');
 
             this.callNextMethod();
 
@@ -6527,7 +6522,6 @@ console.log('anotherdim.equals');
         //  Define an 'equals' method on it - calling 'up' to its supertype
         TP.test.AnotherMagnitude.Inst.defineMethod('equals', function() {
 
-console.log('anothermag.equals');
             //  No sense in having callNextMethod() here - no implementation
             //  exists higher than us.
 
@@ -6603,7 +6597,6 @@ console.log('anothermag.equals');
             'equals',
             function() {
 
-console.log('dimsquare.equals');
                 this.callNextMethod();
 
                 dimensionedSquareEqualsCount = 1;
@@ -6807,15 +6800,11 @@ console.log('dimsquare.equals');
         //  trait types but executing the one on TP.test.DimensionedQuadrangle.
         //  ---
 
-debugger;
-
         //  DimensionedQuadrangle Definition
         TP.lang.Object.defineSubtype('test.DimensionedQuadrangle');
 
         TP.test.DimensionedQuadrangle.addTraits(
                 TP.test.AnotherMagnitude, TP.test.AnotherDimension);
-
-console.log(TP.json(TP.test.DimensionedQuadrangle.getC3ResolutionOrder()));
 
         //  Satisfies 'smaller' from TP.test.Magnitude
         TP.test.DimensionedQuadrangle.Inst.defineMethod(
@@ -6826,14 +6815,13 @@ console.log(TP.json(TP.test.DimensionedQuadrangle.getC3ResolutionOrder()));
 
         //  Define an 'equals' method on it - calling 'up' to the traited type
         TP.test.DimensionedQuadrangle.Inst.defineMethod('equals', function() {
-console.log('dimquad.equals');
             this.callNextMethod();
 
             dimensionedQuadrangleEqualsCount = 1;
         });
 
-        //  Resolve the conflict in favor of TP.test.Color, but executing the
-        //  one on TP.test.Hexagon first.
+        //  Resolve the conflict in favor of TP.test.AnotherMagnitude, but
+        //  execute the one on TP.test.DimensionedQuadrangle afterwards as well.
         TP.test.DimensionedQuadrangle.Inst.resolveTrait(
             'equals', TP.test.AnotherMagnitude, TP.BEFORE);
 
@@ -6847,11 +6835,8 @@ console.log('dimquad.equals');
 
         obj.equals();
 
-        //  These should be 0 - we resolved 'up' the other side of the chain -
-        //  the 'TP.test.AnotherMagnitude' side.
-
         val = dimensionEqualsCount;
-        correctVal = 0;
+        correctVal = 1;
 
         test.assert.isEqualTo(
             val,
@@ -6861,7 +6846,7 @@ console.log('dimquad.equals');
                     ' not: ', val, '.'));
 
         val = anotherDimensionEqualsCount;
-        correctVal = 0;
+        correctVal = 1;
 
         test.assert.isEqualTo(
             val,
