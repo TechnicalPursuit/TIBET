@@ -2234,7 +2234,6 @@ function() {
      *     the target content.
      */
 
-    //return '$tagCompileAndRegister';
     return 'tagCompile';
 });
 
@@ -2304,7 +2303,7 @@ function() {
      *     the target content.
      */
 
-    return 'tagExpand';
+    return '$tagExpandAndRegister';
 });
 
 //  ------------------------------------------------------------------------

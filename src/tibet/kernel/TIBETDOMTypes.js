@@ -4043,14 +4043,14 @@ function(sourceNode, mutatedNode, targetNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.CollectionNode.Type.defineMethod('$tagCompileAndRegister',
+TP.dom.CollectionNode.Type.defineMethod('$tagExpandAndRegister',
 function(aRequest) {
 
     /**
-     * @method $tagCompileAndRegister
+     * @method $tagExpandAndRegister
      * @summary A private method that is used by the tag processing system to
      *      store off a copy of the original collection node if the system is
-     *      configured to do. It then calls the authored 'tagCompile' method.
+     *      configured to do. It then calls the authored 'tagExpand' method.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      * @returns {Element} The new element.
@@ -4068,9 +4068,9 @@ function(aRequest) {
 
     elem = aRequest.at('node');
 
-    //  Make sure that we can invoke 'tagCompile' on ourself - if not, just
+    //  Make sure that we can invoke 'tagExpand' on ourself - if not, just
     //  exit.
-    if (!TP.canInvoke(this, 'tagCompile')) {
+    if (!TP.canInvoke(this, 'tagExpand')) {
         return elem;
     }
 
@@ -4083,7 +4083,7 @@ function(aRequest) {
     //  '.nodeValue' that's being updated).
     elemClone = TP.nodeCloneNode(elem);
 
-    result = this.tagCompile(aRequest);
+    result = this.tagExpand(aRequest);
 
     //  We didn't get a valid Node or Array back - log an Error
     if (!TP.isNode(result) && !TP.isArray(result)) {
