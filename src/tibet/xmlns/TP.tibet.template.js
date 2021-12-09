@@ -54,7 +54,7 @@ function(aRequest, anElement) {
     //  We do not want our descendant content to be compiled. By stamping this
     //  attribute on ourself, we prevent compilation of that content.
 
-    //  NOTE: Because, by default, the tagCompile method on TP.tag.CustomTag
+    //  NOTE: Because, by default, the tagExpand method on TP.tag.CustomTag
     //  will return the same element, this element will not be placed into the
     //  result DOM, but this attribute will act as a sigil to the tag processing
     //  engine to not continue to process descendants of this element.

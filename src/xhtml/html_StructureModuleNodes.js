@@ -199,7 +199,7 @@ function(aRequest) {
         TP.trace('Merging css:sheet elements into css:sheetset',
                     TP.CSS_LOG) : 0;
 
-    //  TODO:   tidy up the css:sheet elements from tagCompile phase.
+    //  TODO:   tidy up the css:sheet elements from tagExpand phase.
 
     return;
 });
