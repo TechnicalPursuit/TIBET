@@ -129,7 +129,7 @@ function() {
 
         tpElem = TP.tpelem(`
 <test:elem xmlns:bind="http://www.technicalpursuit.com/2005/binding"
-    foo="{value: foo}"
+    foo="[[foo]]"
     bind:out="{foo: bindout, bar: bar}"
 />
 `);
@@ -148,7 +148,7 @@ function() {
 
         tpElem = TP.tpelem(`
 <test:elem xmlns:bind="http://www.technicalpursuit.com/2005/binding"
-    foo="{value: foo}"
+    foo="[[foo]]"
     bind:io="{foo: bindio, bar: bar}"
 />
 `);
