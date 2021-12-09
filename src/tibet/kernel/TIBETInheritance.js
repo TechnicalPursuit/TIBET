@@ -4872,7 +4872,7 @@ function(varargs) {
                 entry.removeKey('resolvesToType');
             }
 
-            //  Install a trait trap on the main type 'type prototype' for
+            //  Install a trait trap on the main type 'instance prototype' for
             //  the property found on the trait type.
             this.$installTraitTrap(
                             mainTypeTarget,
