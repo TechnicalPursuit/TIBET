@@ -3627,6 +3627,49 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getInboundAspectEntries',
+function(flushCache) {
+
+    /**
+     * @method getInboundAspectEntries
+     * @summary Gets the 'inbound' binding information for all aspects on the
+     *     receiver. This is information for bindings that set values on the
+     *     receiver.
+     * @param {Boolean} [flushCache=false] Whether or not to flush any currently
+     *     cached binding info that the aspect may have generated.
+     * @returns {TP.core.Hash} A hash of binding information keyed by the aspect
+     *     name.
+     */
+
+    var bindInInfo,
+        bindIoInfo,
+
+        retVal;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindInInfo = this.getBindingInfoFrom(
+                    'bind:in', this.getAttribute('bind:in'), flushCache);
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindIoInfo = this.getBindingInfoFrom(
+                    'bind:io', this.getAttribute('bind:io'), flushCache);
+
+    retVal = TP.hc();
+
+    //  NB: 'bind:in' entries are more specific than 'bind:io' entries and
+    //  should *not* be overwritten.
+    retVal.addAllIfAbsent(bindInInfo);
+    retVal.addAllIfAbsent(bindIoInfo);
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getInboundAspectEntry',
 function(aspectName, flushCache) {
 
@@ -3639,8 +3682,8 @@ function(aspectName, flushCache) {
      *     information is being retrieved for.
      * @param {Boolean} [flushCache=false] Whether or not to flush any currently
      *     cached binding info that the aspect may have generated.
-     * @returns {TP.core.Hash} A hash of binding information keyed by the aspect
-     *     name.
+     * @returns {TP.core.Hash} A hash of binding information associated with the
+     *     aspect name.
      */
 
     var bindingInfo,
@@ -3749,6 +3792,49 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.dom.ElementNode.Inst.defineMethod('getOutboundAspectEntries',
+function(flushCache) {
+
+    /**
+     * @method getOutboundAspectEntries
+     * @summary Gets the 'outbound' binding information for all aspects on the
+     *     receiver. This is information for bindings that get values from the
+     *     receiver.
+     * @param {Boolean} [flushCache=false] Whether or not to flush any currently
+     *     cached binding info that the aspect may have generated.
+     * @returns {TP.core.Hash} A hash of binding information keyed by the aspect
+     *     name.
+     */
+
+    var bindOutInfo,
+        bindIoInfo,
+
+        retVal;
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindOutInfo = this.getBindingInfoFrom(
+                    'bind:out', this.getAttribute('bind:out'), flushCache);
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindIoInfo = this.getBindingInfoFrom(
+                    'bind:io', this.getAttribute('bind:io'), flushCache);
+
+    retVal = TP.hc();
+
+    //  NB: 'bind:out' entries are more specific than 'bind:io' entries and
+    //  should *not* be overwritten.
+    retVal.addAllIfAbsent(bindOutInfo);
+    retVal.addAllIfAbsent(bindIoInfo);
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.dom.ElementNode.Inst.defineMethod('getOutboundAspectEntry',
 function(aspectName, flushCache) {
 
@@ -3761,8 +3847,8 @@ function(aspectName, flushCache) {
      *     information is being retrieved for.
      * @param {Boolean} [flushCache=false] Whether or not to flush any currently
      *     cached binding info that the aspect may have generated.
-     * @returns {TP.core.Hash} A hash of binding information keyed by the aspect
-     *     name.
+     * @returns {TP.core.Hash} A hash of binding information associated with the
+     *     aspect name.
      */
 
     var bindingInfo,
