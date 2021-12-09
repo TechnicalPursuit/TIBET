@@ -14,13 +14,11 @@
 
 //  ------------------------------------------------------------------------
 
-TP.dom.UIElementNode.defineSubtype('xctrls.Element');
+TP.dom.NonNativeUIElementNode.defineSubtype('xctrls.Element');
 
 //  This type is intended to be used as either a trait type or supertype of
 //  concrete types, so we don't allow instance creation
 TP.xctrls.Element.isAbstract(true);
-
-TP.xctrls.Element.addTraits(TP.dom.NonNativeUIElementNode);
 
 TP.xctrls.Element.Type.resolveTrait(
         'tagExpand',

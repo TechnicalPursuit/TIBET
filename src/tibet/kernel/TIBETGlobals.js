@@ -907,6 +907,7 @@ TP.INSTC = '$$Inst';
 //  js object relationships
 TP.ANCESTOR_NAMES = '$$anames';
 TP.ANCESTORS = '$$ancestors';
+TP.C3 = '$$c3list';
 TP.TRAITS = '$$traits';
 TP.INSTANCES = '$$instances';
 TP.SUBTYPE_NAMES = '$$snames';

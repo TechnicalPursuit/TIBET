@@ -19,7 +19,7 @@
 //  namespace objects (TP for example) which don't current inherit/support the
 //  testing API. This is an example of "detached test definition".
 
-TP.test.OOTester = TP.lang.Object.construct();
+TP.lang.Object.defineSubtype('TP.test.OOTester');
 
 //  Local attributes used for traits testing
 TP.test.OOTester.defineAttribute('circleEqualsCount');
@@ -225,6 +225,7 @@ function() {
 
     //  Satisfies 'equals' from TP.test.Equality
     TP.test.Circle.Inst.defineMethod('equals', function() {
+console.log('circle.equals');
         TP.test.OOTester.set(
             'circleEqualsCount',
                 TP.test.OOTester.get('circleEqualsCount') + 1);
@@ -252,6 +253,7 @@ function() {
                 TP.test.OOTester.get('colorGetRGBCount') + 1);
     });
     TP.test.Color.Inst.defineMethod('equals', function() {
+console.log('color.equals');
         TP.test.OOTester.set(
             'colorEqualsCount',
                 TP.test.OOTester.get('colorEqualsCount') + 1);
@@ -268,6 +270,15 @@ function() {
     });
 
     TP.test.RGBData.Inst.defineAttribute('equalityValue', TP.jpc('$.RGBEqualityVal'));
+
+    TP.test.OOTester.set('circleEqualsCount', 0);
+    TP.test.OOTester.set('colorEqualsCount', 0);
+    TP.test.OOTester.set('colorGetRGBCount', 0);
+    TP.test.OOTester.set('rgbDataGetRGBCount', 0);
+    TP.test.OOTester.set('differsCount', 0);
+    TP.test.OOTester.set('greaterCount', 0);
+    TP.test.OOTester.set('smallerCount', 0);
+    TP.test.OOTester.set('betweenCount', 0);
 });
 
 //  ------------------------------------------------------------------------
@@ -5671,7 +5682,7 @@ function() {
     this.it('Inheritance - C3 linearization', function(test, options) {
         var val;
 
-        val = TP.test.Z.computeC3Linearization();
+        val = TP.test.Z.getC3ResolutionOrder(true);
 
         test.assert.isEqualTo(
             val,
@@ -5751,6 +5762,7 @@ function() {
         TP.test.Triangle.Inst.defineMethod(
             'equals',
             function() {
+console.log('triangle.equals');
                 return true;
             });
 
@@ -6419,7 +6431,7 @@ function() {
 
             val,
             correctVal;
-
+debugger;
         //  ---
 
         //  Diamond Definition
@@ -6453,17 +6465,17 @@ function() {
         //  ---
 
         //  Set the test count and invoke the 'resolved' method
-        TP.test.OOTester.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('rgbDataGetRGBCount', 0);
 
         obj.getRgb();
 
-        val = TP.test.OOTester.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('rgbDataGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
             val,
             correctVal,
-            TP.sc('The count for "colorGetRGBCount"',
+            TP.sc('The count for "getRgb"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
     });
@@ -6493,6 +6505,7 @@ function() {
 
         //  Define an 'equals' method on it
         TP.test.Dimension.Inst.defineMethod('equals', function() {
+console.log('dim.equals');
             dimensionEqualsCount = 1;
         });
 
@@ -6501,6 +6514,7 @@ function() {
 
         //  Define an 'equals' method on it - calling 'up' to its supertype
         TP.test.AnotherDimension.Inst.defineMethod('equals', function() {
+console.log('anotherdim.equals');
 
             this.callNextMethod();
 
@@ -6514,6 +6528,7 @@ function() {
         //  Define an 'equals' method on it - calling 'up' to its supertype
         TP.test.AnotherMagnitude.Inst.defineMethod('equals', function() {
 
+console.log('anothermag.equals');
             //  No sense in having callNextMethod() here - no implementation
             //  exists higher than us.
 
@@ -6526,19 +6541,19 @@ function() {
         //  ---
 
         //  TP.test.DimensionedRectangle Definition
-        TP.lang.Object.defineSubtype('test.TP.test.DimensionedRectangle');
+        TP.lang.Object.defineSubtype('TP.test.DimensionedRectangle');
 
-        TP.test.TP.test.DimensionedRectangle.addTraits(
+        TP.test.DimensionedRectangle.addTraits(
                 TP.test.Magnitude, TP.test.AnotherDimension);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.TP.test.DimensionedRectangle.Inst.defineMethod(
+        TP.test.DimensionedRectangle.Inst.defineMethod(
             'smaller',
             function() {
                 //  empty
             });
 
-        obj = TP.test.TP.test.DimensionedRectangle.construct();
+        obj = TP.test.DimensionedRectangle.construct();
 
         //  Set the test counts and invoke the method
         dimensionEqualsCount = 0;
@@ -6552,7 +6567,7 @@ function() {
         test.assert.isEqualTo(
             val,
             correctVal,
-            TP.sc('The count for "dimensionEqualsCount"',
+            TP.sc('The count for first "dimensionEqualsCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
@@ -6589,6 +6604,7 @@ function() {
             'equals',
             function() {
 
+console.log('dimsquare.equals');
                 this.callNextMethod();
 
                 dimensionedSquareEqualsCount = 1;
@@ -6609,7 +6625,7 @@ function() {
         test.assert.isEqualTo(
             val,
             correctVal,
-            TP.sc('The count for "dimensionEqualsCount"',
+            TP.sc('The count for second "dimensionEqualsCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
@@ -6685,7 +6701,7 @@ function() {
         test.assert.isEqualTo(
             val,
             correctVal,
-            TP.sc('The count for "dimensionEqualsCount"',
+            TP.sc('The count for third "dimensionEqualsCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
@@ -6763,7 +6779,7 @@ function() {
         test.assert.isEqualTo(
             val,
             correctVal,
-            TP.sc('The count for "dimensionEqualsCount"',
+            TP.sc('The count for fourth "dimensionEqualsCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
@@ -6807,7 +6823,7 @@ function() {
 
         //  Define an 'equals' method on it - calling 'up' to the traited type
         TP.test.DimensionedQuadrangle.Inst.defineMethod('equals', function() {
-
+console.log('dimquad.equals');
             this.callNextMethod();
 
             dimensionedQuadrangleEqualsCount = 1;
@@ -6816,9 +6832,11 @@ function() {
         //  Resolve the conflict in favor of TP.test.Color, but executing the
         //  one on TP.test.Hexagon first.
         TP.test.DimensionedQuadrangle.Inst.resolveTrait(
-                                'equals', TP.test.AnotherMagnitude, TP.BEFORE);
+            'equals', TP.test.AnotherMagnitude, TP.BEFORE);
 
         obj = TP.test.DimensionedQuadrangle.construct();
+
+console.log(TP.json(TP.test.DimensionedQuadrangle.getC3ResolutionOrder()));
 
         //  Set the test counts and invoke the method
         dimensionEqualsCount = 0;
@@ -6837,7 +6855,7 @@ function() {
         test.assert.isEqualTo(
             val,
             correctVal,
-            TP.sc('The count for "dimensionEqualsCount"',
+            TP.sc('The count for fifth "dimensionEqualsCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 

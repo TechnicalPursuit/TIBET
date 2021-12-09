@@ -62,9 +62,7 @@ function(aSignal, aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.dom.UIElementNode.defineSubtype('TP.tag.CustomTag');
-
-TP.tag.CustomTag.addTraits(TP.dom.NonNativeUIElementNode);
+TP.dom.NonNativeUIElementNode.defineSubtype('TP.tag.CustomTag');
 
 TP.tag.CustomTag.Type.resolveTrait(
         'tagExpand',
