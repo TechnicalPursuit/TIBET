@@ -1492,14 +1492,17 @@ TP.dom.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
 //  ------------------------------------------------------------------------
 
 TP.dom.ElementNode.Type.defineMethod('computeBindingInfo',
-function(targetElement, attributeValue) {
+function(targetElement, attributeName, attributeValue) {
 
     /**
      * @method computeBindingInfo
      * @summary Gets binding information from the attribute named by the
      *     supplied attribute name on the receiver.
      * @param {Element} targetElement The element the attribute is on.
-     * @param {String} attributeValue The element the attribute is on.
+     * @param {String} attributeName The name of binding attribute to retrieve
+     *     the binding information from.
+     * @param {String} attributeValue The value of the binding attribute to
+     *     extract binding information from.
      * @returns {TP.core.Hash} A hash of binding information keyed by the
      *     binding target name.
      */
@@ -1558,6 +1561,7 @@ function(targetElement, attributeValue) {
         //  Extract the expression record from the entry. This returns a hash
         //  that we'll register under the aspectName.
         extractedEntry = this.extractExpressionRecord(aspectName, entry);
+        extractedEntry.atPut('bindingAttr', attributeName);
 
         bindEntries.atPut(aspectName, extractedEntry);
     }
@@ -2121,7 +2125,8 @@ function(attributeName, aspectName, expression) {
 
         //  NB: Even if attrVal is empty, we'll get an empty hash, which we need
         //  below.
-        bindEntries = this.getType().computeBindingInfo(elem, attrVal);
+        bindEntries = this.getType().computeBindingInfo(
+                                elem, attributeName, attrVal);
         registry.atPut(infoKey, bindEntries);
     }
 
@@ -2129,6 +2134,7 @@ function(attributeName, aspectName, expression) {
     //  expression.
     extractedEntry = this.getType().extractExpressionRecord(
                                             aspectName, expression);
+    extractedEntry.atPut('bindingAttr', attributeName);
 
     //  Put it into the bind entries
     bindEntries.atPut(aspectName, extractedEntry);
@@ -2941,7 +2947,8 @@ function(attributeName, attributeValue, flushCache) {
     }
 
     //  Ask the type to compute the binding info and put it into the registry.
-    bindEntries = this.getType().computeBindingInfo(elem, attributeValue);
+    bindEntries = this.getType().computeBindingInfo(
+                                    elem, attributeName, attributeValue);
     registry.atPut(infoKey, bindEntries);
 
     return bindEntries;

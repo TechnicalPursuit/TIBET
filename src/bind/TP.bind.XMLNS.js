@@ -46,6 +46,7 @@ function(anElement) {
         attrs,
         j,
 
+        attrName,
         attrVal,
 
         bindEntries,
@@ -95,6 +96,7 @@ function(anElement) {
             //  CSS query above can't do that... sigh.
             if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
 
+                attrName = attrs[j].nodeName;
                 attrVal = attrs[j].value;
 
                 //  If we detect a 'binding attribute' value, then it's a
@@ -107,7 +109,7 @@ function(anElement) {
                     if (TP.notValid(bindEntries = infoCacheDict.at(attrVal))) {
 
                         bindEntries = TP.dom.ElementNode.computeBindingInfo(
-                                                    boundElements[i], attrVal);
+                                        boundElements[i], attrName, attrVal);
                         infoCacheDict.atPut(attrVal, bindEntries);
 
                         //  There can be 1...n 'entries' in a particular

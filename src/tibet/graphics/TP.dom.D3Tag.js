@@ -167,6 +167,7 @@ function(enterSelection) {
         i,
         attrs,
         j,
+        attrName,
         attrVal,
 
         allData,
@@ -229,6 +230,7 @@ function(enterSelection) {
             //  Loop over all of the attributes of the found element.
             for (j = 0; j < attrs.length; j++) {
 
+                attrName = attrs[j].nodeName;
                 attrVal = attrs[j].value;
 
                 //  If the attribute was in the BIND namespace, then add it to
@@ -236,7 +238,8 @@ function(enterSelection) {
                 if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
                     registry.atPut(
                         attrVal,
-                        this.getType().computeBindingInfo(elems[i], attrVal));
+                        this.getType().computeBindingInfo(
+                                            elems[i], attrName, attrVal));
                 }
             }
         }
