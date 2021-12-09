@@ -4568,6 +4568,11 @@ function(varargs) {
     //  Gather traits
     //  ---
 
+    //  If we have a C3 cache blow it away
+    if (TP.owns(this, TP.C3)) {
+        delete this[TP.C3];
+    }
+
     //  Make sure that we have an Array for all traits for the receiver, kept as
     //  the overall long-term list of traits that the receiver has.
     if (TP.notValid(traitList = this[TP.TRAITS])) {
@@ -4920,8 +4925,10 @@ function(propName, sources, track) {
     //  Make sure that we're configure to auto resolve.
     if (TP.isTrue(TP.sys.cfg('oo.$$traits_autoresolve'))) {
 
-        //  Compute the C3 linearization for the target type
-        c3TypeList = this.computeC3Linearization();
+        //  Compute the C3 linearization for the target type. Note that without
+        //  flags this returns a non-strict (TIBET precedence order) list of
+        //  type names (not type instances).
+        c3TypeList = this.getC3ResolutionOrder();
 
         resolvedType = null;
 
@@ -5325,194 +5332,256 @@ function(propertyName, track) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('computeC3Linearization',
-function() {
+TP.lang.RootObject.Type.defineMethod('getC3ResolutionOrder',
+function(strict, types) {
 
     /**
-     * @method computeC3Linearization
-     * @summary Computes a 'C3 linearization' off of the receiving type.
-     * @description In TIBET, multiple inheritance is implemented using traits.
-     *     In other multiple inheritance systems, the 'C3 linearization'
-     *     algorithm is used to compute the 'method resolution order' when
-     *     looking up methods (as described here:
-     *     http://en.wikipedia.org/wiki/C3_linearization). Officially, trait
-     *     systems don't look up methods in an automatic fashion - they require
-     *     the developer to resolve the trait to a particular type manually.
-     *     TIBET supports this very well (see the resolveTrait()/resolveTraits()
-     *     methods), but TIBET also allows for the system to 'auto resolve' a
-     *     trait and it does this using the C3 algorithm. Therefore, it's
-     *     necessary to be able to compute a 'C3 linearization' of the type,
-     *     its supertypes, its traits and all of its traits supertypes.
-     * @returns {String[]} A list of type names that forms the list of the
-     *     receiver's supertype names and all of the trait type names, sorted
-     *     using the C3 linearization algorithm.
+     * @method getC3ResolutionOrder
+     * @summary Returns a list of the supertype/trait names in the order
+     * determined by TIBET's modified (or strict) C3 algorithm. TIBET's version
+     * of the order prioritizes lookup from the last trait to the supertype of
+     * the receiver. Strict-mode uses the order of declaration instead.
+     * @param {Boolean} strict Set to true to use the strict C3 algorithm.
+     * @param {Boolean} types Set to true to return the list as type objects.
+     * @returns {Array} The array of supertype/trait type names.
      */
 
-    //  NOTE: This code is adapted from:
-    //          https://github.com/silas/node-c3
+    //  From the wikipedia article one sample of this is...
+    //  L(K3) := [K3] + merge(L(D), L(A), [D, A])
+    //    = [K3] + merge([D, O], [A, O], [D, A])      // select D
+    //    = [K3, D] + merge([O], [A, O], [A])         // fail O, select A
+    //    = [K3, D, A] + merge([O], [O])              // select O
+    //    = [K3, D, A, O]
 
-    //  It has been reformatted and altered for clarity and to conform to TIBET
-    //  coding guidelines.
+    var list;
 
-    var C3,
-        c3,
-
-        resolver,
-
-        finalResult;
-
-    C3 = function(name) {
-        this.name = name;
-        this.typeMap = {};
-        this.typeMap[name] = [];
-    };
-
-    c3 = function(name) {
-        return new C3(name);
-    };
-
-    C3.prototype.add = function(name, parentName) {
-
-        var ref;
-
-        if (!TP.isString(name)) {
-            TP.raise(this, 'TP.sig.InvalidName');
-        }
-
-        if (!TP.isString(parentName)) {
-            TP.raise(this, 'TP.sig.InvalidName');
-        }
-
-        if (!this.typeMap.hasOwnProperty(parentName)) {
-            this.typeMap[parentName] = [];
-        }
-
-        if (!this.typeMap.hasOwnProperty(name)) {
-            this.typeMap[name] = [];
-        }
-
-        ref = this.typeMap[name];
-
-        //  wje: Unlike the original code, TIBET will sometimes produce a
-        //  duplicate parent and we don't really care. We simply return and
-        //  don't add it to the list. It is, after all, found under the same
-        //  child's name - so the system has uniqued it.
-        if (ref.indexOf(parentName) >= 0) {
-            // throw new Error('Duplicate parent');
-            return this;
-        }
-
-        this.typeMap[name].push(parentName);
-
-        return this;
-    };
-
-    C3.prototype.compute = function() {
-
-        var thisref,
-            processMap,
-
-            notHead,
-            empty,
-            merge,
-            run,
-
-            runResult;
-
-        thisref = this;
-        processMap = {};
-
-        TP.objectGetKeys(thisref.typeMap).forEach(
-                function(n) {
-                    processMap[n] = thisref.typeMap[n].slice();
-                });
-
-        notHead = function(l, c) {
-            return l.some(function(s) {
-                return s.indexOf(c) > 0;
-            });
-        };
-
-        empty = function(s) {
-            return s.length;
-        };
-
-        merge = function(seqs) {
-            var results,
-                candidate,
-                nonEmptySeqs,
-                i;
-
-            results = [];
-
-            /* eslint-disable no-constant-condition */
-            while (true) {
-            /* eslint-enable no-constant-condition */
-                nonEmptySeqs = seqs.filter(empty);
-
-                if (!nonEmptySeqs.length) {
-                    return results;
-                }
-
-                for (i = 0; i < nonEmptySeqs.length; i++) {
-                    candidate = nonEmptySeqs[i][0];
-
-                    if (notHead(nonEmptySeqs, candidate)) {
-                        candidate = null;
-                    } else {
-                        break;
-                    }
-                }
-
-                if (!candidate) {
-                    TP.raise(this,
-                            'TP.sig.InheritanceException',
-                            'Inconsistent hierarchy: ' +
-                                TP.json(nonEmptySeqs));
-                    break;
-                }
-
-                results.push(candidate);
-
-                for (i = 0; i < nonEmptySeqs.length; i++) {
-                    if (nonEmptySeqs[i][0] === candidate) {
-                        nonEmptySeqs[i].shift();
-                    }
-                }
-            }
-        };
-
-        run = function(name) {
-            var mergeResult;
-
-            mergeResult = merge([[name]].concat(processMap[name].map(run)));
-            mergeResult = mergeResult.concat(processMap[name]);
-
-            return mergeResult;
-        };
-
-        runResult = run(this.name);
-
-        return runResult;
-    };
-
-    //  Start with ourself
-    resolver = c3(this.getName());
-
-    //  Recursively populate the resolver
-    this.$populateC3Resolver(resolver);
-
-    //  Return the result of running the algorithm
-    finalResult = resolver.compute();
-
-    //  Because we allow duplicate parents, there will be further entries after
-    //  'Object' in our list (all duplicated parents). We slice them off, ending
-    //  our list with 'Object'.
-    if (finalResult.contains('Object')) {
-        finalResult = finalResult.slice(0, finalResult.indexOf('Object') + 1);
+    //  If we cached this return it now. This is cleared by addTraits call.
+    if (TP.owns(this, TP.C3)) {
+        return this[TP.C3];
     }
 
-    return finalResult;
+    list = [this.getName()];
+
+    //  Object or any other top-level root (are there any?)
+    if (this.getSupertype() === Object) {
+        return list.concat('Object');
+    }
+
+    //  e.g. --  L(K3) := [K3] + merge(L(D), L(A), [D, A])
+    list = list.concat(this.performC3Merge(this.getC3MergeData(strict)));
+
+    this[TP.C3] = list;
+
+    if (types) {
+        list = list.map(function(name) {
+            return TP.sys.getTypeByName(name);
+        });
+    }
+
+    TP.ifDebug() ?
+        TP.debug(this.getName() + ' c3 order ' + TP.json(list)) : 0;
+
+    return list;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getC3MergeNames',
+function(strict) {
+
+    /**
+     * @method getC3MergeNames
+     * @summary Returns a list of the supertype names (supertype and traits)
+     *     associated with the receiver. By default this method reverses the
+     *     order so you get the list in "last overlay first" order which is how
+     *     TIBET authoing represents resolution order will occur.
+     * @param {Boolean} strict Set to true to use the strict C3 algorithm.
+     * @returns {Array} The array of supertype/trait names.
+     */
+
+    var list;
+
+    list = this.getC3MergeTypes(strict);
+
+    return list.map(function(type) {
+        return type.getName();
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getC3MergeTypes',
+function(strict) {
+
+    /**
+     * @method getC3MergeTypes
+     * @summary Returns a list of the supertypes (supertype and trait types)
+     *     associated with the receiver. By default this method reverses the
+     *     order so you get the list in "last overlay first" order which is how
+     *     TIBET authoing represents resolution order will occur.
+     * @param {Boolean} strict Set to true to use the strict C3 algorithm.
+     * @returns {Array} The array of supertype/trait types.
+     */
+
+    var sooper,
+        list;
+
+    sooper = this.getSupertype();
+
+    //  Stop at the top!!!
+    if (TP.notValid(sooper) || sooper === Object) {
+        return [];
+    }
+
+    //  Always at least our direct supertype (invoker of defineSubtype)
+    list = [sooper];
+
+    //  If we specifically own a traits slot we have added "supertypes"
+    if (TP.owns(this, TP.TRAITS)) {
+        list = list.concat(this[TP.TRAITS]);
+    }
+
+    //  If we're not doing strict C3 reverse so our last trait (what we think of
+    //  as the most influential overlay) actually comes first.
+    if (TP.isFalsey(strict)) {
+        list.reverse();
+    }
+
+    return list;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getC3MergeData',
+function(strict) {
+
+    /**
+     * @method getC3MergeData
+     * @summary Returns an array of arrays containing the C3 resolution orders
+     *     for all supertype/traits of the receiver as well as the list of
+     *     supertype/trait names being resolved. This structure is defined as
+     *     the data provided to the "merge" function (performC3Merge).
+    *       SEE https://en.wikipedia.org/wiki/C3_linearization
+     * @param {Boolean} strict Set to true to use the strict C3 algorithm.
+     * @returns {Array} The array of C3 resolutions and merge names.
+     */
+
+    //  From the wikipedia article one sample of this is...
+    //  L(K3) := [K3] + merge(L(D), L(A), [D, A])
+
+    var types,
+        list;
+
+    //  e.g. [D, A]
+    types = this.getC3MergeTypes(strict);
+
+    //  e.g. -- L(D), L(A)
+    list = types.map(function(type) {
+        return type.getC3ResolutionOrder(strict);
+    });
+
+    //  plus [D.name, A.name]
+    if (TP.isFalsey(strict)) {
+        list.unshift(this.getC3MergeNames(strict));
+    } else {
+        list.push(this.getC3MergeNames(strict));
+    }
+
+    return list;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('performC3Merge',
+function(c3MergeData) {
+
+    /**
+     * @method performC3Merge
+     * @summary Returns an
+     *
+     *       SEE https://en.wikipedia.org/wiki/C3_linearization
+     * @param {Array.<Array>} c3MergeData Merge data as produced by the
+     *     getC3MergeData routine. This should be an array of arrays
+     *     containing type names to be merged per the C3 algorithm.
+     * @returns {Array} The array of merged (reduced) type names.
+     */
+
+    //  From the wikipedia article one sample of this is...
+    //  L(K3) := [K3] + merge(L(D), L(A), [D, A])
+    //    = [K3] + merge([D, O], [A, O], [D, A])      // select D
+    //    = [K3, D] + merge([O], [A, O], [A])         // fail O, select A
+    //    = [K3, D, A] + merge([O], [O])              // select O
+    //    = [K3, D, A, O]
+
+    var slices,
+        heads,
+        tails,
+        nexts,
+        best;
+
+    //  e.g. -- merge([D, O], [A, O], [D, A])      // select D
+
+    TP.ifDebug() ?
+        TP.debug(this.getName() + ' c3 merge ' + TP.json(c3MergeData)) : 0;
+
+    if (TP.isEmpty(c3MergeData)) {
+        return [];
+    }
+
+    //  Slice data into two lists of heads and tails
+    slices = c3MergeData.map(function(arr) {
+        return [arr[0], arr.slice(1)];
+    });
+
+    //  NOTE the compact() to remove any null values due to empty items
+    heads = slices.map((item) => {
+        return item.first();
+    }).compact();
+
+    TP.ifDebug() ?
+        TP.debug(this.getName() + ' c3 heads ' + TP.json(heads)) : 0;
+
+    //  NOTE the compact() to remove any empty arrays due to slicing
+    tails = slices.map((item) => {
+        return item.last();
+    }).compact(TP.isEmpty);
+
+    TP.ifDebug() ?
+        TP.debug(this.getName() + ' c3 tails ' + TP.json(tails)) : 0;
+
+    //  Find first key from list of heads that's not in any tails.
+    best = heads.detect(function(key) {
+        return !tails.some(function(arr) {
+            return arr.indexOf(key) !== -1;
+        });
+    });
+
+    //  Oops! Can't compute a proper linearization from structure provided.
+    if (TP.isEmpty(best)) {
+        TP.error('C3 algorithm unable to merge ' + TP.json(c3MergeData));
+        return [];
+    }
+
+    TP.ifDebug() ?
+        TP.debug(this.getName() + ' c3 chose ' + best) : 0;
+
+    //  Remove 'best' from head of any list it was in to prep next iteration.
+    nexts = c3MergeData.map(function(arr) {
+        return arr[0] === best ? arr.slice(1) : arr;
+    });
+
+    //  If removing best from remaining lists left them all empty we're done.
+    if (!nexts.some(function(arr) {
+            return arr.length > 0;
+        })) {
+
+        //  NOTE we always want an array... or outer call will slice the string
+        //  into individual characters.
+        return [best];
+    }
+
+    //  return the reduced list thanks to a little destructuring
+    return [best, ...this.performC3Merge(nexts)];
 });
 
 //  ------------------------------------------------------------------------
@@ -5639,63 +5708,6 @@ function() {
      */
 
     return TP.notEmpty(this[TP.TRAITS]);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('$populateC3Resolver',
-function(c3Resolver) {
-
-    /**
-     * @method $populateC3Resolver
-     * @summary Populates the supplied C3 resolver with type names, including
-     *     the main supertype names up the supertype chain and trait types up
-     *     the supertype chain.
-     * @description TIBET uses a C3 resolution mechanism (as described here:
-     *     http://en.wikipedia.org/wiki/C3_linearization), to 'auto resolve'
-     *     traits where the developer hasn't provided an explicit resolution for
-     *     a particular trait.
-     * @param {Object} c3Resolver The object used to compute a C3 linearization
-     *     of types.
-     * @returns {TP.meta.lang.RootObject} The receiver.
-     */
-
-    var traits,
-        i;
-
-    //  Add an entry for ourself and our supertype.
-    c3Resolver.add(this.getName(), this.getSupertypeName());
-
-    //  If we have traits, add them.
-    if (TP.notEmpty(traits = this[TP.TRAITS])) {
-
-        //  Make sure to copy the Array - we reverse it below and don't want to
-        //  alter that.
-        traits = traits.copy();
-
-        for (i = 0; i < traits.getSize(); i++) {
-            c3Resolver.add(this.getName(), traits.at(i).getName());
-        }
-
-        //  Not strictly necessary, but makes for easier debugging since trait
-        //  types will be added in 'more specific to less specific' order.
-        traits = traits.reverse();
-
-        for (i = 0; i < traits.getSize(); i++) {
-            traits.at(i).$populateC3Resolver(c3Resolver);
-        }
-    }
-
-    //  Process our supertype
-
-    //  If we're at the top of the tree, 'Object' has already been accounted for
-    //  by its subtypes - no need to proceed. It won't respond to this method
-    //  anyway.
-    if (this.getSupertype() !== Object) {
-        this.getSupertype().$populateC3Resolver(c3Resolver);
-    }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
