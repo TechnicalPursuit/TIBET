@@ -6028,11 +6028,17 @@ function(propertyName, resolution, resolutionOption) {
         entry.atPut('resolvesToType', aType);
     };
 
-    //  Make sure to obtain any previous value that this slot had, but don't
-    //  trip the resolution machinery doing so.
-    TP.$$no_exec_trait_resolution = true;
-    prevValue = this[propertyName];
-    TP.$$no_exec_trait_resolution = false;
+    //  If the resolutionOption is either TP.BEFORE or TP.AFTER then we need to
+    //  resolve the slot right away.
+    if (resolutionOption === TP.BEFORE || resolutionOption === TP.AFTER) {
+        prevValue = this[propertyName];
+    } else {
+        //  Make sure to obtain any previous value that this slot had, but don't
+        //  trip the resolution machinery doing so.
+        TP.$$no_exec_trait_resolution = true;
+        prevValue = this[propertyName];
+        TP.$$no_exec_trait_resolution = false;
+    }
 
     //  If this property already had a resolutions entry, then we get any
     //  previous value that would've gotten computed.
@@ -6108,7 +6114,7 @@ function(propertyName, resolution, resolutionOption) {
                             resolutionOption,
                             TP.INST_TRACK);
         } else {
-            //  Case #5 or 6: The resolution is a Type with a TP.BEFORE or
+            //  Case #5 or 6: The resolution is a type with a TP.BEFORE or
             //  TP.AFTER option
             populateResolutionType(entry, resolution);
 
