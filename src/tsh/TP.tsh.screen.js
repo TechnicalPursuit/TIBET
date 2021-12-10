@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:screen');
 
-TP.tsh.screen.addTraits(TP.tsh.Element);
+TP.tsh.screen.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

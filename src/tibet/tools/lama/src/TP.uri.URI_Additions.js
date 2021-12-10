@@ -12,7 +12,7 @@
 //  TP.uri.URI Additions
 //  ========================================================================
 
-TP.uri.URI.addTraits(TP.lama.ToolAPI);
+TP.uri.URI.addTraitTypes(TP.lama.ToolAPI);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

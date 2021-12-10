@@ -21,7 +21,7 @@
 
 TP.html.Attrs.defineSubtype('meta');
 
-TP.html.meta.addTraits(TP.dom.EmptyElementNode);
+TP.html.meta.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.meta.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),

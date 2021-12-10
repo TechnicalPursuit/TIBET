@@ -16,7 +16,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:halo');
 
-TP.tsh.halo.addTraits(TP.tsh.Element);
+TP.tsh.halo.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

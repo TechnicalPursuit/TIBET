@@ -283,7 +283,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
 
 TP.html.Attrs.defineSubtype('li');
 
-TP.html.li.addTraits(TP.dom.SelectableItemUIElementNode);
+TP.html.li.addTraitTypes(TP.dom.SelectableItemUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

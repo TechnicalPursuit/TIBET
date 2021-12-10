@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:audit');
 
-TP.tsh.audit.addTraits(TP.tsh.Element);
+TP.tsh.audit.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

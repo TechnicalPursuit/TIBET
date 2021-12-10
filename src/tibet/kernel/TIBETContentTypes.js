@@ -163,7 +163,7 @@ TP.lang.Object.defineSubtype('core.Content');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.Content.addTraits(TP.core.Selection);
+TP.core.Content.addTraitTypes(TP.core.Selection);
 
 //  This type's constructor functions to locate the best matching subtype.
 TP.core.Content.isAbstract(true);

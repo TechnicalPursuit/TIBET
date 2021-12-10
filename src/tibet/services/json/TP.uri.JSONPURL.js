@@ -42,7 +42,7 @@
 
 TP.uri.URL.defineSubtype('JSONPURL');
 
-TP.uri.JSONPURL.addTraits(TP.uri.CommURL);
+TP.uri.JSONPURL.addTraitTypes(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants

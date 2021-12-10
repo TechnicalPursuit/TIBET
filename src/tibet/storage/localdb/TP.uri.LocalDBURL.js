@@ -128,7 +128,7 @@
 
 TP.uri.URL.defineSubtype('TP.uri.LocalDBURL');
 
-TP.uri.LocalDBURL.addTraits(TP.uri.CommURL);
+TP.uri.LocalDBURL.addTraitTypes(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants

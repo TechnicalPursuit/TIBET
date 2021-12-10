@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:deploy');
 
-TP.tsh.deploy.addTraits(TP.tsh.Element);
+TP.tsh.deploy.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

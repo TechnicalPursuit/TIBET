@@ -20,7 +20,7 @@
 
 TP.uri.HTTPURLHandler.defineSubtype('uri.TDSURLHandler');
 
-TP.uri.TDSURLHandler.addTraits(TP.uri.RemoteURLWatchHandler);
+TP.uri.TDSURLHandler.addTraitTypes(TP.uri.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

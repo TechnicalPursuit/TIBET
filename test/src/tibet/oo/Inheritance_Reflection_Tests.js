@@ -191,7 +191,7 @@ function() {
     //  into it. We don't need to supply the required 'equals' property
     //  unless we make an instance of this type (which we won't).
     TP.lang.Object.defineSubtype('test.Magnitude');
-    TP.test.Magnitude.addTraits(TP.test.Equality);
+    TP.test.Magnitude.addTraitTypes(TP.test.Equality);
 
     TP.test.Magnitude.Inst.defineMethod('smaller', TP.REQUIRED);
     TP.test.Magnitude.Inst.defineMethod('greater', function() {
@@ -213,7 +213,7 @@ function() {
 
     //  We pick up 'differs' from TP.test.Equality and 'greater' &
     //  'between' from TP.test.Magnitude
-    TP.test.Circle.addTraits(TP.test.Magnitude);
+    TP.test.Circle.addTraitTypes(TP.test.Magnitude);
 
     TP.test.Circle.Inst.defineAttribute('doesDiffer', true);
     TP.test.Circle.Inst.defineAttribute('equalityValue', TP.jpc('$.CircleEqualityVal'));
@@ -5660,19 +5660,19 @@ function() {
             TP.test.O.defineSubtype('test.E');
 
             TP.test.A.defineSubtype('test.K1');
-            TP.test.K1.addTraits(TP.test.B);
-            TP.test.K1.addTraits(TP.test.C);
+            TP.test.K1.addTraitTypes(TP.test.B);
+            TP.test.K1.addTraitTypes(TP.test.C);
 
             TP.test.D.defineSubtype('test.K2');
-            TP.test.K2.addTraits(TP.test.B);
-            TP.test.K2.addTraits(TP.test.E);
+            TP.test.K2.addTraitTypes(TP.test.B);
+            TP.test.K2.addTraitTypes(TP.test.E);
 
             TP.test.D.defineSubtype('test.K3');
-            TP.test.K3.addTraits(TP.test.A);
+            TP.test.K3.addTraitTypes(TP.test.A);
 
             TP.test.K1.defineSubtype('test.Z');
-            TP.test.Z.addTraits(TP.test.K2);
-            TP.test.Z.addTraits(TP.test.K3);
+            TP.test.Z.addTraitTypes(TP.test.K2);
+            TP.test.Z.addTraitTypes(TP.test.K3);
         });
 
     //  ---
@@ -5743,7 +5743,7 @@ function() {
         TP.lang.Object.defineSubtype('test.Triangle');
 
         //  Add the TP.test.Equality trait
-        TP.test.Triangle.addTraits(TP.test.Equality);
+        TP.test.Triangle.addTraitTypes(TP.test.Equality);
 
         //  Construct an instance. Because we didn't supply an implementation of
         //  'equals' (a requirement of the TP.test.Equality trait), this should
@@ -5891,7 +5891,7 @@ function() {
         //  implementation of 'equals' from TP.test.Color.
         //  But now we have a conflict over 'getRgb' between TP.test.Color and
         //  TP.test.RGBData
-        TP.test.Square.addTraits(
+        TP.test.Square.addTraitTypes(
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -5967,7 +5967,7 @@ function() {
         //  implementation of 'equals' from TP.test.Color.
         //  But now we have a conflict over 'getRgb' between TP.test.Color and
         //  TP.test.RGBData
-        TP.test.Rectangle.addTraits(
+        TP.test.Rectangle.addTraitTypes(
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6062,7 +6062,7 @@ function() {
         //  implementation of 'equals' from TP.test.Color.
         //  But now we have a conflict over 'getRgb' between TP.test.Color and
         //  TP.test.RGBData
-        TP.test.Octogon.addTraits(
+        TP.test.Octogon.addTraitTypes(
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6132,7 +6132,7 @@ function() {
         //  implementation of 'equals' from TP.test.Color.
         //  But now we have a conflict over 'getRgb' between TP.test.Color and
         //  TP.test.RGBData
-        TP.test.Hexagon.addTraits(
+        TP.test.Hexagon.addTraitTypes(
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6248,7 +6248,7 @@ function() {
         //  implementation of 'equals' from TP.test.Color.
         //  But now we have a conflict over 'getRgb' between TP.test.Color and
         //  TP.test.RGBData
-        TP.test.Pentagon.addTraits(
+        TP.test.Pentagon.addTraitTypes(
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6361,7 +6361,7 @@ function() {
         //  implementation of 'equals' from TP.test.Color.
         //  But now we have a conflict over 'getRgb' between TP.test.Color and
         //  TP.test.RGBData
-        TP.test.Heptagon.addTraits(
+        TP.test.Heptagon.addTraitTypes(
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6439,7 +6439,7 @@ function() {
         //  implementation of 'equals' from TP.test.Color.
         //  But now we have a conflict over 'getRgb' between TP.test.Color and
         //  TP.test.RGBData
-        TP.test.Diamond.addTraits(
+        TP.test.Diamond.addTraitTypes(
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6536,7 +6536,7 @@ function() {
         //  TP.test.DimensionedRectangle Definition
         TP.lang.Object.defineSubtype('TP.test.DimensionedRectangle');
 
-        TP.test.DimensionedRectangle.addTraits(
+        TP.test.DimensionedRectangle.addTraitTypes(
                 TP.test.Magnitude, TP.test.AnotherDimension);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6582,7 +6582,7 @@ function() {
         //  DimensionedSquare Definition
         TP.lang.Object.defineSubtype('test.DimensionedSquare');
 
-        TP.test.DimensionedSquare.addTraits(
+        TP.test.DimensionedSquare.addTraitTypes(
                 TP.test.Magnitude, TP.test.AnotherDimension);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6649,7 +6649,7 @@ function() {
         //  DimensionedCircle Definition
         TP.lang.Object.defineSubtype('test.DimensionedCircle');
 
-        TP.test.DimensionedCircle.addTraits(
+        TP.test.DimensionedCircle.addTraitTypes(
                 TP.test.Circle, TP.test.AnotherDimension);
 
         //  Resolve the conflict in favor of TP.test.Circle, but renaming it to
@@ -6738,7 +6738,7 @@ function() {
         //  DimensionedTriangle Definition
         TP.lang.Object.defineSubtype('test.DimensionedTriangle');
 
-        TP.test.DimensionedTriangle.addTraits(
+        TP.test.DimensionedTriangle.addTraitTypes(
                 TP.test.Magnitude, TP.test.AnotherDimension);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6803,7 +6803,7 @@ function() {
         //  DimensionedQuadrangle Definition
         TP.lang.Object.defineSubtype('test.DimensionedQuadrangle');
 
-        TP.test.DimensionedQuadrangle.addTraits(
+        TP.test.DimensionedQuadrangle.addTraitTypes(
                 TP.test.AnotherMagnitude, TP.test.AnotherDimension);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -6894,7 +6894,7 @@ function() {
         //  Rhombus Definition
         TP.lang.Object.defineSubtype('test.Rhombus');
 
-        TP.test.Rhombus.addTraits(TP.test.Magnitude, TP.test.Color);
+        TP.test.Rhombus.addTraitTypes(TP.test.Magnitude, TP.test.Color);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
         TP.test.Rhombus.Inst.defineMethod(
@@ -6952,7 +6952,7 @@ function() {
         //  ---
 
         //  Now add TP.test.RGBData as another trait type.
-        TP.test.Rhombus.addTraits(TP.test.RGBData);
+        TP.test.Rhombus.addTraitTypes(TP.test.RGBData);
 
         //  ---
 
@@ -7038,7 +7038,7 @@ function() {
         //  implementation of 'equals' from TP.test.Color.
         //  But now we have a conflict over 'getRgb' between TP.test.Color and
         //  TP.test.RGBData
-        TP.test.Nonagon.addTraits(
+        TP.test.Nonagon.addTraitTypes(
             TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
 
         //  Satisfies 'smaller' from TP.test.Magnitude
@@ -7174,7 +7174,7 @@ function() {
         TP.lang.Object.defineSubtype('test.Quadrangle');
 
         //  Add the TP.test.Equality trait
-        TP.test.Quadrangle.addTraits(TP.test.Equality);
+        TP.test.Quadrangle.addTraitTypes(TP.test.Equality);
 
         //  Construct an instance.
         obj = TP.test.Quadrangle.construct();
@@ -7212,7 +7212,7 @@ function() {
         TP.lang.Object.defineSubtype('test.Hectogon');
 
         //  Add the TP.test.Circle and TP.test.Color traits
-        TP.test.Hectogon.addTraits(TP.test.Circle, TP.test.Color);
+        TP.test.Hectogon.addTraitTypes(TP.test.Circle, TP.test.Color);
 
         //  Construct an instance.
         obj = TP.test.Hectogon.construct();
@@ -7261,7 +7261,7 @@ function() {
         TP.lang.Object.defineSubtype('test.Digon');
 
         //  Add the TP.test.Circle and TP.test.Color traits
-        TP.test.Digon.addTraits(TP.test.Circle, TP.test.Color);
+        TP.test.Digon.addTraitTypes(TP.test.Circle, TP.test.Color);
 
         //  Construct an instance.
         obj = TP.test.Digon.construct();
@@ -7331,7 +7331,7 @@ function() {
         TP.lang.Object.defineSubtype('test.Ellipsis');
 
         //  Add the TP.test.Circle and TP.test.Color traits
-        TP.test.Ellipsis.addTraits(TP.test.Circle, TP.test.Color);
+        TP.test.Ellipsis.addTraitTypes(TP.test.Circle, TP.test.Color);
 
         //  Construct an instance.
         obj = TP.test.Ellipsis.construct();
@@ -7373,7 +7373,7 @@ function() {
         TP.lang.Object.defineSubtype('test.Monogon');
 
         //  Add the TP.test.Circle and TP.test.Color traits
-        TP.test.Monogon.addTraits(TP.test.Circle, TP.test.Color);
+        TP.test.Monogon.addTraitTypes(TP.test.Circle, TP.test.Color);
 
         //  Construct an instance.
         obj = TP.test.Monogon.construct();
@@ -7425,7 +7425,7 @@ function() {
         TP.lang.Object.defineSubtype('test.Tridecagon');
 
         //  Add the TP.test.Circle and TP.test.Color traits
-        TP.test.Tridecagon.addTraits(TP.test.Circle, TP.test.Color);
+        TP.test.Tridecagon.addTraitTypes(TP.test.Circle, TP.test.Color);
 
         //  Construct an instance.
         obj = TP.test.Tridecagon.construct();

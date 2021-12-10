@@ -20,7 +20,7 @@
 
 TP.dom.UIElementNode.defineSubtype('svg:view');
 
-TP.svg.view.addTraits(TP.svg.Element);
+TP.svg.view.addTraitTypes(TP.svg.Element);
 
 TP.svg.view.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.view.Inst.resolveTrait('isReadyToRender', TP.svg.Element);

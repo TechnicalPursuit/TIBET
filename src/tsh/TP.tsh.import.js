@@ -16,7 +16,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:import');
 
-TP.tsh.import.addTraits(TP.tsh.Element);
+TP.tsh.import.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

@@ -56,7 +56,7 @@ TP.html.Aligned.defineSubtype('caption');
 
 TP.html.tcolumn.defineSubtype('col');
 
-TP.html.col.addTraits(TP.dom.EmptyElementNode);
+TP.html.col.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.col.Type.resolveTrait('booleanAttrs', TP.html.Element);
 

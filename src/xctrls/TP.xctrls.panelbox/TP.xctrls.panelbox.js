@@ -17,7 +17,7 @@
 
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:panelbox');
 
-TP.xctrls.panelbox.addTraits(TP.xctrls.SwitchableElement);
+TP.xctrls.panelbox.addTraitTypes(TP.xctrls.SwitchableElement);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

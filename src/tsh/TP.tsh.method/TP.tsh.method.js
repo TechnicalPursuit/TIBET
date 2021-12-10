@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:method');
 
-TP.tsh.method.addTraits(TP.tsh.Element);
+TP.tsh.method.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

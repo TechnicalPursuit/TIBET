@@ -20,7 +20,7 @@
 
 TP.dom.UIElementNode.defineSubtype('svg:clipPath');
 
-TP.svg.clipPath.addTraits(TP.svg.Element);
+TP.svg.clipPath.addTraitTypes(TP.svg.Element);
 
 TP.svg.clipPath.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.clipPath.Inst.resolveTrait('isReadyToRender', TP.svg.Element);

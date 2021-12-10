@@ -24,7 +24,7 @@ TP.html.Attrs.defineSubtype('link');
 TP.html.link.Type.set('uriAttrs', TP.ac('href'));
 TP.html.link.Type.set('reloadableUriAttrs', TP.ac('href'));
 
-TP.html.link.addTraits(TP.dom.EmptyElementNode);
+TP.html.link.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.link.Type.resolveTrait('uriAttrs', TP.html.link);
 

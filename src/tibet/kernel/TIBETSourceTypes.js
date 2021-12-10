@@ -686,7 +686,7 @@ function(message) {
 
 TP.core.MessageSource.defineSubtype('RemoteMessageSource');
 
-TP.core.RemoteMessageSource.addTraits(TP.core.URISignalSource);
+TP.core.RemoteMessageSource.addTraitTypes(TP.core.URISignalSource);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -1182,7 +1182,7 @@ function(signalTypes) {
 TP.core.RemoteMessageSource.defineSubtype('Socket');
 
 //  Mix in send capability.
-TP.core.Socket.addTraits(TP.core.MessageConnection);
+TP.core.Socket.addTraitTypes(TP.core.MessageConnection);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -3365,7 +3365,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 TP.core.URISignalSource.defineSubtype('Worker');
 
 //  Mix in send capability.
-TP.core.Worker.addTraits(TP.core.MessageConnection);
+TP.core.Worker.addTraitTypes(TP.core.MessageConnection);
 
 TP.core.Worker.Inst.resolveTraits(TP.ac('sendMessage'), TP.core.Worker);
 

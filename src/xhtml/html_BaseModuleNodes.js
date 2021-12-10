@@ -21,7 +21,7 @@
 
 TP.html.Attrs.defineSubtype('base');
 
-TP.html.base.addTraits(TP.dom.EmptyElementNode);
+TP.html.base.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.base.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),

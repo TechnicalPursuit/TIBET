@@ -52,7 +52,7 @@ TP.sig.StateSignal.defineSubtype('StateEnter');
 
 TP.lang.Object.defineSubtype('TP.core.StateMachine');
 
-TP.core.StateMachine.addTraits(TP.core.Triggered);
+TP.core.StateMachine.addTraitTypes(TP.core.Triggered);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

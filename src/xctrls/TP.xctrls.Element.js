@@ -208,7 +208,7 @@ function(aStyleTPElem) {
 //  ------------------------------------------------------------------------
 
 TP.tag.ComputedTag.defineSubtype('xctrls.ComputedTag');
-TP.xctrls.ComputedTag.addTraits(TP.xctrls.Element);
+TP.xctrls.ComputedTag.addTraitTypes(TP.xctrls.Element);
 
 //  Resolve the 'tagExpand' method in favor of TP.xctrls.Element, but go ahead
 //  and execute the one inherited from TP.tag.ComputedTag afterwards as well.
@@ -229,7 +229,7 @@ TP.xctrls.ComputedTag.Type.resolveTrait(
 
 TP.tag.TemplatedTag.defineSubtype('xctrls.TemplatedTag');
 
-TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
+TP.xctrls.TemplatedTag.addTraitTypes(TP.xctrls.Element);
 
 //  Resolve the 'tagExpand' method in favor of TP.xctrls.Element, but go ahead
 //  and execute the one inherited from TP.tag.TemplatedTag afterwards as well.

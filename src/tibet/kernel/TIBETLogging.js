@@ -652,8 +652,8 @@ TP.log.Nestable.defineSubtype('log.Logger');
 
 //  ----------------------------------------------------------------------------
 
-TP.log.Logger.addTraits(TP.log.Leveled);
-TP.log.Logger.addTraits(TP.log.Filtered);
+TP.log.Logger.addTraitTypes(TP.log.Leveled);
+TP.log.Logger.addTraitTypes(TP.log.Filtered);
 
 //  Logger's inherit from their ancestor chain so we need to preserve getters.
 TP.log.Logger.Inst.resolveTraits(
@@ -1351,8 +1351,8 @@ TP.lang.Object.defineSubtype('log.Appender');
 //  ----------------------------------------------------------------------------
 
 //  Appenders are leveled and filtered based on both level and filter content.
-TP.log.Appender.addTraits(TP.log.Leveled);
-TP.log.Appender.addTraits(TP.log.Filtered);
+TP.log.Appender.addTraitTypes(TP.log.Leveled);
+TP.log.Appender.addTraitTypes(TP.log.Filtered);
 
 //  ----------------------------------------------------------------------------
 

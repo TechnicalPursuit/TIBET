@@ -16,7 +16,7 @@
 
 TP.lama.Element.defineSubtype('hud');
 
-TP.lama.hud.addTraits(TP.dom.TemplatedNode);
+TP.lama.hud.addTraitTypes(TP.dom.TemplatedNode);
 
 TP.lama.hud.Type.resolveTrait('tagExpand', TP.dom.TemplatedNode);
 

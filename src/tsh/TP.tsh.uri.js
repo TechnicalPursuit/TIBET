@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:uri');
 
-TP.tsh.uri.addTraits(TP.tsh.Element);
+TP.tsh.uri.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

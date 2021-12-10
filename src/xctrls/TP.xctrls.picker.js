@@ -21,7 +21,7 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:picker');
 //  don't allow instance creation
 TP.xctrls.picker.isAbstract(true);
 
-TP.xctrls.picker.addTraits(TP.dom.SelectingUIElementNode);
+TP.xctrls.picker.addTraitTypes(TP.dom.SelectingUIElementNode);
 
 TP.xctrls.picker.Inst.resolveTrait('isReadyToRender', TP.dom.UIElementNode);
 TP.xctrls.picker.Inst.resolveTrait('select', TP.dom.SelectingUIElementNode);

@@ -17,7 +17,7 @@
 
 TP.dom.UIElementNode.defineSubtype('xctrls:propertysheet');
 
-TP.xctrls.propertysheet.addTraits(TP.xctrls.Element);
+TP.xctrls.propertysheet.addTraitTypes(TP.xctrls.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

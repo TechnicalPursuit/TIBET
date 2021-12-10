@@ -17,7 +17,7 @@
 
 TP.tag.CustomTag.defineSubtype('xctrls:item');
 
-TP.xctrls.item.addTraits(TP.dom.SelectableItemUIElementNode);
+TP.xctrls.item.addTraitTypes(TP.dom.SelectableItemUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

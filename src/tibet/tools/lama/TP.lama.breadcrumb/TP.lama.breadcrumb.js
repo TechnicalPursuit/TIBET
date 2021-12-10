@@ -16,7 +16,7 @@
 
 TP.lama.TemplatedTag.defineSubtype('breadcrumb');
 
-TP.lama.breadcrumb.addTraits(TP.dom.D3Tag);
+TP.lama.breadcrumb.addTraitTypes(TP.dom.D3Tag);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

@@ -17,7 +17,7 @@
 TP.xctrls.TemplatedTag.defineSubtype('wayfinder');
 
 //  The wayfinder itself is an wayfinder source for the 'root' entries.
-TP.xctrls.wayfinder.addTraits(TP.xctrls.WayfinderSource);
+TP.xctrls.wayfinder.addTraitTypes(TP.xctrls.WayfinderSource);
 
 TP.xctrls.wayfinder.Inst.resolveTrait('init', TP.xctrls.TemplatedTag);
 

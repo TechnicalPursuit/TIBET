@@ -17,7 +17,7 @@
 
 TP.tibet.group.defineSubtype('xctrls:itemgroup');
 
-TP.xctrls.itemgroup.addTraits(TP.dom.TogglingUIElementNode);
+TP.xctrls.itemgroup.addTraitTypes(TP.dom.TogglingUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

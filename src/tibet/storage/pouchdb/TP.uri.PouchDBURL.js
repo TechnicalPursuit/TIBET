@@ -128,7 +128,7 @@
 
 TP.uri.URL.defineSubtype('TP.uri.PouchDBURL');
 
-TP.uri.PouchDBURL.addTraits(TP.uri.CommURL);
+TP.uri.PouchDBURL.addTraitTypes(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants

@@ -77,19 +77,19 @@ function() {
         TP.test.O.defineSubtype('TP.test.E');
 
         TP.test.A.defineSubtype('TP.test.K1');
-        TP.test.K1.addTraits(TP.test.B);
-        TP.test.K1.addTraits(TP.test.C);
+        TP.test.K1.addTraitTypes(TP.test.B);
+        TP.test.K1.addTraitTypes(TP.test.C);
 
         TP.test.D.defineSubtype('TP.test.K2');
-        TP.test.K2.addTraits(TP.test.B);
-        TP.test.K2.addTraits(TP.test.E);
+        TP.test.K2.addTraitTypes(TP.test.B);
+        TP.test.K2.addTraitTypes(TP.test.E);
 
         TP.test.D.defineSubtype('TP.test.K3');
-        TP.test.K3.addTraits(TP.test.A);
+        TP.test.K3.addTraitTypes(TP.test.A);
 
         TP.test.K1.defineSubtype('TP.test.Z');
-        TP.test.Z.addTraits(TP.test.K2);
-        TP.test.Z.addTraits(TP.test.K3);
+        TP.test.Z.addTraitTypes(TP.test.K2);
+        TP.test.Z.addTraitTypes(TP.test.K3);
 
     });
 

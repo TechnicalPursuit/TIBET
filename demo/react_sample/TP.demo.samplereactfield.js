@@ -17,7 +17,7 @@
 
 TP.tag.CustomTag.defineSubtype('demo:samplereactfield');
 
-TP.demo.samplereactfield.addTraits(TP.dom.ReactElement);
+TP.demo.samplereactfield.addTraitTypes(TP.dom.ReactElement);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

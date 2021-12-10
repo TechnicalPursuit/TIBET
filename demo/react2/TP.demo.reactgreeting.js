@@ -17,7 +17,7 @@
 
 TP.tag.CustomTag.defineSubtype('demo:reactgreeting');
 
-TP.demo.reactgreeting.addTraits(TP.dom.ReactElement);
+TP.demo.reactgreeting.addTraitTypes(TP.dom.ReactElement);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

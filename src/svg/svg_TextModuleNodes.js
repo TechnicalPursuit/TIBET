@@ -20,7 +20,7 @@
 
 TP.dom.UIElementNode.defineSubtype('svg:text');
 
-TP.svg.text.addTraits(TP.svg.Element);
+TP.svg.text.addTraitTypes(TP.svg.Element);
 
 TP.svg.text.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.text.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -44,7 +44,7 @@ TP.svg.text.Type.set('uriAttrs',
 
 TP.dom.UIElementNode.defineSubtype('svg:tspan');
 
-TP.svg.tspan.addTraits(TP.svg.Element);
+TP.svg.tspan.addTraitTypes(TP.svg.Element);
 
 TP.svg.tspan.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.tspan.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -67,7 +67,7 @@ TP.svg.tspan.Type.set('uriAttrs', TP.ac('fill', 'stroke'));
 
 TP.dom.UIElementNode.defineSubtype('svg:tref');
 
-TP.svg.tref.addTraits(TP.svg.Element);
+TP.svg.tref.addTraitTypes(TP.svg.Element);
 
 TP.svg.tref.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.tref.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -90,7 +90,7 @@ TP.svg.tref.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 TP.dom.UIElementNode.defineSubtype('svg:textpath');
 
-TP.svg.textpath.addTraits(TP.svg.Element);
+TP.svg.textpath.addTraitTypes(TP.svg.Element);
 
 TP.svg.textpath.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.textpath.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -113,7 +113,7 @@ TP.svg.textpath.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 TP.dom.UIElementNode.defineSubtype('svg:altGlyph');
 
-TP.svg.altGlyph.addTraits(TP.svg.Element);
+TP.svg.altGlyph.addTraitTypes(TP.svg.Element);
 
 TP.svg.altGlyph.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.altGlyph.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -136,7 +136,7 @@ TP.svg.altGlyph.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 TP.dom.UIElementNode.defineSubtype('svg:altGlyphDef');
 
-TP.svg.altGlyphDef.addTraits(TP.svg.Element);
+TP.svg.altGlyphDef.addTraitTypes(TP.svg.Element);
 
 TP.svg.altGlyphDef.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.altGlyphDef.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -153,7 +153,7 @@ TP.svg.altGlyphDef.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 TP.dom.UIElementNode.defineSubtype('svg:altGlyphItem');
 
-TP.svg.altGlyphItem.addTraits(TP.svg.Element);
+TP.svg.altGlyphItem.addTraitTypes(TP.svg.Element);
 
 TP.svg.altGlyphItem.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.altGlyphItem.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -170,7 +170,7 @@ TP.svg.altGlyphItem.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 TP.dom.UIElementNode.defineSubtype('svg:glyphRef');
 
-TP.svg.glyphRef.addTraits(TP.svg.Element);
+TP.svg.glyphRef.addTraitTypes(TP.svg.Element);
 
 TP.svg.glyphRef.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.glyphRef.Inst.resolveTrait('isReadyToRender', TP.svg.Element);

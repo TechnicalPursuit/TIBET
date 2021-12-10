@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:xslt');
 
-TP.tsh.xslt.addTraits(TP.tsh.Element);
+TP.tsh.xslt.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

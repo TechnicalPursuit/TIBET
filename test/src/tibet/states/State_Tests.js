@@ -1601,7 +1601,7 @@ function() {
         responder;
 
     Responder = TP.lang.Object.defineSubtype('TestResponder');
-    Responder.addTraits(TP.core.StateResponder);
+    Responder.addTraitTypes(TP.core.StateResponder);
 
     this.beforeEach(function(test, options) {
         machine = TP.core.StateMachine.construct();

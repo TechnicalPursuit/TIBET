@@ -21,7 +21,7 @@
 
 TP.uri.HTTPURLHandler.defineSubtype('uri.CouchDBURLHandler');
 
-TP.uri.CouchDBURLHandler.addTraits(TP.uri.RemoteURLWatchHandler);
+TP.uri.CouchDBURLHandler.addTraitTypes(TP.uri.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
 //  Type Constants

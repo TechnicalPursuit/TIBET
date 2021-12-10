@@ -18,7 +18,7 @@
 
 TP.lang.Object.defineSubtype('lama.InspectorSource');
 
-TP.lama.InspectorSource.addTraits(TP.lama.ToolAPI);
+TP.lama.InspectorSource.addTraitTypes(TP.lama.ToolAPI);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -850,7 +850,7 @@ function(anAspect, options) {
 TP.lama.TemplatedTag.defineSubtype('inspector');
 
 //  The inspector itself is an inspector source for the 'root' entries.
-TP.lama.inspector.addTraits(TP.lama.InspectorSource);
+TP.lama.inspector.addTraitTypes(TP.lama.InspectorSource);
 
 TP.lama.inspector.Inst.resolveTrait('init', TP.lama.TemplatedTag);
 

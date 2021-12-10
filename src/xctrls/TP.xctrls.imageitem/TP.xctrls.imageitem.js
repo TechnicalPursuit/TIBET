@@ -17,7 +17,7 @@
 
 TP.xctrls.item.defineSubtype('xctrls:imageitem');
 
-TP.xctrls.imageitem.addTraits(TP.xctrls.TemplatedTag);
+TP.xctrls.imageitem.addTraitTypes(TP.xctrls.TemplatedTag);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

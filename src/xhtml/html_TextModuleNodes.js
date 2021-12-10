@@ -89,7 +89,7 @@ TP.html.blockquote.Type.set('uriAttrs', TP.ac('cite'));
 
 TP.html.CoreAttrs.defineSubtype('br');
 
-TP.html.br.addTraits(TP.dom.EmptyElementNode);
+TP.html.br.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.br.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),

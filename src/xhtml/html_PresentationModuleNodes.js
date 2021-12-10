@@ -130,7 +130,7 @@ TP.html.hr.Type.set('booleanAttrs',
         TP.html.hr.Type.get('booleanAttrs').concat(
             TP.ac('noShade')));
 
-TP.html.hr.addTraits(TP.dom.EmptyElementNode);
+TP.html.hr.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.hr.Type.resolveTrait('booleanAttrs', TP.html.Element);
 

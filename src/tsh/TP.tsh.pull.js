@@ -16,7 +16,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:pull');
 
-TP.tsh.pull.addTraits(TP.tsh.Element);
+TP.tsh.pull.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

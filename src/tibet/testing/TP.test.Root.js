@@ -20,10 +20,10 @@ TP.lang.Object.defineSubtype('test.Root');
 TP.test.Root.isAbstract(true);
 
 //  Add support for providing Promises.
-TP.test.Root.addTraits(TP.core.PromiseProvider);
+TP.test.Root.addTraitTypes(TP.core.PromiseProvider);
 
 //  Add support for job control status tracking and querying.
-TP.test.Root.addTraits(TP.core.JobStatus);
+TP.test.Root.addTraitTypes(TP.core.JobStatus);
 
 TP.test.Root.Inst.resolveTrait('resume', TP.core.JobStatus);
 

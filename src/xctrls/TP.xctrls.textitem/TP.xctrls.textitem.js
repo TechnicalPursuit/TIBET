@@ -17,7 +17,7 @@
 
 TP.xctrls.item.defineSubtype('xctrls:textitem');
 
-TP.xctrls.textitem.addTraits(TP.xctrls.TemplatedTag);
+TP.xctrls.textitem.addTraitTypes(TP.xctrls.TemplatedTag);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

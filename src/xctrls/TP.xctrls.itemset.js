@@ -20,8 +20,8 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls.itemset');
 //  concrete types, so we don't allow instance creation
 TP.xctrls.itemset.isAbstract(true);
 
-TP.xctrls.itemset.addTraits(TP.dom.SelectingUIElementNode);
-TP.xctrls.itemset.addTraits(TP.dom.D3Tag);
+TP.xctrls.itemset.addTraitTypes(TP.dom.SelectingUIElementNode);
+TP.xctrls.itemset.addTraitTypes(TP.dom.D3Tag);
 
 TP.xctrls.itemset.Inst.resolveTrait('isReadyToRender', TP.dom.UIElementNode);
 TP.xctrls.itemset.Inst.resolveTrait('select', TP.dom.SelectingUIElementNode);

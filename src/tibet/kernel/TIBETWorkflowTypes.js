@@ -367,8 +367,8 @@ function() {
 TP.lang.Object.defineSubtype('core.Resource');
 
 //  add sync and async mode support along with necessary constants.
-TP.core.Resource.addTraits(TP.core.SyncAsync);
-TP.core.Resource.addTraits(TP.core.Triggered);
+TP.core.Resource.addTraitTypes(TP.core.SyncAsync);
+TP.core.Resource.addTraitTypes(TP.core.Triggered);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -1113,7 +1113,7 @@ TP.sig.Signal.defineSubtype('WorkflowSignal');
 
 //  add job status behavior to the receiver so we can track progress. this
 //  adds methods such as fail, complete, etc.
-TP.sig.WorkflowSignal.addTraits(TP.core.JobStatus);
+TP.sig.WorkflowSignal.addTraitTypes(TP.core.JobStatus);
 
 TP.sig.WorkflowSignal.Type.resolveTrait('getSignalName', TP.sig.Signal);
 
@@ -6851,7 +6851,7 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    TP.core.Controller.addTraits(TP.core.StateResponder);
+    TP.core.Controller.addTraitTypes(TP.core.StateResponder);
 
     //  NOTE:   we define this method here because it's overriding a traited
     //  method and we need the traits to be in place or the callNextMethod

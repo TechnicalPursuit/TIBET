@@ -27,7 +27,7 @@ TP.html.area.Type.set('booleanAttrs',
 
 TP.html.area.Type.set('uriAttrs', TP.ac('href'));
 
-TP.html.area.addTraits(TP.dom.EmptyElementNode);
+TP.html.area.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.area.Type.resolveTraits(
         TP.ac('booleanAttrs', 'uriAttrs'),

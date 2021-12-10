@@ -34,7 +34,7 @@ TP.dom.UIElementNode.defineSubtype('html.CoreAttrs');
 
 TP.html.CoreAttrs.isAbstract(true);
 
-TP.html.CoreAttrs.addTraits(TP.html.Element);
+TP.html.CoreAttrs.addTraitTypes(TP.html.Element);
 
 TP.html.CoreAttrs.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
@@ -49,7 +49,7 @@ TP.html.CoreAttrs.Inst.resolveTraits(
 TP.dom.UIElementNode.defineSubtype('html.Attrs');
 TP.html.Attrs.isAbstract(true);
 
-TP.html.Attrs.addTraits(TP.html.Element);
+TP.html.Attrs.addTraitTypes(TP.html.Element);
 
 TP.html.Attrs.Type.resolveTrait('booleanAttrs', TP.html.Element);
 

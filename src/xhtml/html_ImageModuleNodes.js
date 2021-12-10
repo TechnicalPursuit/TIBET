@@ -27,7 +27,7 @@ TP.html.img.Type.set('booleanAttrs',
         TP.html.img.Type.get('booleanAttrs').concat(
             TP.ac('isMap', 'complete')));
 
-TP.html.img.addTraits(TP.dom.EmptyElementNode);
+TP.html.img.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.img.Type.resolveTraits(
         TP.ac('booleanAttrs', 'uriAttrs'),

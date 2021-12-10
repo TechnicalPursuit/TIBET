@@ -22,7 +22,7 @@ TP.core.IOService.defineSubtype('sf.SalesforceService');
 TP.sf.SalesforceService.isAbstract(true);
 
 //  This is an authenticated service.
-TP.sf.SalesforceService.addTraits(TP.core.AuthenticatedService);
+TP.sf.SalesforceService.addTraitTypes(TP.core.AuthenticatedService);
 
 //  ------------------------------------------------------------------------
 //  Type Constants

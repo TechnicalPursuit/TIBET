@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:xpath');
 
-TP.tsh.xpath.addTraits(TP.tsh.Element);
+TP.tsh.xpath.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

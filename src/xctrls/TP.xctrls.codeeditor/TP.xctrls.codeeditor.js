@@ -21,7 +21,7 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:codeeditor');
 //  Events:
 //      xctrls-codeeditor-selected
 
-TP.xctrls.codeeditor.addTraits(TP.html.textUtilities);
+TP.xctrls.codeeditor.addTraitTypes(TP.html.textUtilities);
 
 TP.xctrls.codeeditor.Type.resolveTrait('booleanAttrs', TP.html.textUtilities);
 TP.xctrls.codeeditor.Type.resolveTrait('getResourceURI', TP.xctrls.codeeditor);

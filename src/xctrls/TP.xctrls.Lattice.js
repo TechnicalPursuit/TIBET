@@ -20,8 +20,8 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:Lattice');
 //  don't allow instance creation
 TP.xctrls.Lattice.isAbstract(true);
 
-TP.xctrls.Lattice.addTraits(TP.dom.SelectingUIElementNode);
-TP.xctrls.Lattice.addTraits(TP.dom.D3VirtualList);
+TP.xctrls.Lattice.addTraitTypes(TP.dom.SelectingUIElementNode);
+TP.xctrls.Lattice.addTraitTypes(TP.dom.D3VirtualList);
 
 TP.xctrls.Lattice.Inst.resolveTrait('isReadyToRender', TP.dom.UIElementNode);
 TP.xctrls.Lattice.Inst.resolveTrait('select', TP.dom.SelectingUIElementNode);

@@ -17,7 +17,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:echo');
 
-TP.tsh.echo.addTraits(TP.tsh.Element);
+TP.tsh.echo.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

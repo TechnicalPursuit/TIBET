@@ -22,7 +22,7 @@ TP.core.IOService.defineSubtype('aws.AWSService');
 TP.aws.AWSService.isAbstract(true);
 
 //  This is an authenticated service.
-TP.aws.AWSService.addTraits(TP.core.AuthenticatedService);
+TP.aws.AWSService.addTraitTypes(TP.core.AuthenticatedService);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

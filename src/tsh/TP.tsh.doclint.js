@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:doclint');
 
-TP.tsh.doclint.addTraits(TP.tsh.Element);
+TP.tsh.doclint.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:dump');
 
-TP.tsh.dump.addTraits(TP.tsh.Element);
+TP.tsh.dump.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

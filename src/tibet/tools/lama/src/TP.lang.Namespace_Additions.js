@@ -12,7 +12,7 @@
 //  TP.lang.Namespace Additions
 //  ========================================================================
 
-TP.lang.Namespace.addTraits(TP.lama.ToolAPI);
+TP.lang.Namespace.addTraitTypes(TP.lama.ToolAPI);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

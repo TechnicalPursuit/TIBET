@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:validate');
 
-TP.tsh.validate.addTraits(TP.tsh.Element);
+TP.tsh.validate.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

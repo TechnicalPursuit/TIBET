@@ -20,7 +20,7 @@
 
 TP.dom.UIElementNode.defineSubtype('svg:font');
 
-TP.svg.font.addTraits(TP.svg.Element);
+TP.svg.font.addTraitTypes(TP.svg.Element);
 
 TP.svg.font.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.font.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -37,7 +37,7 @@ TP.svg.font.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 TP.dom.UIElementNode.defineSubtype('svg:font_face');
 
-TP.svg.font_face.addTraits(TP.svg.Element);
+TP.svg.font_face.addTraitTypes(TP.svg.Element);
 
 TP.svg.font_face.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.font_face.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -62,7 +62,7 @@ TP.svg.font_face.set('localName', 'font-face');
 
 TP.dom.UIElementNode.defineSubtype('svg:glyph');
 
-TP.svg.glyph.addTraits(TP.svg.Element);
+TP.svg.glyph.addTraitTypes(TP.svg.Element);
 
 TP.svg.glyph.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.glyph.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -79,7 +79,7 @@ TP.svg.glyph.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 TP.dom.UIElementNode.defineSubtype('svg:missing_glyph');
 
-TP.svg.missing_glyph.addTraits(TP.svg.Element);
+TP.svg.missing_glyph.addTraitTypes(TP.svg.Element);
 
 TP.svg.missing_glyph.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.missing_glyph.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -104,7 +104,7 @@ TP.svg.missing_glyph.set('localName', 'missing-glyph');
 
 TP.dom.UIElementNode.defineSubtype('svg:hkern');
 
-TP.svg.hkern.addTraits(TP.svg.Element);
+TP.svg.hkern.addTraitTypes(TP.svg.Element);
 
 TP.svg.hkern.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.hkern.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -121,7 +121,7 @@ TP.svg.hkern.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 TP.dom.UIElementNode.defineSubtype('svg:vkern');
 
-TP.svg.vkern.addTraits(TP.svg.Element);
+TP.svg.vkern.addTraitTypes(TP.svg.Element);
 
 TP.svg.vkern.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.vkern.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -138,7 +138,7 @@ TP.svg.vkern.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
 
 TP.dom.UIElementNode.defineSubtype('svg:font_face_src');
 
-TP.svg.font_face_src.addTraits(TP.svg.Element);
+TP.svg.font_face_src.addTraitTypes(TP.svg.Element);
 
 TP.svg.font_face.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.font_face.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -163,7 +163,7 @@ TP.svg.font_face_src.set('localName', 'font-face-src');
 
 TP.dom.UIElementNode.defineSubtype('svg:font_face_uri');
 
-TP.svg.font_face_uri.addTraits(TP.svg.Element);
+TP.svg.font_face_uri.addTraitTypes(TP.svg.Element);
 
 TP.svg.font_face_uri.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.font_face_uri.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -188,7 +188,7 @@ TP.svg.font_face_uri.set('localName', 'font-face-uri');
 
 TP.dom.UIElementNode.defineSubtype('svg:font_face_format');
 
-TP.svg.font_face_format.addTraits(TP.svg.Element);
+TP.svg.font_face_format.addTraitTypes(TP.svg.Element);
 
 TP.svg.font_face_format.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.font_face_format.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -213,7 +213,7 @@ TP.svg.font_face_format.set('localName', 'font-face-format');
 
 TP.dom.UIElementNode.defineSubtype('svg:font_face_name');
 
-TP.svg.font_face_name.addTraits(TP.svg.Element);
+TP.svg.font_face_name.addTraitTypes(TP.svg.Element);
 
 TP.svg.font_face_name.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.font_face_name.Inst.resolveTrait('isReadyToRender', TP.svg.Element);
@@ -238,7 +238,7 @@ TP.svg.font_face_name.set('localName', 'font-face-name');
 
 TP.dom.UIElementNode.defineSubtype('svg:definition_src');
 
-TP.svg.definition_src.addTraits(TP.svg.Element);
+TP.svg.definition_src.addTraitTypes(TP.svg.Element);
 
 TP.svg.definition_src.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.definition_src.Inst.resolveTrait('isReadyToRender', TP.svg.Element);

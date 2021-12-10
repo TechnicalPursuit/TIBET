@@ -724,7 +724,7 @@ function(aRequest) {
 TP.tag.CustomTag.defineSubtype('TP.tag.TemplatedTag');
 
 //  Mix in templating behavior, resolving computation in favor of templating.
-TP.tag.TemplatedTag.addTraits(TP.dom.TemplatedNode);
+TP.tag.TemplatedTag.addTraitTypes(TP.dom.TemplatedNode);
 
 TP.tag.TemplatedTag.Type.resolveTrait('tagExpand', TP.dom.TemplatedNode);
 
@@ -2336,7 +2336,7 @@ function(aRequest) {
 
 TP.tag.CustomTag.defineSubtype('dom.MultipliedElement');
 
-TP.dom.MultipliedElement.addTraits(TP.dom.ElementNode);
+TP.dom.MultipliedElement.addTraitTypes(TP.dom.ElementNode);
 
 TP.dom.MultipliedElement.Inst.resolveTraits(
         TP.ac('serializeCloseTag', 'serializeOpenTag'),

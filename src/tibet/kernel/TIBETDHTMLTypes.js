@@ -24,7 +24,7 @@
 
 TP.lang.Object.defineSubtype('dnd.DragResponder');
 
-TP.dnd.DragResponder.addTraits(TP.core.StateResponder);
+TP.dnd.DragResponder.addTraitTypes(TP.core.StateResponder);
 
 //  need a drag responsder of a specific subtype
 TP.dnd.DragResponder.isAbstract(true);
@@ -5378,7 +5378,7 @@ function(trackingSignal) {
 
 TP.lang.Object.defineSubtype('TP.core.KeyResponder');
 
-TP.core.KeyResponder.addTraits(TP.core.StateResponder);
+TP.core.KeyResponder.addTraitTypes(TP.core.StateResponder);
 
 //  ------------------------------------------------------------------------
 
@@ -6116,7 +6116,7 @@ TP.dom.SelectingUIElementNode.defineSubtype('TogglingUIElementNode');
 
 //  Add in selectable item traits - instances of this type manage themselves as
 //  selectable items.
-TP.dom.TogglingUIElementNode.addTraits(TP.dom.SelectableItemUIElementNode);
+TP.dom.TogglingUIElementNode.addTraitTypes(TP.dom.SelectableItemUIElementNode);
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation

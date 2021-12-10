@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('test.TSHTestCmd');
 
-TP.test.TSHTestCmd.addTraits(TP.tsh.Element);
+TP.test.TSHTestCmd.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

@@ -281,7 +281,7 @@ function() {
 //  TP.dom.ElementNode Additions
 //  ========================================================================
 
-TP.dom.ElementNode.addTraits(TP.lama.ToolAPI);
+TP.dom.ElementNode.addTraitTypes(TP.lama.ToolAPI);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

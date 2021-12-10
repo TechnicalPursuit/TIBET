@@ -1035,7 +1035,7 @@ function(parameters) {
 TP.lang.Object.defineSubtype('core.Job');
 
 //  add job status code support.
-TP.core.Job.addTraits(TP.core.JobStatus);
+TP.core.Job.addTraitTypes(TP.core.JobStatus);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -3627,7 +3627,7 @@ function(controlParams, stepParams) {
 TP.lang.Object.defineSubtype('core.JobGroup');
 
 //  add job status code support.
-TP.core.JobGroup.addTraits(TP.core.JobStatus);
+TP.core.JobGroup.addTraitTypes(TP.core.JobStatus);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

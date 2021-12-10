@@ -112,7 +112,7 @@ TP.lang.Object.defineSubtype('uri.URI');
 TP.uri.URI.isAbstract(true);
 
 //  Add support methods for sync vs. async mode and request rewriting.
-TP.uri.URI.addTraits(TP.core.SyncAsync);
+TP.uri.URI.addTraitTypes(TP.core.SyncAsync);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -7789,7 +7789,7 @@ function() {
 
 TP.uri.URL.defineSubtype('HTTPURL');
 
-TP.uri.HTTPURL.addTraits(TP.uri.CommURL);
+TP.uri.HTTPURL.addTraitTypes(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -8115,7 +8115,7 @@ function(aRequest) {
 
 TP.uri.URL.defineSubtype('FileURL');
 
-TP.uri.FileURL.addTraits(TP.uri.CommURL);
+TP.uri.FileURL.addTraitTypes(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -8890,7 +8890,7 @@ function(schemeSpecificString) {
 
 TP.uri.URL.defineSubtype('TIBETURL');
 
-TP.uri.TIBETURL.addTraits(TP.uri.CommURL);
+TP.uri.TIBETURL.addTraitTypes(TP.uri.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants

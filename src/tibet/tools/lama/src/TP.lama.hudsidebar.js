@@ -20,7 +20,7 @@ TP.lama.TemplatedTag.defineSubtype('hudsidebar');
 //  don't allow instance creation
 TP.lama.hudsidebar.isAbstract(true);
 
-TP.lama.hudsidebar.addTraits(TP.dom.D3Tag);
+TP.lama.hudsidebar.addTraitTypes(TP.dom.D3Tag);
 
 //  ------------------------------------------------------------------------
 //  Type Local Attributes

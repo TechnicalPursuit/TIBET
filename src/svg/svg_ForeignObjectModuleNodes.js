@@ -20,7 +20,7 @@
 
 TP.dom.UIElementNode.defineSubtype('svg:foreignObject');
 
-TP.svg.foreignObject.addTraits(TP.svg.Element);
+TP.svg.foreignObject.addTraitTypes(TP.svg.Element);
 
 TP.svg.foreignObject.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.foreignObject.Inst.resolveTrait('isReadyToRender', TP.svg.Element);

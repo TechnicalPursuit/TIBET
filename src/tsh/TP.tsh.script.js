@@ -25,7 +25,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:script');
 
-TP.tsh.script.addTraits(TP.tsh.Element);
+TP.tsh.script.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

@@ -21,7 +21,7 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:jsonview');
 //  Events:
 //      xctrls-jsonview-selected
 
-TP.xctrls.jsonview.addTraits(TP.html.textUtilities);
+TP.xctrls.jsonview.addTraitTypes(TP.html.textUtilities);
 
 TP.xctrls.jsonview.Type.resolveTrait('booleanAttrs', TP.html.textUtilities);
 TP.xctrls.jsonview.Type.resolveTrait('getResourceURI', TP.xctrls.jsonview);

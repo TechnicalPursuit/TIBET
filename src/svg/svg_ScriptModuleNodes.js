@@ -20,7 +20,7 @@
 
 TP.dom.UIElementNode.defineSubtype('svg:script');
 
-TP.svg.script.addTraits(TP.svg.Element);
+TP.svg.script.addTraitTypes(TP.svg.Element);
 
 TP.svg.script.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.script.Inst.resolveTrait('isReadyToRender', TP.svg.Element);

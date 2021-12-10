@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:interests');
 
-TP.tsh.interests.addTraits(TP.tsh.Element);
+TP.tsh.interests.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

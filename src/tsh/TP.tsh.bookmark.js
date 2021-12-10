@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:bookmark');
 
-TP.tsh.bookmark.addTraits(TP.tsh.Element);
+TP.tsh.bookmark.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

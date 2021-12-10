@@ -4509,11 +4509,11 @@ function(target, targetPropName, track, initialValue, wantsImmediate) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('addTraits',
+TP.lang.RootObject.Type.defineMethod('addTraitTypes',
 function(varargs) {
 
     /**
-     * @method addTraits
+     * @method addTraitTypes
      * @summary Adds the type objects supplied as a variable arguments list as
      *     trait types to the receiver.
      * @param {arguments} varargs 1...n trait type objects or a Boolean (the
@@ -5356,7 +5356,7 @@ function(strict, types) {
 
     var list;
 
-    //  If we cached this return it now. This is cleared by addTraits call.
+    //  If we cached this return it now. This is cleared by addTraitTypes call.
     if (TP.owns(this, TP.C3)) {
         return this[TP.C3];
     }

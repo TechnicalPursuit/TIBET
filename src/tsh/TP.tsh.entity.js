@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:entity');
 
-TP.tsh.entity.addTraits(TP.tsh.Element);
+TP.tsh.entity.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

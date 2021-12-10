@@ -22,7 +22,7 @@ TP.dom.UIElementNode.defineSubtype('svg:switch');
 
 //  Some JS parsers are stricter than others about reserved words, so we
 //  have to use the 'slot name' version of the type name.
-TP.svg.switch.addTraits(TP.svg.Element);
+TP.svg.switch.addTraitTypes(TP.svg.Element);
 
 TP.svg.switch.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.switch.Inst.resolveTrait('isReadyToRender', TP.svg.Element);

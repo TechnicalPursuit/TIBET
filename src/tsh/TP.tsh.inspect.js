@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:inspect');
 
-TP.tsh.inspect.addTraits(TP.tsh.Element);
+TP.tsh.inspect.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

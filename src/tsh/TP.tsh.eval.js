@@ -25,7 +25,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:eval');
 
-TP.tsh.eval.addTraits(TP.tsh.Element);
+TP.tsh.eval.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

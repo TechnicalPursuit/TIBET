@@ -17,7 +17,7 @@
 
 TP.dom.UIElementNode.defineSubtype('xctrls:image');
 
-TP.xctrls.image.addTraits(TP.xctrls.Element);
+TP.xctrls.image.addTraitTypes(TP.xctrls.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

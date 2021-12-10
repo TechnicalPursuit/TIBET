@@ -397,7 +397,7 @@ TP.html.optgroup.Type.set('booleanAttrs',
 
 TP.html.Attrs.defineSubtype('option');
 
-TP.html.option.addTraits(TP.dom.SelectableItemUIElementNode);
+TP.html.option.addTraitTypes(TP.dom.SelectableItemUIElementNode);
 
 TP.html.option.Type.set('booleanAttrs',
         TP.html.option.Type.get('booleanAttrs').concat(
@@ -697,7 +697,7 @@ TP.dom.UIElementNode.defineSubtype('html.textUtilities');
 //  instance creation
 TP.html.textUtilities.isAbstract(true);
 
-TP.html.textUtilities.addTraits(TP.html.Element);
+TP.html.textUtilities.addTraitTypes(TP.html.Element);
 
 TP.html.textUtilities.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
@@ -1250,7 +1250,7 @@ TP.html.Focused.defineSubtype('input');
 //  can't construct concrete instances of this
 TP.html.input.isAbstract(true);
 
-TP.html.input.addTraits(TP.dom.EmptyElementNode);
+TP.html.input.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.input.Type.resolveTraits(
         TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
@@ -1828,7 +1828,7 @@ function() {
 
 //  check boxes / radio buttons
 TP.html.inputClickable.defineSubtype('inputCheckable');
-TP.html.inputCheckable.addTraits(TP.dom.TogglingUIElementNode);
+TP.html.inputCheckable.addTraitTypes(TP.dom.TogglingUIElementNode);
 
 TP.html.inputCheckable.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue', 'isScalarValued'),
@@ -2348,7 +2348,7 @@ TP.html.inputClickable.defineSubtype('inputButton');
 
 TP.html.inputClickable.defineSubtype('inputColor');
 
-TP.html.inputColor.addTraits(TP.html.textUtilities, TP.html.inputSelectable);
+TP.html.inputColor.addTraitTypes(TP.html.textUtilities, TP.html.inputSelectable);
 
 TP.html.inputColor.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2371,7 +2371,7 @@ TP.html.inputColor.Inst.resolveTraits(
 
 TP.html.inputClickable.defineSubtype('inputDate');
 
-TP.html.inputDate.addTraits(TP.html.textUtilities, TP.html.inputSelectable);
+TP.html.inputDate.addTraitTypes(TP.html.textUtilities, TP.html.inputSelectable);
 
 TP.html.inputDate.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2394,7 +2394,7 @@ TP.html.inputDate.Inst.resolveTraits(
 
 TP.html.inputClickable.defineSubtype('inputDateTime');
 
-TP.html.inputDateTime.addTraits(TP.html.textUtilities, TP.html.inputSelectable);
+TP.html.inputDateTime.addTraitTypes(TP.html.textUtilities, TP.html.inputSelectable);
 
 TP.html.inputDateTime.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2417,7 +2417,7 @@ TP.html.inputDateTime.Inst.resolveTraits(
 
 TP.html.inputClickable.defineSubtype('inputDateTimeLocal');
 
-TP.html.inputDateTimeLocal.addTraits(TP.html.textUtilities,
+TP.html.inputDateTimeLocal.addTraitTypes(TP.html.textUtilities,
                                         TP.html.inputSelectable);
 
 TP.html.inputDateTimeLocal.Inst.resolveTraits(
@@ -2441,7 +2441,7 @@ TP.html.inputDateTimeLocal.Inst.resolveTraits(
 
 TP.html.inputClickable.defineSubtype('inputMonth');
 
-TP.html.inputMonth.addTraits(TP.html.textUtilities, TP.html.inputSelectable);
+TP.html.inputMonth.addTraitTypes(TP.html.textUtilities, TP.html.inputSelectable);
 
 TP.html.inputMonth.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2464,7 +2464,7 @@ TP.html.inputMonth.Inst.resolveTraits(
 
 TP.html.inputClickable.defineSubtype('inputRange');
 
-TP.html.inputRange.addTraits(TP.html.textUtilities, TP.html.inputSelectable);
+TP.html.inputRange.addTraitTypes(TP.html.textUtilities, TP.html.inputSelectable);
 
 TP.html.inputRange.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2587,7 +2587,7 @@ function(aValue) {
 
 TP.html.inputSelectable.defineSubtype('inputEmail');
 
-TP.html.inputEmail.addTraits(TP.html.textUtilities);
+TP.html.inputEmail.addTraitTypes(TP.html.textUtilities);
 
 TP.html.inputEmail.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2623,7 +2623,7 @@ TP.html.inputSelectable.defineSubtype('inputFile');
 
 TP.html.input.defineSubtype('inputHidden');
 
-TP.html.inputHidden.addTraits(TP.html.textUtilities);
+TP.html.inputHidden.addTraitTypes(TP.html.textUtilities);
 
 TP.html.inputHidden.Type.resolveTraits(
         TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
@@ -2654,7 +2654,7 @@ TP.html.inputHidden.Inst.resolveTraits(
 
 TP.html.inputSelectable.defineSubtype('inputNumber');
 
-TP.html.inputNumber.addTraits(TP.html.textUtilities);
+TP.html.inputNumber.addTraitTypes(TP.html.textUtilities);
 
 TP.html.inputNumber.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2690,7 +2690,7 @@ TP.html.input.defineSubtype('inputImage');
 
 TP.html.inputSelectable.defineSubtype('inputPassword');
 
-TP.html.inputPassword.addTraits(TP.html.textUtilities);
+TP.html.inputPassword.addTraitTypes(TP.html.textUtilities);
 
 TP.html.inputPassword.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2736,7 +2736,7 @@ function(aValue) {
 
 TP.html.inputSelectable.defineSubtype('inputSearch');
 
-TP.html.inputSearch.addTraits(TP.html.textUtilities);
+TP.html.inputSearch.addTraitTypes(TP.html.textUtilities);
 
 TP.html.inputSearch.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
@@ -2812,7 +2812,7 @@ TP.html.inputClickable.defineSubtype('inputSubmit');
 
 TP.html.inputSelectable.defineSubtype('inputTel');
 
-TP.html.inputTel.addTraits(TP.html.textUtilities);
+TP.html.inputTel.addTraitTypes(TP.html.textUtilities);
 
 TP.html.inputTel.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2835,7 +2835,7 @@ TP.html.inputTel.Inst.resolveTraits(
 
 TP.html.inputSelectable.defineSubtype('inputText');
 
-TP.html.inputText.addTraits(TP.html.textUtilities);
+TP.html.inputText.addTraitTypes(TP.html.textUtilities);
 
 TP.html.inputText.Type.resolveTraits(
         TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
@@ -2866,7 +2866,7 @@ TP.html.inputText.Inst.resolveTraits(
 
 TP.html.inputClickable.defineSubtype('inputTime');
 
-TP.html.inputTime.addTraits(TP.html.textUtilities, TP.html.inputSelectable);
+TP.html.inputTime.addTraitTypes(TP.html.textUtilities, TP.html.inputSelectable);
 
 TP.html.inputTime.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2889,7 +2889,7 @@ TP.html.inputTime.Inst.resolveTraits(
 
 TP.html.inputClickable.defineSubtype('inputWeek');
 
-TP.html.inputTime.addTraits(TP.html.textUtilities, TP.html.inputSelectable);
+TP.html.inputTime.addTraitTypes(TP.html.textUtilities, TP.html.inputSelectable);
 
 TP.html.inputWeek.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
@@ -2912,7 +2912,7 @@ TP.html.inputWeek.Inst.resolveTraits(
 
 TP.html.inputSelectable.defineSubtype('inputUrl');
 
-TP.html.inputUrl.addTraits(TP.html.textUtilities);
+TP.html.inputUrl.addTraitTypes(TP.html.textUtilities);
 
 TP.html.inputUrl.Type.resolveTraits(
         TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
@@ -2956,7 +2956,7 @@ TP.html.Aligned.defineSubtype('legend');
 
 TP.html.Focused.defineSubtype('select');
 
-TP.html.select.addTraits(TP.dom.TogglingUIElementNode);
+TP.html.select.addTraitTypes(TP.dom.TogglingUIElementNode);
 
 //  ------------------------------------------------------------------------
 
@@ -3612,7 +3612,7 @@ function(aValue, shouldSignal) {
 
 TP.html.Focused.defineSubtype('textarea');
 
-TP.html.textarea.addTraits(TP.html.textUtilities);
+TP.html.textarea.addTraitTypes(TP.html.textUtilities);
 
 TP.html.textarea.Type.resolveTraits(
         TP.ac('booleanAttrs', 'bidiAttrs'),

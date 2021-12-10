@@ -17,7 +17,7 @@
 
 TP.xctrls.item.defineSubtype('xctrls:radioitem');
 
-TP.xctrls.radioitem.addTraits(TP.xctrls.TemplatedTag);
+TP.xctrls.radioitem.addTraitTypes(TP.xctrls.TemplatedTag);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

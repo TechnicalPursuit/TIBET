@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:colors');
 
-TP.tsh.colors.addTraits(TP.tsh.Element);
+TP.tsh.colors.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

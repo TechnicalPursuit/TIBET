@@ -21,7 +21,7 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:editor');
 //  Events:
 //      xctrls-editor-selected
 
-TP.xctrls.editor.addTraits(TP.html.textUtilities);
+TP.xctrls.editor.addTraitTypes(TP.html.textUtilities);
 
 TP.xctrls.editor.Type.resolveTrait('booleanAttrs', TP.html.textUtilities);
 TP.xctrls.editor.Type.resolveTrait('getResourceURI', TP.xctrls.editor);

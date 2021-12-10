@@ -20,7 +20,7 @@
 
 TP.dom.UIElementNode.defineSubtype('svg:color_profile');
 
-TP.svg.color_profile.addTraits(TP.svg.Element);
+TP.svg.color_profile.addTraitTypes(TP.svg.Element);
 
 TP.svg.color_profile.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.color_profile.Inst.resolveTrait('isReadyToRender', TP.svg.Element);

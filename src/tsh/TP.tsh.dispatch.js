@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:dispatch');
 
-TP.tsh.dispatch.addTraits(TP.tsh.Element);
+TP.tsh.dispatch.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

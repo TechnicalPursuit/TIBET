@@ -374,7 +374,7 @@ TP.html.object.defineSubtype('objectConcrete');
 
 TP.html.Attrs.defineSubtype('param');
 
-TP.html.param.addTraits(TP.dom.EmptyElementNode);
+TP.html.param.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.param.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
@@ -427,7 +427,7 @@ TP.html.track.Type.set('booleanAttrs',
         TP.html.track.Type.get('booleanAttrs').concat(
             TP.ac('default')));
 
-TP.html.track.addTraits(TP.dom.EmptyElementNode);
+TP.html.track.addTraitTypes(TP.dom.EmptyElementNode);
 
 TP.html.track.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),

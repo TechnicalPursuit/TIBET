@@ -20,7 +20,7 @@
 
 TP.dom.UIElementNode.defineSubtype('svg:marker');
 
-TP.svg.marker.addTraits(TP.svg.Element);
+TP.svg.marker.addTraitTypes(TP.svg.Element);
 
 TP.svg.marker.Type.resolveTrait('cmdRunContent', TP.svg.Element);
 TP.svg.marker.Inst.resolveTrait('isReadyToRender', TP.svg.Element);

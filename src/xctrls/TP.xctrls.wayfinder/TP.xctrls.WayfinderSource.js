@@ -14,7 +14,7 @@
 
 TP.lang.Object.defineSubtype('TP.xctrls.WayfinderSource');
 
-TP.xctrls.WayfinderSource.addTraits(TP.xctrls.WayfinderAPI);
+TP.xctrls.WayfinderSource.addTraitTypes(TP.xctrls.WayfinderAPI);
 
 //  ------------------------------------------------------------------------
 //  Type Constants

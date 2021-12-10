@@ -16,7 +16,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:export');
 
-TP.tsh.export.addTraits(TP.tsh.Element);
+TP.tsh.export.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

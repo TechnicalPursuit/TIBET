@@ -19,7 +19,7 @@
 
 TP.sig.IORequest.defineSubtype('UserIORequest');
 
-TP.sig.UserIORequest.addTraits(TP.sig.UserIOSignal);
+TP.sig.UserIORequest.addTraitTypes(TP.sig.UserIOSignal);
 
 TP.sig.UserIORequest.Type.resolveTrait('shouldLog', TP.sig.UserIOSignal);
 TP.sig.UserIORequest.Type.resolveTrait('getSignalName', TP.sig.Signal);

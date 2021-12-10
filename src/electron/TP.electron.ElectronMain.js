@@ -547,7 +547,7 @@ function(signalTypes) {
 
 TP.uri.FileURLHandler.defineSubtype('ElectronFileURLHandler');
 
-TP.uri.ElectronFileURLHandler.addTraits(TP.uri.RemoteURLWatchHandler);
+TP.uri.ElectronFileURLHandler.addTraitTypes(TP.uri.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
 

@@ -16,7 +16,7 @@
 
 TP.dom.UIElementNode.defineSubtype('lama.Element');
 
-TP.lama.Element.addTraits(TP.dom.NonNativeUIElementNode);
+TP.lama.Element.addTraitTypes(TP.dom.NonNativeUIElementNode);
 
 TP.lama.Element.Type.resolveTrait(
         'tagExpand',
@@ -102,7 +102,7 @@ function(aHalo) {
 
 TP.tag.ComputedTag.defineSubtype('lama.ComputedTag');
 
-TP.lama.ComputedTag.addTraits(TP.lama.Element);
+TP.lama.ComputedTag.addTraitTypes(TP.lama.Element);
 
 //  ========================================================================
 //  TP.lama.TemplatedTag
@@ -118,7 +118,7 @@ TP.lama.ComputedTag.addTraits(TP.lama.Element);
 
 TP.tag.TemplatedTag.defineSubtype('lama.TemplatedTag');
 
-TP.lama.TemplatedTag.addTraits(TP.lama.Element);
+TP.lama.TemplatedTag.addTraitTypes(TP.lama.Element);
 
 TP.lama.TemplatedTag.Type.resolveTrait(
         'tagExpand',

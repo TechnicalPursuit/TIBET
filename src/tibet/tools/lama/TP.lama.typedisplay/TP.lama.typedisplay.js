@@ -16,7 +16,7 @@
 
 TP.lama.TemplatedTag.defineSubtype('typedisplay');
 
-TP.lama.typedisplay.addTraits(TP.dom.D3Tag);
+TP.lama.typedisplay.addTraitTypes(TP.dom.D3Tag);
 
 TP.lama.typedisplay.Inst.defineAttribute('body',
     TP.cpc('> .body', TP.hc('shouldCollapse', true)));

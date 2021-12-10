@@ -18,7 +18,7 @@
 
 TP.tag.ActionTag.defineSubtype('tsh:apropos');
 
-TP.tsh.apropos.addTraits(TP.tsh.Element);
+TP.tsh.apropos.addTraitTypes(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
