@@ -23,18 +23,22 @@ TP.lang.Object.defineSubtype('TP.test.OOTester');
 TP.test.OOTester.describe('c3 tests - primitives',
 function() {
 
-    const O='O',
-        A='A',
-        B='B',
-        C='C',
-        D='D',
-        E='E',
-        K1='K1',
-        K2='K2',
-        K3='K3',
-        Z='Z';
-
-    const mergeable = [[K1, K2, K3], [K1, A, B, C, O], [K2, D, B, E, O], [K3, D, A, O]];
+    const O = 'O',
+        A = 'A',
+        B = 'B',
+        C = 'C',
+        D = 'D',
+        E = 'E',
+        K1 = 'K1',
+        K2 = 'K2',
+        K3 = 'K3',
+        // Z = 'Z',
+        mergeable = [
+            [K1, K2, K3],
+            [K1, A, B, C, O],
+            [K2, D, B, E, O],
+            [K3, D, A, O]
+        ];
 
     this.it('merges for strict mode', function(test, options) {
         var list;
@@ -120,7 +124,7 @@ function() {
         var checks,
             list;
 
-        checks = ['TP.test.K1', 'TP.test.A' , 'TP.test.B', 'TP.test.C'];
+        checks = ['TP.test.K1', 'TP.test.A', 'TP.test.B', 'TP.test.C'];
 
         list = TP.test.K1.getC3ResolutionOrder(true);
         test.assert.isEqualTo(list, checks.concat(roots));
@@ -130,7 +134,7 @@ function() {
         var checks,
             list;
 
-        checks = ['TP.test.K2', 'TP.test.D' , 'TP.test.B', 'TP.test.E'];
+        checks = ['TP.test.K2', 'TP.test.D', 'TP.test.B', 'TP.test.E'];
 
         list = TP.test.K2.getC3ResolutionOrder(true);
         test.assert.isEqualTo(list, checks.concat(roots));
@@ -140,7 +144,7 @@ function() {
         var checks,
             list;
 
-        checks = ['TP.test.K3', 'TP.test.D' , 'TP.test.A'];
+        checks = ['TP.test.K3', 'TP.test.D', 'TP.test.A'];
 
         list = TP.test.K3.getC3ResolutionOrder(true);
         test.assert.isEqualTo(list, checks.concat(roots));
@@ -151,7 +155,7 @@ function() {
             list;
 
         checks = ['TP.test.Z', 'TP.test.K1', 'TP.test.K2', 'TP.test.K3',
-            'TP.test.D' , 'TP.test.A', 'TP.test.B', 'TP.test.C', 'TP.test.E'];
+            'TP.test.D', 'TP.test.A', 'TP.test.B', 'TP.test.C', 'TP.test.E'];
 
         list = TP.test.Z.getC3ResolutionOrder(true);
         test.assert.isEqualTo(list, checks.concat(roots));
