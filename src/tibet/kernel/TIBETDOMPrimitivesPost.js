@@ -7355,8 +7355,12 @@ function(aString, defaultNS, shouldReport) {
     //  off for who knows how long if it's not at least closed markup.
     if (str.first() !== '<' || str.last() !== '>') {
         if (shouldReport) {
-            TP.error('Invalid opening or closing tag in ' + str);
+            TP.ifWarn() ?
+                TP.warn('Invalid opening or closing tag in ' + str) : 0;
         }
+        //  TODO:   strictly speaking this seems like a bug. it's entire
+        //  possible given how the following logic works to use this routine to
+        //  create a document fragment. we're going to wrap it anyway...
         return;
     }
 
