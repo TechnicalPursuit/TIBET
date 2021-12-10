@@ -3429,10 +3429,10 @@ function(normalizedEvent) {
 
     TP.core.Mouse.$$clickTimer = setTimeout(
         function() {
+            clearTimeout(TP.core.Mouse.$$clickTimer);
+            TP.core.Mouse.$$clickTimer = undefined;
 
             TP.core.Mouse.invokeObservers('click', theEvent);
-
-            TP.core.Mouse.$$clickTimer = undefined;
         }, clickDelay);
 
     return this;
@@ -3482,7 +3482,7 @@ function(normalizedEvent) {
 
     //  clear any click timer...double-click overrides click at the raw
     //  event level
-    if (TP.isNumber(TP.core.Mouse.$$clickTimer)) {
+    if (TP.isValid(TP.core.Mouse.$$clickTimer)) {
         clearTimeout(TP.core.Mouse.$$clickTimer);
         TP.core.Mouse.$$clickTimer = undefined;
     }
@@ -3532,7 +3532,6 @@ function(nativeEvent) {
     //  during the course of that call.
     switch (TP.eventGetType(ev)) {
         case 'mousedown':
-
             lastEventName = 'lastDown';
             TP.core.Mouse.$set(lastEventName, ev);
 
@@ -3595,12 +3594,13 @@ function(nativeEvent) {
             //  focusable control. We don't want these signals (TIBET handles
             //  events/signals in a much smarter - and more explicit - way) and
             //  so we dampen them here.
-            if (ev.detail !== 0) {
-                lastEventName = 'lastClick';
-                TP.core.Mouse.$set(lastEventName, ev);
-
-                TP.core.Mouse.$$handleClick(ev);
+            if (ev.detail === 0) {
+                break;
             }
+            lastEventName = 'lastClick';
+            TP.core.Mouse.$set(lastEventName, ev);
+
+            TP.core.Mouse.$$handleClick(ev);
             break;
 
         case 'dblclick':
