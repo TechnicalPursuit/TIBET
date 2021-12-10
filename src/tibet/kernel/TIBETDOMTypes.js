@@ -3804,6 +3804,7 @@ function(aDocument) {
         cssQuery,
 
         allInstances,
+        thisref,
 
         world,
         screenDocs,
@@ -3858,6 +3859,8 @@ function(aDocument) {
     if (TP.isEmpty(allInstances)) {
         return this;
     }
+
+    thisref = this;
 
     //  Iterate over the instances that were found.
     allInstances.forEach(
@@ -3932,7 +3935,8 @@ function(aDocument) {
                     //  We're getting ready to some recasting. Flip the
                     //  type-level flag on. This is used by some types to manage
                     //  things like caches of markup.
-                    TP.dom.CollectionNode.$set('$isRecasting', true);
+                    // TP.dom.CollectionNode.$set('$isRecasting', true);
+                    thisref.$set('$isRecasting', true);
 
                     aTPElem.setAttribute('tibet:recasting', true);
                     aTPElem.compile(null, true, authoredElem);
@@ -4001,7 +4005,8 @@ function(aDocument) {
                         }
 
                         //  We're done recasting. Flip the type-level flag off.
-                        TP.dom.CollectionNode.$set('$isRecasting', false);
+                        // TP.dom.CollectionNode.$set('$isRecasting', false);
+                        thisref.$set('$isRecasting', false);
                     };
 
                     //  Set up the MutationAttach observation on the original
@@ -9455,7 +9460,8 @@ function(aRequest, replaceNode, alternateNode) {
             //  cache entry and set newNode to null so that we go back through
             //  the tag compiler.
             if (TP.isNode(newNode) &&
-                TP.dom.CollectionNode.$get('$isRecasting')) {
+                // TP.dom.CollectionNode.$get('$isRecasting')) {
+                    TP.wrap(newNode).getType().$get('$isRecasting')) {
                 TP.$compiled_doc_cache.removeKey(nodeLID);
                 newNode = null;
             }
@@ -11430,7 +11436,8 @@ function(resource, mimeType, setupFunc) {
     //  If we have a cached result, but we're recasting, then set result to null
     //  so that we retrieve the new markup from the URI cache. The new result
     //  will be cached below before we exit this method.
-    if (TP.isValid(result) && TP.dom.CollectionNode.$get('$isRecasting')) {
+    // if (TP.isValid(result) && TP.dom.CollectionNode.$get('$isRecasting')) {
+    if (TP.isValid(result) && this.$get('$isRecasting')) {
         result = null;
     }
 
