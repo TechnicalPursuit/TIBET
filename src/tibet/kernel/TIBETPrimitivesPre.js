@@ -13599,7 +13599,7 @@ function() {
             }
 
             //  Third, add the trait types (and their supertypes)
-            traitTypes = aType[TP.TRAITS];
+            traitTypes = TP.owns(aType, TP.TRAITS) ? aType[TP.TRAITS] : null;
             if (TP.notEmpty(traitTypes)) {
                 traitTypes.forEach(
                     function(aTraitType) {

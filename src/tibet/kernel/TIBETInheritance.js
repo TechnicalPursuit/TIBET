@@ -4575,7 +4575,8 @@ function(varargs) {
 
     //  Make sure that we have an Array for all traits for the receiver, kept as
     //  the overall long-term list of traits that the receiver has.
-    if (TP.notValid(traitList = this[TP.TRAITS])) {
+    traitList = TP.owns(this, TP.TRAITS) ? this[TP.TRAITS] : null;
+    if (TP.notValid(traitList)) {
         traitList = TP.ac();
         this[TP.TRAITS] = traitList;
     }
@@ -5602,14 +5603,17 @@ function() {
         i,
         traitTraits;
 
-    if (TP.notEmpty(traits = this[TP.TRAITS])) {
-        len = traits.getSize();
+    traits = TP.owns(this, TP.TRAITS) ? this[TP.TRAITS] : null;
+    if (TP.isEmpty(traits)) {
+        return TP.ac();
+    }
 
-        //  Recurse into the trait types and get *their* traits.
-        for (i = 0; i < len; i++) {
-            if (TP.notEmpty(traitTraits = traits.at(i).getAllTraits())) {
-                traits = traits.concat(traitTraits);
-            }
+    len = traits.getSize();
+
+    //  Recurse into the trait types and get *their* traits.
+    for (i = 0; i < len; i++) {
+        if (TP.notEmpty(traitTraits = traits.at(i).getAllTraits())) {
+            traits = traits.concat(traitTraits);
         }
     }
 
@@ -5707,7 +5711,7 @@ function() {
      * @returns {Boolean} Whether or not the receiver has traits
      */
 
-    return TP.notEmpty(this[TP.TRAITS]);
+    return TP.owns(this, TP.TRAITS) && TP.notEmpty(this[TP.TRAITS]);
 });
 
 //  ------------------------------------------------------------------------
@@ -9146,7 +9150,7 @@ function() {
     }
 
     //  Third, add the trait types (and their supertypes)
-    traitTypes = this[TP.TRAITS];
+    traitTypes = TP.owns(this, TP.TRAITS) ? this[TP.TRAITS] : null;
     if (TP.notEmpty(traitTypes)) {
         traitTypes.forEach(
             function(aTraitType) {
