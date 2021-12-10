@@ -1239,7 +1239,7 @@ function(aRequest) {
         'HTMLDocument',                         /([\s\S]+)/,
         'HTMLElement',                          /([\s\S]+)/,
 
-        'XMLDocument',                          'Hi there<boo><goo/></boo><moo/>',
+        'XMLDocument',                          '<boo><goo/>Hi there</boo><moo/>',
         'XMLElement',                           'bar',
 
         'AttributeNode',                        'bar',
@@ -1270,7 +1270,7 @@ function(aRequest) {
         'TP.dom.HTMLDocumentNode',              /([\s\S]+)/,
         'TP.dom.HTMLElementNode',               /([\s\S]+)/,
 
-        'TP.dom.XMLDocumentNode',               'Hi there<boo><goo/></boo><moo/>',
+        'TP.dom.XMLDocumentNode',               '<boo><goo/>Hi there</boo><moo/>',
         'TP.dom.XMLElementNode',                'bar',
 
         'TP.dom.DocumentFragmentNode',          /<foo(.+)>(.+)<\/foo><bar(.+)>(.+)<\/bar>/,
