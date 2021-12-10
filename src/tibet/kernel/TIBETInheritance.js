@@ -5379,7 +5379,7 @@ function(strict, types) {
     }
 
     TP.ifDebug() ?
-        TP.debug(this.getName() + ' c3 order ' + TP.json(list)) : 0;
+        TP.debug(this.getName() + ' c3 order ' + JSON.stringify(list)) : 0;
 
     return list;
 });
@@ -5522,7 +5522,7 @@ function(c3MergeData) {
     //  e.g. -- merge([D, O], [A, O], [D, A])      // select D
 
     TP.ifDebug() ?
-        TP.debug(this.getName() + ' c3 merge ' + TP.json(c3MergeData)) : 0;
+        TP.debug(this.getName() + ' c3 merge ' + JSON.stringify(c3MergeData)) : 0;
 
     if (TP.isEmpty(c3MergeData)) {
         return [];
@@ -5539,7 +5539,7 @@ function(c3MergeData) {
     }).compact();
 
     TP.ifDebug() ?
-        TP.debug(this.getName() + ' c3 heads ' + TP.json(heads)) : 0;
+        TP.debug(this.getName() + ' c3 heads ' + JSON.stringify(heads)) : 0;
 
     //  NOTE the compact() to remove any empty arrays due to slicing
     tails = slices.map((item) => {
@@ -5547,7 +5547,7 @@ function(c3MergeData) {
     }).compact(TP.isEmpty);
 
     TP.ifDebug() ?
-        TP.debug(this.getName() + ' c3 tails ' + TP.json(tails)) : 0;
+        TP.debug(this.getName() + ' c3 tails ' + JSON.stringify(tails)) : 0;
 
     //  Find first key from list of heads that's not in any tails.
     best = heads.detect(function(key) {
@@ -5558,7 +5558,7 @@ function(c3MergeData) {
 
     //  Oops! Can't compute a proper linearization from structure provided.
     if (TP.isEmpty(best)) {
-        TP.error('C3 algorithm unable to merge ' + TP.json(c3MergeData));
+        TP.error('C3 algorithm unable to merge ' + JSON.stringify(c3MergeData));
         return [];
     }
 
