@@ -2073,8 +2073,10 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (/^handle/.test(iname)) {
-                TP.sys.$$meta_handlers.push(iname);
-                TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
+                if (TP.sys.$$meta_handlers.indexOf(iname) === -1) {
+                    TP.sys.$$meta_handlers.push(iname);
+                    TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
+                }
             }
 
             TP.sys.$$meta_methods.atPut(gname, anItem);
@@ -2809,8 +2811,10 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
         }
     } else if (methodName.match(/^handle/)) {
         //  still make sure we track handler names for getBestHandlerNames call.
-        TP.sys.$$meta_handlers.push(methodName);
-        TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
+        if (TP.sys.$$meta_handlers.indexOf(methodName) === -1) {
+            TP.sys.$$meta_handlers.push(methodName);
+            TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
+        }
     }
 
     return method;
