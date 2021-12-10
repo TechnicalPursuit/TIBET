@@ -123,6 +123,14 @@ function() {
 TP.bind.XMLNS.Type.describe('outbound bind info',
 function() {
 
+    this.before(function() {
+        TP.test.elem.set('bidiAttrs', TP.ac('foo'));
+    });
+
+    this.after(function() {
+        TP.test.elem.set('bidiAttrs', null);
+    });
+
     this.it('uses explicit attribute value before bind:out', function(test, options) {
         var tpElem,
             info;

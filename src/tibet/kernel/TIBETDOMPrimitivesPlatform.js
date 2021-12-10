@@ -127,6 +127,7 @@ TP.hc(
 
             node,
 
+            bindAttrLocalNames,
             bindAttrLocalName,
 
             i,
@@ -138,6 +139,7 @@ TP.hc(
             ioAttrs,
 
             j,
+            k,
 
             ownerElemAttr,
             val,
@@ -185,10 +187,10 @@ TP.hc(
             //  use 'in'.
             ownerType = TP.dom.ElementNode.getConcreteType(ownerElem);
             ioAttrs = ownerType.get('bidiAttrs');
-            bindAttrLocalName =
+            bindAttrLocalNames =
                         ioAttrs.indexOf(srcAttr.localName) !== TP.NOT_FOUND ?
-                        'io' :
-                        'in';
+                        TP.ac('io', 'out') :
+                        TP.ac('in');
 
             //  Initially set the bindAttr to null
             bindAttr = null;
@@ -201,10 +203,13 @@ TP.hc(
             for (j = 0; j < ownerElem.attributes.length; j++) {
                 ownerElemAttr = ownerElem.attributes[j];
 
-                if (ownerElemAttr.localName === bindAttrLocalName &&
-                     ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
-                    bindAttr = ownerElemAttr;
-                    break;
+                for (k = 0; k < bindAttrLocalNames.length; k++) {
+                    if (ownerElemAttr.localName === bindAttrLocalNames[k] &&
+                         ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
+                        bindAttr = ownerElemAttr;
+                        bindAttrLocalName = bindAttrLocalNames[k];
+                        break;
+                    }
                 }
             }
 
