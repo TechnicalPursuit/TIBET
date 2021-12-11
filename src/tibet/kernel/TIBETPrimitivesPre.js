@@ -517,7 +517,7 @@ TP.isFunction = function(anObj) {
      *     it a day. Unfortunately many of IE's DOM-associated functions don't
      *     return 'function' in response to a typeof call and Mozilla is
      *     confused about RegExp objects and typeof (it returns "function"). So
-     *     there are at least two cases where typeo) will lie to you with
+     *     there are at least two cases where typeof will lie to you with
      *     Function checks. Dates have similar issues, as do Numbers. Our
      *     advice? Don't use typeof unless you're certain of what you're
      *     really testing against and you're only interested in knowing what the
@@ -2950,11 +2950,17 @@ function(aValue) {
      * @returns {Boolean} Whether or not the value is NaN.
      */
 
+    var type;
+
+    //  Symbols will throw on the isNaN call, so we check for them first.
+    type = typeof anObj;
+
     //  NB: Firefox can occasionally hang at 100% CPU  on the native isNaN call
     //  if handed an 'orphaned' (i.e. prototype-less) object, so we check for
     //  the __proto__ slot here as well.
     /* eslint-disable no-proto */
     if (TP.isValid(aValue) &&
+        type !== 'symbol' &&
         TP.isValid(aValue.__proto__) &&
         aValue.constructor === Number &&
         isNaN(aValue)) {
@@ -9011,8 +9017,14 @@ function(anObj) {
      *     Number.
      */
 
+    var type;
+
+    //  Symbols will throw on the isNaN call, so we check for them first.
+    type = typeof anObj;
+
     /* eslint-disable no-extra-parens */
-    return (!isNaN(anObj) &&
+    return (type !== 'symbol' &&
+            !isNaN(anObj) &&
             !Array.isArray(anObj) &&
             (anObj - parseFloat(anObj) + 1) >= 0) ||
             anObj === Number.POSITIVE_INFINITY ||
