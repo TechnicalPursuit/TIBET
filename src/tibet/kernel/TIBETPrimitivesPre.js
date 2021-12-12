@@ -2073,9 +2073,14 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (/^handle/.test(iname)) {
+
+                //  Make sure we mark this revised to force any caches to
+                //  re-compute their "best handler matches"... even if the name
+                //  is a duplicate.
+                TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
+
                 if (TP.sys.$$meta_handlers.indexOf(iname) === -1) {
                     TP.sys.$$meta_handlers.push(iname);
-                    TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
                 }
             }
 
@@ -2810,10 +2815,14 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
             TP.sys.addMetadata(own, value, TP.METHOD, trk);
         }
     } else if (methodName.match(/^handle/)) {
+
+        //  Make sure we mark this revised to force any caches to re-compute
+        //  their "best handler matches"... even if the name is a duplicate.
+        TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
+
         //  still make sure we track handler names for getBestHandlerNames call.
         if (TP.sys.$$meta_handlers.indexOf(methodName) === -1) {
             TP.sys.$$meta_handlers.push(methodName);
-            TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
         }
     }
 
