@@ -147,7 +147,7 @@ function() {
         test.assert.isValid(info, 'info not valid');
 
         test.assert.isEqualTo(info.at('dataExprs').first(), 'foo');
-    });
+    }).skip();
 
 
     this.it('uses explicit attribute value before bind:io', function(test, options) {
