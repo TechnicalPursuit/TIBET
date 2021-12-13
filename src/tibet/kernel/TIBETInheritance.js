@@ -11250,6 +11250,11 @@ function() {
      * @returns {Object}
      */
 
+    //  If we're the *Type prototype*, then we're an instance of a Function.
+    if (TP.isPrototype(this)) {
+        return Function;
+    }
+
     return this[TP.TYPEC];
 });
 
@@ -11436,6 +11441,11 @@ function() {
      *     to see :).
      * @returns {Object}
      */
+
+    //  If we're the *Inst prototype*, then we're an instance of a Function.
+    if (TP.isPrototype(this)) {
+        return Function;
+    }
 
     return this[TP.TYPE];
 });
