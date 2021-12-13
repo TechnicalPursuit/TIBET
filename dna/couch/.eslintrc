@@ -16,6 +16,8 @@
         "self": false,
         "Proxy": false,
         "Reflect": false,
+        "AsyncFunction": false,
+        "GeneratorFunction": false,
         "import": false
     },
     "rules": {
