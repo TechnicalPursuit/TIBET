@@ -5339,9 +5339,10 @@ function(strict, types) {
     /**
      * @method getC3ResolutionOrder
      * @summary Returns a list of the supertype/trait names in the order
-     * determined by TIBET's modified (or strict) C3 algorithm. TIBET's version
-     * of the order prioritizes lookup from the last trait to the supertype of
-     * the receiver. Strict-mode uses the order of declaration instead.
+     *     determined by TIBET's modified (or strict) C3 algorithm. TIBET's
+     *     version of the order prioritizes lookup from the last trait to the
+     *     supertype of the receiver. Strict-mode uses the order of declaration
+     *     instead.
      * @param {Boolean} strict Set to true to use the strict C3 algorithm.
      * @param {Boolean} types Set to true to return the list as type objects.
      * @returns {Array} The array of supertype/trait type names.
@@ -5361,7 +5362,7 @@ function(strict, types) {
         return this[TP.C3];
     }
 
-    list = [this.getName()];
+    list = TP.ac(this.getName());
 
     //  Object or any other top-level root (are there any?)
     if (this.getSupertype() === Object) {
@@ -5435,7 +5436,7 @@ function(strict) {
     }
 
     //  Always at least our direct supertype (invoker of defineSubtype)
-    list = [sooper];
+    list = TP.ac(sooper);
 
     //  If we specifically own a traits slot we have added "supertypes"
     if (TP.owns(this, TP.TRAITS)) {
@@ -5523,19 +5524,21 @@ function(c3MergeData) {
     //  e.g. -- merge([D, O], [A, O], [D, A])      // select D
 
     TP.ifDebug() ?
-        TP.debug(this.getName() + ' c3 merge ' + JSON.stringify(c3MergeData)) : 0;
+        TP.debug(this.getName() +
+                    ' c3 merge ' +
+                    JSON.stringify(c3MergeData)) : 0;
 
     if (TP.isEmpty(c3MergeData)) {
-        return [];
+        return TP.ac();
     }
 
     //  Slice data into two lists of heads and tails
     slices = c3MergeData.map(function(arr) {
-        return [arr[0], arr.slice(1)];
+        return TP.ac(arr[0], arr.slice(1));
     });
 
     //  NOTE the compact() to remove any null values due to empty items
-    heads = slices.map((item) => {
+    heads = slices.map(function(item) {
         return item.first();
     }).compact();
 
@@ -5543,7 +5546,7 @@ function(c3MergeData) {
         TP.debug(this.getName() + ' c3 heads ' + JSON.stringify(heads)) : 0;
 
     //  NOTE the compact() to remove any empty arrays due to slicing
-    tails = slices.map((item) => {
+    tails = slices.map(function(item) {
         return item.last();
     }).compact(TP.isEmpty);
 
@@ -5568,7 +5571,7 @@ function(c3MergeData) {
 
     //  Remove 'best' from head of any list it was in to prep next iteration.
     nexts = c3MergeData.map(function(arr) {
-        return arr[0] === best ? arr.slice(1) : arr;
+        return arr.first() === best ? arr.slice(1) : arr;
     });
 
     //  If removing best from remaining lists left them all empty we're done.
@@ -5578,11 +5581,11 @@ function(c3MergeData) {
 
         //  NOTE we always want an array... or outer call will slice the string
         //  into individual characters.
-        return [best];
+        return TP.ac(best);
     }
 
     //  return the reduced list thanks to a little destructuring
-    return [best, ...this.performC3Merge(nexts)];
+    return TP.ac(best, ...this.performC3Merge(nexts));
 });
 
 //  ------------------------------------------------------------------------
