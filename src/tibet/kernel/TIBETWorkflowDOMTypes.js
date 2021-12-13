@@ -1794,7 +1794,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                 switch (result[TP.PROCESSOR_HINT]) {
                     case TP.DESCEND:
                         /* eslint-disable */
-                        TP.nodeGetChildNodes(result).forEach((aResult) => {
+                        TP.nodeGetChildNodes(result).forEach(function(aResult) {
                                 //  Filter any descendants out of the original
                                 //  node list, if necessary.
                                 if (TP.isElement(aResult)) {
