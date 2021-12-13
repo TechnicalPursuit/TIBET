@@ -559,6 +559,96 @@ TP.registerLoadInfo(TP.isFunction);
 
 //  ------------------------------------------------------------------------
 
+TP.isAsyncFunction = function(anObj) {
+
+    /**
+     * @method isAsyncFunction
+     * @summary Returns true if the object provided is an asynchronous function
+     *     instance. No attempt is made to determine whether that function is a
+     *     DNU, or method (an owned function). Use TP.isCallable(), or
+     *     TP.isMethod() to test for those cases.
+     * @param {Object} anObj The object to test.
+     * @example Test to see if a function is an asynchronous Function:
+     *     <code>
+     *          anObj = async function() {return 42};
+     *          TP.isAsyncFunction(anObj);
+     *          <samp>true</samp>
+     *     </code>
+     * @example Test to see if a DOM function is an asynchronous Function:
+     *     <code>
+     *          TP.isAsyncFunction(document.write);
+     *          <samp>false</samp>
+     *     </code>
+     * @example Test to see if a RegExp is an asynchronous Function:
+     *     <code>
+     *          TP.isAsyncFunction(/matchme/g);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a JavaScript
+     *     asynchronous Function.
+     */
+
+    var str;
+
+    str = TP.ObjectProto.toString.call(anObj);
+
+    return str === '[object AsyncFunction]';
+};
+
+//  Manual setup
+TP.isAsyncFunction[TP.NAME] = 'isAsyncFunction';
+TP.isAsyncFunction[TP.OWNER] = TP;
+TP.isAsyncFunction[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.isAsyncFunction[TP.DISPLAY] = 'TP.isAsyncFunction';
+TP.registerLoadInfo(TP.isAsyncFunction);
+
+//  ------------------------------------------------------------------------
+
+TP.isGeneratorFunction = function(anObj) {
+
+    /**
+     * @method isGeneratorFunction
+     * @summary Returns true if the object provided is a generator function
+     *     instance. No attempt is made to determine whether that function is a
+     *     DNU, or method (an owned function). Use TP.isCallable(), or
+     *     TP.isMethod() to test for those cases.
+     * @param {Object} anObj The object to test.
+     * @example Test to see if a function is an Generatorhronous Function:
+     *     <code>
+     *          anObj = function*() {return 42};
+     *          TP.isGeneratorFunction(anObj);
+     *          <samp>true</samp>
+     *     </code>
+     * @example Test to see if a DOM function is an Generatorhronous Function:
+     *     <code>
+     *          TP.isGeneratorFunction(document.write);
+     *          <samp>false</samp>
+     *     </code>
+     * @example Test to see if a RegExp is an Generatorhronous Function:
+     *     <code>
+     *          TP.isGeneratorFunction(/matchme/g);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a JavaScript
+     *     generator Function.
+     */
+
+    var str;
+
+    str = TP.ObjectProto.toString.call(anObj);
+
+    return str === '[object GeneratorFunction]';
+};
+
+//  Manual setup
+TP.isGeneratorFunction[TP.NAME] = 'isGeneratorFunction';
+TP.isGeneratorFunction[TP.OWNER] = TP;
+TP.isGeneratorFunction[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.isGeneratorFunction[TP.DISPLAY] = 'TP.isGeneratorFunction';
+TP.registerLoadInfo(TP.isGeneratorFunction);
+
+//  ------------------------------------------------------------------------
+
 TP.isString = function(anObj) {
 
     /**
@@ -5415,6 +5505,18 @@ function() {
      * @returns {Object} The receiver's type.
      */
 
+    //  NB: We must do this check before testing isFunction as asynchronous
+    //  Functions will return true there as well.
+    if (TP.isAsyncFunction(this)) {
+        return AsyncFunction;
+    }
+
+    //  NB: We must do this check before testing isFunction as generator
+    //  Functions will return true there as well.
+    if (TP.isGeneratorFunction(this)) {
+        return GeneratorFunction;
+    }
+
     if (TP.isFunction(this)) {
         return Function;
     }
@@ -5458,6 +5560,18 @@ function() {
 
             return str.strip(/[\[\]]/g);
         }
+    }
+
+    //  NB: We must do this check before testing isFunction as asynchronous
+    //  Functions will return true there as well.
+    if (TP.isAsyncFunction(this)) {
+        return 'AsyncFunction';
+    }
+
+    //  NB: We must do this check before testing isFunction as generator
+    //  Functions will return true there as well.
+    if (TP.isGeneratorFunction(this)) {
+        return 'GeneratorFunction';
     }
 
     if (TP.isFunction(this)) {
