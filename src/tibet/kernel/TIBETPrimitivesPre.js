@@ -512,16 +512,6 @@ TP.isFunction = function(anObj) {
      *     attempt is made to determine whether that function is a DNU, or
      *     method (an owned function). Use TP.isCallable(), or TP.isMethod() to
      *     test for those cases.
-     * @description Perhaps the most glaring example of why we've encapsulated
-     *     so heavily in TIBET. Most libraries use typeof == 'function' and call
-     *     it a day. Unfortunately many of IE's DOM-associated functions don't
-     *     return 'function' in response to a typeof call and Mozilla is
-     *     confused about RegExp objects and typeof (it returns "function"). So
-     *     there are at least two cases where typeof will lie to you with
-     *     Function checks. Dates have similar issues, as do Numbers. Our
-     *     advice? Don't use typeof unless you're certain of what you're
-     *     really testing against and you're only interested in knowing what the
-     *     primitive type (in ECMA-standard terms) of the object is.
      * @param {Object} anObj The object to test.
      * @example Test to see if a function is a Function:
      *     <code>
@@ -547,7 +537,9 @@ TP.isFunction = function(anObj) {
 
     str = TP.ObjectProto.toString.call(anObj);
 
-    return str === '[object Function]' || str === '[object AsyncFunction]';
+    return str === '[object Function]' ||
+            str === '[object AsyncFunction]' ||
+            str === '[object GeneratorFunction]';
 };
 
 //  Manual setup
