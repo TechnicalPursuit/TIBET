@@ -4007,6 +4007,16 @@ function(anObject, anAspect, autoCollapse) {
         return anObject;
     }
 
+    //  The value of a namespace is itself.
+    if (TP.isNamespace(anObject)) {
+        return anObject;
+    }
+
+    //  The value of a prototype is itself.
+    if (TP.isPrototype(anObject)) {
+        return anObject;
+    }
+
     if (TP.isNaN(anObject)) {
         return NaN;
     }
@@ -5329,8 +5339,18 @@ function(anObject) {
         return anObject.valueOf();
     }
 
-    //  The wrapped value of a Type is the Type (native or TIBET-made)
+    //  The unwrapped value of a Type is the Type (native or TIBET-made)
     if (TP.isType(anObject)) {
+        return anObject;
+    }
+
+    //  The unwrapped value of a namespace is itself.
+    if (TP.isNamespace(anObject)) {
+        return anObject;
+    }
+
+    //  The unwrapped alue of a prototype is itself.
+    if (TP.isPrototype(anObject)) {
         return anObject;
     }
 
@@ -5433,7 +5453,17 @@ function(anObject) {
     }
 
     //  The wrapped value of a Type is the Type (native or TIBET-made)
-    if (TP.isType(anObject) || TP.isNamespace(anObject)) {
+    if (TP.isType(anObject)) {
+        return anObject;
+    }
+
+    //  The wrapped value of a namespace is itself.
+    if (TP.isNamespace(anObject)) {
+        return anObject;
+    }
+
+    //  The wrapped value of a prototype is itself.
+    if (TP.isPrototype(anObject)) {
         return anObject;
     }
 

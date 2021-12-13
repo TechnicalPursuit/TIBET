@@ -2581,6 +2581,10 @@ function(aNode) {
 
     var otherNode;
 
+    if (TP.isPrototype(this)) {
+        return this.callNextMethod();
+    }
+
     otherNode = TP.unwrap(aNode);
 
     if (!TP.isNode(otherNode)) {
