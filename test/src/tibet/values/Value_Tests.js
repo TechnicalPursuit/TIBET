@@ -104,9 +104,20 @@ function() {
         'Array',                                /^Array\$(\w+)$/,
         'Object',                               /^Object\$(\w+)$/,
         'Function',                             /^Function\$(\w+)$/,
+        'AsyncFunction',                        /^AsyncFunction\$(\w+)$/,
+        'GeneratorFunction',                    /^GeneratorFunction\$(\w+)$/,
         'NaN',                                  'NaN',
         'NativeType',                           'Array',
         'NativeFunction',                       /^(\w+)\.Inst\.(\w+)$/,
+        'Symbol',                               /^Symbol\$(\w+)$/,
+        'Map',                                  /^Map\$(\w+)$/,
+        'Set',                                  /^Set\$(\w+)$/,
+        'WeakMap',                              /^WeakMap\$(\w+)$/,
+        'WeakSet',                              /^WeakSet\$(\w+)$/,
+        'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
+        'DataView',                             /^DataView\$(\w+)$/,
+        'Promise',                              /^Promise\$(\w+)$/,
+        'Proxy',                                /^Object\$(\w+)$/,  //  Proxys are see-thru
 
         'Window',                               TP.sys.cfg('tibet.top_win_name'),
         'IFrameWindow',                         'UIROOT',
@@ -137,6 +148,9 @@ function() {
         'XHR',                                  /^XMLHttpRequest\$(\w+)$/,
 
         'TIBETType',                            'TP.dom.Node',
+        'TIBETType.Type',                       'TP.dom.Node.Type',
+        'TIBETType.Inst',                       'TP.dom.Node.Inst',
+
         'TP.lang.Object',                       /^TP\.lang\.Object\$(\w+)$/,
         'TP.core.Hash',                         /^TP\.core\.Hash\$(\w+)$/,
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
@@ -303,9 +317,20 @@ function() {
         'Array',                                /^Array\$(\w+)$/,
         'Object',                               /^Object\$(\w+)$/,
         'Function',                             /^Function\$(\w+)$/,
+        'AsyncFunction',                        /^AsyncFunction\$(\w+)$/,
+        'GeneratorFunction',                    /^GeneratorFunction\$(\w+)$/,
         'NaN',                                  'NaN',
         'NativeType',                           'Array',
         'NativeFunction',                       /^(\w+)\.Inst\.(\w+)$/,
+        'Symbol',                               /^Symbol\$(\w+)$/,
+        'Map',                                  /^Map\$(\w+)$/,
+        'Set',                                  /^Set\$(\w+)$/,
+        'WeakMap',                              /^WeakMap\$(\w+)$/,
+        'WeakSet',                              /^WeakSet\$(\w+)$/,
+        'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
+        'DataView',                             /^DataView\$(\w+)$/,
+        'Promise',                              /^Promise\$(\w+)$/,
+        'Proxy',                                /^Object\$(\w+)$/,  //  Proxys are see-thru
 
         'Window',                               winGID,
         'IFrameWindow',                         winGID + '.UIROOT',
@@ -336,6 +361,9 @@ function() {
         'XHR',                                  /^XMLHttpRequest\$(\w+)$/,
 
         'TIBETType',                            'TP.dom.Node',
+        'TIBETType.Type',                       'TP.dom.Node.Type',
+        'TIBETType.Inst',                       'TP.dom.Node.Inst',
+
         'TP.lang.Object',                       /^TP\.lang\.Object\$(\w+)$/,
         'TP.core.Hash',                         /^TP\.core\.Hash\$(\w+)$/,
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
@@ -500,9 +528,20 @@ function() {
         'Array',                                false,
         'Object',                               false,
         'Function',                             false,
+        'AsyncFunction',                        false,
+        'GeneratorFunction',                    false,
         'NaN',                                  false,
         'NativeType',                           true,
         'NativeFunction',                       false,
+        'Symbol',                               false,
+        'Map',                                  false,
+        'Set',                                  false,
+        'WeakMap',                              false,
+        'WeakSet',                              false,
+        'ArrayBuffer',                          false,
+        'DataView',                             false,
+        'Promise',                              false,
+        'Proxy',                                false,
 
         'Window',                               false,
         'IFrameWindow',                         false,
@@ -533,6 +572,9 @@ function() {
         'XHR',                                  false,
 
         'TIBETType',                            true,
+        'TIBETType.Type',                       false,
+        'TIBETType.Inst',                       false,
+
         'TP.lang.Object',                       false,
         'TP.core.Hash',                         false,
         'TP.sig.Signal',                        false,
@@ -680,9 +722,20 @@ function() {
         'Array',                                false,
         'Object',                               false,
         'Function',                             false,
+        'AsyncFunction',                        false,
+        'GeneratorFunction',                    false,
         'NaN',                                  false,
         'NativeType',                           true,
         'NativeFunction',                       false,
+        'Symbol',                               false,
+        'Map',                                  false,
+        'Set',                                  false,
+        'WeakMap',                              false,
+        'WeakSet',                              false,
+        'ArrayBuffer',                          false,
+        'DataView',                             false,
+        'Promise',                              false,
+        'Proxy',                                false,
 
         'Window',                               false,
         'IFrameWindow',                         false,
@@ -713,6 +766,9 @@ function() {
         'XHR',                                  false,
 
         'TIBETType',                            false,
+        'TIBETType.Type',                       false,
+        'TIBETType.Inst',                       false,
+
         'TP.lang.Object',                       false,
         'TP.core.Hash',                         false,
         'TP.sig.Signal',                        false,
@@ -846,9 +902,10 @@ function() {
     //  isMemberOf() tests 'direct' type relationship - an instance of an exact
     //  type.
 
-    //  Native JavaScript types (big 8)
-    testData = TP.ac(Array, Boolean, Date, Function,
-                        Number, Object, RegExp, String);
+    //  Native JavaScript types
+    testData = TP.ac(Array, ArrayBuffer, AsyncFunction, Boolean, DataView, Date, Function,
+                        GeneratorFunction, Map, Number, Object, Promise, Proxy, RegExp, Set,
+                        String, Symbol, WeakMap, WeakSet);
 
     for (i = 0; i < testData.getSize(); i++) {
 
@@ -1359,9 +1416,10 @@ function() {
     //  isKindOf() tests 'indirect' type relationship - an instance of a type or
     //  one of it's subtypes.
 
-    //  Native JavaScript types (big 8)
-    testData = TP.ac(Array, Boolean, Date, Function,
-                        Number, Object, RegExp, String);
+    //  Native JavaScript types
+    testData = TP.ac(Array, ArrayBuffer, AsyncFunction, Boolean, DataView, Date, Function,
+                        GeneratorFunction, Map, Number, Object, Promise, Proxy, RegExp, Set,
+                        String, Symbol, WeakMap, WeakSet);
 
     for (i = 0; i < testData.getSize(); i++) {
 
@@ -1706,8 +1764,12 @@ function() {
         }());
 
         if (testKey === 'Function' ||
+            testKey === 'AsyncFunction' ||
+            testKey === 'GeneratorFunction' ||
             testKey === 'NativeType' ||
-            testKey === 'NativeFunction') {
+            testKey === 'NativeFunction' ||
+            testKey === 'TIBETType.Type' ||
+            testKey === 'TIBETType.Inst') {
             (function() {
                 var testFunc;
 
@@ -2685,9 +2747,20 @@ function() {
         'Array',                                true,
         'Object',                               true,
         'Function',                             false,
+        'AsyncFunction',                        false,
+        'GeneratorFunction',                    false,
         'NaN',                                  false,
         'NativeType',                           true,
         'NativeFunction',                       false,
+        'Symbol',                               false,
+        'Map',                                  false,
+        'Set',                                  false,
+        'WeakMap',                              false,
+        'WeakSet',                              false,
+        'ArrayBuffer',                          false,
+        'DataView',                             false,
+        'Promise',                              false,
+        'Proxy',                                true,       //  Proxys are see-thru,
 
         'Window',                               true,
         'IFrameWindow',                         true,
@@ -2718,6 +2791,9 @@ function() {
         'XHR',                                  true,
 
         'TIBETType',                            true,
+        'TIBETType.Type',                       true,
+        'TIBETType.Inst',                       true,
+
         'TP.lang.Object',                       true,
         'TP.core.Hash',                         true,
         'TP.sig.Signal',                        true,
