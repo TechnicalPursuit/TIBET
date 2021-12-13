@@ -179,7 +179,7 @@ if (!self.Window) {
 }
 
 AsyncFunction = Object.getPrototypeOf(async function() {}).constructor;
-GeneratorFunction = Object.getPrototypeOf(function *() {}).constructor;
+GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
 /* eslint-enable no-undef,no-global-assign,no-empty-function */
 
 //  ------------------------------------------------------------------------

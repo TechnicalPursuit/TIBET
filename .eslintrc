@@ -42,7 +42,7 @@
         "func-call-spacing": 1,
         "func-names": [2, never],
         "func-style": 1,
-        "generator-star-spacing": [1, {"before": true, "after": false}],
+        "generator-star-spacing": [1, {"before": false, "after": false}],
         "guard-for-in": 2,
         "implicit-arrow-linebreak": [1, "beside"],
         "indent": [0, 4, {"SwitchCase": 1, "VariableDeclarator": 1, "outerIIFEBody": 1, "FunctionDeclaration": {"parameters": "first", "body": 1}, "FunctionExpression": {"parameters": "first", "body": 1}, "ArrayExpression": 1, "MemberExpression": "off", "ObjectExpression": 1, "ignoreComments": true, "flatTernaryExpressions": true, "ignoredNodes": ["CallExpression", "ConditionalExpression"]}],
