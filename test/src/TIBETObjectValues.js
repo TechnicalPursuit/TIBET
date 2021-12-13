@@ -48,12 +48,24 @@ function(aRequest) {
         arrayVal,
         objectVal,
         functionVal,
+        asyncFunctionVal,
+        generatorFunctionVal,
 
         nanVal,
         invalidDateVal,
 
         nativeTypeVal,
         nativeFuncVal,
+
+        symbolVal,
+        mapVal,
+        setVal,
+        weakMapVal,
+        weakSetVal,
+        arrayBufferVal,
+        dataViewVal,
+        promiseVal,
+        proxyVal,
 
         windowVal,
         iframeWindowVal,
@@ -85,6 +97,9 @@ function(aRequest) {
         xhrVal,
 
         tibetTypeVal,
+        tibetTypeTypeProtoVal,
+        tibetTypeInstProtoVal,
+
         tibetObjectVal,
         tibetHashVal,
         tibetSignalVal,
@@ -163,9 +178,11 @@ function(aRequest) {
     //  NB: Do *not* reformat this in any way. Some of the representation tests
     //  expect to see this in *exactly* this format.
     //  Instance of Function
-    /* eslint-disable brace-style,max-statements-per-line,quotes */
+    /* eslint-disable brace-style,max-statements-per-line,quotes,require-yield */
     functionVal = function() {return "fluffy"; };
-    /* eslint-enable brace-style,max-statements-per-line,quotes */
+    asyncFunctionVal = async function() {return "async fluffy"; };
+    generatorFunctionVal = function*() {return "generator fluffy"; };
+    /* eslint-enable brace-style,max-statements-per-line,quotes,require-yield */
 
     //  invalid Date
     invalidDateVal = new Date('fluffy');
@@ -186,6 +203,35 @@ function(aRequest) {
     nativeTypeVal = Array;
     //  Native Function
     nativeFuncVal = Array.prototype.slice;
+
+    //  Symbol
+    symbolVal = Symbol('foo');
+
+    //  Map
+    mapVal = new Map();
+
+    //  Set
+    setVal = new Set();
+
+    //  WeakMap
+    weakMapVal = new WeakMap();
+
+    //  WeakSet
+    weakSetVal = new WeakSet();
+
+    //  ArrayBuffer
+    arrayBufferVal = new ArrayBuffer(8);
+
+    //  DataView
+    dataViewVal = new DataView(new ArrayBuffer(2));
+
+    //  Promise
+    /* eslint-disable no-empty-function */
+    promiseVal = new Promise(function() {}, function() {});
+    /* eslint-enable no-empty-function */
+
+    //  Proxy
+    proxyVal = new Proxy({}, {});
 
     //  Window
     windowVal = topLevelWindow;
@@ -273,6 +319,8 @@ function(aRequest) {
 
     //  TIBET Type
     tibetTypeVal = TP.sys.getTypeByName('TP.dom.Node');
+    tibetTypeTypeProtoVal = tibetTypeVal.Type;
+    tibetTypeInstProtoVal = tibetTypeVal.Inst;
 
     //  Instance of TP.lang.Object
     tibetObjectVal = TP.lang.Object.construct();
@@ -421,6 +469,8 @@ function(aRequest) {
     'Boolean',                  booleanVal,             //  Boolean
     'Date',                     dateVal,                //  Date
     'Function',                 functionVal,            //  Function
+    'AsyncFunction',            asyncFunctionVal,       //  Async Function
+    'GeneratorFunction',        generatorFunctionVal,   //  Generator Function
     'InvalidDate',              invalidDateVal,         //  not a Date
     'NaN',                      nanVal,                 //  NaN
     'Number',                   numberVal,              //  Number
@@ -430,6 +480,16 @@ function(aRequest) {
 
     'NativeType',               nativeTypeVal,          //  NativeType
     'NativeFunction',           nativeFuncVal,          //  NativeFunc
+
+    'Symbol',                   symbolVal,              //  Symbol
+    'Map',                      mapVal,                 //  Map
+    'Set',                      setVal,                 //  Set
+    'WeakMap',                  weakMapVal,             //  WeakMap
+    'WeakSet',                  weakSetVal,             //  WeakSet
+    'ArrayBuffer',              arrayBufferVal,         //  ArrayBuffer
+    'DataView',                 dataViewVal,            //  DataView
+    'Promise',                  promiseVal,             //  Promise
+    'Proxy',                    proxyVal,               //  Proxy
 
     'Window',                   windowVal,              //  Window
     'IFrameWindow',             iframeWindowVal,        //  IFrame Window
@@ -459,6 +519,8 @@ function(aRequest) {
     'XHR',                      xhrVal,                 //  XHR
 
     'TIBETType',                tibetTypeVal,           //  TIBET type
+    'TIBETType.Type',           tibetTypeTypeProtoVal,  //  TIBET type.Type
+    'TIBETType.Inst',           tibetTypeInstProtoVal,  //  TIBET type.Inst
 
     'TP.lang.Object',           tibetObjectVal,         //  TP.lang.Object
     'TP.core.Hash',             tibetHashVal,           //  TP.core.Hash
@@ -543,12 +605,24 @@ function(aRequest) {
         arrayVal,
         objectVal,
         functionVal,
+        asyncFunctionVal,
+        generatorFunctionVal,
 
         nanVal,
         invalidDateVal,
 
         nativeTypeVal,
         nativeFuncVal,
+
+        symbolVal,
+        mapVal,
+        setVal,
+        weakMapVal,
+        weakSetVal,
+        arrayBufferVal,
+        dataViewVal,
+        promiseVal,
+        proxyVal,
 
         windowVal,
         iframeWindowVal,
@@ -578,6 +652,9 @@ function(aRequest) {
         xhrVal,
 
         tibetTypeVal,
+        tibetTypeTypeProtoVal,
+        tibetTypeInstProtoVal,
+
         tibetObjectVal,
         tibetHashVal,
         tibetSignalVal,
@@ -662,12 +739,24 @@ function(aRequest) {
     objectVal = TP.ac(Object);
 
     functionVal = TP.ac(Function, Object);
+    asyncFunctionVal = TP.ac(AsyncFunction, Object);
+    generatorFunctionVal = TP.ac(GeneratorFunction, Object);
 
     nanVal = TP.ac(Number, Object);
     invalidDateVal = TP.ac(Date, Object);
 
     nativeTypeVal = TP.ac(Function, Object);
     nativeFuncVal = TP.ac(Function, Object);
+
+    symbolVal = TP.ac(Symbol, Object);
+    mapVal = TP.ac(Map, Object);
+    setVal = TP.ac(Set, Object);
+    weakMapVal = TP.ac(WeakMap, Object);
+    weakSetVal = TP.ac(WeakSet, Object);
+    arrayBufferVal = TP.ac(ArrayBuffer, Object);
+    dataViewVal = TP.ac(DataView, Object);
+    promiseVal = TP.ac(Promise, Object);
+    proxyVal = TP.ac(Object);
 
     windowVal = TP.ac(Window, Object);
     iframeWindowVal = TP.ac(topLevelWindow.UIROOT.Window, topLevelWindow.UIROOT.Object);
@@ -701,6 +790,8 @@ function(aRequest) {
     }
 
     tibetTypeVal = TP.ac(TP.meta.dom.Node, TP.lang.Object, TP.lang.RootObject, Object);
+    tibetTypeTypeProtoVal = TP.ac(Function, Object);
+    tibetTypeInstProtoVal = TP.ac(Function, Object);
 
     tibetObjectVal = TP.ac(TP.lang.Object, TP.lang.RootObject, Object);
 
@@ -771,6 +862,8 @@ function(aRequest) {
     'Boolean',                  booleanVal,             //  Boolean
     'Date',                     dateVal,                //  Date
     'Function',                 functionVal,            //  Function
+    'AsyncFunction',            asyncFunctionVal,       //  AsyncFunction
+    'GeneratorFunction',        generatorFunctionVal,   //  Generator Function
     'InvalidDate',              invalidDateVal,         //  not a Date
     'NaN',                      nanVal,                 //  NaN
     'Number',                   numberVal,              //  Number
@@ -780,6 +873,16 @@ function(aRequest) {
 
     'NativeType',               nativeTypeVal,          //  NativeType
     'NativeFunction',           nativeFuncVal,          //  NativeFunc
+
+    'Symbol',                   symbolVal,              //  Symbol
+    'Map',                      mapVal,                 //  Map
+    'Set',                      setVal,                 //  Set
+    'WeakMap',                  weakMapVal,             //  WeakMap
+    'WeakSet',                  weakSetVal,             //  WeakSet
+    'ArrayBuffer',              arrayBufferVal,         //  ArrayBuffer
+    'DataView',                 dataViewVal,            //  DataView
+    'Promise',                  promiseVal,             //  Promise
+    'Proxy',                    proxyVal,               //  Proxy
 
     'Window',                   windowVal,              //  Window
     'IFrameWindow',             iframeWindowVal,        //  IFrame Window
@@ -809,6 +912,8 @@ function(aRequest) {
     'XHR',                      xhrVal,                 //  XHR
 
     'TIBETType',                tibetTypeVal,           //  TIBET type
+    'TIBETType.Type',           tibetTypeTypeProtoVal,  //  TIBET type.Type
+    'TIBETType.Inst',           tibetTypeInstProtoVal,  //  TIBET type.Inst
 
     'TP.lang.Object',           tibetObjectVal,         //  TP.lang.Object
     'TP.core.Hash',             tibetHashVal,           //  TP.core.Hash
@@ -980,6 +1085,8 @@ function(aRequest) {
         'Boolean',                              TP.IDENTITY,
         'Date',                                 TP.IDENTITY,
         'Function',                             TP.IDENTITY,
+        'AsyncFunction',                        TP.IDENTITY,
+        'GeneratorFunction',                    TP.IDENTITY,
         'InvalidDate',                          TP.IDENTITY,
         'NaN',                                  TP.IDENTITY,
         'Number',                               TP.IDENTITY,
@@ -989,6 +1096,16 @@ function(aRequest) {
 
         'NativeType',                           TP.IDENTITY,
         'NativeFunction',                       TP.IDENTITY,
+
+        'Symbol',                               TP.IDENTITY,
+        'Map',                                  TP.IDENTITY,
+        'Set',                                  TP.IDENTITY,
+        'WeakMap',                              TP.IDENTITY,
+        'WeakSet',                              TP.IDENTITY,
+        'ArrayBuffer',                          TP.IDENTITY,
+        'DataView',                             TP.IDENTITY,
+        'Promise',                              TP.IDENTITY,
+        'Proxy',                                TP.IDENTITY,
 
         'Window',                               'TP.core.Window',
         'IFrameWindow',                         'TP.core.Window',
@@ -1019,6 +1136,9 @@ function(aRequest) {
         'XHR',                                  TP.IDENTITY,
 
         'TIBETType',                            TP.IDENTITY,
+        'TIBETType.Type',                       TP.IDENTITY,
+        'TIBETType.Inst',                       TP.IDENTITY,
+
         'TP.lang.Object',                       TP.IDENTITY,
         'TP.core.Hash',                         'TP.core.Hash', //  contents wrapped
         'TP.sig.Signal',                        TP.IDENTITY,
@@ -1101,6 +1221,8 @@ function(aRequest) {
         'Boolean',                              TP.IDENTITY,
         'Date',                                 TP.IDENTITY,
         'Function',                             TP.IDENTITY,
+        'AsyncFunction',                        TP.IDENTITY,
+        'GeneratorFunction',                    TP.IDENTITY,
         'InvalidDate',                          TP.IDENTITY,
         'NaN',                                  TP.IDENTITY,
         'Number',                               TP.IDENTITY,
@@ -1110,6 +1232,16 @@ function(aRequest) {
 
         'NativeType',                           TP.IDENTITY,
         'NativeFunction',                       TP.IDENTITY,
+
+        'Symbol',                               TP.IDENTITY,
+        'Map',                                  TP.IDENTITY,
+        'Set',                                  TP.IDENTITY,
+        'WeakMap',                              TP.IDENTITY,
+        'WeakSet',                              TP.IDENTITY,
+        'ArrayBuffer',                          TP.IDENTITY,
+        'DataView',                             TP.IDENTITY,
+        'Promise',                              TP.IDENTITY,
+        'Proxy',                                'Object',
 
         'Window',                               TP.IDENTITY,
         'IFrameWindow',                         TP.IDENTITY,
@@ -1140,6 +1272,9 @@ function(aRequest) {
         'XHR',                                  TP.IDENTITY,
 
         'TIBETType',                            TP.IDENTITY,
+        'TIBETType.Type',                       'Object',
+        'TIBETType.Inst',                       TP.IDENTITY,
+
         'TP.lang.Object',                       TP.IDENTITY,
         'TP.core.Hash',                         'TP.core.Hash', //  contents wrapped
         'TP.sig.Signal',                        TP.IDENTITY,
@@ -1221,7 +1356,9 @@ function(aRequest) {
         'Array',                                TP.IDENTITY,
         'Boolean',                              TP.IDENTITY,
         'Date',                                 TP.IDENTITY,
-        'Function',                             'fluffy',   //  Return value of function
+        'Function',                             'fluffy',           //  Return value of function
+        'AsyncFunction',                        /Promise([\s\S]+)/,
+        'GeneratorFunction',                    /\[object Generator\]/,
         'InvalidDate',                          TP.IDENTITY,
         'NaN',                                  TP.IDENTITY,
         'Number',                               TP.IDENTITY,
@@ -1231,6 +1368,16 @@ function(aRequest) {
 
         'NativeType',                           TP.IDENTITY,
         'NativeFunction',                       TP.IDENTITY,
+
+        'Symbol',                               TP.IDENTITY,
+        'Map',                                  TP.IDENTITY,
+        'Set',                                  TP.IDENTITY,
+        'WeakMap',                              TP.IDENTITY,
+        'WeakSet',                              TP.IDENTITY,
+        'ArrayBuffer',                          TP.IDENTITY,
+        'DataView',                             TP.IDENTITY,
+        'Promise',                              /Promise([\s\S]+)/,
+        'Proxy',                                TP.IDENTITY,
 
         'Window',                               TP.IDENTITY,
         'IFrameWindow',                         TP.IDENTITY,
@@ -1261,6 +1408,9 @@ function(aRequest) {
         'XHR',                                  TP.IDENTITY,
 
         'TIBETType',                            TP.IDENTITY,
+        'TIBETType.Type',                       TP.IDENTITY,
+        'TIBETType.Inst',                       TP.IDENTITY,
+
         'TP.lang.Object',                       TP.IDENTITY,
         'TP.core.Hash',                         TP.IDENTITY,
         'TP.sig.Signal',                        TP.IDENTITY,
