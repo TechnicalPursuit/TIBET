@@ -2096,7 +2096,8 @@ function(anObject, aType) {
     //  respond to getName
     try {
         /* eslint-disable no-extra-parens */
-        if ((aType !== Object) &&
+        if (aType !== Object &&
+            aType !== 'Object' &&
             ((anObject.constructor === aType) ||
                 (TP.isCallable(anObject.constructor.getName) &&
                 (anObject.constructor.getName() === aType)))) {
@@ -2108,8 +2109,15 @@ function(anObject, aType) {
     }
 
     //  check for spoofing hook and use it if found
-    if (TP.canInvoke(anObject, '$$isMemberOf') && TP.isNativeType(aType)) {
-        if (TP.isBoolean(result = anObject.$$isMemberOf(aType))) {
+    if (TP.canInvoke(anObject, '$$isMemberOf')) {
+        if (TP.isString(aType)) {
+            testType = TP.sys.getTypeByName(aType);
+        } else {
+            testType = aType;
+        }
+
+        if (TP.isNativeType(testType) &&
+            TP.isBoolean(result = anObject.$$isMemberOf(testType))) {
             return result;
         }
     }
