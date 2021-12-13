@@ -11402,7 +11402,7 @@ function(resource, mimeType, setupFunc) {
      * @param {String} resource The resource name. Typically template, style,
      *     style_{theme}, etc. but it could be essentially anything except the
      *     word 'resource' (since that would trigger a recursion).
-     * @param {String} mimeType The mimeType for the resource being looked up.
+     * @param {String} [mimeType] The mimeType for the resource being looked up.
      * @param {Function} [setupFunc] An optional set up function for the
      *     resource element that will be executed before it is wrapped for
      *     return.
@@ -11411,13 +11411,16 @@ function(resource, mimeType, setupFunc) {
      */
 
     var uri,
+
+        mime,
+        cacheable,
+
         src,
         result,
 
         resp,
         str,
 
-        mime,
         xmlnsInfo,
         defaultNS,
 
@@ -11431,11 +11434,21 @@ function(resource, mimeType, setupFunc) {
             'Unable to locate resource URI for ' + this.asString());
     }
 
+    if (TP.isEmpty(mime = mimeType)) {
+        mime = uri.getMIMEType();
+    }
+
+    cacheable = TP.ifInvalid(
+                    TP.ietf.mime.get('info').at(mime).at('cacheable'),
+                    true);
+
     src = uri.getLocation();
 
-    //  If a TP.dom.ElementNode with a URI that matches the src has been cached,
-    //  then return it.
-    result = this.get('$resourceElements').at(src);
+    if (cacheable) {
+        //  If a TP.dom.ElementNode with a URI that matches the src has been
+        //  cached, then return it.
+        result = this.get('$resourceElements').at(src);
+    }
 
     //  If we have a cached result, but we're recasting, then set result to null
     //  so that we retrieve the new markup from the URI cache. The new result
@@ -11458,10 +11471,6 @@ function(resource, mimeType, setupFunc) {
                     'signalChange', false));
 
     str = resp.get('result');
-
-    if (TP.isEmpty(mime = mimeType)) {
-        mime = uri.getMIMEType();
-    }
 
     //  Try to guess the default XML namespace from the MIME type computed from
     //  the supplied text and URL.
@@ -11491,8 +11500,10 @@ function(resource, mimeType, setupFunc) {
 
     result = TP.wrap(elem);
 
-    //  Cache the TP.dom.ElementNode under the URI's source.
-    this.get('$resourceElements').atPut(src, result);
+    if (cacheable) {
+        //  Cache the TP.dom.ElementNode under the URI's source.
+        this.get('$resourceElements').atPut(src, result);
+    }
 
     return result;
 });
