@@ -34,13 +34,24 @@ unique identity which can be used to distinguish them from other objects.
 //  objects.
 
 Array[TP.ID] = 'Array';
+ArrayBuffer[TP.ID] = 'ArrayBuffer';
+AsyncFunction[TP.ID] = 'AsyncFunction';
 Boolean[TP.ID] = 'Boolean';
+DataView[TP.ID] = 'DataView';
 Date[TP.ID] = 'Date';
+GeneratorFunction[TP.ID] = 'GeneratorFunction';
 Function[TP.ID] = 'Function';
+Map[TP.ID] = 'Map';
 Number[TP.ID] = 'Number';
 Object[TP.ID] = 'Object';
+Promise[TP.ID] = 'Promise';
+Proxy[TP.ID] = 'Proxy';
 RegExp[TP.ID] = 'RegExp';
+Set[TP.ID] = 'Set';
 String[TP.ID] = 'String';
+Symbol[TP.ID] = 'Symbol';
+WeakMap[TP.ID] = 'WeakMap';
+WeakSet[TP.ID] = 'WeakSet';
 
 Window[TP.ID] = 'Window';
 
@@ -48,12 +59,23 @@ Window[TP.ID] = 'Window';
 //  NB: We do *not* place a TP.ID slot on TP.ObjectProto in an effort to keep
 //  slots off of there.
 TP.ArrayProto[TP.ID] = 'ArrayProto';
+TP.ArrayBufferProto[TP.ID] = 'ArrayBufferProto';
+TP.AsyncFunctionProto[TP.ID] = 'AsyncFunctionProto';
 TP.BooleanProto[TP.ID] = 'BooleanProto';
+TP.DataViewProto[TP.ID] = 'DataViewProto';
 TP.DateProto[TP.ID] = 'DateProto';
+TP.GeneratorFunctionProto[TP.ID] = 'GeneratorFunctionProto';
 TP.FunctionProto[TP.ID] = 'FunctionProto';
+TP.MapProto[TP.ID] = 'MapProto';
 TP.NumberProto[TP.ID] = 'NumberProto';
+TP.PromiseProto[TP.ID] = 'PromiseProto';
+//  TP.ProxyProto[TP.ID] = 'ProxyProto';    //  Proxy constructor has no proto
 TP.RegExpProto[TP.ID] = 'RegExpProto';
+TP.SetProto[TP.ID] = 'SetProto';
 TP.StringProto[TP.ID] = 'StringProto';
+TP.SymbolProto[TP.ID] = 'SymbolProto';
+TP.WeakMapProto[TP.ID] = 'WeakMapProto';
+TP.WeakSetProto[TP.ID] = 'WeakSetProto';
 
 Window.prototype[TP.ID] = 'WindowProto';
 
@@ -74,12 +96,23 @@ APP[TP.ID] = 'APP';
 //  NB: We do *not* place a TP.NAME slot on TP.ObjectProto in an effort to keep
 //  slots off of there.
 TP.ArrayProto[TP.NAME] = 'ArrayProto';
+TP.ArrayBufferProto[TP.NAME] = 'ArrayBufferProto';
+TP.AsyncFunctionProto[TP.NAME] = 'AsyncFunctionProto';
 TP.BooleanProto[TP.NAME] = 'BooleanProto';
+TP.DataViewProto[TP.NAME] = 'DataViewProto';
 TP.DateProto[TP.NAME] = 'DateProto';
+TP.GeneratorFunctionProto[TP.NAME] = 'GeneratorFunctionProto';
 TP.FunctionProto[TP.NAME] = 'FunctionProto';
+TP.MapProto[TP.NAME] = 'MapProto';
 TP.NumberProto[TP.NAME] = 'NumberProto';
+TP.PromiseProto[TP.NAME] = 'PromiseProto';
+//  TP.ProxyProto[TP.NAME] = 'ProxyProto';  //  Proxy constructor has no proto
 TP.RegExpProto[TP.NAME] = 'RegExpProto';
+TP.SetProto[TP.NAME] = 'SetProto';
 TP.StringProto[TP.NAME] = 'StringProto';
+TP.SymbolProto[TP.NAME] = 'SymbolProto';
+TP.WeakMapProto[TP.NAME] = 'WeakMapProto';
+TP.WeakSetProto[TP.NAME] = 'WeakSetProto';
 
 Window.prototype[TP.NAME] = 'WindowProto';
 
@@ -100,12 +133,23 @@ APP[TP.NAME] = 'APP';
 //  NB: We do *not* place a TP.TNAME slot on TP.ObjectProto in an effort to keep
 //  slots off of there.
 TP.ArrayProto[TP.TNAME] = 'Object';
+TP.ArrayBufferProto[TP.TNAME] = 'Object';
+TP.AsyncFunctionProto[TP.TNAME] = 'Object';
 TP.BooleanProto[TP.TNAME] = 'Object';
+TP.DataViewProto[TP.TNAME] = 'Object';
 TP.DateProto[TP.TNAME] = 'Object';
+TP.GeneratorFunctionProto[TP.TNAME] = 'Object';
 TP.FunctionProto[TP.TNAME] = 'Object';
+TP.MapProto[TP.TNAME] = 'Object';
 TP.NumberProto[TP.TNAME] = 'Object';
+TP.PromiseProto[TP.TNAME] = 'Object';
+//  TP.ProxyProto[TP.TNAME] = 'Object';     //  Proxy constructor has no proto
 TP.RegExpProto[TP.TNAME] = 'Object';
+TP.SetProto[TP.TNAME] = 'Object';
 TP.StringProto[TP.TNAME] = 'Object';
+TP.SymbolProto[TP.TNAME] = 'Object';
+TP.WeakMapProto[TP.TNAME] = 'Object';
+TP.WeakSetProto[TP.TNAME] = 'Object';
 
 Window.prototype[TP.TNAME] = 'Object';
 
@@ -124,12 +168,23 @@ APP[TP.TNAME] = 'Object';
 
 //  Built-in prototypes
 TP.ArrayProto[TP.OWNER] = Array;
+TP.ArrayBufferProto[TP.OWNER] = ArrayBuffer;
+TP.AsyncFunctionProto[TP.OWNER] = AsyncFunction;
 TP.BooleanProto[TP.OWNER] = Boolean;
+TP.DataViewProto[TP.OWNER] = DataView;
 TP.DateProto[TP.OWNER] = Date;
+TP.GeneratorFunctionProto[TP.OWNER] = GeneratorFunction;
 TP.FunctionProto[TP.OWNER] = Function;
+TP.MapProto[TP.OWNER] = Map;
 TP.NumberProto[TP.OWNER] = Number;
+TP.PromiseProto[TP.OWNER] = Promise;
+//  TP.ProxyProto[TP.OWNER] = Proxy;     //  Proxy constructor has no proto
 TP.RegExpProto[TP.OWNER] = RegExp;
+TP.SetProto[TP.OWNER] = Set;
 TP.StringProto[TP.OWNER] = String;
+TP.SymbolProto[TP.OWNER] = Symbol;
+TP.WeakMapProto[TP.OWNER] = WeakMap;
+TP.WeakSetProto[TP.OWNER] = WeakSet;
 
 Window.prototype[TP.OWNER] = Window;
 

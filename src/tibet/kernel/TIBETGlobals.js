@@ -47,13 +47,22 @@ TP.ObjectProto = Object.prototype;
 
 //  'Wire up' the other prototypes for API completeness
 TP.ArrayProto = Array.prototype;
+TP.ArrayBufferProto = ArrayBuffer.prototype;
+TP.AsyncFunctionProto = AsyncFunction.prototype;
 TP.BooleanProto = Boolean.prototype;
+TP.DataViewProto = DataView.prototype;
 TP.DateProto = Date.prototype;
+TP.GeneratorFunctionProto = GeneratorFunction.prototype;
 TP.MapProto = Map.prototype;
 TP.NumberProto = Number.prototype;
+TP.PromiseProto = Promise.prototype;
+//  TP.ProxyProto = Proxy.prototype;    //  Proxy constructor has no proto
 TP.RegExpProto = RegExp.prototype;
 TP.SetProto = Set.prototype;
 TP.StringProto = String.prototype;
+TP.SymbolProto = Symbol.prototype;
+TP.WeakMapProto = WeakMap.prototype;
+TP.WeakSetProto = WeakSet.prototype;
 
 //  ------------------------------------------------------------------------
 //  LOW-LEVEL OBJECT CREATION
