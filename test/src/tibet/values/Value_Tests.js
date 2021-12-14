@@ -263,7 +263,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('local id of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('local id of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -483,7 +485,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('global id of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('global id of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -677,7 +681,9 @@ function() {
             testFunc.val = val;
             testFunc.correctVal = correctVal;
 
-            thisref.it('is type: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('is type: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -871,7 +877,9 @@ function() {
             testFunc.val = val;
             testFunc.correctVal = correctVal;
 
-            thisref.it('is native type: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('is native type: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }

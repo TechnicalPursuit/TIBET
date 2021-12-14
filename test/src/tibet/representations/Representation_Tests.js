@@ -207,7 +207,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('name of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('name of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -396,7 +398,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('type name of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('type name of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -584,7 +588,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('toString() of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('toString() of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -780,7 +786,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('asString() of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('asString() of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -976,7 +984,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('dump of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('dump of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -1170,7 +1180,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('HTML String of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('HTML String of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -1365,7 +1377,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('XML String of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('XML String of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -1558,7 +1572,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('pretty of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('pretty of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
@@ -1757,7 +1773,9 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisref.it('jsonsrc of: ' + testKey, testFunc);
+            if (TP.isCallable(testFunc)) {
+                thisref.it('jsonsrc of: ' + testKey, testFunc);
+            }
         }());
         /* eslint-disable no-loop-func */
     }
