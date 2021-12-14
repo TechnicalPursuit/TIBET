@@ -1267,7 +1267,8 @@ function() {
                 testFunc);
         }());
 
-        if (testKey === 'Object') {
+        if (testKey === 'Object' ||
+            testKey === 'Proxy') {
             (function() {
                 var testFunc;
 
@@ -1343,8 +1344,12 @@ function() {
         }
 
         if (testKey === 'Function' ||
+            testKey === 'AsyncFunction' ||
+            testKey === 'GeneratorFunction' ||
             testKey === 'NativeType' ||
-            testKey === 'NativeFunction') {
+            testKey === 'NativeFunction' ||
+            testKey === 'TIBETType.Type' ||
+            testKey === 'TIBETType.Inst') {
             (function() {
                 var testFunc;
 
