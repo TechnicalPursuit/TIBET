@@ -574,6 +574,46 @@ CLI.isSameJSON = function(objOne, objTwo) {
 //  ---
 
 /**
+ * An async version of ECMAScript's 'every' function that allows the callback
+ * function to be asynchronous.
+ * @param {Array} target The target array to filter.
+ * @param {Function} callbackFn The function to test for each element.
+ * @returns {Boolean} true if the callback function returns a truthy value for
+   every element in the target array.
+ */
+CLI.asyncEvery = async function(target, callback) {
+    var item;
+
+    for (item of target) {
+        if (!await callback(item)) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+/**
+ * An async version of ECMAScript's 'some' function that allows the callback
+ * function to be asynchronous.
+ * @param {Array} target The target array to filter.
+ * @param {Function} callbackFn The function to test for each element.
+ * @returns {Boolean} true if the callback function returns a truthy value for
+ * at least one element in the target array.
+ */
+CLI.asyncSome = async function(target, callback) {
+    var item;
+
+    for (item of target) {
+        if (await callback(item)) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+/**
  * A common handle to the js-beautify routine for pretty-printing JSON to
  * the console or via the logger.
  * @type {Function}
