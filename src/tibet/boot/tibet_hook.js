@@ -186,7 +186,7 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
     var elemProto,
         originalSet;
 
-    elemProto = self.Element.prototype;
+    elemProto = root.Element.prototype;
     originalSet = Object.getOwnPropertyDescriptor(elemProto, 'innerHTML').set;
 
     Object.defineProperty(elemProto, 'innerHTML', {
