@@ -46,7 +46,9 @@ function(anObject) {
         return false;
     }
 
+    /* eslint-disable no-loss-of-precision */
     return n.isBetweenInclusive(0, 18446744073709551615);
+    /* eslint-enable no-loss-of-precision */
 });
 
 //  ------------------------------------------------------------------------
