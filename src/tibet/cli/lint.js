@@ -140,9 +140,9 @@ Cmd.prototype.configureEslintOptions = function() {
     opts = {};
 
     if (this.options.esconfig) {
-        opts.configFile = this.options.esconfig;
+        opts.overrideConfigFile = this.options.esconfig;
     } else {
-        opts.configFile = CLI.expandPath('~/.eslintrc');
+        opts.overrideConfigFile = CLI.expandPath('~/.eslintrc');
     }
 
     if (this.options.esrules) {
@@ -251,7 +251,7 @@ Cmd.prototype.getLinterExtensions = function() {
  *     non-zero indicates an Error) or a Promise that resolves when the command
  *     finishes.
  */
-Cmd.prototype.execute = function() {
+Cmd.prototype.execute = async function() {
 
     var list,       // The result list of asset references.
         files,
@@ -362,7 +362,7 @@ Cmd.prototype.execute = function() {
     files = this.executeForEach(list);
 
     if (this.options.js) {
-        result = this.validateSourceFiles(files.js, result);
+        result = await this.validateSourceFiles(files.js, result);
         if (this.options.stop && result.errors !== 0) {
             return this.summarize(result);
         }
@@ -900,7 +900,6 @@ Cmd.prototype.processEslintResult = function(result) {
     var cmd,
         errors,
         warnings,
-        results,
         recheck,
         summary;
 
@@ -910,9 +909,7 @@ Cmd.prototype.processEslintResult = function(result) {
 
     recheck = [];
 
-    results = result.results;
-
-    results.forEach(function(entry) {
+    result.forEach(function(entry) {
         var messages,
             file;
 
@@ -1340,7 +1337,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
  *     across multiple lint passes.
  * @returns {Object} A results container with error 'count' and 'files' count.
  */
-Cmd.prototype.validateSourceFiles = function(files, results) {
+Cmd.prototype.validateSourceFiles = async function(files, results) {
 
     var cmd,
         opts,
@@ -1350,7 +1347,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
 
     cmd = this;
     opts = this.configureEslintOptions();
-    engine = new eslint.CLIEngine(opts);
+    engine = new eslint.ESLint(opts);
 
     res = results || this.constructResults();
     res.recheck = res.recheck || [];
@@ -1359,12 +1356,13 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
     res.checked += srcFiles.length;
 
     try {
-        srcFiles.some(
-            function(file) {
+        await CLI.asyncSome(
+            srcFiles,
+            async function(file) {
                 var result,
                     summary;
 
-                if (engine.isPathIgnored(file)) {
+                if (await engine.isPathIgnored(file)) {
                     return false;
                 }
 
@@ -1380,18 +1378,18 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
                     return false;
                 }
 
-                result = engine.executeOnFiles([file]);
+                result = await engine.lintFiles([file]);
 
-                // Rely on a common output routine. This is shared with output
-                // for inline source done during executeForEach.
+                //  Rely on a common output routine. This is shared with output
+                //  for inline source done during executeForEach.
                 summary = cmd.processEslintResult(result);
                 res.errors = res.errors + summary.errors;
                 res.warnings = res.warnings + summary.warnings;
                 res.linty = res.linty + summary.linty;
                 res.recheck = res.recheck.concat(summary.recheck);
 
-                // True will end the loop but we only do that if we're doing
-                // stop-on-first processing.
+                //  True will end the loop but we only do that if we're doing
+                //  stop-on-first processing.
                 if (cmd.options.stop) {
                     return res.errors > 0;
                 } else {

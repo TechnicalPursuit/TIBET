@@ -122,7 +122,7 @@
         "@babel/preset-env": "^7.14.7",
         "babel-minify": "^0.5.1",
         "chai": "^4.3.4",
-        "eslint": "^7.30.0",
+        "eslint": "^8.4.1",
         "less": "^4.1.1",
         "mocha": "^8.4.0",
         "mutation-summary": "github:TechnicalPursuit/mutation-summary",
