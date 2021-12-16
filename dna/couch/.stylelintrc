@@ -1,17 +1,27 @@
 {
     "extends": "stylelint-config-standard",
     "rules": {
+        "alpha-value-notation": "number",
+
         "at-rule-empty-line-before": null,
-
-        "comment-empty-line-before": null,
-
-        "custom-property-empty-line-before": null,
 
         "block-no-empty": null,
 
         "block-opening-brace-newline-after": "always",
 
+        "color-function-notation": "legacy",
+
+        "comment-empty-line-before": null,
+
+        "custom-property-empty-line-before": null,
+
+        "custom-property-no-missing-var-function": null,
+
+        "custom-property-pattern": null,
+
         "declaration-empty-line-before": null,
+
+        "declaration-block-no-redundant-longhand-properties": null,
 
         "indentation": 4,
 
@@ -19,14 +29,27 @@
 
         "function-url-quotes": "always",
 
+        "keyframes-name-pattern": null,
+
+        "hue-degree-notation": "angle",
+
         "max-empty-lines": [1, { "severity": "warning" }],
+
+        "max-line-length": null,
 
         "no-descending-specificity": null,
         "no-duplicate-selectors": null,
 
+        "property-no-vendor-prefix": null,
+
         "rule-empty-line-before": ["always", { ignore: "after-comment" }],
 
         "selector-attribute-quotes": "always",
+
+        "selector-id-pattern": null,
+        "selector-class-pattern": null,
+
+        "selector-no-vendor-prefix": null,
 
         "selector-type-no-unknown": [ true, {
             "ignore": ["default-namespace"],
@@ -36,9 +59,13 @@
 
         "selector-type-case": null,
 
+        "shorthand-property-no-redundant-values": null,
+
         "string-quotes": "double",
 
-        "value-keyword-case": "lower"
+        "value-keyword-case": "lower",
+
+        "value-no-vendor-prefix": null
     },
     "ignoreFiles": [
         "node_modules/**",
