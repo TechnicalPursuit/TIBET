@@ -6518,7 +6518,7 @@ var CognitoUser = /*#__PURE__*/function () {
     var _this18 = this;
 
     // If tokens won't be revoked, we just clean the client data.
-    if (!revokeTokenCallback || typeof revokeTokenCallback !== "function") {
+    if (!revokeTokenCallback || typeof revokeTokenCallback !== 'function') {
       this.cleanClientData();
       return;
     }
