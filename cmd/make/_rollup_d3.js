@@ -14,7 +14,7 @@
         make.sh.exec('npm update d3-interpolate');
         make.sh.exec('npm update d3-dispatch');
 
-        make.sh.cd(make.CLI.joinPaths(npmdir, 'd3-selection'));
+        make.sh.cd('d3-selection');
 
         make.sh.cp(
             make.CLI.joinPaths('.', 'dist', 'd3-selection.js'),
