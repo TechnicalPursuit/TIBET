@@ -274,6 +274,9 @@ function(stepArray, isTestLevel) {
 
             func,
 
+            targetID,
+
+            loadLoc,
             loadURI,
             timeout,
             origin,
@@ -388,9 +391,16 @@ function(stepArray, isTestLevel) {
                 break;
 
             case 'loadURL':
-                loadURI = TP.uc(args.at(1));
+                loadLoc = args.at(1);
+                loadURI = TP.uc(loadLoc);
 
                 driver.setLocation(loadURI);
+
+                if (TP.notEmpty(args.at(2))) {
+                    targetID = TP.computeOriginID(
+                                windowContext, loadLoc, args.at(2));
+                    this.andWaitFor(targetID, 'TP.sig.DidRender');
+                }
 
                 //  Note the 'chain' here - waiting until the setLocation comes
                 //  back.
