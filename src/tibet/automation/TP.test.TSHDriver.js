@@ -50,11 +50,24 @@ function() {
 
 TP.test.TSHDriver.Inst.defineMethod('execShellTest',
 function(test, shellInput, valueTestFunction) {
+
     /**
+     * @method execShellTest
+     * @summary Executes the supplied shell input and determines the
+     *     success/failure of the supplied test case.
+     * @param {TP.test.Case} test The test case to determine the success/failure
+     *     of.
+     * @param {String} shellInput The shell input to execute.
+     * @param {Function} [valueTestFunction] An optional Function to execute on
+     *     the result of running the shell input before supplying it as the
+     *     result value of the returned Promise.
+     * @exception TP.sig.InvalidURI
+     * @returns {Promise} A Promise which completes when the shell processing is
+     *     complete.
     */
 
-    this.get('promiseProvider').chainPromise(
-        TP.extern.Promise.construct(function(resolver, rejector) {
+    return TP.extern.Promise.construct(
+        function(resolver, rejector) {
 
             //  Flip the flag on to ignore eval errors in the TSH. We'll test
             //  for undefined values here.
@@ -131,9 +144,7 @@ function(test, shellInput, valueTestFunction) {
                         //  Set the faultText to that content as well.
                         test.set('faultText', errMsg || '');
                     }));
-        }));
-
-    return;
+        });
 });
 
 //  ------------------------------------------------------------------------

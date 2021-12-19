@@ -319,44 +319,36 @@ function(aURI, aRequest) {
         return this.raise('TP.sig.InvalidURI');
     }
 
-    //  'Then' a Function onto our internal Promise that will itself return a
-    //  Promise when called upon. That Promise will await the 'RequestSucceeded'
-    //  signal and resolve the Promise with the result.
-    return this.get('promiseProvider').chain(
-        function() {
-            var promise;
+    //  A Promise that will await the 'RequestSucceeded' signal and resolve the
+    //  Promise with the result.
+    return TP.extern.Promise.construct(
+                function(resolver, rejector) {
+                    var subrequest;
 
-            promise = TP.extern.Promise.construct(
-                        function(resolver, rejector) {
-                            var subrequest;
+                    subrequest = TP.request(aRequest);
 
-                            subrequest = TP.request(aRequest);
-
-                            subrequest.defineHandler(
-                                'RequestSucceeded',
-                                function(aResponse) {
-                                    //  We succeeded - call the Promise's
-                                    //  resolver.
-                                    resolver(aResponse.getResult());
-                                });
-
-                            subrequest.defineHandler(
-                                'RequestFailed',
-                                function(aResponse) {
-                                    //  We failed - call the Promise's rejector.
-                                    rejector(aResponse.getResult());
-                                });
-
-                            aURI.getResource(subrequest);
+                    subrequest.defineHandler(
+                        'RequestSucceeded',
+                        function(aResponse) {
+                            //  We succeeded - call the Promise's
+                            //  resolver.
+                            resolver(aResponse.getResult());
                         });
 
-            return promise;
-        }).chainCatch(
-        function(err) {
-            TP.ifError() ?
-                TP.error('Error creating fetchResource Promise: ' +
-                            TP.str(err)) : 0;
-        });
+                    subrequest.defineHandler(
+                        'RequestFailed',
+                        function(aResponse) {
+                            //  We failed - call the Promise's rejector.
+                            rejector(aResponse.getResult());
+                        });
+
+                    aURI.getResource(subrequest);
+                },
+                function(err) {
+                    TP.ifError() ?
+                        TP.error('Error creating fetchResource Promise: ' +
+                                    TP.str(err)) : 0;
+                });
 });
 
 //  ------------------------------------------------------------------------
@@ -410,7 +402,8 @@ function(aURI, aWindow) {
      * @param {TP.core.Window} The Window to use the body of to load the content
      *     into. This will default to the current UI canvas.
      * @exception TP.sig.InvalidURI
-     * @returns {TP.test.GUIDriver} The receiver.
+     * @returns {Promise} A Promise which completes when the resource is
+     *     available.
      */
 
     if (!TP.isKindOf(aURI, TP.uri.URI)) {
@@ -418,7 +411,7 @@ function(aURI, aWindow) {
     }
 
     //  Fetch the result and then set the Window's body to the result.
-    this.fetchResource(aURI, TP.hc('resultType', TP.DOM)).chain(
+    return this.fetchResource(aURI, TP.hc('resultType', TP.DOM)).then(
         function(result) {
             var tpWin,
                 tpDoc,
@@ -439,8 +432,6 @@ function(aURI, aWindow) {
             TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),
                             TP.Log.ERROR);
         });
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -459,6 +450,8 @@ function(aURI, aWindow, aRequest) {
      *     parameters.
      * @exception TP.sig.InvalidURI
      * @returns {TP.test.GUIDriver} The receiver.
+     * @returns {Promise} A Promise which completes when the URI is *completely*
+     *     loaded into the supplied Window.
      */
 
     var tpWin;
@@ -479,7 +472,7 @@ function(aURI, aWindow, aRequest) {
         tpWin = this.get('windowContext');
     }
 
-    this.get('promiseProvider').chain(
+    return TP.extern.Promise.resolve().then(
         function() {
             var promise;
 
@@ -496,14 +489,12 @@ function(aURI, aWindow, aRequest) {
                             });
 
             return promise;
-        }).chainCatch(
+        },
         function(err) {
             TP.ifError() ?
                 TP.error('Error creating setLocation Promise: ' +
                             TP.str(err)) : 0;
         });
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1378,116 +1369,106 @@ function() {
      *     if there are other asynchronous actions that are using Promises from
      *     the receiver's driver's Promise supplier, this method will respect
      *     that.
-     * @returns {TP.test.GUISequence} The receiver.
+     * @returns {Promise} A Promise which completes when the event sequence is
+     *     complete.
      */
 
-    var provider,
-
-        thisref;
-
-    provider = this.get('driver').get('promiseProvider');
+    var thisref,
+        promise;
 
     thisref = this;
 
-    //  'Then' a Function onto our internal Promise that will itself return a
-    //  Promise when called upon. That Promise will execute set up a 'work'
-    //  callback function that executes each entry in the sequence and then
-    //  resolves the Promise after executing the last entry.
-    provider.chain(
-        function() {
-            var promise;
+    //  A Promise that will execute set up a 'work' callback function that
+    //  executes each entry in the sequence and then resolves the Promise after
+    //  executing the last entry.
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
 
-            promise = TP.extern.Promise.construct(
-                function(resolver, rejector) {
+            var sequenceEntries,
 
-                    var sequenceEntries,
+                driver,
 
-                        driver,
+                count,
+                workFunc;
 
-                        count,
-                        workFunc;
+            sequenceEntries = thisref.get('sequenceEntries');
+            driver = thisref.get('driver');
 
-                    sequenceEntries = thisref.get('sequenceEntries');
-                    driver = thisref.get('driver');
+            //  'Expand' any event targets in the sequence entries
+            sequenceEntries = thisref.$expandSequenceEntries(
+                                                sequenceEntries);
 
-                    //  'Expand' any event targets in the sequence entries
-                    sequenceEntries = thisref.$expandSequenceEntries(
-                                                        sequenceEntries);
+            //  Set up the work function that will process a single
+            //  entry and then supply a callback that will call back the
+            //  work function, but only after a delay to give the GUI a
+            //  chance to refresh.
+            count = 0;
+            workFunc = function() {
 
-                    //  Set up the work function that will process a single
-                    //  entry and then supply a callback that will call back the
-                    //  work function, but only after a delay to give the GUI a
-                    //  chance to refresh.
-                    count = 0;
-                    workFunc = function() {
+                var seqEntry,
+                    currentElement,
 
-                        var seqEntry,
-                            currentElement,
+                    workCallback;
 
-                            workCallback;
+                //  If the count equals the number of entries, then
+                //  we're done here and we can resolve the Promise.
+                if (count === sequenceEntries.getSize()) {
 
-                        //  If the count equals the number of entries, then
-                        //  we're done here and we can resolve the Promise.
-                        if (count === sequenceEntries.getSize()) {
+                    sequenceEntries = null;
 
-                            sequenceEntries = null;
+                    return resolver();
+                }
 
-                            return resolver();
-                        }
+                seqEntry = sequenceEntries.at(count);
+                count++;
 
-                        seqEntry = sequenceEntries.at(count);
-                        count++;
+                //  If it's an 'exec', then we're just executing a
+                //  Function. Execute it and then make sure to call the
+                //  resolver.
+                if (seqEntry.at(0) === 'exec') {
+                    seqEntry.at(1)();
 
-                        //  If it's an 'exec', then we're just executing a
-                        //  Function. Execute it and then make sure to call the
-                        //  resolver.
-                        if (seqEntry.at(0) === 'exec') {
-                            seqEntry.at(1)();
+                    return workFunc();
+                } else {
 
-                            return workFunc();
-                        } else {
+                    //  If we can't determine a focused element, call
+                    //  the error callback and exit.
+                    if (!TP.isElement(
+                        currentElement = driver.getFocusedElement())) {
 
-                            //  If we can't determine a focused element, call
-                            //  the error callback and exit.
-                            if (!TP.isElement(
-                                currentElement = driver.getFocusedElement())) {
+                        sequenceEntries = null;
 
-                                sequenceEntries = null;
+                        return rejector(
+                            'No current Element for the GUI Driver.');
+                    }
 
-                                return rejector(
-                                    'No current Element for the GUI Driver.');
-                            }
+                    //  We fork the work function here to give the GUI
+                    //  a chance to refresh before we manipulate it.
+                    workCallback =
+                        function() {
+                            workFunc.queueAfterNextRepaint(
+                                TP.nodeGetWindow(currentElement));
+                        };
 
-                            //  We fork the work function here to give the GUI
-                            //  a chance to refresh before we manipulate it.
-                            workCallback =
-                                function() {
-                                    workFunc.queueAfterNextRepaint(
-                                        TP.nodeGetWindow(currentElement));
-                                };
+                    //  Execute the individual sequence step entry.
+                    thisref.$performGUISequenceStep(
+                        seqEntry.at(1),
+                        seqEntry.at(0),
+                        seqEntry.at(2),
+                        workCallback,
+                        currentElement);
+                }
+            };
 
-                            //  Execute the individual sequence step entry.
-                            thisref.$performGUISequenceStep(
-                                seqEntry.at(1),
-                                seqEntry.at(0),
-                                seqEntry.at(2),
-                                workCallback,
-                                currentElement);
-                        }
-                    };
-
-                    workFunc();
-                });
-
-            return promise;
-        }).chainCatch(
+            workFunc();
+        },
         function(err) {
             TP.ifError() ?
                 TP.error('Error creating GUI automation \'run\' Promise: ' +
                             TP.str(err)) : 0;
         });
 
-    return this;
+    return promise;
 });
 
 //  ------------------------------------------------------------------------

@@ -6395,15 +6395,14 @@ function(windowContext) {
      * @summary A convenience method to give the GUI a chance to refresh.
      * @param {TP.core.Window} windowContext The window context to wait to be
      *     refreshed.
-     * @returns {TP.core.PromiseProvider} The receiver.
+     * @returns {Promise} A Promise that will resolve after the GUI is
+     *     refreshed.
      */
 
-    this.chainPromise(TP.extern.Promise.construct(
+    return TP.extern.Promise.construct(
         function(resolver, rejector) {
             resolver.queueAfterNextRepaint(windowContext.getNativeWindow());
-        }));
-
-    return this;
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -6415,12 +6414,11 @@ function(delayMS) {
      * @method andWait
      * @summary A convenience method to wait a certain number of milliseconds.
      * @param {Number} delayMS The number of milliseconds to wait.
-     * @returns {TP.core.PromiseProvider} The receiver.
+     * @returns {Promise} A Promise that will resolve after the delayed amount
+     *     of time.
      */
 
-    this.chainPromise(TP.extern.Promise.delay(delayMS));
-
-    return this;
+    return TP.extern.Promise.delay(delayMS);
 });
 
 //  ------------------------------------------------------------------------
@@ -6435,7 +6433,8 @@ function(anOrigin, aSignal, timeoutMS) {
      * @param {Object} anOrigin The signal origin to observe.
      * @param {TP.sig.Signal|String} aSignal The signal type or name to observe.
      * @param {Number} [timeoutMS] The number of milliseconds before timing out.
-     * @returns {TP.core.PromiseProvider} The receiver.
+     * @returns {Promise} A Promise that will resolve after the origin has
+     *     received the signal.
      */
 
     var timeout;
@@ -6443,7 +6442,7 @@ function(anOrigin, aSignal, timeoutMS) {
     timeout = TP.ifInvalid(timeoutMS,
                             TP.sys.cfg('test.case_mslimit', 10000));
 
-    this.chainPromise(TP.extern.Promise.construct(
+    return TP.extern.Promise.construct(
         function(resolver, rejector) {
             var sigName,
                 sigType,
@@ -6507,9 +6506,7 @@ function(anOrigin, aSignal, timeoutMS) {
                             patchCallee: true
                         });
             }
-        }).timeout(timeout));
-
-    return this;
+        }).timeout(timeout);
 }, {
     patchCallee: false
 });
@@ -6534,24 +6531,30 @@ function(aCondition, anOrigin, aSignal, timeoutMS) {
      * @param {Object} anOrigin The signal origin to observe.
      * @param {TP.sig.Signal|String} aSignal The signal type or name to observe.
      * @param {Number} [timeoutMS] The number of milliseconds before timing out.
-     * @returns {TP.core.PromiseProvider} The receiver.
+     * @returns {Promise} A Promise that will resolve after the origin has
+     *     received the signal.
      */
 
-    var result;
+    var result,
+        promise;
 
+    //  Run the condition Function first to see if we have a valid value.
     result = aCondition();
     if (TP.isValid(result)) {
         return this;
     }
 
-    this.andWaitFor(anOrigin, aSignal, timeoutMS);
+    //  Now wait for the origin to get the signal (with an optional timeout).
+    promise = this.andWaitFor(anOrigin, aSignal, timeoutMS);
 
-    this.chain(
+    //  Make sure and execute the condition Function - there may be code in
+    //  there that is waiting for the origin to get the signal.
+    promise = promise.then(
         function() {
             aCondition();
         });
 
-    return this;
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
