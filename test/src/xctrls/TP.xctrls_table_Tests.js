@@ -8,6 +8,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -15,31 +16,29 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this));
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -66,14 +65,14 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
         var table,
             firsttableItem;
 
         table = TP.byId('table1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firsttableItem = table.get('rows').first();
                     return firsttableItem;
@@ -83,26 +82,19 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    sendEvent(TP.hc('type', 'focus'), table).
-                    run();
-            });
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), table).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.hasAttribute(firsttableItem, 'pclass:focus');
 
-                test.assert.hasAttribute(firsttableItem, 'pclass:focus');
-
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIFocus');
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidFocus');
-            });
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIFocus');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDidFocus');
     });
 
     //  ---
 
-    this.it('Activation - mouse', function(test, options) {
+    this.it('Activation - mouse', async function(test, options) {
 
         var table,
             firsttableItem;
@@ -111,7 +103,7 @@ function() {
 
         table = TP.byId('table1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firsttableItem = table.get('rows').first();
                     return firsttableItem;
@@ -121,66 +113,47 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firsttableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firsttableItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firsttableItem, 'pclass:active');
+        test.assert.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firsttableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firsttableItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttableItem, 'pclass:active');
+        test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firsttableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firsttableItem).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Activation - keyboard', function(test, options) {
+    this.it('Activation - keyboard', async function(test, options) {
 
         var table,
             firsttableItem;
@@ -189,7 +162,7 @@ function() {
 
         table = TP.byId('table1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firsttableItem = table.get('rows').first();
                     return firsttableItem;
@@ -199,42 +172,30 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firsttableItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firsttableItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firsttableItem, 'pclass:active');
+        test.assert.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firsttableItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firsttableItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttableItem, 'pclass:active');
+        test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var table,
             firsttableItem;
@@ -246,7 +207,7 @@ function() {
         table = TP.byId('table1', windowContext);
         table.setAttrDisabled(true);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firsttableItem = table.get('rows').first();
                     return firsttableItem;
@@ -258,106 +219,70 @@ function() {
 
         //  --- Focus
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    sendEvent(TP.hc('type', 'focus'), firsttableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), firsttableItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttableItem, 'pclass:focus');
+        test.refute.hasAttribute(firsttableItem, 'pclass:focus');
 
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIFocus');
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIFocus');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firsttableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firsttableItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttableItem, 'pclass:active');
+        test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firsttableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firsttableItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firsttableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firsttableItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firsttableItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firsttableItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttableItem, 'pclass:active');
+        test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firsttableItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firsttableItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
     });
 });
 
@@ -371,6 +296,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -378,18 +304,19 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -416,10 +343,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1010,6 +937,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -1034,18 +962,19 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc,
                 tableID;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
             tableID = TP.computeOriginID(windowContext, loc, 'table7');
             this.andWaitFor(tableID, 'TP.sig.DidRender');
@@ -1066,10 +995,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1244,7 +1173,8 @@ function() {
 TP.xctrls.table.Type.describe('TP.xctrls.table: data binding - no multiple',
 function() {
 
-    var windowContext,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI;
@@ -1254,24 +1184,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1300,7 +1231,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:table - change value via user interaction', function(test, options) {
+    this.it('xctrls:table - change value via user interaction', async function(test, options) {
 
         var tpElem,
 
@@ -1313,7 +1244,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     tableItem = tpElem.get('rows').first();
                     return tableItem;
@@ -1321,31 +1252,30 @@ function() {
                 TP.gid(tpElem),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(tableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(tableItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac('foo', 'foo', 1));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'foo', 1));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    TP.ac('foo', 'foo', 1));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            TP.ac('foo', 'foo', 1));
     });
 
-    this.it('xctrls:table - change data and re-render', function(test, options) {
+    this.it('xctrls:table - change data and re-render', async function(test, options) {
 
         var tpElem,
 
             modelURI,
-            tableItem;
+            tableItem,
+
+            modelObj,
+
+            rows,
+            items;
 
         tpElem = TP.byId('table9', windowContext);
 
@@ -1353,7 +1283,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     tableItem = tpElem.get('allItems').first();
                     return tableItem;
@@ -1361,89 +1291,75 @@ function() {
                 TP.gid(tpElem),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                var rows,
-                    items;
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('Fluffy', 'Fido', 'Foofy'),
+                    TP.ac('Goofy', 'Sneezy', 'Schlumpy'))));
 
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('Fluffy', 'Fido', 'Foofy'),
-                            TP.ac('Goofy', 'Sneezy', 'Schlumpy'))));
+        rows = tpElem.get('rows');
 
-                rows = tpElem.get('rows');
+        test.assert.isEqualTo(
+            rows.getSize(),
+            3);
 
-                test.assert.isEqualTo(
-                    rows.getSize(),
-                    3);
+        items = tpElem.get('allItems');
 
-                items = tpElem.get('allItems');
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fluffy');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(2).getLabelText(),
+            'Foofy');
+        test.assert.isEqualTo(
+            items.at(3).getLabelText(),
+            'Goofy');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Sneezy');
+        test.assert.isEqualTo(
+            items.at(5).getLabelText(),
+            'Schlumpy');
 
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fluffy');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(2).getLabelText(),
-                    'Foofy');
-                test.assert.isEqualTo(
-                    items.at(3).getLabelText(),
-                    'Goofy');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Sneezy');
-                test.assert.isEqualTo(
-                    items.at(5).getLabelText(),
-                    'Schlumpy');
-            });
+        modelObj = modelURI.getContent();
 
-        test.chain(
-            function() {
-                var modelObj,
+        modelObj.at('data').unshift(TP.ac('Fluffy', 'Fido', 'Foofy'));
+        modelObj.at('data').push(TP.ac('Goofy', 'Sneezy', 'Schlumpy'));
 
-                    rows,
-                    items;
+        modelURI.$changed();
 
-                modelObj = modelURI.getContent();
+        rows = tpElem.get('rows');
 
-                modelObj.at('data').unshift(TP.ac('Fluffy', 'Fido', 'Foofy'));
-                modelObj.at('data').push(TP.ac('Goofy', 'Sneezy', 'Schlumpy'));
+        //  Even though the data set has 4 items, we're only displaying
+        //  3 (virtual table).
+        test.assert.isEqualTo(
+            rows.getSize(),
+            3);
 
-                modelURI.$changed();
+        items = tpElem.get('allItems');
 
-                rows = tpElem.get('rows');
-
-                //  Even though the data set has 4 items, we're only displaying
-                //  3 (virtual table).
-                test.assert.isEqualTo(
-                    rows.getSize(),
-                    3);
-
-                items = tpElem.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fluffy');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(2).getLabelText(),
-                    'Foofy');
-                test.assert.isEqualTo(
-                    items.at(-3).getLabelText(),
-                    'Goofy');
-                test.assert.isEqualTo(
-                    items.at(-2).getLabelText(),
-                    'Sneezy');
-                test.assert.isEqualTo(
-                    items.at(-1).getLabelText(),
-                    'Schlumpy');
-            });
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fluffy');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(2).getLabelText(),
+            'Foofy');
+        test.assert.isEqualTo(
+            items.at(-3).getLabelText(),
+            'Goofy');
+        test.assert.isEqualTo(
+            items.at(-2).getLabelText(),
+            'Sneezy');
+        test.assert.isEqualTo(
+            items.at(-1).getLabelText(),
+            'Schlumpy');
     });
 });
 
@@ -1452,7 +1368,8 @@ function() {
 TP.xctrls.table.Type.describe('TP.xctrls.table: data binding - multiple',
 function() {
 
-    var windowContext,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI;
@@ -1462,24 +1379,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1512,7 +1430,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:table - change value via user interaction', function(test, options) {
+    this.it('xctrls:table - change value via user interaction', async function(test, options) {
 
         var tpElem,
 
@@ -1526,7 +1444,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     secondtableItem = tpElem.get('rows').at(1);
                     return secondtableItem;
@@ -1534,32 +1452,26 @@ function() {
                 TP.gid(tpElem),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(secondtableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(secondtableItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac(
-                        TP.ac('foo', 'foo', 1),
-                        TP.ac('baz', 'baz', 3),
-                        TP.ac('bar', 'bar', 2)));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac(
+                TP.ac('foo', 'foo', 1),
+                TP.ac('baz', 'baz', 3),
+                TP.ac('bar', 'bar', 2)));
 
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac(
-                        TP.ac('foo', 'foo', 1),
-                        TP.ac('baz', 'baz', 3),
-                        TP.ac('bar', 'bar', 2)));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac(
+                TP.ac('foo', 'foo', 1),
+                TP.ac('baz', 'baz', 3),
+                TP.ac('bar', 'bar', 2)));
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     thirdtableItem = tpElem.get('rows').at(2);
                     return thirdtableItem;
@@ -1567,35 +1479,34 @@ function() {
                 TP.gid(tpElem),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(thirdtableItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(thirdtableItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac(
-                        TP.ac('foo', 'foo', 1),
-                        TP.ac('bar', 'bar', 2)));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac(
+                TP.ac('foo', 'foo', 1),
+                TP.ac('bar', 'bar', 2)));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac(
-                        TP.ac('foo', 'foo', 1),
-                        TP.ac('bar', 'bar', 2)));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac(
+                TP.ac('foo', 'foo', 1),
+                TP.ac('bar', 'bar', 2)));
     });
 
-    this.it('xctrls:table - change data and re-render', function(test, options) {
+    this.it('xctrls:table - change data and re-render', async function(test, options) {
 
         var tpElem,
 
             modelURI,
-            tableItem;
+            tableItem,
+
+            modelObj,
+
+            rows,
+            items;
 
         tpElem = TP.byId('table11', windowContext);
 
@@ -1603,7 +1514,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     tableItem = tpElem.get('allItems').first();
                     return tableItem;
@@ -1611,89 +1522,75 @@ function() {
                 TP.gid(tpElem),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                var rows,
-                    items;
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('Fluffy', 'Fido', 'Foofy'),
+                    TP.ac('Goofy', 'Sneezy', 'Schlumpy'))));
 
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('Fluffy', 'Fido', 'Foofy'),
-                            TP.ac('Goofy', 'Sneezy', 'Schlumpy'))));
+        rows = tpElem.get('rows');
 
-                rows = tpElem.get('rows');
+        test.assert.isEqualTo(
+            rows.getSize(),
+            3);
 
-                test.assert.isEqualTo(
-                    rows.getSize(),
-                    3);
+        items = tpElem.get('allItems');
 
-                items = tpElem.get('allItems');
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fluffy');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(2).getLabelText(),
+            'Foofy');
+        test.assert.isEqualTo(
+            items.at(3).getLabelText(),
+            'Goofy');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Sneezy');
+        test.assert.isEqualTo(
+            items.at(5).getLabelText(),
+            'Schlumpy');
 
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fluffy');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(2).getLabelText(),
-                    'Foofy');
-                test.assert.isEqualTo(
-                    items.at(3).getLabelText(),
-                    'Goofy');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Sneezy');
-                test.assert.isEqualTo(
-                    items.at(5).getLabelText(),
-                    'Schlumpy');
-            });
+        modelObj = modelURI.getContent();
 
-        test.chain(
-            function() {
-                var modelObj,
+        modelObj.at('data').unshift(TP.ac('Fluffy', 'Fido', 'Foofy'));
+        modelObj.at('data').push(TP.ac('Goofy', 'Sneezy', 'Schlumpy'));
 
-                    rows,
-                    items;
+        modelURI.$changed();
 
-                modelObj = modelURI.getContent();
+        rows = tpElem.get('rows');
 
-                modelObj.at('data').unshift(TP.ac('Fluffy', 'Fido', 'Foofy'));
-                modelObj.at('data').push(TP.ac('Goofy', 'Sneezy', 'Schlumpy'));
+        //  Even though the data set has 4 items, we're only displaying
+        //  3 (virtual table).
+        test.assert.isEqualTo(
+            rows.getSize(),
+            3);
 
-                modelURI.$changed();
+        items = tpElem.get('allItems');
 
-                rows = tpElem.get('rows');
-
-                //  Even though the data set has 4 items, we're only displaying
-                //  3 (virtual table).
-                test.assert.isEqualTo(
-                    rows.getSize(),
-                    3);
-
-                items = tpElem.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fluffy');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(2).getLabelText(),
-                    'Foofy');
-                test.assert.isEqualTo(
-                    items.at(-3).getLabelText(),
-                    'Goofy');
-                test.assert.isEqualTo(
-                    items.at(-2).getLabelText(),
-                    'Sneezy');
-                test.assert.isEqualTo(
-                    items.at(-1).getLabelText(),
-                    'Schlumpy');
-            });
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fluffy');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(2).getLabelText(),
+            'Foofy');
+        test.assert.isEqualTo(
+            items.at(-3).getLabelText(),
+            'Goofy');
+        test.assert.isEqualTo(
+            items.at(-2).getLabelText(),
+            'Sneezy');
+        test.assert.isEqualTo(
+            items.at(-1).getLabelText(),
+            'Schlumpy');
     });
 });
 

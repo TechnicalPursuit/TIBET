@@ -4925,33 +4925,29 @@ function() {
     this.before(
         function(suite, options) {
 
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var now,
+            var now,
 
-                        pouchPromise,
-                        promise;
+                pouchPromise,
+                promise;
 
-                    now = Date.now();
+            now = Date.now();
 
-                    testDb = new TP.extern.PouchDB('pouch_test');
+            testDb = new TP.extern.PouchDB('pouch_test');
 
-                    pouchPromise = testDb.put(
-                        {
-                            _id: 'author_info',
-                            date_created: now,
-                            date_modified: now,
-                            body: {
-                                firstName: 'Bill',
-                                lastName: 'Edney'
-                            }
-                        });
-
-                    promise = TP.extern.Promise.resolve(pouchPromise);
-
-                    return promise;
+            pouchPromise = testDb.put(
+                {
+                    _id: 'author_info',
+                    date_created: now,
+                    date_modified: now,
+                    body: {
+                        firstName: 'Bill',
+                        lastName: 'Edney'
+                    }
                 });
+
+            promise = TP.extern.Promise.resolve(pouchPromise);
+
+            return promise;
         });
 
     //  ---
@@ -5164,18 +5160,14 @@ function() {
     this.after(
         function(suite, options) {
 
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var pouchPromise,
-                        promise;
+            var pouchPromise,
+                promise;
 
-                    pouchPromise = testDb.destroy();
+            pouchPromise = testDb.destroy();
 
-                    promise = TP.extern.Promise.resolve(pouchPromise);
+            promise = TP.extern.Promise.resolve(pouchPromise);
 
-                    return promise;
-                });
+            return promise;
         });
 });
 
@@ -5190,39 +5182,35 @@ function() {
     this.before(
         function(suite, options) {
 
+            var now,
+
+                pouchPromise,
+                promise;
+
             //  We set this to false here, but to true if the test containing
             //  the database destroy() succeeds, such that we don't try to call
             //  destroy() twice (once in that test and once in the after()
             //  code).
             destroySucceeded = false;
 
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var now,
+            now = Date.now();
 
-                        pouchPromise,
-                        promise;
+            testDb = new TP.extern.PouchDB('pouch_test');
 
-                    now = Date.now();
-
-                    testDb = new TP.extern.PouchDB('pouch_test');
-
-                    pouchPromise = testDb.put(
-                        {
-                            _id: 'author_info',
-                            date_created: now,
-                            date_modified: now,
-                            body: {
-                                firstName: 'Bill',
-                                lastName: 'Edney'
-                            }
-                        });
-
-                    promise = TP.extern.Promise.resolve(pouchPromise);
-
-                    return promise;
+            pouchPromise = testDb.put(
+                {
+                    _id: 'author_info',
+                    date_created: now,
+                    date_modified: now,
+                    body: {
+                        firstName: 'Bill',
+                        lastName: 'Edney'
+                    }
                 });
+
+            promise = TP.extern.Promise.resolve(pouchPromise);
+
+            return promise;
         });
 
     //  ---
@@ -5440,20 +5428,16 @@ function() {
     this.after(
         function(suite, options) {
 
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var pouchPromise,
-                        promise;
+            var pouchPromise,
+                promise;
 
-                    if (!destroySucceeded) {
-                        pouchPromise = testDb.destroy();
-                    }
+            if (!destroySucceeded) {
+                pouchPromise = testDb.destroy();
+            }
 
-                    promise = TP.extern.Promise.resolve(pouchPromise);
+            promise = TP.extern.Promise.resolve(pouchPromise);
 
-                    return promise;
-                });
+            return promise;
         });
 });
 

@@ -17,7 +17,7 @@
 TP.sig.Request.Inst.describe('TP.sig.Request - chaining then() on response',
 function() {
 
-    this.it('Function request - synchronous success', function(test, options) {
+    this.it('Function request - synchronous success', async function(test, options) {
 
         var testFunction,
 
@@ -48,12 +48,11 @@ function() {
                     testResult = 'The message is: ' + aResult;
                 });
 
-        test.chain(
-                function(result) {
-                    test.assert.isEqualTo(
-                            testResult,
-                            'The message is: Hi there!');
-                });
+        await testPromise;
+
+        test.assert.isEqualTo(
+                testResult,
+                'The message is: Hi there!');
 
         return testPromise;
     });

@@ -8,6 +8,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -15,26 +16,27 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -42,224 +44,188 @@ function() {
 
     //  ---
 
-    this.it('xctrls:list - simple Array', function(test, options) {
+    this.it('xctrls:list - simple Array', async function(test, options) {
 
-        var list;
+        var list,
+            items;
 
         list = TP.byId('list1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return list.get('allItems').first();
                 },
                 TP.gid(list),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
+        test.assert.isEqualTo(
+            list.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            list.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            list.get('$dataKeys').getSize(),
+            10);
 
-                test.assert.isEqualTo(
-                    list.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    list.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    list.get('$dataKeys').getSize(),
-                    10);
-            });
+        items = list.get('allItems');
 
-        test.chain(
-            function() {
-                var items;
-
-                items = list.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:list - Array of Pairs', function(test, options) {
+    this.it('xctrls:list - Array of Pairs', async function(test, options) {
 
-        var list;
+        var list,
+            items;
 
         list = TP.byId('list2', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return list.get('allItems').first();
                 },
                 TP.gid(list),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    list.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    list.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    list.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            list.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            list.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            list.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = list.get('allItems');
 
-                items = list.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:list - multi-item Array', function(test, options) {
+    this.it('xctrls:list - multi-item Array', async function(test, options) {
 
-        var list;
+        var list,
+            items;
 
         list = TP.byId('list3', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return list.get('allItems').first();
                 },
                 TP.gid(list),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    list.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    list.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    list.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            list.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            list.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            list.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = list.get('allItems');
 
-                items = list.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:list - single-item Array with Hash', function(test, options) {
+    this.it('xctrls:list - single-item Array with Hash', async function(test, options) {
 
-        var list;
+        var list,
+            items;
 
         list = TP.byId('list4', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return list.get('allItems').first();
                 },
                 TP.gid(list),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    list.get('allItems').getSize(),
-                    3);
-                test.assert.isEqualTo(
-                    list.get('data').getSize(),
-                    3);
-                test.assert.isEqualTo(
-                    list.get('$dataKeys').getSize(),
-                    3);
-            });
+        test.assert.isEqualTo(
+            list.get('allItems').getSize(),
+            3);
+        test.assert.isEqualTo(
+            list.get('data').getSize(),
+            3);
+        test.assert.isEqualTo(
+            list.get('$dataKeys').getSize(),
+            3);
 
-        test.chain(
-            function() {
-                var items;
+        items = list.get('allItems');
 
-                items = list.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
     });
 
     //  ---
 
-    this.it('xctrls:list - multi-item Array with Hashes', function(test, options) {
+    this.it('xctrls:list - multi-item Array with Hashes', async function(test, options) {
 
-        var list;
+        var list,
+            items;
 
         list = TP.byId('list5', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return list.get('allItems').first();
                 },
                 TP.gid(list),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    list.get('allItems').getSize(),
-                    3);
-                test.assert.isEqualTo(
-                    list.get('data').getSize(),
-                    3);
-                test.assert.isEqualTo(
-                    list.get('$dataKeys').getSize(),
-                    3);
-            });
+        test.assert.isEqualTo(
+            list.get('allItems').getSize(),
+            3);
+        test.assert.isEqualTo(
+            list.get('data').getSize(),
+            3);
+        test.assert.isEqualTo(
+            list.get('$dataKeys').getSize(),
+            3);
 
-        test.chain(
-            function() {
-                var items;
+        items = list.get('allItems');
 
-                items = list.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Brown');
-            });
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Brown');
     });
 
 });
@@ -272,6 +238,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -279,31 +246,29 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this));
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -330,14 +295,14 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
         var list,
             firstListItem;
 
         list = TP.byId('list1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstListItem = list.get('allItems').first();
                     return firstListItem;
@@ -347,23 +312,19 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().constructSequence().
-            sendEvent(TP.hc('type', 'focus'), list).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), list).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.hasAttribute(firstListItem, 'pclass:focus');
 
-                test.assert.hasAttribute(firstListItem, 'pclass:focus');
-
-                test.assert.didSignal(firstListItem, 'TP.sig.UIFocus');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidFocus');
-            });
+        test.assert.didSignal(firstListItem, 'TP.sig.UIFocus');
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDidFocus');
     });
 
     //  ---
 
-    this.it('Activation - mouse', function(test, options) {
+    this.it('Activation - mouse', async function(test, options) {
 
         var list,
             firstListItem;
@@ -372,7 +333,7 @@ function() {
 
         list = TP.byId('list1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstListItem = list.get('allItems').first();
                     return firstListItem;
@@ -382,66 +343,47 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firstListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firstListItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firstListItem, 'pclass:active');
+        test.assert.hasAttribute(firstListItem, 'pclass:active');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firstListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firstListItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:active');
+        test.refute.hasAttribute(firstListItem, 'pclass:active');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstListItem).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Activation - keyboard', function(test, options) {
+    this.it('Activation - keyboard', async function(test, options) {
 
         var list,
             firstListItem;
@@ -450,7 +392,7 @@ function() {
 
         list = TP.byId('list1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstListItem = list.get('allItems').first();
                     return firstListItem;
@@ -460,42 +402,30 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firstListItem, 'Enter').
+        await driver.constructSequence().
+                        keyDown(firstListItem, 'Enter').
+                        run();
+
+        test.assert.hasAttribute(firstListItem, 'pclass:active');
+
+        test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+
+        test.getSuite().resetSignalTracking();
+
+        await driver.constructSequence().
+                    keyUp(firstListItem, 'Enter').
                     run();
-            });
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firstListItem, 'pclass:active');
+        test.refute.hasAttribute(firstListItem, 'pclass:active');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
-
-                test.getSuite().resetSignalTracking();
-            });
-
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                keyUp(firstListItem, 'Enter').
-                run();
-            });
-
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:active');
-
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var list,
             firstListItem;
@@ -507,7 +437,7 @@ function() {
         list = TP.byId('list1', windowContext);
         list.setAttrDisabled(true);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstListItem = list.get('allItems').first();
                     return firstListItem;
@@ -519,106 +449,70 @@ function() {
 
         //  --- Focus
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    sendEvent(TP.hc('type', 'focus'), firstListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), firstListItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:focus');
+        test.refute.hasAttribute(firstListItem, 'pclass:focus');
 
-                test.refute.didSignal(firstListItem, 'TP.sig.UIFocus');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIFocus');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firstListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firstListItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:active');
+        test.refute.hasAttribute(firstListItem, 'pclass:active');
 
-                test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firstListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firstListItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstListItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firstListItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firstListItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:active');
+        test.refute.hasAttribute(firstListItem, 'pclass:active');
 
-                test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firstListItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firstListItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
     });
 });
 
@@ -632,6 +526,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -639,18 +534,19 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -671,10 +567,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -998,6 +894,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -1022,18 +919,19 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc,
                 listID;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
             listID = TP.computeOriginID(windowContext, loc, 'list7');
             this.andWaitFor(listID, 'TP.sig.DidRender');
@@ -1054,10 +952,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1206,7 +1104,8 @@ function() {
 TP.xctrls.list.Type.describe('TP.xctrls.list: data binding - no multiple',
 function() {
 
-    var windowContext,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI;
@@ -1216,24 +1115,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1262,7 +1162,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:list - change value via user interaction', function(test, options) {
+    this.it('xctrls:list - change value via user interaction', async function(test, options) {
 
         var tpElem,
 
@@ -1275,7 +1175,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstListItem = tpElem.get('allItems').first();
                     return firstListItem;
@@ -1283,31 +1183,28 @@ function() {
                 TP.gid(tpElem),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstListItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'foo');
     });
 
-    this.it('xctrls:list - change data and re-render', function(test, options) {
+    this.it('xctrls:list - change data and re-render', async function(test, options) {
 
         var list,
 
             modelURI,
-            firstListItem;
+            firstListItem,
+
+            modelObj,
+            items;
 
         list = TP.byId('list9', windowContext);
 
@@ -1315,7 +1212,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstListItem = list.get('allItems').first();
                     return firstListItem;
@@ -1323,61 +1220,50 @@ function() {
                 TP.gid(list),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                var items;
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('fido', 'Fido'),
+                    TP.ac('lassie', 'Lassie'))));
 
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('fido', 'Fido'),
-                            TP.ac('lassie', 'Lassie'))));
+        items = list.get('allItems');
 
-                items = list.get('allItems');
+        test.assert.isEqualTo(
+            items.getSize(),
+            3);
 
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    3);
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Lassie');
 
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Lassie');
-            });
+        modelObj = modelURI.getContent();
 
-        test.chain(
-            function() {
-                var modelObj,
-                    items;
+        modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+        modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
 
-                modelObj = modelURI.getContent();
+        modelURI.$changed();
 
-                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
-                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+        items = list.get('allItems');
 
-                modelURI.$changed();
+        //  Even though the data set has 4 items, we're only displaying
+        //  3 (virtual list).
+        test.assert.isEqualTo(
+            items.getSize(),
+            3);
 
-                items = list.get('allItems');
-
-                //  Even though the data set has 4 items, we're only displaying
-                //  3 (virtual list).
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    3);
-
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fluffy');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(2).getLabelText(),
-                    'Lassie');
-            });
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fluffy');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(2).getLabelText(),
+            'Lassie');
     });
 
 });
@@ -1387,7 +1273,8 @@ function() {
 TP.xctrls.list.Type.describe('TP.xctrls.list: data binding - multiple',
 function() {
 
-    var windowContext,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI;
@@ -1397,24 +1284,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1443,7 +1331,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:list - change value via user interaction', function(test, options) {
+    this.it('xctrls:list - change value via user interaction', async function(test, options) {
 
         var tpElem,
 
@@ -1457,7 +1345,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     secondListItem = tpElem.get('allItems').at(1);
                     return secondListItem;
@@ -1465,25 +1353,19 @@ function() {
                 TP.gid(tpElem),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(secondListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(secondListItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac('foo', 'baz', 'bar'));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'baz', 'bar'));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac('foo', 'baz', 'bar'));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac('foo', 'baz', 'bar'));
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     thirdListItem = tpElem.get('allItems').at(2);
                     return thirdListItem;
@@ -1491,31 +1373,28 @@ function() {
                 TP.gid(tpElem),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(thirdListItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(thirdListItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac('foo', 'bar'));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'bar'));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac('foo', 'bar'));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac('foo', 'bar'));
     });
 
-    this.it('xctrls:list - change data and re-render', function(test, options) {
+    this.it('xctrls:list - change data and re-render', async function(test, options) {
 
         var list,
 
             modelURI,
-            firstListItem;
+            firstListItem,
+
+            modelObj,
+            items;
 
         list = TP.byId('list10', windowContext);
 
@@ -1523,7 +1402,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstListItem = list.get('allItems').first();
                     return firstListItem;
@@ -1531,61 +1410,50 @@ function() {
                 TP.gid(list),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                var items;
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('fido', 'Fido'),
+                    TP.ac('lassie', 'Lassie'))));
 
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('fido', 'Fido'),
-                            TP.ac('lassie', 'Lassie'))));
+        items = list.get('allItems');
 
-                items = list.get('allItems');
+        test.assert.isEqualTo(
+            items.getSize(),
+            3);
 
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    3);
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Lassie');
 
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Lassie');
-            });
+        modelObj = modelURI.getContent();
 
-        test.chain(
-            function() {
-                var modelObj,
-                    items;
+        modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+        modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
 
-                modelObj = modelURI.getContent();
+        modelURI.$changed();
 
-                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
-                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+        items = list.get('allItems');
 
-                modelURI.$changed();
+        //  Even though the data set has 4 items, we're only displaying
+        //  3 (virtual list).
+        test.assert.isEqualTo(
+            items.getSize(),
+            3);
 
-                items = list.get('allItems');
-
-                //  Even though the data set has 4 items, we're only displaying
-                //  3 (virtual list).
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    3);
-
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fluffy');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(2).getLabelText(),
-                    'Lassie');
-            });
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fluffy');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(2).getLabelText(),
+            'Lassie');
     });
 });
 

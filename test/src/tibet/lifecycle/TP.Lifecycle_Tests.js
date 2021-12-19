@@ -48,146 +48,117 @@ function() {
 
     //  ---
 
-    this.it('window - DocumentLoaded', function(test, options) {
+    this.it('window - DocumentLoaded', async function(test, options) {
 
         var driver;
 
         driver = test.getDriver();
-        driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
+        await driver.setLocation(loadURI);
 
-                //  Window throws DocumentLoaded when document loads
-                test.assert.didSignal(TP.gid(winContext),
-                                        'TP.sig.DocumentLoaded');
-            });
+        //  Window throws DocumentLoaded when document loads
+        test.assert.didSignal(TP.gid(winContext),
+                                'TP.sig.DocumentLoaded');
     });
 
     //  ---
 
-    this.it('window - DocumentUnloaded', function(test, options) {
+    this.it('window - DocumentUnloaded', async function(test, options) {
 
         var driver;
 
         driver = test.getDriver();
-        driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
+        await driver.setLocation(loadURI);
 
-                //  Now that we're loaded, unload the document
-                driver.setLocation(unloadURI);
+        //  Now that we're loaded, unload the document
+        await driver.setLocation(unloadURI);
 
-                test.chain(
-                    function() {
-                        //  Window throws DocumentUnloaded when document unloads
-                        test.assert.didSignal(TP.gid(winContext),
-                                                'TP.sig.DocumentUnloaded');
-                    });
-            });
+        //  Window throws DocumentUnloaded when document unloads
+        test.assert.didSignal(TP.gid(winContext),
+                                'TP.sig.DocumentUnloaded');
     });
 
     //  ---
 
-    this.it('document - DOMContentLoaded', function(test, options) {
+    this.it('document - DOMContentLoaded', async function(test, options) {
 
         var driver;
 
         driver = test.getDriver();
-        driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
+        await driver.setLocation(loadURI);
 
-                //  Document throws DOMContentLoaded when document loads
-                test.assert.didSignal(
-                        TP.gid(winContext.getNativeDocument()),
-                        'TP.sig.DOMContentLoaded');
-            });
+        //  Document throws DOMContentLoaded when document loads
+        test.assert.didSignal(
+                TP.gid(winContext.getNativeDocument()),
+                'TP.sig.DOMContentLoaded');
     });
 
     //  ---
 
-    this.it('document - DOMContentUnloaded', function(test, options) {
+    this.it('document - DOMContentUnloaded', async function(test, options) {
 
-        var driver;
+        var driver,
+            gid;
 
         driver = test.getDriver();
-        driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
-                var gid;
+        await driver.setLocation(loadURI);
 
-                //  Grab the id with the now-loaded content. Any unload will be
-                //  signaled from here. If we wait until the next 'then' the ID
-                //  will have shifted to the unload URI.
-                gid = TP.gid(winContext.getNativeDocument());
+        //  Grab the id with the now-loaded content. Any unload will be
+        //  signaled from here. If we wait until the next 'then' the ID
+        //  will have shifted to the unload URI.
+        gid = TP.gid(winContext.getNativeDocument());
 
-                //  Now that we're loaded, unload the document
-                driver.setLocation(unloadURI);
+        //  Now that we're loaded, unload the document
+        await driver.setLocation(unloadURI);
 
-                test.chain(
-                    function() {
-                        //  Document throws DOMContentUnloaded when document
-                        //  unloads
-                        test.assert.didSignal(gid,
-                                'TP.sig.DOMContentUnloaded');
-                    });
-            });
+        //  Document throws DOMContentUnloaded when document
+        //  unloads
+        test.assert.didSignal(gid,
+                'TP.sig.DOMContentUnloaded');
     });
 
     //  ---
 
-    this.it('element - DOMContentLoaded', function(test, options) {
+    this.it('element - DOMContentLoaded', async function(test, options) {
 
         var driver;
 
         driver = test.getDriver();
-        driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
-                TP.elementSetContent(
-                    TP.byId('testSpan', winContext, false),
-                    '<span>This is inner content</span>');
-            });
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
+        TP.elementSetContent(
+            TP.byId('testSpan', winContext, false),
+            '<span>This is inner content</span>');
 
-                //  Element throws DOMContentLoaded when its content is added
-                //  to, inserted or set.
-                test.assert.didSignal(
-                    TP.gid(TP.byId('testSpan', winContext, false)),
-                    'TP.sig.DOMContentLoaded');
-            });
+
+        //  Element throws DOMContentLoaded when its content is added
+        //  to, inserted or set.
+        test.assert.didSignal(
+            TP.gid(TP.byId('testSpan', winContext, false)),
+            'TP.sig.DOMContentLoaded');
     });
 
-    this.it('element - AttachComplete', function(test, options) {
+    this.it('element - AttachComplete', async function(test, options) {
 
         var driver;
 
         driver = test.getDriver();
-        driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
-                TP.elementSetContent(
-                    TP.byId('testSpan', winContext, false),
-                    '<span>This is inner content</span>');
-            });
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
+        TP.elementSetContent(
+            TP.byId('testSpan', winContext, false),
+            '<span>This is inner content</span>');
 
-                //  Element throws AttachComplete when its content is done
-                //  attaching.
-                test.assert.didSignal(
-                    TP.gid(TP.byId('testSpan', winContext, false)),
-                    'TP.sig.AttachComplete');
-            });
+        //  Element throws AttachComplete when its content is done
+        //  attaching.
+        test.assert.didSignal(
+            TP.gid(TP.byId('testSpan', winContext, false)),
+            'TP.sig.AttachComplete');
     }).skip();
 });
 
@@ -214,42 +185,34 @@ function() {
 
     //  ---
 
-    this.it('form - block submission', function(test, options) {
+    this.it('form - block submission', async function(test, options) {
 
-        var driver;
+        var driver,
+            submitButton;
 
         driver = test.getDriver();
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
+        submitButton = TP.byId('submitButton', windowContext, false);
 
-                var submitButton;
+        driver.constructSequence().click(submitButton).run();
 
-                submitButton = TP.byId('submitButton', windowContext, false);
+        //  Note here how we re-obtain the submit button so that
+        //  we can test its presence again. The submit event
+        //  should've been blocked, so the page should've
+        //  remained where it was and this element should still
+        //  be on the page.
+        submitButton = TP.byId('submitButton',
+                                windowContext,
+                                false);
 
-                driver.constructSequence().click(submitButton).run();
+        test.assert.isElement(submitButton);
 
-                test.chain(
-                    function() {
-                        //  Note here how we re-obtain the submit button so that
-                        //  we can test its presence again. The submit event
-                        //  should've been blocked, so the page should've
-                        //  remained where it was and this element should still
-                        //  be on the page.
-                        submitButton = TP.byId('submitButton',
-                                                windowContext,
-                                                false);
+        //  Unload the current page by setting it to the blank
+        await driver.setLocation(unloadURI);
 
-                        test.assert.isElement(submitButton);
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-            });
+        //  Unregister the URI to avoid a memory leak
+        loadURI.unregister();
     });
 
     //  Can't test "submit" in Headless because we're not launching from an

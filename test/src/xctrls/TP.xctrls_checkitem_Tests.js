@@ -16,14 +16,13 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -31,12 +30,12 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -51,36 +50,31 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
-        var checkitem;
+        var checkitem,
+            focusedElem;
 
         checkitem = TP.byId('checkitem1', windowContext);
 
         //  Change the focus via 'direct' method
 
-        driver.constructSequence().
-            sendEvent(TP.hc('type', 'focus'), checkitem).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), checkitem).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.hasAttribute(checkitem, 'pclass:focus');
 
-                var focusedElem;
+        test.assert.didSignal(checkitem, 'TP.sig.UIFocus');
+        test.assert.didSignal(checkitem, 'TP.sig.UIDidFocus');
 
-                test.assert.hasAttribute(checkitem, 'pclass:focus');
-
-                test.assert.didSignal(checkitem, 'TP.sig.UIFocus');
-                test.assert.didSignal(checkitem, 'TP.sig.UIDidFocus');
-
-                focusedElem = driver.getFocusedElement();
-                test.assert.isIdenticalTo(focusedElem, checkitem);
-            });
+        focusedElem = driver.getFocusedElement();
+        test.assert.isIdenticalTo(focusedElem, checkitem);
     });
 
     //  ---
 
-    this.it('Activation - mouse', function(test, options) {
+    this.it('Activation - mouse', async function(test, options) {
 
         var checkitem;
 
@@ -90,57 +84,47 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        driver.constructSequence().
-            mouseDown(checkitem).
-            run();
+        await driver.constructSequence().
+                        mouseDown(checkitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(checkitem, 'pclass:active');
+        test.assert.hasAttribute(checkitem, 'pclass:active');
 
-                test.assert.didSignal(checkitem, 'TP.sig.UIActivate');
-                test.assert.didSignal(checkitem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(checkitem, 'TP.sig.UIActivate');
+        test.assert.didSignal(checkitem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            mouseUp(checkitem).
-            run();
+        await driver.constructSequence().
+                        mouseUp(checkitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(checkitem, 'pclass:active');
+        test.refute.hasAttribute(checkitem, 'pclass:active');
 
-                test.assert.didSignal(checkitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(checkitem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  click
 
-        driver.constructSequence().
-            click(checkitem).
-            run();
+        await driver.constructSequence().
+                        click(checkitem).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(checkitem, 'TP.sig.UIActivate');
+        test.assert.didSignal(checkitem, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(checkitem, 'TP.sig.UIActivate');
-                test.assert.didSignal(checkitem, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(checkitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(checkitem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Activation - keyboard', function(test, options) {
+    this.it('Activation - keyboard', async function(test, options) {
 
         var checkitem;
 
@@ -150,36 +134,30 @@ function() {
 
         //  Individual keydown/keyup
 
-        driver.constructSequence().
-            keyDown(checkitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyDown(checkitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(checkitem, 'pclass:active');
+        test.assert.hasAttribute(checkitem, 'pclass:active');
 
-                test.assert.didSignal(checkitem, 'TP.sig.UIActivate');
-                test.assert.didSignal(checkitem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(checkitem, 'TP.sig.UIActivate');
+        test.assert.didSignal(checkitem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(checkitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyUp(checkitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(checkitem, 'pclass:active');
+        test.refute.hasAttribute(checkitem, 'pclass:active');
 
-                test.assert.didSignal(checkitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(checkitem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var checkitem;
 
@@ -192,88 +170,70 @@ function() {
 
         //  --- Focus
 
-        driver.constructSequence().
-            sendEvent(TP.hc('type', 'focus'), checkitem).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), checkitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(checkitem, 'pclass:focus');
+        test.refute.hasAttribute(checkitem, 'pclass:focus');
 
-                test.refute.didSignal(checkitem, 'TP.sig.UIFocus');
-                test.refute.didSignal(checkitem, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(checkitem, 'TP.sig.UIFocus');
+        test.refute.didSignal(checkitem, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup
 
-        driver.constructSequence().
-            mouseDown(checkitem).
-            run();
+        await driver.constructSequence().
+                        mouseDown(checkitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(checkitem, 'pclass:active');
+        test.refute.hasAttribute(checkitem, 'pclass:active');
 
-                test.refute.didSignal(checkitem, 'TP.sig.UIActivate');
-                test.refute.didSignal(checkitem, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(checkitem, 'TP.sig.UIActivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIDidActivate');
 
-        driver.constructSequence().
-            mouseUp(checkitem).
-            run();
+        await driver.constructSequence().
+                        mouseUp(checkitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(checkitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- click
 
-        driver.constructSequence().
-            click(checkitem).
-            run();
+        await driver.constructSequence().
+                        click(checkitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(checkitem, 'TP.sig.UIActivate');
-                test.refute.didSignal(checkitem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIActivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(checkitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        driver.constructSequence().
-            keyDown(checkitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyDown(checkitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(checkitem, 'pclass:active');
+        test.refute.hasAttribute(checkitem, 'pclass:active');
 
-                test.refute.didSignal(checkitem, 'TP.sig.UIActivate');
-                test.refute.didSignal(checkitem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIActivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(checkitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyUp(checkitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(checkitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
-            });
+        test.refute.didSignal(checkitem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
     });
 });
 
@@ -295,26 +255,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = driver.get('windowContext');
-
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -472,17 +431,16 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = driver.get('windowContext');
-
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -500,10 +458,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -694,25 +652,24 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            driver.setLocation(loadURI);
-
-            windowContext = driver.get('windowContext');
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -840,16 +797,15 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = driver.get('windowContext');
-
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -867,10 +823,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1029,23 +985,22 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1089,20 +1044,17 @@ function() {
 
         datacheckitem7 = TP.byId('datacheckitem7', windowContext);
 
-        test.getDriver().constructSequence().
-            click(datacheckitem7).
-            run();
+        driver.constructSequence().
+                        click(datacheckitem7).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'foo');
     });
 
 });
@@ -1123,23 +1075,22 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1184,37 +1135,31 @@ function() {
 
         datacheckitem11 = TP.byId('datacheckitem11', windowContext);
 
-        test.getDriver().constructSequence().
-            click(datacheckitem11).
-            run();
+        driver.constructSequence().
+                        click(datacheckitem11).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac('foo', 'bar', 'baz'));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'bar', 'baz'));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac('foo', 'bar', 'baz'));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac('foo', 'bar', 'baz'));
 
         datacheckitem12 = TP.byId('datacheckitem12', windowContext);
 
-        test.getDriver().constructSequence().
-            click(datacheckitem12).
-            run();
+        driver.constructSequence().
+                        click(datacheckitem12).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac('foo', 'bar'));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'bar'));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac('foo', 'bar'));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac('foo', 'bar'));
     });
 
 });

@@ -18,9 +18,10 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             //  We 'snapshot' the current focus stack so that in case we're
             //  running this in the Sherpa, etc., any current items won't be
@@ -42,11 +43,9 @@ function() {
                         true);
                 });
 
-            windowContext = driver.get('windowContext');
-
             //  A document containing several focusable fields
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_dialog.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -54,12 +53,12 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -90,134 +89,120 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
         var pageTextField,
-            focusedElem;
+            focusedElem,
+
+            templateURI,
+
+            uiRootWin,
+            dialogTPElem,
+            dialogTextField;
+
+        await test.andAllowGUIRefresh(windowContext);
 
         pageTextField = TP.byId('pageTextField', windowContext, false);
 
-        test.chain(
-            function() {
-                //  Initially, the text field in the page should have focus.
-                test.assert.hasAttribute(pageTextField, 'pclass:focus');
+        //  Initially, the text field in the page should have focus.
+        test.assert.hasAttribute(pageTextField, 'pclass:focus');
 
-                test.assert.didSignal(pageTextField, 'TP.sig.UIFocus');
-                test.assert.didSignal(pageTextField, 'TP.sig.UIDidFocus');
+        test.assert.didSignal(pageTextField, 'TP.sig.UIFocus');
+        test.assert.didSignal(pageTextField, 'TP.sig.UIDidFocus');
 
-                focusedElem = driver.getFocusedElement();
-                test.assert.isIdenticalTo(focusedElem, pageTextField);
+        focusedElem = driver.getFocusedElement();
+        test.assert.isIdenticalTo(focusedElem, pageTextField);
 
-                //  At this point, the focus stack should have one item on it -
-                //  the page field element (wrapped).
-                test.assert.isSizeOf(
-                        TP.$focus_stack,
-                        1,
-                        'Focus stack size of: ' +
-                            TP.$focus_stack.getSize() +
-                            ' is not the correct size in Step #1');
-                test.assert.isIdenticalTo(
-                        TP.$focus_stack.last(),
-                        pageTextField,
-                        'Stack last element not identical to page text field');
-            });
+        //  At this point, the focus stack should have one item on it -
+        //  the page field element (wrapped).
+        test.assert.isSizeOf(
+                TP.$focus_stack,
+                1,
+                'Focus stack size of: ' +
+                    TP.$focus_stack.getSize() +
+                    ' is not the correct size in Step #1');
+        test.assert.isIdenticalTo(
+                TP.$focus_stack.last(),
+                pageTextField,
+                'Stack last element not identical to page text field');
 
-        test.chain(
-            function() {
 
-                var templateURI,
-                    promise;
+        //  Grab the template URI and dialog ID for the 'prompt' panel
+        //  (and defaulting if they are not supplied in the separate
+        //  hash).
+        templateURI = TP.uc('~TP.xctrls.dialog/system_prompt.xhtml');
 
-                //  Grab the template URI and dialog ID for the 'prompt' panel
-                //  (and defaulting if they are not supplied in the separate
-                //  hash).
-                templateURI = TP.uc('~TP.xctrls.dialog/system_prompt.xhtml');
+        //  Call the TP.dialog() method with that data and specifying
+        //  that the panelis to be modal and what the message it.
+        await TP.dialog(
+                    TP.hc('templateURI', templateURI,
+                            'dialogID', 'testDialog',
+                            'isModal', true,
+                            'templateData',
+                                TP.hc('message', 'Hi There')));
 
-                //  Call the TP.dialog() method with that data and specifying
-                //  that the panelis to be modal and what the message it.
-                promise = TP.dialog(
-                            TP.hc('templateURI', templateURI,
-                                    'dialogID', 'testDialog',
-                                    'isModal', true,
-                                    'templateData',
-                                        TP.hc('message', 'Hi There')));
+        await test.andAllowGUIRefresh(windowContext);
 
-                return promise;
-            });
+        uiRootWin = TP.sys.getUIRoot(true);
 
-        test.andAllowGUIRefresh(windowContext);
+        dialogTPElem = TP.byId('testDialog', uiRootWin, true);
 
-        test.chain(
-            function() {
+        dialogTextField =
+            TP.byCSSPath('#testDialog input[type="text"]',
+                            uiRootWin,
+                            true);
 
-                var uiRootWin,
-                    dialogTPElem,
-                    dialogTextField;
+        test.assert.hasAttribute(dialogTextField, 'pclass:focus');
 
-                uiRootWin = TP.sys.getUIRoot(true);
+        test.assert.didSignal(dialogTextField, 'TP.sig.UIFocus');
+        test.assert.didSignal(dialogTextField, 'TP.sig.UIDidFocus');
 
-                dialogTPElem = TP.byId('testDialog', uiRootWin, true);
+        focusedElem = TP.documentGetFocusedElement(uiRootWin.document);
+        test.assert.isIdenticalTo(focusedElem,
+                                    TP.unwrap(dialogTextField));
 
-                dialogTextField =
-                    TP.byCSSPath('#testDialog input[type="text"]',
-                                    uiRootWin,
-                                    true);
+        //  At this point, the focus stack should have two items
+        //  on it, because we entered a new focusing context -
+        //  the previous element (pageTextField) and the currently
+        //  focused element (dialogTextField)
+        test.assert.isSizeOf(
+            TP.$focus_stack,
+            2,
+            'Focus stack size of: ' +
+                TP.$focus_stack.getSize() +
+                ' is not the correct size in Step #2');
+        test.assert.isIdenticalTo(
+            TP.$focus_stack.first(),
+            TP.wrap(pageTextField),
+            'Stack first element not identical to page text field');
+        test.assert.isIdenticalTo(
+            TP.$focus_stack.last(),
+            TP.wrap(dialogTextField),
+            'Stack last element not identical to dialog text field');
 
-                test.assert.hasAttribute(dialogTextField, 'pclass:focus');
+        //  Hide the dialog - this should cause it's field to blur and
+        //  for the focus stack to pop, thereby making the page field
+        //  the currently focused field.
+        dialogTPElem.setAttribute('hidden', true);
 
-                test.assert.didSignal(dialogTextField, 'TP.sig.UIFocus');
-                test.assert.didSignal(dialogTextField, 'TP.sig.UIDidFocus');
+        await test.andAllowGUIRefresh(windowContext);
 
-                focusedElem = TP.documentGetFocusedElement(uiRootWin.document);
-                test.assert.isIdenticalTo(focusedElem,
-                                            TP.unwrap(dialogTextField));
 
-                //  At this point, the focus stack should have two items
-                //  on it, because we entered a new focusing context -
-                //  the previous element (pageTextField) and the currently
-                //  focused element (dialogTextField)
-                test.assert.isSizeOf(
-                    TP.$focus_stack,
-                    2,
-                    'Focus stack size of: ' +
-                        TP.$focus_stack.getSize() +
-                        ' is not the correct size in Step #2');
-                test.assert.isIdenticalTo(
-                    TP.$focus_stack.first(),
-                    TP.wrap(pageTextField),
-                    'Stack first element not identical to page text field');
-                test.assert.isIdenticalTo(
-                    TP.$focus_stack.last(),
-                    TP.wrap(dialogTextField),
-                    'Stack last element not identical to dialog text field');
+        focusedElem = driver.getFocusedElement();
+        test.assert.isIdenticalTo(focusedElem, pageTextField);
 
-                //  Hide the dialog - this should cause it's field to blur and
-                //  for the focus stack to pop, thereby making the page field
-                //  the currently focused field.
-                dialogTPElem.setAttribute('hidden', true);
-            });
-
-        test.andAllowGUIRefresh(windowContext);
-
-        test.chain(
-            function() {
-
-                focusedElem = driver.getFocusedElement();
-                test.assert.isIdenticalTo(focusedElem, pageTextField);
-
-                //  At this point, the focus stack should have one item on it -
-                //  the page field element (wrapped).
-                test.assert.isSizeOf(
-                        TP.$focus_stack,
-                        1,
-                        'Focus stack size of: ' +
-                            TP.$focus_stack.getSize() +
-                            ' is not the correct size in step #3');
-                test.assert.isIdenticalTo(
-                        TP.$focus_stack.last(),
-                        pageTextField,
-                        'Stack last element not identical to page text field');
-            });
+        //  At this point, the focus stack should have one item on it -
+        //  the page field element (wrapped).
+        test.assert.isSizeOf(
+                TP.$focus_stack,
+                1,
+                'Focus stack size of: ' +
+                    TP.$focus_stack.getSize() +
+                    ' is not the correct size in step #3');
+        test.assert.isIdenticalTo(
+                TP.$focus_stack.last(),
+                pageTextField,
+                'Stack last element not identical to page text field');
     });
 
 }).skip(TP.sys.isHeadless() || TP.sys.cfg('project.name') === 'travis');

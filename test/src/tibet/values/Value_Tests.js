@@ -117,7 +117,7 @@ function() {
         'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
         'DataView',                             /^DataView\$(\w+)$/,
         'Promise',                              /^Promise\$(\w+)$/,
-        'Proxy',                                /^Object\$(\w+)$/,  //  Proxys are see-thru
+        'Proxy',                                /^Object\$(\w+)$/,  //  Proxies are see-thru
 
         'Window',                               TP.sys.cfg('tibet.top_win_name'),
         'IFrameWindow',                         'UIROOT',
@@ -332,7 +332,7 @@ function() {
         'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
         'DataView',                             /^DataView\$(\w+)$/,
         'Promise',                              /^Promise\$(\w+)$/,
-        'Proxy',                                /^Object\$(\w+)$/,  //  Proxys are see-thru
+        'Proxy',                                /^Object\$(\w+)$/,  //  Proxies are see-thru
 
         'Window',                               winGID,
         'IFrameWindow',                         winGID + '.UIROOT',
@@ -2773,7 +2773,7 @@ function() {
         'ArrayBuffer',                          false,
         'DataView',                             false,
         'Promise',                              false,
-        'Proxy',                                true,       //  Proxys are see-thru,
+        'Proxy',                                true,       //  Proxies are see-thru,
 
         'Window',                               true,
         'IFrameWindow',                         true,

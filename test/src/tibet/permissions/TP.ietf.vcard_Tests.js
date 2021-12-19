@@ -55,23 +55,19 @@ function() {
     this.before(
         function(suite, options) {
 
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var loadPromise;
+            var loadPromise;
 
-                    loadPromise = TP.ietf.vcard.loadVCards(loadURI);
+            loadPromise = TP.ietf.vcard.loadVCards(loadURI);
 
-                    return loadPromise.then(
-                                function(aResult) {
-                                    loadedCards =
-                                        TP.ietf.vcard.initVCards(aResult);
+            return loadPromise.then(
+                        function(aResult) {
+                            loadedCards =
+                                TP.ietf.vcard.initVCards(aResult);
 
-                                    //  Register the vcard for use below.
-                                    TP.ietf.vcard.registerVCard(
-                                                        loadedCards.first());
-                                });
-                });
+                            //  Register the vcard for use below.
+                            TP.ietf.vcard.registerVCard(
+                                                loadedCards.first());
+                        });
         });
 
     //  ---

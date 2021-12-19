@@ -33,7 +33,9 @@ function() {
 
     var unloadURI,
         loadURI,
-        driver;
+
+        driver,
+        windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
     loadURI = TP.uc('~lib_test/src/on/OnTest1.xhtml');
@@ -41,31 +43,31 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
-
-            this.getDriver().showTestGUI();
+        async function(suite, options) {
 
             driver = this.getDriver();
-            driver.setLocation(loadURI);
+            windowContext = driver.get('windowContext');
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this),
-                function(error) {
-                    this.fail(error, TP.sc('Couldn\'t get resource: ',
-                                                loadURI.getLocation()));
-                });
+            //  ---
+
+            driver.showTestGUI();
+
+            //  ---
+
+            await driver.setLocation(loadURI);
+
+            this.startTrackingSignals();
         });
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
             this.stopTrackingSignals();
-            this.getDriver().showTestLog();
+
+            driver.showTestLog();
 
             //  Unload the current page by setting it to the
             //  blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -83,77 +85,50 @@ function() {
 
     //  ---
 
-    this.it('DOM on: signaling - DOM standard name', function(test, options) {
+    this.it('DOM on: signaling - DOM standard name', async function(test, options) {
 
-        var windowContext,
-            elem;
-
-        windowContext = driver.get('windowContext');
+        var elem;
 
         elem = TP.byId('testElem1', windowContext);
 
-        driver.constructSequence().
-                click(elem).
-                run();
+        await driver.constructSequence().
+                        click(elem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.didSignal(elem, 'TP.sig.DOMClick');
-                test.assert.didSignal(elem, 'ClickTestSignal');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.didSignal(elem, 'TP.sig.DOMClick');
+        test.assert.didSignal(elem, 'ClickTestSignal');
     });
 
     //  ---
 
-    this.it('DOM on: signaling - TIBET full name', function(test, options) {
+    this.it('DOM on: signaling - TIBET full name', async function(test, options) {
 
-        var windowContext,
-            elem;
-
-        windowContext = driver.get('windowContext');
+        var elem;
 
         elem = TP.byId('testElem2', windowContext);
 
-        driver.constructSequence().
-                click(elem).
-                run();
+        await driver.constructSequence().
+                        click(elem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.didSignal(elem, 'TP.sig.DOMClick');
-                test.assert.didSignal(elem, 'ClickTestSignal');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.didSignal(elem, 'TP.sig.DOMClick');
+        test.assert.didSignal(elem, 'ClickTestSignal');
     });
 
     //  ---
 
-    this.it('DOM on: signaling - TIBET short name', function(test, options) {
+    this.it('DOM on: signaling - TIBET short name', async function(test, options) {
 
-        var windowContext,
-            elem;
-
-        windowContext = driver.get('windowContext');
+        var elem;
 
         elem = TP.byId('testElem3', windowContext);
 
-        driver.constructSequence().
-                click(elem).
-                run();
+        await driver.constructSequence().
+                        click(elem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.didSignal(elem, 'TP.sig.DOMClick');
-                test.assert.didSignal(elem, 'ClickTestSignal');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.didSignal(elem, 'TP.sig.DOMClick');
+        test.assert.didSignal(elem, 'ClickTestSignal');
     });
 
 });
@@ -165,7 +140,9 @@ function() {
 
     var unloadURI,
         loadURI,
-        driver;
+
+        driver,
+        windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
     loadURI = TP.uc('~lib_test/src/on/OnTest2.xhtml');
@@ -173,31 +150,27 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
-
-            this.getDriver().showTestGUI();
+        async function(suite, options) {
 
             driver = this.getDriver();
-            driver.setLocation(loadURI);
+            windowContext = driver.get('windowContext');
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this),
-                function(error) {
-                    this.fail(error, TP.sc('Couldn\'t get resource: ',
-                                                loadURI.getLocation()));
-                });
+            driver.showTestGUI();
+
+            await driver.setLocation(loadURI);
+
+            this.startTrackingSignals();
         });
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
             this.stopTrackingSignals();
-            this.getDriver().showTestLog();
+
+            driver.showTestLog();
 
             //  Unload the current page by setting it to the
             //  blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -215,146 +188,119 @@ function() {
 
     //  ---
 
-    this.it('DOM on: signaling - DOM standard name', function(test, options) {
+    this.it('DOM on: signaling - DOM standard name', async function(test, options) {
 
-        var windowContext,
-            triggerElem,
-            elem;
+        var triggerElem,
+            elem,
 
-        windowContext = driver.get('windowContext');
+            args,
+            len,
+            i,
+
+            sigPayload;
 
         triggerElem = TP.byId('triggerElem1', windowContext);
         elem = TP.byId('testElem1', windowContext);
 
-        driver.constructSequence().
-                click(triggerElem).
-                run();
+        await driver.constructSequence().
+                        click(triggerElem).
+                        run();
 
-        test.chain(
-            function() {
-                var args,
-                    len,
-                    i,
+        test.assert.didSignal(triggerElem, 'TP.sig.DOMClick');
+        test.assert.didSignal(elem, 'ClickTestSignal');
 
-                    sigPayload;
+        //  Search through all of the signal invocations, looking for
+        //  'ClickTestSignal'
+        args = test.getSuite().getSignalingArgs();
 
-                test.assert.didSignal(triggerElem, 'TP.sig.DOMClick');
-                test.assert.didSignal(elem, 'ClickTestSignal');
+        len = args.getSize();
+        for (i = len - 1; i >= 0; i--) {
+            if (args.at(i).at(1) === 'ClickTestSignal') {
+                sigPayload = args.at(i).at(2);
+                break;
+            }
+        }
 
-                //  Search through all of the signal invocations, looking for
-                //  'ClickTestSignal'
-                args = test.getSuite().getSignalingArgs();
-
-                len = args.getSize();
-                for (i = len - 1; i >= 0; i--) {
-                    if (args.at(i).at(1) === 'ClickTestSignal') {
-                        sigPayload = args.at(i).at(2);
-                        break;
-                    }
-                }
-
-                test.assert.hasKey(sigPayload, 'foo');
-                test.assert.hasKey(sigPayload, 'baz');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.hasKey(sigPayload, 'foo');
+        test.assert.hasKey(sigPayload, 'baz');
     });
 
     //  ---
 
-    this.it('DOM on: signaling - TIBET full name', function(test, options) {
+    this.it('DOM on: signaling - TIBET full name', async function(test, options) {
 
-        var windowContext,
-            triggerElem,
-            elem;
+        var triggerElem,
+            elem,
 
-        windowContext = driver.get('windowContext');
+            args,
+            len,
+            i,
+
+            sigPayload;
 
         triggerElem = TP.byId('triggerElem2', windowContext);
         elem = TP.byId('testElem1', windowContext);
 
-        driver.constructSequence().
-                click(triggerElem).
-                run();
+        await driver.constructSequence().
+                        click(triggerElem).
+                        run();
 
-        test.chain(
-            function() {
-                var args,
-                    len,
-                    i,
+        test.assert.didSignal(triggerElem, 'TP.sig.DOMClick');
+        test.assert.didSignal(elem, 'ClickTestSignal');
 
-                    sigPayload;
+        //  Search through all of the signal invocations, looking for
+        //  'ClickTestSignal'
+        args = test.getSuite().getSignalingArgs();
 
-                test.assert.didSignal(triggerElem, 'TP.sig.DOMClick');
-                test.assert.didSignal(elem, 'ClickTestSignal');
+        len = args.getSize();
+        for (i = len - 1; i >= 0; i--) {
+            if (args.at(i).at(1) === 'ClickTestSignal') {
+                sigPayload = args.at(i).at(2);
+                break;
+            }
+        }
 
-                //  Search through all of the signal invocations, looking for
-                //  'ClickTestSignal'
-                args = test.getSuite().getSignalingArgs();
-
-                len = args.getSize();
-                for (i = len - 1; i >= 0; i--) {
-                    if (args.at(i).at(1) === 'ClickTestSignal') {
-                        sigPayload = args.at(i).at(2);
-                        break;
-                    }
-                }
-
-                test.assert.hasKey(sigPayload, 'foo');
-                test.assert.hasKey(sigPayload, 'baz');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.hasKey(sigPayload, 'foo');
+        test.assert.hasKey(sigPayload, 'baz');
     });
 
     //  ---
 
-    this.it('DOM on: signaling - TIBET short name', function(test, options) {
+    this.it('DOM on: signaling - TIBET short name', async function(test, options) {
 
-        var windowContext,
-            triggerElem,
-            elem;
+        var triggerElem,
+            elem,
 
-        windowContext = driver.get('windowContext');
+            args,
+            len,
+            i,
+
+            sigPayload;
 
         triggerElem = TP.byId('triggerElem3', windowContext);
         elem = TP.byId('testElem1', windowContext);
 
-        driver.constructSequence().
-                click(triggerElem).
-                run();
+        await driver.constructSequence().
+                        click(triggerElem).
+                        run();
 
-        test.chain(
-            function() {
-                var args,
-                    len,
-                    i,
+        test.assert.didSignal(triggerElem, 'TP.sig.DOMClick');
+        test.assert.didSignal(elem, 'ClickTestSignal');
 
-                    sigPayload;
+        //  Search through all of the signal invocations, looking for
+        //  'ClickTestSignal'
+        args = test.getSuite().getSignalingArgs();
 
-                test.assert.didSignal(triggerElem, 'TP.sig.DOMClick');
-                test.assert.didSignal(elem, 'ClickTestSignal');
+        len = args.getSize();
+        for (i = len - 1; i >= 0; i--) {
+            if (args.at(i).at(1) === 'ClickTestSignal') {
+                sigPayload = args.at(i).at(2);
+                break;
+            }
+        }
 
-                //  Search through all of the signal invocations, looking for
-                //  'ClickTestSignal'
-                args = test.getSuite().getSignalingArgs();
-
-                len = args.getSize();
-                for (i = len - 1; i >= 0; i--) {
-                    if (args.at(i).at(1) === 'ClickTestSignal') {
-                        sigPayload = args.at(i).at(2);
-                        break;
-                    }
-                }
-
-                test.assert.hasKey(sigPayload, 'foo');
-                test.assert.hasKey(sigPayload, 'baz');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.hasKey(sigPayload, 'foo');
+        test.assert.hasKey(sigPayload, 'baz');
     });
 
 });
@@ -366,7 +312,9 @@ function() {
 
     var unloadURI,
         loadURI,
-        driver;
+
+        driver,
+        windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
     loadURI = TP.uc('~lib_test/src/on/OnTest3.xhtml');
@@ -374,31 +322,27 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
-
-            this.getDriver().showTestGUI();
+        async function(suite, options) {
 
             driver = this.getDriver();
-            driver.setLocation(loadURI);
+            windowContext = driver.get('windowContext');
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this),
-                function(error) {
-                    this.fail(error, TP.sc('Couldn\'t get resource: ',
-                                                loadURI.getLocation()));
-                });
+            driver.showTestGUI();
+
+            await driver.setLocation(loadURI);
+
+            this.startTrackingSignals();
         });
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
+
             this.stopTrackingSignals();
-            this.getDriver().showTestLog();
+            driver.showTestLog();
 
             //  Unload the current page by setting it to the
             //  blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -418,46 +362,28 @@ function() {
 
     this.it('non-DOM on: signaling - TIBET full name', function(test, options) {
 
-        var windowContext,
-            elem;
-
-        windowContext = driver.get('windowContext');
+        var elem;
 
         elem = TP.byId('testElem1', windowContext);
 
         TP.wrap(elem).dispatch('TP.sig.FooSignal');
 
-        test.chain(
-            function() {
-                test.assert.didSignal(elem, 'TP.sig.FooSignal');
-                test.assert.didSignal(elem, 'TP.sig.BarSignal');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.didSignal(elem, 'TP.sig.FooSignal');
+        test.assert.didSignal(elem, 'TP.sig.BarSignal');
     });
 
     //  ---
 
     this.it('non-DOM on: signaling - TIBET short name', function(test, options) {
 
-        var windowContext,
-            elem;
-
-        windowContext = driver.get('windowContext');
+        var elem;
 
         elem = TP.byId('testElem2', windowContext);
 
         TP.wrap(elem).dispatch('FooSignal');
 
-        test.chain(
-            function() {
-                test.assert.didSignal(elem, 'FooSignal');
-                test.assert.didSignal(elem, 'TP.sig.BarSignal');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.didSignal(elem, 'FooSignal');
+        test.assert.didSignal(elem, 'TP.sig.BarSignal');
     });
 
 });
@@ -469,7 +395,9 @@ function() {
 
     var unloadURI,
         loadURI,
-        driver;
+
+        driver,
+        windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
     loadURI = TP.uc('~lib_test/src/on/OnTest4.xhtml');
@@ -477,31 +405,28 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
-
-            this.getDriver().showTestGUI();
+        async function(suite, options) {
 
             driver = this.getDriver();
-            driver.setLocation(loadURI);
+            windowContext = driver.get('windowContext');
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this),
-                function(error) {
-                    this.fail(error, TP.sc('Couldn\'t get resource: ',
-                                                loadURI.getLocation()));
-                });
+            driver.showTestGUI();
+
+            await driver.setLocation(loadURI);
+
+            this.startTrackingSignals();
         });
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
+
             this.stopTrackingSignals();
-            this.getDriver().showTestLog();
+
+            driver.showTestLog();
 
             //  Unload the current page by setting it to the
             //  blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -521,92 +446,74 @@ function() {
 
     this.it('non-DOM on: signaling - TIBET full name', function(test, options) {
 
-        var windowContext,
-            triggerElem,
-            elem;
+        var triggerElem,
+            elem,
 
-        windowContext = driver.get('windowContext');
+            args,
+            len,
+            i,
+
+            sigPayload;
 
         triggerElem = TP.byId('triggerElem1', windowContext);
         elem = TP.byId('testElem1', windowContext);
 
         TP.wrap(triggerElem).dispatch('TP.sig.FooSignal');
 
-        test.chain(
-            function() {
-                var args,
-                    len,
-                    i,
+        test.assert.didSignal(triggerElem, 'TP.sig.FooSignal');
+        test.assert.didSignal(elem, 'TP.sig.BarSignal');
 
-                    sigPayload;
+        //  Search through all of the signal invocations, looking for
+        //  'TP.sig.BarSignal'
+        args = test.getSuite().getSignalingArgs();
 
-                test.assert.didSignal(triggerElem, 'TP.sig.FooSignal');
-                test.assert.didSignal(elem, 'TP.sig.BarSignal');
+        len = args.getSize();
+        for (i = len - 1; i >= 0; i--) {
+            if (args.at(i).at(1) === 'TP.sig.BarSignal') {
+                sigPayload = args.at(i).at(2);
+                break;
+            }
+        }
 
-                //  Search through all of the signal invocations, looking for
-                //  'TP.sig.BarSignal'
-                args = test.getSuite().getSignalingArgs();
-
-                len = args.getSize();
-                for (i = len - 1; i >= 0; i--) {
-                    if (args.at(i).at(1) === 'TP.sig.BarSignal') {
-                        sigPayload = args.at(i).at(2);
-                        break;
-                    }
-                }
-
-                test.assert.hasKey(sigPayload, 'foo');
-                test.assert.hasKey(sigPayload, 'baz');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.hasKey(sigPayload, 'foo');
+        test.assert.hasKey(sigPayload, 'baz');
     });
 
     //  ---
 
     this.it('non-DOM on: signaling - TIBET short name', function(test, options) {
 
-        var windowContext,
-            triggerElem,
-            elem;
+        var triggerElem,
+            elem,
 
-        windowContext = driver.get('windowContext');
+            args,
+            len,
+            i,
+
+            sigPayload;
 
         triggerElem = TP.byId('triggerElem2', windowContext);
         elem = TP.byId('testElem1', windowContext);
 
         TP.wrap(triggerElem).dispatch('FooSignal');
 
-        test.chain(
-            function() {
-                var args,
-                    len,
-                    i,
+        test.assert.didSignal(triggerElem, 'FooSignal');
+        test.assert.didSignal(elem, 'TP.sig.BarSignal');
 
-                    sigPayload;
+        //  Search through all of the signal invocations, looking for
+        //  'TP.sig.BarSignal'
+        args = test.getSuite().getSignalingArgs();
 
-                test.assert.didSignal(triggerElem, 'FooSignal');
-                test.assert.didSignal(elem, 'TP.sig.BarSignal');
+        len = args.getSize();
+        for (i = len - 1; i >= 0; i--) {
+            if (args.at(i).at(1) === 'TP.sig.BarSignal') {
+                sigPayload = args.at(i).at(2);
+                break;
+            }
+        }
 
-                //  Search through all of the signal invocations, looking for
-                //  'TP.sig.BarSignal'
-                args = test.getSuite().getSignalingArgs();
-
-                len = args.getSize();
-                for (i = len - 1; i >= 0; i--) {
-                    if (args.at(i).at(1) === 'TP.sig.BarSignal') {
-                        sigPayload = args.at(i).at(2);
-                        break;
-                    }
-                }
-
-                test.assert.hasKey(sigPayload, 'foo');
-                test.assert.hasKey(sigPayload, 'baz');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Event sequence error'));
-            });
+        test.assert.hasKey(sigPayload, 'foo');
+        test.assert.hasKey(sigPayload, 'baz');
     });
 
 });

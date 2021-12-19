@@ -260,299 +260,246 @@ function() {
 
     //  ---
 
-    this.it('\'all nodes\' - no mutation', function(test, options) {
+    this.it('\'all nodes\' - no mutation', async function(test, options) {
 
         var loadURI,
-            promise;
+            result,
+
+            processor,
+
+            beforeStr,
+            afterStr;
 
         loadURI = TP.uc(testDataLoc + '#nochange');
 
-        promise = test.getDriver().fetchResource(
+        result = await test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
 
-        promise.chain(function(result) {
-                var processor,
+        processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
-                    beforeStr,
-                    afterStr;
+        //  Capture the String representation before we process it
+        beforeStr = TP.str(result);
 
-                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
+        processor.processTree(result);
 
-                //  Capture the String representation before we process it
-                beforeStr = TP.str(result);
+        //  Capture the String representation after we process it
+        afterStr = TP.str(result);
 
-                processor.processTree(result);
-
-                //  Capture the String representation after we process it
-                afterStr = TP.str(result);
-
-                test.assert.isEqualTo(beforeStr, afterStr);
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(beforeStr, afterStr);
     });
 
-    this.it('\'all nodes\' - attribute mutation', function(test, options) {
+    this.it('\'all nodes\' - attribute mutation', async function(test, options) {
 
         var loadURI,
-            promise;
+            result,
+
+            processor;
 
         loadURI = TP.uc(testDataLoc + '#attrchange');
 
-        promise = test.getDriver().fetchResource(
+        result = await test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
 
-        promise.chain(function(result) {
-                var processor;
+        processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
-                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
+        processor.processTree(result);
 
-                processor.processTree(result);
-
-                test.assert.hasAttribute(result, 'allnodesmark');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.hasAttribute(result, 'allnodesmark');
     });
 
-    this.it('\'all nodes\' - more attribute mutation', function(test, options) {
+    this.it('\'all nodes\' - more attribute mutation', async function(test, options) {
 
         var loadURI,
-            promise;
+            result,
+
+            processor;
 
         loadURI = TP.uc(testDataLoc + '#moreattrchange');
 
-        promise = test.getDriver().fetchResource(
+        result = await test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
 
-        promise.chain(function(result) {
-                var processor;
+        processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
-                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
+        processor.processTree(result);
 
-                processor.processTree(result);
-
-                test.assert.hasAttribute(result, 'allnodesmark');
-                test.assert.hasAttribute(result, 'allnodesmark2');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.hasAttribute(result, 'allnodesmark');
+        test.assert.hasAttribute(result, 'allnodesmark2');
     });
 
-    this.it('\'all nodes\' - content mutation', function(test, options) {
+    this.it('\'all nodes\' - content mutation', async function(test, options) {
 
         var loadURI,
-            promise;
+            result,
+
+            processor,
+            testElem;
 
         loadURI = TP.uc(testDataLoc + '#contentchange');
 
-        promise = test.getDriver().fetchResource(
+        result = await test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
 
-        promise.chain(function(result) {
-                var processor,
-                    testElem;
+        processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
-                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
+        processor.processTree(result);
 
-                processor.processTree(result);
+        testElem = result.firstElementChild;
 
-                testElem = result.firstElementChild;
-
-                test.assert.isXMLNode(testElem);
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isXMLNode(testElem);
     });
 
-    this.it('\'all nodes\' - more content mutation', function(test, options) {
+    this.it('\'all nodes\' - more content mutation', async function(test, options) {
 
         var loadURI,
-            promise;
+            result,
+
+            processor,
+            testElem;
 
         loadURI = TP.uc(testDataLoc + '#morecontentchange');
 
-        promise = test.getDriver().fetchResource(
+        result = await test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
-        promise.chain(function(result) {
-                var processor,
-                    testElem;
 
-                processor = TP.tag.TagProcessor.getTestFixture('allNodes');
+        processor = TP.tag.TagProcessor.getTestFixture('allNodes');
 
-                processor.processTree(result);
+        processor.processTree(result);
 
-                testElem = result.firstElementChild;
+        testElem = result.firstElementChild;
 
-                test.assert.hasAttribute(result, 'allnodesmark');
+        test.assert.hasAttribute(result, 'allnodesmark');
 
-                test.assert.isXMLNode(testElem);
-                test.assert.hasAttribute(testElem, 'allnodesmark2');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isXMLNode(testElem);
+        test.assert.hasAttribute(testElem, 'allnodesmark2');
     });
 
-    this.it('\'all nodes\' - ACP substitution', function(test, options) {
+    this.it('\'all nodes\' - ACP substitution', async function(test, options) {
 
         var loadURI,
-            promise;
+            result,
+
+            processor,
+            req,
+            testElem;
 
         loadURI = TP.uc(testDataLoc + '#acpcontentchange');
 
-        promise = test.getDriver().fetchResource(
+        result = await test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
 
-        promise.chain(function(result) {
-                var processor,
-                    req,
-                    testElem;
+        processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
 
-                processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
+        req = TP.request(
+                'sources',
+                    TP.ac(TP.tpelem('<wrapper>' +
+                                    '<foo xmlns="" bar="baz"/>' +
+                                    '</wrapper>', ''))
+                );
 
-                req = TP.request(
-                        'sources',
-                            TP.ac(TP.tpelem('<wrapper>' +
-                                            '<foo xmlns="" bar="baz"/>' +
-                                            '</wrapper>', ''))
-                        );
+        processor.processTree(result, req);
 
-                processor.processTree(result, req);
+        testElem = result.firstElementChild;
 
-                testElem = result.firstElementChild;
+        test.assert.isXMLNode(testElem);
+        test.assert.isNull(testElem.namespaceURI);
+        test.assert.hasAttribute(testElem, 'bar');
 
-                test.assert.isXMLNode(testElem);
-                test.assert.isNull(testElem.namespaceURI);
-                test.assert.hasAttribute(testElem, 'bar');
-
-                test.assert.isEqualTo(testElem.localName, 'foo');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(testElem.localName, 'foo');
     });
 
-    this.it('\'all nodes\' - ACP select substitution', function(test, options) {
+    this.it('\'all nodes\' - ACP select substitution', async function(test, options) {
 
         var loadURI,
-            promise;
+            result,
+
+            processor,
+            req,
+            testElem;
 
         loadURI = TP.uc(testDataLoc + '#selectacpcontentchange');
 
-        promise = test.getDriver().fetchResource(
+        result = await test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
 
-        promise.chain(function(result) {
-                var processor,
-                    req,
-                    testElem;
+        processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
 
-                processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
+        req = TP.request(
+                'sources',
+                    TP.ac(TP.tpelem('<wrapper>' +
+                                    '<foo xmlns="" bar="baz"/>' +
+                                    '<moo xmlns="" bar="baz"/>' +
+                                    '</wrapper>', ''))
+                );
 
-                req = TP.request(
-                        'sources',
-                            TP.ac(TP.tpelem('<wrapper>' +
-                                            '<foo xmlns="" bar="baz"/>' +
-                                            '<moo xmlns="" bar="baz"/>' +
-                                            '</wrapper>', ''))
-                        );
+        processor.processTree(result, req);
 
-                processor.processTree(result, req);
+        test.assert.isEqualTo(result.children.length, 1);
 
-                test.assert.isEqualTo(result.children.length, 1);
+        testElem = result.firstElementChild;
 
-                testElem = result.firstElementChild;
+        test.assert.isXMLNode(testElem);
+        test.assert.isNull(testElem.namespaceURI);
+        test.assert.hasAttribute(testElem, 'bar');
 
-                test.assert.isXMLNode(testElem);
-                test.assert.isNull(testElem.namespaceURI);
-                test.assert.hasAttribute(testElem, 'bar');
-
-                test.assert.isEqualTo(testElem.localName, 'foo');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(testElem.localName, 'foo');
     });
 
-    this.it('\'all nodes\' - ACP attribute substitution', function(test, options) {
+    this.it('\'all nodes\' - ACP attribute substitution', async function(test, options) {
 
         var loadURI,
-            promise;
+            result,
+
+            processor,
+            req,
+            testElem;
 
         loadURI = TP.uc(testDataLoc + '#attracpcontentchange');
 
-        promise = test.getDriver().fetchResource(
+        result = await test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
 
-        promise.chain(function(result) {
-                var processor,
-                    req,
-                    testElem;
+        processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
 
-                processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
+        req = TP.request(
+                'sources',
+                    TP.ac(TP.tpelem('<foo xmlns="" bar="baz"/>', ''))
+                );
 
-                req = TP.request(
-                        'sources',
-                            TP.ac(TP.tpelem('<foo xmlns="" bar="baz"/>', ''))
-                        );
+        processor.processTree(result, req);
 
-                processor.processTree(result, req);
+        testElem = result.firstElementChild;
 
-                testElem = result.firstElementChild;
-
-                test.assert.hasAttribute(testElem, 'foo');
-                test.assert.isEqualTo(testElem.getAttribute('foo'), 'baz');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.hasAttribute(testElem, 'foo');
+        test.assert.isEqualTo(testElem.getAttribute('foo'), 'baz');
     });
 
-    this.it('\'all nodes\' - ACP no-exist attribute substitution', function(test, options) {
+    this.it('\'all nodes\' - ACP no-exist attribute substitution', async function(test, options) {
 
         var loadURI,
-            promise;
+            result,
+
+            processor,
+            req,
+            testElem;
 
         loadURI = TP.uc(testDataLoc + '#attrnoexistacpcontentchange');
 
-        promise = test.getDriver().fetchResource(
+        result = await test.getDriver().fetchResource(
                                     loadURI, TP.hc('resultType', TP.DOM));
 
-        promise.chain(function(result) {
-                var processor,
-                    req,
-                    testElem;
+        processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
 
-                processor = TP.tag.TagProcessor.getTestFixture('acpNodes');
+        req = TP.request(
+                'sources',
+                    TP.ac(TP.tpelem('<foo xmlns="" bar="baz"/>', ''))
+                );
 
-                req = TP.request(
-                        'sources',
-                            TP.ac(TP.tpelem('<foo xmlns="" bar="baz"/>', ''))
-                        );
+        processor.processTree(result, req);
 
-                processor.processTree(result, req);
+        testElem = result.firstElementChild;
 
-                testElem = result.firstElementChild;
-
-                test.assert.hasAttribute(testElem, 'foo');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.hasAttribute(testElem, 'foo');
     });
 
 });
@@ -584,10 +531,10 @@ function() {
     //  ---
 
     this.afterEach(
-        function(test, options) {
+        async function(test, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -595,77 +542,69 @@ function() {
 
     //  ---
 
-    this.it('XML Base processing', function(test, options) {
+    this.it('XML Base processing', async function(test, options) {
+
+        var windowContext;
 
         loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/XMLBaseTest1.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        await test.getDriver().setLocation(loadURI);
 
-        test.chain(
-            function() {
+        windowContext = test.getDriver().get('windowContext');
 
-                var windowContext;
+        //  Note that these paths on these elements aren't real - we're
+        //  not really interested in that. What we're interested in is
+        //  whether the path got computed properly. Note that the reason
+        //  we actually set the 'src' attribute on an '<img>' tag is
+        //  that we still need it to be an attribute that TIBET thinks
+        //  needs to be processed (see the 'TP.html.img' tag type and it
+        //  'uriAttrs' attribute).
 
-                windowContext = test.getDriver().get('windowContext');
+        test.assert.isElement(TP.byId('area1', windowContext, false));
+        test.assert.isAttributeEqualTo(
+            TP.byId('area1', windowContext, false),
+            'href',
+            'file:///usr/local/src/TIBET/base/lib/tibet/img/area1.gif');
 
-                //  Note that these paths on these elements aren't real - we're
-                //  not really interested in that. What we're interested in is
-                //  whether the path got computed properly. Note that the reason
-                //  we actually set the 'src' attribute on an '<img>' tag is
-                //  that we still need it to be an attribute that TIBET thinks
-                //  needs to be processed (see the 'TP.html.img' tag type and it
-                //  'uriAttrs' attribute).
+        test.assert.isAttributeEqualTo(
+            TP.byId('area2', windowContext, false),
+            'href',
+            TP.uc('~tibet/base/lib/tibet/img/area2.gif').getLocation());
 
-                test.assert.isElement(TP.byId('area1', windowContext, false));
-                test.assert.isAttributeEqualTo(
-                    TP.byId('area1', windowContext, false),
-                    'href',
-                    'file:///usr/local/src/TIBET/base/lib/tibet/img/area1.gif');
+        test.assert.isAttributeEqualTo(
+            TP.byId('area3', windowContext, false),
+            'href',
+            TP.uc('~tibet/base/lib/tibet/img/../area3.gif').getLocation());
 
-                test.assert.isAttributeEqualTo(
-                    TP.byId('area2', windowContext, false),
-                    'href',
-                    TP.uc('~tibet/base/lib/tibet/img/area2.gif').getLocation());
-
-                test.assert.isAttributeEqualTo(
-                    TP.byId('area3', windowContext, false),
-                    'href',
-                    TP.uc('~tibet/base/lib/tibet/img/../area3.gif').getLocation());
-
-                test.assert.isAttributeEqualTo(
-                    TP.byId('area4', windowContext, false),
-                    'href',
-                    TP.uc('~tibet/base/lib/tibet/img/area4.gif').getLocation());
-            });
+        test.assert.isAttributeEqualTo(
+            TP.byId('area4', windowContext, false),
+            'href',
+            TP.uc('~tibet/base/lib/tibet/img/area4.gif').getLocation());
     });
 
-    this.it('TIBET stylesheet PI processing - single level', function(test, options) {
+    this.it('TIBET stylesheet PI processing - single level', async function(test, options) {
+
+        var elem,
+            tpElem;
 
         loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/EmbedXSL1.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        await test.getDriver().setLocation(loadURI);
 
-        test.chain(
-            function() {
+        elem = TP.byId('colorizedSpan',
+                        test.getDriver().get('windowContext'),
+                        false);
+        test.assert.isElement(elem);
 
-                var elem,
-                    tpElem;
+        tpElem = TP.wrap(elem);
 
-                elem = TP.byId('colorizedSpan',
-                                test.getDriver().get('windowContext'),
-                                false);
-                test.assert.isElement(elem);
-
-                tpElem = TP.wrap(elem);
-
-                //  NB: We convert this into a TP.gui.Color object to compare
-                //  - depending on platform, getComputedStyleProperty will
-                //  return RGB values, etc.
-                test.assert.isEqualTo(
-                    TP.gui.Color.fromString(
-                        tpElem.getComputedStyleProperty('backgroundColor')),
-                    TP.gui.Color.fromString('blue'));
-            });
+        //  NB: We convert this into a TP.gui.Color object to compare
+        //  - depending on platform, getComputedStyleProperty will
+        //  return RGB values, etc.
+        test.assert.isEqualTo(
+            TP.gui.Color.fromString(
+                tpElem.getComputedStyleProperty('backgroundColor')),
+            TP.gui.Color.fromString('blue'));
     });
 });
 
@@ -722,10 +661,10 @@ function() {
     //  ---
 
     this.afterEach(
-        function(test, options) {
+        async function(test, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -733,104 +672,89 @@ function() {
 
     //  ---
 
-    this.it('whole file inclusion', function(test, options) {
+    this.it('whole file inclusion', async function(test, options) {
+
+        var result,
+
+            tpDoc,
+
+            server,
+            loc,
+
+            windowContext;
 
         loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/XInclude1.xml');
 
-        test.getDriver().fetchResource(loadURI, TP.hc('resultType', TP.DOM)
-            ).chain(function(result) {
+        result = await test.getDriver().fetchResource(
+                                    loadURI, TP.hc('resultType', TP.DOM));
 
-                var tpDoc,
+        tpDoc = TP.sys.getUICanvas().getDocument();
 
-                    server,
-                    loc;
+        //  NB: These calls use a synchronous XHR, so we don't need a
+        //  'server.respond()' call below.
 
-                tpDoc = TP.sys.getUICanvas().getDocument();
+        server = TP.test.fakeServer.create();
 
-                //  NB: These calls use a synchronous XHR, so we don't need a
-                //  'server.respond()' call below.
+        loc = TP.uc('~lib_test/src/tibet/tagprocessor/XIncludePart10.xml').getConcreteURI().get('path');
+        if (loc.charAt(0) !== '/') {
+            loc = '/' + loc;
+        }
 
-                server = TP.test.fakeServer.create();
+        server.respondWith(
+            TP.HTTP_GET,
+            loc,
+            [
+                404,
+                {
+                },
+                ''
+            ]);
 
-                loc = TP.uc('~lib_test/src/tibet/tagprocessor/XIncludePart10.xml').getConcreteURI().get('path');
-                if (loc.charAt(0) !== '/') {
-                    loc = '/' + loc;
-                }
+        server.xhr.filters = [];
+        server.xhr.useFilters = true;
+        server.xhr.addFilter(
+                function(method, url) {
+                    var testMatcher;
 
-                server.respondWith(
-                    TP.HTTP_GET,
-                    loc,
-                    [
-                        404,
-                        {
-                        },
-                        ''
-                    ]);
+                    testMatcher = new RegExp(TP.regExpEscape(loc));
 
-                server.xhr.filters = [];
-                server.xhr.useFilters = true;
-                server.xhr.addFilter(
-                        function(method, url) {
-                            var testMatcher;
+                    return !testMatcher.test(url);
+                });
 
-                            testMatcher = new RegExp(TP.regExpEscape(loc));
+        tpDoc.setContent(result);
 
-                            return !testMatcher.test(url);
-                        });
+        windowContext = test.getDriver().get('windowContext');
 
-                tpDoc.setContent(result);
+        test.assert.isElement(
+            TP.byId('part1Success', windowContext, false));
 
-                test.chain(
-                    function() {
+        test.assert.isElement(
+            TP.byId('part10Fallback', windowContext, false));
 
-                        var windowContext;
-
-                        windowContext = test.getDriver().get('windowContext');
-
-                        test.assert.isElement(
-                            TP.byId('part1Success', windowContext, false));
-
-                        test.assert.isElement(
-                            TP.byId('part10Fallback', windowContext, false));
-
-                        server.restore();
-                        server.xhr.filters = [];
-                        server.xhr.useFilters = false;
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        server.restore();
+        server.xhr.filters = [];
+        server.xhr.useFilters = false;
     });
 
-    this.it('partial file inclusion', function(test, options) {
+    this.it('partial file inclusion', async function(test, options) {
+
+        var windowContext;
 
         loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/XInclude2.xml');
 
-        test.getDriver().setLocation(loadURI);
+        await test.getDriver().setLocation(loadURI);
 
-        test.chain(
-            function() {
+        windowContext = test.getDriver().get('windowContext');
 
-                var windowContext;
+        //  This comes from the first XInclude with a simple XPointer
+        //  expression
+        test.assert.isElement(
+            TP.byId('partialDiv', windowContext, false));
 
-                windowContext = test.getDriver().get('windowContext');
-
-                //  This comes from the first XInclude with a simple XPointer
-                //  expression
-                test.assert.isElement(
-                    TP.byId('partialDiv', windowContext, false));
-
-                //  This comes from the second XInclude with a more complex
-                //  XPointer expression.
-                test.assert.isElement(
-                    TP.byId('partialParagraph', windowContext, false));
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        //  This comes from the second XInclude with a more complex
+        //  XPointer expression.
+        test.assert.isElement(
+            TP.byId('partialParagraph', windowContext, false));
     });
 });
 
@@ -885,26 +809,30 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             windowContext = this.getDriver().get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/ActionTag1.xhtml');
 
-            this.getDriver().setLocation(loadURI);
+            await this.getDriver().setLocation(loadURI);
+
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(test, options) {
+        async function(test, options) {
 
             var unloadURI;
 
             unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
+            this.stopTrackingSignals();
+
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -932,7 +860,7 @@ function() {
 
     //  ---
 
-    this.it('signal-based execution', function(test, options) {
+    this.it('signal-based execution', async function(test, options) {
 
         var actionTPElem,
             sendActivateButton;
@@ -945,19 +873,16 @@ function() {
                                         windowContext,
                                         false);
 
-        this.getSuite().getDriver().constructSequence().click(sendActivateButton).run();
+        await test.getDriver().constructSequence().click(sendActivateButton).run();
 
-        test.andWaitFor(actionTPElem, 'TP.sig.DidRun');
+        test.assert.didSignal(actionTPElem, 'TP.sig.DidRun');
 
-        test.chain(
-            function() {
-                test.assert.isAttributeEqualTo(
-                                actionTPElem,
-                                'simpleactionexecid',
-                                'simpleAction1');
+        test.assert.isAttributeEqualTo(
+                        actionTPElem,
+                        'simpleactionexecid',
+                        'simpleAction1');
 
-                actionTPElem.removeAttribute('simpleactionexecid');
-            });
+        actionTPElem.removeAttribute('simpleactionexecid');
     });
 
 });
@@ -973,26 +898,30 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             windowContext = this.getDriver().get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/ActionTag2.xhtml');
 
-            this.getDriver().setLocation(loadURI);
+            await this.getDriver().setLocation(loadURI);
+
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(test, options) {
+        async function(test, options) {
 
             var unloadURI;
 
             unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
+            this.stopTrackingSignals();
+
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1025,7 +954,7 @@ function() {
 
     //  ---
 
-    this.it('signal-based execution', function(test, options) {
+    this.it('signal-based execution', async function(test, options) {
 
         var actionTPElem,
             sendActivateButton;
@@ -1038,21 +967,18 @@ function() {
                                         windowContext,
                                         false);
 
-        this.getSuite().getDriver().constructSequence().click(sendActivateButton).run();
+        await test.getDriver().constructSequence().click(sendActivateButton).run();
 
-        test.andWaitFor(actionTPElem, 'TP.sig.DidRun');
+        test.assert.didSignal(actionTPElem, 'TP.sig.DidRun');
 
-        test.chain(
-            function() {
-                test.assert.isAttributeEqualTo(
-                                actionTPElem.getChildElements().at(0),
-                                'simpleactionexecid',
-                                'simpleAction1');
-                test.assert.isAttributeEqualTo(
-                                actionTPElem.getChildElements().at(1),
-                                'simpleactionexecid',
-                                'simpleAction2');
-            });
+        test.assert.isAttributeEqualTo(
+                        actionTPElem.getChildElements().at(0),
+                        'simpleactionexecid',
+                        'simpleAction1');
+        test.assert.isAttributeEqualTo(
+                        actionTPElem.getChildElements().at(1),
+                        'simpleactionexecid',
+                        'simpleAction2');
     });
 
 });
@@ -1068,28 +994,21 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             windowContext = this.getDriver().get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/ActionTag3.xhtml');
 
-            this.getDriver().setLocation(loadURI);
+            await this.getDriver().setLocation(loadURI);
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this),
-                function(error) {
-                    this.fail(error, TP.sc('Couldn\'t get resource: ',
-                                                loadURI.getLocation()));
-                });
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(test, options) {
+        async function(test, options) {
 
             var unloadURI;
 
@@ -1098,7 +1017,7 @@ function() {
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1121,7 +1040,7 @@ function() {
 
     //  ---
 
-    this.it('signal-based execution', function(test, options) {
+    this.it('signal-based execution', async function(test, options) {
 
         var actionTPElem,
             sendActivateButton;
@@ -1134,14 +1053,11 @@ function() {
                                         windowContext,
                                         false);
 
-        this.getSuite().getDriver().constructSequence().click(sendActivateButton).run();
+        await test.getDriver().constructSequence().click(sendActivateButton).run();
 
-        test.andWaitFor(actionTPElem, 'TP.sig.DidRun');
+        test.assert.didSignal(actionTPElem, 'TP.sig.DidRun');
 
-        test.chain(
-            function() {
-                test.assert.didSignal(actionTPElem, 'DispatchTestSignal1');
-            });
+        test.assert.didSignal(actionTPElem, 'DispatchTestSignal1');
     });
 
 });
@@ -1157,28 +1073,21 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             windowContext = this.getDriver().get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/ActionTag4.xhtml');
 
-            this.getDriver().setLocation(loadURI);
+            await this.getDriver().setLocation(loadURI);
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this),
-                function(error) {
-                    this.fail(error, TP.sc('Couldn\'t get resource: ',
-                                                loadURI.getLocation()));
-                });
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(test, options) {
+        async function(test, options) {
 
             var unloadURI;
 
@@ -1187,7 +1096,7 @@ function() {
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1211,7 +1120,7 @@ function() {
 
     //  ---
 
-    this.it('signal-based execution', function(test, options) {
+    this.it('signal-based execution', async function(test, options) {
 
         var actionTPElem,
             sendActivateButton;
@@ -1224,15 +1133,12 @@ function() {
                                         windowContext,
                                         false);
 
-        this.getSuite().getDriver().constructSequence().click(sendActivateButton).run();
+        await this.getDriver().constructSequence().click(sendActivateButton).run();
 
-        test.andWaitFor(actionTPElem, 'TP.sig.DidRun');
+        test.assert.didSignal(actionTPElem, 'TP.sig.DidRun');
 
-        test.chain(
-            function() {
-                test.assert.didSignal(actionTPElem, 'DispatchTestSignal1');
-                test.assert.didSignal(actionTPElem, 'DispatchTestSignal2');
-            });
+        test.assert.didSignal(actionTPElem, 'DispatchTestSignal1');
+        test.assert.didSignal(actionTPElem, 'DispatchTestSignal2');
     });
 
 });

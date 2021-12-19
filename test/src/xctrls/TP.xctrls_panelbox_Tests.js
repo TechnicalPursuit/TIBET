@@ -16,14 +16,13 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_panelbox.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -31,12 +30,12 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -51,7 +50,7 @@ function() {
 
     //  ---
 
-    this.it('Switching', function(test, options) {
+    this.it('Switching', async function(test, options) {
 
         var modelURI,
             modelVal,
@@ -111,71 +110,65 @@ function() {
 
         //  ---
 
-        driver.constructSequence().
-            click(panelTrigger).
-            run();
+        await driver.constructSequence().
+                        click(panelTrigger).
+                        run();
 
-        driver.constructSequence().
-            click(fooItem).
-            run();
+        await driver.constructSequence().
+                        click(fooItem).
+                        run();
 
-        test.chain(
-            function() {
-                modelVal = modelURI.getResource().get('result');
-                test.assert.isEqualTo(
-                    modelVal,
-                    'foo');
+        modelVal = modelURI.getResource().get('result');
+        test.assert.isEqualTo(
+            modelVal,
+            'foo');
 
-                selectedValue = panelBox.get('selectedValue');
-                test.assert.isEqualTo(
-                    selectedValue,
-                    'foo');
+        selectedValue = panelBox.get('selectedValue');
+        test.assert.isEqualTo(
+            selectedValue,
+            'foo');
 
-                test.assert.isDisplayed(panelBoxItems.at(0));
-                test.refute.isDisplayed(panelBoxItems.at(1));
-                test.refute.isDisplayed(panelBoxItems.at(2));
-                test.refute.isDisplayed(panelBoxItems.at(3));
+        test.assert.isDisplayed(panelBoxItems.at(0));
+        test.refute.isDisplayed(panelBoxItems.at(1));
+        test.refute.isDisplayed(panelBoxItems.at(2));
+        test.refute.isDisplayed(panelBoxItems.at(3));
 
-                //  Make sure the content hasn't been corrupted.
-                test.assert.isEqualTo(
-                    TP.trim(
-                        panelBoxItems.at(0).get('contentElement').
-                                                getTextContent()),
-                    'This is content for panel #0.');
-            });
+        //  Make sure the content hasn't been corrupted.
+        test.assert.isEqualTo(
+            TP.trim(
+                panelBoxItems.at(0).get('contentElement').
+                                        getTextContent()),
+            'This is content for panel #0.');
 
-        driver.constructSequence().
-            click(panelTrigger).
-            run();
+        await driver.constructSequence().
+                        click(panelTrigger).
+                        run();
 
-        driver.constructSequence().
-            click(barItem).
-            run();
+        await driver.constructSequence().
+                        click(barItem).
+                        run();
 
-        test.chain(
-            function() {
-                modelVal = modelURI.getResource().get('result');
-                test.assert.isEqualTo(
-                    modelVal,
-                    'bar');
+        modelVal = modelURI.getResource().get('result');
+        test.assert.isEqualTo(
+            modelVal,
+            'bar');
 
-                selectedValue = panelBox.get('selectedValue');
-                test.assert.isEqualTo(
-                    selectedValue,
-                    'bar');
+        selectedValue = panelBox.get('selectedValue');
+        test.assert.isEqualTo(
+            selectedValue,
+            'bar');
 
-                test.refute.isDisplayed(panelBoxItems.at(0));
-                test.assert.isDisplayed(panelBoxItems.at(1));
-                test.refute.isDisplayed(panelBoxItems.at(2));
-                test.refute.isDisplayed(panelBoxItems.at(3));
+        test.refute.isDisplayed(panelBoxItems.at(0));
+        test.assert.isDisplayed(panelBoxItems.at(1));
+        test.refute.isDisplayed(panelBoxItems.at(2));
+        test.refute.isDisplayed(panelBoxItems.at(3));
 
-                //  Make sure the content hasn't been corrupted.
-                test.assert.isEqualTo(
-                    TP.trim(
-                        panelBoxItems.at(1).get('contentElement').
-                                                getTextContent()),
-                    'This is content for panel #1.');
-            });
+        //  Make sure the content hasn't been corrupted.
+        test.assert.isEqualTo(
+            TP.trim(
+                panelBoxItems.at(1).get('contentElement').
+                                        getTextContent()),
+            'This is content for panel #1.');
 
     });
 });

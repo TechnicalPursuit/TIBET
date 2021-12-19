@@ -62,9 +62,20 @@ function() {
         'Array',                                /^Array\$(\w+)$/,
         'Object',                               /^Object\$(\w+)$/,
         'Function',                             'functionVal',
+        'AsyncFunction',                        'asyncFunctionVal',
+        'GeneratorFunction',                    'generatorFunctionVal',
         'NaN',                                  'NaN',
         'NativeType',                           'Array',
         'NativeFunction',                       'slice',
+        'Symbol',                               /^Symbol\$(\w+)$/,
+        'Map',                                  /^Map\$(\w+)$/,
+        'Set',                                  /^Set\$(\w+)$/,
+        'WeakMap',                              /^WeakMap\$(\w+)$/,
+        'WeakSet',                              /^WeakSet\$(\w+)$/,
+        'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
+        'DataView',                             /^DataView\$(\w+)$/,
+        'Promise',                              /^Promise\$(\w+)$/,
+        'Proxy',                                /^Object\$(\w+)$/,  //  Proxies are see-thru
 
         'Window',                               topLevelNativeWinName,
         'IFrameWindow',                         'UIROOT',
@@ -95,6 +106,9 @@ function() {
         'XHR',                                  /^XMLHttpRequest\$(\w+)$/,
 
         'TIBETType',                            'TP.dom.Node',
+        'TIBETType.Type',                       'TP.dom.Node.Type',
+        'TIBETType.Inst',                       'TP.dom.Node.Inst',
+
         'TP.lang.Object',                       /^TP\.lang\.Object\$(\w+)$/,
         'TP.core.Hash',                         /^TP\.core\.Hash\$(\w+)$/,
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
@@ -254,9 +268,20 @@ function() {
         'Array',                                'Array',
         'Object',                               'Object',
         'Function',                             'Function',
+        'AsyncFunction',                        'AsyncFunction',
+        'GeneratorFunction',                    'GeneratorFunction',
         'NaN',                                  'Number',
         'NativeType',                           'Function',
         'NativeFunction',                       'Function',
+        'Symbol',                               'Symbol',
+        'Map',                                  'Map',
+        'Set',                                  'Set',
+        'WeakMap',                              'WeakMap',
+        'WeakSet',                              'WeakSet',
+        'ArrayBuffer',                          'ArrayBuffer',
+        'DataView',                             'DataView',
+        'Promise',                              'Promise',
+        'Proxy',                                'Object',  //  Proxies are see-thru
 
         'Window',                               'DOMWindow',
         'IFrameWindow',                         'DOMWindow',
@@ -288,6 +313,9 @@ function() {
         'XHR',                                  'XMLHttpRequest',
 
         'TIBETType',                            'TP.meta.dom.Node',
+        'TIBETType.Type',                       'Function',
+        'TIBETType.Inst',                       'Function',
+
         'TP.lang.Object',                       'TP.lang.Object',
         'TP.core.Hash',                         'TP.core.Hash',
         'TP.sig.Signal',                        'TP.sig.Signal',
@@ -445,9 +473,20 @@ function() {
         'Array',                '1,2,3',
         'Object',               '[object Object]',
         'Function',             /function\s*\(\s*\)\s*{return\s*"fluffy"\s*;?\s*}/,
+        'AsyncFunction',        /async function\s*\(\s*\)\s*{return\s*"async fluffy"\s*;?\s*}/,
+        'GeneratorFunction',    /function\s*\*\(\s*\)\s*{return\s*"generator fluffy"\s*;?\s*}/,
         'NaN',                  'NaN',
         'NativeType',           'Array',
         'NativeFunction',       /function\s*slice\s*\(\s*\)\s*{\s*\[native code\]\s*}/,
+        'Symbol',               'Symbol(foo)',
+        'Map',                  '[object Map]',
+        'Set',                  '[object Set]',
+        'WeakMap',              '[object WeakMap]',
+        'WeakSet',              '[object WeakSet]',
+        'ArrayBuffer',          '[object ArrayBuffer]',
+        'DataView',             '[object DataView]',
+        'Promise',              '[object Promise]',
+        'Proxy',                '[object Object]',  //  Proxies are see-thru
 
         'Window',               '[object DOMWindow]',
         'IFrameWindow',         '[object DOMWindow]',
@@ -479,6 +518,9 @@ function() {
         'XHR',                  '[object XMLHttpRequest]',
 
         'TIBETType',                            '[object Object]',
+        'TIBETType.Type',                       '[object Function]',
+        'TIBETType.Inst',                       '[object Function]',
+
         'TP.lang.Object',                       '[object Object]',
         'TP.core.Hash',                         '[object Object]',
         'TP.sig.Signal',                        '[object Object]',
@@ -643,9 +685,20 @@ function() {
         'Array',                '1, 2, 3',
         'Object',               'foo: bar',
         'Function',             /function\s*\(\s*\)\s*{return\s*"fluffy"\s*;?\s*}/,
+        'AsyncFunction',        /async function\s*\(\s*\)\s*{return\s*"async fluffy"\s*;?\s*}/,
+        'GeneratorFunction',    /function\s*\*\(\s*\)\s*{return\s*"generator fluffy"\s*;?\s*}/,
         'NaN',                  'NaN',
         'NativeType',           'Array',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
+        'Symbol',               'Symbol(foo)',
+        'Map',                  '[object Map]',
+        'Set',                  '[object Set]',
+        'WeakMap',              '[object WeakMap]',
+        'WeakSet',              '[object WeakSet]',
+        'ArrayBuffer',          '[object ArrayBuffer]',
+        'DataView',             '[object DataView]',
+        'Promise',              '[object Promise]',
+        'Proxy',                '[object Object]',  //  Proxies are see-thru
 
         'Window',               TP.rc('^' + topLevelWinName + ', ([\\s\\S]+)'),
         'IFrameWindow',         TP.rc('^' + topLevelWinName + '.UIROOT, ([\\s\\S]+)'),
@@ -676,6 +729,9 @@ function() {
         'XHR',                  /^XMLHttpRequest :: (\d+) : ([\s\S]*)/,
 
         'TIBETType',                    'TP.dom.Node',
+        'TIBETType.Type',               'TP.dom.Node.Type',
+        'TIBETType.Inst',               'TP.dom.Node.Inst',
+
         'TP.lang.Object',               'foo: bar',
         'TP.core.Hash',                 'foo => bar',
         'TP.sig.Signal',                'TP.sig.Signal :: (foo => bar)',
