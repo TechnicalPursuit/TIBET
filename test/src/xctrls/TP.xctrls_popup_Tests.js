@@ -79,14 +79,13 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_popup.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -94,12 +93,12 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -114,36 +113,31 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
-        var trigger;
+        var trigger,
+            focusedElem;
 
         trigger = TP.byId('trigger3', windowContext);
 
         //  Change the focus via 'direct' method
 
-        driver.constructSequence().
-            sendEvent(TP.hc('type', 'focus'), trigger).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), trigger).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.hasAttribute(trigger, 'pclass:focus');
 
-                var focusedElem;
+        test.assert.didSignal(trigger, 'TP.sig.UIFocus');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidFocus');
 
-                test.assert.hasAttribute(trigger, 'pclass:focus');
-
-                test.assert.didSignal(trigger, 'TP.sig.UIFocus');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidFocus');
-
-                focusedElem = driver.getFocusedElement();
-                test.assert.isIdenticalTo(focusedElem, trigger);
-            });
+        focusedElem = driver.getFocusedElement();
+        test.assert.isIdenticalTo(focusedElem, trigger);
     });
 
     //  ---
 
-    this.it('Activation - mouse - non-sticky', function(test, options) {
+    this.it('Activation - mouse - non-sticky', async function(test, options) {
 
         var trigger,
             systemPopup;
@@ -158,30 +152,26 @@ function() {
         //  It will, however, respond to click to show/hide and will hide
         //  immediately because it's not sticky - trigger3 is not sticky.
 
-        driver.constructSequence().
-            click(trigger).
-            run();
+        await driver.constructSequence().
+                        click(trigger).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(trigger, 'TP.sig.UIActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIActivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
-
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.refute.isVisible(systemPopup);
-            });
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.refute.isVisible(systemPopup);
     });
 
     //  ---
 
-    this.it('Activation - keyboard - non-sticky', function(test, options) {
+    this.it('Activation - keyboard - non-sticky', async function(test, options) {
 
         var trigger,
             systemPopup;
@@ -195,42 +185,36 @@ function() {
         //  TP.xctrls.popup will respond to keydown/keyup to show/hide, and will
         //  hide immediately because it's not sticky - trigger3 is not sticky.
 
-        driver.constructSequence().
-            keyDown(trigger, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyDown(trigger, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(trigger, 'pclass:active');
+        test.assert.hasAttribute(trigger, 'pclass:active');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIActivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.assert.isVisible(systemPopup);
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.assert.isVisible(systemPopup);
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(trigger, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyUp(trigger, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(trigger, 'pclass:active');
+        test.refute.hasAttribute(trigger, 'pclass:active');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.refute.isVisible(systemPopup);
-            });
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.refute.isVisible(systemPopup);
     });
 
     //  ---
 
-    this.it('Activation - mouse - sticky', function(test, options) {
+    this.it('Activation - mouse - sticky', async function(test, options) {
 
         var trigger,
             systemPopup;
@@ -245,52 +229,44 @@ function() {
         //  It will, however, respond to click to show/hide and will not hide if
         //  it's 'sticky' - trigger1 is sticky.
 
-        driver.constructSequence().
-            click(trigger).
-            run();
+        await driver.constructSequence().
+                        click(trigger).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(trigger, 'TP.sig.UIActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIActivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.assert.isVisible(systemPopup);
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.assert.isVisible(systemPopup);
+        test.getSuite().resetSignalTracking();
 
-                test.getSuite().resetSignalTracking();
-            });
+        await driver.constructSequence().
+                        click(trigger).
+                        run();
 
-        driver.constructSequence().
-            click(trigger).
-            run();
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-        test.chain(
-            function() {
+        test.assert.didSignal(trigger, 'TP.sig.UIActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIActivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
-
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.refute.isVisible(systemPopup);
-            });
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.refute.isVisible(systemPopup);
     });
 
     //  ---
 
-    this.it('Activation - keyboard - sticky', function(test, options) {
+    this.it('Activation - keyboard - sticky', async function(test, options) {
 
         var trigger,
             systemPopup;
@@ -304,76 +280,64 @@ function() {
         //  TP.xctrls.popup will respond to keydown/keyup to show/hide, and will
         //  not hide if it's not sticky - trigger1 is sticky.
 
-        driver.constructSequence().
-            keyDown(trigger, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyDown(trigger, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(trigger, 'pclass:active');
+        test.assert.hasAttribute(trigger, 'pclass:active');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIActivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.assert.isVisible(systemPopup);
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.assert.isVisible(systemPopup);
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(trigger, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyUp(trigger, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(trigger, 'pclass:active');
+        test.refute.hasAttribute(trigger, 'pclass:active');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.assert.isVisible(systemPopup);
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.assert.isVisible(systemPopup);
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyDown(trigger, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyDown(trigger, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(trigger, 'pclass:active');
+        test.assert.hasAttribute(trigger, 'pclass:active');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIActivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIActivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidActivate');
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.assert.isVisible(systemPopup);
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.assert.isVisible(systemPopup);
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(trigger, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyUp(trigger, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(trigger, 'pclass:active');
+        test.refute.hasAttribute(trigger, 'pclass:active');
 
-                test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(trigger, 'TP.sig.UIDidDeactivate');
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.refute.isVisible(systemPopup);
-            });
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.refute.isVisible(systemPopup);
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var trigger,
             systemPopup;
@@ -387,73 +351,61 @@ function() {
 
         //  --- Focus
 
-        driver.constructSequence().
-            sendEvent(TP.hc('type', 'focus'), trigger).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), trigger).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(trigger, 'pclass:focus');
+        test.refute.hasAttribute(trigger, 'pclass:focus');
 
-                test.refute.didSignal(trigger, 'TP.sig.UIFocus');
-                test.refute.didSignal(trigger, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(trigger, 'TP.sig.UIFocus');
+        test.refute.didSignal(trigger, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup don't affect popups
 
         //  --- click
 
-        driver.constructSequence().
-            click(trigger).
-            run();
+        await driver.constructSequence().
+                        click(trigger).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(trigger, 'TP.sig.UIActivate');
-                test.refute.didSignal(trigger, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(trigger, 'TP.sig.UIActivate');
+        test.refute.didSignal(trigger, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(trigger, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(trigger, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(trigger, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(trigger, 'TP.sig.UIDidDeactivate');
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.refute.isVisible(systemPopup);
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.refute.isVisible(systemPopup);
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        driver.constructSequence().
-            keyDown(trigger, 'Enter').
-            run();
+        await driver.constructSequence().
+                    keyDown(trigger, 'Enter').
+                    run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(trigger, 'pclass:active');
+        test.refute.hasAttribute(trigger, 'pclass:active');
 
-                test.refute.didSignal(trigger, 'TP.sig.UIActivate');
-                test.refute.didSignal(trigger, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(trigger, 'TP.sig.UIActivate');
+        test.refute.didSignal(trigger, 'TP.sig.UIDidActivate');
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.refute.isVisible(systemPopup);
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.refute.isVisible(systemPopup);
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(trigger, 'Enter').
-            run();
+        await driver.constructSequence().
+                    keyUp(trigger, 'Enter').
+                    run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(trigger, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(trigger, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(trigger, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(trigger, 'TP.sig.UIDidDeactivate');
 
-                systemPopup = TP.byId('systemPopup', windowContext);
-                test.refute.isVisible(systemPopup);
-            });
+        systemPopup = TP.byId('systemPopup', windowContext);
+        test.refute.isVisible(systemPopup);
     });
 });
 

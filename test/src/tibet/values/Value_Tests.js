@@ -117,7 +117,7 @@ function() {
         'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
         'DataView',                             /^DataView\$(\w+)$/,
         'Promise',                              /^Promise\$(\w+)$/,
-        'Proxy',                                /^Object\$(\w+)$/,  //  Proxys are see-thru
+        'Proxy',                                /^Object\$(\w+)$/,  //  Proxies are see-thru
 
         'Window',                               TP.sys.cfg('tibet.top_win_name'),
         'IFrameWindow',                         'UIROOT',
@@ -332,7 +332,7 @@ function() {
         'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
         'DataView',                             /^DataView\$(\w+)$/,
         'Promise',                              /^Promise\$(\w+)$/,
-        'Proxy',                                /^Object\$(\w+)$/,  //  Proxys are see-thru
+        'Proxy',                                /^Object\$(\w+)$/,  //  Proxies are see-thru
 
         'Window',                               winGID,
         'IFrameWindow',                         winGID + '.UIROOT',
@@ -1267,7 +1267,8 @@ function() {
                 testFunc);
         }());
 
-        if (testKey === 'Object') {
+        if (testKey === 'Object' ||
+            testKey === 'Proxy') {
             (function() {
                 var testFunc;
 
@@ -1343,8 +1344,12 @@ function() {
         }
 
         if (testKey === 'Function' ||
+            testKey === 'AsyncFunction' ||
+            testKey === 'GeneratorFunction' ||
             testKey === 'NativeType' ||
-            testKey === 'NativeFunction') {
+            testKey === 'NativeFunction' ||
+            testKey === 'TIBETType.Type' ||
+            testKey === 'TIBETType.Inst') {
             (function() {
                 var testFunc;
 
@@ -2768,7 +2773,7 @@ function() {
         'ArrayBuffer',                          false,
         'DataView',                             false,
         'Promise',                              false,
-        'Proxy',                                true,       //  Proxys are see-thru,
+        'Proxy',                                true,       //  Proxies are see-thru,
 
         'Window',                               true,
         'IFrameWindow',                         true,

@@ -23,10 +23,10 @@ body {
     background:
         repeating-linear-gradient(
             45deg,
-            rgb(69 63 175) 0,
-            rgb(69 63 175) 10px,
-            rgb(191 40 173) 10px,
-            rgb(191 40 173) 20px
+            rgb(69, 63, 175) 0,
+            rgb(69, 63, 175) 10px,
+            rgb(191, 40, 173) 10px,
+            rgb(191, 40, 173) 20px
         );
 
     color: white;

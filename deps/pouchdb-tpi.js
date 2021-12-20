@@ -12816,6 +12816,7 @@ Replication.prototype.ready = function (src, target) {
     target.removeListener('destroyed', onDestroy);
   }
   self.once('complete', cleanup);
+  self.once('error', cleanup);
 };
 
 function toPouch(db, opts) {

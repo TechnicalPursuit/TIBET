@@ -1204,8 +1204,8 @@ function(aPath, aType) {
 
             //  If the type's package itself is 'alacarte' or in investigating
             //  it's 'package chain paths' it can be determined to be an
-            //  'alacarte' resoure, then it is really an app resource and should
-            //  refer to the 'boot.inlined' flag.
+            //  'alacarte' resource, then it is really an app resource and
+            //  should refer to the 'boot.inlined' flag.
             packageChainPaths = TP.sys.getPackageChainPaths(aType.getName());
             if (TP.boot.$isAlacarteResource(aPath, packageChainPaths)) {
                 inlined = TP.sys.cfg('boot.inlined');

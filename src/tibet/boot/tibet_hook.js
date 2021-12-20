@@ -173,11 +173,6 @@ if (TP.sys.cfg('log.hook') && !TP.sys.isHeadless()) {
 //  ------------------------------------------------------------------------
 
 /* eslint-disable no-undef,no-global-assign,no-empty-function */
-//  For Safari only...
-if (!self.Window) {
-    Window = self.constructor;
-}
-
 AsyncFunction = Object.getPrototypeOf(async function() {}).constructor;
 GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
 /* eslint-enable no-undef,no-global-assign,no-empty-function */
@@ -191,7 +186,7 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
     var elemProto,
         originalSet;
 
-    elemProto = self.Element.prototype;
+    elemProto = root.Element.prototype;
     originalSet = Object.getOwnPropertyDescriptor(elemProto, 'innerHTML').set;
 
     Object.defineProperty(elemProto, 'innerHTML', {

@@ -31,34 +31,28 @@ function(options) {
 TP.test.GUIDriver.Inst.describe('Syn test',
 function() {
 
-    this.it('focus and sendKeys sequence', function(test, options) {
+    this.it('focus and sendKeys sequence', async function(test, options) {
 
         var uri,
             driver,
             seq;
 
         uri = TP.uc('~lib_test/src/tibet/driver/testmarkup.xml');
-        test.getDriver().setBodyContent(uri);
+        await test.getDriver().setBodyContent(uri);
 
-        test.chain(
-            function() {
-                driver = TP.test.GUIDriver.getTestFixture(
-                                        TP.hc('testCase', test));
+        driver = TP.test.GUIDriver.getTestFixture(
+                                TP.hc('testCase', test));
 
-                seq = driver.constructSequence();
-                seq.sendKeys('ABC[Left][Backspace]D[Right]E',
-                                        TP.cpc('#testField'));
-                seq.run();
+        seq = driver.constructSequence();
+        seq.sendKeys('ABC[Left][Backspace]D[Right]E',
+                                TP.cpc('#testField'));
+        await seq.run();
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            TP.byId('testField',
-                                    driver.get('windowContext'),
-                                    false).value,
-                            'ADCE');
-                    });
-            });
+        test.assert.isEqualTo(
+            TP.byId('testField',
+                    driver.get('windowContext'),
+                    false).value,
+            'ADCE');
 
         /*
         testField = TP.byId('testField',

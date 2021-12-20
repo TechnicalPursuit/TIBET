@@ -45,27 +45,23 @@ function() {
     this.before(
         function(suite, options) {
 
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var loadPromise;
+            var loadPromise;
 
-                    loadPromise = TP.tibet.keyring.loadKeyrings(loadURI);
+            loadPromise = TP.tibet.keyring.loadKeyrings(loadURI);
 
-                    return loadPromise.then(
-                                function(aResult) {
-                                    loadedKeyrings =
-                                        TP.tibet.keyring.initKeyrings(aResult);
+            return loadPromise.then(
+                        function(aResult) {
+                            loadedKeyrings =
+                                TP.tibet.keyring.initKeyrings(aResult);
 
-                                    //  Register a few keyrings for use below.
-                                    TP.tibet.keyring.registerKeyring(
-                                                        loadedKeyrings.at(0));
-                                    TP.tibet.keyring.registerKeyring(
-                                                        loadedKeyrings.at(1));
-                                    TP.tibet.keyring.registerKeyring(
-                                                        loadedKeyrings.at(2));
-                                });
-                });
+                            //  Register a few keyrings for use below.
+                            TP.tibet.keyring.registerKeyring(
+                                                loadedKeyrings.at(0));
+                            TP.tibet.keyring.registerKeyring(
+                                                loadedKeyrings.at(1));
+                            TP.tibet.keyring.registerKeyring(
+                                                loadedKeyrings.at(2));
+                        });
         });
 
     //  ---

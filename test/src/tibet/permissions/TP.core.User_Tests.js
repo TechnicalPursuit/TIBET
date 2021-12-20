@@ -25,23 +25,19 @@ function() {
     this.before(
         function(suite, options) {
 
-            //  'this' refers to the suite here.
-            suite.chain(
-                function() {
-                    var loadPromise;
+            var loadPromise;
 
-                    loadPromise = TP.core.User.loadVCards(loadURI);
+            loadPromise = TP.core.User.loadVCards(loadURI);
 
-                    return loadPromise.then(
-                                function(aResult) {
-                                    loadedCards =
-                                        TP.core.User.initVCards(aResult);
+            return loadPromise.then(
+                        function(aResult) {
+                            loadedCards =
+                                TP.core.User.initVCards(aResult);
 
-                                    //  Register the vcard for use below.
-                                    TP.core.User.registerVCard(
-                                                        loadedCards.first());
-                                });
-                });
+                            //  Register the vcard for use below.
+                            TP.core.User.registerVCard(
+                                                loadedCards.first());
+                        });
         });
 
     //  ---

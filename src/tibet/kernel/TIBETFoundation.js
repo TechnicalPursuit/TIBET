@@ -2992,7 +2992,13 @@ function(aName) {
     var proto,
         scope;
 
-    proto = this.getPrototype();
+    //  If this is an Inst prototype, then we need to look at the *type's* inst
+    //  prototype (not our prototype, which will always be Function.prototype).
+    if (/\.Inst/.test(this[TP.NAME])) {
+        proto = this[TP.TYPE].getInstPrototype();
+    } else {
+        proto = this.getPrototype();
+    }
 
     //  If the receiver and its prototype are the same object then we're looping
     //  back on ourselves near the top of the tree. In this case we have to
@@ -3089,7 +3095,22 @@ function(aName) {
     //  some other prototype instance, either on a native type or a TIBET
     //  type...so we need to look at our own prototype to know if we
     //  inherit, introduce, or override this value
-    proto = this.getPrototype();
+
+    //  If this is a Type or Inst prototype, then we need to look at the
+    //  *type's* type or inst prototype (not our prototype, which will always be
+    //  Function.prototype).
+    if (TP.isPrototype(this)) {
+        if (/\.Type/.test(this[TP.NAME])) {
+            proto = this[TP.TYPE].getTypePrototype();
+        } else if (/\.Inst/.test(this[TP.NAME])) {
+            proto = this[TP.TYPE].getInstPrototype();
+        }
+    }
+
+    //  Still couldn't get a prototype? Just use our prototype.
+    if (TP.notValid(proto)) {
+        proto = this.getPrototype();
+    }
 
     //  don't forget that some prototype chains loop and when that happens
     //  we have to switch to checking against TP.ObjectProto
@@ -3182,7 +3203,14 @@ function(aName) {
         ancestor;
 
     //  start with proto for the "instance" to check for locals
-    proto = this.getPrototype();
+
+    //  If this is a Type prototype, then we need to look at the *type's* type
+    //  prototype (not our prototype, which will always be Function.prototype).
+    if (TP.isPrototype(this) && /\.Type/.test(this[TP.NAME])) {
+        proto = this[TP.TYPE].getTypePrototype();
+    } else {
+        proto = this.getPrototype();
+    }
 
     //  First check is does our prototype have this property or not? If not
     //  then it must be local to the current type object since we know we have

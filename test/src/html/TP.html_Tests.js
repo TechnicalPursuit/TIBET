@@ -29,23 +29,23 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
             windowContext = this.getDriver().get('windowContext');
 
-            this.getDriver().setLocation(loadURI);
+            await this.getDriver().setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -785,7 +785,7 @@ function() {
         windowContext;
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
             var testDataLoc,
                 loadURI;
 
@@ -797,7 +797,7 @@ function() {
 
             windowContext = this.getDriver().get('windowContext');
 
-            this.getDriver().setLocation(loadURI);
+            await this.getDriver().setLocation(loadURI);
         });
 
     //  ---
@@ -1971,19 +1971,20 @@ function() {
 
     var windowContext;
 
-    this.before(function(suite, options) {
-        var testDataLoc,
-            loadURI;
+    this.before(
+        async function(suite, options) {
+            var testDataLoc,
+                loadURI;
 
-        TP.$$setupCommonObjectValues();
+            TP.$$setupCommonObjectValues();
 
-        testDataLoc = '~lib_test/src/html/HTMLContent.xhtml';
-        loadURI = TP.uc(testDataLoc);
+            testDataLoc = '~lib_test/src/html/HTMLContent.xhtml';
+            loadURI = TP.uc(testDataLoc);
 
-        windowContext = this.getDriver().get('windowContext');
+            windowContext = this.getDriver().get('windowContext');
 
-        this.getDriver().setLocation(loadURI);
-    });
+            await this.getDriver().setLocation(loadURI);
+        });
 
     //  ---
 
@@ -2599,20 +2600,20 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             windowContext = this.getDriver().get('windowContext');
 
-            this.getDriver().setLocation(loadURI);
+            await this.getDriver().setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();

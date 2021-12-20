@@ -44,8 +44,8 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
-            this.getDriver().setLocation(loadURI);
+        async function(suite, options) {
+            await this.getDriver().setLocation(loadURI);
         });
 
     //  ---
@@ -62,10 +62,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -555,8 +555,8 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
-            this.getDriver().setLocation(loadURI);
+        async function(suite, options) {
+            await this.getDriver().setLocation(loadURI);
         });
 
     //  ---
@@ -580,10 +580,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();

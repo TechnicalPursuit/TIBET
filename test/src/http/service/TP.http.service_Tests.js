@@ -63,1374 +63,1007 @@ function() {
         });
 
     this.afterEach(
-        function(test, options) {
+        async function(test, options) {
 
             server.restore();
 
             //  Unload the current page by setting it to the
             //  blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
         });
 
     //  ---
 
-    this.it('GET with static query-style parameter - no specific result type', function(test, options) {
+    this.it('GET with static query-style parameter - no specific result type', async function(test, options) {
+
+        var locStr,
+            resultElem,
+
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service1.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locStr,
-                    resultElem,
+        locStr = '/TIBET_endpoints/HTTP_QUERY_GET_TEST?search=dog';
+        resultElem = TP.wrap(
+                        TP.xhtmlnode(
+                            '<html><body>Hi there</body></html>'));
 
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        serviceTPElem = TP.byId('Service1', windowContext);
 
-                locStr = '/TIBET_endpoints/HTTP_QUERY_GET_TEST?search=dog';
-                resultElem = TP.wrap(
-                                TP.xhtmlnode(
-                                    '<html><body>Hi there</body></html>'));
+        //  If we're running in headless mode (we're probably testing),
+        //  then we need to rewrite the URL to have an HTTP resource and
+        //  reset it on the service element.
+        if (TP.sys.isHeadless()) {
+            locStr = httpLoc + locStr;
+            TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                    'href',
+                                    locStr,
+                                    true);
+        }
 
-                //  ---
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                serviceTPElem = TP.byId('Service1', windowContext);
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_GET,
+            locStr,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED
+                },
+                resultElem.asString()
+            ]);
 
-                //  If we're running in headless mode (we're probably testing),
-                //  then we need to rewrite the URL to have an HTTP resource and
-                //  reset it on the service element.
-                if (TP.sys.isHeadless()) {
-                    locStr = httpLoc + locStr;
-                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
-                                            'href',
-                                            locStr,
-                                            true);
-                }
+        serviceTPElem.activate();
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
+        //  ---
 
-                        var handler;
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
 
-                        handler = function() {
-                            var resultURI,
-                                aResult;
+        //  ---
 
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
+        server.respond();
 
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+        //  ---
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                            resultURI = TP.uc('urn:tibet:Service1_Result');
+        resultURI = TP.uc('urn:tibet:Service1_Result');
 
-                            aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.WRAP)).get('result');
+        aResult = resultURI.getResource(
+            TP.hc('resultType', TP.WRAP)).get('result');
 
-                            test.assert.isKindOf(
-                                aResult, TP.dom.XHTMLDocumentNode);
+        test.assert.isKindOf(
+            aResult, TP.dom.XHTMLDocumentNode);
 
-                            test.assert.isEqualTo(
-                                    aResult.get('html|body'),
-                                    resultElem.get('html|body'));
-
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_GET,
-                            locStr,
-                            [
-                                200,
-                                {
-                                    'Content-Type': TP.XML_ENCODED
-                                },
-                                resultElem.asString()
-                            ]);
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+                aResult.get('html|body'),
+                resultElem.get('html|body'));
     });
 
     //  ---
 
-    this.it('GET with dynamic query-style parameter - no specific result type', function(test, options) {
+    this.it('GET with dynamic query-style parameter - no specific result type', async function(test, options) {
+
+        var locRe,
+            resultElem,
+
+            searchTPElem,
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service2.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locRe,
-                    resultElem,
+        locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_QUERY_GET_TEST\\?search=.+');
+        resultElem = TP.wrap(
+                        TP.xhtmlnode(
+                            '<html><body>Hi there</body></html>'));
 
-                    searchTPElem,
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        searchTPElem = TP.byId('SearchTermField', windowContext);
+        serviceTPElem = TP.byId('Service2', windowContext);
 
-                locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_QUERY_GET_TEST\\?search=.+');
-                resultElem = TP.wrap(
-                                TP.xhtmlnode(
-                                    '<html><body>Hi there</body></html>'));
+        //  ---
 
-                //  ---
+        await driver.constructSequence().
+                        sendKeys('dog', searchTPElem).
+                        sendEvent(TP.hc('type', 'change'), searchTPElem).
+                        run();
 
-                searchTPElem = TP.byId('SearchTermField', windowContext);
-                serviceTPElem = TP.byId('Service2', windowContext);
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                //  ---
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_GET,
+            locRe,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED
+                },
+                resultElem.asString()
+            ]);
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
+        serviceTPElem.activate();
 
-                        var handler;
+        //  ---
 
-                        handler = function() {
-                            var resultURI,
-                                aResult;
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
 
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
+        //  ---
 
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+        server.respond();
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
+        //  ---
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
 
-                            resultURI = TP.uc('urn:tibet:Service2_Result');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                            aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.WRAP)).get('result');
+        resultURI = TP.uc('urn:tibet:Service2_Result');
 
-                            test.assert.isKindOf(
-                                aResult, TP.dom.XHTMLDocumentNode);
+        aResult = resultURI.getResource(
+            TP.hc('resultType', TP.WRAP)).get('result');
 
-                            test.assert.isEqualTo(
-                                    aResult.get('html|body'),
-                                    resultElem.get('html|body'));
+        test.assert.isKindOf(
+            aResult, TP.dom.XHTMLDocumentNode);
 
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                driver.constructSequence().
-                    sendKeys('dog', searchTPElem).
-                    sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    run();
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_GET,
-                            locRe,
-                            [
-                                200,
-                                {
-                                    'Content-Type': TP.XML_ENCODED
-                                },
-                                resultElem.asString()
-                            ]);
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+                aResult.get('html|body'),
+                resultElem.get('html|body'));
     });
 
     //  ---
 
-    this.it('REST GET with no parameter, no specific result type', function(test, options) {
+    this.it('REST GET with no parameter, no specific result type', async function(test, options) {
+
+        var locStr,
+            resultElem,
+
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service3.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locStr,
-                    resultElem,
+        locStr = '/TIBET_endpoints/HTTP_REST_GET_TEST';
+        resultElem = TP.wrap(
+                        TP.xhtmlnode(
+                            '<html><body>Hi there</body></html>'));
 
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        serviceTPElem = TP.byId('Service3', windowContext);
 
-                locStr = '/TIBET_endpoints/HTTP_REST_GET_TEST';
-                resultElem = TP.wrap(
-                                TP.xhtmlnode(
-                                    '<html><body>Hi there</body></html>'));
+        //  If we're running in headless mode (we're probably testing),
+        //  then we need to rewrite the URL to have an HTTP resource and
+        //  reset it on the service element.
+        if (TP.sys.isHeadless()) {
+            locStr = httpLoc + locStr;
+            TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                    'href',
+                                    locStr,
+                                    true);
+        }
 
-                //  ---
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                serviceTPElem = TP.byId('Service3', windowContext);
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_GET,
+            locStr,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED
+                },
+                resultElem.asString()
+            ]);
 
-                //  If we're running in headless mode (we're probably testing),
-                //  then we need to rewrite the URL to have an HTTP resource and
-                //  reset it on the service element.
-                if (TP.sys.isHeadless()) {
-                    locStr = httpLoc + locStr;
-                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
-                                            'href',
-                                            locStr,
-                                            true);
-                }
+        serviceTPElem.activate();
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
+        //  ---
 
-                        var handler;
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
 
-                        handler = function() {
-                            var resultURI,
-                                aResult;
+        //  ---
 
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
+        server.respond();
 
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+        //  ---
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                            resultURI = TP.uc('urn:tibet:Service3_Result');
+        resultURI = TP.uc('urn:tibet:Service3_Result');
 
-                            aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.WRAP)).get('result');
+        aResult = resultURI.getResource(
+            TP.hc('resultType', TP.WRAP)).get('result');
 
-                            test.assert.isKindOf(
-                                aResult, TP.dom.XHTMLDocumentNode);
+        test.assert.isKindOf(
+            aResult, TP.dom.XHTMLDocumentNode);
 
-                            test.assert.isEqualTo(
-                                    aResult.get('html|body'),
-                                    resultElem.get('html|body'));
-
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_GET,
-                            locStr,
-                            [
-                                200,
-                                {
-                                    'Content-Type': TP.XML_ENCODED
-                                },
-                                resultElem.asString()
-                            ]);
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+                aResult.get('html|body'),
+                resultElem.get('html|body'));
     });
 
     //  ---
 
-    this.it('REST GET with static parameter - no specific result type', function(test, options) {
+    this.it('REST GET with static parameter - no specific result type', async function(test, options) {
+
+        var locStr,
+            resultElem,
+
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service4.xhtml');
 
-        driver.setLocation(loadURI);
-
-        test.chain(
-            function(result) {
-                var locStr,
-                    resultElem,
-
-                    serviceTPElem,
-
-                    promise;
+        await driver.setLocation(loadURI);
 
                 locStr = '/TIBET_endpoints/HTTP_REST_GET_TEST/dog';
                 resultElem = TP.wrap(
                                 TP.xhtmlnode(
                                     '<html><body>Hi there</body></html>'));
 
-                //  ---
+        //  ---
 
-                serviceTPElem = TP.byId('Service4', windowContext);
+        serviceTPElem = TP.byId('Service4', windowContext);
 
-                //  If we're running in headless mode (we're probably testing),
-                //  then we need to rewrite the URL to have an HTTP resource and
-                //  reset it on the service element.
-                if (TP.sys.isHeadless()) {
-                    locStr = httpLoc + locStr;
-                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
-                                            'href',
-                                            locStr,
-                                            true);
-                }
+        //  If we're running in headless mode (we're probably testing),
+        //  then we need to rewrite the URL to have an HTTP resource and
+        //  reset it on the service element.
+        if (TP.sys.isHeadless()) {
+            locStr = httpLoc + locStr;
+            TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                    'href',
+                                    locStr,
+                                    true);
+        }
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                        var handler;
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_GET,
+            locStr,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED
+                },
+                resultElem.asString()
+            ]);
 
-                        handler = function() {
-                            var resultURI,
-                                aResult;
+        serviceTPElem.activate();
 
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
+        //  ---
 
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
+        //  ---
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
+        server.respond();
 
-                            resultURI = TP.uc('urn:tibet:Service4_Result');
+        //  ---
 
-                            aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.WRAP)).get('result');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
 
-                            test.assert.isKindOf(
-                                aResult, TP.dom.XHTMLDocumentNode);
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                            test.assert.isEqualTo(
-                                    aResult.get('html|body'),
-                                    resultElem.get('html|body'));
+        resultURI = TP.uc('urn:tibet:Service4_Result');
 
-                            return this;
-                        };
+        aResult = resultURI.getResource(
+            TP.hc('resultType', TP.WRAP)).get('result');
 
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
+        test.assert.isKindOf(
+            aResult, TP.dom.XHTMLDocumentNode);
 
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_GET,
-                            locStr,
-                            [
-                                200,
-                                {
-                                    'Content-Type': TP.XML_ENCODED
-                                },
-                                resultElem.asString()
-                            ]);
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+                aResult.get('html|body'),
+                resultElem.get('html|body'));
     });
 
     //  ---
 
-    this.it('REST GET with dynamic parameter - no specific result type', function(test, options) {
+    this.it('REST GET with dynamic parameter - no specific result type', async function(test, options) {
+
+        var locRe,
+            resultElem,
+
+            searchTPElem,
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service5.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locRe,
-                    resultElem,
+        locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_GET_TEST\\/.+');
+        resultElem = TP.wrap(
+                        TP.xhtmlnode(
+                            '<html><body>Hi there</body></html>'));
 
-                    searchTPElem,
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        searchTPElem = TP.byId('SearchTermField', windowContext);
+        serviceTPElem = TP.byId('Service5', windowContext);
 
-                locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_GET_TEST\\/.+');
-                resultElem = TP.wrap(
-                                TP.xhtmlnode(
-                                    '<html><body>Hi there</body></html>'));
+        //  ---
 
-                //  ---
+        await driver.constructSequence().
+                        sendKeys('dog', searchTPElem).
+                        sendEvent(TP.hc('type', 'change'), searchTPElem).
+                        run();
 
-                searchTPElem = TP.byId('SearchTermField', windowContext);
-                serviceTPElem = TP.byId('Service5', windowContext);
+        //  ---
 
-                //  ---
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_GET,
+            locRe,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED
+                },
+                resultElem.asString()
+            ]);
 
-                        var handler;
+        serviceTPElem.activate();
 
-                        handler = function() {
-                            var resultURI,
-                                aResult;
+        //  ---
 
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
 
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+        //  ---
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
+        server.respond();
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
+        //  ---
 
-                            resultURI = TP.uc('urn:tibet:Service5_Result');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
 
-                            aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.WRAP)).get('result');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                            test.assert.isKindOf(
-                                aResult, TP.dom.XHTMLDocumentNode);
+        resultURI = TP.uc('urn:tibet:Service5_Result');
 
-                            test.assert.isEqualTo(
-                                    aResult.get('html|body'),
-                                    resultElem.get('html|body'));
+        aResult = resultURI.getResource(
+            TP.hc('resultType', TP.WRAP)).get('result');
 
-                            return this;
-                        };
+        test.assert.isKindOf(
+            aResult, TP.dom.XHTMLDocumentNode);
 
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                driver.constructSequence().
-                    sendKeys('dog', searchTPElem).
-                    sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    run();
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_GET,
-                            locRe,
-                            [
-                                200,
-                                {
-                                    'Content-Type': TP.XML_ENCODED
-                                },
-                                resultElem.asString()
-                            ]);
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+                aResult.get('html|body'),
+                resultElem.get('html|body'));
     });
 
     //  ---
 
-    this.it('REST GET with dynamic parameter and custom headers - no specific result type', function(test, options) {
+    this.it('REST GET with dynamic parameter and custom headers - no specific result type', async function(test, options) {
+
+        var locRe,
+            resultElem,
+
+            searchTPElem,
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service6.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locRe,
-                    resultElem,
+        locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_GET_TEST\\/.+');
+        resultElem = TP.wrap(
+                        TP.xhtmlnode(
+                            '<html><body>Hi there</body></html>'));
 
-                    searchTPElem,
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        searchTPElem = TP.byId('SearchTermField', windowContext);
+        serviceTPElem = TP.byId('Service6', windowContext);
 
-                locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_GET_TEST\\/.+');
-                resultElem = TP.wrap(
-                                TP.xhtmlnode(
-                                    '<html><body>Hi there</body></html>'));
+        //  ---
 
-                //  ---
+        await driver.constructSequence().
+                        sendKeys('dog', searchTPElem).
+                        sendEvent(TP.hc('type', 'change'), searchTPElem).
+                        run();
 
-                searchTPElem = TP.byId('SearchTermField', windowContext);
-                serviceTPElem = TP.byId('Service6', windowContext);
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                //  ---
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_GET,
+            locRe,
+            function(req) {
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
-
-                        var handler;
-
-                        handler = function() {
-                            var resultURI,
-                                aResult;
-
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
-
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
-
-                            resultURI = TP.uc('urn:tibet:Service6_Result');
-
-                            aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.WRAP)).get('result');
-
-                            test.assert.isKindOf(
-                                aResult, TP.dom.XHTMLDocumentNode);
-
-                            test.assert.isEqualTo(
-                                    aResult.get('html|body'),
-                                    resultElem.get('html|body'));
-
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                driver.constructSequence().
-                    sendKeys('dog', searchTPElem).
-                    sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    run();
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_GET,
-                            locRe,
-                            function(req) {
-
-                                req.respond(
-                                    200,
-                                    {
-                                        'Content-Type': TP.XML_ENCODED
-                                    },
-                                    resultElem.asString());
-                            });
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.XML_ENCODED
+                    },
+                    resultElem.asString());
             });
+
+        serviceTPElem.activate();
+
+        //  ---
+
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
+
+        //  ---
+
+        server.respond();
+
+        //  ---
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
+
+        resultURI = TP.uc('urn:tibet:Service6_Result');
+
+        aResult = resultURI.getResource(
+            TP.hc('resultType', TP.WRAP)).get('result');
+
+        test.assert.isKindOf(
+            aResult, TP.dom.XHTMLDocumentNode);
+
+        test.assert.isEqualTo(
+                aResult.get('html|body'),
+                resultElem.get('html|body'));
+
     });
 
     //  ---
 
-    this.it('REST POST with dynamic body - no specific result type', function(test, options) {
+    this.it('REST POST with dynamic body - no specific result type', async function(test, options) {
+
+        var locStr,
+            testBody,
+
+            bodyContentTPElem,
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service7.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locStr,
-                    testBody,
+        locStr = '/TIBET_endpoints/HTTP_REST_POST_TEST';
+        testBody = 'OK from POST';
 
-                    bodyContentTPElem,
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        bodyContentTPElem = TP.byId('BodyContentField', windowContext);
+        serviceTPElem = TP.byId('Service7', windowContext);
 
-                locStr = '/TIBET_endpoints/HTTP_REST_POST_TEST';
-                testBody = 'OK from POST';
+        //  If we're running in headless mode (we're probably testing),
+        //  then we need to rewrite the URL to have an HTTP resource and
+        //  reset it on the service element.
+        if (TP.sys.isHeadless()) {
+            locStr = httpLoc + locStr;
+            TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                    'href',
+                                    locStr,
+                                    true);
+        }
 
-                //  ---
+        //  ---
 
-                bodyContentTPElem = TP.byId('BodyContentField', windowContext);
-                serviceTPElem = TP.byId('Service7', windowContext);
+        await driver.constructSequence().
+                        sendKeys(testBody, bodyContentTPElem).
+                        sendEvent(TP.hc('type', 'change'), bodyContentTPElem).
+                        run();
 
-                //  If we're running in headless mode (we're probably testing),
-                //  then we need to rewrite the URL to have an HTTP resource and
-                //  reset it on the service element.
-                if (TP.sys.isHeadless()) {
-                    locStr = httpLoc + locStr;
-                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
-                                            'href',
-                                            locStr,
-                                            true);
-                }
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                //  ---
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
+                test.assert.isEqualTo(req.requestBody, testBody);
 
-                        var handler;
-
-                        handler = function() {
-                            var resultURI,
-                                aResult;
-
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
-
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
-
-                            resultURI = TP.uc('urn:tibet:Service7_Result');
-
-                            aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.TEXT)).get('result');
-
-                            test.assert.isKindOf(aResult, String);
-                            test.assert.isEqualTo(aResult, testBody);
-
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                driver.constructSequence().
-                    sendKeys(testBody, bodyContentTPElem).
-                    sendEvent(TP.hc('type', 'change'), bodyContentTPElem).
-                    run();
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_POST,
-                            locStr,
-                            function(req) {
-
-                                test.assert.isEqualTo(req.requestBody, testBody);
-
-                                req.respond(
-                                    200,
-                                    {
-                                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                                    },
-                                    'OK from POST');
-                            });
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from POST');
             });
+
+        //  ---
+
+        serviceTPElem.activate();
+
+        //  ---
+
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
+
+        //  ---
+
+        server.respond();
+
+        //  ---
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
+
+        resultURI = TP.uc('urn:tibet:Service7_Result');
+
+        aResult = resultURI.getResource(
+            TP.hc('resultType', TP.TEXT)).get('result');
+
+        test.assert.isKindOf(aResult, String);
+        test.assert.isEqualTo(aResult, testBody);
     });
 
     //  ---
 
-    this.it('REST PUT with dynamic parameter - no specific result type', function(test, options) {
+    this.it('REST PUT with dynamic parameter - no specific result type', async function(test, options) {
+
+        var locRe,
+            resultElem,
+
+            searchTPElem,
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service8.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locRe,
-                    resultElem,
+        locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_PUT_TEST\\/.+');
+        resultElem = TP.wrap(
+                        TP.xhtmlnode(
+                            '<html><body>Hi there</body></html>'));
 
-                    searchTPElem,
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        searchTPElem = TP.byId('SearchTermField', windowContext);
+        serviceTPElem = TP.byId('Service8', windowContext);
 
-                locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_PUT_TEST\\/.+');
-                resultElem = TP.wrap(
-                                TP.xhtmlnode(
-                                    '<html><body>Hi there</body></html>'));
+        //  ---
 
-                //  ---
+        await driver.constructSequence().
+                        sendKeys('dog', searchTPElem).
+                        sendEvent(TP.hc('type', 'change'), searchTPElem).
+                        run();
 
-                searchTPElem = TP.byId('SearchTermField', windowContext);
-                serviceTPElem = TP.byId('Service8', windowContext);
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                //  ---
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_PUT,
+            locRe,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED
+                },
+                resultElem.asString()
+            ]);
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
+        serviceTPElem.activate();
 
-                        var handler;
+        //  ---
 
-                        handler = function() {
-                            var resultURI,
-                                aResult;
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
 
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
+        //  ---
 
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+        server.respond();
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
+        //  ---
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
 
-                            resultURI = TP.uc('urn:tibet:Service8_Result');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                            aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.WRAP)).get('result');
+        resultURI = TP.uc('urn:tibet:Service8_Result');
 
-                            test.assert.isKindOf(
-                                aResult, TP.dom.XHTMLDocumentNode);
+        aResult = resultURI.getResource(
+            TP.hc('resultType', TP.WRAP)).get('result');
 
-                            test.assert.isEqualTo(
-                                    aResult.get('html|body'),
-                                    resultElem.get('html|body'));
+        test.assert.isKindOf(
+            aResult, TP.dom.XHTMLDocumentNode);
 
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                driver.constructSequence().
-                    sendKeys('dog', searchTPElem).
-                    sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    run();
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_PUT,
-                            locRe,
-                            [
-                                200,
-                                {
-                                    'Content-Type': TP.XML_ENCODED
-                                },
-                                resultElem.asString()
-                            ]);
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+                aResult.get('html|body'),
+                resultElem.get('html|body'));
     });
 
     //  ---
 
-    this.it('REST DELETE with dynamic parameter - no specific result type', function(test, options) {
+    this.it('REST DELETE with dynamic parameter - no specific result type', async function(test, options) {
+
+        var locRe,
+            resultElem,
+
+            searchTPElem,
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service9.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locRe,
-                    resultElem,
+        locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_DELETE_TEST\\/.+');
+        resultElem = TP.wrap(
+                        TP.xhtmlnode(
+                            '<html><body>Hi there</body></html>'));
 
-                    searchTPElem,
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        searchTPElem = TP.byId('SearchTermField', windowContext);
+        serviceTPElem = TP.byId('Service9', windowContext);
 
-                locRe = TP.rc('\\/TIBET_endpoints\\/HTTP_REST_DELETE_TEST\\/.+');
-                resultElem = TP.wrap(
-                                TP.xhtmlnode(
-                                    '<html><body>Hi there</body></html>'));
+        //  ---
 
-                //  ---
+        await driver.constructSequence().
+                        sendKeys('dog', searchTPElem).
+                        sendEvent(TP.hc('type', 'change'), searchTPElem).
+                        run();
 
-                searchTPElem = TP.byId('SearchTermField', windowContext);
-                serviceTPElem = TP.byId('Service9', windowContext);
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                //  ---
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_DELETE,
+            locRe,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED
+                },
+                resultElem.asString()
+            ]);
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
+        serviceTPElem.activate();
 
-                        var handler;
+        //  ---
 
-                        handler = function() {
-                            var resultURI,
-                                aResult;
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
 
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
+        //  ---
 
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
+        server.respond();
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
+        //  ---
 
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
 
-                            resultURI = TP.uc('urn:tibet:Service9_Result');
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
 
-                            aResult = resultURI.getResource(
-                                TP.hc('resultType', TP.WRAP)).get('result');
+        resultURI = TP.uc('urn:tibet:Service9_Result');
 
-                            test.assert.isKindOf(
-                                aResult, TP.dom.XHTMLDocumentNode);
+        aResult = resultURI.getResource(
+            TP.hc('resultType', TP.WRAP)).get('result');
 
-                            test.assert.isEqualTo(
-                                    aResult.get('html|body'),
-                                    resultElem.get('html|body'));
+        test.assert.isKindOf(
+            aResult, TP.dom.XHTMLDocumentNode);
 
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                driver.constructSequence().
-                    sendKeys('dog', searchTPElem).
-                    sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    run();
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_DELETE,
-                            locRe,
-                            [
-                                200,
-                                {
-                                    'Content-Type': TP.XML_ENCODED
-                                },
-                                resultElem.asString()
-                            ]);
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+                aResult.get('html|body'),
+                resultElem.get('html|body'));
     });
 
     //  ---
 
-    this.it('FORM POST with body - no specific result type', function(test, options) {
+    this.it('FORM POST with body - no specific result type', async function(test, options) {
+
+        var locStr,
+
+            bodyURI,
+            testBody,
+
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service10.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locStr,
+        locStr = '/TIBET_endpoints/HTTP_FORM_POST_TEST';
 
-                    bodyURI,
-                    testBody,
+        bodyURI = TP.uc('urn:tibet:Service10_Body');
+        testBody = bodyURI.getResource().get('result');
 
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        serviceTPElem = TP.byId('Service10', windowContext);
 
-                locStr = '/TIBET_endpoints/HTTP_FORM_POST_TEST';
+        //  If we're running in headless mode (we're probably testing),
+        //  then we need to rewrite the URL to have an HTTP resource and
+        //  reset it on the service element.
+        if (TP.sys.isHeadless()) {
+            locStr = httpLoc + locStr;
+            TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                    'href',
+                                    locStr,
+                                    true);
+        }
 
-                bodyURI = TP.uc('urn:tibet:Service10_Body');
-                testBody = bodyURI.getResource().get('result');
+        //  ---
 
-                //  ---
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                serviceTPElem = TP.byId('Service10', windowContext);
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
 
-                //  If we're running in headless mode (we're probably testing),
-                //  then we need to rewrite the URL to have an HTTP resource and
-                //  reset it on the service element.
-                if (TP.sys.isHeadless()) {
-                    locStr = httpLoc + locStr;
-                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
-                                            'href',
-                                            locStr,
-                                            true);
-                }
+                test.assert.isEqualTo(
+                    req.requestBody,
+                    testBody.asHTTPValue());
 
-                //  ---
-
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
-
-                        var handler;
-
-                        handler = function() {
-                            var resultURI,
-                                aResult;
-
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
-
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
-
-                            resultURI = TP.uc('urn:tibet:Service10_Result');
-
-                            aResult = resultURI.getResource(
-                                    TP.hc('resultType', TP.TEXT)).get('result');
-
-                            test.assert.isKindOf(aResult, String);
-                            test.assert.isEqualTo(aResult, 'OK from POST');
-
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_POST,
-                            locStr,
-                            function(req) {
-
-                                test.assert.isEqualTo(
-                                    req.requestBody,
-                                    testBody.asHTTPValue());
-
-                                req.respond(
-                                    200,
-                                    {
-                                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                                    },
-                                    'OK from POST');
-                            });
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from POST');
             });
+
+        serviceTPElem.activate();
+
+        //  ---
+
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
+
+        //  ---
+
+        server.respond();
+
+        //  ---
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
+
+        resultURI = TP.uc('urn:tibet:Service10_Result');
+
+        aResult = resultURI.getResource(
+                TP.hc('resultType', TP.TEXT)).get('result');
+
+        test.assert.isKindOf(aResult, String);
+        test.assert.isEqualTo(aResult, 'OK from POST');
     });
 
     //  ---
 
-    this.it('MULTIPART FORM POST with body - no specific result type', function(test, options) {
+    this.it('MULTIPART FORM POST with body - no specific result type', async function(test, options) {
+
+        var locStr,
+
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service11.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locStr,
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_TEST';
 
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        serviceTPElem = TP.byId('Service11', windowContext);
 
-                locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_TEST';
+        //  If we're running in headless mode (we're probably testing),
+        //  then we need to rewrite the URL to have an HTTP resource and
+        //  reset it on the service element.
+        if (TP.sys.isHeadless()) {
+            locStr = httpLoc + locStr;
+            TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                    'href',
+                                    locStr,
+                                    true);
+        }
 
-                //  ---
+        //  ---
 
-                serviceTPElem = TP.byId('Service11', windowContext);
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                //  If we're running in headless mode (we're probably testing),
-                //  then we need to rewrite the URL to have an HTTP resource and
-                //  reset it on the service element.
-                if (TP.sys.isHeadless()) {
-                    locStr = httpLoc + locStr;
-                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
-                                            'href',
-                                            locStr,
-                                            true);
-                }
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
 
-                //  ---
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="0"/);
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="1"/);
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
-
-                        var handler;
-
-                        handler = function() {
-                            var resultURI,
-                                aResult;
-
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
-
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
-
-                            resultURI = TP.uc('urn:tibet:Service11_Result');
-
-                            aResult = resultURI.getResource().get('result');
-
-                            aResult = resultURI.getResource(
-                                    TP.hc('resultType', TP.TEXT)).get('result');
-
-                            test.assert.isKindOf(aResult, String);
-                            test.assert.isEqualTo(aResult, 'OK from POST');
-
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_POST,
-                            locStr,
-                            function(req) {
-
-                                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="0"/);
-                                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="1"/);
-
-                                req.respond(
-                                    200,
-                                    {
-                                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                                    },
-                                    'OK from POST');
-                            });
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from POST');
             });
+
+        serviceTPElem.activate();
+
+        //  ---
+
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
+
+        //  ---
+
+        server.respond();
+
+        //  ---
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
+
+        resultURI = TP.uc('urn:tibet:Service11_Result');
+
+        aResult = resultURI.getResource().get('result');
+
+        aResult = resultURI.getResource(
+                TP.hc('resultType', TP.TEXT)).get('result');
+
+        test.assert.isKindOf(aResult, String);
+        test.assert.isEqualTo(aResult, 'OK from POST');
     });
 
     //  ---
 
-    this.it('MULTIPART RELATED POST with body - no specific result type', function(test, options) {
+    this.it('MULTIPART RELATED POST with body - no specific result type', async function(test, options) {
+
+        var locStr,
+
+            serviceTPElem,
+            resultURI,
+            aResult;
 
         loadURI = TP.uc('~lib_test/src/http/service/Service12.xhtml');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
-                var locStr,
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_RELATED_POST_TEST';
 
-                    serviceTPElem,
+        //  ---
 
-                    promise;
+        serviceTPElem = TP.byId('Service12', windowContext);
 
-                locStr = '/TIBET_endpoints/HTTP_MULTIPART_RELATED_POST_TEST';
+        //  If we're running in headless mode (we're probably testing),
+        //  then we need to rewrite the URL to have an HTTP resource and
+        //  reset it on the service element.
+        if (TP.sys.isHeadless()) {
+            locStr = httpLoc + locStr;
+            TP.elementSetAttribute(serviceTPElem.getNativeNode(),
+                                    'href',
+                                    locStr,
+                                    true);
+        }
 
-                //  ---
+        //  ---
 
-                serviceTPElem = TP.byId('Service12', windowContext);
+        //  Create a 'fake' HTTP server
+        server = TP.test.fakeServer.create();
 
-                //  If we're running in headless mode (we're probably testing),
-                //  then we need to rewrite the URL to have an HTTP resource and
-                //  reset it on the service element.
-                if (TP.sys.isHeadless()) {
-                    locStr = httpLoc + locStr;
-                    TP.elementSetAttribute(serviceTPElem.getNativeNode(),
-                                            'href',
-                                            locStr,
-                                            true);
-                }
+        //  Set up the 'server' to respond properly.
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
 
-                //  ---
+                test.assert.matches(req.requestBody, /Content-ID: 0\s+foo => bar, baz => goo/);
+                test.assert.matches(req.requestBody, /Content-ID: 1\s+<value><goo>tar<\/goo><faz>roo<\/faz><\/value>/);
 
-                //  In order to make the asynchronous behavior work here, we
-                //  create a Promise and return it from the test case method.
-                promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
-
-                        var handler;
-
-                        handler = function() {
-                            var resultURI,
-                                aResult;
-
-                            //  Now that we're really done with everything, we
-                            //  can resolve() the Promise.
-                            resolver();
-
-                            handler.ignore(serviceTPElem, 'TP.sig.DOMReady');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataReceived');
-
-                            test.assert.didSignal(
-                                serviceTPElem, 'TP.sig.UIDataConstruct');
-
-                            resultURI = TP.uc('urn:tibet:Service12_Result');
-
-                            aResult = resultURI.getResource(
-                                    TP.hc('resultType', TP.TEXT)).get('result');
-
-                            test.assert.isKindOf(aResult, String);
-                            test.assert.isEqualTo(aResult, 'OK from POST');
-
-                            return this;
-                        };
-
-                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
-                    });
-
-                test.chain(
-                    function() {
-
-                        //  Create a 'fake' HTTP server
-                        server = TP.test.fakeServer.create();
-
-                        //  Set up the 'server' to respond properly.
-                        server.respondWith(
-                            TP.HTTP_POST,
-                            locStr,
-                            function(req) {
-
-                                test.assert.matches(req.requestBody, /Content-ID: 0\s+foo => bar, baz => goo/);
-                                test.assert.matches(req.requestBody, /Content-ID: 1\s+<value><goo>tar<\/goo><faz>roo<\/faz><\/value>/);
-
-                                req.respond(
-                                    200,
-                                    {
-                                        'Content-Type': TP.PLAIN_TEXT_ENCODED
-                                    },
-                                    'OK from POST');
-                            });
-
-                        serviceTPElem.activate();
-
-                        test.assert.didSignal(serviceTPElem,
-                                                'TP.sig.UIDataSent');
-
-                        server.respond();
-                    });
-
-                //  Return the Promise.
-                return promise;
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                    },
+                    'OK from POST');
             });
+
+        serviceTPElem.activate();
+
+        //  ---
+
+        test.assert.didSignal(serviceTPElem,
+                                'TP.sig.UIDataSent');
+
+        //  ---
+
+        server.respond();
+
+        //  ---
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataReceived');
+
+        test.assert.didSignal(
+            serviceTPElem, 'TP.sig.UIDataConstruct');
+
+        resultURI = TP.uc('urn:tibet:Service12_Result');
+
+        aResult = resultURI.getResource(
+                TP.hc('resultType', TP.TEXT)).get('result');
+
+        test.assert.isKindOf(aResult, String);
+        test.assert.isEqualTo(aResult, 'OK from POST');
     });
 });
 

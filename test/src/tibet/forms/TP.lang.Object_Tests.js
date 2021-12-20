@@ -1038,6 +1038,8 @@ function() {
     var unloadURI,
         loadURI,
 
+        windowContext,
+
         usingDebugger,
         oldLogLevel;
 
@@ -1085,6 +1087,10 @@ function() {
 
             //  ---
 
+            windowContext = this.getDriver().get('windowContext');
+
+            //  ---
+
             //  NB: We do this here rather than in the 'beforeEach' so that we
             //  can test for signals that get dispatched during the load
             //  process.
@@ -1114,10 +1120,10 @@ function() {
         });
 
     this.afterEach(
-        function(test, options) {
+        async function(test, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1130,44 +1136,137 @@ function() {
 
     //  ---
 
-    this.it('markup-level validation - simple and complex types', function(test, options) {
+    this.it('markup-level validation - simple and complex types', async function(test, options) {
         var driver,
-            windowContext;
+
+            srcURI,
+
+            ageURI,
+
+            ageField;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/forms/Validation1.xhtml');
 
+        await driver.setLocation(loadURI);
+
+        srcURI = TP.uc('urn:tibet:Validation1_person');
+        ageURI = TP.uc('urn:tibet:Validation1_person#tibet(age)');
+
+        ageField = TP.byId('ageField', windowContext);
+
+        //  Note that these are tested in order of firing, just for
+        //  clarity purposes.
+
+        //  ---
+
+        //  'structure' change - age URI
+        test.assert.didSignal(ageURI, 'TP.sig.StructureChange');
+
+        //  'valid' change
+        test.assert.didSignal(ageURI, 'AgeValidChange');
+        test.assert.didSignal(ageField, 'TP.sig.UIValid');
+
+        test.assert.didSignal(srcURI, 'AgeValidChange');
+
+        //  ---
+
+        //  'value' change - source URI
+        test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+
+        //  ---
+
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
+
+        await driver.constructSequence().
+                        exec(function() {
+                            ageField.clearValue();
+                        }).
+                        sendKeys('Not A Number', ageField).
+                        sendEvent(TP.hc('type', 'change'), ageField).
+                        run();
+
+        //  ---
+
+        //  'age' change - age URI
+        test.assert.didSignal(ageURI, 'AgeChange');
+
+        //  'age' change - source URI
+        test.assert.didSignal(srcURI, 'AgeChange');
+
+        //  'valid' change
+        test.assert.didSignal(ageURI, 'AgeValidChange');
+        test.assert.didSignal(ageField, 'TP.sig.UIInvalid');
+
+        test.assert.didSignal(srcURI, 'AgeValidChange');
+
+        //  ---
+
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
+
+        //  ---
+
+        await driver.constructSequence().
+                        exec(function() {
+                            ageField.clearValue();
+                        }).
+                        sendKeys('25', ageField).
+                        sendEvent(TP.hc('type', 'change'), ageField).
+                        run();
+
+        //  ---
+
+        //  'age' change - age URI
+        test.assert.didSignal(ageURI, 'AgeChange');
+
+        //  'age' change - source URI
+        test.assert.didSignal(srcURI, 'AgeChange');
+
+        //  'valid' change
+        test.assert.didSignal(ageURI, 'AgeValidChange');
+        test.assert.didSignal(ageField, 'TP.sig.UIValid');
+
+        test.assert.didSignal(srcURI, 'AgeValidChange');
+    });
+
+    //  ---
+
+    this.it('markup-level validation - multiple types validation', async function(test, options) {
+        var driver,
+
+            typeTestFunc;
+
         driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
 
-        driver.setLocation(loadURI);
+        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation2.xhtml');
 
-        test.chain(
-            function(result) {
+        await driver.setLocation(loadURI);
 
-                var srcURI,
+        typeTestFunc = async function(aspectName, invalidValueStr, validValueStr) {
 
-                    ageURI,
+                var name,
+                    nameTC,
 
-                    ageField;
+                    srcURI,
 
-                srcURI = TP.uc('urn:tibet:Validation1_person');
-                ageURI = TP.uc('urn:tibet:Validation1_person#tibet(age)');
+                    aspectURI,
 
-                ageField = TP.byId('ageField', windowContext);
+                    aspectField;
+
+                name = aspectName;
+                nameTC = aspectName.asTitleCase();
+
+                srcURI = TP.uc('urn:tibet:Validation2_data');
+                aspectURI =
+                    TP.uc('urn:tibet:Validation2_data#tibet(' + name + ')');
+
+                aspectField = TP.byId(name + 'Field', windowContext);
 
                 //  Note that these are tested in order of firing, just for
                 //  clarity purposes.
-
-                //  ---
-
-                //  'structure' change - age URI
-                test.assert.didSignal(ageURI, 'TP.sig.StructureChange');
-
-                //  'valid' change
-                test.assert.didSignal(ageURI, 'AgeValidChange');
-                test.assert.didSignal(ageField, 'TP.sig.UIValid');
-
-                test.assert.didSignal(srcURI, 'AgeValidChange');
 
                 //  ---
 
@@ -1176,1872 +1275,1480 @@ function() {
 
                 //  ---
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+                //  Reset the metrics we're tracking.
+                test.getSuite().resetSignalTracking();
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        ageField.clearValue();
-                    }).
-                    sendKeys('Not A Number', ageField).
-                    sendEvent(TP.hc('type', 'change'), ageField).
-                    run();
+                await driver.constructSequence().
+                                exec(function() {
+                                    aspectField.clearValue();
+                                }).
+                                sendKeys(invalidValueStr, aspectField).
+                                sendEvent(TP.hc('type', 'change'), aspectField).
+                                run();
 
                 //  ---
 
-                test.chain(
-                    function() {
+                //  aspect change - aspect URI
+                test.assert.didSignal(aspectURI, nameTC + 'Change');
 
-                        //  'age' change - age URI
-                        test.assert.didSignal(ageURI, 'AgeChange');
+                //  aspect change - source URI
+                test.assert.didSignal(srcURI, nameTC + 'Change');
 
-                        //  'age' change - source URI
-                        test.assert.didSignal(srcURI, 'AgeChange');
+                //  'valid' change - aspect URI
+                test.assert.didSignal(aspectURI, nameTC + 'ValidChange');
+                test.assert.didSignal(aspectField, 'TP.sig.UIInvalid');
 
-                        //  'valid' change
-                        test.assert.didSignal(ageURI, 'AgeValidChange');
-                        test.assert.didSignal(ageField, 'TP.sig.UIInvalid');
-
-                        test.assert.didSignal(srcURI, 'AgeValidChange');
-                    });
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, nameTC + 'ValidChange');
 
                 //  ---
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+                //  Reset the metrics we're tracking.
+                test.getSuite().resetSignalTracking();
 
                 //  ---
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        ageField.clearValue();
-                    }).
-                    sendKeys('25', ageField).
-                    sendEvent(TP.hc('type', 'change'), ageField).
-                    run();
+                await driver.constructSequence().
+                                exec(function() {
+                                    aspectField.clearValue();
+                                }).
+                                sendKeys(validValueStr, aspectField).
+                                sendEvent(TP.hc('type', 'change'), aspectField).
+                                run();
 
                 //  ---
 
-                test.chain(
-                    function() {
 
-                        //  'age' change - age URI
-                        test.assert.didSignal(ageURI, 'AgeChange');
+                //  aspect change - aspect URI
+                test.assert.didSignal(aspectURI, nameTC + 'Change');
 
-                        //  'age' change - source URI
-                        test.assert.didSignal(srcURI, 'AgeChange');
+                //  'age' change - source URI
+                test.assert.didSignal(srcURI, nameTC + 'Change');
 
-                        //  'valid' change
-                        test.assert.didSignal(ageURI, 'AgeValidChange');
-                        test.assert.didSignal(ageField, 'TP.sig.UIValid');
+                //  'valid' change - aspect URI
+                test.assert.didSignal(aspectURI, nameTC + 'ValidChange');
+                test.assert.didSignal(aspectField, 'TP.sig.UIValid');
 
-                        test.assert.didSignal(srcURI, 'AgeValidChange');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
-    });
-
-    //  ---
-
-    this.it('markup-level validation - multiple types validation', function(test, options) {
-        var driver,
-            windowContext,
-
-            typeTestFunc;
-
-        loadURI = TP.uc('~lib_test/src/tibet/forms/Validation2.xhtml');
-
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
-
-        driver.setLocation(loadURI);
-
-        typeTestFunc = function(aspectName, invalidValueStr, validValueStr) {
-
-            test.chain(
-                function(result) {
-
-                    var name,
-                        nameTC,
-
-                        srcURI,
-
-                        aspectURI,
-
-                        aspectField;
-
-                    name = aspectName;
-                    nameTC = aspectName.asTitleCase();
-
-                    srcURI = TP.uc('urn:tibet:Validation2_data');
-                    aspectURI =
-                        TP.uc('urn:tibet:Validation2_data#tibet(' + name + ')');
-
-                    aspectField = TP.byId(name + 'Field', windowContext);
-
-                    //  Note that these are tested in order of firing, just for
-                    //  clarity purposes.
-
-                    //  ---
-
-                    //  'value' change - source URI
-                    test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
-
-                    //  ---
-
-                    test.chain(
-                        function() {
-                            //  Reset the metrics we're tracking.
-                            test.getSuite().resetSignalTracking();
-                        });
-
-                    test.getDriver().constructSequence().
-                        exec(function() {
-                            aspectField.clearValue();
-                        }).
-                        sendKeys(invalidValueStr, aspectField).
-                        sendEvent(TP.hc('type', 'change'), aspectField).
-                        run();
-
-                    //  ---
-
-                    test.chain(
-                        function() {
-
-                            //  aspect change - aspect URI
-                            test.assert.didSignal(aspectURI,
-                                                    nameTC + 'Change');
-
-                            //  aspect change - source URI
-                            test.assert.didSignal(srcURI,
-                                                    nameTC + 'Change');
-
-                            //  'valid' change - aspect URI
-                            test.assert.didSignal(aspectURI,
-                                                    nameTC + 'ValidChange');
-                            test.assert.didSignal(aspectField,
-                                                    'TP.sig.UIInvalid');
-
-                            //  'valid' change - source URI
-                            test.assert.didSignal(srcURI,
-                                                    nameTC + 'ValidChange');
-                        });
-
-                    //  ---
-
-                    test.chain(
-                        function() {
-                            //  Reset the metrics we're tracking.
-                            test.getSuite().resetSignalTracking();
-                        });
-
-                    //  ---
-
-                    test.getDriver().constructSequence().
-                        exec(function() {
-                            aspectField.clearValue();
-                        }).
-                        sendKeys(validValueStr, aspectField).
-                        sendEvent(TP.hc('type', 'change'), aspectField).
-                        run();
-
-                    //  ---
-
-                    test.chain(
-                        function() {
-
-                            //  aspect change - aspect URI
-                            test.assert.didSignal(aspectURI,
-                                                    nameTC + 'Change');
-
-                            //  'age' change - source URI
-                            test.assert.didSignal(srcURI,
-                                                    nameTC + 'Change');
-
-                            //  'valid' change - aspect URI
-                            test.assert.didSignal(aspectURI,
-                                                    nameTC + 'ValidChange');
-                            test.assert.didSignal(aspectField,
-                                                    'TP.sig.UIValid');
-
-                            //  'valid' change - source URI
-                            test.assert.didSignal(srcURI,
-                                                    nameTC + 'ValidChange');
-                        });
-                });
+                //  'valid' change - source URI
+                test.assert.didSignal(srcURI, nameTC + 'ValidChange');
         };
 
-        test.chain(
-            function(result) {
-                typeTestFunc('AlphaOnly', 'ABC123', 'ABC');
-                typeTestFunc('AlphaNum', 'ABC123%#', 'ABC123');
-                typeTestFunc('Password', 'badpwd', 'GoodPwd2*');
-                typeTestFunc('CVV', '1234', '123');
-                typeTestFunc('Date', 'foo', '1/1/1970');
-                typeTestFunc('Email', 'foo', 'foo@bar.com');
-                typeTestFunc('EmailList', 'foo. bar', 'foo@bar.com baz@goo.com');
-                typeTestFunc('Identifier', '**FOO37foo**', 'foo39_');
-                typeTestFunc('IPV4Addr', '45.34.2', '127.0.0.1');
-                typeTestFunc('IPV6Addr', 'FE80::0202:B3FF:FE1E:', 'FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
-                typeTestFunc('NoWhitespace', 'Hi There', 'HiThere');
-                typeTestFunc('Decimal', '1A', '34.52');
-                typeTestFunc('NonNegativeNumber', '-42', '42');
-                typeTestFunc('PositiveNumber', '0', '42');
-                typeTestFunc('Integer', '42.45', '42');
-                typeTestFunc('NonNegativeInteger', '-42.45', '42');
-                typeTestFunc('PositiveInteger', '0', '42');
-                typeTestFunc('USPhoneNumber', 'BU 5-1212', '555-555-1212');
-                typeTestFunc('InternationalPhoneNumber', 'fluffy', '+15555555555');
-                typeTestFunc('SSN', '555-55-33', '555-55-1212');
-                typeTestFunc('Time', 'fluffy', '12:18pm');
-                typeTestFunc('Duration', 'barfy', 'P1Y2M3DT4H5M6S');
-                typeTestFunc('URL', 'bazfy', 'http://www.baz.com');
-                typeTestFunc('USPostalCode', 'ACD456', '11111-1111');
-                typeTestFunc('CreditCard', '5555555544', '5555555555554444');
-                typeTestFunc('USDollar', 'moo', '$42.00');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        await typeTestFunc('AlphaOnly', 'ABC123', 'ABC');
+        await typeTestFunc('AlphaNum', 'ABC123%#', 'ABC123');
+        await typeTestFunc('Password', 'badpwd', 'GoodPwd2*');
+        await typeTestFunc('CVV', '1234', '123');
+        await typeTestFunc('Date', 'foo', '1/1/1970');
+        await typeTestFunc('Email', 'foo', 'foo@bar.com');
+        await typeTestFunc('EmailList', 'foo. bar', 'foo@bar.com baz@goo.com');
+        await typeTestFunc('Identifier', '**FOO37foo**', 'foo39_');
+        await typeTestFunc('IPV4Addr', '45.34.2', '127.0.0.1');
+        await typeTestFunc('IPV6Addr', 'FE80::0202:B3FF:FE1E:', 'FE80:0000:0000:0000:0202:B3FF:FE1E:8329');
+        await typeTestFunc('NoWhitespace', 'Hi There', 'HiThere');
+        await typeTestFunc('Decimal', '1A', '34.52');
+        await typeTestFunc('NonNegativeNumber', '-42', '42');
+        await typeTestFunc('PositiveNumber', '0', '42');
+        await typeTestFunc('Integer', '42.45', '42');
+        await typeTestFunc('NonNegativeInteger', '-42.45', '42');
+        await typeTestFunc('PositiveInteger', '0', '42');
+        await typeTestFunc('USPhoneNumber', 'BU 5-1212', '555-555-1212');
+        await typeTestFunc('InternationalPhoneNumber', 'fluffy', '+15555555555');
+        await typeTestFunc('SSN', '555-55-33', '555-55-1212');
+        await typeTestFunc('Time', 'fluffy', '12:18pm');
+        await typeTestFunc('Duration', 'barfy', 'P1Y2M3DT4H5M6S');
+        await typeTestFunc('URL', 'bazfy', 'http://www.baz.com');
+        await typeTestFunc('USPostalCode', 'ACD456', '11111-1111');
+        await typeTestFunc('CreditCard', '5555555544', '5555555555554444');
+        await typeTestFunc('USDollar', 'moo', '$42.00');
 
     }).timeout(15000);
 
     //  ---
 
-    this.it('markup-level validation - group-level validation', function(test, options) {
+    this.it('markup-level validation - group-level validation', async function(test, options) {
         var driver,
-            windowContext;
+
+            srcURI,
+
+            ssnURI,
+            gendURI,
+
+            ssnField,
+            gendField,
+
+            citCheckbox,
+
+            empGroup;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/forms/Validation3.xhtml');
 
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
+        await driver.setLocation(loadURI);
 
-        driver.setLocation(loadURI);
+        srcURI = TP.uc('urn:tibet:Validation3_person');
+        ssnURI = TP.uc('urn:tibet:Validation3_person#tibet(SSN)');
+        gendURI = TP.uc('urn:tibet:Validation3_person#tibet(gender)');
 
-        test.chain(
-            function(result) {
+        ssnField = TP.byId('SSNField', windowContext);
+        gendField = TP.byId('GenderField', windowContext);
+        citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
 
-                var srcURI,
+        empGroup = TP.byId('EmployeeGroup', windowContext);
 
-                    ssnURI,
-                    gendURI,
+        //  Note that these are tested in order of firing, just for
+        //  clarity purposes.
 
-                    ssnField,
-                    gendField,
+        //  ---
 
-                    citCheckbox,
+        //  Gender
 
-                    empGroup;
+        //  'structure' change - gender URI
+        test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
 
-                srcURI = TP.uc('urn:tibet:Validation3_person');
-                ssnURI = TP.uc('urn:tibet:Validation3_person#tibet(SSN)');
-                gendURI = TP.uc('urn:tibet:Validation3_person#tibet(gender)');
+        //  'required' change - gender (the model value has a valid
+        //  value - so this constraint is satisfied)
+        test.assert.didSignal(gendURI, 'GenderRequiredChange');
+        test.assert.didSignal(gendField, 'TP.sig.UIOptional');
 
-                ssnField = TP.byId('SSNField', windowContext);
-                gendField = TP.byId('GenderField', windowContext);
-                citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI, 'GenderRequiredChange');
 
-                empGroup = TP.byId('EmployeeGroup', windowContext);
+        //  'valid' change - gender
+        test.assert.didSignal(gendURI, 'GenderValidChange');
+        test.assert.didSignal(gendField, 'TP.sig.UIValid');
 
-                //  Note that these are tested in order of firing, just for
-                //  clarity purposes.
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'GenderValidChange');
 
-                //  ---
+        //  ---
 
-                //  Gender
+        //  SSN
 
-                //  'structure' change - gender URI
-                test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
+        //  'structure' change - SSN URI
+        test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
 
-                //  'required' change - gender (the model value has a valid
-                //  value - so this constraint is satisfied)
-                test.assert.didSignal(gendURI, 'GenderRequiredChange');
-                test.assert.didSignal(gendField, 'TP.sig.UIOptional');
+        //  'relevant' change - SSN (there is a model value for
+        //  uscitizen, but it's empty)
+        test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+        test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
 
-                //  'required' change - source URI
-                test.assert.didSignal(srcURI, 'GenderRequiredChange');
+        //  'relevant' change - source URI
+        test.assert.didSignal(srcURI, 'SSNRelevantChange');
 
-                //  'valid' change - gender
-                test.assert.didSignal(gendURI, 'GenderValidChange');
-                test.assert.didSignal(gendField, 'TP.sig.UIValid');
+        //  'valid' change - SSN
+        test.assert.didSignal(ssnURI, 'SSNValidChange');
+        // test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
 
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'GenderValidChange');
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'SSNValidChange');
 
-                //  ---
+        //  ---
 
-                //  SSN
+        //  Employee Group
 
-                //  'structure' change - SSN URI
-                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+        //  'valid' change - Employee Group field (it's invalid because
+        //  the SSN is missing)
+        // test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
+        // test.assert.hasAttribute(empGroup, 'pclass:invalid');
 
-                //  'relevant' change - SSN (there is a model value for
-                //  uscitizen, but it's empty)
-                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
-                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+        //  ---
 
-                //  'relevant' change - source URI
-                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                //  'valid' change - SSN
-                test.assert.didSignal(ssnURI, 'SSNValidChange');
-                // test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+        //  ---
 
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'SSNValidChange');
+        await driver.constructSequence().
+                        click(citCheckbox).
+                        run();
 
-                //  ---
+        //  ---
 
-                //  Employee Group
+        //  'relevant' change - source URI
+        test.assert.didSignal(srcURI, 'SSNRelevantChange');
+        test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
 
-                //  'valid' change - Employee Group field (it's invalid because
-                //  the SSN is missing)
-                // test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
-                // test.assert.hasAttribute(empGroup, 'pclass:invalid');
+        //  ---
 
-                //  ---
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  ---
 
-                //  ---
+        await driver.constructSequence().
+                        exec(function() {
+                            ssnField.clearValue();
+                        }).
+                        sendKeys('333-33-3333', ssnField).
+                        sendEvent(TP.hc('type', 'change'), ssnField).
+                        run();
 
-                driver.constructSequence().
-                    click(citCheckbox).
-                    run();
+        //  ---
 
-                //  ---
+        //  SSN
 
-                test.chain(
-                    function() {
-                        //  'relevant' change - source URI
-                        test.assert.didSignal(srcURI, 'SSNRelevantChange');
-                        test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
-                    });
+        //  'SSN' change - SSN URI
+        test.assert.didSignal(ssnURI, 'SSNChange');
 
-                //  ---
+        //  'SSN' change - source URI
+        test.assert.didSignal(srcURI, 'SSNChange');
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  'valid' change - SSN
+        test.assert.didSignal(ssnURI, 'SSNValidChange');
+        test.assert.didSignal(ssnField, 'TP.sig.UIValid');
 
-                //  ---
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'SSNValidChange');
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        ssnField.clearValue();
-                    }).
-                    sendKeys('333-33-3333', ssnField).
-                    sendEvent(TP.hc('type', 'change'), ssnField).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-
-                        //  SSN
-
-                        //  'SSN' change - SSN URI
-                        test.assert.didSignal(ssnURI, 'SSNChange');
-
-                        //  'SSN' change - source URI
-                        test.assert.didSignal(srcURI, 'SSNChange');
-
-                        //  'valid' change - SSN
-                        test.assert.didSignal(ssnURI, 'SSNValidChange');
-                        test.assert.didSignal(ssnField, 'TP.sig.UIValid');
-
-                        //  'valid' change - source URI
-                        test.assert.didSignal(srcURI, 'SSNValidChange');
-
-                        //  'valid' change - Employee Group field
-                        // test.assert.didSignal(empGroup, 'TP.sig.UIValid');
-                        test.refute.hasAttribute(empGroup, 'pclass:invalid');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        //  'valid' change - Employee Group field
+        // test.assert.didSignal(empGroup, 'TP.sig.UIValid');
+        test.refute.hasAttribute(empGroup, 'pclass:invalid');
     });
 
     //  ---
 
-    this.it('markup-level validation - nested group-level validation', function(test, options) {
+    this.it('markup-level validation - nested group-level validation', async function(test, options) {
         var driver,
-            windowContext;
+
+            srcURI,
+
+            ssnURI,
+            gendURI,
+            cityURI,
+            stateURI,
+
+            ssnField,
+            gendField,
+            cityField,
+            stateField,
+            citCheckbox,
+
+            empGroup,
+            addrGroup;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/forms/Validation4.xhtml');
 
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
+        await driver.setLocation(loadURI);
 
-        driver.setLocation(loadURI);
+        srcURI = TP.uc('urn:tibet:Validation4_person');
+        ssnURI = TP.uc('urn:tibet:Validation4_person#tibet(SSN)');
+        gendURI = TP.uc('urn:tibet:Validation4_person#tibet(gender)');
+        cityURI = TP.uc('urn:tibet:Validation4_person#tibet(city)');
+        stateURI = TP.uc('urn:tibet:Validation4_person#tibet(state)');
 
-        test.chain(
-            function(result) {
+        ssnField = TP.byId('SSNField', windowContext);
+        gendField = TP.byId('GenderField', windowContext);
+        cityField = TP.byId('CityField', windowContext);
+        stateField = TP.byId('StateField', windowContext);
+        citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
 
-                var srcURI,
+        empGroup = TP.byId('EmployeeGroup', windowContext);
+        addrGroup = TP.byId('AddressGroup', windowContext);
 
-                    ssnURI,
-                    gendURI,
-                    cityURI,
-                    stateURI,
+        //  Note that these are tested in order of firing, just for
+        //  clarity purposes.
 
-                    ssnField,
-                    gendField,
-                    cityField,
-                    stateField,
-                    citCheckbox,
+        //  ---
 
-                    empGroup,
-                    addrGroup;
+        //  Gender
 
-                srcURI = TP.uc('urn:tibet:Validation4_person');
-                ssnURI = TP.uc('urn:tibet:Validation4_person#tibet(SSN)');
-                gendURI = TP.uc('urn:tibet:Validation4_person#tibet(gender)');
-                cityURI = TP.uc('urn:tibet:Validation4_person#tibet(city)');
-                stateURI = TP.uc('urn:tibet:Validation4_person#tibet(state)');
+        //  'structure' change - gender URI
+        test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
 
-                ssnField = TP.byId('SSNField', windowContext);
-                gendField = TP.byId('GenderField', windowContext);
-                cityField = TP.byId('CityField', windowContext);
-                stateField = TP.byId('StateField', windowContext);
-                citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
+        //  'required' change - gender (the model value has a valid
+        //  value - so this constraint is satisfied)
+        test.assert.didSignal(gendURI, 'GenderRequiredChange');
+        test.assert.didSignal(gendField, 'TP.sig.UIOptional');
 
-                empGroup = TP.byId('EmployeeGroup', windowContext);
-                addrGroup = TP.byId('AddressGroup', windowContext);
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI, 'GenderRequiredChange');
 
-                //  Note that these are tested in order of firing, just for
-                //  clarity purposes.
+        //  'valid' change - gender
+        test.assert.didSignal(gendURI, 'GenderValidChange');
+        test.assert.didSignal(gendField, 'TP.sig.UIValid');
 
-                //  ---
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'GenderValidChange');
 
-                //  Gender
+        //  ---
 
-                //  'structure' change - gender URI
-                test.assert.didSignal(gendURI, 'TP.sig.StructureChange');
+        //  SSN
 
-                //  'required' change - gender (the model value has a valid
-                //  value - so this constraint is satisfied)
-                test.assert.didSignal(gendURI, 'GenderRequiredChange');
-                test.assert.didSignal(gendField, 'TP.sig.UIOptional');
+        //  'structure' change - SSN URI
+        test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
 
-                //  'required' change - source URI
-                test.assert.didSignal(srcURI, 'GenderRequiredChange');
+        //  'relevant' change - SSN
+        test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+        test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
 
-                //  'valid' change - gender
-                test.assert.didSignal(gendURI, 'GenderValidChange');
-                test.assert.didSignal(gendField, 'TP.sig.UIValid');
+        //  'relevant' change - source URI
+        test.assert.didSignal(srcURI, 'SSNRelevantChange');
 
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'GenderValidChange');
+        //  'valid' change - SSN
+        test.assert.didSignal(ssnURI, 'SSNValidChange');
+        // test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
 
-                //  ---
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'SSNValidChange');
 
-                //  SSN
+        //  ---
 
-                //  'structure' change - SSN URI
-                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+        //  City
 
-                //  'relevant' change - SSN
-                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
-                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+        //  'structure' change - city URI
+        test.assert.didSignal(cityURI, 'TP.sig.StructureChange');
 
-                //  'relevant' change - source URI
-                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+        //  'required' change - city
+        test.assert.didSignal(cityURI, 'CityRequiredChange');
+        test.assert.didSignal(cityField, 'TP.sig.UIOptional');
 
-                //  'valid' change - SSN
-                test.assert.didSignal(ssnURI, 'SSNValidChange');
-                // test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI, 'CityRequiredChange');
 
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'SSNValidChange');
+        //  'structure' change - city URI
+        test.assert.didSignal(cityURI, 'TP.sig.StructureChange');
 
-                //  ---
+        //  'valid' change - city
+        test.assert.didSignal(cityURI, 'CityValidChange');
+        test.assert.didSignal(cityField, 'TP.sig.UIValid');
 
-                //  City
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'CityValidChange');
 
-                //  'structure' change - city URI
-                test.assert.didSignal(cityURI, 'TP.sig.StructureChange');
+        //  ---
 
-                //  'required' change - city
-                test.assert.didSignal(cityURI, 'CityRequiredChange');
-                test.assert.didSignal(cityField, 'TP.sig.UIOptional');
+        //  State
 
-                //  'required' change - source URI
-                test.assert.didSignal(srcURI, 'CityRequiredChange');
+        //  'structure' change - state URI
+        test.assert.didSignal(stateURI, 'TP.sig.StructureChange');
 
-                //  'structure' change - city URI
-                test.assert.didSignal(cityURI, 'TP.sig.StructureChange');
+        //  'required' change - state
+        test.assert.didSignal(stateURI, 'StateRequiredChange');
+        test.assert.didSignal(stateField, 'TP.sig.UIOptional');
 
-                //  'valid' change - city
-                test.assert.didSignal(cityURI, 'CityValidChange');
-                test.assert.didSignal(cityField, 'TP.sig.UIValid');
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI, 'StateRequiredChange');
 
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'CityValidChange');
+        //  'valid' change - state
+        test.assert.didSignal(stateURI, 'StateValidChange');
+        test.assert.didSignal(stateField, 'TP.sig.UIInvalid');
 
-                //  ---
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'StateValidChange');
 
-                //  State
+        //  ---
 
-                //  'structure' change - state URI
-                test.assert.didSignal(stateURI, 'TP.sig.StructureChange');
+        //  Employee Group
 
-                //  'required' change - state
-                test.assert.didSignal(stateURI, 'StateRequiredChange');
-                test.assert.didSignal(stateField, 'TP.sig.UIOptional');
+        //  'valid' change - Employee Group field (invalid because SSN
+        //  is invalid)
+        // test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
+        // test.assert.hasAttribute(empGroup, 'pclass:invalid');
 
-                //  'required' change - source URI
-                test.assert.didSignal(srcURI, 'StateRequiredChange');
+        //  ---
 
-                //  'valid' change - state
-                test.assert.didSignal(stateURI, 'StateValidChange');
-                test.assert.didSignal(stateField, 'TP.sig.UIInvalid');
+        //  Address Group
 
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'StateValidChange');
+        //  'required' change - Address Group field (invalid because
+        //  State is invalid)
+        test.assert.didSignal(addrGroup, 'TP.sig.UIInvalid');
+        test.assert.hasAttribute(addrGroup, 'pclass:invalid');
 
-                //  ---
+        //  ---
 
-                //  Employee Group
+        test.getSuite().resetSignalTracking();
 
-                //  'valid' change - Employee Group field (invalid because SSN
-                //  is invalid)
-                // test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
-                // test.assert.hasAttribute(empGroup, 'pclass:invalid');
+        //  ---
 
-                //  ---
+        await driver.constructSequence().
+                        exec(function() {
+                            stateField.clearValue();
+                        }).
+                        sendKeys('CA', stateField).
+                        sendEvent(TP.hc('type', 'change'), stateField).
+                        run();
 
-                //  Address Group
+        //  ---
 
-                //  'required' change - Address Group field (invalid because
-                //  State is invalid)
-                test.assert.didSignal(addrGroup, 'TP.sig.UIInvalid');
-                test.assert.hasAttribute(addrGroup, 'pclass:invalid');
+        //  State
 
-                //  ---
+        //  'State' change - State URI
+        test.assert.didSignal(stateURI, 'StateChange');
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  'State' change - source URI
+        test.assert.didSignal(srcURI, 'StateChange');
 
-                //  ---
+        //  'valid' change - state
+        test.assert.didSignal(stateURI, 'StateValidChange');
+        test.assert.didSignal(stateField, 'TP.sig.UIValid');
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        stateField.clearValue();
-                    }).
-                    sendKeys('CA', stateField).
-                    sendEvent(TP.hc('type', 'change'), stateField).
-                    run();
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'StateValidChange');
 
-                //  ---
+        //  Employee Group
 
-                test.chain(
-                    function() {
+        //  'valid' change - Employee Group field (invalid
+        //  because SSN is still invalid). Note that, because
+        //  it's state didn't change, no signal will have been
+        //  thrown.
+        // test.assert.hasAttribute(empGroup, 'pclass:invalid');
 
-                        //  State
+        //  ---
 
-                        //  'State' change - State URI
-                        test.assert.didSignal(stateURI, 'StateChange');
+        //  Address Group
 
-                        //  'State' change - source URI
-                        test.assert.didSignal(srcURI, 'StateChange');
+        //  'valid' change - Address Group field (valid because
+        //  State is now valid)
+        test.assert.didSignal(addrGroup, 'TP.sig.UIValid');
+        test.refute.hasAttribute(addrGroup, 'pclass:invalid');
 
-                        //  'valid' change - state
-                        test.assert.didSignal(stateURI, 'StateValidChange');
-                        test.assert.didSignal(stateField, 'TP.sig.UIValid');
+        //  ---
 
-                        //  'valid' change - source URI
-                        test.assert.didSignal(srcURI, 'StateValidChange');
+        test.getSuite().resetSignalTracking();
 
-                        //  Employee Group
+        //  ---
 
-                        //  'valid' change - Employee Group field (invalid
-                        //  because SSN is still invalid). Note that, because
-                        //  it's state didn't change, no signal will have been
-                        //  thrown.
-                        // test.assert.hasAttribute(empGroup, 'pclass:invalid');
+        await driver.constructSequence().
+                        click(citCheckbox).
+                        run();
 
-                        //  ---
+        //  ---
 
-                        //  Address Group
+        test.assert.didSignal(srcURI, 'SSNRelevantChange');
 
-                        //  'valid' change - Address Group field (valid because
-                        //  State is now valid)
-                        test.assert.didSignal(addrGroup, 'TP.sig.UIValid');
-                        test.refute.hasAttribute(addrGroup, 'pclass:invalid');
-                    });
+        //  ---
 
-                //  ---
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  ---
 
-                //  ---
+        await driver.constructSequence().
+                        exec(function() {
+                            ssnField.clearValue();
+                        }).
+                        sendKeys('333-33-3333', ssnField).
+                        sendEvent(TP.hc('type', 'change'), ssnField).
+                        run();
 
-                driver.constructSequence().
-                    click(citCheckbox).
-                    run();
+        //  ---
 
-                //  ---
+        //  SSN
 
-                test.chain(
-                    function() {
-                        //  'relevant' change - source URI
-                        test.assert.didSignal(srcURI, 'SSNRelevantChange');
-                    });
+        //  'SSN' change - SSN URI
+        test.assert.didSignal(ssnURI, 'SSNChange');
 
-                //  ---
+        //  'SSN' change - source URI
+        test.assert.didSignal(srcURI, 'SSNChange');
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  'valid' change - SSN
+        test.assert.didSignal(ssnURI, 'SSNValidChange');
+        test.assert.didSignal(ssnField, 'TP.sig.UIValid');
 
-                //  ---
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'SSNValidChange');
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        ssnField.clearValue();
-                    }).
-                    sendKeys('333-33-3333', ssnField).
-                    sendEvent(TP.hc('type', 'change'), ssnField).
-                    run();
+        //  ---
 
-                //  ---
+        //  Employee Group
 
-                test.chain(
-                    function() {
-
-                        //  SSN
-
-                        //  'SSN' change - SSN URI
-                        test.assert.didSignal(ssnURI, 'SSNChange');
-
-                        //  'SSN' change - source URI
-                        test.assert.didSignal(srcURI, 'SSNChange');
-
-                        //  'valid' change - SSN
-                        test.assert.didSignal(ssnURI, 'SSNValidChange');
-                        test.assert.didSignal(ssnField, 'TP.sig.UIValid');
-
-                        //  'valid' change - source URI
-                        test.assert.didSignal(srcURI, 'SSNValidChange');
-
-                        //  ---
-
-                        //  Employee Group
-
-                        //  'valid' change - Employee Group field (valid
-                        //  because SSN is now valid)
-                        // test.assert.didSignal(empGroup, 'TP.sig.UIValid');
-                        test.refute.hasAttribute(empGroup, 'pclass:invalid');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        //  'valid' change - Employee Group field (valid
+        //  because SSN is now valid)
+        // test.assert.didSignal(empGroup, 'TP.sig.UIValid');
+        test.refute.hasAttribute(empGroup, 'pclass:invalid');
     });
 
     //  ---
 
-    this.it('markup-level relevancy', function(test, options) {
+    this.it('markup-level relevancy', async function(test, options) {
         var driver,
-            windowContext;
+            srcURI,
+
+            ssnURI,
+            citURI,
+
+            ssnField,
+            citCheckbox;
 
         loadURI = TP.uc('~lib_test/src/tibet/forms/Relevant1.xhtml');
 
         driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
+        srcURI = TP.uc('urn:tibet:Relevant1_person');
+        ssnURI = TP.uc('urn:tibet:Relevant1_person#tibet(SSN)');
+        citURI = TP.uc('urn:tibet:Relevant1_person#tibet(uscitizen)');
 
-                var srcURI,
+        ssnField = TP.byId('SSNField', windowContext);
+        citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
 
-                    ssnURI,
-                    citURI,
+        //  Note that these are tested in order of firing, just for
+        //  clarity purposes.
 
-                    ssnField,
-                    citCheckbox;
+        //  ---
 
-                srcURI = TP.uc('urn:tibet:Relevant1_person');
-                ssnURI = TP.uc('urn:tibet:Relevant1_person#tibet(SSN)');
-                citURI = TP.uc('urn:tibet:Relevant1_person#tibet(uscitizen)');
+        //  Citizen
 
-                ssnField = TP.byId('SSNField', windowContext);
-                citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
+        //  'structure' change - citizen URI
+        test.assert.didSignal(citURI, 'TP.sig.StructureChange');
 
-                //  Note that these are tested in order of firing, just for
-                //  clarity purposes.
+        //  'valid' change - citizen
+        test.assert.didSignal(citURI, 'UscitizenValidChange');
+        test.assert.didSignal(citCheckbox, 'TP.sig.UIValid');
 
-                //  ---
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'UscitizenValidChange');
 
-                //  Citizen
+        //  ---
 
-                //  'structure' change - citizen URI
-                test.assert.didSignal(citURI, 'TP.sig.StructureChange');
+        //  SSN
 
-                //  'valid' change - citizen
-                test.assert.didSignal(citURI, 'UscitizenValidChange');
-                test.assert.didSignal(citCheckbox, 'TP.sig.UIValid');
+        //  'structure' change - SSN URI
+        test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
 
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'UscitizenValidChange');
+        //  'relevant' change - SSN
+        test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+        test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
 
-                //  ---
+        test.assert.didSignal(srcURI, 'SSNRelevantChange');
 
-                //  SSN
+        //  'valid' change - SSN
+        test.assert.didSignal(ssnURI, 'SSNValidChange');
+        test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
 
-                //  'structure' change - SSN URI
-                test.assert.didSignal(ssnURI, 'TP.sig.StructureChange');
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'SSNValidChange');
 
-                //  'relevant' change - SSN
-                test.assert.didSignal(ssnURI, 'SSNRelevantChange');
-                test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
+        //  ---
 
-                test.assert.didSignal(srcURI, 'SSNRelevantChange');
+        //  'value' change - source URI
+        test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
 
-                //  'valid' change - SSN
-                test.assert.didSignal(ssnURI, 'SSNValidChange');
-                test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
+        //  ---
 
-                //  'valid' change - source URI
-                test.assert.didSignal(srcURI, 'SSNValidChange');
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                //  ---
+        //  ---
 
-                //  'value' change - source URI
-                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+        await driver.constructSequence().
+                        click(citCheckbox).
+                        run();
 
-                //  ---
+        //  ---
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  'relevant' change - SSN
+        test.assert.didSignal(ssnURI, 'SSNRelevantChange');
+        test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
 
-                //  ---
+        test.assert.didSignal(srcURI, 'SSNRelevantChange');
 
-                driver.constructSequence().
-                    click(citCheckbox).
-                    run();
+        //  'US citizen' change - citizen URI
+        test.assert.didSignal(citURI, 'UscitizenChange');
 
-                //  ---
-
-                test.chain(
-                    function() {
-
-                        //  'relevant' change - SSN
-                        test.assert.didSignal(ssnURI, 'SSNRelevantChange');
-                        test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
-
-                        test.assert.didSignal(srcURI, 'SSNRelevantChange');
-
-                        //  'US citizen' change - citizen URI
-                        test.assert.didSignal(citURI, 'UscitizenChange');
-
-                        //  'US citizen' change - source URI
-                        test.assert.didSignal(srcURI, 'UscitizenChange');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        //  'US citizen' change - source URI
+        test.assert.didSignal(srcURI, 'UscitizenChange');
     });
 
     //  ---
 
-    this.it('markup-level required - XML content type defined in markup', function(test, options) {
+    this.it('markup-level required - XML content type defined in markup', async function(test, options) {
         var driver,
-            windowContext;
+
+            srcURI,
+
+            codeNumURI,
+
+            codeNumField;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/forms/Required1.xhtml');
 
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
+        await driver.setLocation(loadURI);
 
-        driver.setLocation(loadURI);
+        srcURI = TP.uc('urn:tibet:Required1_data');
+        codeNumURI = TP.uc('urn:tibet:Required1_data#tibet(codenum)');
 
-        test.chain(
-            function(result) {
+        codeNumField = TP.byId('CodeNumField', windowContext);
 
-                var srcURI,
+        //  Note that these are tested in order of firing, just for
+        //  clarity purposes.
 
-                    codeNumURI,
+        //  ---
 
-                    codeNumField;
+        //  Code Number
 
-                srcURI = TP.uc('urn:tibet:Required1_data');
-                codeNumURI = TP.uc('urn:tibet:Required1_data#tibet(codenum)');
+        //  'structure' change - code number URI
+        test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
 
-                codeNumField = TP.byId('CodeNumField', windowContext);
+        //  'required' change
+        test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
 
-                //  Note that these are tested in order of firing, just for
-                //  clarity purposes.
+        test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
-                //  ---
+        //  'valid' change
+        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
 
-                //  Code Number
+        test.assert.didSignal(srcURI, 'CodenumValidChange');
 
-                //  'structure' change - code number URI
-                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+        //  ---
 
-                //  'required' change
-                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
+        //  'value' change - source URI
+        test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+        //  ---
 
-                //  'valid' change
-                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                test.assert.didSignal(srcURI, 'CodenumValidChange');
+        await driver.constructSequence().
+                        exec(function() {
+                            codeNumField.clearValue();
+                        }).
+                        sendKeys('42', codeNumField).
+                        sendEvent(TP.hc('type', 'change'), codeNumField).
+                        run();
 
-                //  ---
+        //  ---
 
-                //  'value' change - source URI
-                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+        //  Code Number
 
-                //  ---
+        //  'Codenum' change - Codenum URI
+        test.assert.didSignal(codeNumURI, 'CodenumChange');
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  'Codenum' change - source URI
+        test.assert.didSignal(srcURI, 'CodenumChange');
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        codeNumField.clearValue();
-                    }).
-                    sendKeys('42', codeNumField).
-                    sendEvent(TP.hc('type', 'change'), codeNumField).
-                    run();
+        //  'valid' change - Codenum
+        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
 
-                //  ---
+        //  'required' change - Codenum
+        test.assert.didSignal(codeNumURI,
+                                'CodenumRequiredChange');
+        test.assert.didSignal(codeNumField,
+                                'TP.sig.UIOptional');
 
-                test.chain(
-                    function() {
-
-                        //  Code Number
-
-                        //  'Codenum' change - Codenum URI
-                        test.assert.didSignal(codeNumURI, 'CodenumChange');
-
-                        //  'Codenum' change - source URI
-                        test.assert.didSignal(srcURI, 'CodenumChange');
-
-                        //  'valid' change - Codenum
-                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
-                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-
-                        //  'required' change - Codenum
-                        test.assert.didSignal(codeNumURI,
-                                                'CodenumRequiredChange');
-                        test.assert.didSignal(codeNumField,
-                                                'TP.sig.UIOptional');
-
-                        //  'valid' change - source URI
-                        test.assert.didSignal(srcURI, 'CodenumValidChange');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'CodenumValidChange');
     });
 
     //  ---
 
-    this.it('markup-level required - JSON content type defined in markup', function(test, options) {
+    this.it('markup-level required - JSON content type defined in markup', async function(test, options) {
         var driver,
-            windowContext;
+
+            srcURI,
+
+            codeNumURI,
+
+            codeNumField;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/forms/Required2.xhtml');
 
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
+        await driver.setLocation(loadURI);
 
-        driver.setLocation(loadURI);
+        srcURI = TP.uc('urn:tibet:Required2_data');
+        codeNumURI = TP.uc('urn:tibet:Required2_data#tibet(codenum)');
 
-        test.chain(
-            function(result) {
+        codeNumField = TP.byId('CodeNumField', windowContext);
 
-                var srcURI,
+        //  Note that these are tested in order of firing, just for
+        //  clarity purposes.
 
-                    codeNumURI,
+        //  ---
 
-                    codeNumField;
+        //  Code Number
 
-                srcURI = TP.uc('urn:tibet:Required2_data');
-                codeNumURI = TP.uc('urn:tibet:Required2_data#tibet(codenum)');
+        //  'structure' change - code number URI
+        test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
 
-                codeNumField = TP.byId('CodeNumField', windowContext);
+        //  'required' change
+        test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
 
-                //  Note that these are tested in order of firing, just for
-                //  clarity purposes.
+        test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
-                //  ---
+        //  'valid' change
+        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
 
-                //  Code Number
+        test.assert.didSignal(srcURI, 'CodenumValidChange');
 
-                //  'structure' change - code number URI
-                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+        //  ---
 
-                //  'required' change
-                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
+        //  'value' change - source URI
+        test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+        //  ---
 
-                //  'valid' change
-                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                test.assert.didSignal(srcURI, 'CodenumValidChange');
+        await driver.constructSequence().
+                        exec(function() {
+                            codeNumField.clearValue();
+                        }).
+                        sendKeys('4', codeNumField).
+                        sendEvent(TP.hc('type', 'change'), codeNumField).
+                        run();
 
-                //  ---
+        //  ---
 
-                //  'value' change - source URI
-                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+        //  Code Number
 
-                //  ---
+        //  'Codenum' change - Codenum URI
+        test.assert.didSignal(codeNumURI, 'CodenumChange');
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  'Codenum' change - source URI
+        test.assert.didSignal(srcURI, 'CodenumChange');
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        codeNumField.clearValue();
-                    }).
-                    sendKeys('4', codeNumField).
-                    sendEvent(TP.hc('type', 'change'), codeNumField).
-                    run();
+        //  'valid' change - Codenum
+        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
 
-                //  ---
+        //  'required' change - Codenum
+        test.assert.didSignal(codeNumURI,
+                                'CodenumRequiredChange');
+        test.assert.didSignal(codeNumField,
+                                'TP.sig.UIOptional');
 
-                test.chain(
-                    function() {
-
-                        //  Code Number
-
-                        //  'Codenum' change - Codenum URI
-                        test.assert.didSignal(codeNumURI, 'CodenumChange');
-
-                        //  'Codenum' change - source URI
-                        test.assert.didSignal(srcURI, 'CodenumChange');
-
-                        //  'valid' change - Codenum
-                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
-                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-
-                        //  'required' change - Codenum
-                        test.assert.didSignal(codeNumURI,
-                                                'CodenumRequiredChange');
-                        test.assert.didSignal(codeNumField,
-                                                'TP.sig.UIOptional');
-
-                        //  'valid' change - source URI
-                        test.assert.didSignal(srcURI, 'CodenumValidChange');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'CodenumValidChange');
     });
 
     //  ---
 
-    this.it('markup-level required - XML content type defined in markup with a schema defined type', function(test, options) {
+    this.it('markup-level required - XML content type defined in markup with a schema defined type', async function(test, options) {
         var driver,
-            windowContext;
+
+            srcURI,
+
+            codeNumURI,
+
+            codeNumField;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/forms/Required3.xhtml');
 
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
+        await driver.setLocation(loadURI);
 
-        driver.setLocation(loadURI);
+        srcURI = TP.uc('urn:tibet:Required3_data');
+        codeNumURI = TP.uc('urn:tibet:Required3_data#tibet(codenum)');
 
-        test.chain(
-            function(result) {
+        codeNumField = TP.byId('CodeNumField', windowContext);
 
-                var srcURI,
+        //  Note that these are tested in order of firing, just for
+        //  clarity purposes.
 
-                    codeNumURI,
+        //  ---
 
-                    codeNumField;
+        //  Code Number
 
-                srcURI = TP.uc('urn:tibet:Required3_data');
-                codeNumURI = TP.uc('urn:tibet:Required3_data#tibet(codenum)');
+        //  'structure' change - code number URI
+        test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
 
-                codeNumField = TP.byId('CodeNumField', windowContext);
+        //  'required' change
+        test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
 
-                //  Note that these are tested in order of firing, just for
-                //  clarity purposes.
+        test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
-                //  ---
+        //  'valid' change
+        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
 
-                //  Code Number
+        test.assert.didSignal(srcURI, 'CodenumValidChange');
 
-                //  'structure' change - code number URI
-                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+        //  ---
 
-                //  'required' change
-                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
+        //  'value' change - source URI
+        test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+        //  ---
 
-                //  'valid' change
-                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+        test.getSuite().resetSignalTracking();
 
-                test.assert.didSignal(srcURI, 'CodenumValidChange');
+        await driver.constructSequence().
+                        exec(function() {
+                            codeNumField.clearValue();
+                        }).
+                        sendKeys('42', codeNumField).
+                        sendEvent(TP.hc('type', 'change'), codeNumField).
+                        run();
 
-                //  ---
+        //  ---
 
-                //  'value' change - source URI
-                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+        //  Code Number
 
-                //  ---
+        //  'Codenum' change - Codenum URI
+        test.assert.didSignal(codeNumURI, 'CodenumChange');
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  'Codenum' change - source URI
+        test.assert.didSignal(srcURI, 'CodenumChange');
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        codeNumField.clearValue();
-                    }).
-                    sendKeys('42', codeNumField).
-                    sendEvent(TP.hc('type', 'change'), codeNumField).
-                    run();
+        //  'valid' change - Codenum
+        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
 
-                //  ---
+        //  'required' change - Codenum
+        test.assert.didSignal(codeNumURI,
+                                'CodenumRequiredChange');
+        test.assert.didSignal(codeNumField,
+                                'TP.sig.UIOptional');
 
-                test.chain(
-                    function() {
-
-                        //  Code Number
-
-                        //  'Codenum' change - Codenum URI
-                        test.assert.didSignal(codeNumURI, 'CodenumChange');
-
-                        //  'Codenum' change - source URI
-                        test.assert.didSignal(srcURI, 'CodenumChange');
-
-                        //  'valid' change - Codenum
-                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
-                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-
-                        //  'required' change - Codenum
-                        test.assert.didSignal(codeNumURI,
-                                                'CodenumRequiredChange');
-                        test.assert.didSignal(codeNumField,
-                                                'TP.sig.UIOptional');
-
-                        //  'valid' change - source URI
-                        test.assert.didSignal(srcURI, 'CodenumValidChange');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'CodenumValidChange');
     });
 
     //  ---
 
-    this.it('markup-level required - JSON content type defined in markup with a schema defined type', function(test, options) {
+    this.it('markup-level required - JSON content type defined in markup with a schema defined type', async function(test, options) {
         var driver,
-            windowContext;
+
+            srcURI,
+
+            codeNumURI,
+
+            codeNumField;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/forms/Required4.xhtml');
 
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
+        await driver.setLocation(loadURI);
 
-        driver.setLocation(loadURI);
+        srcURI = TP.uc('urn:tibet:Required4_data');
+        codeNumURI = TP.uc('urn:tibet:Required4_data#tibet(codenum)');
 
-        test.chain(
-            function(result) {
+        codeNumField = TP.byId('CodeNumField', windowContext);
 
-                var srcURI,
+        //  Note that these are tested in order of firing, just for
+        //  clarity purposes.
 
-                    codeNumURI,
+        //  ---
 
-                    codeNumField;
+        //  Code Number
 
-                srcURI = TP.uc('urn:tibet:Required4_data');
-                codeNumURI = TP.uc('urn:tibet:Required4_data#tibet(codenum)');
+        //  'structure' change - code number URI
+        test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
 
-                codeNumField = TP.byId('CodeNumField', windowContext);
+        //  'required' change (the model value is empty)
+        test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
 
-                //  Note that these are tested in order of firing, just for
-                //  clarity purposes.
+        test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
-                //  ---
+        //  'valid' change
+        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
 
-                //  Code Number
+        test.assert.didSignal(srcURI, 'CodenumValidChange');
 
-                //  'structure' change - code number URI
-                test.assert.didSignal(codeNumURI, 'TP.sig.StructureChange');
+        //  ---
 
-                //  'required' change (the model value is empty)
-                test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
+        //  'value' change - source URI
+        test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(srcURI, 'CodenumRequiredChange');
+        //  ---
 
-                //  'valid' change
-                test.assert.didSignal(codeNumURI, 'CodenumValidChange');
-                test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                test.assert.didSignal(srcURI, 'CodenumValidChange');
+        await driver.constructSequence().
+                        sendKeys('42', codeNumField).
+                        sendEvent(TP.hc('type', 'change'), codeNumField).
+                        run();
 
-                //  ---
+        //  ---
 
-                //  'value' change - source URI
-                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+        //  Code Number
 
-                //  ---
+        //  'Codenum' change - Codenum URI
+        test.assert.didSignal(codeNumURI, 'CodenumChange');
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  'Codenum' change - source URI
+        test.assert.didSignal(srcURI, 'CodenumChange');
 
-                test.getDriver().constructSequence().
-                    sendKeys('42', codeNumField).
-                    sendEvent(TP.hc('type', 'change'), codeNumField).
-                    run();
+        //  'valid' change - Codenum
+        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
+        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
 
-                //  ---
+        //  'required' change - Codenum
+        test.assert.didSignal(codeNumURI,
+                                'CodenumRequiredChange');
+        test.assert.didSignal(codeNumField,
+                                'TP.sig.UIOptional');
 
-                test.chain(
-                    function() {
-
-                        //  Code Number
-
-                        //  'Codenum' change - Codenum URI
-                        test.assert.didSignal(codeNumURI, 'CodenumChange');
-
-                        //  'Codenum' change - source URI
-                        test.assert.didSignal(srcURI, 'CodenumChange');
-
-                        //  'valid' change - Codenum
-                        test.assert.didSignal(codeNumURI, 'CodenumValidChange');
-                        test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-
-                        //  'required' change - Codenum
-                        test.assert.didSignal(codeNumURI,
-                                                'CodenumRequiredChange');
-                        test.assert.didSignal(codeNumField,
-                                                'TP.sig.UIOptional');
-
-                        //  'valid' change - source URI
-                        test.assert.didSignal(srcURI, 'CodenumValidChange');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        //  'valid' change - source URI
+        test.assert.didSignal(srcURI, 'CodenumValidChange');
     });
 
     //  ---
 
-    this.it('markup-level required - various controls', function(test, options) {
+    this.it('markup-level required - various controls', async function(test, options) {
         var driver,
-            windowContext,
 
             srcURI,
 
             beforeChangeFunc,
             changeFunc;
 
+        driver = test.getDriver();
+
         loadURI = TP.uc('~lib_test/src/tibet/forms/Required5.xhtml');
 
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
-
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
         srcURI = TP.uc('urn:tibet:Required5_data');
 
         beforeChangeFunc = function(aspectName) {
 
-            test.chain(
-                function(result) {
+            var name,
+                nameTC,
 
-                    var name,
-                        nameTC,
+                aspectURI,
 
-                        aspectURI,
+                aspectField;
 
-                        aspectField;
+            name = aspectName;
+            nameTC = aspectName.asTitleCase();
 
-                    name = aspectName;
-                    nameTC = aspectName.asTitleCase();
+            aspectURI =
+                TP.uc('urn:tibet:Required5_data#tibet(' + name + ')');
 
-                    aspectURI =
-                        TP.uc('urn:tibet:Required5_data#tibet(' + name + ')');
+            aspectField = TP.byId(name + 'Field', windowContext);
 
-                    aspectField = TP.byId(name + 'Field', windowContext);
+            //  Note that these are tested in order of firing, just for
+            //  clarity purposes.
 
-                    //  Note that these are tested in order of firing, just for
-                    //  clarity purposes.
+            //  ---
 
-                    //  ---
+            //  'required' change - aspect URI
+            test.assert.didSignal(aspectURI, nameTC + 'RequiredChange');
+            test.assert.didSignal(aspectField, 'TP.sig.UIRequired');
 
-                    //  'required' change - aspect URI
-                    test.assert.didSignal(aspectURI, nameTC + 'RequiredChange');
-                    test.assert.didSignal(aspectField, 'TP.sig.UIRequired');
-
-                    //  'required' change - source URI
-                    test.assert.didSignal(srcURI, nameTC + 'RequiredChange');
-                });
+            //  'required' change - source URI
+            test.assert.didSignal(srcURI, nameTC + 'RequiredChange');
         };
 
-        changeFunc = function(aspectName, typedStr, valueStr) {
+        changeFunc = async function(aspectName, typedStr, valueStr) {
 
-            test.chain(
-                function(result) {
+            var name,
+                nameTC,
 
-                    var name,
-                        nameTC,
+                aspectURI,
 
-                        aspectURI,
+                aspectField;
 
-                        aspectField;
+            name = aspectName;
+            nameTC = aspectName.asTitleCase();
 
-                    name = aspectName;
-                    nameTC = aspectName.asTitleCase();
+            srcURI = TP.uc('urn:tibet:Required5_data');
+            aspectURI =
+                TP.uc('urn:tibet:Required5_data#tibet(' + name + ')');
 
-                    srcURI = TP.uc('urn:tibet:Required5_data');
-                    aspectURI =
-                        TP.uc('urn:tibet:Required5_data#tibet(' + name + ')');
+            aspectField = TP.byId(name + 'Field', windowContext);
 
-                    aspectField = TP.byId(name + 'Field', windowContext);
+            //  ---
 
-                    //  ---
+            if (TP.isValid(typedStr)) {
+                await driver.constructSequence().
+                                exec(function() {
+                                    aspectField.clearValue();
+                                }).
+                                sendKeys(typedStr, aspectField).
+                                sendEvent(TP.hc('type', 'change'), aspectField).
+                                run();
+            } else {
+                aspectField.set('value', valueStr);
+            }
 
-                    if (TP.isValid(typedStr)) {
-                        test.getDriver().constructSequence().
-                            exec(function() {
-                                aspectField.clearValue();
-                            }).
-                            sendKeys(typedStr, aspectField).
-                            sendEvent(TP.hc('type', 'change'), aspectField).
-                            run();
-                    } else {
-                        test.chain(
-                            function() {
-                                aspectField.set('value', valueStr);
-                            });
-                    }
+            //  ---
 
-                    //  ---
+            //  Note that these are tested in order of firing,
+            //  just for clarity purposes.
 
-                    test.chain(
-                        function() {
+            //  aspect change - aspect URI
+            test.assert.didSignal(aspectURI, nameTC + 'Change');
 
-                            //  Note that these are tested in order of firing,
-                            //  just for clarity purposes.
+            //  'age' change - source URI
+            test.assert.didSignal(srcURI, nameTC + 'Change');
 
-                            //  aspect change - aspect URI
-                            test.assert.didSignal(aspectURI,
-                                                    nameTC + 'Change');
+            //  'required' change - aspect URI
+            test.assert.didSignal(aspectURI, nameTC + 'RequiredChange');
+            test.assert.didSignal(aspectField, 'TP.sig.UIOptional');
 
-                            //  'age' change - source URI
-                            test.assert.didSignal(srcURI,
-                                                    nameTC + 'Change');
-
-                            //  'required' change - aspect URI
-                            test.assert.didSignal(aspectURI,
-                                                    nameTC + 'RequiredChange');
-                            test.assert.didSignal(aspectField,
-                                                    'TP.sig.UIOptional');
-
-                            //  'required' change - source URI
-                            test.assert.didSignal(srcURI,
-                                                    nameTC + 'RequiredChange');
-                        });
-                });
+            //  'required' change - source URI
+            test.assert.didSignal(srcURI, nameTC + 'RequiredChange');
         };
 
-        test.chain(
-            function(result) {
+        //  'value' change - source URI
+        test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
 
-                //  'value' change - source URI
-                test.assert.didSignal(srcURI, 'TP.sig.ValueChange');
+        beforeChangeFunc('AnyText');
+        beforeChangeFunc('PasswordText');
+        beforeChangeFunc('Filename');
+        beforeChangeFunc('Notes');
+        beforeChangeFunc('SingleSelect');
+        beforeChangeFunc('MultiSelect');
 
-                beforeChangeFunc('AnyText');
-                beforeChangeFunc('PasswordText');
-                beforeChangeFunc('Filename');
-                beforeChangeFunc('Notes');
-                beforeChangeFunc('SingleSelect');
-                beforeChangeFunc('MultiSelect');
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                test.chain(
-                    function() {
-                    //  Reset the metrics we're tracking.
-                    test.getSuite().resetSignalTracking();
-                });
-
-                changeFunc('AnyText', 'moo');
-                changeFunc('PasswordText', 'my_password');
-                //  changeFunc('Filename', null, 'myfile.txt');
-                changeFunc('Notes', 'moo');
-                changeFunc('SingleSelect', null, 'Option #1');
-                changeFunc('MultiSelect', null, 'Option A');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
-
+        await changeFunc('AnyText', 'moo');
+        await changeFunc('PasswordText', 'my_password');
+        //  changeFunc('Filename', null, 'myfile.txt');
+        await changeFunc('Notes', 'moo');
+        await changeFunc('SingleSelect', null, 'Option #1');
+        await changeFunc('MultiSelect', null, 'Option A');
     });
 
     //  ---
 
-    this.it('markup-level validation - group-level various controls', function(test, options) {
+    this.it('markup-level validation - group-level various controls', async function(test, options) {
         var driver,
-            windowContext;
+
+            srcURI,
+
+            codeURI,
+            expMonthURI,
+            expYearURI,
+            clubSeatsURI,
+            boxSeatsURI,
+            bleacherSeatsURI,
+            nosebleedSeatsURI,
+            radioButtonURI,
+            checkBoxURI,
+
+            fieldUnionGroup,
+            codeField,
+            expMonthSelect,
+            expYearSelect,
+
+            textFieldGroup,
+            clubSeatsField,
+            boxSeatsField,
+            bleacherSeatsField,
+            nosebleedSeatsField,
+
+            radioButtonGroup,
+            radio1Field,
+            radio2Field,
+            radio3Field,
+
+            checkBoxGroup,
+            checkBox1Field,
+            checkBox2Field,
+            checkBox3Field;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/forms/Required6.xhtml');
 
-        driver = test.getDriver();
-        windowContext = test.getDriver().get('windowContext');
+        await driver.setLocation(loadURI);
 
-        driver.setLocation(loadURI);
+        srcURI = TP.uc('urn:tibet:Required6_data');
 
-        test.chain(
-            function(result) {
+        codeURI = TP.uc('urn:tibet:Required6_data#tibet(Code)');
+        expMonthURI =
+            TP.uc('urn:tibet:Required6_data#tibet(ExpirationMonth)');
+        expYearURI =
+            TP.uc('urn:tibet:Required6_data#tibet(ExpirationYear)');
 
-                var srcURI,
+        clubSeatsURI =
+            TP.uc('urn:tibet:Required6_data#tibet(ClubSeats)');
+        boxSeatsURI =
+            TP.uc('urn:tibet:Required6_data#tibet(BoxSeats)');
+        bleacherSeatsURI =
+            TP.uc('urn:tibet:Required6_data#tibet(BleacherSeats)');
+        nosebleedSeatsURI =
+            TP.uc('urn:tibet:Required6_data#tibet(NosebleedSeats)');
 
-                    codeURI,
-                    expMonthURI,
-                    expYearURI,
-                    clubSeatsURI,
-                    boxSeatsURI,
-                    bleacherSeatsURI,
-                    nosebleedSeatsURI,
-                    radioButtonURI,
-                    checkBoxURI,
+        radioButtonURI =
+            TP.uc('urn:tibet:Required6_data#tibet(RadioValue)');
+        checkBoxURI =
+            TP.uc('urn:tibet:Required6_data#tibet(CheckboxValue)');
 
-                    fieldUnionGroup,
-                    codeField,
-                    expMonthSelect,
-                    expYearSelect,
+        fieldUnionGroup = TP.byId('FieldUnionGroup', windowContext);
+        codeField = TP.byId('CodeField', windowContext);
+        expMonthSelect = TP.byId('MonthField', windowContext);
+        expYearSelect = TP.byId('YearField', windowContext);
 
-                    textFieldGroup,
-                    clubSeatsField,
-                    boxSeatsField,
-                    bleacherSeatsField,
-                    nosebleedSeatsField,
+        textFieldGroup = TP.byId('TextFieldGroup', windowContext);
+        clubSeatsField = TP.byId('ClubSeatsField', windowContext);
+        boxSeatsField = TP.byId('BoxSeatsField', windowContext);
+        bleacherSeatsField = TP.byId('BleacherSeatsField',
+                                        windowContext);
+        nosebleedSeatsField = TP.byId('NosebleedSeatsField',
+                                        windowContext);
 
-                    radioButtonGroup,
-                    radio1Field,
-                    radio2Field,
-                    radio3Field,
+        radioButtonGroup = TP.byId('RadioButtonGroup', windowContext);
+        radio1Field = TP.byId('Radio1Field', windowContext);
+        radio2Field = TP.byId('Radio2Field', windowContext);
+        radio3Field = TP.byId('Radio3Field', windowContext);
 
-                    checkBoxGroup,
-                    checkBox1Field,
-                    checkBox2Field,
-                    checkBox3Field;
+        checkBoxGroup = TP.byId('CheckBoxGroup', windowContext);
+        checkBox1Field = TP.byId('Checkbox1Field', windowContext);
+        checkBox2Field = TP.byId('Checkbox2Field', windowContext);
+        checkBox3Field = TP.byId('Checkbox3Field', windowContext);
 
-                srcURI = TP.uc('urn:tibet:Required6_data');
+        //  Note that these are tested in order of firing, just for
+        //  clarity purposes.
 
-                codeURI = TP.uc('urn:tibet:Required6_data#tibet(Code)');
-                expMonthURI =
-                    TP.uc('urn:tibet:Required6_data#tibet(ExpirationMonth)');
-                expYearURI =
-                    TP.uc('urn:tibet:Required6_data#tibet(ExpirationYear)');
+        //  ---
 
-                clubSeatsURI =
-                    TP.uc('urn:tibet:Required6_data#tibet(ClubSeats)');
-                boxSeatsURI =
-                    TP.uc('urn:tibet:Required6_data#tibet(BoxSeats)');
-                bleacherSeatsURI =
-                    TP.uc('urn:tibet:Required6_data#tibet(BleacherSeats)');
-                nosebleedSeatsURI =
-                    TP.uc('urn:tibet:Required6_data#tibet(NosebleedSeats)');
+        //  Code
 
-                radioButtonURI =
-                    TP.uc('urn:tibet:Required6_data#tibet(RadioValue)');
-                checkBoxURI =
-                    TP.uc('urn:tibet:Required6_data#tibet(CheckboxValue)');
+        //  'required' change - code
+        test.assert.didSignal(codeURI,
+                                'CodeRequiredChange');
+        test.assert.didSignal(codeField,
+                                'TP.sig.UIRequired');
 
-                fieldUnionGroup = TP.byId('FieldUnionGroup', windowContext);
-                codeField = TP.byId('CodeField', windowContext);
-                expMonthSelect = TP.byId('MonthField', windowContext);
-                expYearSelect = TP.byId('YearField', windowContext);
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI, 'CodeRequiredChange');
 
-                textFieldGroup = TP.byId('TextFieldGroup', windowContext);
-                clubSeatsField = TP.byId('ClubSeatsField', windowContext);
-                boxSeatsField = TP.byId('BoxSeatsField', windowContext);
-                bleacherSeatsField = TP.byId('BleacherSeatsField',
-                                                windowContext);
-                nosebleedSeatsField = TP.byId('NosebleedSeatsField',
-                                                windowContext);
+        //  ---
 
-                radioButtonGroup = TP.byId('RadioButtonGroup', windowContext);
-                radio1Field = TP.byId('Radio1Field', windowContext);
-                radio2Field = TP.byId('Radio2Field', windowContext);
-                radio3Field = TP.byId('Radio3Field', windowContext);
+        //  Expiration Month
 
-                checkBoxGroup = TP.byId('CheckBoxGroup', windowContext);
-                checkBox1Field = TP.byId('Checkbox1Field', windowContext);
-                checkBox2Field = TP.byId('Checkbox2Field', windowContext);
-                checkBox3Field = TP.byId('Checkbox3Field', windowContext);
+        //  'required' change - expiration month
+        test.assert.didSignal(expMonthURI,
+                                'ExpirationMonthRequiredChange');
+        test.assert.didSignal(expMonthSelect,
+                                'TP.sig.UIRequired');
 
-                //  Note that these are tested in order of firing, just for
-                //  clarity purposes.
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI, 'ExpirationMonthRequiredChange');
 
-                //  ---
+        //  ---
 
-                //  Code
+        //  Expiration Year
 
-                //  'required' change - code
+        //  'required' change - expiration year
+        test.assert.didSignal(expYearURI,
+                                'ExpirationYearRequiredChange');
+        test.assert.didSignal(expYearSelect,
+                                'TP.sig.UIRequired');
+
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI, 'ExpirationYearRequiredChange');
+
+        //  ---
+
+        //  Field Union group
+
+        //  'required' change - Field Union group (it's in required mode
+        //  because all values are missing)
+        test.assert.didSignal(fieldUnionGroup, 'TP.sig.UIRequired');
+        test.assert.hasAttribute(fieldUnionGroup, 'pclass:required');
+
+        //  ---
+
+        //  Radio Button group
+
+        //  'required' change - Radio Button group (it's in required
+        //  mode because all values are missing)
+        test.assert.didSignal(radioButtonGroup, 'TP.sig.UIRequired');
+        test.assert.hasAttribute(radioButtonGroup, 'pclass:required');
+
+        //  ---
+
+        //  Check Box group
+
+        //  'required' change - Check Box group (it's in required
+        //  mode because all values are missing)
+        test.assert.didSignal(checkBoxGroup, 'TP.sig.UIRequired');
+        test.assert.hasAttribute(checkBoxGroup, 'pclass:required');
+
+        //  ---
+
+        test.getSuite().resetSignalTracking();
+
+        //  ---
+
+        await driver.constructSequence().
+                        exec(function() {
+                            codeField.clearValue();
+                        }).
+                        sendKeys('333-33-3333', codeField).
+                        sendEvent(TP.hc('type', 'change'), codeField).
+                        run();
+
+        //  ---
+
                 test.assert.didSignal(codeURI,
                                         'CodeRequiredChange');
                 test.assert.didSignal(codeField,
-                                        'TP.sig.UIRequired');
+                                        'TP.sig.UIOptional');
 
                 //  'required' change - source URI
                 test.assert.didSignal(srcURI, 'CodeRequiredChange');
 
-                //  ---
 
-                //  Expiration Month
+                //  This should not have signaled yet - not all of the
+                //  constraints are fulfilled.
+                test.refute.didSignal(fieldUnionGroup,
+                                        'TP.sig.UIOptional');
 
-                //  'required' change - expiration month
-                test.assert.didSignal(expMonthURI,
-                                        'ExpirationMonthRequiredChange');
-                test.assert.didSignal(expMonthSelect,
-                                        'TP.sig.UIRequired');
+        //  ---
 
-                //  'required' change - source URI
-                test.assert.didSignal(srcURI, 'ExpirationMonthRequiredChange');
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                //  ---
+        //  ---
 
-                //  Expiration Year
+        await driver.constructSequence().
+                        exec(function() {
+                            expMonthSelect.setValue('Mar');
+                        }).
+                        run();
 
-                //  'required' change - expiration year
-                test.assert.didSignal(expYearURI,
-                                        'ExpirationYearRequiredChange');
-                test.assert.didSignal(expYearSelect,
-                                        'TP.sig.UIRequired');
+        //  ---
 
-                //  'required' change - source URI
-                test.assert.didSignal(srcURI, 'ExpirationYearRequiredChange');
+        test.assert.didSignal(expMonthURI,
+                                'ExpirationMonthRequiredChange');
+        test.assert.didSignal(expMonthSelect,
+                                'TP.sig.UIOptional');
 
-                //  ---
+        //  'required' change - source URI
+        test.assert.didSignal(
+            srcURI, 'ExpirationMonthRequiredChange');
 
-                //  Field Union group
 
-                //  'required' change - Field Union group (it's in required mode
-                //  because all values are missing)
-                test.assert.didSignal(fieldUnionGroup, 'TP.sig.UIRequired');
-                test.assert.hasAttribute(fieldUnionGroup, 'pclass:required');
+        //  This should not have signaled yet - not all of the
+        //  constraints are fulfilled.
+        test.refute.didSignal(fieldUnionGroup,
+                                'TP.sig.UIOptional');
 
-                //  ---
+        //  ---
 
-                //  Radio Button group
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                //  'required' change - Radio Button group (it's in required
-                //  mode because all values are missing)
-                test.assert.didSignal(radioButtonGroup, 'TP.sig.UIRequired');
-                test.assert.hasAttribute(radioButtonGroup, 'pclass:required');
+        //  ---
 
-                //  ---
+        await driver.constructSequence().
+                        exec(function() {
+                            expYearSelect.setValue('2022');
+                        }).
+                        run();
 
-                //  Check Box group
+        //  ---
 
-                //  'required' change - Check Box group (it's in required
-                //  mode because all values are missing)
-                test.assert.didSignal(checkBoxGroup, 'TP.sig.UIRequired');
-                test.assert.hasAttribute(checkBoxGroup, 'pclass:required');
+        test.assert.didSignal(expYearURI,
+                                'ExpirationYearRequiredChange');
+        test.assert.didSignal(expYearSelect,
+                                'TP.sig.UIOptional');
 
-                //  ---
+        //  'required' change - source URI
+        test.assert.didSignal(
+            srcURI, 'ExpirationYearRequiredChange');
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
 
-                //  ---
+        //  Now that all of the constraints on the group are
+        //  fulfilled (i.e. 'all') this should have signaled.
+        test.assert.didSignal(fieldUnionGroup,
+                                'TP.sig.UIOptional');
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        codeField.clearValue();
-                    }).
-                    sendKeys('333-33-3333', codeField).
-                    sendEvent(TP.hc('type', 'change'), codeField).
-                    run();
+        //  ---
 
-                //  ---
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
 
-                test.chain(
-                    function() {
-                        test.assert.didSignal(codeURI,
-                                                'CodeRequiredChange');
-                        test.assert.didSignal(codeField,
-                                                'TP.sig.UIOptional');
+        //  ---
 
-                        //  'required' change - source URI
-                        test.assert.didSignal(srcURI, 'CodeRequiredChange');
+        await driver.constructSequence().
+                        exec(function() {
+                            clubSeatsField.clearValue();
+                        }).
+                        sendKeys('2', clubSeatsField).
+                        sendEvent(TP.hc('type', 'change'), clubSeatsField).
+                        run();
 
+        //  ---
 
-                        //  This should not have signaled yet - not all of the
-                        //  constraints are fulfilled.
-                        test.refute.didSignal(fieldUnionGroup,
-                                                'TP.sig.UIOptional');
-                    });
+        test.assert.didSignal(clubSeatsURI,
+                                'ClubSeatsRequiredChange');
+        test.assert.didSignal(clubSeatsField,
+                                'TP.sig.UIOptional');
 
-                //  ---
+        //  'required' change - source URI
+        test.assert.didSignal(
+            srcURI, 'ClubSeatsRequiredChange');
 
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
+        //  Now that all of the constraints on the group are
+        //  fulfilled (i.e. 'any') this should have signaled.
+        test.assert.didSignal(textFieldGroup,
+                                'TP.sig.UIOptional');
 
-                //  ---
+        //  ---
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        expMonthSelect.setValue('Mar');
-                    }).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        test.assert.didSignal(expMonthURI,
-                                                'ExpirationMonthRequiredChange');
-                        test.assert.didSignal(expMonthSelect,
-                                                'TP.sig.UIOptional');
-
-                        //  'required' change - source URI
-                        test.assert.didSignal(
-                            srcURI, 'ExpirationMonthRequiredChange');
-
-
-                        //  This should not have signaled yet - not all of the
-                        //  constraints are fulfilled.
-                        test.refute.didSignal(fieldUnionGroup,
-                                                'TP.sig.UIOptional');
-                    });
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
-
-                //  ---
-
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        expYearSelect.setValue('2022');
-                    }).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        test.assert.didSignal(expYearURI,
-                                                'ExpirationYearRequiredChange');
-                        test.assert.didSignal(expYearSelect,
-                                                'TP.sig.UIOptional');
-
-                        //  'required' change - source URI
-                        test.assert.didSignal(
-                            srcURI, 'ExpirationYearRequiredChange');
-
-
-                        //  Now that all of the constraints on the group are
-                        //  fulfilled (i.e. 'all') this should have signaled.
-                        test.assert.didSignal(fieldUnionGroup,
-                                                'TP.sig.UIOptional');
-                    });
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
-
-                //  ---
-
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        clubSeatsField.clearValue();
-                    }).
-                    sendKeys('2', clubSeatsField).
-                    sendEvent(TP.hc('type', 'change'), clubSeatsField).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        test.assert.didSignal(clubSeatsURI,
-                                                'ClubSeatsRequiredChange');
-                        test.assert.didSignal(clubSeatsField,
-                                                'TP.sig.UIOptional');
-
-                        //  'required' change - source URI
-                        test.assert.didSignal(
-                            srcURI, 'ClubSeatsRequiredChange');
-
-                        //  Now that all of the constraints on the group are
-                        //  fulfilled (i.e. 'any') this should have signaled.
-                        test.assert.didSignal(textFieldGroup,
-                                                'TP.sig.UIOptional');
-                    });
-
-                //  ---
-
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        boxSeatsField.clearValue();
-                    }).
-                    sendKeys('2', boxSeatsField).
-                    sendEvent(TP.hc('type', 'change'), boxSeatsField).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        test.assert.didSignal(boxSeatsURI,
-                                                'BoxSeatsRequiredChange');
-                        test.assert.didSignal(boxSeatsField,
-                                                'TP.sig.UIOptional');
-
-                        //  'required' change - source URI
-                        test.assert.didSignal(
-                            srcURI, 'BoxSeatsRequiredChange');
-                    });
-
-                //  ---
-
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        bleacherSeatsField.clearValue();
-                    }).
-                    sendKeys('2', bleacherSeatsField).
-                    sendEvent(TP.hc('type', 'change'), bleacherSeatsField).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        test.assert.didSignal(bleacherSeatsURI,
-                                                'BleacherSeatsRequiredChange');
-                        test.assert.didSignal(bleacherSeatsField,
-                                                'TP.sig.UIOptional');
-
-                        //  'required' change - source URI
-                        test.assert.didSignal(
-                            srcURI, 'BleacherSeatsRequiredChange');
-                    });
-
-                //  ---
-
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        nosebleedSeatsField.clearValue();
-                    }).
-                    sendKeys('2', nosebleedSeatsField).
-                    sendEvent(TP.hc('type', 'change'), nosebleedSeatsField).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        test.assert.didSignal(nosebleedSeatsURI,
-                                                'NosebleedSeatsRequiredChange');
-                        test.assert.didSignal(nosebleedSeatsField,
-                                                'TP.sig.UIOptional');
-
-                        //  'required' change - source URI
-                        test.assert.didSignal(
-                            srcURI, 'NosebleedSeatsRequiredChange');
-                    });
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
-
-                //  ---
-
-                driver.constructSequence().
-                    click(radio1Field).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        test.assert.didSignal(radioButtonURI,
-                                                'RadioValueRequiredChange');
-                        test.assert.didSignal(radio1Field,
-                                                'TP.sig.UIOptional');
-                        test.assert.didSignal(radio2Field,
-                                                'TP.sig.UIOptional');
-                        test.assert.didSignal(radio3Field,
-                                                'TP.sig.UIOptional');
-
-                        //  'required' change - source URI
-                        test.assert.didSignal(
-                            srcURI, 'RadioValueRequiredChange');
-
-                        //  Now that all of the constraints on the group are
-                        //  fulfilled (i.e. 'any') this should have signaled.
-                        test.assert.didSignal(radioButtonGroup,
-                                                'TP.sig.UIOptional');
-                    });
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
-
-                //  ---
-
-                driver.constructSequence().
-                    click(checkBox1Field).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        test.assert.didSignal(checkBoxURI,
-                                                'CheckboxValueRequiredChange');
-                        test.assert.didSignal(checkBox1Field,
-                                                'TP.sig.UIOptional');
-                        test.assert.didSignal(checkBox2Field,
-                                                'TP.sig.UIOptional');
-                        test.assert.didSignal(checkBox3Field,
-                                                'TP.sig.UIOptional');
-
-                        //  'required' change - source URI
-                        test.assert.didSignal(
-                            srcURI, 'CheckboxValueRequiredChange');
-
-                        //  Now that all of the constraints on the group are
-                        //  fulfilled (i.e. 'any') this should have signaled.
-                        test.assert.didSignal(checkBoxGroup,
-                                                'TP.sig.UIOptional');
-                    });
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        //  Reset the metrics we're tracking.
-                        test.getSuite().resetSignalTracking();
-                    });
-
-                //  ---
-
-                //  Turn the checkbox back off. This will make our checkboxes
-                //  and checkbox group required again.
-                driver.constructSequence().
-                    click(checkBox1Field).
-                    run();
-
-                //  ---
-
-                test.chain(
-                    function() {
-                        test.assert.didSignal(checkBoxURI,
-                                                'CheckboxValueRequiredChange');
-                        test.assert.didSignal(checkBox1Field,
-                                                'TP.sig.UIRequired');
-                        test.assert.didSignal(checkBox2Field,
-                                                'TP.sig.UIRequired');
-                        test.assert.didSignal(checkBox3Field,
-                                                'TP.sig.UIRequired');
-
-                        //  'required' change - source URI
-                        test.assert.didSignal(
-                            srcURI, 'CheckboxValueRequiredChange');
-
-                        //  Now that all of the constraints on the group are
-                        //  fulfilled (i.e. 'any') this should have signaled.
-                        test.assert.didSignal(checkBoxGroup,
-                                                'TP.sig.UIRequired');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            }).timeout(15000);
+        await driver.constructSequence().
+                        exec(function() {
+                            boxSeatsField.clearValue();
+                        }).
+                        sendKeys('2', boxSeatsField).
+                        sendEvent(TP.hc('type', 'change'), boxSeatsField).
+                        run();
+
+        //  ---
+
+        test.assert.didSignal(boxSeatsURI,
+                                'BoxSeatsRequiredChange');
+        test.assert.didSignal(boxSeatsField,
+                                'TP.sig.UIOptional');
+
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI,
+                                'BoxSeatsRequiredChange');
+
+        //  ---
+
+        await driver.constructSequence().
+                        exec(function() {
+                            bleacherSeatsField.clearValue();
+                        }).
+                        sendKeys('2', bleacherSeatsField).
+                        sendEvent(TP.hc('type', 'change'), bleacherSeatsField).
+                        run();
+
+        //  ---
+
+        test.assert.didSignal(bleacherSeatsURI,
+                                'BleacherSeatsRequiredChange');
+        test.assert.didSignal(bleacherSeatsField,
+                                'TP.sig.UIOptional');
+
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI,
+                                'BleacherSeatsRequiredChange');
+
+        //  ---
+
+        await driver.constructSequence().
+                        exec(function() {
+                            nosebleedSeatsField.clearValue();
+                        }).
+                        sendKeys('2', nosebleedSeatsField).
+                        sendEvent(TP.hc('type', 'change'), nosebleedSeatsField).
+                        run();
+
+        //  ---
+
+        test.assert.didSignal(nosebleedSeatsURI,
+                                'NosebleedSeatsRequiredChange');
+        test.assert.didSignal(nosebleedSeatsField,
+                                'TP.sig.UIOptional');
+
+        //  'required' change - source URI
+        test.assert.didSignal(srcURI,
+                                'NosebleedSeatsRequiredChange');
+
+        //  ---
+
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
+
+        //  ---
+
+        await driver.constructSequence().
+                        click(radio1Field).
+                        run();
+
+        //  ---
+
+        test.assert.didSignal(radioButtonURI,
+                                'RadioValueRequiredChange');
+        test.assert.didSignal(radio1Field,
+                                'TP.sig.UIOptional');
+        test.assert.didSignal(radio2Field,
+                                'TP.sig.UIOptional');
+        test.assert.didSignal(radio3Field,
+                                'TP.sig.UIOptional');
+
+        //  'required' change - source URI
+        test.assert.didSignal(
+            srcURI, 'RadioValueRequiredChange');
+
+        //  Now that all of the constraints on the group are
+        //  fulfilled (i.e. 'any') this should have signaled.
+        test.assert.didSignal(radioButtonGroup,
+                                'TP.sig.UIOptional');
+
+        //  ---
+
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
+
+        //  ---
+
+        await driver.constructSequence().
+                        click(checkBox1Field).
+                        run();
+
+        //  ---
+
+        test.assert.didSignal(checkBoxURI,
+                                'CheckboxValueRequiredChange');
+        test.assert.didSignal(checkBox1Field,
+                                'TP.sig.UIOptional');
+        test.assert.didSignal(checkBox2Field,
+                                'TP.sig.UIOptional');
+        test.assert.didSignal(checkBox3Field,
+                                'TP.sig.UIOptional');
+
+        //  'required' change - source URI
+        test.assert.didSignal(
+            srcURI, 'CheckboxValueRequiredChange');
+
+        //  Now that all of the constraints on the group are
+        //  fulfilled (i.e. 'any') this should have signaled.
+        test.assert.didSignal(checkBoxGroup,
+                                'TP.sig.UIOptional');
+
+        //  ---
+
+        //  Reset the metrics we're tracking.
+        test.getSuite().resetSignalTracking();
+
+        //  ---
+
+        //  Turn the checkbox back off. This will make our checkboxes
+        //  and checkbox group required again.
+        await driver.constructSequence().
+                        click(checkBox1Field).
+                        run();
+
+        //  ---
+
+        test.assert.didSignal(checkBoxURI,
+                                'CheckboxValueRequiredChange');
+        test.assert.didSignal(checkBox1Field,
+                                'TP.sig.UIRequired');
+        test.assert.didSignal(checkBox2Field,
+                                'TP.sig.UIRequired');
+        test.assert.didSignal(checkBox3Field,
+                                'TP.sig.UIRequired');
+
+        //  'required' change - source URI
+        test.assert.didSignal(
+            srcURI, 'CheckboxValueRequiredChange');
+
+        //  Now that all of the constraints on the group are
+        //  fulfilled (i.e. 'any') this should have signaled.
+        test.assert.didSignal(checkBoxGroup,
+                                'TP.sig.UIRequired');
     });
 
 });

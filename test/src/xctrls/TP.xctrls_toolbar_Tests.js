@@ -8,6 +8,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -15,17 +16,19 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_toolbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -34,7 +37,7 @@ function() {
         function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -42,223 +45,188 @@ function() {
 
     //  ---
 
-    this.it('xctrls:toolbar - simple Array', function(test, options) {
+    this.it('xctrls:toolbar - simple Array', async function(test, options) {
 
-        var toolbar;
+        var toolbar,
+            items;
 
         toolbar = TP.byId('toolbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    return toolbar.get('allItems').first();
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        return toolbar.get('allItems').first();
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    toolbar.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    toolbar.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    toolbar.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            toolbar.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            toolbar.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            toolbar.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = toolbar.get('allItems');
 
-                items = toolbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:toolbar - Array of Pairs', function(test, options) {
+    this.it('xctrls:toolbar - Array of Pairs', async function(test, options) {
 
-        var toolbar;
+        var toolbar,
+            items;
 
         toolbar = TP.byId('toolbar2', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    return toolbar.get('allItems').first();
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        return toolbar.get('allItems').first();
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    toolbar.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    toolbar.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    toolbar.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            toolbar.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            toolbar.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            toolbar.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = toolbar.get('allItems');
 
-                items = toolbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:toolbar - multi-item Array', function(test, options) {
+    this.it('xctrls:toolbar - multi-item Array', async function(test, options) {
 
-        var toolbar;
+        var toolbar,
+            items;
 
         toolbar = TP.byId('toolbar3', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    return toolbar.get('allItems').first();
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        return toolbar.get('allItems').first();
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    toolbar.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    toolbar.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    toolbar.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            toolbar.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            toolbar.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            toolbar.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = toolbar.get('allItems');
 
-                items = toolbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:toolbar - single-item Array with Hash', function(test, options) {
+    this.it('xctrls:toolbar - single-item Array with Hash', async function(test, options) {
 
-        var toolbar;
+        var toolbar,
+            items;
 
         toolbar = TP.byId('toolbar4', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    return toolbar.get('allItems').first();
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        return toolbar.get('allItems').first();
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    toolbar.get('allItems').getSize(),
-                    1);
-                test.assert.isEqualTo(
-                    toolbar.get('data').getSize(),
-                    1);
-                test.assert.isEqualTo(
-                    toolbar.get('$dataKeys').getSize(),
-                    1);
-            });
+        test.assert.isEqualTo(
+            toolbar.get('allItems').getSize(),
+            1);
+        test.assert.isEqualTo(
+            toolbar.get('data').getSize(),
+            1);
+        test.assert.isEqualTo(
+            toolbar.get('$dataKeys').getSize(),
+            1);
 
-        test.chain(
-            function() {
-                var items;
+        items = toolbar.get('allItems');
 
-                items = toolbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
     });
 
     //  ---
 
-    this.it('xctrls:toolbar - multi-item Array with Hashes', function(test, options) {
+    this.it('xctrls:toolbar - multi-item Array with Hashes', async function(test, options) {
 
-        var toolbar;
+        var toolbar,
+            items;
 
         toolbar = TP.byId('toolbar5', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    return toolbar.get('allItems').first();
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        return toolbar.get('allItems').first();
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    toolbar.get('allItems').getSize(),
-                    2);
-                test.assert.isEqualTo(
-                    toolbar.get('data').getSize(),
-                    2);
-                test.assert.isEqualTo(
-                    toolbar.get('$dataKeys').getSize(),
-                    2);
-            });
+        test.assert.isEqualTo(
+            toolbar.get('allItems').getSize(),
+            2);
+        test.assert.isEqualTo(
+            toolbar.get('data').getSize(),
+            2);
+        test.assert.isEqualTo(
+            toolbar.get('$dataKeys').getSize(),
+            2);
 
-        test.chain(
-            function() {
-                var items;
+        items = toolbar.get('allItems');
 
-                items = toolbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Brown');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Brown');
     });
 
 });
@@ -271,6 +239,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -278,31 +247,30 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_toolbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this));
+            await driver.setLocation(loadURI);
+
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -329,40 +297,36 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
         var toolbar,
             firsttoolbarItem;
 
         toolbar = TP.byId('toolbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firsttoolbarItem = toolbar.get('allItems').first();
-                    return firsttoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        firsttoolbarItem = toolbar.get('allItems').first();
+                        return firsttoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().constructSequence().
-            sendEvent(TP.hc('type', 'focus'), toolbar).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), toolbar).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.hasAttribute(firsttoolbarItem, 'pclass:focus');
 
-                test.assert.hasAttribute(firsttoolbarItem, 'pclass:focus');
-
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIFocus');
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidFocus');
-            });
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIFocus');
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidFocus');
     });
 
     //  ---
 
-    this.it('Activation - mouse', function(test, options) {
+    this.it('Activation - mouse', async function(test, options) {
 
         var toolbar,
             firsttoolbarItem;
@@ -371,76 +335,57 @@ function() {
 
         toolbar = TP.byId('toolbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firsttoolbarItem = toolbar.get('allItems').first();
-                    return firsttoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        firsttoolbarItem = toolbar.get('allItems').first();
+                        return firsttoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
         //  Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firsttoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firsttoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firsttoolbarItem, 'pclass:active');
+        test.assert.hasAttribute(firsttoolbarItem, 'pclass:active');
 
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firsttoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firsttoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttoolbarItem, 'pclass:active');
+        test.refute.hasAttribute(firsttoolbarItem, 'pclass:active');
 
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firsttoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firsttoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Activation - keyboard', function(test, options) {
+    this.it('Activation - keyboard', async function(test, options) {
 
         var toolbar,
             firsttoolbarItem;
@@ -449,52 +394,40 @@ function() {
 
         toolbar = TP.byId('toolbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firsttoolbarItem = toolbar.get('allItems').first();
-                    return firsttoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        firsttoolbarItem = toolbar.get('allItems').first();
+                        return firsttoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
         //  Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firsttoolbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firsttoolbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
                 test.assert.hasAttribute(firsttoolbarItem, 'pclass:active');
 
                 test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
                 test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
 
                 test.getSuite().resetSignalTracking();
-            });
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firsttoolbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firsttoolbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttoolbarItem, 'pclass:active');
+        test.refute.hasAttribute(firsttoolbarItem, 'pclass:active');
 
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var toolbar,
             firsttoolbarItem;
@@ -506,118 +439,82 @@ function() {
         toolbar = TP.byId('toolbar1', windowContext);
         toolbar.setAttrDisabled(true);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firsttoolbarItem = toolbar.get('allItems').first();
-                    return firsttoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        firsttoolbarItem = toolbar.get('allItems').first();
+                        return firsttoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
         test.assert.isDisabled(firsttoolbarItem);
 
         //  --- Focus
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    sendEvent(TP.hc('type', 'focus'), firsttoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), firsttoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttoolbarItem, 'pclass:focus');
+        test.refute.hasAttribute(firsttoolbarItem, 'pclass:focus');
 
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIFocus');
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIFocus');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firsttoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firsttoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttoolbarItem, 'pclass:active');
+        test.refute.hasAttribute(firsttoolbarItem, 'pclass:active');
 
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firsttoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firsttoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firsttoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firsttoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firsttoolbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firsttoolbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firsttoolbarItem, 'pclass:active');
+        test.refute.hasAttribute(firsttoolbarItem, 'pclass:active');
 
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firsttoolbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firsttoolbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firsttoolbarItem, 'TP.sig.UIDidDeactivate');
     });
 });
 
@@ -631,6 +528,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -638,18 +536,20 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_toolbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -667,10 +567,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -827,6 +727,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -851,17 +752,19 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_toolbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -879,10 +782,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1027,26 +930,26 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_toolbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1075,7 +978,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:toolbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:toolbar - change value via user interaction', async function(test, options) {
 
         var toolbar,
 
@@ -1088,39 +991,36 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firsttoolbarItem = toolbar.get('allItems').first();
-                    return firsttoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        firsttoolbarItem = toolbar.get('allItems').first();
+                        return firsttoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firsttoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firsttoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    toolbar.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            toolbar.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'foo');
     });
 
-    this.it('xctrls:toolbar - change data and re-render', function(test, options) {
+    this.it('xctrls:toolbar - change data and re-render', async function(test, options) {
 
         var toolbar,
 
             modelURI,
-            firsttoolbarItem;
+            firsttoolbarItem,
+
+            modelObj,
+            items;
 
         toolbar = TP.byId('toolbar7', windowContext);
 
@@ -1128,64 +1028,53 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firsttoolbarItem = toolbar.get('allItems').first();
-                    return firsttoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        firsttoolbarItem = toolbar.get('allItems').first();
+                        return firsttoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                var items;
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('fido', 'Fido'),
+                    TP.ac('lassie', 'Lassie'))));
 
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('fido', 'Fido'),
-                            TP.ac('lassie', 'Lassie'))));
+        items = toolbar.get('allItems');
 
-                items = toolbar.get('allItems');
+        test.assert.isEqualTo(
+            items.getSize(),
+            2);
 
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    2);
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Lassie');
 
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Lassie');
-            });
+        modelObj = modelURI.getContent();
 
-        test.chain(
-            function() {
-                var modelObj,
-                    items;
+        modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+        modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
 
-                modelObj = modelURI.getContent();
+        modelURI.$changed();
 
-                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
-                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+        items = toolbar.get('allItems');
 
-                modelURI.$changed();
+        test.assert.isEqualTo(
+            items.getSize(),
+            4);
 
-                items = toolbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    4);
-
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fluffy');
-                test.assert.isEqualTo(
-                    items.at(3).getLabelText(),
-                    'Tigger');
-            });
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fluffy');
+        test.assert.isEqualTo(
+            items.at(3).getLabelText(),
+            'Tigger');
     });
 
 });
@@ -1206,26 +1095,26 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_toolbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1254,7 +1143,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:toolbar - test for static content', function(test, options) {
+    this.it('xctrls:toolbar - test for static content', async function(test, options) {
 
         var toolbar,
 
@@ -1263,14 +1152,14 @@ function() {
 
         toolbar = TP.byId('toolbar8', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firsttoolbarItem = toolbar.get('allItems').first();
-                    lasttoolbarItem = toolbar.get('allItems').last();
-                    return firsttoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        firsttoolbarItem = toolbar.get('allItems').first();
+                        lasttoolbarItem = toolbar.get('allItems').last();
+                        return firsttoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
         //  The 2nd child element will be an 'xctrls:value'
 
@@ -1285,7 +1174,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:toolbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:toolbar - change value via user interaction', async function(test, options) {
 
         var toolbar,
 
@@ -1304,38 +1193,32 @@ function() {
 
         statictoolbarItem = toolbar.get('allItems').last();
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    statictoolbarItem = toolbar.get('allItems').last();
-                    statictoolbarItem.defineHandler(
-                        'TestClick',
-                        function() {
-                            localHandlerRan = true;
-                        });
-                    return statictoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        statictoolbarItem = toolbar.get('allItems').last();
+                        statictoolbarItem.defineHandler(
+                            'TestClick',
+                            function() {
+                                localHandlerRan = true;
+                            });
+                        return statictoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(statictoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(statictoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    toolbar.get('value'),
-                    'after');
+        test.assert.isEqualTo(
+            toolbar.get('value'),
+            'after');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'after');
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'after');
 
-                test.assert.isTrue(localHandlerRan);
-            });
+        test.assert.isTrue(localHandlerRan);
     });
 
 });
@@ -1356,7 +1239,7 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
@@ -1366,16 +1249,17 @@ function() {
 
             loc = '~lib_test/src/xctrls/xctrls_toolbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1419,7 +1303,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:toolbar - test for static content', function(test, options) {
+    this.it('xctrls:toolbar - test for static content', async function(test, options) {
 
         var toolbar,
 
@@ -1428,14 +1312,14 @@ function() {
 
         toolbar = TP.byId('toolbar9', windowContext);
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firsttoolbarItem = toolbar.get('allItems').first();
-                    lasttoolbarItem = toolbar.get('allItems').last();
-                    return firsttoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        firsttoolbarItem = toolbar.get('allItems').first();
+                        lasttoolbarItem = toolbar.get('allItems').last();
+                        return firsttoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
         //  The 2nd child element will be an 'xctrls:value'
 
@@ -1450,7 +1334,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:toolbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:toolbar - change value via user interaction', async function(test, options) {
 
         var toolbar,
 
@@ -1468,124 +1352,104 @@ function() {
 
         statictoolbarItem = toolbar.get('allItems').first();
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    statictoolbarItem = toolbar.get('allItems').first();
-                    dynamictoolbarItem = toolbar.get('allItems').at(1);
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        statictoolbarItem = toolbar.get('allItems').first();
+                        dynamictoolbarItem = toolbar.get('allItems').at(1);
 
-                    return statictoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+                        return statictoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(statictoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(statictoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    toolbar.get('value'),
-                    'before');
+        test.assert.isEqualTo(
+            toolbar.get('value'),
+            'before');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    'before');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            'before');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(dynamictoolbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(dynamictoolbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    toolbar.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            toolbar.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            'foo');
     });
 
     //  ---
 
-    this.it('xctrls:toolbar - change data and re-render', function(test, options) {
+    this.it('xctrls:toolbar - change data and re-render', async function(test, options) {
 
         var toolbar,
 
             modelURI,
-            firsttoolbarItem;
+            firsttoolbarItem,
+
+            modelObj,
+            items;
 
         toolbar = TP.byId('toolbar9', windowContext);
 
         modelURI = TP.uc('urn:tibet:selection_test_data');
 
-        test.andIfNotValidWaitFor(
-                function() {
-                    firsttoolbarItem = toolbar.get('allItems').first();
-                    return firsttoolbarItem;
-                },
-                TP.gid(toolbar),
-                'TP.sig.DidRenderData');
+        await test.andIfNotValidWaitFor(
+                    function() {
+                        firsttoolbarItem = toolbar.get('allItems').first();
+                        return firsttoolbarItem;
+                    },
+                    TP.gid(toolbar),
+                    'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                var items;
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('fido', 'Fido'),
+                    TP.ac('lassie', 'Lassie'))));
 
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('fido', 'Fido'),
-                            TP.ac('lassie', 'Lassie'))));
+        items = toolbar.get('allItems');
 
-                items = toolbar.get('allItems');
+        test.assert.isEqualTo(
+            items.getSize(),
+            4);
 
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    4);
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'FIDO');
+        test.assert.isEqualTo(
+            items.at(2).getLabelText(),
+            'LASSIE');
 
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'FIDO');
-                test.assert.isEqualTo(
-                    items.at(2).getLabelText(),
-                    'LASSIE');
-            });
+        modelObj = modelURI.getContent();
 
-        test.chain(
-            function() {
-                var modelObj,
-                    items;
+        modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+        modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
 
-                modelObj = modelURI.getContent();
+        modelURI.$changed();
 
-                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
-                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+        items = toolbar.get('allItems');
 
-                modelURI.$changed();
+        test.assert.isEqualTo(
+            items.getSize(),
+            6);
 
-                items = toolbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    6);
-
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'FLUFFY');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'TIGGER');
-            });
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'FLUFFY');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'TIGGER');
     });
 
 });

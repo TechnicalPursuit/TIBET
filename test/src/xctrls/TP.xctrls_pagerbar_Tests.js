@@ -8,6 +8,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -15,26 +16,27 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -42,223 +44,188 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - simple Array', function(test, options) {
+    this.it('xctrls:pagerbar - simple Array', async function(test, options) {
 
-        var pagerbar;
+        var pagerbar,
+            items;
 
         pagerbar = TP.byId('pagerbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return pagerbar.get('allItems').first();
                 },
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    pagerbar.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    pagerbar.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            pagerbar.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            pagerbar.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            pagerbar.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = pagerbar.get('allItems');
 
-                items = pagerbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:pagerbar - Array of Pairs', function(test, options) {
+    this.it('xctrls:pagerbar - Array of Pairs', async function(test, options) {
 
-        var pagerbar;
+        var pagerbar,
+            items;
 
         pagerbar = TP.byId('pagerbar2', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return pagerbar.get('allItems').first();
                 },
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    pagerbar.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    pagerbar.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            pagerbar.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            pagerbar.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            pagerbar.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = pagerbar.get('allItems');
 
-                items = pagerbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:pagerbar - multi-item Array', function(test, options) {
+    this.it('xctrls:pagerbar - multi-item Array', async function(test, options) {
 
-        var pagerbar;
+        var pagerbar,
+            items;
 
         pagerbar = TP.byId('pagerbar3', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return pagerbar.get('allItems').first();
                 },
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    pagerbar.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    pagerbar.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            pagerbar.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            pagerbar.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            pagerbar.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = pagerbar.get('allItems');
 
-                items = pagerbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:pagerbar - single-item Array with Hash', function(test, options) {
+    this.it('xctrls:pagerbar - single-item Array with Hash', async function(test, options) {
 
-        var pagerbar;
+        var pagerbar,
+            items;
 
         pagerbar = TP.byId('pagerbar4', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return pagerbar.get('allItems').first();
                 },
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('allItems').getSize(),
-                    1);
-                test.assert.isEqualTo(
-                    pagerbar.get('data').getSize(),
-                    1);
-                test.assert.isEqualTo(
-                    pagerbar.get('$dataKeys').getSize(),
-                    1);
-            });
+        test.assert.isEqualTo(
+            pagerbar.get('allItems').getSize(),
+            1);
+        test.assert.isEqualTo(
+            pagerbar.get('data').getSize(),
+            1);
+        test.assert.isEqualTo(
+            pagerbar.get('$dataKeys').getSize(),
+            1);
 
-        test.chain(
-            function() {
-                var items;
+        items = pagerbar.get('allItems');
 
-                items = pagerbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
     });
 
     //  ---
 
-    this.it('xctrls:pagerbar - multi-item Array with Hashes', function(test, options) {
+    this.it('xctrls:pagerbar - multi-item Array with Hashes', async function(test, options) {
 
-        var pagerbar;
+        var pagerbar,
+            items;
 
         pagerbar = TP.byId('pagerbar5', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return pagerbar.get('allItems').first();
                 },
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('allItems').getSize(),
-                    2);
-                test.assert.isEqualTo(
-                    pagerbar.get('data').getSize(),
-                    2);
-                test.assert.isEqualTo(
-                    pagerbar.get('$dataKeys').getSize(),
-                    2);
-            });
+        test.assert.isEqualTo(
+            pagerbar.get('allItems').getSize(),
+            2);
+        test.assert.isEqualTo(
+            pagerbar.get('data').getSize(),
+            2);
+        test.assert.isEqualTo(
+            pagerbar.get('$dataKeys').getSize(),
+            2);
 
-        test.chain(
-            function() {
-                var items;
+        items = pagerbar.get('allItems');
 
-                items = pagerbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Brown');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Brown');
     });
 
 });
@@ -271,6 +238,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -278,31 +246,29 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this));
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -329,14 +295,14 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
         var pagerbar,
             firstPagerbarItem;
 
         pagerbar = TP.byId('pagerbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
@@ -346,23 +312,19 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().constructSequence().
-            sendEvent(TP.hc('type', 'focus'), pagerbar).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), pagerbar).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.hasAttribute(firstPagerbarItem, 'pclass:focus');
 
-                test.assert.hasAttribute(firstPagerbarItem, 'pclass:focus');
-
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIFocus');
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidFocus');
-            });
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIFocus');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidFocus');
     });
 
     //  ---
 
-    this.it('Activation - mouse', function(test, options) {
+    this.it('Activation - mouse', async function(test, options) {
 
         var pagerbar,
             firstPagerbarItem;
@@ -371,7 +333,7 @@ function() {
 
         pagerbar = TP.byId('pagerbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
@@ -381,66 +343,47 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firstPagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firstPagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firstPagerbarItem, 'pclass:active');
+        test.assert.hasAttribute(firstPagerbarItem, 'pclass:active');
 
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firstPagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firstPagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstPagerbarItem, 'pclass:active');
+        test.refute.hasAttribute(firstPagerbarItem, 'pclass:active');
 
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstPagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstPagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Activation - keyboard', function(test, options) {
+    this.it('Activation - keyboard', async function(test, options) {
 
         var pagerbar,
             firstPagerbarItem;
@@ -449,7 +392,7 @@ function() {
 
         pagerbar = TP.byId('pagerbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
@@ -459,42 +402,30 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firstPagerbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firstPagerbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firstPagerbarItem, 'pclass:active');
+        test.assert.hasAttribute(firstPagerbarItem, 'pclass:active');
 
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firstPagerbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firstPagerbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstPagerbarItem, 'pclass:active');
+        test.refute.hasAttribute(firstPagerbarItem, 'pclass:active');
 
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var pagerbar,
             firstPagerbarItem;
@@ -506,7 +437,7 @@ function() {
         pagerbar = TP.byId('pagerbar1', windowContext);
         pagerbar.setAttrDisabled(true);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
@@ -518,106 +449,70 @@ function() {
 
         //  --- Focus
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    sendEvent(TP.hc('type', 'focus'), firstPagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), firstPagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstPagerbarItem, 'pclass:focus');
+        test.refute.hasAttribute(firstPagerbarItem, 'pclass:focus');
 
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIFocus');
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIFocus');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firstPagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firstPagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstPagerbarItem, 'pclass:active');
+        test.refute.hasAttribute(firstPagerbarItem, 'pclass:active');
 
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firstPagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firstPagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstPagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstPagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firstPagerbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firstPagerbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstPagerbarItem, 'pclass:active');
+        test.refute.hasAttribute(firstPagerbarItem, 'pclass:active');
 
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firstPagerbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firstPagerbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firstPagerbarItem, 'TP.sig.UIDidDeactivate');
     });
 });
 
@@ -631,6 +526,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -638,18 +534,19 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -667,10 +564,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -847,6 +744,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -871,17 +769,18 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -899,10 +798,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1047,7 +946,7 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
@@ -1057,16 +956,16 @@ function() {
 
             loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1099,7 +998,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction (binding)', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (binding)', async function(test, options) {
 
         var pagerbar,
 
@@ -1112,7 +1011,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
@@ -1120,32 +1019,26 @@ function() {
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstPagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstPagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    1);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            1);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'foo');
     });
 
     //  ---
 
-    this.it('xctrls:pagerbar - change data and re-render', function(test, options) {
+    this.it('xctrls:pagerbar - change data and re-render', async function(test, options) {
 
         var pagerbar,
 
@@ -1158,7 +1051,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
@@ -1166,22 +1059,19 @@ function() {
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('fido', 'Fido'),
-                            TP.ac('lassie', 'Lassie'))));
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('fido', 'Fido'),
+                    TP.ac('lassie', 'Lassie'))));
 
-                test.assert.isEqualTo(
-                    pagerbar.get('allItems').getSize(),
-                    2);
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    1);
-            });
+        test.assert.isEqualTo(
+            pagerbar.get('allItems').getSize(),
+            2);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            1);
     });
 
 });
@@ -1202,7 +1092,7 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
@@ -1212,16 +1102,16 @@ function() {
 
             loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1250,7 +1140,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - test for static content', function(test, options) {
+    this.it('xctrls:pagerbar - test for static content', async function(test, options) {
 
         var pagerbar,
 
@@ -1259,7 +1149,7 @@ function() {
 
         pagerbar = TP.byId('pagerbar8', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstpagerbarItem = pagerbar.get('allItems').first();
                     lastpagerbarItem = pagerbar.get('allItems').last();
@@ -1281,7 +1171,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction (static)', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (static)', async function(test, options) {
 
         var pagerbar,
 
@@ -1300,7 +1190,7 @@ function() {
 
         staticpagerbarItem = pagerbar.get('allItems').first();
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     staticpagerbarItem = pagerbar.get('allItems').first();
                     staticpagerbarItem.defineHandler(
@@ -1313,25 +1203,19 @@ function() {
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(staticpagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(staticpagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'before');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'before');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'before');
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'before');
 
-                test.assert.isTrue(localHandlerRan);
-            });
+        test.assert.isTrue(localHandlerRan);
     });
 
 });
@@ -1352,7 +1236,7 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
@@ -1362,16 +1246,16 @@ function() {
 
             loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1405,7 +1289,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - test for static content', function(test, options) {
+    this.it('xctrls:pagerbar - test for static content', async function(test, options) {
 
         var pagerbar,
 
@@ -1414,7 +1298,7 @@ function() {
 
         pagerbar = TP.byId('pagerbar9', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstPagerbarItem = pagerbar.get('allItems').first();
                     lastPagerbarItem = pagerbar.get('allItems').last();
@@ -1436,7 +1320,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction (mixed)', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (mixed)', async function(test, options) {
 
         var pagerbar,
 
@@ -1452,7 +1336,7 @@ function() {
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     staticPagerItem = pagerbar.get('allItems').first();
                     dynamicPagerItem = pagerbar.get('allItems').at(2);
@@ -1461,54 +1345,42 @@ function() {
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(staticPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(staticPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'before');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'before');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    1);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            1);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    'before');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            'before');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(dynamicPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(dynamicPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'bar');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'bar');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    3);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            3);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    'bar');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            'bar');
     });
 
     //  ---
 
-    this.it('xctrls:pagerbar - change data and re-render', function(test, options) {
+    this.it('xctrls:pagerbar - change data and re-render', async function(test, options) {
 
         var pagerbar,
 
@@ -1521,7 +1393,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
@@ -1529,22 +1401,19 @@ function() {
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('fido', 'Fido'),
-                            TP.ac('lassie', 'Lassie'))));
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('fido', 'Fido'),
+                    TP.ac('lassie', 'Lassie'))));
 
-                test.assert.isEqualTo(
-                    pagerbar.get('allItems').getSize(),
-                    4);
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    1);
-            });
+        test.assert.isEqualTo(
+            pagerbar.get('allItems').getSize(),
+            4);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            1);
     });
 
 });
@@ -1565,7 +1434,7 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
@@ -1575,16 +1444,16 @@ function() {
 
             loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1617,7 +1486,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction (extra buttons)', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (extra buttons)', async function(test, options) {
 
         var pagerbar,
 
@@ -1636,7 +1505,7 @@ function() {
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     startPagerItem = pagerbar.get('allItems').at(0);
                     previousPagerItem = pagerbar.get('allItems').at(1);
@@ -1648,142 +1517,106 @@ function() {
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(startPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(startPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    1);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            1);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_3')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_3')),
+            'foo');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(numTwoPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(numTwoPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'bar');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'bar');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    2);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            2);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_3')),
-                    'bar');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_3')),
+            'bar');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(nextPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(nextPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'baz');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'baz');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    3);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            3);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_3')),
-                    'baz');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_3')),
+            'baz');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(previousPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(previousPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'bar');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'bar');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    2);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            2);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_3')),
-                    'bar');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_3')),
+            'bar');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(endPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(endPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'baz');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'baz');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    3);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            3);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_3')),
-                    'baz');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_3')),
+            'baz');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(startPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(startPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    1);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            1);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_3')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_3')),
+            'foo');
     });
 
     //  ---
 
-    this.it('xctrls:pagerbar - disable buttons when appropriate', function(test, options) {
+    this.it('xctrls:pagerbar - disable buttons when appropriate', async function(test, options) {
 
         var pagerbar,
 
@@ -1798,7 +1631,7 @@ function() {
         //  Change the content via 'user' interaction - first, one of the
         //  'static' items.
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     startPagerItem = pagerbar.get('allItems').at(0);
                     previousPagerItem = pagerbar.get('allItems').at(1);
@@ -1810,95 +1643,59 @@ function() {
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(startPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(startPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isDisabled(startPagerItem);
-                test.assert.isDisabled(previousPagerItem);
-                test.refute.isDisabled(nextPagerItem);
-                test.refute.isDisabled(endPagerItem);
-            });
+        test.assert.isDisabled(startPagerItem);
+        test.assert.isDisabled(previousPagerItem);
+        test.refute.isDisabled(nextPagerItem);
+        test.refute.isDisabled(endPagerItem);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(numTwoPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(numTwoPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.isDisabled(startPagerItem);
-                test.refute.isDisabled(previousPagerItem);
-                test.refute.isDisabled(nextPagerItem);
-                test.refute.isDisabled(endPagerItem);
-            });
+        test.refute.isDisabled(startPagerItem);
+        test.refute.isDisabled(previousPagerItem);
+        test.refute.isDisabled(nextPagerItem);
+        test.refute.isDisabled(endPagerItem);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(nextPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(nextPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.isDisabled(startPagerItem);
-                test.refute.isDisabled(previousPagerItem);
-                test.assert.isDisabled(nextPagerItem);
-                test.assert.isDisabled(endPagerItem);
-            });
+        test.refute.isDisabled(startPagerItem);
+        test.refute.isDisabled(previousPagerItem);
+        test.assert.isDisabled(nextPagerItem);
+        test.assert.isDisabled(endPagerItem);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(previousPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(previousPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.isDisabled(startPagerItem);
-                test.refute.isDisabled(previousPagerItem);
-                test.refute.isDisabled(nextPagerItem);
-                test.refute.isDisabled(endPagerItem);
-            });
+        test.refute.isDisabled(startPagerItem);
+        test.refute.isDisabled(previousPagerItem);
+        test.refute.isDisabled(nextPagerItem);
+        test.refute.isDisabled(endPagerItem);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(endPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(endPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.isDisabled(startPagerItem);
-                test.refute.isDisabled(previousPagerItem);
-                test.assert.isDisabled(nextPagerItem);
-                test.assert.isDisabled(endPagerItem);
-            });
+        test.refute.isDisabled(startPagerItem);
+        test.refute.isDisabled(previousPagerItem);
+        test.assert.isDisabled(nextPagerItem);
+        test.assert.isDisabled(endPagerItem);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(startPagerItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(startPagerItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isDisabled(startPagerItem);
-                test.assert.isDisabled(previousPagerItem);
-                test.refute.isDisabled(nextPagerItem);
-                test.refute.isDisabled(endPagerItem);
-            });
+        test.assert.isDisabled(startPagerItem);
+        test.assert.isDisabled(previousPagerItem);
+        test.refute.isDisabled(nextPagerItem);
+        test.refute.isDisabled(endPagerItem);
     });
 }).skip();
 
@@ -1918,7 +1715,7 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
@@ -1928,16 +1725,16 @@ function() {
 
             loc = '~lib_test/src/xctrls/xctrls_pagerbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1970,7 +1767,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:pagerbar - change value via user interaction (paging)', function(test, options) {
+    this.it('xctrls:pagerbar - change value via user interaction (paging)', async function(test, options) {
 
         var pagerbar,
 
@@ -1983,7 +1780,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstPagerbarItem = pagerbar.get('allItems').first();
                     return firstPagerbarItem;
@@ -1991,27 +1788,21 @@ function() {
                 TP.gid(pagerbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstPagerbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstPagerbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    pagerbar.get('value'),
-                    'Smith');
+        test.assert.isEqualTo(
+            pagerbar.get('value'),
+            'Smith');
 
-                test.assert.isEqualTo(
-                    pagerbar.get('pageValue'),
-                    1);
+        test.assert.isEqualTo(
+            pagerbar.get('pageValue'),
+            1);
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_4')),
-                    'Smith');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_4')),
+            'Smith');
     });
 
 });

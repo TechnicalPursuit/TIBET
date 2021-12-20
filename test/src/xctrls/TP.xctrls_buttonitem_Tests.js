@@ -16,14 +16,13 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_buttonitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -31,12 +30,12 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -51,36 +50,31 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
-        var buttonitem;
+        var buttonitem,
+            focusedElem;
 
         buttonitem = TP.byId('buttonitem1', windowContext);
 
         //  Change the focus via 'direct' method
 
-        driver.constructSequence().
-            sendEvent(TP.hc('type', 'focus'), buttonitem).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), buttonitem).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.hasAttribute(buttonitem, 'pclass:focus');
 
-                var focusedElem;
+        test.assert.didSignal(buttonitem, 'TP.sig.UIFocus');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDidFocus');
 
-                test.assert.hasAttribute(buttonitem, 'pclass:focus');
-
-                test.assert.didSignal(buttonitem, 'TP.sig.UIFocus');
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDidFocus');
-
-                focusedElem = driver.getFocusedElement();
-                test.assert.isIdenticalTo(focusedElem, buttonitem);
-            });
+        focusedElem = driver.getFocusedElement();
+        test.assert.isIdenticalTo(focusedElem, buttonitem);
     });
 
     //  ---
 
-    this.it('Activation - mouse', function(test, options) {
+    this.it('Activation - mouse', async function(test, options) {
 
         var buttonitem;
 
@@ -90,57 +84,47 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        driver.constructSequence().
-            mouseDown(buttonitem).
-            run();
+        await driver.constructSequence().
+                        mouseDown(buttonitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(buttonitem, 'pclass:active');
+        test.assert.hasAttribute(buttonitem, 'pclass:active');
 
-                test.assert.didSignal(buttonitem, 'TP.sig.UIActivate');
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIActivate');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            mouseUp(buttonitem).
-            run();
+        await driver.constructSequence().
+                        mouseUp(buttonitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(buttonitem, 'pclass:active');
+        test.refute.hasAttribute(buttonitem, 'pclass:active');
 
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  click
 
-        driver.constructSequence().
-            click(buttonitem).
-            run();
+        await driver.constructSequence().
+                        click(buttonitem).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(buttonitem, 'TP.sig.UIActivate');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(buttonitem, 'TP.sig.UIActivate');
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Activation - keyboard', function(test, options) {
+    this.it('Activation - keyboard', async function(test, options) {
 
         var buttonitem;
 
@@ -150,36 +134,30 @@ function() {
 
         //  Individual keydown/keyup
 
-        driver.constructSequence().
-            keyDown(buttonitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyDown(buttonitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(buttonitem, 'pclass:active');
+        test.assert.hasAttribute(buttonitem, 'pclass:active');
 
-                test.assert.didSignal(buttonitem, 'TP.sig.UIActivate');
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIActivate');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(buttonitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyUp(buttonitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(buttonitem, 'pclass:active');
+        test.refute.hasAttribute(buttonitem, 'pclass:active');
 
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var buttonitem;
 
@@ -192,88 +170,70 @@ function() {
 
         //  --- Focus
 
-        driver.constructSequence().
-            sendEvent(TP.hc('type', 'focus'), buttonitem).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), buttonitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(buttonitem, 'pclass:focus');
+        test.refute.hasAttribute(buttonitem, 'pclass:focus');
 
-                test.refute.didSignal(buttonitem, 'TP.sig.UIFocus');
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIFocus');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup
 
-        driver.constructSequence().
-            mouseDown(buttonitem).
-            run();
+        await driver.constructSequence().
+                        mouseDown(buttonitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(buttonitem, 'pclass:active');
+        test.refute.hasAttribute(buttonitem, 'pclass:active');
 
-                test.refute.didSignal(buttonitem, 'TP.sig.UIActivate');
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(buttonitem, 'TP.sig.UIActivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDidActivate');
 
-        driver.constructSequence().
-            mouseUp(buttonitem).
-            run();
+        await driver.constructSequence().
+                        mouseUp(buttonitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- click
 
-        driver.constructSequence().
-            click(buttonitem).
-            run();
+        await driver.constructSequence().
+                        click(buttonitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(buttonitem, 'TP.sig.UIActivate');
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIActivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        driver.constructSequence().
-            keyDown(buttonitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyDown(buttonitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(buttonitem, 'pclass:active');
+        test.refute.hasAttribute(buttonitem, 'pclass:active');
 
-                test.refute.didSignal(buttonitem, 'TP.sig.UIActivate');
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIActivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(buttonitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyUp(buttonitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
-            });
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(buttonitem, 'TP.sig.UIDidDeactivate');
     });
 });
 
@@ -295,26 +255,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = driver.get('windowContext');
-
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_buttonitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -472,17 +431,16 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = driver.get('windowContext');
-
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_buttonitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -500,10 +458,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -694,25 +652,24 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_buttonitem.xhtml');
-            driver.setLocation(loadURI);
-
-            windowContext = driver.get('windowContext');
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -840,16 +797,15 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = driver.get('windowContext');
-
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_buttonitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -867,10 +823,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1028,23 +984,22 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_buttonitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1073,7 +1028,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:buttonitem - change value via user interaction', function(test, options) {
+    this.it('xctrls:buttonitem - change value via user interaction', async function(test, options) {
 
         var tpElem,
 
@@ -1088,20 +1043,17 @@ function() {
 
         databuttonitem7 = TP.byId('databuttonitem7', windowContext);
 
-        test.getDriver().constructSequence().
-            click(databuttonitem7).
-            run();
+        await driver.constructSequence().
+                        click(databuttonitem7).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'foo');
     });
 
 });
@@ -1122,23 +1074,22 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_buttonitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1167,7 +1118,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:buttonitem - change value via user interaction', function(test, options) {
+    this.it('xctrls:buttonitem - change value via user interaction', async function(test, options) {
 
         var tpElem,
 
@@ -1183,37 +1134,31 @@ function() {
 
         databuttonitem11 = TP.byId('databuttonitem11', windowContext);
 
-        test.getDriver().constructSequence().
-            click(databuttonitem11).
-            run();
+        await driver.constructSequence().
+                        click(databuttonitem11).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac('foo', 'bar', 'baz'));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'bar', 'baz'));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac('foo', 'bar', 'baz'));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac('foo', 'bar', 'baz'));
 
         databuttonitem12 = TP.byId('databuttonitem12', windowContext);
 
-        test.getDriver().constructSequence().
-            click(databuttonitem12).
-            run();
+        await driver.constructSequence().
+                        click(databuttonitem12).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac('foo', 'bar'));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'bar'));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac('foo', 'bar'));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac('foo', 'bar'));
     });
 
 });

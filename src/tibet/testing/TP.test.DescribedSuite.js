@@ -245,7 +245,8 @@ function(stepArray, isTestLevel) {
      * @param {Boolean} isTestLevel Whether or not the set of steps is at the
      *     'suite' (i.e. 'before' and 'after' functions) level or at the 'test'
      *     level (i.e. 'beforeEach', 'afterEach' and test case functions).
-     * @returns {Function} The function that will process the supplied steps.
+     * @returns {AsyncFunction} The function that will process the supplied
+     *     steps.
      */
 
     var suiteref,
@@ -255,7 +256,7 @@ function(stepArray, isTestLevel) {
     suiteref = this;
     /* eslint-enable consistent-this */
 
-    stepProcessorFunc = function(test, options) {
+    stepProcessorFunc = async function(test, options) {
         var suite,
 
             chainref,
@@ -274,6 +275,9 @@ function(stepArray, isTestLevel) {
 
             func,
 
+            targetID,
+
+            loadLoc,
             loadURI,
             timeout,
             origin,
@@ -388,16 +392,18 @@ function(stepArray, isTestLevel) {
                 break;
 
             case 'loadURL':
-                loadURI = TP.uc(args.at(1));
+                loadLoc = args.at(1);
+                loadURI = TP.uc(loadLoc);
 
-                driver.setLocation(loadURI);
+                await driver.setLocation(loadURI);
 
-                //  Note the 'chain' here - waiting until the setLocation comes
-                //  back.
-                chainref.chain(
-                    function() {
-                        nextStepFunc();
-                    });
+                if (TP.notEmpty(args.at(2))) {
+                    targetID = TP.computeOriginID(
+                                windowContext, loadLoc, args.at(2));
+                    this.andWaitFor(targetID, 'TP.sig.DidRender');
+                }
+
+                nextStepFunc();
 
                 break;
 
@@ -444,10 +450,7 @@ function(stepArray, isTestLevel) {
 
                 //  Note the 'chain' here - waiting until the andWait comes
                 //  back.
-                chainref.chain(
-                    function() {
-                        nextStepFunc();
-                    });
+                nextStepFunc();
 
                 break;
 
@@ -459,10 +462,7 @@ function(stepArray, isTestLevel) {
 
                 //  Note the 'chain' here - waiting until the andWaitFor comes
                 //  back.
-                chainref.chain(
-                    function() {
-                        nextStepFunc();
-                    });
+                nextStepFunc();
 
                 break;
 
@@ -487,10 +487,7 @@ function(stepArray, isTestLevel) {
 
                 //  Note the 'chain' here - waiting until the event sequence has
                 //  been processed.
-                chainref.chain(
-                    function() {
-                        nextStepFunc();
-                    });
+                nextStepFunc();
             break;
 
             case 'sendEvent':
@@ -510,10 +507,7 @@ function(stepArray, isTestLevel) {
 
                 //  Note the 'chain' here - waiting until the event sequence has
                 //  been processed.
-                chainref.chain(
-                    function() {
-                        nextStepFunc();
-                    });
+                nextStepFunc();
             break;
 
             default:

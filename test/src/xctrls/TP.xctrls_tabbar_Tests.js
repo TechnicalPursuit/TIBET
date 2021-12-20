@@ -8,6 +8,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -15,26 +16,27 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -42,223 +44,188 @@ function() {
 
     //  ---
 
-    this.it('xctrls:tabbar - simple Array', function(test, options) {
+    this.it('xctrls:tabbar - simple Array', async function(test, options) {
 
-        var tabbar;
+        var tabbar,
+            items;
 
         tabbar = TP.byId('tabbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return tabbar.get('allItems').first();
                 },
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tabbar.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    tabbar.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    tabbar.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            tabbar.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            tabbar.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            tabbar.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = tabbar.get('allItems');
 
-                items = tabbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:tabbar - Array of Pairs', function(test, options) {
+    this.it('xctrls:tabbar - Array of Pairs', async function(test, options) {
 
-        var tabbar;
+        var tabbar,
+            items;
 
         tabbar = TP.byId('tabbar2', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return tabbar.get('allItems').first();
                 },
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tabbar.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    tabbar.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    tabbar.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            tabbar.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            tabbar.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            tabbar.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = tabbar.get('allItems');
 
-                items = tabbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:tabbar - multi-item Array', function(test, options) {
+    this.it('xctrls:tabbar - multi-item Array', async function(test, options) {
 
-        var tabbar;
+        var tabbar,
+            items;
 
         tabbar = TP.byId('tabbar3', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return tabbar.get('allItems').first();
                 },
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tabbar.get('allItems').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    tabbar.get('data').getSize(),
-                    10);
-                test.assert.isEqualTo(
-                    tabbar.get('$dataKeys').getSize(),
-                    10);
-            });
+        test.assert.isEqualTo(
+            tabbar.get('allItems').getSize(),
+            10);
+        test.assert.isEqualTo(
+            tabbar.get('data').getSize(),
+            10);
+        test.assert.isEqualTo(
+            tabbar.get('$dataKeys').getSize(),
+            10);
 
-        test.chain(
-            function() {
-                var items;
+        items = tabbar.get('allItems');
 
-                items = tabbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'Brown');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Taylor');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'Brown');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Taylor');
     });
 
     //  ---
 
-    this.it('xctrls:tabbar - single-item Array with Hash', function(test, options) {
+    this.it('xctrls:tabbar - single-item Array with Hash', async function(test, options) {
 
-        var tabbar;
+        var tabbar,
+            items;
 
         tabbar = TP.byId('tabbar4', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return tabbar.get('allItems').first();
                 },
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tabbar.get('allItems').getSize(),
-                    1);
-                test.assert.isEqualTo(
-                    tabbar.get('data').getSize(),
-                    1);
-                test.assert.isEqualTo(
-                    tabbar.get('$dataKeys').getSize(),
-                    1);
-            });
+        test.assert.isEqualTo(
+            tabbar.get('allItems').getSize(),
+            1);
+        test.assert.isEqualTo(
+            tabbar.get('data').getSize(),
+            1);
+        test.assert.isEqualTo(
+            tabbar.get('$dataKeys').getSize(),
+            1);
 
-        test.chain(
-            function() {
-                var items;
+        items = tabbar.get('allItems');
 
-                items = tabbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
     });
 
     //  ---
 
-    this.it('xctrls:tabbar - multi-item Array with Hashes', function(test, options) {
+    this.it('xctrls:tabbar - multi-item Array with Hashes', async function(test, options) {
 
-        var tabbar;
+        var tabbar,
+            items;
 
         tabbar = TP.byId('tabbar5', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     return tabbar.get('allItems').first();
                 },
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tabbar.get('allItems').getSize(),
-                    2);
-                test.assert.isEqualTo(
-                    tabbar.get('data').getSize(),
-                    2);
-                test.assert.isEqualTo(
-                    tabbar.get('$dataKeys').getSize(),
-                    2);
-            });
+        test.assert.isEqualTo(
+            tabbar.get('allItems').getSize(),
+            2);
+        test.assert.isEqualTo(
+            tabbar.get('data').getSize(),
+            2);
+        test.assert.isEqualTo(
+            tabbar.get('$dataKeys').getSize(),
+            2);
 
-        test.chain(
-            function() {
-                var items;
+        items = tabbar.get('allItems');
 
-                items = tabbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.first().getLabelText(),
-                    'Smith');
-                test.assert.isEqualTo(
-                    items.last().getLabelText(),
-                    'Brown');
-            });
+        test.assert.isEqualTo(
+            items.first().getLabelText(),
+            'Smith');
+        test.assert.isEqualTo(
+            items.last().getLabelText(),
+            'Brown');
     });
 
 });
@@ -271,6 +238,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -278,31 +246,29 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this));
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -329,14 +295,14 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
         var tabbar,
             firstTabbarItem;
 
         tabbar = TP.byId('tabbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstTabbarItem = tabbar.get('allItems').first();
                     return firstTabbarItem;
@@ -346,23 +312,19 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().constructSequence().
-            sendEvent(TP.hc('type', 'focus'), tabbar).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), tabbar).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.hasAttribute(firstTabbarItem, 'pclass:focus');
 
-                test.assert.hasAttribute(firstTabbarItem, 'pclass:focus');
-
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIFocus');
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidFocus');
-            });
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIFocus');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidFocus');
     });
 
     //  ---
 
-    this.it('Activation - mouse', function(test, options) {
+    this.it('Activation - mouse', async function(test, options) {
 
         var tabbar,
             firstTabbarItem;
@@ -371,7 +333,7 @@ function() {
 
         tabbar = TP.byId('tabbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstTabbarItem = tabbar.get('allItems').first();
                     return firstTabbarItem;
@@ -381,66 +343,47 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firstTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firstTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firstTabbarItem, 'pclass:active');
+        test.assert.hasAttribute(firstTabbarItem, 'pclass:active');
 
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firstTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firstTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstTabbarItem, 'pclass:active');
+        test.refute.hasAttribute(firstTabbarItem, 'pclass:active');
 
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Activation - keyboard', function(test, options) {
+    this.it('Activation - keyboard', async function(test, options) {
 
         var tabbar,
             firstTabbarItem;
@@ -449,7 +392,7 @@ function() {
 
         tabbar = TP.byId('tabbar1', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstTabbarItem = tabbar.get('allItems').first();
                     return firstTabbarItem;
@@ -459,42 +402,30 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firstTabbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firstTabbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firstTabbarItem, 'pclass:active');
+        test.assert.hasAttribute(firstTabbarItem, 'pclass:active');
 
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firstTabbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firstTabbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstTabbarItem, 'pclass:active');
+        test.refute.hasAttribute(firstTabbarItem, 'pclass:active');
 
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var tabbar,
             firstTabbarItem;
@@ -506,7 +437,7 @@ function() {
         tabbar = TP.byId('tabbar1', windowContext);
         tabbar.setAttrDisabled(true);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstTabbarItem = tabbar.get('allItems').first();
                     return firstTabbarItem;
@@ -518,106 +449,70 @@ function() {
 
         //  --- Focus
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    sendEvent(TP.hc('type', 'focus'), firstTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), firstTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstTabbarItem, 'pclass:focus');
+        test.refute.hasAttribute(firstTabbarItem, 'pclass:focus');
 
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIFocus');
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIFocus');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(firstTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(firstTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstTabbarItem, 'pclass:active');
+        test.refute.hasAttribute(firstTabbarItem, 'pclass:active');
 
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(firstTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseUp(firstTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firstTabbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firstTabbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstTabbarItem, 'pclass:active');
+        test.refute.hasAttribute(firstTabbarItem, 'pclass:active');
 
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIActivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firstTabbarItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firstTabbarItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
-            });
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(firstTabbarItem, 'TP.sig.UIDidDeactivate');
     });
 });
 
@@ -631,6 +526,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -638,18 +534,19 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -667,10 +564,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -827,6 +724,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -851,17 +749,18 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -879,10 +778,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1027,26 +926,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1075,7 +973,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:tabbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:tabbar - change value via user interaction', async function(test, options) {
 
         var tabbar,
 
@@ -1088,7 +986,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstTabbarItem = tabbar.get('allItems').first();
                     return firstTabbarItem;
@@ -1096,31 +994,29 @@ function() {
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(firstTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(firstTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tabbar.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            tabbar.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'foo');
     });
 
-    this.it('xctrls:tabbar - change data and re-render', function(test, options) {
+    this.it('xctrls:tabbar - change data and re-render', async function(test, options) {
 
         var tabbar,
 
             modelURI,
-            firsttabbarItem;
+            firsttabbarItem,
+
+            modelObj,
+
+            items;
 
         tabbar = TP.byId('tabbar7', windowContext);
 
@@ -1128,7 +1024,7 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firsttabbarItem = tabbar.get('allItems').first();
                     return firsttabbarItem;
@@ -1136,56 +1032,45 @@ function() {
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                var items;
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('fido', 'Fido'),
+                    TP.ac('lassie', 'Lassie'))));
 
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('fido', 'Fido'),
-                            TP.ac('lassie', 'Lassie'))));
+        items = tabbar.get('allItems');
 
-                items = tabbar.get('allItems');
+        test.assert.isEqualTo(
+            items.getSize(),
+            2);
 
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    2);
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fido');
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'Lassie');
 
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fido');
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'Lassie');
-            });
+        modelObj = modelURI.getContent();
 
-        test.chain(
-            function() {
-                var modelObj,
-                    items;
+        modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+        modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
 
-                modelObj = modelURI.getContent();
+        modelURI.$changed();
 
-                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
-                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+        items = tabbar.get('allItems');
 
-                modelURI.$changed();
+        test.assert.isEqualTo(
+            items.getSize(),
+            4);
 
-                items = tabbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    4);
-
-                test.assert.isEqualTo(
-                    items.at(0).getLabelText(),
-                    'Fluffy');
-                test.assert.isEqualTo(
-                    items.at(3).getLabelText(),
-                    'Tigger');
-            });
+        test.assert.isEqualTo(
+            items.at(0).getLabelText(),
+            'Fluffy');
+        test.assert.isEqualTo(
+            items.at(3).getLabelText(),
+            'Tigger');
     });
 
 });
@@ -1206,26 +1091,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1254,7 +1138,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:tabbar - test for static content', function(test, options) {
+    this.it('xctrls:tabbar - test for static content', async function(test, options) {
 
         var tabbar,
 
@@ -1263,7 +1147,7 @@ function() {
 
         tabbar = TP.byId('tabbar8', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstTabbarItem = tabbar.get('allItems').first();
                     lastTabbarItem = tabbar.get('allItems').last();
@@ -1285,7 +1169,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:tabbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:tabbar - change value via user interaction', async function(test, options) {
 
         var tabbar,
 
@@ -1304,7 +1188,7 @@ function() {
 
         staticTabbarItem = tabbar.get('allItems').last();
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     staticTabbarItem = tabbar.get('allItems').last();
                     staticTabbarItem.defineHandler(
@@ -1317,25 +1201,19 @@ function() {
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(staticTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(staticTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tabbar.get('value'),
-                    'after');
+        test.assert.isEqualTo(
+            tabbar.get('value'),
+            'after');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'after');
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'after');
 
-                test.assert.isTrue(localHandlerRan);
-            });
+        test.assert.isTrue(localHandlerRan);
     });
 
 });
@@ -1356,26 +1234,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_tabbar.xhtml';
             loadURI = TP.uc(loc);
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1419,7 +1296,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:tabbar - test for static content', function(test, options) {
+    this.it('xctrls:tabbar - test for static content', async function(test, options) {
 
         var tabbar,
 
@@ -1428,7 +1305,7 @@ function() {
 
         tabbar = TP.byId('tabbar9', windowContext);
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firstTabbarItem = tabbar.get('allItems').first();
                     lastTabbarItem = tabbar.get('allItems').last();
@@ -1450,7 +1327,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:tabbar - change value via user interaction', function(test, options) {
+    this.it('xctrls:tabbar - change value via user interaction', async function(test, options) {
 
         var tabbar,
 
@@ -1468,7 +1345,7 @@ function() {
 
         staticTabbarItem = tabbar.get('allItems').first();
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     staticTabbarItem = tabbar.get('allItems').first();
                     dynamicTabbarItem = tabbar.get('allItems').at(1);
@@ -1478,57 +1355,48 @@ function() {
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(staticTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(staticTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tabbar.get('value'),
-                    'before');
+        test.assert.isEqualTo(
+            tabbar.get('value'),
+            'before');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    'before');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            'before');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(dynamicTabbarItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(dynamicTabbarItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tabbar.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            tabbar.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            'foo');
     });
 
     //  ---
 
-    this.it('xctrls:tabbar - change data and re-render', function(test, options) {
+    this.it('xctrls:tabbar - change data and re-render', async function(test, options) {
 
         var tabbar,
 
             modelURI,
-            firsttabbarItem;
+            firsttabbarItem,
+
+            modelObj,
+            items;
 
         tabbar = TP.byId('tabbar9', windowContext);
 
         modelURI = TP.uc('urn:tibet:selection_test_data');
 
-        test.andIfNotValidWaitFor(
+        await test.andIfNotValidWaitFor(
                 function() {
                     firsttabbarItem = tabbar.get('allItems').first();
                     return firsttabbarItem;
@@ -1536,56 +1404,45 @@ function() {
                 TP.gid(tabbar),
                 'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                var items;
+        modelURI.setResource(
+            TP.hc(
+                'data',
+                TP.ac(
+                    TP.ac('fido', 'Fido'),
+                    TP.ac('lassie', 'Lassie'))));
 
-                modelURI.setResource(
-                    TP.hc(
-                        'data',
-                        TP.ac(
-                            TP.ac('fido', 'Fido'),
-                            TP.ac('lassie', 'Lassie'))));
+        items = tabbar.get('allItems');
 
-                items = tabbar.get('allItems');
+        test.assert.isEqualTo(
+            items.getSize(),
+            4);
 
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    4);
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'FIDO');
+        test.assert.isEqualTo(
+            items.at(2).getLabelText(),
+            'LASSIE');
 
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'FIDO');
-                test.assert.isEqualTo(
-                    items.at(2).getLabelText(),
-                    'LASSIE');
-            });
+        modelObj = modelURI.getContent();
 
-        test.chain(
-            function() {
-                var modelObj,
-                    items;
+        modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
+        modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
 
-                modelObj = modelURI.getContent();
+        modelURI.$changed();
 
-                modelObj.at('data').unshift(TP.ac('fluffy', 'Fluffy'));
-                modelObj.at('data').push(TP.ac('tigger', 'Tigger'));
+        items = tabbar.get('allItems');
 
-                modelURI.$changed();
+        test.assert.isEqualTo(
+            items.getSize(),
+            6);
 
-                items = tabbar.get('allItems');
-
-                test.assert.isEqualTo(
-                    items.getSize(),
-                    6);
-
-                test.assert.isEqualTo(
-                    items.at(1).getLabelText(),
-                    'FLUFFY');
-                test.assert.isEqualTo(
-                    items.at(4).getLabelText(),
-                    'TIGGER');
-            });
+        test.assert.isEqualTo(
+            items.at(1).getLabelText(),
+            'FLUFFY');
+        test.assert.isEqualTo(
+            items.at(4).getLabelText(),
+            'TIGGER');
     });
 
 });

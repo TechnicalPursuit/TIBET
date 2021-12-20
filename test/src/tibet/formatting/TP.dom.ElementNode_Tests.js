@@ -128,10 +128,10 @@ function() {
     //  ---
 
     this.afterEach(
-        function(test, options) {
+        async function(test, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -139,368 +139,340 @@ function() {
 
     //  ---
 
-    this.it('set content - single format - simple substitutions', function(test, options) {
+    this.it('set content - single format - simple substitutions', async function(test, options) {
 
         var driver,
-            windowContext;
+
+            windowContext,
+            elem;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting1.xhtml');
 
-        driver = test.getDriver();
         windowContext = driver.get('windowContext');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
+        //  ---
 
-                var elem;
+        elem = TP.byId('span', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', '5555555');
 
-                elem = TP.byId('span', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            '555-5555');
 
-                elem.set('value', '5555555');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    '555-5555');
+        elem = TP.byId('div', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', '100');
 
-                elem = TP.byId('div', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            '100.00');
 
-                elem.set('value', '100');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    '100.00');
+        elem = TP.byId('input_text', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 'bill');
 
-                elem = TP.byId('input_text', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'Bill');
 
-                elem.set('value', 'bill');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'Bill');
+        elem = TP.byId('textarea', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', TP.dc());
 
-                elem = TP.byId('textarea', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            TP.str(TP.dc().getFullYear()));
 
-                elem.set('value', TP.dc());
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    TP.str(TP.dc().getFullYear()));
+        elem = TP.byId('select_single', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 'woof');
 
-                elem = TP.byId('select_single', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'foo');
 
-                elem.set('value', 'woof');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'foo');
+        elem = TP.byId('select_single', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 'gurgle');
 
-                elem = TP.byId('select_single', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'baz');
 
-                elem.set('value', 'gurgle');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'baz');
+        elem = TP.byId('select_multiple', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', TP.cc('red'));
 
-                elem = TP.byId('select_multiple', windowContext);
-                test.assert.isElement(elem);
+        test.assert.contains(
+            elem.getValue(),
+            'foo');
 
-                elem.set('value', TP.cc('red'));
+        //  ---
 
-                test.assert.contains(
-                    elem.getValue(),
-                    'foo');
+        elem = TP.byId('select_multiple', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', TP.cc('yellow'));
 
-                elem = TP.byId('select_multiple', windowContext);
-                test.assert.isElement(elem);
+        test.assert.contains(
+            elem.getValue(),
+            'baz');
 
-                elem.set('value', TP.cc('yellow'));
+        //  ---
 
-                test.assert.contains(
-                    elem.getValue(),
-                    'baz');
+        //  NB: We go after elements that do *not* have the 'ui:display'
+        //  attribute, but because they're in a group with an element
+        //  that does, the value should still be formatted.
+        elem = TP.byId('input_radio_2', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 'woof');
 
-                //  NB: We go after elements that do *not* have the 'ui:display'
-                //  attribute, but because they're in a group with an element
-                //  that does, the value should still be formatted.
-                elem = TP.byId('input_radio_2', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'foo');
 
-                elem.set('value', 'woof');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'foo');
+        elem = TP.byId('input_radio_3', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 'gurgle');
 
-                elem = TP.byId('input_radio_3', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'baz');
 
-                elem.set('value', 'gurgle');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'baz');
+        //  NB: We go after elements that do *not* have the 'ui:display'
+        //  attribute, but because they're in a group with an element
+        //  that does, the value should still be formatted.
 
-                //  ---
+        elem = TP.byId('input_checkbox_2', windowContext);
+        test.assert.isElement(elem);
 
-                //  NB: We go after elements that do *not* have the 'ui:display'
-                //  attribute, but because they're in a group with an element
-                //  that does, the value should still be formatted.
+        elem.set('value', TP.cc('red'));
 
-                elem = TP.byId('input_checkbox_2', windowContext);
-                test.assert.isElement(elem);
+        test.assert.contains(
+            elem.getValue(),
+            'foo');
 
-                elem.set('value', TP.cc('red'));
+        //  ---
 
-                test.assert.contains(
-                    elem.getValue(),
-                    'foo');
+        elem = TP.byId('input_checkbox_3', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', TP.cc('yellow'));
 
-                elem = TP.byId('input_checkbox_3', windowContext);
-                test.assert.isElement(elem);
-
-                elem.set('value', TP.cc('yellow'));
-
-                test.assert.contains(
-                    elem.getValue(),
-                    'baz');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.contains(
+            elem.getValue(),
+            'baz');
     }).timeout(10000);
 
     //  ---
 
-    this.it('set content - single format - templating', function(test, options) {
+    this.it('set content - single format - templating', async function(test, options) {
 
         var driver,
-            windowContext;
+
+            windowContext,
+            elem;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting2.xhtml');
 
-        driver = test.getDriver();
         windowContext = driver.get('windowContext');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
+        //  ---
 
-                var elem;
+        elem = TP.byId('span', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', TP.hc('foo', 'bar'));
 
-                elem = TP.byId('span', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'bar');
 
-                elem.set('value', TP.hc('foo', 'bar'));
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'bar');
+        elem = TP.byId('div', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', TP.hc('foo', 'bar'));
 
-                elem = TP.byId('div', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'It is: bar');
 
-                elem.set('value', TP.hc('foo', 'bar'));
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'It is: bar');
+        elem = TP.byId('input_text', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', TP.hc('foo', TP.hc('bar', 'baz')));
 
-                elem = TP.byId('input_text', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'baz');
 
-                elem.set('value', TP.hc('foo', TP.hc('bar', 'baz')));
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'baz');
+        elem = TP.byId('textarea', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', TP.ac(1, 2, 3));
 
-                elem = TP.byId('textarea', windowContext);
-                test.assert.isElement(elem);
-
-                elem.set('value', TP.ac(1, 2, 3));
-
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    '3');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+            elem.getValue(),
+            '3');
     });
 
     //  ---
 
-    this.it('set content - multiple formats - simple substitutions', function(test, options) {
+    this.it('set content - multiple formats - simple substitutions', async function(test, options) {
 
         var driver,
-            windowContext;
+
+            windowContext,
+            elem;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting3.xhtml');
 
-        driver = test.getDriver();
         windowContext = driver.get('windowContext');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
+        //  ---
 
-                var elem;
+        elem = TP.byId('span', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 'Bill');
 
-                elem = TP.byId('span', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'bill');
 
-                elem.set('value', 'Bill');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'bill');
+        elem = TP.byId('div', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', TP.ac(1, 2, 3));
 
-                elem = TP.byId('div', windowContext);
-                test.assert.isElement(elem);
-
-                elem.set('value', TP.ac(1, 2, 3));
-
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    '&lt;html:li&gt;1&lt;/html:li&gt;&lt;html:li&gt;2&lt;/html:li&gt;&lt;html:li&gt;3&lt;/html:li&gt;');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+            elem.getValue(),
+            '&lt;html:li&gt;1&lt;/html:li&gt;&lt;html:li&gt;2&lt;/html:li&gt;&lt;html:li&gt;3&lt;/html:li&gt;');
     });
 
     //  ---
 
-    this.it('set content - using type for localization', function(test, options) {
+    this.it('set content - using type for localization', async function(test, options) {
 
         var driver,
-            windowContext;
+
+            windowContext,
+            elem;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting4.xhtml');
 
-        driver = test.getDriver();
         windowContext = driver.get('windowContext');
 
-        driver.setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function(result) {
+        //  Note that the strings here are localized against the
+        //  'strings.tmx' file in either the app (if available) or the
+        //  lib.
 
-                var elem;
+        //  ---
 
-                //  Note that the strings here are localized against the
-                //  'strings.tmx' file in either the app (if available) or the
-                //  lib.
+        elem = TP.byId('span', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 'false');
 
-                elem = TP.byId('span', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'falsch');
 
-                elem.set('value', 'false');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'falsch');
+        elem = TP.byId('div', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 'Hello');
 
-                elem = TP.byId('div', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'Hallo');
 
-                elem.set('value', 'Hello');
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'Hallo');
+        elem = TP.byId('input_text', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 1000000.42);
 
-                elem = TP.byId('input_text', windowContext);
-                test.assert.isElement(elem);
+        test.assert.isEqualTo(
+            elem.getValue(),
+            '1.000.000,42');
 
-                elem.set('value', 1000000.42);
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    '1.000.000,42');
+        elem = TP.byId('textarea', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        TP.i18n.DELocale.set('dateFormat', '%{mmmm}');
 
-                elem = TP.byId('textarea', windowContext);
-                test.assert.isElement(elem);
+        elem.set('value', Date.constructDayOne(1900));
 
-                TP.i18n.DELocale.set('dateFormat', '%{mmmm}');
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'Januar');
 
-                elem.set('value', Date.constructDayOne(1900));
+        //  ---
 
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'Januar');
+        elem = TP.byId('select_single', windowContext);
+        test.assert.isElement(elem);
 
-                //  ---
+        elem.set('value', 'yes');
 
-                elem = TP.byId('select_single', windowContext);
-                test.assert.isElement(elem);
-
-                elem.set('value', 'yes');
-
-                test.assert.isEqualTo(
-                    elem.getValue(),
-                    'ja');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+            elem.getValue(),
+            'ja');
     });
 });
 
@@ -600,10 +572,10 @@ function() {
     //  ---
 
     this.afterEach(
-        function(test, options) {
+        async function(test, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -611,289 +583,244 @@ function() {
 
     //  ---
 
-    this.it('get content - single format - simple substitutions', function(test, options) {
+    this.it('get content - single format - simple substitutions', async function(test, options) {
+
+        var driver,
+
+            textField,
+            textArea,
+
+            selectSingle,
+            optionToSelect,
+
+            selectMultiple,
+
+            inputRadio2,
+            inputRadio3,
+
+            inputCheckbox2,
+            inputCheckbox3;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting5.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
-                var textField,
-                    textArea,
+        //  Change the content via 'user' interaction
 
-                    selectSingle,
-                    optionToSelect,
+        textField = TP.byId('input_text', windowContext);
 
-                    selectMultiple,
+        await driver.constructSequence().
+                        exec(function() {
+                            textField.clearValue();
+                        }).
+                        sendKeys('jones', textField).
+                        sendEvent(TP.hc('type', 'change'), textField).
+                        run();
 
-                    inputRadio2,
-                    inputRadio3,
+        test.assert.isEqualTo(
+            textField.get('value'),
+            'Jones');
 
-                    inputCheckbox2,
-                    inputCheckbox3;
+        //  ---
 
-                //  Change the content via 'user' interaction
+        textArea = TP.byId('textarea', windowContext);
 
-                textField = TP.byId('input_text', windowContext);
+        await driver.constructSequence().
+                        exec(function() {
+                            textArea.clearValue();
+                        }).
+                        sendKeys(TP.str(TP.dc()), textArea).
+                        sendEvent(TP.hc('type', 'change'), textArea).
+                        run();
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        textField.clearValue();
-                    }).
-                    sendKeys('jones', textField).
-                    sendEvent(TP.hc('type', 'change'), textField).
-                    run();
+        test.assert.isEqualTo(
+            textArea.get('value'),
+            TP.str(TP.dc().getFullYear()));
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            textField.get('value'),
-                            'Jones');
-                    });
+        //  ---
 
-                //  ---
+        selectSingle = TP.byId('select_single', windowContext);
+        optionToSelect = selectSingle.getValueElements().at(1);
 
-                textArea = TP.byId('textarea', windowContext);
+        await driver.constructSequence().
+                        click(optionToSelect).
+                        run();
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        textArea.clearValue();
-                    }).
-                    sendKeys(TP.str(TP.dc()), textArea).
-                    sendEvent(TP.hc('type', 'change'), textArea).
-                    run();
+        test.assert.isEqualTo(
+            selectSingle.get('value'),
+            'meow');
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            textArea.get('value'),
-                            TP.str(TP.dc().getFullYear()));
-                    });
+        //  ---
 
-                //  ---
+        selectMultiple = TP.byId('select_multiple', windowContext);
+        optionToSelect = selectMultiple.getValueElements().at(1);
 
-                selectSingle = TP.byId('select_single', windowContext);
-                optionToSelect = selectSingle.getValueElements().at(1);
+        await driver.constructSequence().
+                        click(optionToSelect).
+                        run();
 
-                test.getDriver().constructSequence().
-                    click(optionToSelect).
-                    run();
+        test.assert.isEqualTo(
+            selectMultiple.get('value'),
+            TP.ac(TP.cc('blue')));
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            selectSingle.get('value'),
-                            'meow');
-                    });
+        //  ---
 
-                //  ---
+        //  NB: We go after elements that do *not* have the 'ui:storage'
+        //  attribute, but because they're in a group with an element
+        //  that does, the value should still be formatted.
+        inputRadio2 = TP.byId('input_radio_2', windowContext);
+        test.assert.isElement(inputRadio2);
 
-                selectMultiple = TP.byId('select_multiple', windowContext);
-                optionToSelect = selectMultiple.getValueElements().at(1);
+        await driver.constructSequence().
+                        click(inputRadio2).
+                        run();
 
-                test.getDriver().constructSequence().
-                    click(optionToSelect).
-                    run();
+        test.assert.isEqualTo(
+            inputRadio2.getValue(),
+            'meow');
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            selectMultiple.get('value'),
-                            TP.ac(TP.cc('blue')));
-                    });
+        //  ---
 
-                //  ---
+        inputRadio3 = TP.byId('input_radio_3', windowContext);
+        test.assert.isElement(inputRadio3);
 
-                //  NB: We go after elements that do *not* have the 'ui:storage'
-                //  attribute, but because they're in a group with an element
-                //  that does, the value should still be formatted.
-                inputRadio2 = TP.byId('input_radio_2', windowContext);
-                test.assert.isElement(inputRadio2);
+        await driver.constructSequence().
+                        click(inputRadio3).
+                        run();
 
-                test.getDriver().constructSequence().
-                    click(inputRadio2).
-                    run();
+        test.assert.isEqualTo(
+            inputRadio3.getValue(),
+            'gurgle');
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            inputRadio2.getValue(),
-                            'meow');
-                    });
+        //  ---
 
-                //  ---
+        //  NB: We go after elements that do *not* have the 'ui:storage'
+        //  attribute, but because they're in a group with an element
+        //  that does, the value should still be formatted.
 
-                inputRadio3 = TP.byId('input_radio_3', windowContext);
-                test.assert.isElement(inputRadio3);
+        inputCheckbox2 = TP.byId('input_checkbox_2', windowContext);
+        test.assert.isElement(inputCheckbox2);
 
-                test.getDriver().constructSequence().
-                    click(inputRadio3).
-                    run();
+        await driver.constructSequence().
+                        click(inputCheckbox2).
+                        run();
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            inputRadio3.getValue(),
-                            'gurgle');
-                    });
+        test.assert.isEqualTo(
+            inputCheckbox2.getValue(),
+            TP.ac(TP.cc('blue')));
 
-                //  ---
+        //  ---
 
-                //  NB: We go after elements that do *not* have the 'ui:storage'
-                //  attribute, but because they're in a group with an element
-                //  that does, the value should still be formatted.
+        inputCheckbox3 = TP.byId('input_checkbox_3', windowContext);
+        test.assert.isElement(inputCheckbox3);
 
-                inputCheckbox2 = TP.byId('input_checkbox_2', windowContext);
-                test.assert.isElement(inputCheckbox2);
+        await driver.constructSequence().
+                        click(inputCheckbox3).
+                        run();
 
-                test.getDriver().constructSequence().
-                    click(inputCheckbox2).
-                    run();
-
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            inputCheckbox2.getValue(),
-                            TP.ac(TP.cc('blue')));
-                    });
-
-                //  ---
-
-                inputCheckbox3 = TP.byId('input_checkbox_3', windowContext);
-                test.assert.isElement(inputCheckbox3);
-
-                test.getDriver().constructSequence().
-                    click(inputCheckbox3).
-                    run();
-
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            inputCheckbox3.getValue(),
-                            //  both checkbox2 and checkbox3 are on at this
-                            //  point
-                            TP.ac(TP.cc('blue'), TP.cc('yellow')));
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+            inputCheckbox3.getValue(),
+            //  both checkbox2 and checkbox3 are on at this
+            //  point
+            TP.ac(TP.cc('blue'), TP.cc('yellow')));
     });
 
     //  ---
 
-    this.it('get content - single format - templating', function(test, options) {
+    this.it('get content - single format - templating', async function(test, options) {
+
+        var driver,
+
+            textField,
+            textArea;
 
         loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting6.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver = test.getDriver();
 
-        test.chain(
-            function() {
-                var textField,
-                    textArea;
+        await driver.setLocation(loadURI);
 
-                //  Change the content via 'user' interaction
+        //  Change the content via 'user' interaction
 
-                textField = TP.byId('input_text', windowContext);
+        textField = TP.byId('input_text', windowContext);
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        textField.clearValue();
-                    }).
-                    sendKeys('foo', textField).
-                    sendEvent(TP.hc('type', 'change'), textField).
-                    run();
+        await driver.constructSequence().
+                        exec(function() {
+                            textField.clearValue();
+                        }).
+                        sendKeys('foo', textField).
+                        sendEvent(TP.hc('type', 'change'), textField).
+                        run();
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            textField.get('value'),
-                            'It is: foo');
-                    });
+        test.assert.isEqualTo(
+            textField.get('value'),
+            'It is: foo');
 
-                //  ---
+        //  ---
 
-                textArea = TP.byId('textarea', windowContext);
+        textArea = TP.byId('textarea', windowContext);
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        textArea.clearValue();
-                    }).
-                    sendKeys('bill', textArea).
-                    sendEvent(TP.hc('type', 'change'), textArea).
-                    run();
+        await driver.constructSequence().
+                        exec(function() {
+                            textArea.clearValue();
+                        }).
+                        sendKeys('bill', textArea).
+                        sendEvent(TP.hc('type', 'change'), textArea).
+                        run();
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            textArea.get('value'),
-                            'Uppercased: BILL');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+            textArea.get('value'),
+            'Uppercased: BILL');
     });
 
     //  ---
 
-    this.it('get content - multiple formats - simple substitutions', function(test, options) {
+    this.it('get content - multiple formats - simple substitutions', async function(test, options) {
+
+        var driver,
+
+            textField,
+            textArea;
+
+        driver = test.getDriver();
 
         loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting7.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        await driver.setLocation(loadURI);
 
-        test.chain(
-            function() {
-                var textField,
-                    textArea;
+        //  Change the content via 'user' interaction
 
-                //  Change the content via 'user' interaction
+        textField = TP.byId('input_text', windowContext);
 
-                textField = TP.byId('input_text', windowContext);
+        await driver.constructSequence().
+                        exec(function() {
+                            textField.clearValue();
+                        }).
+                        sendKeys('Bill', textField).
+                        sendEvent(TP.hc('type', 'change'), textField).
+                        run();
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        textField.clearValue();
-                    }).
-                    sendKeys('Bill', textField).
-                    sendEvent(TP.hc('type', 'change'), textField).
-                    run();
+        test.assert.isEqualTo(
+            textField.get('value'),
+            'bill');
 
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            textField.get('value'),
-                            'bill');
-                    });
+        //  ---
 
-                //  ---
+        textArea = TP.byId('textarea', windowContext);
 
-                textArea = TP.byId('textarea', windowContext);
+        await driver.constructSequence().
+                        exec(function() {
+                            textArea.clearValue();
+                        }).
+                        sendKeys('foo,bar,baz', textArea).
+                        sendEvent(TP.hc('type', 'change'), textArea).
+                        run();
 
-                test.getDriver().constructSequence().
-                    exec(function() {
-                        textArea.clearValue();
-                    }).
-                    sendKeys('foo,bar,baz', textArea).
-                    sendEvent(TP.hc('type', 'change'), textArea).
-                    run();
-
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            textArea.get('value'),
-                            '&lt;html:li&gt;foo&lt;/html:li&gt;&lt;html:li&gt;bar&lt;/html:li&gt;&lt;html:li&gt;baz&lt;/html:li&gt;');
-                    });
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
+        test.assert.isEqualTo(
+            textArea.get('value'),
+            '&lt;html:li&gt;foo&lt;/html:li&gt;&lt;html:li&gt;bar&lt;/html:li&gt;&lt;html:li&gt;baz&lt;/html:li&gt;');
     });
 });
 

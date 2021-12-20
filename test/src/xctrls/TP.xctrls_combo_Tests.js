@@ -8,6 +8,7 @@ function() {
     var unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -15,31 +16,30 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
+            driver = this.getDriver();
             windowContext = this.getDriver().get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_combo.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
 
-            this.chain(
-                function() {
-                    this.startTrackingSignals();
-                }.bind(this));
+            await driver.setLocation(loadURI);
+
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -74,38 +74,34 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
-        var combo;
+        var combo,
+            comboInput;
 
         combo = TP.byId('combo1', windowContext);
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().constructSequence().
-            sendEvent(TP.hc('type', 'focus'), combo).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), combo).
+                        run();
 
-        test.chain(
-            function() {
+        comboInput = combo.get('comboInput');
 
-                var comboInput;
+        test.assert.hasAttribute(comboInput, 'pclass:focus');
 
-                comboInput = combo.get('comboInput');
-
-                test.assert.hasAttribute(comboInput, 'pclass:focus');
-
-                test.assert.didSignal(comboInput, 'TP.sig.UIFocus');
-                test.assert.didSignal(comboInput, 'TP.sig.UIDidFocus');
-            });
+        test.assert.didSignal(comboInput, 'TP.sig.UIFocus');
+        test.assert.didSignal(comboInput, 'TP.sig.UIDidFocus');
     });
 
     //  ---
 
-    this.it('Activation - mouse', function(test, options) {
+    this.it('Activation - mouse', async function(test, options) {
 
         var combo,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         //  Change the content via 'user' interaction
 
@@ -113,99 +109,73 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(combo).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(combo, 'pclass:active');
+        test.assert.hasAttribute(combo, 'pclass:active');
 
-                test.assert.didSignal(combo, 'TP.sig.UIActivate');
-                test.assert.didSignal(combo, 'TP.sig.UIDidActivate');
-            });
+        test.assert.didSignal(combo, 'TP.sig.UIActivate');
+        test.assert.didSignal(combo, 'TP.sig.UIDidActivate');
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
+        await test.andWaitFor(firstComboItem, 'TP.sig.UIFocus');
 
-                test.andWaitFor(firstComboItem, 'TP.sig.UIFocus');
-            });
+        test.assert.hasAttribute(firstComboItem, 'pclass:focus');
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firstComboItem, 'pclass:focus');
+        test.assert.didSignal(firstComboItem, 'TP.sig.UIFocus');
+        test.assert.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
 
-                test.assert.didSignal(firstComboItem, 'TP.sig.UIFocus');
-                test.assert.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
+        test.getSuite().resetSignalTracking();
 
-                test.getSuite().resetSignalTracking();
-            });
+        await driver.constructSequence().
+                        mouseUp(combo).
+                        run();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(combo).
-                    run();
-            });
+        test.refute.hasAttribute(combo, 'pclass:active');
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(combo, 'pclass:active');
+        test.assert.didSignal(combo, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(combo, 'TP.sig.UIDidDeactivate');
 
-                test.assert.didSignal(combo, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(combo, 'TP.sig.UIDidDeactivate');
+        test.refute.hasAttribute(firstComboItem, 'pclass:focus');
 
-                test.refute.hasAttribute(firstComboItem, 'pclass:focus');
+        test.assert.didSignal(firstComboItem, 'TP.sig.UIBlur');
+        test.assert.didSignal(firstComboItem, 'TP.sig.UIDidBlur');
 
-                test.assert.didSignal(firstComboItem, 'TP.sig.UIBlur');
-                test.assert.didSignal(firstComboItem, 'TP.sig.UIDidBlur');
-
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
+        test.assert.didSignal(combo, 'TP.sig.UIActivate');
+        test.assert.didSignal(combo, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(combo, 'TP.sig.UIActivate');
-                test.assert.didSignal(combo, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(combo, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(combo, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(combo, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(combo, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Activation - keyboard', function(test, options) {
+    this.it('Activation - keyboard', async function(test, options) {
 
         var combo,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         //  Change the content via 'user' interaction
 
@@ -214,94 +184,66 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(combo, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(combo, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(combo, 'pclass:active');
+        test.assert.hasAttribute(combo, 'pclass:active');
 
-                test.assert.didSignal(combo, 'TP.sig.UIActivate');
-                test.assert.didSignal(combo, 'TP.sig.UIDidActivate');
-            });
+        test.assert.didSignal(combo, 'TP.sig.UIActivate');
+        test.assert.didSignal(combo, 'TP.sig.UIDidActivate');
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
-
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                keyUp(combo, 'Enter').
-                run();
-            });
+        await driver.constructSequence().
+                        keyUp(combo, 'Enter').
+                        run();
 
         //  popups focus as part of the key *up*
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(firstComboItem, 'pclass:focus');
+        test.assert.hasAttribute(firstComboItem, 'pclass:focus');
 
-                test.assert.didSignal(firstComboItem, 'TP.sig.UIFocus');
-                test.assert.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
-            });
+        test.assert.didSignal(firstComboItem, 'TP.sig.UIFocus');
+        test.assert.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(combo, 'pclass:active');
+        test.refute.hasAttribute(combo, 'pclass:active');
 
-                test.assert.didSignal(combo, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(combo, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(combo, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(combo, 'TP.sig.UIDidDeactivate');
 
-                //  The picker is still up and the first item is focused -
-                //  that's how it works. It's sticky.
-                test.assert.hasAttribute(firstComboItem, 'pclass:focus');
-            });
+        //  The picker is still up and the first item is focused -
+        //  that's how it works. It's sticky.
+        test.assert.hasAttribute(firstComboItem, 'pclass:focus');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firstComboItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firstComboItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firstComboItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firstComboItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstComboItem, 'pclass:focus');
+        test.refute.hasAttribute(firstComboItem, 'pclass:focus');
 
-                test.assert.didSignal(firstComboItem, 'TP.sig.UIBlur');
-                test.assert.didSignal(firstComboItem, 'TP.sig.UIDidBlur');
-            });
+        test.assert.didSignal(firstComboItem, 'TP.sig.UIBlur');
+        test.assert.didSignal(firstComboItem, 'TP.sig.UIDidBlur');
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var combo,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         //  All of these mechanisms to 'activate' the control should fail - it's
         //  disabled.
@@ -310,202 +252,133 @@ function() {
         combo = TP.byId('combo1', windowContext);
         combo.setAttrDisabled(true);
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
-
-        test.chain(
-            function() {
-                test.assert.isDisabled(firstComboItem);
-            });
+        test.assert.isDisabled(firstComboItem);
 
         //  --- Focus
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    sendEvent(TP.hc('type', 'focus'), firstComboItem).
-                    run();
-            });
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), firstComboItem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstComboItem, 'pclass:focus');
+        test.refute.hasAttribute(firstComboItem, 'pclass:focus');
 
-                test.refute.didSignal(firstComboItem, 'TP.sig.UIFocus');
-                test.refute.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(firstComboItem, 'TP.sig.UIFocus');
+        test.refute.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseDown(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        mouseDown(combo).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(combo, 'pclass:active');
+        test.refute.hasAttribute(combo, 'pclass:active');
 
-                test.refute.didSignal(combo, 'TP.sig.UIActivate');
-                test.refute.didSignal(combo, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(combo, 'TP.sig.UIActivate');
+        test.refute.didSignal(combo, 'TP.sig.UIDidActivate');
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
+        test.refute.hasAttribute(firstComboItem, 'pclass:focus');
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstComboItem, 'pclass:focus');
+        test.refute.didSignal(firstComboItem, 'TP.sig.UIFocus');
+        test.refute.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
 
-                test.refute.didSignal(firstComboItem, 'TP.sig.UIFocus');
-                test.refute.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
+        test.getSuite().resetSignalTracking();
 
-                test.getSuite().resetSignalTracking();
-            });
+        await driver.constructSequence().
+                        mouseUp(combo).
+                        run();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    mouseUp(combo).
-                    run();
-            });
+        test.refute.didSignal(combo, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(combo, 'TP.sig.UIDidDeactivate');
 
-        test.chain(
-            function() {
-                test.refute.didSignal(combo, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(combo, 'TP.sig.UIDidDeactivate');
-
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- click
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(combo, 'TP.sig.UIActivate');
-                test.refute.didSignal(combo, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(combo, 'TP.sig.UIActivate');
+        test.refute.didSignal(combo, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(combo, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(combo, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(combo, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(combo, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(combo, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(combo, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(combo, 'pclass:active');
+        test.refute.hasAttribute(combo, 'pclass:active');
 
-                test.refute.didSignal(combo, 'TP.sig.UIActivate');
-                test.refute.didSignal(combo, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(combo, 'TP.sig.UIActivate');
+        test.refute.didSignal(combo, 'TP.sig.UIDidActivate');
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
-
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                keyUp(combo, 'Enter').
-                run();
-            });
+        await driver.constructSequence().
+                        keyUp(combo, 'Enter').
+                        run();
 
         //  popups focus as part of the key *up*
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstComboItem, 'pclass:focus');
+        test.refute.hasAttribute(firstComboItem, 'pclass:focus');
 
-                test.refute.didSignal(firstComboItem, 'TP.sig.UIFocus');
-                test.refute.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
-            });
+        test.refute.didSignal(firstComboItem, 'TP.sig.UIFocus');
+        test.refute.didSignal(firstComboItem, 'TP.sig.UIDidFocus');
 
-        test.chain(
-            function() {
-                test.refute.didSignal(combo, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(combo, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(combo, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(combo, 'TP.sig.UIDidDeactivate');
 
-                //  The picker is still up and the first item is focused -
-                //  that's how it works. It's sticky.
-                test.refute.hasAttribute(firstComboItem, 'pclass:focus');
-            });
+        //  The picker is still up and the first item is focused -
+        //  that's how it works. It's sticky.
+        test.refute.hasAttribute(firstComboItem, 'pclass:focus');
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyDown(firstComboItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyDown(firstComboItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    keyUp(firstComboItem, 'Enter').
-                    run();
-            });
+        await driver.constructSequence().
+                        keyUp(firstComboItem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(firstComboItem, 'pclass:focus');
+        test.refute.hasAttribute(firstComboItem, 'pclass:focus');
 
-                test.refute.didSignal(firstComboItem, 'TP.sig.UIBlur');
-                test.refute.didSignal(firstComboItem, 'TP.sig.UIDidBlur');
-            });
+        test.refute.didSignal(firstComboItem, 'TP.sig.UIBlur');
+        test.refute.didSignal(firstComboItem, 'TP.sig.UIDidBlur');
     });
 });
 
@@ -519,6 +392,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -526,18 +400,19 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_combo.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -558,10 +433,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -569,11 +444,12 @@ function() {
 
     //  ---
 
-    this.it('xctrls:combo - setting value to scalar values', function(test, options) {
+    this.it('xctrls:combo - setting value to scalar values', async function(test, options) {
 
         var combo,
             firstComboItem,
-            value;
+            value,
+            comboList;
 
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
@@ -582,64 +458,55 @@ function() {
 
         //  ---
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
 
-                comboList = combo.get('popupContentFirstElement');
+        comboList = combo.get('popupContentFirstElement');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-        test.chain(
-            function() {
-                //  undefined
-                combo.set('value', testData.at(TP.UNDEF));
-                value = combo.get('value');
-                test.assert.isNull(value);
+        //  undefined
+        combo.set('value', testData.at(TP.UNDEF));
+        value = combo.get('value');
+        test.assert.isNull(value);
 
-                //  null
-                combo.set('value', testData.at(TP.NULL));
-                value = combo.get('value');
-                test.assert.isNull(value);
+        //  null
+        combo.set('value', testData.at(TP.NULL));
+        value = combo.get('value');
+        test.assert.isNull(value);
 
-                //  String
-                combo.set('value', testData.at('String'));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, TP.str(testData.at('String')));
+        //  String
+        combo.set('value', testData.at('String'));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at('String')));
 
-                //  Number
-                combo.set('value', testData.at('Number'));
-                value = combo.get('value');
-                test.assert.isNull(value);
+        //  Number
+        combo.set('value', testData.at('Number'));
+        value = combo.get('value');
+        test.assert.isNull(value);
 
-                //  Boolean
-                combo.set('value', testData.at('Boolean'));
-                value = combo.get('value');
-                test.assert.isNull(value);
-            });
+        //  Boolean
+        combo.set('value', testData.at('Boolean'));
+        value = combo.get('value');
+        test.assert.isNull(value);
     });
 
     //  ---
 
-    this.it('xctrls:combo - setting value to complex object values', function(test, options) {
+    this.it('xctrls:combo - setting value to complex object values', async function(test, options) {
 
         var combo,
             firstComboItem,
-            value;
+            value,
+            comboList;
 
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
@@ -648,146 +515,125 @@ function() {
 
         //  ---
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
+        await driver.constructSequence().
+                        click(combo).
+                        run();
+
+        comboList = combo.get('popupContentFirstElement');
+
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
+
+        //  RegExp
+        combo.set('value', testData.at('RegExp'));
+        value = combo.get('value');
+        test.assert.isNull(value);
+
+        //  Date
+        combo.set('value', testData.at('Date'));
+        value = combo.get('value');
+        test.assert.isNull(value);
+
+        //  Array
+        combo.set('value', TP.ac('foo', 'bar', 'baz'));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  Object
+        combo.set('value',
+            {
+                foo: 'baz'
             });
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'baz');
 
-        test.chain(
-            function() {
-                var comboList;
-
-                comboList = combo.get('popupContentFirstElement');
-
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
-
-        test.chain(
-            function() {
-                //  RegExp
-                combo.set('value', testData.at('RegExp'));
-                value = combo.get('value');
-                test.assert.isNull(value);
-
-                //  Date
-                combo.set('value', testData.at('Date'));
-                value = combo.get('value');
-                test.assert.isNull(value);
-
-                //  Array
-                combo.set('value', TP.ac('foo', 'bar', 'baz'));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'foo');
-
-                //  Object
-                combo.set('value',
-                    {
-                        foo: 'baz'
-                    });
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'baz');
-
-                //  TP.core.Hash
-                combo.set('value', TP.hc('foo', 'bar'));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'bar');
-            });
+        //  TP.core.Hash
+        combo.set('value', TP.hc('foo', 'bar'));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'bar');
     });
 
     //  ---
 
-    this.it('xctrls:combo - setting value to markup', function(test, options) {
+    this.it('xctrls:combo - setting value to markup', async function(test, options) {
 
         var combo,
             firstComboItem,
-            value;
+            value,
+            comboList;
 
         combo = TP.byId('combo4', windowContext);
 
         //  ---
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
+        //  XMLDocument
+        combo.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = combo.get('value');
+        test.assert.isNull(value);
 
-        test.chain(
-            function() {
-                //  XMLDocument
-                combo.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
-                value = combo.get('value');
-                test.assert.isNull(value);
+        //  XMLElement
+        combo.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'bar');
 
-                //  XMLElement
-                combo.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'bar');
+        //  AttributeNode
+        combo.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'bar');
 
-                //  AttributeNode
-                combo.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'bar');
+        //  TextNode
+        combo.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'foo');
 
-                //  TextNode
-                combo.set('value', TP.nodeCloneNode(testData.at('TextNode')));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'foo');
+        //  CDATASectionNode
+        combo.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'foo');
 
-                //  CDATASectionNode
-                combo.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'foo');
+        //  PINode
+        combo.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'bar');
 
-                //  PINode
-                combo.set('value', TP.nodeCloneNode(testData.at('PINode')));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'bar');
+        //  CommentNode
+        combo.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'foo');
 
-                //  CommentNode
-                combo.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'foo');
+        //  DocumentFragmentNode
+        combo.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'foo');
 
-                //  DocumentFragmentNode
-                combo.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'foo');
+        //  NodeList
+        combo.set('value', testData.at('NodeList'));
+        value = combo.get('value');
+        test.assert.isNull(value);
 
-                //  NodeList
-                combo.set('value', testData.at('NodeList'));
-                value = combo.get('value');
-                test.assert.isNull(value);
-
-                //  NamedNodeMap
-                combo.set('value', testData.at('NamedNodeMap'));
-                value = combo.get('value');
-                test.assert.isEqualTo(value, 'baz');
-            });
+        //  NamedNodeMap
+        combo.set('value', testData.at('NamedNodeMap'));
+        value = combo.get('value');
+        test.assert.isEqualTo(value, 'baz');
     });
 });
 
@@ -801,6 +647,7 @@ function() {
         unloadURI,
         loadURI,
 
+        driver,
         windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -828,17 +675,18 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_combo.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -856,24 +704,21 @@ function() {
     //  ---
 
     this.afterEach(
-        function(test, suite) {
-            test.chain(
-                function() {
-                    //  'Click away' from the currently selected popup to get it
-                    //  to close.
-                    test.getDriver().constructSequence().
-                        click(windowContext.getDocument().getBody()).
-                        run();
-                });
+        async function(test, suite) {
+            //  'Click away' from the currently selected popup to get it
+            //  to close.
+            await driver.constructSequence().
+                            click(windowContext.getDocument().getBody()).
+                            run();
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -881,274 +726,214 @@ function() {
 
     //  ---
 
-    this.it('xctrls:combo - addSelection', function(test, options) {
+    this.it('xctrls:combo - addSelection', async function(test, options) {
 
         var combo,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         combo = TP.byId('combo5', windowContext);
 
         //  ---
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
+        //  (property defaults to 'value')
+        combo.deselectAll();
+        combo.addSelection('bar');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
 
-        test.chain(
-            function() {
-                //  (property defaults to 'value')
-                combo.deselectAll();
-                combo.addSelection('bar');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
-
-                //  'value' property
-                combo.deselectAll();
-                combo.addSelection('foo', 'value');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(0));
-            });
+        //  'value' property
+        combo.deselectAll();
+        combo.addSelection('foo', 'value');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(0));
     });
 
     //  ---
 
-    this.it('xctrls:combo - removeSelection', function(test, options) {
+    this.it('xctrls:combo - removeSelection', async function(test, options) {
 
         var combo,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         combo = TP.byId('combo5', windowContext);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
+        //  (property defaults to 'value')
+        combo.deselectAll();
+        combo.addSelection('foo');
+        combo.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(0));
 
-        test.chain(
-            function() {
-                //  (property defaults to 'value')
-                combo.deselectAll();
-                combo.addSelection('foo');
-                combo.removeSelection('baz');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(0));
+        combo.deselectAll();
+        combo.addSelection('bar');
+        combo.removeSelection('bar');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac());
 
-                combo.deselectAll();
-                combo.addSelection('bar');
-                combo.removeSelection('bar');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac());
+        //  'value' property
+        combo.deselectAll();
+        combo.addSelection('foo');
+        combo.removeSelection('baz', 'value');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(0));
 
-                //  'value' property
-                combo.deselectAll();
-                combo.addSelection('foo');
-                combo.removeSelection('baz', 'value');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(0));
-
-                combo.deselectAll();
-                combo.addSelection('bar');
-                combo.removeSelection('bar', 'value');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac());
-            });
+        combo.deselectAll();
+        combo.addSelection('bar');
+        combo.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac());
     });
 
     //  ---
 
-    this.it('xctrls:combo - combo', function(test, options) {
+    this.it('xctrls:combo - combo', async function(test, options) {
 
         var combo,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         combo = TP.byId('combo5', windowContext);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
+        combo.deselectAll();
+        combo.select('bar');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
+        combo.select('baz');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(2));
 
-        test.chain(
-            function() {
-                combo.deselectAll();
-                combo.select('bar');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
-                combo.select('baz');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(2));
-
-                combo.deselectAll();
-                combo.select(TP.ac('foo'));
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(0));
-            });
+        combo.deselectAll();
+        combo.select(TP.ac('foo'));
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(0));
     });
 
     //  ---
 
-    this.it('xctrls:combo - combo with RegExp', function(test, options) {
+    this.it('xctrls:combo - combo with RegExp', async function(test, options) {
 
         var combo,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         combo = TP.byId('combo5', windowContext);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
-
-        test.chain(
-            function() {
-                combo.deselectAll();
-                combo.select(/ba/);
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
-            });
+        combo.deselectAll();
+        combo.select(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
     });
 
     //  ---
 
-    this.it('xctrls:combo - deselect', function(test, options) {
+    this.it('xctrls:combo - deselect', async function(test, options) {
 
         var combo,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         combo = TP.byId('combo5', windowContext);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
-
-        test.chain(
-            function() {
-                combo.select('bar');
-                combo.deselect('bar');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac());
-                combo.select('bar');
-                combo.deselect('baz');
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
-            });
+        combo.select('bar');
+        combo.deselect('bar');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac());
+        combo.select('bar');
+        combo.deselect('baz');
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
     });
 
     //  ---
 
-    this.it('xctrls:combo - deselect with RegExp', function(test, options) {
+    this.it('xctrls:combo - deselect with RegExp', async function(test, options) {
 
         var combo,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         combo = TP.byId('combo5', windowContext);
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
-
-        test.chain(
-            function() {
-                combo.select('bar');
-                combo.deselect(/ba/);
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac());
-                combo.select('bar');
-                combo.deselect(/fo/);
-                test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
-            });
+        combo.select('bar');
+        combo.deselect(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac());
+        combo.select('bar');
+        combo.deselect(/fo/);
+        test.assert.isEqualTo(getSelectedIndices(combo), TP.ac(1));
     });
 
 });
@@ -1158,7 +943,8 @@ function() {
 TP.xctrls.combo.Type.describe('TP.xctrls.combo: data binding',
 function() {
 
-    var windowContext,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI;
@@ -1168,24 +954,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             var loc;
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             loc = '~lib_test/src/xctrls/xctrls_combo.xhtml';
             loadURI = TP.uc(loc);
-            this.getDriver().setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1193,12 +980,13 @@ function() {
 
     //  ---
 
-    this.it('xctrls:combo - initial setup', function(test, options) {
+    this.it('xctrls:combo - initial setup', async function(test, options) {
 
         var combo,
 
             modelObj,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         combo = TP.byId('combo5', windowContext);
 
@@ -1206,48 +994,38 @@ function() {
 
         //  ---
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
+        test.assert.isEqualTo(
+            combo.get('value'),
+            'bar');
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    combo.get('value'),
-                    'bar');
-
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'bar');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'bar');
     });
 
     //  ---
 
-    this.it('xctrls:combo - change value via user interaction', function(test, options) {
+    this.it('xctrls:combo - change value via user interaction', async function(test, options) {
 
         var combo,
 
             modelObj,
-            firstComboItem;
+            firstComboItem,
+            comboList;
 
         combo = TP.byId('combo5', windowContext);
 
@@ -1255,49 +1033,31 @@ function() {
 
         //  Change the content via 'user' interaction
 
-        test.chain(
-            function() {
-                test.getDriver().constructSequence().
-                    click(combo).
-                    run();
-            });
+        await driver.constructSequence().
+                        click(combo).
+                        run();
 
-        test.chain(
-            function() {
-                var comboList;
+        comboList = combo.get('popupContentFirstElement');
 
-                comboList = combo.get('popupContentFirstElement');
+        await test.andIfNotValidWaitFor(
+                function() {
+                    firstComboItem = comboList.get('allItems').first();
+                    return firstComboItem;
+                },
+                TP.gid(comboList),
+                'TP.sig.DidRenderData');
 
-                test.andIfNotValidWaitFor(
-                        function() {
-                            firstComboItem = comboList.get('allItems').first();
-                            return firstComboItem;
-                        },
-                        TP.gid(comboList),
-                        'TP.sig.DidRenderData');
-            });
+        await driver.constructSequence().
+                        click(firstComboItem).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.isEqualTo(
+            combo.get('value'),
+            'foo');
 
-                test.chain(
-                    function() {
-                        test.getDriver().constructSequence().
-                            click(firstComboItem).
-                            run();
-                    });
-
-                test.chain(
-                    function() {
-                        test.assert.isEqualTo(
-                            combo.get('value'),
-                            'foo');
-
-                        test.assert.isEqualTo(
-                            TP.val(modelObj.get('selection_set_1')),
-                            'foo');
-                    });
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'foo');
     });
 
 });

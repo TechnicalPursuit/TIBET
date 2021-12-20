@@ -16,14 +16,13 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -31,12 +30,12 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -51,36 +50,31 @@ function() {
 
     //  ---
 
-    this.it('Focusing', function(test, options) {
+    this.it('Focusing', async function(test, options) {
 
-        var radioitem;
+        var radioitem,
+            focusedElem;
 
         radioitem = TP.byId('radioitem1', windowContext);
 
         //  Change the focus via 'direct' method
 
-        driver.constructSequence().
-            sendEvent(TP.hc('type', 'focus'), radioitem).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), radioitem).
+                        run();
 
-        test.chain(
-            function() {
+        test.assert.hasAttribute(radioitem, 'pclass:focus');
 
-                var focusedElem;
+        test.assert.didSignal(radioitem, 'TP.sig.UIFocus');
+        test.assert.didSignal(radioitem, 'TP.sig.UIDidFocus');
 
-                test.assert.hasAttribute(radioitem, 'pclass:focus');
-
-                test.assert.didSignal(radioitem, 'TP.sig.UIFocus');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidFocus');
-
-                focusedElem = driver.getFocusedElement();
-                test.assert.isIdenticalTo(focusedElem, radioitem);
-            });
+        focusedElem = driver.getFocusedElement();
+        test.assert.isIdenticalTo(focusedElem, radioitem);
     });
 
     //  ---
 
-    this.it('Activation - mouse', function(test, options) {
+    this.it('Activation - mouse', async function(test, options) {
 
         var radioitem;
 
@@ -90,57 +84,46 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        driver.constructSequence().
-            mouseDown(radioitem).
-            run();
+        await driver.constructSequence().
+                        mouseDown(radioitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(radioitem, 'pclass:active');
+        test.assert.hasAttribute(radioitem, 'pclass:active');
 
-                test.assert.didSignal(radioitem, 'TP.sig.UIActivate');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(radioitem, 'TP.sig.UIActivate');
+        test.assert.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            mouseUp(radioitem).
-            run();
+        await driver.constructSequence().
+                        mouseUp(radioitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(radioitem, 'pclass:active');
+        test.refute.hasAttribute(radioitem, 'pclass:active');
 
-                test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
+        test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  click
 
-        driver.constructSequence().
-            click(radioitem).
-            run();
+        await driver.constructSequence().
+                        click(radioitem).
+                        run();
 
-        test.chain(
-            function() {
+        //  Don't test the attribute here - it will already have been
+        //  removed.
+        test.assert.didSignal(radioitem, 'TP.sig.UIActivate');
+        test.assert.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
-                //  Don't test the attribute here - it will already have been
-                //  removed.
-
-                test.assert.didSignal(radioitem, 'TP.sig.UIActivate');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidActivate');
-
-                test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Activation - keyboard', function(test, options) {
+    this.it('Activation - keyboard', async function(test, options) {
 
         var radioitem;
 
@@ -150,36 +133,30 @@ function() {
 
         //  Individual keydown/keyup
 
-        driver.constructSequence().
-            keyDown(radioitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyDown(radioitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.hasAttribute(radioitem, 'pclass:active');
+        test.assert.hasAttribute(radioitem, 'pclass:active');
 
-                test.assert.didSignal(radioitem, 'TP.sig.UIActivate');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidActivate');
+        test.assert.didSignal(radioitem, 'TP.sig.UIActivate');
+        test.assert.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(radioitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyUp(radioitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(radioitem, 'pclass:active');
+        test.refute.hasAttribute(radioitem, 'pclass:active');
 
-                test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
-            });
+        test.assert.didSignal(radioitem, 'TP.sig.UIDeactivate');
+        test.assert.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
     });
 
     //  ---
 
-    this.it('Disabled behavior', function(test, options) {
+    this.it('Disabled behavior', async function(test, options) {
 
         var radioitem;
 
@@ -192,88 +169,70 @@ function() {
 
         //  --- Focus
 
-        driver.constructSequence().
-            sendEvent(TP.hc('type', 'focus'), radioitem).
-            run();
+        await driver.constructSequence().
+                        sendEvent(TP.hc('type', 'focus'), radioitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(radioitem, 'pclass:focus');
+        test.refute.hasAttribute(radioitem, 'pclass:focus');
 
-                test.refute.didSignal(radioitem, 'TP.sig.UIFocus');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidFocus');
+        test.refute.didSignal(radioitem, 'TP.sig.UIFocus');
+        test.refute.didSignal(radioitem, 'TP.sig.UIDidFocus');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual mousedown/mouseup
 
-        driver.constructSequence().
-            mouseDown(radioitem).
-            run();
+        await driver.constructSequence().
+                        mouseDown(radioitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(radioitem, 'pclass:active');
+        test.refute.hasAttribute(radioitem, 'pclass:active');
 
-                test.refute.didSignal(radioitem, 'TP.sig.UIActivate');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
-            });
+        test.refute.didSignal(radioitem, 'TP.sig.UIActivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
-        driver.constructSequence().
-            mouseUp(radioitem).
-            run();
+        await driver.constructSequence().
+                        mouseUp(radioitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- click
 
-        driver.constructSequence().
-            click(radioitem).
-            run();
+        await driver.constructSequence().
+                        click(radioitem).
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(radioitem, 'TP.sig.UIActivate');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIActivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
         //  --- Individual keydown/keyup
 
-        driver.constructSequence().
-            keyDown(radioitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyDown(radioitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.hasAttribute(radioitem, 'pclass:active');
+        test.refute.hasAttribute(radioitem, 'pclass:active');
 
-                test.refute.didSignal(radioitem, 'TP.sig.UIActivate');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIActivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
 
-                test.getSuite().resetSignalTracking();
-            });
+        test.getSuite().resetSignalTracking();
 
-        driver.constructSequence().
-            keyUp(radioitem, 'Enter').
-            run();
+        await driver.constructSequence().
+                        keyUp(radioitem, 'Enter').
+                        run();
 
-        test.chain(
-            function() {
-                test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
-            });
+        test.refute.didSignal(radioitem, 'TP.sig.UIDeactivate');
+        test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
     });
 });
 
@@ -295,26 +254,25 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = driver.get('windowContext');
-
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -472,17 +430,16 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            windowContext = driver.get('windowContext');
-
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -500,10 +457,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -694,25 +651,24 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            driver.setLocation(loadURI);
-
-            windowContext = driver.get('windowContext');
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -840,16 +796,15 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             TP.$$setupCommonObjectValues();
 
-            windowContext = driver.get('windowContext');
-
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
@@ -867,10 +822,10 @@ function() {
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1029,23 +984,22 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1074,7 +1028,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:radioitem - change value via user interaction', function(test, options) {
+    this.it('xctrls:radioitem - change value via user interaction', async function(test, options) {
 
         var tpElem,
 
@@ -1089,20 +1043,17 @@ function() {
 
         dataradioitem7 = TP.byId('dataradioitem7', windowContext);
 
-        test.getDriver().constructSequence().
-            click(dataradioitem7).
-            run();
+        await driver.constructSequence().
+                        click(dataradioitem7).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    'foo');
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            'foo');
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_1')),
-                    'foo');
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_1')),
+            'foo');
     });
 
 });
@@ -1123,23 +1074,22 @@ function() {
     //  ---
 
     this.before(
-        function(suite, options) {
+        async function(suite, options) {
 
             driver = this.getDriver();
-
             windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            driver.setLocation(loadURI);
+            await driver.setLocation(loadURI);
         });
 
     //  ---
 
     this.after(
-        function(suite, options) {
+        async function(suite, options) {
 
             //  Unload the current page by setting it to the blank
-            driver.setLocation(unloadURI);
+            await driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1168,7 +1118,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:radioitem - change value via user interaction', function(test, options) {
+    this.it('xctrls:radioitem - change value via user interaction', async function(test, options) {
 
         var tpElem,
 
@@ -1184,37 +1134,31 @@ function() {
 
         dataradioitem11 = TP.byId('dataradioitem11', windowContext);
 
-        test.getDriver().constructSequence().
-            click(dataradioitem11).
-            run();
+        await driver.constructSequence().
+                        click(dataradioitem11).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac('foo', 'bar', 'baz'));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'bar', 'baz'));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac('foo', 'bar', 'baz'));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac('foo', 'bar', 'baz'));
 
         dataradioitem12 = TP.byId('dataradioitem12', windowContext);
 
-        test.getDriver().constructSequence().
-            click(dataradioitem12).
-            run();
+        await driver.constructSequence().
+                        click(dataradioitem12).
+                        run();
 
-        test.chain(
-            function() {
-                test.assert.isEqualTo(
-                    tpElem.get('value'),
-                    TP.ac('foo', 'bar'));
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'bar'));
 
-                test.assert.isEqualTo(
-                    TP.val(modelObj.get('selection_set_2')),
-                    TP.ac('foo', 'bar'));
-            });
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('selection_set_2')),
+            TP.ac('foo', 'bar'));
     });
 
 });

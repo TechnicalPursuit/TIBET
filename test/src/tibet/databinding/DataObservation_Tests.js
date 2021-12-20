@@ -1914,12 +1914,12 @@ function() {
         });
 
     this.afterEach(
-        function(test, options) {
+        async function(test, options) {
             this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the
             //  blank
-            this.getDriver().setLocation(unloadURI);
+            await this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -1927,1443 +1927,1347 @@ function() {
 
     //  ---
 
-    this.it('change notification - concrete reference, simple aspect', function(test, options) {
+    this.it('change notification - concrete reference, simple aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
 
-                modelObj = TP.lang.Object.construct();
-                modelObj.defineAttribute('salary');
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value', modelObj, 'salary');
 
-                salaryField.defineBinding('value', modelObj, 'salary');
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'value' on the field to update.
+        modelObj.set('salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'value' on the field to update.
-                modelObj.set('salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('salary'),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value', modelObj, 'salary');
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value', modelObj, 'salary');
+        modelObj.set('salary', 45);
 
-                modelObj.set('salary', 45);
-
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-            });
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
     });
 
-    this.it('change notification - virtual reference, simple aspect', function(test, options) {
+    this.it('change notification - virtual reference, simple aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
 
-                modelObj = TP.lang.Object.construct();
-                modelObj.defineAttribute('salary');
+        //  This sets the ID of the object and registers it with an
+        //  accompanying 'urn:tibet' URN (which will allow the
+        //  'defineBinding()' call to turn change handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj, null, null, true);
 
-                //  This sets the ID of the object and registers it with an
-                //  accompanying 'urn:tibet' URN (which will allow the
-                //  'defineBinding()' call to turn change handling on for it).
-                modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj, null, null, true);
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value', 'CurrentEmployee', 'salary');
 
-                salaryField.defineBinding('value', 'CurrentEmployee', 'salary');
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'value' on the field to update.
+        modelObj.set('salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'value' on the field to update.
-                modelObj.set('salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('salary'),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding(
+                        'value', 'CurrentEmployee', 'salary');
 
-                //  Destroy the binding
-                salaryField.destroyBinding(
-                                'value', 'CurrentEmployee', 'salary');
+        modelObj.set('salary', 45);
 
-                modelObj.set('salary', 45);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                //  Unregister the model object.
-                TP.sys.unregisterObject(modelObj);
-            });
+        //  Unregister the model object.
+        TP.sys.unregisterObject(modelObj);
     });
 
-    this.it('change notification - URI reference, simple aspect', function(test, options) {
+    this.it('change notification - URI reference, simple aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            modelURI,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    modelURI,
-                    salaryField;
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
 
-                modelObj = TP.lang.Object.construct();
-                modelObj.defineAttribute('salary');
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to
+        //  'urn:tibet:testdata' because it didn't have an existing ID
+        //  and was assigned as the resource to the URI defined above.
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                modelURI = TP.uc('urn:tibet:testdata');
-                //  This automatically sets the ID of modelObj to
-                //  'urn:tibet:testdata' because it didn't have an existing ID
-                //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj, TP.hc('observeResource', true));
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value', modelURI, 'salary');
 
-                salaryField.defineBinding('value', modelURI, 'salary');
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'value' on the field to update.
+        modelObj.set('salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'value' on the field to update.
-                modelObj.set('salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('salary'),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value', modelURI, 'salary');
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value', modelURI, 'salary');
+        modelObj.set('salary', 45);
 
-                modelObj.set('salary', 45);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                modelURI.unregister();
-            });
+        modelURI.unregister();
     });
 
-    this.it('change notification - concrete reference, simple aspect with attributes', function(test, options) {
+    this.it('change notification - concrete reference, simple aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
+        modelObj.defineAttribute('salaryInRange');
 
-                modelObj = TP.lang.Object.construct();
-                modelObj.defineAttribute('salary');
-                modelObj.defineAttribute('salaryInRange');
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value', modelObj, 'salary');
+        salaryField.defineBinding('@inrange', modelObj, 'salaryInRange');
 
-                salaryField.defineBinding('value', modelObj, 'salary');
-                salaryField.defineBinding('@inrange', modelObj, 'salaryInRange');
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('salary'),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of 'salary' on the field to
+        //  update.
+        modelObj.set('salaryInRange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
-                //  update.
-                modelObj.set('salaryInRange', true);
+        test.assert.isEqualTo(
+                    modelObj.get('salaryInRange'),
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            modelObj.get('salaryInRange'),
-                            salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value', modelObj, 'salary');
+        salaryField.destroyBinding('@inrange', modelObj, 'salaryInRange');
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value', modelObj, 'salary');
-                salaryField.destroyBinding('@inrange', modelObj, 'salaryInRange');
+        modelObj.set('salary', 45);
+        modelObj.set('salaryInRange', false);
 
-                modelObj.set('salary', 45);
-                modelObj.set('salaryInRange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-            });
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
     });
 
-    this.it('change notification - virtual reference, simple aspect with attributes', function(test, options) {
+    this.it('change notification - virtual reference, simple aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
+        modelObj.defineAttribute('salaryInRange');
 
-                modelObj = TP.lang.Object.construct();
-                modelObj.defineAttribute('salary');
-                modelObj.defineAttribute('salaryInRange');
+        //  This sets the ID of the object and registers it with an
+        //  accompanying 'urn:tibet' URN (which will allow the
+        //  'defineBinding()' call to turn change handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj, null, null, true);
 
-                //  This sets the ID of the object and registers it with an
-                //  accompanying 'urn:tibet' URN (which will allow the
-                //  'defineBinding()' call to turn change handling on for it).
-                modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj, null, null, true);
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value', 'CurrentEmployee', 'salary');
+        salaryField.defineBinding('@inrange', 'CurrentEmployee', 'salaryInRange');
 
-                salaryField.defineBinding('value', 'CurrentEmployee', 'salary');
-                salaryField.defineBinding('@inrange', 'CurrentEmployee', 'salaryInRange');
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('salary'),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of 'salary' on the field to
+        //  update.
+        modelObj.set('salaryInRange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
-                //  update.
-                modelObj.set('salaryInRange', true);
+        test.assert.isEqualTo(
+                    modelObj.get('salaryInRange'),
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            modelObj.get('salaryInRange'),
-                            salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value', 'CurrentEmployee', 'salary');
+        salaryField.destroyBinding('@inrange', 'CurrentEmployee', 'salaryInRange');
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value', 'CurrentEmployee', 'salary');
-                salaryField.destroyBinding('@inrange', 'CurrentEmployee', 'salaryInRange');
+        modelObj.set('salary', 45);
+        modelObj.set('salaryInRange', false);
 
-                modelObj.set('salary', 45);
-                modelObj.set('salaryInRange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-
-                //  Unregister the model object.
-                TP.sys.unregisterObject(modelObj);
-            });
+        //  Unregister the model object.
+        TP.sys.unregisterObject(modelObj);
     });
 
-    this.it('change notification - URI reference, simple aspect with attributes', function(test, options) {
+    this.it('change notification - URI reference, simple aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            modelURI,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    modelURI,
-                    salaryField;
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
+        modelObj.defineAttribute('salaryInRange');
 
-                modelObj = TP.lang.Object.construct();
-                modelObj.defineAttribute('salary');
-                modelObj.defineAttribute('salaryInRange');
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to
+        //  'urn:tibet:testdata' because it didn't have an existing ID
+        //  and was assigned as the resource to the URI defined above.
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                modelURI = TP.uc('urn:tibet:testdata');
-                //  This automatically sets the ID of modelObj to
-                //  'urn:tibet:testdata' because it didn't have an existing ID
-                //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj, TP.hc('observeResource', true));
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value', modelURI, 'salary');
+        salaryField.defineBinding('@inrange', modelURI, 'salaryInRange');
 
-                salaryField.defineBinding('value', modelURI, 'salary');
-                salaryField.defineBinding('@inrange', modelURI, 'salaryInRange');
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('salary'),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of 'salary' on the field to
+        //  update.
+        modelObj.set('salaryInRange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
-                //  update.
-                modelObj.set('salaryInRange', true);
+        test.assert.isEqualTo(
+                    modelObj.get('salaryInRange'),
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            modelObj.get('salaryInRange'),
-                            salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value', modelURI, 'salary');
+        salaryField.destroyBinding('@inrange', modelURI, 'salaryInRange');
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value', modelURI, 'salary');
-                salaryField.destroyBinding('@inrange', modelURI, 'salaryInRange');
+        modelObj.set('salary', 45);
+        modelObj.set('salaryInRange', false);
 
-                modelObj.set('salary', 45);
-                modelObj.set('salaryInRange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-
-                modelURI.unregister();
-            });
+        modelURI.unregister();
     });
 
-    this.it('change notification - concrete reference, TIBET path aspect', function(test, options) {
+    this.it('change notification - concrete reference, TIBET path aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
 
-        test.chain(
-            function() {
+            salaryField;
 
-                var modelObj,
+        await test.getDriver().setLocation(loadURI);
 
-                    salaryField;
+        modelObj = TP.json2js('{"emp":{"salary":50000}}');
 
-                modelObj = TP.json2js('{"emp":{"salary":50000}}');
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelObj,
+                                    TP.apc('emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            modelObj,
-                                            TP.apc('emp.salary'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('emp.salary'),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelObj,
+                                    TP.apc('emp.salary'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelObj,
-                                            TP.apc('emp.salary'));
+        modelObj.set('emp.salary', 45);
 
-                modelObj.set('emp.salary', 45);
-
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-            });
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
     });
 
-    this.it('change notification - virtual reference, TIBET path aspect', function(test, options) {
+    this.it('change notification - virtual reference, TIBET path aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.json2js('{"emp":{"salary":50000}}');
 
-                modelObj = TP.json2js('{"emp":{"salary":50000}}');
+        //  This sets the ID of the object and registers it with an
+        //  accompanying 'urn:tibet' URN (which will allow the
+        //  'defineBinding()' call to turn change handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj, null, null, true);
 
-                //  This sets the ID of the object and registers it with an
-                //  accompanying 'urn:tibet' URN (which will allow the
-                //  'defineBinding()' call to turn change handling on for it).
-                modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj, null, null, true);
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('emp.salary'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'value' on the field to update.
+        modelObj.set('emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'value' on the field to update.
-                modelObj.set('emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('emp.salary'),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('emp.salary'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('emp.salary'));
+        modelObj.set('emp.salary', 45);
 
-                modelObj.set('emp.salary', 45);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                //  Unregister the model object.
-                TP.sys.unregisterObject(modelObj);
-            });
+        //  Unregister the model object.
+        TP.sys.unregisterObject(modelObj);
     });
 
-    this.it('change notification - URI reference, TIBET path aspect', function(test, options) {
+    this.it('change notification - URI reference, TIBET path aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            modelURI,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    modelURI,
-                    salaryField;
+        modelObj = TP.json2js('{"emp":{"salary":50000}}');
 
-                modelObj = TP.json2js('{"emp":{"salary":50000}}');
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to
+        //  'urn:tibet:testdata' because it didn't have an existing ID
+        //  and was assigned as the resource to the URI defined above.
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                modelURI = TP.uc('urn:tibet:testdata');
-                //  This automatically sets the ID of modelObj to
-                //  'urn:tibet:testdata' because it didn't have an existing ID
-                //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj, TP.hc('observeResource', true));
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelURI,
+                                    TP.apc('emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            modelURI,
-                                            TP.apc('emp.salary'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'value' on the field to update.
+        modelObj.set('emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'value' on the field to update.
-                modelObj.set('emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('emp.salary'),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelURI,
+                                    TP.apc('emp.salary'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelURI,
-                                            TP.apc('emp.salary'));
+        modelObj.set('emp.salary', 45);
 
-                modelObj.set('emp.salary', 45);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                modelURI.unregister();
-            });
+        modelURI.unregister();
     });
 
-    this.it('change notification - concrete reference, TIBET path aspect with attributes', function(test, options) {
+    this.it('change notification - concrete reference, TIBET path aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.json2js(
+                        '{"emp":{"salary":50000,"salaryInRange":false}}');
 
-                modelObj = TP.json2js(
-                                '{"emp":{"salary":50000,"salaryInRange":false}}');
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelObj,
+                                    TP.apc('emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            modelObj,
-                                            TP.apc('emp.salary'));
+        salaryField.defineBinding('@inrange',
+                                    modelObj,
+                                    TP.apc('emp.salaryInRange'));
 
-                salaryField.defineBinding('@inrange',
-                                            modelObj,
-                                            TP.apc('emp.salaryInRange'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('emp.salary'),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of '@inrange' on the field to
+        //  update.
+        modelObj.set('emp.salaryInRange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of '@inrange' on the field to
-                //  update.
-                modelObj.set('emp.salaryInRange', true);
+        test.assert.isEqualTo(
+                    modelObj.get('emp.salaryInRange'),
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            modelObj.get('emp.salaryInRange'),
-                            salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelObj,
+                                    TP.apc('emp.salary'));
+        salaryField.destroyBinding('@inrange',
+                                    modelObj,
+                                    TP.apc('emp.salaryInRange'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelObj,
-                                            TP.apc('emp.salary'));
-                salaryField.destroyBinding('@inrange',
-                                            modelObj,
-                                            TP.apc('emp.salaryInRange'));
+        modelObj.set('emp.salary', 45);
+        modelObj.set('emp.salaryInRange', false);
 
-                modelObj.set('emp.salary', 45);
-                modelObj.set('emp.salaryInRange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-            });
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
     });
 
-    this.it('change notification - virtual reference, TIBET path aspect with attributes', function(test, options) {
+    this.it('change notification - virtual reference, TIBET path aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.json2js(
+                        '{"emp":{"salary":50000,"salaryInRange":null}}');
 
-                modelObj = TP.json2js(
-                                '{"emp":{"salary":50000,"salaryInRange":null}}');
+        //  This sets the ID of the object and registers it with an
+        //  accompanying 'urn:tibet' URN (which will allow the
+        //  'defineBinding()' call to turn change handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj, null, null, true);
 
-                //  This sets the ID of the object and registers it with an
-                //  accompanying 'urn:tibet' URN (which will allow the
-                //  'defineBinding()' call to turn change handling on for it).
-                modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj, null, null, true);
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('emp.salary'));
+        salaryField.defineBinding('@inrange',
+                                    'CurrentEmployee',
+                                    TP.apc('emp.salaryInRange'));
 
-                salaryField.defineBinding('@inrange',
-                                            'CurrentEmployee',
-                                            TP.apc('emp.salaryInRange'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('emp.salary'),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of '@inrange' on the field to
+        //  update.
+        modelObj.set('emp.salaryInRange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of '@inrange' on the field to
-                //  update.
-                modelObj.set('emp.salaryInRange', true);
+        test.assert.isEqualTo(
+                    modelObj.get('emp.salaryInRange'),
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            modelObj.get('emp.salaryInRange'),
-                            salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('emp.salary'));
+        salaryField.destroyBinding('@inrange',
+                                    'CurrentEmployee',
+                                    TP.apc('emp.salaryInRange'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('emp.salary'));
-                salaryField.destroyBinding('@inrange',
-                                            'CurrentEmployee',
-                                            TP.apc('emp.salaryInRange'));
+        modelObj.set('emp.salary', 45);
+        modelObj.set('emp.salaryInRange', false);
 
-                modelObj.set('emp.salary', 45);
-                modelObj.set('emp.salaryInRange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-
-                //  Unregister the model object.
-                TP.sys.unregisterObject(modelObj);
-            });
+        //  Unregister the model object.
+        TP.sys.unregisterObject(modelObj);
     });
 
-    this.it('change notification - URI reference, TIBET path aspect with attributes', function(test, options) {
+    this.it('change notification - URI reference, TIBET path aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            modelURI,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    modelURI,
-                    salaryField;
+        modelObj = TP.json2js(
+                        '{"emp":{"salary":50000,"salaryInRange":null}}');
 
-                modelObj = TP.json2js(
-                                '{"emp":{"salary":50000,"salaryInRange":null}}');
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to
+        //  'urn:tibet:testdata' because it didn't have an existing ID
+        //  and was assigned as the resource to the URI defined above.
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                modelURI = TP.uc('urn:tibet:testdata');
-                //  This automatically sets the ID of modelObj to
-                //  'urn:tibet:testdata' because it didn't have an existing ID
-                //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj, TP.hc('observeResource', true));
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelURI,
+                                    TP.apc('emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            modelURI,
-                                            TP.apc('emp.salary'));
+        salaryField.defineBinding('@inrange',
+                                    modelURI,
+                                    TP.apc('emp.salaryInRange'));
 
-                salaryField.defineBinding('@inrange',
-                                            modelURI,
-                                            TP.apc('emp.salaryInRange'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('emp.salary'),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of 'salary' on the field to
+        //  update.
+        modelObj.set('emp.salaryInRange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
-                //  update.
-                modelObj.set('emp.salaryInRange', true);
+        test.assert.isEqualTo(
+                    modelObj.get('emp.salaryInRange'),
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            modelObj.get('emp.salaryInRange'),
-                            salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelURI,
+                                    TP.apc('emp.salary'));
+        salaryField.destroyBinding('@inrange',
+                                    modelURI,
+                                    TP.apc('emp.salaryInRange'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelURI,
-                                            TP.apc('emp.salary'));
-                salaryField.destroyBinding('@inrange',
-                                            modelURI,
-                                            TP.apc('emp.salaryInRange'));
+        modelObj.set('emp.salary', 45);
+        modelObj.set('emp.salaryInRange', false);
 
-                modelObj.set('emp.salary', 45);
-                modelObj.set('emp.salaryInRange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-
-                modelURI.unregister();
-            });
+        modelURI.unregister();
     });
 
-    this.it('change notification - concrete reference, JSON path aspect', function(test, options) {
+    this.it('change notification - concrete reference, JSON path aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
 
-        test.chain(
-            function() {
+            salaryField;
 
-                var modelObj,
+        await test.getDriver().setLocation(loadURI);
 
-                    salaryField;
+        modelObj = TP.core.JSONContent.construct(
+                        '{"emp":{"salary":50000}}');
 
-                modelObj = TP.core.JSONContent.construct(
-                                '{"emp":{"salary":50000}}');
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelObj,
+                                    TP.apc('$.emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            modelObj,
-                                            TP.apc('$.emp.salary'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('$.emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('$.emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('$.emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('$.emp.salary'),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelObj,
+                                    TP.apc('$.emp.salary'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelObj,
-                                            TP.apc('$.emp.salary'));
+        modelObj.set('$.emp.salary', 45);
 
-                modelObj.set('$.emp.salary', 45);
-
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-            });
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
     });
 
-    this.it('change notification - virtual reference, JSON path aspect', function(test, options) {
+    this.it('change notification - virtual reference, JSON path aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.core.JSONContent.construct(
+                        '{"emp":{"salary":50000}}');
 
-                modelObj = TP.core.JSONContent.construct(
-                                '{"emp":{"salary":50000}}');
+        //  This sets the ID of the object and registers it with an
+        //  accompanying 'urn:tibet' URN (which will allow the
+        //  'defineBinding()' call to turn change handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj, null, null, true);
 
-                //  This sets the ID of the object and registers it with an
-                //  accompanying 'urn:tibet' URN (which will allow the
-                //  'defineBinding()' call to turn change handling on for it).
-                modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj, null, null, true);
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('$.emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('$.emp.salary'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'value' on the field to update.
+        modelObj.set('$.emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'value' on the field to update.
-                modelObj.set('$.emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('$.emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('$.emp.salary'),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('$.emp.salary'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('$.emp.salary'));
+        modelObj.set('$.emp.salary', 45);
 
-                modelObj.set('$.emp.salary', 45);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                //  Unregister the model object.
-                TP.sys.unregisterObject(modelObj);
-            });
+        //  Unregister the model object.
+        TP.sys.unregisterObject(modelObj);
     });
 
-    this.it('change notification - URI reference, JSON path aspect', function(test, options) {
+    this.it('change notification - URI reference, JSON path aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            modelURI,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    modelURI,
-                    salaryField;
+        modelObj = TP.core.JSONContent.construct(
+                        '{"emp":{"salary":50000}}');
 
-                modelObj = TP.core.JSONContent.construct(
-                                '{"emp":{"salary":50000}}');
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to
+        //  'urn:tibet:testdata' because it didn't have an existing ID
+        //  and was assigned as the resource to the URI defined above.
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                modelURI = TP.uc('urn:tibet:testdata');
-                //  This automatically sets the ID of modelObj to
-                //  'urn:tibet:testdata' because it didn't have an existing ID
-                //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj, TP.hc('observeResource', true));
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelURI,
+                                    TP.apc('$.emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            modelURI,
-                                            TP.apc('$.emp.salary'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'value' on the field to update.
+        modelObj.set('$.emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'value' on the field to update.
-                modelObj.set('$.emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('$.emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('$.emp.salary'),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelURI,
+                                    TP.apc('$.emp.salary'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelURI,
-                                            TP.apc('$.emp.salary'));
+        modelObj.set('$.emp.salary', 45);
 
-                modelObj.set('$.emp.salary', 45);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                modelURI.unregister();
-            });
+        modelURI.unregister();
     });
 
-    this.it('change notification - concrete reference, JSON path aspect with attributes', function(test, options) {
+    this.it('change notification - concrete reference, JSON path aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.core.JSONContent.construct(
+                        '{"emp":{"salary":50000,"salaryInRange":false}}');
 
-                modelObj = TP.core.JSONContent.construct(
-                                '{"emp":{"salary":50000,"salaryInRange":false}}');
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelObj,
+                                    TP.apc('$.emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            modelObj,
-                                            TP.apc('$.emp.salary'));
+        salaryField.defineBinding('@inrange',
+                                    modelObj,
+                                    TP.apc('$.emp.salaryInRange'));
 
-                salaryField.defineBinding('@inrange',
-                                            modelObj,
-                                            TP.apc('$.emp.salaryInRange'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('$.emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('$.emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('$.emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('$.emp.salary'),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of '@inrange' on the field to
+        //  update.
+        modelObj.set('$.emp.salaryInRange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of '@inrange' on the field to
-                //  update.
-                modelObj.set('$.emp.salaryInRange', true);
+        test.assert.isEqualTo(
+                    modelObj.get('$.emp.salaryInRange'),
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            modelObj.get('$.emp.salaryInRange'),
-                            salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelObj,
+                                    TP.apc('$.emp.salary'));
+        salaryField.destroyBinding('@inrange',
+                                    modelObj,
+                                    TP.apc('$.emp.salaryInRange'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelObj,
-                                            TP.apc('$.emp.salary'));
-                salaryField.destroyBinding('@inrange',
-                                            modelObj,
-                                            TP.apc('$.emp.salaryInRange'));
+        modelObj.set('$.emp.salary', 45);
+        modelObj.set('$.emp.salaryInRange', false);
 
-                modelObj.set('$.emp.salary', 45);
-                modelObj.set('$.emp.salaryInRange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-            });
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
     });
 
-    this.it('change notification - virtual reference, JSON path aspect with attributes', function(test, options) {
+    this.it('change notification - virtual reference, JSON path aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.core.JSONContent.construct(
+                    '{"emp":{"salary":50000,"salaryInRange":null}}');
 
-                modelObj = TP.core.JSONContent.construct(
-                            '{"emp":{"salary":50000,"salaryInRange":null}}');
+        //  This sets the ID of the object and registers it with an
+        //  accompanying 'urn:tibet' URN (which will allow the
+        //  'defineBinding()' call to turn change handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj, null, null, true);
 
-                //  This sets the ID of the object and registers it with an
-                //  accompanying 'urn:tibet' URN (which will allow the
-                //  'defineBinding()' call to turn change handling on for it).
-                modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj, null, null, true);
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('$.emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('$.emp.salary'));
+        salaryField.defineBinding('@inrange',
+                                    'CurrentEmployee',
+                                    TP.apc('$.emp.salaryInRange'));
 
-                salaryField.defineBinding('@inrange',
-                                            'CurrentEmployee',
-                                            TP.apc('$.emp.salaryInRange'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('$.emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('$.emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('$.emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('$.emp.salary'),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of '@inrange' on the field to
+        //  update.
+        modelObj.set('$.emp.salaryInRange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of '@inrange' on the field to
-                //  update.
-                modelObj.set('$.emp.salaryInRange', true);
+        test.assert.isEqualTo(
+                    modelObj.get('$.emp.salaryInRange'),
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            modelObj.get('$.emp.salaryInRange'),
-                            salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('$.emp.salary'));
+        salaryField.destroyBinding('@inrange',
+                                    'CurrentEmployee',
+                                    TP.apc('$.emp.salaryInRange'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('$.emp.salary'));
-                salaryField.destroyBinding('@inrange',
-                                            'CurrentEmployee',
-                                            TP.apc('$.emp.salaryInRange'));
+        modelObj.set('$.emp.salary', 45);
+        modelObj.set('$.emp.salaryInRange', false);
 
-                modelObj.set('$.emp.salary', 45);
-                modelObj.set('$.emp.salaryInRange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-
-                //  Unregister the model object.
-                TP.sys.unregisterObject(modelObj);
-            });
+        //  Unregister the model object.
+        TP.sys.unregisterObject(modelObj);
     });
 
-    this.it('change notification - URI reference, JSON path aspect with attributes', function(test, options) {
+    this.it('change notification - URI reference, JSON path aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            modelURI,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    modelURI,
-                    salaryField;
+        modelObj = TP.core.JSONContent.construct(
+                        '{"emp":{"salary":50000,"salaryInRange":null}}');
 
-                modelObj = TP.core.JSONContent.construct(
-                                '{"emp":{"salary":50000,"salaryInRange":null}}');
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to
+        //  'urn:tibet:testdata' because it didn't have an existing ID
+        //  and was assigned as the resource to the URI defined above.
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                modelURI = TP.uc('urn:tibet:testdata');
-                //  This automatically sets the ID of modelObj to
-                //  'urn:tibet:testdata' because it didn't have an existing ID
-                //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj, TP.hc('observeResource', true));
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelURI,
+                                    TP.apc('$.emp.salary'));
 
-                salaryField.defineBinding('value',
-                                            modelURI,
-                                            TP.apc('$.emp.salary'));
+        salaryField.defineBinding('@inrange',
+                                    modelURI,
+                                    TP.apc('$.emp.salaryInRange'));
 
-                salaryField.defineBinding('@inrange',
-                                            modelURI,
-                                            TP.apc('$.emp.salaryInRange'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('$.emp.salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('$.emp.salary', 42);
+        test.assert.isEqualTo(
+                    modelObj.get('$.emp.salary'),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            modelObj.get('$.emp.salary'),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of 'salary' on the field to
+        //  update.
+        modelObj.set('$.emp.salaryInRange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
-                //  update.
-                modelObj.set('$.emp.salaryInRange', true);
+        test.assert.isEqualTo(
+                    modelObj.get('$.emp.salaryInRange'),
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            modelObj.get('$.emp.salaryInRange'),
-                            salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelURI,
+                                    TP.apc('$.emp.salary'));
+        salaryField.destroyBinding('@inrange',
+                                    modelURI,
+                                    TP.apc('$.emp.salaryInRange'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelURI,
-                                            TP.apc('$.emp.salary'));
-                salaryField.destroyBinding('@inrange',
-                                            modelURI,
-                                            TP.apc('$.emp.salaryInRange'));
+        modelObj.set('$.emp.salary', 45);
+        modelObj.set('$.emp.salaryInRange', false);
 
-                modelObj.set('$.emp.salary', 45);
-                modelObj.set('$.emp.salaryInRange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-
-                modelURI.unregister();
-            });
+        modelURI.unregister();
     });
 
-    this.it('change notification - concrete reference, XML path aspect', function(test, options) {
+    this.it('change notification - concrete reference, XML path aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
 
-        test.chain(
-            function() {
+            salaryField;
 
-                var modelObj,
+        await test.getDriver().setLocation(loadURI);
 
-                    salaryField;
+        modelObj = TP.tpdoc('<emp><salary>50000</salary></emp>');
 
-                modelObj = TP.tpdoc('<emp><salary>50000</salary></emp>');
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelObj,
+                                    TP.apc('/emp/salary'));
 
-                salaryField.defineBinding('value',
-                                            modelObj,
-                                            TP.apc('/emp/salary'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('/emp/salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('/emp/salary', 42);
+        test.assert.isEqualTo(
+                    TP.val(modelObj.get('/emp/salary')).asNumber(),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            TP.val(modelObj.get('/emp/salary')).asNumber(),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelObj,
+                                    TP.apc('/emp/salary'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelObj,
-                                            TP.apc('/emp/salary'));
+        modelObj.set('/emp/salary', 45);
 
-                modelObj.set('/emp/salary', 45);
-
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-            });
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
     });
 
-    this.it('change notification - virtual reference, XML path aspect', function(test, options) {
+    this.it('change notification - virtual reference, XML path aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.tpdoc('<emp><salary>50000</salary></emp>');
 
-                modelObj = TP.tpdoc('<emp><salary>50000</salary></emp>');
+        //  This sets the ID of the object and registers it with an
+        //  accompanying 'urn:tibet' URN (which will allow the
+        //  'defineBinding()' call to turn change handling on for it).
+        modelObj.setID('CurrentEmployee');
 
-                //  This sets the ID of the object and registers it with an
-                //  accompanying 'urn:tibet' URN (which will allow the
-                //  'defineBinding()' call to turn change handling on for it).
-                modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj, null, null, true);
 
-                TP.sys.registerObject(modelObj, null, null, true);
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('/emp/salary'));
 
-                salaryField.defineBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('/emp/salary'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'value' on the field to update.
+        modelObj.set('/emp/salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'value' on the field to update.
-                modelObj.set('/emp/salary', 42);
+        test.assert.isEqualTo(
+                    TP.val(modelObj.get('/emp/salary')).asNumber(),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            TP.val(modelObj.get('/emp/salary')).asNumber(),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('/emp/salary'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('/emp/salary'));
+        modelObj.set('/emp/salary', 45);
 
-                modelObj.set('/emp/salary', 45);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                //  Unregister the model object.
-                TP.sys.unregisterObject(modelObj);
-            });
+        //  Unregister the model object.
+        TP.sys.unregisterObject(modelObj);
     });
 
-    this.it('change notification - URI reference, XML path aspect', function(test, options) {
+    this.it('change notification - URI reference, XML path aspect', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            modelURI,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    modelURI,
-                    salaryField;
+        modelObj = TP.tpdoc('<emp><salary>50000</salary></emp>');
 
-                modelObj = TP.tpdoc('<emp><salary>50000</salary></emp>');
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to
+        //  'urn:tibet:testdata' because it didn't have an existing ID
+        //  and was assigned as the resource to the URI defined above.
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                modelURI = TP.uc('urn:tibet:testdata');
-                //  This automatically sets the ID of modelObj to
-                //  'urn:tibet:testdata' because it didn't have an existing ID
-                //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj, TP.hc('observeResource', true));
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelURI,
+                                    TP.apc('/emp/salary'));
 
-                salaryField.defineBinding('value',
-                                            modelURI,
-                                            TP.apc('/emp/salary'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'value' on the field to update.
+        modelObj.set('/emp/salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'value' on the field to update.
-                modelObj.set('/emp/salary', 42);
+        test.assert.isEqualTo(
+                    TP.val(modelObj.get('/emp/salary')).asNumber(),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            TP.val(modelObj.get('/emp/salary')).asNumber(),
-                            salaryField.get('value').asNumber());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelURI,
+                                    TP.apc('/emp/salary'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelURI,
-                                            TP.apc('/emp/salary'));
+        modelObj.set('/emp/salary', 45);
 
-                modelObj.set('/emp/salary', 45);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                modelURI.unregister();
-            });
+        modelURI.unregister();
     });
 
-    this.it('change notification - concrete reference, XML path aspect with attributes', function(test, options) {
+    this.it('change notification - concrete reference, XML path aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.tpdoc(
+                    '<emp><salary inrange="false">50000</salary></emp>');
 
-                modelObj = TP.tpdoc(
-                            '<emp><salary inrange="false">50000</salary></emp>');
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelObj,
+                                    TP.apc('/emp/salary'));
 
-                salaryField.defineBinding('value',
-                                            modelObj,
-                                            TP.apc('/emp/salary'));
+        salaryField.defineBinding('@inrange',
+                                    modelObj,
+                                    TP.apc('/emp/salary/@inrange'));
 
-                salaryField.defineBinding('@inrange',
-                                            modelObj,
-                                            TP.apc('/emp/salary/@inrange'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('/emp/salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('/emp/salary', 42);
+        test.assert.isEqualTo(
+                    TP.val(modelObj.get('/emp/salary')).asNumber(),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            TP.val(modelObj.get('/emp/salary')).asNumber(),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of 'salary' on the field to
+        //  update.
+        modelObj.set('/emp/salary/@inrange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
-                //  update.
-                modelObj.set('/emp/salary/@inrange', true);
+        test.assert.isEqualTo(
+                TP.val(modelObj.get('/emp/salary/@inrange')).asBoolean(),
+                salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                        TP.val(modelObj.get('/emp/salary/@inrange')).asBoolean(),
-                        salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelObj,
+                                    TP.apc('/emp/salary'));
+        salaryField.destroyBinding('@inrange',
+                                    modelObj,
+                                    TP.apc('/emp/salary/@inrange'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelObj,
-                                            TP.apc('/emp/salary'));
-                salaryField.destroyBinding('@inrange',
-                                            modelObj,
-                                            TP.apc('/emp/salary/@inrange'));
+        modelObj.set('/emp/salary', 45);
+        modelObj.set('/emp/salary/@inrange', false);
 
-                modelObj.set('/emp/salary', 45);
-                modelObj.set('/emp/salary/@inrange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
-
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-            });
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
     });
 
-    this.it('change notification - virtual reference, XML path aspect with attributes', function(test, options) {
+    this.it('change notification - virtual reference, XML path aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    salaryField;
+        modelObj = TP.tpdoc(
+                    '<emp><salary inrange="false">50000</salary></emp>');
 
-                modelObj = TP.tpdoc(
-                            '<emp><salary inrange="false">50000</salary></emp>');
+        //  This sets the ID of the object and registers it with an
+        //  accompanying 'urn:tibet' URN (which will allow the
+        //  'defineBinding()' call to turn change handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj, null, null, true);
 
-                //  This sets the ID of the object and registers it with an
-                //  accompanying 'urn:tibet' URN (which will allow the
-                //  'defineBinding()' call to turn change handling on for it).
-                modelObj.setID('CurrentEmployee');
-                TP.sys.registerObject(modelObj, null, null, true);
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('/emp/salary'));
 
-                salaryField.defineBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('/emp/salary'));
+        salaryField.defineBinding('@inrange',
+                                    'CurrentEmployee',
+                                    TP.apc('/emp/salary/@inrange'));
 
-                salaryField.defineBinding('@inrange',
-                                            'CurrentEmployee',
-                                            TP.apc('/emp/salary/@inrange'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('/emp/salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('/emp/salary', 42);
+        test.assert.isEqualTo(
+                    TP.val(modelObj.get('/emp/salary')).asNumber(),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            TP.val(modelObj.get('/emp/salary')).asNumber(),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of 'salary' on the field to
+        //  update.
+        modelObj.set('/emp/salary/@inrange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
-                //  update.
-                modelObj.set('/emp/salary/@inrange', true);
+        test.assert.isEqualTo(
+                TP.val(modelObj.get('/emp/salary/@inrange')).asBoolean(),
+                salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                        TP.val(modelObj.get('/emp/salary/@inrange')).asBoolean(),
-                        salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    'CurrentEmployee',
+                                    TP.apc('/emp/salary'));
+        salaryField.destroyBinding('@inrange',
+                                    'CurrentEmployee',
+                                    TP.apc('/emp/salary/@inrange'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            'CurrentEmployee',
-                                            TP.apc('/emp/salary'));
-                salaryField.destroyBinding('@inrange',
-                                            'CurrentEmployee',
-                                            TP.apc('/emp/salary/@inrange'));
+        modelObj.set('/emp/salary', 45);
+        modelObj.set('/emp/salary/@inrange', false);
 
-                modelObj.set('/emp/salary', 45);
-                modelObj.set('/emp/salary/@inrange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-
-                //  Unregister the model object.
-                TP.sys.unregisterObject(modelObj);
-            });
+        //  Unregister the model object.
+        TP.sys.unregisterObject(modelObj);
     });
 
-    this.it('change notification - URI reference, XML path aspect with attributes', function(test, options) {
+    this.it('change notification - URI reference, XML path aspect with attributes', async function(test, options) {
 
-        test.getDriver().setLocation(loadURI);
+        var modelObj,
+            modelURI,
+            salaryField;
 
-        test.chain(
-            function() {
+        await test.getDriver().setLocation(loadURI);
 
-                var modelObj,
-                    modelURI,
-                    salaryField;
+        modelObj = TP.tpdoc(
+                    '<emp><salary inrange="false">50000</salary></emp>');
 
-                modelObj = TP.tpdoc(
-                            '<emp><salary inrange="false">50000</salary></emp>');
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to
+        //  'urn:tibet:testdata' because it didn't have an existing ID
+        //  and was assigned as the resource to the URI defined above.
+        modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                modelURI = TP.uc('urn:tibet:testdata');
-                //  This automatically sets the ID of modelObj to
-                //  'urn:tibet:testdata' because it didn't have an existing ID
-                //  and was assigned as the resource to the URI defined above.
-                modelURI.setResource(modelObj, TP.hc('observeResource', true));
+        salaryField = TP.byId('salaryField',
+                                test.getDriver().get('windowContext'));
 
-                salaryField = TP.byId('salaryField',
-                                        test.getDriver().get('windowContext'));
+        salaryField.defineBinding('value',
+                                    modelURI,
+                                    TP.apc('/emp/salary'));
 
-                salaryField.defineBinding('value',
-                                            modelURI,
-                                            TP.apc('/emp/salary'));
+        salaryField.defineBinding('@inrange',
+                                    modelURI,
+                                    TP.apc('/emp/salary/@inrange'));
 
-                salaryField.defineBinding('@inrange',
-                                            modelURI,
-                                            TP.apc('/emp/salary/@inrange'));
+        //  Set the value of 'salary' on the model object. The binding
+        //  should cause the value of 'salary' on the field to update.
+        modelObj.set('/emp/salary', 42);
 
-                //  Set the value of 'salary' on the model object. The binding
-                //  should cause the value of 'salary' on the field to update.
-                modelObj.set('/emp/salary', 42);
+        test.assert.isEqualTo(
+                    TP.val(modelObj.get('/emp/salary')).asNumber(),
+                    salaryField.get('value').asNumber());
 
-                test.assert.isEqualTo(
-                            TP.val(modelObj.get('/emp/salary')).asNumber(),
-                            salaryField.get('value').asNumber());
+        //  Set the value of 'salaryInRange' on the model object. The
+        //  binding should cause the value of 'salary' on the field to
+        //  update.
+        modelObj.set('/emp/salary/@inrange', true);
 
-                //  Set the value of 'salaryInRange' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
-                //  update.
-                modelObj.set('/emp/salary/@inrange', true);
+        test.assert.isEqualTo(
+                TP.val(modelObj.get('/emp/salary/@inrange')).asBoolean(),
+                salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                        TP.val(modelObj.get('/emp/salary/@inrange')).asBoolean(),
-                        salaryField.get('@inrange').asBoolean());
+        test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+        //  Destroy the binding
+        salaryField.destroyBinding('value',
+                                    modelURI,
+                                    TP.apc('/emp/salary'));
+        salaryField.destroyBinding('@inrange',
+                                    modelURI,
+                                    TP.apc('/emp/salary/@inrange'));
 
-                //  Destroy the binding
-                salaryField.destroyBinding('value',
-                                            modelURI,
-                                            TP.apc('/emp/salary'));
-                salaryField.destroyBinding('@inrange',
-                                            modelURI,
-                                            TP.apc('/emp/salary/@inrange'));
+        modelObj.set('/emp/salary', 45);
+        modelObj.set('/emp/salary/@inrange', false);
 
-                modelObj.set('/emp/salary', 45);
-                modelObj.set('/emp/salary/@inrange', false);
+        //  Because there is now no binding between these two, the field
+        //  should still have the value of 42 set above.
+        test.assert.isEqualTo(
+                    42,
+                    salaryField.get('value').asNumber());
 
-                //  Because there is now no binding between these two, the field
-                //  should still have the value of 42 set above.
-                test.assert.isEqualTo(
-                            42,
-                            salaryField.get('value').asNumber());
+        test.assert.isEqualTo(
+                    true,
+                    salaryField.get('@inrange').asBoolean());
 
-                test.assert.isEqualTo(
-                            true,
-                            salaryField.get('@inrange').asBoolean());
-
-                modelURI.unregister();
-            });
+        modelURI.unregister();
     });
 });
 
