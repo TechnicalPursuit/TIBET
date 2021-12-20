@@ -5004,6 +5004,12 @@ function(methodName, methodBody, methodDescriptor) {
         //  method install method and we leave that version alone.
         if ((existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_TYPE_OWNER) {
+            if (target[TP.NO_OVERRIDE_METHODS] &&
+                target[TP.NO_OVERRIDE_METHODS].indexOf(methodName) !==
+                                                            TP.NOT_FOUND) {
+                continue;
+            }
+
             if (TP.isNativeFunction(existingMethod)) {
                 target['ECMA' + methodName] = existingMethod;
                 TP.ifDebug() && TP.sys.getcfg('log.method_replacements') ?
@@ -5139,6 +5145,12 @@ function(methodName, methodBody, methodDescriptor) {
         //  method install method and we leave that version alone.
         if ((existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
+            if (target[TP.NO_OVERRIDE_METHODS] &&
+                target[TP.NO_OVERRIDE_METHODS].indexOf(methodName) !==
+                                                            TP.NOT_FOUND) {
+                continue;
+            }
+
             if (TP.isNativeFunction(existingMethod)) {
                 target['ECMA' + methodName] = existingMethod;
                 TP.ifDebug() && TP.sys.getcfg('log.method_replacements') ?
@@ -11303,6 +11315,12 @@ TP.StringProto.asString = TP.RETURN_TOSTRING;
 TP.SymbolProto.asString = TP.RETURN_TOSTRING;
 TP.WeakMapProto.asString = TP.RETURN_TOSTRING;
 TP.WeakSetProto.asString = TP.RETURN_TOSTRING;
+
+//  Native methods that we prevent from being overlaid by TIBET methods.
+TP.MapProto[TP.NO_OVERRIDE_METHODS] = TP.ac('clear', 'delete', 'get', 'has', 'set');
+TP.SetProto[TP.NO_OVERRIDE_METHODS] = TP.ac('values', 'keys', 'entries', 'forEach');
+TP.WeakMapProto[TP.NO_OVERRIDE_METHODS] = TP.ac('clear', 'delete', 'get', 'has', 'set');
+TP.WeakSetProto[TP.NO_OVERRIDE_METHODS] = TP.ac('values', 'keys', 'entries', 'forEach');
 
 //  ------------------------------------------------------------------------
 //  STRING BASICS

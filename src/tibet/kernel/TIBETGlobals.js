@@ -1118,6 +1118,8 @@ TP.PRIVATE = '$';
 TP.PROTECTED = '_';
 TP.INTERNAL = '$$';
 
+TP.NO_OVERRIDE_METHODS = 'NO_OVERRIDE_METHODS';
+
 //  input/output/error values, NOTE that we use TP.STDIN as an attribute
 //  name so it should be viable for that purpose.
 TP.STDIN = 'tsh_stdin';
