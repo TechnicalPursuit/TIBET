@@ -1090,15 +1090,26 @@ TP.META_INST_OWNER.getDependencies = function() {
 TP.META_INST_OWNER.meta_methods = {};
 TP.META_INST_OWNER.common_methods = {};
 
-//  NB: We leave TP.ObjectProto out of this list on purpose.
+//  NB: We leave TP.ObjectProto out of this list on purpose and Proxy
+//  constructor has no proto.
 TP.META_INST_TARGETS = [
     TP.ArrayProto,
+    TP.ArrayBufferProto,
+    TP.AsyncFunctionProto,
     TP.BooleanProto,
+    TP.DataViewProto,
     TP.DateProto,
     TP.FunctionProto,
+    TP.GeneratorFunctionProto,
+    TP.MapProto,
     TP.NumberProto,
+    TP.PromiseProto,
     TP.RegExpProto,
-    TP.StringProto
+    TP.SetProto,
+    TP.StringProto,
+    TP.SymbolProto,
+    TP.WeakMapProto,
+    TP.WeakSetProto
 ];
 
 //  attribute name prefixes

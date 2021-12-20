@@ -64,8 +64,8 @@ TP.AsyncFunctionProto[TP.ID] = 'AsyncFunctionProto';
 TP.BooleanProto[TP.ID] = 'BooleanProto';
 TP.DataViewProto[TP.ID] = 'DataViewProto';
 TP.DateProto[TP.ID] = 'DateProto';
-TP.GeneratorFunctionProto[TP.ID] = 'GeneratorFunctionProto';
 TP.FunctionProto[TP.ID] = 'FunctionProto';
+TP.GeneratorFunctionProto[TP.ID] = 'GeneratorFunctionProto';
 TP.MapProto[TP.ID] = 'MapProto';
 TP.NumberProto[TP.ID] = 'NumberProto';
 TP.PromiseProto[TP.ID] = 'PromiseProto';
@@ -4366,9 +4366,21 @@ function(aFlag, shouldSignal) {
     Array.Type.$$target = Array;
     Array.Type[TP.OWNER] = Array;
 
+    ArrayBuffer.Type = new NativeTypeStub();
+    ArrayBuffer.Type.$$target = ArrayBuffer;
+    ArrayBuffer.Type[TP.OWNER] = ArrayBuffer;
+
+    AsyncFunction.Type = new NativeTypeStub();
+    AsyncFunction.Type.$$target = AsyncFunction;
+    AsyncFunction.Type[TP.OWNER] = AsyncFunction;
+
     Boolean.Type = new NativeTypeStub();
     Boolean.Type.$$target = Boolean;
     Boolean.Type[TP.OWNER] = Boolean;
+
+    DataView.Type = new NativeTypeStub();
+    DataView.Type.$$target = DataView;
+    DataView.Type[TP.OWNER] = DataView;
 
     Date.Type = new NativeTypeStub();
     Date.Type.$$target = Date;
@@ -4378,6 +4390,14 @@ function(aFlag, shouldSignal) {
     Function.Type.$$target = Function;
     Function.Type[TP.OWNER] = Function;
 
+    GeneratorFunction.Type = new NativeTypeStub();
+    GeneratorFunction.Type.$$target = GeneratorFunction;
+    GeneratorFunction.Type[TP.OWNER] = GeneratorFunction;
+
+    Map.Type = new NativeTypeStub();
+    Map.Type.$$target = Map;
+    Map.Type[TP.OWNER] = Map;
+
     Number.Type = new NativeTypeStub();
     Number.Type.$$target = Number;
     Number.Type[TP.OWNER] = Number;
@@ -4386,13 +4406,33 @@ function(aFlag, shouldSignal) {
     Object.Type.$$target = Object;
     Object.Type[TP.OWNER] = Object;
 
+    Promise.Type = new NativeTypeStub();
+    Promise.Type.$$target = Promise;
+    Promise.Type[TP.OWNER] = Promise;
+
     RegExp.Type = new NativeTypeStub();
     RegExp.Type.$$target = RegExp;
     RegExp.Type[TP.OWNER] = RegExp;
 
+    Set.Type = new NativeTypeStub();
+    Set.Type.$$target = Set;
+    Set.Type[TP.OWNER] = Set;
+
     String.Type = new NativeTypeStub();
     String.Type.$$target = String;
     String.Type[TP.OWNER] = String;
+
+    Symbol.Type = new NativeTypeStub();
+    Symbol.Type.$$target = Symbol;
+    Symbol.Type[TP.OWNER] = Symbol;
+
+    WeakMap.Type = new NativeTypeStub();
+    WeakMap.Type.$$target = WeakMap;
+    WeakMap.Type[TP.OWNER] = WeakMap;
+
+    WeakSet.Type = new NativeTypeStub();
+    WeakSet.Type.$$target = WeakSet;
+    WeakSet.Type[TP.OWNER] = WeakSet;
 
     Window.Type = new NativeTypeStub();
     Window.Type.$$target = Window;
@@ -4660,9 +4700,21 @@ function(aFlag, shouldSignal) {
     Array.Inst.$$target = TP.ArrayProto;
     Array.Inst[TP.OWNER] = Array;
 
+    ArrayBuffer.Inst = new NativeInstStub();
+    ArrayBuffer.Inst.$$target = TP.ArrayBufferProto;
+    ArrayBuffer.Inst[TP.OWNER] = ArrayBuffer;
+
+    AsyncFunction.Inst = new NativeInstStub();
+    AsyncFunction.Inst.$$target = TP.AsyncFunctionProto;
+    AsyncFunction.Inst[TP.OWNER] = AsyncFunction;
+
     Boolean.Inst = new NativeInstStub();
     Boolean.Inst.$$target = TP.BooleanProto;
     Boolean.Inst[TP.OWNER] = Boolean;
+
+    DataView.Inst = new NativeInstStub();
+    DataView.Inst.$$target = TP.DataViewProto;
+    DataView.Inst[TP.OWNER] = DataView;
 
     Date.Inst = new NativeInstStub();
     Date.Inst.$$target = TP.DateProto;
@@ -4671,6 +4723,10 @@ function(aFlag, shouldSignal) {
     Function.Inst = new NativeInstStub();
     Function.Inst.$$target = TP.FunctionProto;
     Function.Inst[TP.OWNER] = Function;
+
+    GeneratorFunction.Inst = new NativeInstStub();
+    GeneratorFunction.Inst.$$target = TP.GeneratorFunctionProto;
+    GeneratorFunction.Inst[TP.OWNER] = GeneratorFunction;
 
     Map.Inst = new NativeInstStub();
     Map.Inst.$$target = TP.MapProto;
@@ -4684,6 +4740,12 @@ function(aFlag, shouldSignal) {
     //  prototype here as we do not want to encourage putting things on
     //  Object.prototype
 
+    Promise.Inst = new NativeInstStub();
+    Promise.Inst.$$target = TP.PromiseProto;
+    Promise.Inst[TP.OWNER] = Promise;
+
+    //  Proxy constructor has no proto
+
     RegExp.Inst = new NativeInstStub();
     RegExp.Inst.$$target = TP.RegExpProto;
     RegExp.Inst[TP.OWNER] = RegExp;
@@ -4695,6 +4757,18 @@ function(aFlag, shouldSignal) {
     String.Inst = new NativeInstStub();
     String.Inst.$$target = TP.StringProto;
     String.Inst[TP.OWNER] = String;
+
+    Symbol.Inst = new NativeInstStub();
+    Symbol.Inst.$$target = TP.SymbolProto;
+    Symbol.Inst[TP.OWNER] = Symbol;
+
+    WeakMap.Inst = new NativeInstStub();
+    WeakMap.Inst.$$target = TP.WeakMapProto;
+    WeakMap.Inst[TP.OWNER] = WeakMap;
+
+    WeakSet.Inst = new NativeInstStub();
+    WeakSet.Inst.$$target = TP.WeakSetProto;
+    WeakSet.Inst[TP.OWNER] = WeakSet;
 
     Window.Inst = new NativeInstStub();
     Window.Inst.$$target = Window.prototype;
@@ -11212,12 +11286,23 @@ function(verbose) {
 //  ------------------------------------------------------------------------
 
 TP.ArrayProto.asString = TP.RETURN_TOSTRING;
+TP.ArrayBufferProto.asString = TP.RETURN_TOSTRING;
+TP.AsyncFunctionProto.asString = TP.RETURN_TOSTRING;
 TP.BooleanProto.asString = TP.RETURN_TOSTRING;
+TP.DataViewProto.asString = TP.RETURN_TOSTRING;
 TP.DateProto.asString = TP.RETURN_TOSTRING;
 TP.FunctionProto.asString = TP.RETURN_TOSTRING;
+TP.GeneratorFunctionProto.asString = TP.RETURN_TOSTRING;
+TP.MapProto.asString = TP.RETURN_TOSTRING;
 TP.NumberProto.asString = TP.RETURN_TOSTRING;
+TP.PromiseProto.asString = TP.RETURN_TOSTRING;
+//  Proxy constructor has no proto
 TP.RegExpProto.asString = TP.RETURN_TOSTRING;
+TP.SetProto.asString = TP.RETURN_TOSTRING;
 TP.StringProto.asString = TP.RETURN_TOSTRING;
+TP.SymbolProto.asString = TP.RETURN_TOSTRING;
+TP.WeakMapProto.asString = TP.RETURN_TOSTRING;
+TP.WeakSetProto.asString = TP.RETURN_TOSTRING;
 
 //  ------------------------------------------------------------------------
 //  STRING BASICS
