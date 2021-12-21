@@ -1038,7 +1038,7 @@ async function(packageConfig, useCache, shouldSignal) {
     }
 
     //  Determine which scripts haven't already been loaded.
-    loadedScripts = TP.boot.$$loadpaths;
+    loadedScripts = TP.boot.$getLoadedScripts();
     missingScripts = packageScriptPaths.difference(loadedScripts);
 
     //  We need to import all of the scripts, but do so in a synchronous
