@@ -10309,7 +10309,7 @@ TP.boot.$$processModuleSpecifiers = function() {
      * @summary Processes any module 'specifiers' (i.e. aliasing names used by
      *     ECMA modules) into a map that maps those to 'full paths'.
      * @description Note that this is only used during loading when *not* in
-     *     inlined/packaged mode. No cfg XML will be around in that mode to be
+     *     inlined/bundled mode. No cfg XML will be around in that mode to be
      *     scanned and these paths will have already been written into the
      *     package by the 'tibet package' command (and those will be virtual
      *     paths that are only used for 'unique naming' lookups).
@@ -11968,9 +11968,8 @@ TP.boot.configureAndPopulateCaches = function() {
      * @description We have 3 different flag that control ServiceWorker caching
      * based on different scenarios:
      *
-     * 1. TeamTIBET developer - Neither ServiceWorker cache is never used and
-     *      all caches are checked upon each reload and cleared if they contain
-     *      content.
+     * 1. Unbundled loading - Neither ServiceWorker cache is used and all caches
+     *      are checked upon each reload and cleared if they contain content.
      * 2. Application developer - The lib cache is used but the app cache is not
      *      and is checked upon each reload and cleared if it contains content.
      * 3. Application user - Both caches are used.

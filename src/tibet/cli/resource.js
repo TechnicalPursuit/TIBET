@@ -235,18 +235,19 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     this.finalizeTimeout(arglist);
 
     params = args.filter(function(arg) {
-        //  Don't let boot.inlined pass...we have to set to false or the
+        //  Don't let boot.bundled pass...we have to set to false or the
         //  resource command can't boot during clean/(re)build operations.
         return arg.indexOf('--boot.') === 0 &&
-            arg.indexOf('--boot.inlined=') === -1;
+            arg.indexOf('--boot.bundled=') === -1;
     });
     params = params.map(function(arg) {
         return arg.slice(2);
     });
-    params.push('boot.inlined=false');
+    params.push('boot.teamtibet=true');
+    params.push('boot.bundled=false');
     params = params.join('&');
 
-    //  Force command to NOT try to load inlined resources since this can cause
+    //  Force command to NOT try to load bundled resources since this can cause
     //  a circular failure condition where we're trying to boot TIBET to compute
     //  resources but we are missing resource files because...we haven't been
     //  able to run this command to completion...etc.
@@ -311,9 +312,9 @@ Cmd.prototype.generateResourceList = function() {
             break;
     }
 
-    //  Force our package queries to ignore inlined content and focus on
-    //  resources which might require generation of the inlined resources.
-    this.pkgOpts.boot.inlined = false;
+    //  Force our package queries to ignore bundled content and focus on
+    //  resources which might require generation of the bundled resources.
+    this.pkgOpts.boot.bundled = false;
 
     if (!this.pkgOpts.package) {
         this.pkgOpts.package = CLI.getcfg('boot.package') ||
@@ -503,6 +504,15 @@ Cmd.prototype.getCompletionOptions = function() {
         plist = Cmd.Parent.prototype.getCompletionOptions();
 
     return CLI.subtract(plist, list);
+};
+
+
+/**
+ * Returns the default boot config to use when launching this command.
+ * @Returns {String} The config value to use if no other is provided.
+ */
+Cmd.prototype.getDefaultBootConfig = function() {
+    return 'resources';
 };
 
 

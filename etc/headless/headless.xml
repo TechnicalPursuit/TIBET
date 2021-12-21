@@ -1,35 +1,103 @@
 <?xml version="1.0"?>
 
+<!--
+    Supports headless loading and execution of TIBET and TSH commands.
+
+    There are several TSH-based commands in the TIBET CLI which rely on
+    these configurations. They include:
+
+    Commands that require full comments:
+        apropos
+        doclint
+
+    Commands that may require comments:
+        reflect
+
+    Commands that require NO comments:
+        resource
+        strip       (not fully implemented)
+        test
+        tsh
+
+    In addition, any command using the 'debugger' flag requires the config
+    to be loaded with the bundled flag set to false so each file is loaded
+    individually with full comments.
+-->
+
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="headless" default="base" basedir="~lib_etc">
 
 <config id="properties" if="boot.phase_one">
-    <property name="boot.inlined" value="false"/>
-    <property name="boot.teamtibet" value="true"/>
+    <!-- default to bundled, minified, inlined code package for speed -->
+    <property name="boot.bundled" value="true"/>
+    <property name="boot.minified" value="true"/>
+    <property name="boot.inlined" value="true"/>
+    <property name="boot.teamtibet" value="false"/>
+
+    <!-- and turn off all login, development tooling, watch logic -->
     <property name="boot.use_login" value="false"/>
     <property name="lama.enabled" value="false"/>
     <property name="uri.source.watch_changes" value="false"/>
+    <property name="uri.source.process_changes" value="false"/>
 </config>
 
-<config id="base">
+<config id="base" if="boot.phase_one">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="testing"/>
+    <config ref="full"/>
 </config>
 
-<config id="reflection">
+<config id="interactive" if="boot.phase_one">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="testing"/>
+    <config ref="full"/>
 </config>
 
-<config id="interactive">
+<config id="reflection" if="boot.phase_one">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="testing"/>
+    <property name="boot.minified" value="false"/>
+    <config ref="full"/>
 </config>
 
-<config id="selftest">
+<config id="resources" if="boot.phase_one">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="developer"/>
-    <package src="~lib_cfg/tibet_testing.xml" config="selftests"/>
+    <config ref="contributor"/>
+</config>
+
+<config id="test" if="boot.phase_one">
+    <config ref="properties"/>
+    <config ref="contributor"/>
+</config>
+
+<config id="selftest" if="boot.phase_one">
+    <config ref="test"/>
+    <config ref="contributor"/>
+    <package src="~lib_cfg/tibet_testing.xml" config="selftests" />
+</config>
+
+
+
+<!--
+    Configs below define the source alternatives (scope, files, minified) which
+    the blocks above select from by adjusting their boot.* values and scopes.
+-->
+
+<config id="base" if="boot.phase_one">
+    <package src="~lib_cfg/BUILD.xml" config="base" />
+</config>
+
+<config id="baseui" if="boot.phase_one">
+    <package src="~lib_cfg/BUILD.xml" config="baseui" />
+</config>
+
+<config id="full" if="boot.phase_one">
+    <package src="~lib_cfg/BUILD.xml" config="full" />
+</config>
+
+<config id="developer" if="boot.phase_one">
+    <package src="~lib_cfg/BUILD.xml" config="developer" />
+</config>
+
+<config id="contributor" if="boot.phase_one">
+    <package src="~lib_cfg/BUILD.xml" config="contributor" />
 </config>
 
 </package>
