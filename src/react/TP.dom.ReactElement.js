@@ -332,12 +332,12 @@ function(aRequest) {
 
                 reactDOMObj = TP.nodeGetWindow(elem).ReactDOM;
 
-                reactDOMObj[TP.LOAD_PATH] = 'inline';
+                reactDOMObj[TP.LOAD_PATH] = 'embedded';
                 reactDOMObj[TP.LOAD_CONFIG] = 'base';
                 reactDOMObj[TP.LOAD_PACKAGE] = thisref[TP.LOAD_PACKAGE];
                 reactDOMObj[TP.LOAD_STAGE] = TP.PHASE_TWO;
 
-                reactDOMObj[TP.SOURCE_PATH] = 'inline';
+                reactDOMObj[TP.SOURCE_PATH] = 'embedded';
                 reactDOMObj[TP.SOURCE_CONFIG] = 'base';
                 reactDOMObj[TP.SOURCE_PACKAGE] = thisref[TP.SOURCE_PACKAGE];
 

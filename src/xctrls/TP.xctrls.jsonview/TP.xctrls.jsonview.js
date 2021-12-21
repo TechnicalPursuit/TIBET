@@ -94,12 +94,12 @@ function(aRequest) {
                 //  is executed because it will try to devine these settings
                 //  from the loader, which is no longer involved - the app is
                 //  running.
-                discoveryObj[TP.LOAD_PATH] = 'inline';
+                discoveryObj[TP.LOAD_PATH] = 'embedded';
                 discoveryObj[TP.LOAD_CONFIG] = thisref[TP.LOAD_CONFIG];
                 discoveryObj[TP.LOAD_PACKAGE] = thisref[TP.LOAD_PACKAGE];
                 discoveryObj[TP.LOAD_STAGE] = TP.PHASE_TWO;
 
-                discoveryObj[TP.SOURCE_PATH] = 'inline';
+                discoveryObj[TP.SOURCE_PATH] = 'embedded';
                 discoveryObj[TP.SOURCE_CONFIG] = thisref[TP.SOURCE_CONFIG];
                 discoveryObj[TP.SOURCE_PACKAGE] = thisref[TP.SOURCE_PACKAGE];
 

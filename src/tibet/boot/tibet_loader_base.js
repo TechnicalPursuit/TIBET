@@ -9499,7 +9499,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
      * @param {Document} targetDoc The HTML document that the script source will
      *     be imported into.
      * @param {String} srcUrl The source URL that the script came from (useful
-     *     for debugging purposes). This defaults to 'inline' if its not
+     *     for debugging purposes). This defaults to 'embedded' if its not
      *     supplied.
      * @param {Boolean} shouldThrow True to cause errors to throw a native Error
      *     so outer catch blocks will trigger.
@@ -9560,11 +9560,11 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
                         scriptDoc.getElementsByTagName('head')[0] :
                         TP.boot.$$head;
 
-    scriptUrl = TP.boot.$isValid(srcUrl) ? srcUrl : 'inline';
+    scriptUrl = TP.boot.$isValid(srcUrl) ? srcUrl : 'embedded';
 
     //  Patch for stack traces on text-injected code. See:
     //  https://bugs.webkit.org/show_bug.cgi?id=25475
-    if (scriptUrl !== 'inline') {
+    if (scriptUrl !== 'embedded') {
         jsSrcUrl = '/' + '/' + '#' + ' sourceURL=' + scriptUrl + '\n\n' + src;
     } else {
         jsSrcUrl = src;
@@ -9597,10 +9597,10 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
         //  source attribute, which TIBET uses as an alternative
         elem.setAttribute('source', scriptUrl);
 
-        //  if we're in a Chromium extension, we cannot execute script inline
-        //  due to security restrictions. In this case, we still append the
-        //  element but we set its type to something Chromium so it won't try to
-        //  execute it. We then eval the script to actually execute it.
+        //  if we're in a Chromium extension, we cannot execute script due to
+        //  security restrictions. In this case, we still append the element but
+        //  we set its type to something Chromium so it won't try to execute it.
+        //  We then eval the script to actually execute it.
         if (TP.sys.inExtension() === true) {
             elem.setAttribute('type', 'tibetscript');
             /* eslint-disable no-eval */
@@ -9631,13 +9631,13 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
             TP.boot.$$loadPath = null;
 
             if (shouldThrow === true) {
-                if (scriptUrl === 'inline') {
+                if (scriptUrl === 'embedded') {
                     throw new Error('Import failed in: ' + jsSrcUrl);
                 } else {
                     throw new Error('Import failed for: ' + scriptUrl);
                 }
             } else {
-                if (scriptUrl === 'inline') {
+                if (scriptUrl === 'embedded') {
                     TP.boot.$stderr('Import failed in: ' + jsSrcUrl);
                 } else {
                     TP.boot.$stderr('Import failed for: ' + scriptUrl);
@@ -9895,6 +9895,7 @@ TP.boot.$importComponents = async function(loadSync) {
     TP.boot.$$loadPath = null;
     TP.boot.$$loadPackage = null;
     TP.boot.$$loadConfig = null;
+
     //  NB: We do *not* reset TP.boot.$$stage to null here - bad things will
     //  happen.
 
@@ -9922,7 +9923,9 @@ TP.boot.$importComponents = async function(loadSync) {
 
     //  if we're out of nodes we can wrap things up :)
     if (TP.boot.$$bootnodes.length === 0 || nd == null) {
-        //  We need to return here.
+        //  Ensure list is clear to avoid confusion that it holds both phases.
+        TP.boot.$$bootnodes.length = 0;
+
         /* eslint-disable no-return-await */
         return await TP.boot.$$importComplete();
         /* eslint-enable no-return-await */
@@ -9934,7 +9937,7 @@ TP.boot.$importComponents = async function(loadSync) {
     //  keep our value so we're consistent in phase two if we're two phase
     TP.boot.$$loadsync = sync;
 
-    //  only handle four cases here: scripts, inline source, echo tags, and
+    //  only handle four cases here: scripts, embedded source, echo tags, and
     //  config scripts. the node array should have already been expanded to
     //  'flatten' packages into place.
     tn = nd.tagName.toLowerCase();
@@ -10005,15 +10008,15 @@ TP.boot.$importComponents = async function(loadSync) {
 
                 return;
             }
-        } else {   //  tibet:script with inline code
+        } else {   //  tibet:script with embedded code
             //  update the script setting so we know who's current
-            TP.boot.$$script = 'inline';
+            TP.boot.$$script = 'embedded';
 
             //  adjust our log path to show shorthand package/config data
             logpath = TP.boot.$join(logpackage,
                             '::',
                             nd.getAttribute('loadcfg'),
-                            ' inline ', tn, ' source');
+                            ' embedded ', tn, ' source');
         }
 
         //  if we've reached this point then we're not deferring the node so
@@ -10025,7 +10028,6 @@ TP.boot.$importComponents = async function(loadSync) {
             TP.boot.$uriInTIBETFormat(srcpath ? srcpath : logpath),
             TP.DEBUG);
 
-        //  trigger the appropriate "will" hook
         if (srcpath) {
             TP.boot.$$loadpaths.push(srcpath);
 
@@ -10054,7 +10056,7 @@ TP.boot.$importComponents = async function(loadSync) {
         TP.sys.setcfg('src.config', TP.boot.$$srcConfig);
 
         //  In some sense the rest of this is all about getting the source code
-        //  to import, either inlined, or from the original location, in either
+        //  to import, either embedded, or from the original location, in either
         //  condensed or commented format.
         //  Once the source is available we can then treat it consistently by
         //  invoking the sourceImport call to do the actual work.
@@ -10074,7 +10076,7 @@ TP.boot.$importComponents = async function(loadSync) {
 
         if ((srcpath = nd.getAttribute('src')) != null) {
             //  debuggers like Firebuggy have issues with script nodes that
-            //  have inline source instead of file references (or they did
+            //  have embedded source instead of file references (or they did
             //  at the time of this writing) so we allow for the option to
             //  do dom-based import here to support source-level debugging
             //  to occur. we'll keep our comments about buggy debuggers to
@@ -10121,7 +10123,7 @@ TP.boot.$importComponents = async function(loadSync) {
         } else {
             source = '';
 
-            //  inline source code...NOTE that we don't normalize because if
+            //  embedded source code...NOTE that we don't normalize because if
             //  we do that some browsers like to replace CDATA sections with
             //  text nodes in a blatant disregard for standards.
             len = nd.childNodes.length;
@@ -10147,7 +10149,7 @@ TP.boot.$importComponents = async function(loadSync) {
                 TP.boot.$$loadNode = null;
             }
         } else {
-            //  if we were handling inline code then we can import it directly
+            //  if we were handling embedded code then we can import it directly
             //  now.
             try {
                 TP.boot.$sourceImport(source, null, srcpath, false);
