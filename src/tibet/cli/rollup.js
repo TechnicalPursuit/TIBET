@@ -360,7 +360,7 @@ Cmd.prototype.executeListPrereqs = function(list) {
         } else {
             return newer.map(function(item) {
                 return item.getAttribute('src') || item.getAttribute('href') ||
-                    'inline';
+                    'embedded';
             });
         }
     }
