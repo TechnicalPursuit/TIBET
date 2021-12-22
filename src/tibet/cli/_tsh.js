@@ -836,25 +836,18 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     //  packages are available (or at least potentially available). Otherwise
     //  we trigger the teamtibet flag to set everything to load full source.
     if (CLI.inProject()) {
-        if (this.options.build) {
-            arglist.push('--boot.bundled=false');
-            arglist.push('--boot.minified=false');
-            arglist.push('--boot.inlined=false');
-        } else {
-            buildpath = CLI.expandPath('~app_build');
-            if (!CLI.hasBuildAssets(buildpath)) {
-                arglist.push('--boot.bundled=false');
-            }
-        }
+        buildpath = CLI.expandPath('~app_build');
+    } else {
+        buildpath = CLI.expandPath('~lib_build');
     }
 
-    buildpath = CLI.expandPath('~lib_build');
-    if (this.options.build) {
-        arglist.push('--boot.teamtibet=true');
+    if (this.options.build || !CLI.hasBuildAssets(buildpath)) {
         arglist.push('--boot.minified=false');
         arglist.push('--boot.inlined=false');
-    } else {
-        if (!CLI.hasBuildAssets(buildpath)) {
+
+        if (CLI.inProject()) {
+            arglist.push('--boot.bundled=false');
+        } else {
             arglist.push('--boot.teamtibet=true');
         }
     }
