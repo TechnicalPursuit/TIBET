@@ -11280,17 +11280,12 @@ function() {
     var owner,
         str;
 
-    /* eslint-disable consistent-this */
     if (TP.isPrototype(this)) {
-        owner = this[TP.OWNER];
-        if (!TP.isType(owner)) {
-            TP.ifError() ?
-                TP.error('Invalid prototype: ' + TP.id(this)) : 0;
-            return null;
-        }
-    } else {
-        owner = this;
+        return 'Function';
     }
+
+    /* eslint-disable consistent-this */
+    owner = this;
     /* eslint-enable consistent-this */
 
     str = owner.getNamespaceRoot() + '.meta.' +
