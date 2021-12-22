@@ -1605,6 +1605,58 @@ function(condition, anOrigin, aSignal, timeout) {
 });
 
 //  ------------------------------------------------------------------------
+//  ASYNC FUNCTION INFORMATION
+//  ------------------------------------------------------------------------
+
+AsyncFunction.Inst.defineMethod('getSignature',
+function() {
+
+    /**
+     * @method getSignature
+     * @summary Returns the "method signature" or function calling signature
+     *     for the receiver.
+     * @returns {String} The signature string.
+     */
+
+    var obj,
+
+        str;
+
+    obj = TP.getRealFunction(this);
+
+    str = 'async function ' + obj.getName() +
+            '(' + obj.getParameterNames().join(', ') + ')';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+//  GENERATOR FUNCTION INFORMATION
+//  ------------------------------------------------------------------------
+
+GeneratorFunction.Inst.defineMethod('getSignature',
+function() {
+
+    /**
+     * @method getSignature
+     * @summary Returns the "method signature" or function calling signature
+     *     for the receiver.
+     * @returns {String} The signature string.
+     */
+
+    var obj,
+
+        str;
+
+    obj = TP.getRealFunction(this);
+
+    str = 'function* ' + obj.getName() +
+            '(' + obj.getParameterNames().join(', ') + ')';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
 //  TYPE MEMBERSHIP
 //  ------------------------------------------------------------------------
 
