@@ -1211,8 +1211,6 @@ function(aFilterName, aLevel) {
                         this.getLocalName(), '\');');
     }
 
-    debugger;
-
     lvl = TP.notDefined(aLevel) ? TP.sys.cfg('stack.max_descent') :
                                 Math.max(0, aLevel);
 
@@ -1368,7 +1366,6 @@ function(depth, level) {
         $depth,
         $level;
 
-            debugger;
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
     if (TP.owns(this, marker)) {
@@ -1810,8 +1807,6 @@ function(depth, level) {
         thisref,
         $depth,
         $level;
-
-    //this.$sortIfNeeded();
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
