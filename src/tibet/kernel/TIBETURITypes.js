@@ -1217,6 +1217,9 @@ TP.uri.URI.Inst.defineAttribute('fragment');
 //  whether the receiver is HTTP-based
 TP.uri.URI.Inst.defineAttribute('httpBased');
 
+//  whether the target URI was loaded inline.
+TP.uri.URI.Inst.defineAttribute('inlined');
+
 //  the resource object for the primary href
 TP.uri.URI.Inst.defineAttribute('resource');
 TP.uri.URI.Inst.defineAttribute('resourceCache');
@@ -3556,6 +3559,23 @@ function() {
     }
 
     return http;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.uri.URI.Inst.defineMethod('isInlined',
+function(aFlag) {
+
+    /**
+     * @method isInlined
+     * @summary Returns true if the receiver's content has been loaded by
+     *     being inlined as part of a built package. This method is used by
+     *     TIBET's resource command to flag inlined resource URIs directly.
+     * @param {Boolean} [aFlag] The new value to optionally set.
+     * @returns {Boolean} Whether or not the content of the receiver is loaded.
+     */
+
+    return this.$flag('inlined', aFlag);
 });
 
 //  ------------------------------------------------------------------------
