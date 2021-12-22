@@ -264,22 +264,17 @@ Cmd.prototype.executeForEach = function(list) {
             }
 
             if (cmd.options.headers) {
-                pkg.log('TP.boot.$$srcPath = \'' + virtual + '\';');
-                pkg.log('TP.boot.$$srcPackage = \'' +
-                        pkg.getVirtualPath(item.getAttribute('loadpkg')) +
-                        '\';');
-                pkg.log('TP.boot.$$srcConfig = \'' +
-                        item.getAttribute('loadcfg') +
-                        '\';');
-                if (item.getAttribute('type') === 'module') {
-                    spec = item.getAttribute('specifier');
-                    if (!CLI.isEmpty(spec)) {
-                        pkg.log('TP.boot.$moduleBareSpecMap' +
-                                   '[\'' + spec + '\'] = \'' +
-                                    pkg.getVirtualPath(src) +
-                                    '\';');
-                    }
-                }
+                pkg.log('TP.boot.$$setSourceInfo(\'' +
+                    virtual + '\', \'' +
+                    pkg.getVirtualPath(item.getAttribute('loadpkg')) + '\', \'' +
+                    item.getAttribute('loadcfg') + '\');');
+            }
+
+            //  Make sure any module with a specifier gets mapped properly.
+            if (item.getAttribute('type') === 'module') {
+                spec = item.getAttribute('specifier');
+                pkg.log('TP.boot.$$setModuleInfo(\'' +
+                    pkg.getVirtualPath(src) + '\', \'' + spec + '\');');
             }
 
             if (cmd.options.debug !== true) {
@@ -289,7 +284,7 @@ Cmd.prototype.executeForEach = function(list) {
         } else {
 
             if (cmd.options.headers) {
-                pkg.log('TP.boot.$$srcPath = \'\';');
+                pkg.log('TP.boot.$$setSourceInfo(\'\')');
             }
 
             if (cmd.options.debug !== true) {

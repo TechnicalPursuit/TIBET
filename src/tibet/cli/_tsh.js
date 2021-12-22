@@ -114,9 +114,9 @@ Cmd.prototype.announce = function() {
             'Loading TIBET v' + CLI.getLibVersion());
     }
 
-    if (this.options.verbose) {
-        this.log(this.options);
-    }
+    // if (this.options.verbose) {
+        this.log(CLI.beautify(this.options));
+    // }
 
     return;
 };
@@ -554,9 +554,9 @@ Cmd.prototype.execute = function() {
 
         start = new Date();
 
-        if (cmd.options.verbose) {
+        // if (cmd.options.verbose) {
             cmd.stdout('Launch URL: ' + fullpath);
-        }
+        // }
 
         return puppetPage.goto(fullpath);
 

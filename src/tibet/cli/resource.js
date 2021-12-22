@@ -244,11 +244,15 @@ Cmd.prototype.finalizeArglist = function(arglist) {
 
         return true;
     });
-    params = params.map(function(arg) {
-        return arg.slice(2);
-    });
     params.push('boot.bundled=false');
     params.push('boot.teamtibet=true');
+
+    params = params.map(function(arg) {
+        if (arg.indexOf('--')) {
+            return arg.slice(2);
+        }
+        return arg;
+    });
     params = params.join('&');
 
     //  Force command to NOT try to load bundled resources since this can cause
@@ -819,8 +823,7 @@ Cmd.prototype.processResources = function() {
             } else {
                 cmd.products.push([resource, file]);
 
-                content = 'TP.uc(\'' + resource + '\').isInlined(true)';
-                content += '.setContent(\n';
+                content = 'TP.uc(\'' + resource + '\').$setInlined(true).setContent(\n';
                 content += CLI.quoted(data);
                 content += '\n);';
 
@@ -950,7 +953,7 @@ Cmd.prototype.processLessResource = function(options) {
                                     '");';
                         });
 
-        content = 'TP.uc(\'' + rname + '\').setContent(\n';
+        content = 'TP.uc(\'' + rname + '\').$setInlined(true).setContent(\n';
         content += CLI.quoted(finaloutput);
         content += '\n);';
 
@@ -1060,7 +1063,7 @@ Cmd.prototype.processScssResource = function(options) {
                                     '");';
                         });
 
-        content = 'TP.uc(\'' + rname + '\').setContent(\n';
+        content = 'TP.uc(\'' + rname + '\').$setInlined(true).setContent(\n';
         content += CLI.quoted(finaloutput);
         content += '\n);';
 
@@ -1105,7 +1108,7 @@ Cmd.prototype.processXmlResource = function(options) {
 
     cmd.products.push([resource, file]);
 
-    content = 'TP.uc(\'' + resource + '\').setContent(\n';
+    content = 'TP.uc(\'' + resource + '\').$setInlined(true).setContent(\n';
     content += CLI.quoted(data);
     content += '\n);';
 
