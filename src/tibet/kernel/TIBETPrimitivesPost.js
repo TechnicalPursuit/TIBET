@@ -4030,6 +4030,11 @@ function(anObject, anAspect, autoCollapse) {
         return anObject;
     }
 
+    //  The value of a Symbol is itself.
+    if (TP.isSymbol(anObject)) {
+        return anObject;
+    }
+
     if (TP.isNaN(anObject)) {
         return NaN;
     }
