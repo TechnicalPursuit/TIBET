@@ -815,7 +815,8 @@ Cmd.prototype.processResources = function() {
             } else {
                 cmd.products.push([resource, file]);
 
-                content = 'TP.uc(\'' + resource + '\').setContent(\n';
+                content = 'TP.uc(\'' + resource + '\').isInlined(true)';
+                content += '.setContent(\n';
                 content += CLI.quoted(data);
                 content += '\n);';
 
