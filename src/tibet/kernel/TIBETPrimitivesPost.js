@@ -3950,6 +3950,10 @@ function(anObject, verbose) {
     }
 
     marker = '$$recursive_asString';
+    if (TP.isProxy(anObject)) {
+        return '[object Proxy]';
+    }
+
     if (TP.owns(anObject, marker)) {
         return TP.recursion(anObject, marker);
     }
@@ -4816,6 +4820,10 @@ function(anObject) {
 
     if (TP.isNativeType(anObject)) {
         return 'Function';
+    }
+
+    if (TP.isProxy(anObject)) {
+        return 'Proxy';
     }
 
     //  First see if it responds to 'getTypeName()' - polymorphically, this is

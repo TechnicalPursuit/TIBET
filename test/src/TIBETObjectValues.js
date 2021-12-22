@@ -231,7 +231,7 @@ function(aRequest) {
     /* eslint-enable no-empty-function */
 
     //  Proxy
-    proxyVal = new Proxy({}, {});
+    proxyVal = TP.constructProxyObject({}, {});
 
     //  Window
     windowVal = topLevelWindow;
@@ -756,7 +756,7 @@ function(aRequest) {
     arrayBufferVal = TP.ac(ArrayBuffer, Object);
     dataViewVal = TP.ac(DataView, Object);
     promiseVal = TP.ac(Promise, Object);
-    proxyVal = TP.ac(Object);
+    proxyVal = TP.ac(Proxy, Object);
 
     windowVal = TP.ac(Window, Object);
     iframeWindowVal = TP.ac(topLevelWindow.UIROOT.Window, topLevelWindow.UIROOT.Object);

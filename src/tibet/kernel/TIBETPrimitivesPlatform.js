@@ -1138,6 +1138,10 @@ TP.hc(
             return '[object CSSStyleDeclaration]';
         }
 
+        if (TP.isProxy(anObject)) {
+            return '[object Proxy]';
+        }
+
         if (TP.canInvoke(anObject, 'toString')) {
             try {
                 str = anObject.toString();

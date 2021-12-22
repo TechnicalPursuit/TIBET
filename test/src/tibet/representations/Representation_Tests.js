@@ -75,7 +75,7 @@ function() {
         'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
         'DataView',                             /^DataView\$(\w+)$/,
         'Promise',                              /^Promise\$(\w+)$/,
-        'Proxy',                                /^Object\$(\w+)$/,  //  Proxies are see-thru
+        'Proxy',                                /^Proxy\$(\w+)$/,
 
         'Window',                               topLevelNativeWinName,
         'IFrameWindow',                         'UIROOT',
@@ -281,7 +281,7 @@ function() {
         'ArrayBuffer',                          'ArrayBuffer',
         'DataView',                             'DataView',
         'Promise',                              'Promise',
-        'Proxy',                                'Object',  //  Proxies are see-thru
+        'Proxy',                                'Proxy',
 
         'Window',                               'DOMWindow',
         'IFrameWindow',                         'DOMWindow',
@@ -486,7 +486,7 @@ function() {
         'ArrayBuffer',          '[object ArrayBuffer]',
         'DataView',             '[object DataView]',
         'Promise',              '[object Promise]',
-        'Proxy',                '[object Object]',  //  Proxies are see-thru
+        'Proxy',                '[object Proxy]',
 
         'Window',               '[object DOMWindow]',
         'IFrameWindow',         '[object DOMWindow]',
@@ -698,7 +698,7 @@ function() {
         'ArrayBuffer',          '[object ArrayBuffer]',
         'DataView',             '[object DataView]',
         'Promise',              '[object Promise]',
-        'Proxy',                '[object Object]',  //  Proxies are see-thru
+        'Proxy',                '[object Proxy]',
 
         'Window',               TP.rc('^' + topLevelWinName + ', ([\\s\\S]+)'),
         'IFrameWindow',         TP.rc('^' + topLevelWinName + '.UIROOT, ([\\s\\S]+)'),
