@@ -1605,6 +1605,58 @@ function(condition, anOrigin, aSignal, timeout) {
 });
 
 //  ------------------------------------------------------------------------
+//  ASYNC FUNCTION INFORMATION
+//  ------------------------------------------------------------------------
+
+AsyncFunction.Inst.defineMethod('getSignature',
+function() {
+
+    /**
+     * @method getSignature
+     * @summary Returns the "method signature" or function calling signature
+     *     for the receiver.
+     * @returns {String} The signature string.
+     */
+
+    var obj,
+
+        str;
+
+    obj = TP.getRealFunction(this);
+
+    str = 'async function ' + obj.getName() +
+            '(' + obj.getParameterNames().join(', ') + ')';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+//  GENERATOR FUNCTION INFORMATION
+//  ------------------------------------------------------------------------
+
+GeneratorFunction.Inst.defineMethod('getSignature',
+function() {
+
+    /**
+     * @method getSignature
+     * @summary Returns the "method signature" or function calling signature
+     *     for the receiver.
+     * @returns {String} The signature string.
+     */
+
+    var obj,
+
+        str;
+
+    obj = TP.getRealFunction(this);
+
+    str = 'function* ' + obj.getName() +
+            '(' + obj.getParameterNames().join(', ') + ')';
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
 //  TYPE MEMBERSHIP
 //  ------------------------------------------------------------------------
 
@@ -6447,6 +6499,11 @@ function(objectA, objectB) {
 
     //  if they're both nodes, we can just === compare them here and exit.
     if (TP.isNode(objectA) && TP.isNode(objectB)) {
+        return objectA === objectB;
+    }
+
+    //  if they're both symbols, we can just === compare them here and exit.
+    if (TP.isSymbol(objectA) && TP.isSymbol(objectB)) {
         return objectA === objectB;
     }
 

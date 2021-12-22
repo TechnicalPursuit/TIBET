@@ -2854,6 +2854,8 @@ function(anObject) {
             return anObject.asHTMLString();
         } catch (e) {
             void 0;
+        } finally {
+            delete anObject.$$recursive_asString;
         }
     }
 
@@ -2975,6 +2977,11 @@ function(anObject) {
             anObject.cssText + '</span>';
     }
 
+    //  Proxies
+    if (TP.isProxy(anObject)) {
+        return '<span class="Proxy"></span>';
+    }
+
     //  we're usually calling this with a standard object so we can leverage
     //  TIBET's method APIs to do a best-fit job
     if (TP.canInvoke(anObject, 'asHTMLString')) {
@@ -3036,6 +3043,8 @@ function(anObject) {
             return anObject.asJSONSource();
         } catch (e) {
             void 0;
+        } finally {
+            delete anObject.$$recursive_asString;
         }
     }
 
@@ -3179,6 +3188,11 @@ function(anObject) {
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
         return '{"type":"Declaration","data":"' + anObject.cssText + '"}';
+    }
+
+    //  Proxies
+    if (TP.isProxy(anObject)) {
+        return '{"type":"Proxy"}';
     }
 
     //  other cases should be dealt with by just returning the JSON rep
@@ -3790,6 +3804,10 @@ function(anObject, verbose) {
 
     wantsVerbose = TP.ifInvalid(verbose, true);
 
+    marker = '$$recursive_asString';
+
+    //  we're usually calling this with a standard object so we can leverage
+    //  TIBET's method APIs to do a best-fit job
     try {
         str = anObject.asString(wantsVerbose);
 
@@ -3802,6 +3820,8 @@ function(anObject, verbose) {
         return str;
     } catch (e) {
         void 0;
+    } finally {
+        delete anObject[marker];
     }
 
     //  XMLHttpRequest can have permission issues, so check early
@@ -3949,7 +3969,10 @@ function(anObject, verbose) {
         return str;
     }
 
-    marker = '$$recursive_asString';
+    if (TP.isProxy(anObject)) {
+        return '[object Proxy]';
+    }
+
     if (TP.owns(anObject, marker)) {
         return TP.recursion(anObject, marker);
     }
@@ -4014,6 +4037,11 @@ function(anObject, anAspect, autoCollapse) {
 
     //  The value of a prototype is itself.
     if (TP.isPrototype(anObject)) {
+        return anObject;
+    }
+
+    //  The value of a Symbol is itself.
+    if (TP.isSymbol(anObject)) {
         return anObject;
     }
 
@@ -4445,6 +4473,11 @@ function(anObject) {
         return '<declaration>' + anObject.cssText + '</declaration>';
     }
 
+    //  Proxies
+    if (TP.isProxy(anObject)) {
+        return '<instance type="Proxy"></instance>';
+    }
+
     //  we're usually calling this with a standard object so we can leverage
     //  TIBET's method APIs to do a best-fit job
     if (TP.canInvoke(anObject, 'asXMLString')) {
@@ -4816,6 +4849,10 @@ function(anObject) {
 
     if (TP.isNativeType(anObject)) {
         return 'Function';
+    }
+
+    if (TP.isProxy(anObject)) {
+        return 'Proxy';
     }
 
     //  First see if it responds to 'getTypeName()' - polymorphically, this is
@@ -5317,6 +5354,10 @@ function(anObject) {
         return null;
     }
 
+    if (TP.isProxy(anObject)) {
+        return anObject;
+    }
+
     //  If it's a POJO, we need to convert it *here* before we try to test it
     //  for being a String, Number or Boolean because testing machinery in those
     //  types can cause an exception to be thrown.
@@ -5464,6 +5505,10 @@ function(anObject) {
 
     //  The wrapped value of a prototype is itself.
     if (TP.isPrototype(anObject)) {
+        return anObject;
+    }
+
+    if (TP.isProxy(anObject)) {
         return anObject;
     }
 

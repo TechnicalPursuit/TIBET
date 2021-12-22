@@ -209,15 +209,28 @@ function(aRequest) {
 
     //  Map
     mapVal = new Map();
+    mapVal.set('foo', 'bar');
 
     //  Set
     setVal = new Set();
+    setVal.add(1);
+    setVal.add(2);
+    setVal.add(3);
+
+    const goo = {};
+    const foo = {};
+    const bar = {};
+    const baz = {};
 
     //  WeakMap
     weakMapVal = new WeakMap();
+    weakMapVal.set(goo, 'bar');
 
     //  WeakSet
     weakSetVal = new WeakSet();
+    weakSetVal.add(foo);
+    weakSetVal.add(bar);
+    weakSetVal.add(baz);
 
     //  ArrayBuffer
     arrayBufferVal = new ArrayBuffer(8);
@@ -231,7 +244,7 @@ function(aRequest) {
     /* eslint-enable no-empty-function */
 
     //  Proxy
-    proxyVal = new Proxy({}, {});
+    proxyVal = TP.constructProxyObject({}, {});
 
     //  Window
     windowVal = topLevelWindow;
@@ -756,7 +769,7 @@ function(aRequest) {
     arrayBufferVal = TP.ac(ArrayBuffer, Object);
     dataViewVal = TP.ac(DataView, Object);
     promiseVal = TP.ac(Promise, Object);
-    proxyVal = TP.ac(Object);
+    proxyVal = TP.ac(Proxy, Object);
 
     windowVal = TP.ac(Window, Object);
     iframeWindowVal = TP.ac(topLevelWindow.UIROOT.Window, topLevelWindow.UIROOT.Object);
@@ -1357,8 +1370,8 @@ function(aRequest) {
         'Boolean',                              TP.IDENTITY,
         'Date',                                 TP.IDENTITY,
         'Function',                             'fluffy',           //  Return value of function
-        'AsyncFunction',                        /Promise([\s\S]+)/,
-        'GeneratorFunction',                    /\[object Generator\]/,
+        'AsyncFunction',                        /{return "async fluffy"; }/,
+        'GeneratorFunction',                    /{return "generator fluffy"; }/,
         'InvalidDate',                          TP.IDENTITY,
         'NaN',                                  TP.IDENTITY,
         'Number',                               TP.IDENTITY,

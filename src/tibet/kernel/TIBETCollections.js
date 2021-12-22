@@ -3250,22 +3250,127 @@ function(aKeyArray) {
 //  Map Extensions
 //  ========================================================================
 
-Map.Inst.defineMethod('asString',
-function() {
-    return this.getItems().asString();
-});
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
 
+//  what delim should be used when joining array elements into a string
+Map.Inst.defineAttribute('delimiter', ', ');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 Map.Inst.defineMethod('at',
 function(aKey) {
+
+    /**
+     * @method at
+     * @summary Returns the value at the index provided.
+     * @param {Object} anIndex The index to use for locating the value. Note
+     *     that this is usually a string, but could be any object. This method
+     *     is designed to protect against returning any of the receiver's
+     *     methods.
+     * @returns {Object|undefined} The item at the index provided or undefined.
+     */
+
     return this.get(aKey);
+});
+
+//  ------------------------------------------------------------------------
+
+Map.Inst.defineMethod('atPut',
+function(anIndex, aValue) {
+
+    /**
+     * @method atPut
+     * @summary Replaces the value at anIndex with aValue.
+     * @param {Object} anIndex The index to put aValue into.
+     * @param {Object} aValue The value to place at anIndex.
+     * @returns {TP.core.Hash} The receiver.
+     * @fires Change
+     */
+
+    var shouldSignal,
+        op,
+        val,
+        changeRecord,
+        changeRecordHash;
+
+    shouldSignal = this.shouldSignalChange();
+    op = null;
+
+    //  three things matter here...that we add the index to our key array,
+    //  that we update ourself with the key/value pair, and that we signal
+    //  changes
+
+    //  setting a key to undefined deletes it
+    if (TP.notDefined(aValue)) {
+        this.delete(anIndex);
+        op = TP.DELETE;
+    } else {
+        //  If we don't know about this value then this is an insert and
+        //  requires a key array update.
+        val = this.get(anIndex);
+        if (TP.notDefined(val)) {
+            this.set(anIndex, aValue);
+
+            op = TP.INSERT;
+        } else {
+            //  Otherwise, this is an update.
+
+            //  If we're signaling Change, we need to compare values to see
+            //  if this is truly a TP.UPDATE (which will only occur if the
+            //  *values are different*).
+            if (shouldSignal) {
+                if (!TP.equal(val, aValue)) {
+                    this.set(anIndex, aValue);
+                    if (TP.notValid(op)) {
+                        op = TP.UPDATE;
+                    }
+                }
+            } else {
+                this.set(anIndex, aValue);
+            }
+        }
+
+        //  Otherwise, we're not gonna signal Change so we just return.
+        if (TP.notValid(op)) {
+            return this;
+        }
+    }
+
+    //  'changed' will check further to see if we signal Change.
+    if (TP.isValid(op) && shouldSignal) {
+        //  NB: Here, we cannot use the normal TP.hc(arguments...) form of the
+        //  constructor or we'll loop endlessly back into this method. We must
+        //  use lower-level constructs.
+        //  this.changed(anIndex, op, TP.hc(TP.OLDVAL, val, TP.NEWVAL, aValue));
+
+        changeRecord = TP.hc();
+
+        changeRecordHash = changeRecord.$get('$$hash');
+
+        changeRecordHash[TP.OLDVAL] = val;
+        changeRecordHash[TP.NEWVAL] = aValue;
+
+        this.changed(anIndex, op, changeRecord);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
 Map.Inst.defineMethod('getKeys',
 function() {
+
+    /**
+     * @method getKeys
+     * @summary Returns the unique keys of the receiver.
+     * @returns {String[]} An array containing the receiver's keys.
+     */
+
     return Array.ECMAfrom(this.keys());
 });
 
@@ -3273,6 +3378,26 @@ function() {
 
 Map.Inst.defineMethod('getItems',
 function() {
+
+    /**
+     * @method getItems
+     * @summary Returns a list of items from the collection, filtering them via
+     *     aSelectFunction if provided. Note that you can use the same semantics
+     *     as select for this call.
+     * @description The term "items", as opposed to "keys", "values", or "pairs"
+     *     is variant in TP.sys. For most collections "items" are "values",
+     *     however for TP.core.Hash in particular the "items" are more like
+     *     Smalltalk "associations", the key/value pairs. Using getItems is a
+     *     way to deal with the "natural item form" of each collection without
+     *     concern for the specific nature of those items so this method is
+     *     typically called only by the collection itself or by generic
+     *     iteration functions.
+     * @param {Function} aSelectFunction A function used to select items that
+     *     will be returned. Each item is passed to this function and if the
+     *     function returns true the item is included in the result.
+     * @returns {Object[]} The receiver's items in array key/value form.
+     */
+
     return Array.ECMAfrom(this.entries());
 });
 
@@ -3280,7 +3405,18 @@ function() {
 
 Map.Inst.defineMethod('getValues',
 function(deconstructPairs) {
-    return Array.ECMAfrom(this.values());
+
+    /**
+     * @method getValues
+     * @summary Returns an array containing the values for the objects'
+     *     attributes.
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item. This parameter is not used in this version of this method.
+     * @returns {Object[]} An array of the values for the receiver's keys.
+     */
+
+    return Array.ECMAfrom(this.values()).getValues(deconstructPairs);
 });
 
 //  ========================================================================
@@ -3432,30 +3568,97 @@ function(endIndex) {
 //  Set Extensions
 //  ========================================================================
 
-Set.Inst.defineMethod('asString',
-function() {
-    return this.getValues().asString();
-});
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
 
+//  what delim should be used when joining array elements into a string
+Set.Inst.defineAttribute('delimiter', ', ');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 Set.Inst.defineMethod('getKeys',
 function() {
+
+    /**
+     * @method getKeys
+     * @summary Returns the objects keys. By default, this is the receiver's
+     *     'attribute keys' (i.e. keys matching the attributes of the receiver).
+     * @returns {String[]} An Array of keys matching all attributes of the
+     *     receiver, hidden or shown, instance-level or local-level.
+     */
+
     return Array.ECMAfrom(this.keys());
 });
 
 //  ------------------------------------------------------------------------
 
 Set.Inst.defineMethod('getItems',
+function(aSelectFunction) {
+
+    /**
+     * @method getItems
+     * @summary Returns a list of items from the collection, filtering them via
+     *     aSelectFunction if provided. Note that you can use the same semantics
+     *     as select for this call.
+     * @description The term "items", as opposed to "keys", "values", or "pairs"
+     *     is variant in TP.sys. For most collections "items" are "values",
+     *     however for TP.core.Hash in particular the "items" are more like
+     *     Smalltalk "associations", the key/value pairs. Using getItems is a
+     *     way to deal with the "natural item form" of each collection without
+     *     concern for the specific nature of those items so this method is
+     *     typically called only by the collection itself or by generic
+     *     iteration functions.
+     * @param {Function} aSelectFunction A function used to select items that
+     *     will be returned. Each item is passed to this function and if the
+     *     function returns true the item is included in the result.
+     * @returns {Object[]} The receiver's items in array key/value form.
+     */
+
+    return Array.ECMAfrom(this.entries()).getItems();
+});
+
+//  ------------------------------------------------------------------------
+
+Set.Inst.defineMethod('getSize',
 function() {
-    return Array.ECMAfrom(this.entries());
+
+    /**
+     * @method getSize
+     * @summary Returns the size of the receiver.
+     * @returns {Number} The size.
+     */
+
+    return this.size;
 });
 
 //  ------------------------------------------------------------------------
 
 Set.Inst.defineMethod('getValues',
 function(deconstructPairs) {
-    return Array.ECMAfrom(this.values());
+
+    /**
+     * @method getValues
+     * @summary Top-level value-getter. For Sets the values are contained in
+     *     the set itself.
+     * @description If deconstructPairs is true, then the second item in each
+     *     pair will be used as the value for that item. For example, assume:
+     *          mySet = new Set();
+     *          mySet.add(['olive', 'green']);
+     *          mySet.add(['cherry', 'red']);
+     *     then:
+     *          myArr.getValues() -> [['olive', 'green'],['cherry', 'red']]
+     *     but:
+     *          myArr.getValues(true) -> ['green, 'red']
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item.
+     * @returns {Object[]} An array containing the receiver's values.
+     */
+
+    return Array.ECMAfrom(this.values()).getValues(deconstructPairs);
 });
 
 //  ========================================================================
@@ -6564,6 +6767,7 @@ function(verbose) {
      * @description Constructs a new string from the hash.
      *     The join is done using the receiver's current 'delimiter' value,
      *     normally ', '. Set the 'delimiter' value on the receiver to use a
+     *     different delimiter.
      * @param {Boolean} verbose Whether or not to return the 'verbose' version
      *     of the TP.core.Hash's String representation. The default is true.
      * @returns {String} The receiver as a String.
@@ -10073,6 +10277,254 @@ function(aFunction, terminateFunction) {
     /* eslint-enable no-extra-parens */
 
     return this;
+});
+
+//  ========================================================================
+//  WeakMap Extensions
+//  ========================================================================
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+WeakMap.Inst.defineMethod('at',
+function(aKey) {
+
+    /**
+     * @method at
+     * @summary Returns the value at the index provided.
+     * @param {Object} anIndex The index to use for locating the value. Note
+     *     that this is usually a string, but could be any object. This method
+     *     is designed to protect against returning any of the receiver's
+     *     methods.
+     * @returns {Object|undefined} The item at the index provided or undefined.
+     */
+
+    return this.get(aKey);
+});
+
+//  ------------------------------------------------------------------------
+
+WeakMap.Inst.defineMethod('atPut',
+function(anIndex, aValue) {
+
+    /**
+     * @method atPut
+     * @summary Replaces the value at anIndex with aValue.
+     * @param {Object} anIndex The index to put aValue into.
+     * @param {Object} aValue The value to place at anIndex.
+     * @returns {TP.core.Hash} The receiver.
+     * @fires Change
+     */
+
+    var shouldSignal,
+        op,
+        val,
+        changeRecord,
+        changeRecordHash;
+
+    shouldSignal = this.shouldSignalChange();
+    op = null;
+
+    //  three things matter here...that we add the index to our key array,
+    //  that we update ourself with the key/value pair, and that we signal
+    //  changes
+
+    //  setting a key to undefined deletes it
+    if (TP.notDefined(aValue)) {
+        this.delete(anIndex);
+        op = TP.DELETE;
+    } else {
+        //  If we don't know about this value then this is an insert and
+        //  requires a key array update.
+        val = this.get(anIndex);
+        if (TP.notDefined(val)) {
+            this.set(anIndex, aValue);
+
+            op = TP.INSERT;
+        } else {
+            //  Otherwise, this is an update.
+
+            //  If we're signaling Change, we need to compare values to see
+            //  if this is truly a TP.UPDATE (which will only occur if the
+            //  *values are different*).
+            if (shouldSignal) {
+                if (!TP.equal(val, aValue)) {
+                    this.set(anIndex, aValue);
+                    if (TP.notValid(op)) {
+                        op = TP.UPDATE;
+                    }
+                }
+            } else {
+                this.set(anIndex, aValue);
+            }
+        }
+
+        //  Otherwise, we're not gonna signal Change so we just return.
+        if (TP.notValid(op)) {
+            return this;
+        }
+    }
+
+    //  'changed' will check further to see if we signal Change.
+    if (TP.isValid(op) && shouldSignal) {
+        //  NB: Here, we cannot use the normal TP.hc(arguments...) form of the
+        //  constructor or we'll loop endlessly back into this method. We must
+        //  use lower-level constructs.
+        //  this.changed(anIndex, op, TP.hc(TP.OLDVAL, val, TP.NEWVAL, aValue));
+
+        changeRecord = TP.hc();
+
+        changeRecordHash = changeRecord.$get('$$hash');
+
+        changeRecordHash[TP.OLDVAL] = val;
+        changeRecordHash[TP.NEWVAL] = aValue;
+
+        this.changed(anIndex, op, changeRecord);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+WeakMap.Inst.defineMethod('getKeys',
+function() {
+
+    /**
+     * @method getKeys
+     * @summary Returns the unique keys of the receiver.
+     * @returns {String[]} An array containing the receiver's keys.
+     */
+
+    //  Return empty Array - there is no way to get keys on a WeakMap
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+WeakMap.Inst.defineMethod('getItems',
+function() {
+
+    /**
+     * @method getItems
+     * @summary Returns a list of items from the collection, filtering them via
+     *     aSelectFunction if provided. Note that you can use the same semantics
+     *     as select for this call.
+     * @description The term "items", as opposed to "keys", "values", or "pairs"
+     *     is variant in TP.sys. For most collections "items" are "values",
+     *     however for TP.core.Hash in particular the "items" are more like
+     *     Smalltalk "associations", the key/value pairs. Using getItems is a
+     *     way to deal with the "natural item form" of each collection without
+     *     concern for the specific nature of those items so this method is
+     *     typically called only by the collection itself or by generic
+     *     iteration functions.
+     * @param {Function} aSelectFunction A function used to select items that
+     *     will be returned. Each item is passed to this function and if the
+     *     function returns true the item is included in the result.
+     * @returns {Object[]} The receiver's items in array key/value form.
+     */
+
+    //  Return empty Array - there is no way to get items on a WeakMap
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+WeakMap.Inst.defineMethod('getValues',
+function(deconstructPairs) {
+
+    /**
+     * @method getValues
+     * @summary Returns an array containing the values for the objects'
+     *     attributes.
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item. This parameter is not used in this version of this method.
+     * @returns {Object[]} An array of the values for the receiver's keys.
+     */
+
+    //  Return empty Array - there is no way to get values on a WeakMap
+    return TP.ac();
+});
+
+//  ========================================================================
+//  WeakSet Extensions
+//  ========================================================================
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+WeakSet.Inst.defineMethod('getKeys',
+function() {
+
+    /**
+     * @method getKeys
+     * @summary Returns the objects keys. By default, this is the receiver's
+     *     'attribute keys' (i.e. keys matching the attributes of the receiver).
+     * @returns {String[]} An Array of keys matching all attributes of the
+     *     receiver, hidden or shown, instance-level or local-level.
+     */
+
+    //  Return empty Array - there is no way to get keys on a WeakSet
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+WeakSet.Inst.defineMethod('getItems',
+function(aSelectFunction) {
+
+    /**
+     * @method getItems
+     * @summary Returns a list of items from the collection, filtering them via
+     *     aSelectFunction if provided. Note that you can use the same semantics
+     *     as select for this call.
+     * @description The term "items", as opposed to "keys", "values", or "pairs"
+     *     is variant in TP.sys. For most collections "items" are "values",
+     *     however for TP.core.Hash in particular the "items" are more like
+     *     Smalltalk "associations", the key/value pairs. Using getItems is a
+     *     way to deal with the "natural item form" of each collection without
+     *     concern for the specific nature of those items so this method is
+     *     typically called only by the collection itself or by generic
+     *     iteration functions.
+     * @param {Function} aSelectFunction A function used to select items that
+     *     will be returned. Each item is passed to this function and if the
+     *     function returns true the item is included in the result.
+     * @returns {Object[]} The receiver's items in array key/value form.
+     */
+
+    //  Return empty Array - there is no way to get items on a WeakSet
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+WeakSet.Inst.defineMethod('getValues',
+function(deconstructPairs) {
+
+    /**
+     * @method getValues
+     * @summary Top-level value-getter. For Sets the values are contained in
+     *     the weak set itself.
+     * @description If deconstructPairs is true, then the second item in each
+     *     pair will be used as the value for that item. For example, assume:
+     *          mySet = new WeakSet();
+     *          mySet.add(['olive', 'green']);
+     *          mySet.add(['cherry', 'red']);
+     *     then:
+     *          myArr.getValues() -> [['olive', 'green'],['cherry', 'red']]
+     *     but:
+     *          myArr.getValues(true) -> ['green, 'red']
+     * @param {Boolean} [deconstructPairs=false] Whether or not to deconstruct
+     *     pairs and make the second item in each pair be the value for that
+     *     item.
+     * @returns {Object[]} An array containing the receiver's values.
+     */
+
+    //  Return empty Array - there is no way to get values on a WeakSet
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------

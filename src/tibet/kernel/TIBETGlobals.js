@@ -1090,15 +1090,26 @@ TP.META_INST_OWNER.getDependencies = function() {
 TP.META_INST_OWNER.meta_methods = {};
 TP.META_INST_OWNER.common_methods = {};
 
-//  NB: We leave TP.ObjectProto out of this list on purpose.
+//  NB: We leave TP.ObjectProto out of this list on purpose and Proxy
+//  constructor has no proto.
 TP.META_INST_TARGETS = [
     TP.ArrayProto,
+    TP.ArrayBufferProto,
+    TP.AsyncFunctionProto,
     TP.BooleanProto,
+    TP.DataViewProto,
     TP.DateProto,
     TP.FunctionProto,
+    TP.GeneratorFunctionProto,
+    TP.MapProto,
     TP.NumberProto,
+    TP.PromiseProto,
     TP.RegExpProto,
-    TP.StringProto
+    TP.SetProto,
+    TP.StringProto,
+    TP.SymbolProto,
+    TP.WeakMapProto,
+    TP.WeakSetProto
 ];
 
 //  attribute name prefixes
@@ -1106,6 +1117,8 @@ TP.PUBLIC = '';
 TP.PRIVATE = '$';
 TP.PROTECTED = '_';
 TP.INTERNAL = '$$';
+
+TP.NO_OVERRIDE_METHODS = 'NO_OVERRIDE_METHODS';
 
 //  input/output/error values, NOTE that we use TP.STDIN as an attribute
 //  name so it should be viable for that purpose.
@@ -3128,7 +3141,7 @@ TP.regex.JS_IDENT_REPLACE = /[^a-zA-Z0-9_$]/g;          //  needs reset
 TP.regex.JS_IDENTIFIER = /^[a-zA-Z_$]{1}[a-zA-Z0-9_$]*$/;
 TP.regex.JS_OPERATORS =
             /(\+|-|\*|\/|=|>|<|>=|<=|&|\||%|!|\^|\(|\)|\?([^?]+):([^:]+))/;
-TP.regex.JS_SYMBOL = /Symbol\(.+\)/;
+TP.regex.JS_SYMBOL = /Symbol\((.+)\)/;
 
 TP.regex.JS_ASSIGNMENT =
     /(^|;|\s+)([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)(\s*=[^=])/g; // needs reset
