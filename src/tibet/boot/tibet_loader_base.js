@@ -670,7 +670,8 @@ window.onerror = function(msg, url, line, column, errorObj) {
 
     var file,
         path,
-        str;
+        str,
+        level;
 
     try {
         file = TP.boot.$$onerrorURL;
@@ -690,16 +691,24 @@ window.onerror = function(msg, url, line, column, errorObj) {
         //  Invoke the currently configured stderr hook function. This will push
         //  the message into the logs and trigger any configured reporters. NOTE
         //  that logging a FATAL error will also terminate the boot process.
-        TP.boot.$stderr(str, TP.FATAL);
+        if (TP.boot.$getcfg('boot.stop_onerror') ||
+                TP.boot.$getcfg('boot.fatalistic')) {
+            level = TP.FATAL;
+        } else {
+            level = TP.ERROR;
+        }
+        TP.boot.$stderr(str, level);
     } catch (e) {
         //  don't let log errors trigger recursion, but don't bury them either.
         TP.topWindow.console.error('Error logging onerror: ' + e.message);
         TP.topWindow.console.error(str || msg);
     }
 
-    //  set a non-zero status to signify that an error occurred to callers
-    //  which won't see a native Error in a catch block
-    $STATUS = TP.FAILED;
+    if (level === TP.boot.FATAL) {
+        //  set a non-zero status to signify that an error occurred to
+        //  callers which won't see a native Error in a catch block
+        $STATUS = TP.FAILED;
+    }
 
     return true;
 };
@@ -2502,9 +2511,10 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
 TP.boot.$uriIsAbsolute = function(aPath) {
 
     /**
-     * Returns true if the path provided appears to be an absolute path. Note
-     * that this will return true for TIBET virtual paths since they are
-     * absolute paths when expanded.
+     * @method $uriIsAbsolute
+     * @summary Returns true if the path provided appears to be an absolute
+     *     path. Note that this will return true for TIBET virtual paths since
+     *     they are absolute paths when expanded.
      * @param {string} aPath The path to be tested.
      * @returns {Boolean} True if the path is absolute.
      */
@@ -2524,13 +2534,116 @@ TP.boot.$uriIsAbsolute = function(aPath) {
     return false;
 };
 
+//  ----------------------------------------------------------------------------
+
+TP.boot.$uriIsBundled = function(aPath) {
+
+    /**
+     * @method $uriIsBundled
+     * @summary Returns true if the path provided represents a path that was
+     *     loaded as part of a bundled/built package. This is the case when a
+     *     resource is part of a larger concatenated package rather than having
+     *     loaded directly from its own source path.
+     * @param {string} aPath The path to be tested.
+     * @returns {Boolean} True if the path loaded in a bundled context.
+     */
+
+    var vpath,
+        found;
+
+    vpath = TP.boot.$uriInTIBETFormat(aPath);
+
+console.log('$uriIsBundled', aPath);
+
+    found = TP.boot.$$bundled.some(function(item) {
+        return item === vpath;
+    });
+
+console.log(found);
+
+    return found;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$uriIsInlined = function(aPath, aType) {
+
+    /**
+     * @method $uriIsInlined
+     * @summary Returns true if the path references an 'inlined' resource. An
+     *     inlined resource is one where the actual source of the HTML, CSS,
+     *     etc. has been embedded as a TIBET URI within a script tag. This is
+     *     the result of building packages with inlined resources.
+     * @param {string} aPath The path to be tested.
+     * @returns {Boolean} True if the path loaded as an inlined resource.
+     */
+
+    var found,
+        uri;
+
+    found = false;
+
+    //  The most accurate answer comes from the URI itself. This flag is set by
+    //  the rollup/resource commands when they bundle inline resources.
+    if (typeof TP.uc === 'function') {
+console.log('$uriIsInlined', aPath);
+        uri = TP.uc(aPath);
+        found = uri.$flag('inlined') === true;
+
+    }
+console.log(found);
+    return found;
+
+/*
+    var inlined,
+
+        packageChainPaths;
+
+    if (TP.isEmpty(aPath)) {
+        return false;
+    }
+
+    //  If the system is running with inlined resources we create 'style'
+    //  elements rather than 'link' elements for CSS files.
+    if (TP.uriIsLibResource(aPath)) {
+
+        //  If a real type was supplied, use a smarter mechanism to determine
+        //  whether it is inlined or not.
+        if (TP.isType(aType)) {
+
+            //  If the type's package itself is 'alacarte' or in investigating
+            //  it's 'package chain paths' it can be determined to be an
+            //  'alacarte' resource, then it is really an app resource and
+            //  should refer to the 'boot.inlined' flag.
+            packageChainPaths = TP.sys.getPackageChainPaths(aType.getName());
+            if (TP.boot.$isAlacarteResource(aPath, packageChainPaths)) {
+                inlined = TP.sys.cfg('boot.inlined');
+            }
+        }
+
+        //  If the inlined local variable still doesn't have a value, then it
+        //  wasn't an alacarte resource - use the lib-level logic, which is to
+        //  determine whether we're running with the 'boot.bundled' flag on.
+        if (TP.notValid(inlined)) {
+            inlined = TP.sys.cfg('boot.bundled');
+        }
+    } else if (TP.uriIsAppResource(aPath)) {
+        inlined = TP.sys.cfg('boot.inlined');
+    } else {
+        inlined = false;
+    }
+
+    return inlined;
+*/
+};
 
 //  ----------------------------------------------------------------------------
 
 TP.boot.$uriIsVirtual = function(aPath) {
 
     /**
-     * Returns true if the path provided appears to be a virtual path.
+     * @method $uriIsVirtual
+     * @summary Returns true if the path provided appears to be a virtual path.
      * @param {string} aPath The path to be tested.
      * @returns {Boolean} True if the path is virtual.
      */
@@ -5572,28 +5685,28 @@ TP.boot.$headlessReporter = function(entry) {
 
     switch (level) {
     case TP.boot.TRACE:
-        TP.topWindow.console.log('trace ' + msg);
+        console.log('trace ' + msg);
         break;
     case TP.boot.DEBUG:
-        TP.topWindow.console.log('debug ' + msg);
+        console.log('debug ' + msg);
         break;
     case TP.boot.INFO:
-        TP.topWindow.console.log('info ' + msg);
+        console.log('info ' + msg);
         break;
     case TP.boot.WARN:
-        TP.topWindow.console.warn('warn ' + msg);
+        console.warn('warn ' + msg);
         break;
     case TP.boot.ERROR:
-        TP.topWindow.console.error('error ' + msg);
+        console.error('error ' + msg);
         break;
     case TP.boot.FATAL:
-        TP.topWindow.console.error('fatal ' + msg);
+        console.error('fatal ' + msg);
         break;
     case TP.boot.SYSTEM:
-        TP.topWindow.console.log('system ' + msg);
+        console.log('system ' + msg);
         break;
     default:
-        TP.topWindow.console.log(msg);
+        console.log(msg);
         break;
     }
 
@@ -9109,6 +9222,58 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
 };
 
 //  ============================================================================
+//  INLINED/BUNDLED INFO FUNCTIONS
+//  ============================================================================
+
+TP.boot.$$setModuleInfo = function(aPath, aSpec) {
+
+    /**
+     * @method $$setModuleInfo
+     * @summary Sets metadata used by the runtime engine to help load modules
+     *     which were inlined with originally-authored specification attributes.
+     * @param {String} aPath The module path from the original script node.
+     * @param {String} aSpec The module 'specification' from the script node.
+     */
+
+    if (TP.boot.$notEmpty(aSpec)) {
+        TP.boot.$moduleBareSpecMap[aSpec] = aPath;
+    }
+
+    TP.boot.$$bundled.push(aPath);
+
+    return;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$$setSourceInfo = function(aPath, aPackage, aConfig) {
+
+    /**
+     * @method $$setSourceInfo
+     * @summary Invoked by rolled-up code packages to adjust the runtime
+     * value(s) for the current source path, package, and config.
+     */
+
+    //  Occasionally bundler will invoke with empty data. In that case we clear
+    //  the slots and return.
+    if (!aPath) {
+        TP.boot.$$srcPath = '';
+        return;
+    }
+
+    TP.boot.$$srcPath = aPath;
+    TP.boot.$$srcPackage = aPackage;
+    TP.boot.$$srcConfig = aConfig;
+
+    if (TP.boot.$uriInTIBETFormat(TP.boot.$$srcPath) !==
+            TP.boot.$uriInTIBETFormat(TP.boot.$$loadPath)) {
+        TP.boot.$$bundled.push(aPath);
+    }
+
+    return;
+};
+
+//  ============================================================================
 //  IMPORT FUNCTIONS
 //  ============================================================================
 
@@ -11731,10 +11896,13 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         pkg,
         config,
 
-        nonTeamTIBETEnv,
+        bundleFlag,
+        tibetFlag,
+
+        bundledEnv,
 
         packageAssets,
-        teamTIBETAssets,
+        unbundledAssets,
         loadableAssets,
 
         loadablePaths,
@@ -11788,19 +11956,23 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
     packageAssets = await TP.boot.$listPackageAssets(
                                 pkg, config, null, true, false, false);
 
-    //  If we're running in a non-Team TIBET environment, that means that we're
+    //  If we're running in a bundled environment, that means that we're
     //  running with at least the lib (and possibly the app) in a form where
     //  some of the resources are inlined. We need to get a list of all the
     //  'resource' tags using the package and config that the user booted with,
     //  but acting as if we're a member of Team TIBET so that we can traverse
     //  all of the applicable manifest entries to find applicable 'resource'
     //  tags.
-    nonTeamTIBETEnv = TP.sys.getcfg('boot.teamtibet') !== true;
-    if (nonTeamTIBETEnv) {
+    bundledEnv = TP.sys.getcfg('boot.bundled') === true &&
+        TP.sys.getcfg('boot.teamtibet') === false;
+    if (bundledEnv) {
 
-        //  Set the flag that members of Team TIBET use to load individual,
-        //  non-inlined, resources.
-        TP.sys.setcfg('boot.teamtibet', true);
+        bundleFlag = TP.sys.getcfg('boot.bundled');
+        tibetFlag = TP.sys.getcfg('boot.teamtibet');
+
+        //  Set the flags to load individual non-inlined, resources.
+        TP.sys.setcfg('boot.bundled', false);
+        TP.sys.setcfg('boot.teamtibet', false);
 
         //  'production' means that we're interested in what the manifest
         //  system calls 'base'.
@@ -11809,23 +11981,24 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         }
 
         //  Grab the list of resources using that package and config.
-        teamTIBETAssets = await TP.boot.$listPackageAssets(
+        unbundledAssets = await TP.boot.$listPackageAssets(
                                 pkg, config, null, true, false, false);
 
         //  Reset config in case we want to use it later.
         config = TP.sys.cfg('boot.config');
 
         //  Filter out the assets that are not 'resource' tags.
-        teamTIBETAssets = teamTIBETAssets.filter(
+        unbundledAssets = unbundledAssets.filter(
                     function(anElem) {
                         return anElem.tagName === 'resource';
                     });
 
         //  Add those assets to the list of assets we already have.
-        packageAssets = packageAssets.concat(teamTIBETAssets);
+        packageAssets = packageAssets.concat(unbundledAssets);
 
-        //  Put the Team TIBET flag back.
-        TP.sys.setcfg('boot.teamtibet', false);
+        //  Put the flags back.
+        TP.sys.setcfg('boot.bundled', bundleFlag);
+        TP.sys.setcfg('boot.teamtibet', tibetFlag);
     }
 
     //  Restore the previous values for 'boot.phase_one' and 'boot.phase_two'.
@@ -11853,7 +12026,7 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         for (i = 0; i < packagePaths.length; i++) {
             path = packagePaths[i];
 
-            if (/main\.xml$/.test(path) ||
+            if (/\/main\.xml$/.test(path) ||
                 TP.boot.$isAlacarteResource(
                     path, TP.boot.$$packages[path].PACKAGE_CHAIN_PATHS)) {
                 packagePaths.splice(i, 1);
@@ -12502,9 +12675,14 @@ TP.boot.shouldCacheFiles = function() {
         return false;
     }
 
-    //  If the user is running as a Team TIBET user, then we don't cache any
+    //  If the user is running unbundled loads, then we don't cache any
     //  files.
-    if (TP.sys.getcfg('boot.teamtibet') === true) {
+    if (TP.notTrue(TP.sys.getcfg('boot.bundled'))) {
+        return false;
+    }
+
+    //  If teamtibet is set then we don't cache either.
+    if (TP.isTrue(TP.sys.getcfg('boot.teamtibet'))) {
         return false;
     }
 
