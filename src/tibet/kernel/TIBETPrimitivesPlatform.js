@@ -1138,6 +1138,10 @@ TP.hc(
             return '[object CSSStyleDeclaration]';
         }
 
+        if (TP.isPrototype(anObject)) {
+            return '[object Function]';
+        }
+
         if (TP.isProxy(anObject)) {
             return '[object Proxy]';
         }
