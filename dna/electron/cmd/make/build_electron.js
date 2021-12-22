@@ -51,12 +51,12 @@
                 }
             }
 
-            if (make.CLI.notEmpty(json.boot.teamtibet) &&
-                json.boot.teamtibet === true) {
+            if (make.CLI.notEmpty(json.boot.bundled) &&
+                json.boot.bundled !== true) {
                 result = make.CLI.prompt.question(
-                    'Your boot teamtibet is set to: ' + json.boot.teamtibet + '.' +
+                    'Your boot.bundled flag is set to: ' + json.boot.bundled + '.' +
                     ' This is not recommended.' +
-                    '\nTo proceed with: ' + json.boot.teamtibet +
+                    '\nTo proceed with: ' + json.boot.bundled +
                     ', enter \'yes\': ');
                 if (!/^y/i.test(result)) {
                     reject('TIBET build cancelled.');

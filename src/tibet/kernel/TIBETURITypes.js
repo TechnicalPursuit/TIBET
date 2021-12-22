@@ -1257,6 +1257,9 @@ TP.uri.URI.Inst.defineAttribute('$dirty', false);
 //  load status flag
 TP.uri.URI.Inst.defineAttribute('$loaded', false);
 
+//  whether the target URI was loaded inline.
+TP.uri.URI.Inst.defineAttribute('$inlined', false);
+
 //  uri mapping/rewriting configuration
 TP.uri.URI.Inst.defineAttribute('$uriMap', null);
 
@@ -4176,6 +4179,27 @@ function(aspectName, facetName, facetValue, shouldSignal) {
 
     return false;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.uri.URI.Inst.defineMethod('$setInlined',
+function(aFlag) {
+
+    /**
+     * @method $setInlined
+     * @summary Sets the receiver as an inlined resource URI. This method is
+     *     only invoked through bundled packages created by TIBET rollup.
+     * @param {Boolean} [aFlag] The new value to optionally set.
+     * @returns {Boolean} Whether or not the content of the receiver is loaded.
+     */
+
+    this.$flag('inlined', aFlag);
+
+    //  We need to return the URI so that rollup's invocation of setContent
+    //  which follows will work properly.
+    return this;
+});
+
 
 //  ------------------------------------------------------------------------
 

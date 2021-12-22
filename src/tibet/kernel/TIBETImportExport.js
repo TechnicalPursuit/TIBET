@@ -78,8 +78,8 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
     targetLoc = url.getLocation();
 
     //  If the script to be fetched is modeled as an ECMA6 module, then we use
-    //  the TIBET 'importModule' call, which is smart around inlined vs.
-    //  non-inlined and HTTP vs. non-HTTP loading.
+    //  the TIBET 'importModule' call, which is smart around bundled vs.
+    //  unbundled as well as HTTP vs. non-HTTP loading.
     if (isECMAModule) {
         newPromise = TP.extern.Promise.construct(
             function(resolver, rejector) {
@@ -931,21 +931,21 @@ function(aSpecifier) {
 
     targetLoc = url.getLocation();
 
-    //  If the URI is inlined, then we use the 'SystemJS' loader. This means
-    //  that we're running in a packaged environment and our 'packaging' step
-    //  will have inlined any ECMA modules and SystemJS will handle any pathing
-    //  issues itself.
-    if (TP.uriIsInlined(targetLoc)) {
-        //  When the packages were built and the module content was inlined, the
-        //  bare spec module map was populated with virtual URIs. Since SystemJS
-        //  won't actually do expansion of those URIs and is just using them as
-        //  a name to do module lookup, we have to use the virtual location
-        //  here.
+    //  If the URI is bundled, then we use the 'SystemJS' loader. This means
+    //  that we're running in a packaged environment. In that case our
+    //  'packaging' step will have embedded any ECMA modules and SystemJS will
+    //  handle any pathing issues itself.
+    if (TP.uriIsBundled(targetLoc)) {
+        //  When the packages were built and the module content was embedded,
+        //  the bare spec module map was populated with virtual URIs. Since
+        //  SystemJS won't actually do expansion of those URIs and is just using
+        //  them as a name to do module lookup, we have to use the virtual
+        //  location here.
         targetLoc = url.getVirtualLocation();
         return TP.extern.System.import(targetLoc);
     }
 
-    //  If we're not running in an inlined (i.e. 'packaged') environment, then
+    //  If we're not running in an bundled (i.e. 'packaged') environment, then
     //  we need to use the module definitions that the TIBET loader will have
     //  repackaged into 'blob' URLs.
     blobUrl = TP.boot.$moduleBlobURLMap[targetLoc];
@@ -1038,7 +1038,7 @@ async function(packageConfig, useCache, shouldSignal) {
     }
 
     //  Determine which scripts haven't already been loaded.
-    loadedScripts = TP.boot.$$loadpaths;
+    loadedScripts = TP.boot.$getLoadedScripts();
     missingScripts = packageScriptPaths.difference(loadedScripts);
 
     //  We need to import all of the scripts, but do so in a synchronous
@@ -1190,7 +1190,7 @@ function(targetUrl) {
     /**
      * @method importSourceText
      * @summary Imports a target script's text *asynchronously* and then adds
-     *     that script source as inlined script source text that integrates the
+     *     that script source as script source text that integrates the
      *     *text* of that with the JS with the currently running "image".
      * @param {String} targetUrl URL of the target resource.
      * @exception TP.sig.InvalidURI Raised when a valid URI has not been

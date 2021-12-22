@@ -250,8 +250,8 @@
     //  sharing code between boot logic and command-line packaging tools).
     TP.sys.setcfg('boot.assets', null);
 
-    //  A convenient shorthand for loading fully-dynamic library source.
-    TP.sys.setcfg('boot.teamtibet', false);
+    //  Do we want to load bundled (concatenated files) by default?
+    TP.sys.setcfg('boot.bundled', true);
 
     //  Do we want to boot minified source alternative(s) where found? The
     //  default tibet.xml file includes unminified options for kernel/library
@@ -2087,7 +2087,7 @@
     //  Boot parameters are nested under the karma key but pulled out and
     //  assigned to boot.* by the karma-tibet adapter.js file processing.
     TP.sys.setcfg('karma.boot.profile', 'main@developer');
-    TP.sys.setcfg('karma.boot.teamtibet', false);
+    TP.sys.setcfg('karma.boot.bundled', true);
     TP.sys.setcfg('karma.boot.minified', true);
     TP.sys.setcfg('karma.boot.inlined', true);
 

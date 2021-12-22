@@ -9,33 +9,23 @@
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
 
 <config id="base" if="boot.phase_one">
-    <package src="~lib_cfg/TIBET.xml" config="base" if="boot.teamtibet" />
-    <script src="~lib_build/tibet_base.js" unless="boot.minified boot.teamtibet" />
-    <script src="~lib_build/tibet_base.min.js" if="boot.minified" unless="boot.teamtibet" />
+    <package src="~lib_cfg/BUILD.xml" config="base" />
 </config>
 
 <config id="baseui" if="boot.phase_one">
-    <package src="~lib_cfg/TIBET.xml" config="baseui" if="boot.teamtibet" />
-    <script src="~lib_build/tibet_baseui.js" unless="boot.minified boot.teamtibet" />
-    <script src="~lib_build/tibet_baseui.min.js" if="boot.minified" unless="boot.teamtibet" />
+    <package src="~lib_cfg/BUILD.xml" config="baseui" />
 </config>
 
 <config id="full" if="boot.phase_one">
-    <package src="~lib_cfg/TIBET.xml" config="full" if="boot.teamtibet" />
-    <script src="~lib_build/tibet_full.js" unless="boot.minified boot.teamtibet" />
-    <script src="~lib_build/tibet_full.min.js" if="boot.minified" unless="boot.teamtibet" />
+    <package src="~lib_cfg/BUILD.xml" config="full" />
 </config>
 
 <config id="developer" if="boot.phase_one">
-    <package src="~lib_cfg/TIBET.xml" config="developer" if="boot.teamtibet" />
-    <script src="~lib_build/tibet_developer.js" unless="boot.minified boot.teamtibet" />
-    <script src="~lib_build/tibet_developer.min.js" if="boot.minified" unless="boot.teamtibet" />
+    <package src="~lib_cfg/BUILD.xml" config="developer" />
 </config>
 
 <config id="contributor" if="boot.phase_one">
-    <package src="~lib_cfg/TIBET.xml" config="contributor" if="boot.teamtibet" />
-    <script src="~lib_build/tibet_contributor.js" unless="boot.minified boot.teamtibet" />
-    <script src="~lib_build/tibet_contributor.min.js" if="boot.minified" unless="boot.teamtibet" />
+    <package src="~lib_cfg/BUILD.xml" config="contributor" />
 </config>
 
 </package>

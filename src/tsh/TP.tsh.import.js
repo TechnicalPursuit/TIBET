@@ -114,7 +114,7 @@ function(aRequest) {
         ref = TP.uriExpandPath(ref);
     }
 
-    options = TP.boot.$$loadpaths.grep(ref);
+    options = TP.boot.$getLoadedScripts().grep(ref);
     if (TP.isEmpty(options)) {
         //  a file we've never seen before
         options = TP.ac(ref);

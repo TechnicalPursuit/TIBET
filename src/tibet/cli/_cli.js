@@ -905,6 +905,38 @@ CLI.expandPath = function(aPath, silent) {
 
 
 /**
+ * Returns true if there appear to be valid build assets in the directory
+ * provided.
+ * @param {String} aPath The directory path to check.
+ * @returns {Boolean} true if the directory exists and contains minified files.
+ */
+CLI.hasBuildAssets = function(aPath) {
+    var fullpath,
+        list;
+
+    fullpath = CLI.expandPath(aPath);
+
+    if (!sh.test('-d', fullpath)) {
+        return false;
+    }
+
+    list = sh.ls('-R', fullpath);
+    list = list.filter(function(entry) {
+        var str;
+
+        str = entry.toString();
+        return /\.min\.js/.test(str);
+    });
+
+    if (list.length > 0) {
+        return true;
+    }
+
+    return false;
+};
+
+
+/**
  * Returns a list of entries in sources list not found in removals list.
  * @param {Array} removals The list of items to remove.
  * @param {Array} sources The list of items to filter.

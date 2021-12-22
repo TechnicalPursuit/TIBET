@@ -29,7 +29,7 @@
     <config ref="properties"/>
 
     <!-- the two properties here ensure full source/comments -->
-    <property name="boot.teamtibet" value="true"/>
+    <property name="boot.bundled" value="false"/>
     <property name="boot.minified" value="false"/>
 
     <package src="~app_cfg/main.xml" config="developer"/>

@@ -650,6 +650,9 @@ TP.boot.$$loadNode = null;
 TP.boot.$$loadPath = null;
 TP.boot.$$loadpaths = [];
 
+//  list of any bundled resources. this is updated by the $$set*Info calls
+TP.boot.$$bundled = [];
+
 //  ---
 //  performance tracking
 //  ---

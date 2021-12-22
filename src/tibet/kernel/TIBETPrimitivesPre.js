@@ -2081,7 +2081,7 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
     TP.sys.$$meta_methods = TP.hc();
     TP.sys.$$meta_owners = TP.hc();
     TP.sys.$$meta_namespaces = TP.hc();
-    TP.sys.$$meta_pathinfo = TP.hc();
+    TP.sys.$$meta_attrpaths = TP.hc();
 
     TP.sys.$$metadata = TP.hc('types', TP.sys.$$meta_types,
                                 'attributes', TP.sys.$$meta_attributes,
@@ -2089,7 +2089,7 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
                                 'methods', TP.sys.$$meta_methods,
                                 'namespaces', TP.sys.$$meta_namespaces,
                                 'owners', TP.sys.$$meta_owners,
-                                'pathinfo', TP.sys.$$meta_pathinfo);
+                                'attrpaths', TP.sys.$$meta_attrpaths);
 }());
 
 //  ------------------------------------------------------------------------
@@ -2190,7 +2190,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
         owners,
 
-        pathinfo,
+        attrpaths,
         itemkey;
 
     //  Need a name for metadata key.
@@ -2247,7 +2247,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
             //  If the item has a 'value' slot and the value there responds
             //  to 'isAccessPath' and is, in fact, an access path, then we
-            //  register it in TP.sys.$$meta_pathinfo. This acts as a
+            //  register it in TP.sys.$$meta_attrpaths. This acts as a
             //  'reverse index' of access paths to aspect names.
             if (anItem.value &&
                 anItem.value.isAccessPath &&
@@ -2258,21 +2258,21 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
                 //  that was actually authored by the user).
                 itemkey = anItem.value.asString(false);
 
-                pathinfo = TP.sys.$$meta_pathinfo.at(
+                attrpaths = TP.sys.$$meta_attrpaths.at(
                                         tname + '_' + itemTrack);
-                if (!pathinfo) {
-                    pathinfo = {};
+                if (!attrpaths) {
+                    attrpaths = {};
 
-                    TP.sys.$$meta_pathinfo.atPut(
+                    TP.sys.$$meta_attrpaths.atPut(
                                         tname + '_' + itemTrack,
-                                        pathinfo);
+                                        attrpaths);
                 }
 
-                if (!pathinfo[itemkey]) {
-                    pathinfo[itemkey] = [];
+                if (!attrpaths[itemkey]) {
+                    attrpaths[itemkey] = [];
                 }
 
-                pathinfo[itemkey].push(iname);
+                attrpaths[itemkey].push(iname);
             }
 
             break;

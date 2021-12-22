@@ -235,18 +235,27 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     this.finalizeTimeout(arglist);
 
     params = args.filter(function(arg) {
-        //  Don't let boot.inlined pass...we have to set to false or the
-        //  resource command can't boot during clean/(re)build operations.
-        return arg.indexOf('--boot.') === 0 &&
-            arg.indexOf('--boot.inlined=') === -1;
+        //  filter out any bundled/teamtibet flags. we force those to proper
+        //  values to ensure the resource command can boot during build(s).
+        if (arg.indexOf('--boot.') === 0) {
+            return arg.indexOf('--boot.bundled=') === -1 &&
+                arg.indexOf('--boot.teamtibet=') === -1;
+        }
+
+        return true;
     });
+    params.push('boot.bundled=false');
+    params.push('boot.teamtibet=true');
+
     params = params.map(function(arg) {
-        return arg.slice(2);
+        if (arg.indexOf('--')) {
+            return arg.slice(2);
+        }
+        return arg;
     });
-    params.push('boot.inlined=false');
     params = params.join('&');
 
-    //  Force command to NOT try to load inlined resources since this can cause
+    //  Force command to NOT try to load bundled resources since this can cause
     //  a circular failure condition where we're trying to boot TIBET to compute
     //  resources but we are missing resource files because...we haven't been
     //  able to run this command to completion...etc.
@@ -311,9 +320,9 @@ Cmd.prototype.generateResourceList = function() {
             break;
     }
 
-    //  Force our package queries to ignore inlined content and focus on
-    //  resources which might require generation of the inlined resources.
-    this.pkgOpts.boot.inlined = false;
+    //  Force our package queries to ignore bundled content and focus on
+    //  resources which might require generation of the bundled resources.
+    this.pkgOpts.boot.bundled = false;
 
     if (!this.pkgOpts.package) {
         this.pkgOpts.package = CLI.getcfg('boot.package') ||
@@ -503,6 +512,15 @@ Cmd.prototype.getCompletionOptions = function() {
         plist = Cmd.Parent.prototype.getCompletionOptions();
 
     return CLI.subtract(plist, list);
+};
+
+
+/**
+ * Returns the default boot config to use when launching this command.
+ * @Returns {String} The config value to use if no other is provided.
+ */
+Cmd.prototype.getDefaultBootConfig = function() {
+    return 'resources';
 };
 
 
@@ -805,7 +823,7 @@ Cmd.prototype.processResources = function() {
             } else {
                 cmd.products.push([resource, file]);
 
-                content = 'TP.uc(\'' + resource + '\').setContent(\n';
+                content = 'TP.uc(\'' + resource + '\').$setInlined(true).setContent(\n';
                 content += CLI.quoted(data);
                 content += '\n);';
 
@@ -935,7 +953,7 @@ Cmd.prototype.processLessResource = function(options) {
                                     '");';
                         });
 
-        content = 'TP.uc(\'' + rname + '\').setContent(\n';
+        content = 'TP.uc(\'' + rname + '\').$setInlined(true).setContent(\n';
         content += CLI.quoted(finaloutput);
         content += '\n);';
 
@@ -1045,7 +1063,7 @@ Cmd.prototype.processScssResource = function(options) {
                                     '");';
                         });
 
-        content = 'TP.uc(\'' + rname + '\').setContent(\n';
+        content = 'TP.uc(\'' + rname + '\').$setInlined(true).setContent(\n';
         content += CLI.quoted(finaloutput);
         content += '\n);';
 
@@ -1090,7 +1108,7 @@ Cmd.prototype.processXmlResource = function(options) {
 
     cmd.products.push([resource, file]);
 
-    content = 'TP.uc(\'' + resource + '\').setContent(\n';
+    content = 'TP.uc(\'' + resource + '\').$setInlined(true).setContent(\n';
     content += CLI.quoted(data);
     content += '\n);';
 

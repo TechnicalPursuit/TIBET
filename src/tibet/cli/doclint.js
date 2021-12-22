@@ -95,6 +95,15 @@ Cmd.prototype.getCompletionOptions = function() {
 
 
 /**
+ * Returns the default boot config to use when launching this command.
+ * @Returns {String} The config value to use if no other is provided.
+ */
+Cmd.prototype.getDefaultBootConfig = function() {
+    return 'reflection';
+};
+
+
+/**
  * Computes and returns the TIBET Shell script command line to be run.
  * @returns {String} The TIBET Shell script command to execute.
  */

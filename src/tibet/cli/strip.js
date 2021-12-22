@@ -149,15 +149,11 @@ Cmd.prototype.getCompletionOptions = function() {
 
 
 /**
- * Computes and returns the proper profile to boot.
- * @returns {String} The profile to boot.
+ * Returns the default boot config to use when launching this command.
+ * @Returns {String} The config value to use if no other is provided.
  */
-Cmd.prototype.getBootProfile = function() {
-    if (this.options.selftest) {
-        return '~lib_etc/headless/headless@selftest';
-    }
-
-    return Cmd.Parent.prototype.getBootProfile.call(this);
+Cmd.prototype.getDefaultBootConfig = function() {
+    return 'resources';
 };
 
 

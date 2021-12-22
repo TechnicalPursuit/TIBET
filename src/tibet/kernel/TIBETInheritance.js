@@ -8881,7 +8881,7 @@ function(aPath, includeSupertypes) {
         i,
         tname;
 
-    entry = TP.sys.$$meta_pathinfo.at(this.getName() + '_Type');
+    entry = TP.sys.$$meta_attrpaths.at(this.getName() + '_Type');
 
     //  If we didn't find an entry in for the type itself, and the flag doesn't
     //  prevent us with checking with the supertypes, then do so.
@@ -8896,7 +8896,7 @@ function(aPath, includeSupertypes) {
         len = names.getSize();
         for (i = 0; i < len; i++) {
             tname = names.at(i);
-            if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
+            if (TP.isValid(entry = TP.sys.$$meta_attrpaths.at(
                             tname + '_Type'))) {
                 break;
             }
@@ -8936,7 +8936,7 @@ function(aPath, includeSupertypes) {
         i,
         tname;
 
-    entry = TP.sys.$$meta_pathinfo.at(this.getTypeName() + '_Inst');
+    entry = TP.sys.$$meta_attrpaths.at(this.getTypeName() + '_Inst');
 
     //  If we didn't find an entry in for the type itself, and the flag doesn't
     //  prevent us with checking with the supertypes, then do so.
@@ -8951,7 +8951,7 @@ function(aPath, includeSupertypes) {
         len = names.getSize();
         for (i = 0; i < len; i++) {
             tname = names.at(i);
-            if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
+            if (TP.isValid(entry = TP.sys.$$meta_attrpaths.at(
                             tname + '_Inst'))) {
                 break;
             }

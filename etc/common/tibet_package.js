@@ -590,9 +590,13 @@
             Package.PACKAGE);
         /* eslint-enable no-extra-parens */
 
-        //  Default to ~app_cfg/{package}[.xml] as needed.
+        //  Default based on context to {context}/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
-            expanded = this.joinPaths('~app_cfg', expanded);
+            if (this.inProject()) {
+                expanded = this.joinPaths('~app_cfg', expanded);
+            } else {
+                expanded = this.joinPaths('~lib_cfg', expanded);
+            }
         }
 
         if (/\.xml$/.test(expanded) !== true) {
@@ -1016,9 +1020,13 @@
             Package.PACKAGE);
         /* eslint-enable no-extra-parens */
 
-        //  Default to ~app_cfg/{package}[.xml] as needed.
+        //  Default based on context to {context}/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
-            expanded = this.joinPaths('~app_cfg', expanded);
+            if (this.inProject()) {
+                expanded = this.joinPaths('~app_cfg', expanded);
+            } else {
+                expanded = this.joinPaths('~lib_cfg', expanded);
+            }
         }
 
         if (/\.xml$/.test(expanded) !== true) {
@@ -1036,6 +1044,7 @@
             doc = this.packages[expanded];
             if (!doc) {
                 if (!sh.test('-e', expanded)) {
+
                     msg = 'Unable to find package: ' + expanded;
                     throw new Error(msg);
                 }
@@ -2395,9 +2404,13 @@
             Package.PACKAGE);
         /* eslint-enable no-extra-parens */
 
-        //  Default to ~app_cfg/{package}[.xml] as needed.
+        //  Default based on context to {context}/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
-            expanded = this.joinPaths('~app_cfg', expanded);
+            if (this.inProject()) {
+                expanded = this.joinPaths('~app_cfg', expanded);
+            } else {
+                expanded = this.joinPaths('~lib_cfg', expanded);
+            }
         }
 
         if (/\.xml$/.test(expanded) !== true) {
@@ -2685,9 +2698,13 @@
             Package.PACKAGE);
         /* eslint-enable no-extra-parens */
 
-        //  Default to ~app_cfg/{package}[.xml] as needed.
+        //  Default based on context to {context}/{package}[.xml] as needed.
         if (!this.isAbsolutePath(expanded)) {
-            expanded = this.joinPaths('~app_cfg', expanded);
+            if (this.inProject()) {
+                expanded = this.joinPaths('~app_cfg', expanded);
+            } else {
+                expanded = this.joinPaths('~lib_cfg', expanded);
+            }
         }
 
         if (/\.xml$/.test(expanded) !== true) {

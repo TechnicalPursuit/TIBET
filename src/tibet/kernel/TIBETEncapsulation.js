@@ -999,7 +999,7 @@ function(kind) {
      *     reflection directly to get more information on a specific type or
      *     object.
      * @param {String} kind The subset of metadata to return. Should be one of
-     *     'types', 'attributes', 'methods', 'owners', or 'pathinfo'.
+     *     'types', 'attributes', 'methods', 'owners', or 'attrpaths'.
      * @returns {TP.core.Hash} The TIBET metadata hash.
      */
 
@@ -1017,8 +1017,8 @@ function(kind) {
             return TP.sys.$$meta_namespaces;
         case 'owners':
             return TP.sys.$$meta_owners;
-        case 'pathinfo':
-            return TP.sys.$$meta_pathinfo;
+        case 'attrpaths':
+            return TP.sys.$$meta_attrpaths;
         default:
             return TP.sys.$$metadata;
     }

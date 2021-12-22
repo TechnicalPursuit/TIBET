@@ -1170,61 +1170,41 @@ function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
+TP.definePrimitive('uriIsBundled',
+function(aPath, aType) {
+
+    /**
+     * @method uriIsBundled
+     * @summary Returns true if the path provided represents a path that was
+     *     loaded as part of a bundled/built package. This is the case when a
+     *     resource is loaded as part of a larger concatenated package rather
+     *     than having loaded directly from its own source path.
+     * @param {String} aPath The path to be tested.
+     * @returns {Boolean} True if the path loaded in a bundled/built context.
+     */
+
+    return TP.boot.$uriIsBundled(aPath, aType);
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.definePrimitive('uriIsInlined',
 function(aPath, aType) {
 
     /**
      * @method uriIsInlined
-     * @summary Returns true if the path provided is an 'inlined' resource. This
-     *     will be different depending on whether the supplied path points to a
-     *     'lib' resource or an 'app' resource.
+     * @summary Returns true if the path references an 'inlined' resource. An
+     *     inlined resource is one where the actual source of the HTML, CSS,
+     *     etc. has been embedded via TP.uc().setContent() in a script tag.
      * @param {String} aPath The path to be tested.
      * @param {TP.meta.lang.RootObject} [aType] An optional type that will allow
      *     this method to be smarter around determining whether something is
-     *     truly a lib or app resource (i.e. if it loads 'alacarte', it will
+     *     a lib or app resource (i.e. if it loads 'alacarte', it will
      *     report as a lib resource, but it is really an app resource).
      * @returns {Boolean} True if the path points to an inlined resource.
      */
 
-    var inlined,
-
-        packageChainPaths;
-
-    if (TP.isEmpty(aPath)) {
-        return false;
-    }
-
-    //  If the system is running with inlined resources we create 'style'
-    //  elements rather than 'link' elements for CSS files.
-    if (TP.uriIsLibResource(aPath)) {
-
-        //  If a real type was supplied, use a smarter mechanism to determine
-        //  whether it is inlined or not.
-        if (TP.isType(aType)) {
-
-            //  If the type's package itself is 'alacarte' or in investigating
-            //  it's 'package chain paths' it can be determined to be an
-            //  'alacarte' resource, then it is really an app resource and
-            //  should refer to the 'boot.inlined' flag.
-            packageChainPaths = TP.sys.getPackageChainPaths(aType.getName());
-            if (TP.boot.$isAlacarteResource(aPath, packageChainPaths)) {
-                inlined = TP.sys.cfg('boot.inlined');
-            }
-        }
-
-        //  If the inlined local variable still doesn't have a value, then it
-        //  wasn't an alacarte resource - use the lib-level logic, which is to
-        //  determine whether we're running with the 'boot.teamtibet' flag on.
-        if (TP.notValid(inlined)) {
-            inlined = !TP.sys.cfg('boot.teamtibet');
-        }
-    } else if (TP.uriIsAppResource(aPath)) {
-        inlined = TP.sys.cfg('boot.inlined');
-    } else {
-        inlined = false;
-    }
-
-    return inlined;
+    return TP.boot.$uriIsInlined(aPath, aType);
 });
 
 //  ----------------------------------------------------------------------------

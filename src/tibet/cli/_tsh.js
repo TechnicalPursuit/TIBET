@@ -111,8 +111,12 @@ Cmd.prototype.announce = function() {
 
     if (!this.options.silent) {
         this.log('# ' + // (this.options.tap ? '# ' : '') +
-            'Loading TIBET platform at ' + new Date().toISOString(), 'dim');
+            'Loading TIBET v' + CLI.getLibVersion());
     }
+
+    // if (this.options.verbose) {
+        this.log(CLI.beautify(this.options));
+    // }
 
     return;
 };
@@ -550,9 +554,9 @@ Cmd.prototype.execute = function() {
 
         start = new Date();
 
-        if (cmd.options.verbose) {
-            cmd.stdout('Loading URL: ' + fullpath);
-        }
+        // if (cmd.options.verbose) {
+            cmd.stdout('Launch URL: ' + fullpath);
+        // }
 
         return puppetPage.goto(fullpath);
 
@@ -593,7 +597,7 @@ Cmd.prototype.execute = function() {
         //  execute for this process.
         if (!cmd.options.silent) {
             cmd.log('# ' + // (cmd.options.tap ? '# ' : '') +
-                    'TIBET reflection suite loaded and active in ' +
+                    'TIBET live in ' +
                     (end - start) +
                     'ms',
                     'dim');
@@ -739,7 +743,7 @@ Cmd.prototype.execute = function() {
             promptUser = function() {
                 var prompt;
 
-                prompt = 'tsh>> ';
+                prompt = 'tsh >> ';
 
                 return new Promise((resolve, reject) => {
                     readlineLib.question(
@@ -822,9 +826,30 @@ Cmd.prototype.execute = function() {
  * @returns {Array.<String>} The finalized argument list.
  */
 Cmd.prototype.finalizeArglist = function(arglist) {
+    var buildpath;
 
     if (arglist.indexOf('--quiet') === -1) {
         arglist.push('--quiet');
+    }
+
+    //  Sanity-check for build --clean and friends where we ensure that built
+    //  packages are available (or at least potentially available). Otherwise
+    //  we trigger the teamtibet flag to set everything to load full source.
+    if (CLI.inProject()) {
+        buildpath = CLI.expandPath('~app_build');
+    } else {
+        buildpath = CLI.expandPath('~lib_build');
+    }
+
+    if (this.options.build || !CLI.hasBuildAssets(buildpath)) {
+        arglist.push('--boot.minified=false');
+        arglist.push('--boot.inlined=false');
+
+        if (CLI.inProject()) {
+            arglist.push('--boot.bundled=false');
+        } else {
+            arglist.push('--boot.teamtibet=true');
+        }
     }
 
     return arglist;
@@ -976,7 +1001,7 @@ Cmd.prototype.getBootProfileConfig = function() {
     if (this.options.interactive) {
         config = config || 'interactive';
     } else {
-        config = config || 'reflection';
+        config = config || this.getDefaultBootConfig();
     }
 
     return config;
@@ -1005,6 +1030,15 @@ Cmd.prototype.getBootProfileRoot = function() {
     }
 
     return profile;
+};
+
+
+/**
+ * Returns the default boot config to use when launching this command.
+ * @Returns {String} The config value to use if no other is provided.
+ */
+Cmd.prototype.getDefaultBootConfig = function() {
+    return 'base';
 };
 
 
@@ -1046,7 +1080,7 @@ Cmd.prototype.getProfileConfig = function() {
     if (CLI.inProject()) {
         config = config || 'base';
     } else {
-        config = config || 'reflection';
+        config = config || this.getDefaultBootConfig();
     }
 
     return config;
