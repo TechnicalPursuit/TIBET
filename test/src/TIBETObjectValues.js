@@ -209,15 +209,28 @@ function(aRequest) {
 
     //  Map
     mapVal = new Map();
+    mapVal.set('foo', 'bar');
 
     //  Set
     setVal = new Set();
+    setVal.add(1);
+    setVal.add(2);
+    setVal.add(3);
+
+    const goo = {};
+    const foo = {};
+    const bar = {};
+    const baz = {};
 
     //  WeakMap
     weakMapVal = new WeakMap();
+    weakMapVal.set(goo, 'bar');
 
     //  WeakSet
     weakSetVal = new WeakSet();
+    weakSetVal.add(foo);
+    weakSetVal.add(bar);
+    weakSetVal.add(baz);
 
     //  ArrayBuffer
     arrayBufferVal = new ArrayBuffer(8);
@@ -1357,8 +1370,8 @@ function(aRequest) {
         'Boolean',                              TP.IDENTITY,
         'Date',                                 TP.IDENTITY,
         'Function',                             'fluffy',           //  Return value of function
-        'AsyncFunction',                        /Promise([\s\S]+)/,
-        'GeneratorFunction',                    /\[object Generator\]/,
+        'AsyncFunction',                        /{return "async fluffy"; }/,
+        'GeneratorFunction',                    /{return "generator fluffy"; }/,
         'InvalidDate',                          TP.IDENTITY,
         'NaN',                                  TP.IDENTITY,
         'Number',                               TP.IDENTITY,
