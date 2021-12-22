@@ -1217,9 +1217,6 @@ TP.uri.URI.Inst.defineAttribute('fragment');
 //  whether the receiver is HTTP-based
 TP.uri.URI.Inst.defineAttribute('httpBased');
 
-//  whether the target URI was loaded inline.
-TP.uri.URI.Inst.defineAttribute('inlined');
-
 //  the resource object for the primary href
 TP.uri.URI.Inst.defineAttribute('resource');
 TP.uri.URI.Inst.defineAttribute('resourceCache');
@@ -1259,6 +1256,9 @@ TP.uri.URI.Inst.defineAttribute('$dirty', false);
 
 //  load status flag
 TP.uri.URI.Inst.defineAttribute('$loaded', false);
+
+//  whether the target URI was loaded inline.
+TP.uri.URI.Inst.defineAttribute('$inlined', false);
 
 //  uri mapping/rewriting configuration
 TP.uri.URI.Inst.defineAttribute('$uriMap', null);
@@ -3563,23 +3563,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.uri.URI.Inst.defineMethod('isInlined',
-function(aFlag) {
-
-    /**
-     * @method isInlined
-     * @summary Returns true if the receiver's content has been loaded by
-     *     being inlined as part of a built package. This method is used by
-     *     TIBET's resource command to flag inlined resource URIs directly.
-     * @param {Boolean} [aFlag] The new value to optionally set.
-     * @returns {Boolean} Whether or not the content of the receiver is loaded.
-     */
-
-    return this.$flag('inlined', aFlag);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.uri.URI.Inst.defineMethod('isLoaded',
 function(aFlag) {
 
@@ -4196,6 +4179,27 @@ function(aspectName, facetName, facetValue, shouldSignal) {
 
     return false;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.uri.URI.Inst.defineMethod('$setInlined',
+function(aFlag) {
+
+    /**
+     * @method $setInlined
+     * @summary Sets the receiver as an inlined resource URI. This method is
+     *     only invoked through bundled packages created by TIBET rollup.
+     * @param {Boolean} [aFlag] The new value to optionally set.
+     * @returns {Boolean} Whether or not the content of the receiver is loaded.
+     */
+
+    this.$flag('inlined', aFlag);
+
+    //  We need to return the URI so that rollup's invocation of setContent
+    //  which follows will work properly.
+    return this;
+});
+
 
 //  ------------------------------------------------------------------------
 
