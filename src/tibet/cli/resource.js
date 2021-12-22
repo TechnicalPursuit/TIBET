@@ -235,16 +235,20 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     this.finalizeTimeout(arglist);
 
     params = args.filter(function(arg) {
-        //  Don't let boot.bundled pass...we have to set to false or the
-        //  resource command can't boot during clean/(re)build operations.
-        return arg.indexOf('--boot.') === 0 &&
-            arg.indexOf('--boot.bundled=') === -1;
+        //  filter out any bundled/teamtibet flags. we force those to proper
+        //  values to ensure the resource command can boot during build(s).
+        if (arg.indexOf('--boot.') === 0) {
+            return arg.indexOf('--boot.bundled=') === -1 &&
+                arg.indexOf('--boot.teamtibet=') === -1;
+        }
+
+        return true;
     });
     params = params.map(function(arg) {
         return arg.slice(2);
     });
-    params.push('boot.teamtibet=true');
     params.push('boot.bundled=false');
+    params.push('boot.teamtibet=true');
     params = params.join('&');
 
     //  Force command to NOT try to load bundled resources since this can cause
