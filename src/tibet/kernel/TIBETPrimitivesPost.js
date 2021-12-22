@@ -2977,6 +2977,11 @@ function(anObject) {
             anObject.cssText + '</span>';
     }
 
+    //  Proxies
+    if (TP.isProxy(anObject)) {
+        return '<span class="Proxy"></span>';
+    }
+
     //  we're usually calling this with a standard object so we can leverage
     //  TIBET's method APIs to do a best-fit job
     if (TP.canInvoke(anObject, 'asHTMLString')) {
@@ -3183,6 +3188,11 @@ function(anObject) {
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
         return '{"type":"Declaration","data":"' + anObject.cssText + '"}';
+    }
+
+    //  Proxies
+    if (TP.isProxy(anObject)) {
+        return '{"type":"Proxy"}';
     }
 
     //  other cases should be dealt with by just returning the JSON rep
@@ -4461,6 +4471,11 @@ function(anObject) {
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
         return '<declaration>' + anObject.cssText + '</declaration>';
+    }
+
+    //  Proxies
+    if (TP.isProxy(anObject)) {
+        return '<instance type="Proxy"></instance>';
     }
 
     //  we're usually calling this with a standard object so we can leverage
