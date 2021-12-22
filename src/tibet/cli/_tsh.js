@@ -111,7 +111,7 @@ Cmd.prototype.announce = function() {
 
     if (!this.options.silent) {
         this.log('# ' + // (this.options.tap ? '# ' : '') +
-            'Loading TIBET - ' + new Date().toISOString(), 'dim');
+            'Loading TIBET v' + CLI.getLibVersion());
     }
 
     if (this.options.verbose) {
@@ -597,7 +597,7 @@ Cmd.prototype.execute = function() {
         //  execute for this process.
         if (!cmd.options.silent) {
             cmd.log('# ' + // (cmd.options.tap ? '# ' : '') +
-                    'TIBET loaded and active in ' +
+                    'TIBET live in ' +
                     (end - start) +
                     'ms',
                     'dim');
