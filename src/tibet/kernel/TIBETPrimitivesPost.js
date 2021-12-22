@@ -2854,6 +2854,8 @@ function(anObject) {
             return anObject.asHTMLString();
         } catch (e) {
             void 0;
+        } finally {
+            delete anObject.$$recursive_asString;
         }
     }
 
@@ -3036,6 +3038,8 @@ function(anObject) {
             return anObject.asJSONSource();
         } catch (e) {
             void 0;
+        } finally {
+            delete anObject.$$recursive_asString;
         }
     }
 
@@ -3790,6 +3794,10 @@ function(anObject, verbose) {
 
     wantsVerbose = TP.ifInvalid(verbose, true);
 
+    marker = '$$recursive_asString';
+
+    //  we're usually calling this with a standard object so we can leverage
+    //  TIBET's method APIs to do a best-fit job
     try {
         str = anObject.asString(wantsVerbose);
 
@@ -3802,6 +3810,8 @@ function(anObject, verbose) {
         return str;
     } catch (e) {
         void 0;
+    } finally {
+        delete anObject[marker];
     }
 
     //  XMLHttpRequest can have permission issues, so check early
@@ -3949,7 +3959,6 @@ function(anObject, verbose) {
         return str;
     }
 
-    marker = '$$recursive_asString';
     if (TP.isProxy(anObject)) {
         return '[object Proxy]';
     }
