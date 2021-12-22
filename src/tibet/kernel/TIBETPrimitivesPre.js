@@ -9347,6 +9347,25 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isSymbol',
+function(anObj) {
+
+    /**
+     * @method isSymbol
+     * @summary Returns true if the object provided is a symbol instance.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean} Whether or not the supplied object is a Symbol.
+     */
+
+    if (typeof anObj === 'symbol') {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isInvalidDate',
 function(anObj) {
 
