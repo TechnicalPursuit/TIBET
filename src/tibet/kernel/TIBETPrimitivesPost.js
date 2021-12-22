@@ -5339,6 +5339,10 @@ function(anObject) {
         return null;
     }
 
+    if (TP.isProxy(anObject)) {
+        return anObject;
+    }
+
     //  If it's a POJO, we need to convert it *here* before we try to test it
     //  for being a String, Number or Boolean because testing machinery in those
     //  types can cause an exception to be thrown.
@@ -5486,6 +5490,10 @@ function(anObject) {
 
     //  The wrapped value of a prototype is itself.
     if (TP.isPrototype(anObject)) {
+        return anObject;
+    }
+
+    if (TP.isProxy(anObject)) {
         return anObject;
     }
 
