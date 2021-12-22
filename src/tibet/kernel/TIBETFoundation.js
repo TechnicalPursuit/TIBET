@@ -6500,6 +6500,11 @@ function(objectA, objectB) {
         return objectA === objectB;
     }
 
+    //  if they're both symbols, we can just === compare them here and exit.
+    if (TP.isSymbol(objectA) && TP.isSymbol(objectB)) {
+        return objectA === objectB;
+    }
+
     //  identity can be spoofed in certain cases, so we don't assume that
     //  === is going to be the right answer in all cases...we'll see if
     //  either object would like to manage the comparison first
