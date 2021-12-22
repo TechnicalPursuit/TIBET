@@ -2419,7 +2419,8 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         }
 
         //  If we're still booting errors that are uncaught are considered FATAL.
-        if (!TP.sys.hasStarted()) {
+        if (!TP.sys.hasStarted() &&
+                TP.sys.getcfg('boot.stop_onerror') || TP.sys.getcfg('boot.fatalistic')) {
             TP.fatal(str);
         } else {
             //  Uncaught errors are errors relative to those we raise/catch.
