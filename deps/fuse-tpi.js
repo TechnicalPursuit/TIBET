@@ -1,5 +1,5 @@
 /**
- * Fuse.js v6.4.6 - Lightweight fuzzy-search (http://fusejs.io)
+ * Fuse.js v6.5.0 - Lightweight fuzzy-search (http://fusejs.io)
  *
  * Copyright (c) 2021 Kiro Risk (http://kiro.me)
  * All Rights Reserved. Apache Software License 2.0
@@ -10,23 +10,43 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.Fuse = factory());
-}(this, (function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Fuse = factory());
+})(this, (function () { 'use strict';
+
+  function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(object);
+      enumerableOnly && (symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      })), keys.push.apply(keys, symbols);
+    }
+
+    return keys;
+  }
+
+  function _objectSpread2(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = null != arguments[i] ? arguments[i] : {};
+      i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+
+    return target;
+  }
 
   function _typeof(obj) {
     "@babel/helpers - typeof";
 
-    if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-      _typeof = function (obj) {
-        return typeof obj;
-      };
-    } else {
-      _typeof = function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-    }
-
-    return _typeof(obj);
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    }, _typeof(obj);
   }
 
   function _classCallCheck(instance, Constructor) {
@@ -48,6 +68,9 @@
   function _createClass(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
     return Constructor;
   }
 
@@ -66,51 +89,20 @@
     return obj;
   }
 
-  function ownKeys(object, enumerableOnly) {
-    var keys = Object.keys(object);
-
-    if (Object.getOwnPropertySymbols) {
-      var symbols = Object.getOwnPropertySymbols(object);
-      if (enumerableOnly) symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-      keys.push.apply(keys, symbols);
-    }
-
-    return keys;
-  }
-
-  function _objectSpread2(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i] != null ? arguments[i] : {};
-
-      if (i % 2) {
-        ownKeys(Object(source), true).forEach(function (key) {
-          _defineProperty(target, key, source[key]);
-        });
-      } else if (Object.getOwnPropertyDescriptors) {
-        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-      } else {
-        ownKeys(Object(source)).forEach(function (key) {
-          Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-        });
-      }
-    }
-
-    return target;
-  }
-
   function _inherits(subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
       throw new TypeError("Super expression must either be null or a function");
     }
 
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        writable: true,
-        configurable: true
-      }
+    Object.defineProperty(subClass, "prototype", {
+      value: Object.create(superClass && superClass.prototype, {
+        constructor: {
+          value: subClass,
+          writable: true,
+          configurable: true
+        }
+      }),
+      writable: false
     });
     if (superClass) _setPrototypeOf(subClass, superClass);
   }
@@ -137,7 +129,7 @@
     if (typeof Proxy === "function") return true;
 
     try {
-      Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
       return true;
     } catch (e) {
       return false;
@@ -155,6 +147,8 @@
   function _possibleConstructorReturn(self, call) {
     if (call && (typeof call === "object" || typeof call === "function")) {
       return call;
+    } else if (call !== void 0) {
+      throw new TypeError("Derived constructors may only return object or undefined");
     }
 
     return _assertThisInitialized(self);
@@ -188,7 +182,7 @@
   }
 
   function _iterableToArray(iter) {
-    if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
   }
 
   function _unsupportedIterableToArray(o, minLen) {
@@ -456,15 +450,18 @@
     // When `true`, the calculation for the relevance score (used for sorting) will
     // ignore the field-length norm.
     // More info: https://fusejs.io/concepts/scoring-theory.html#field-length-norm
-    ignoreFieldNorm: false
+    ignoreFieldNorm: false,
+    // The weight to determine how much field length norm effects scoring.
+    fieldNormWeight: 1
   };
-  var Config = _objectSpread2({}, BasicOptions, {}, MatchOptions, {}, FuzzyOptions, {}, AdvancedOptions);
+  var Config = _objectSpread2(_objectSpread2(_objectSpread2(_objectSpread2({}, BasicOptions), MatchOptions), FuzzyOptions), AdvancedOptions);
 
   var SPACE = /[^ ]+/g; // Field-length norm: the shorter the field, the higher the weight.
   // Set to 3 decimals to reduce index size.
 
   function norm() {
-    var mantissa = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3;
+    var weight = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+    var mantissa = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 3;
     var cache = new Map();
     var m = Math.pow(10, mantissa);
     return {
@@ -473,9 +470,10 @@
 
         if (cache.has(numTokens)) {
           return cache.get(numTokens);
-        }
+        } // Default function is 1/sqrt(x), weight makes that variable
 
-        var norm = 1 / Math.sqrt(numTokens); // In place of `toFixed(mantissa)`, for faster computation
+
+        var norm = 1 / Math.pow(numTokens, 0.5 * weight); // In place of `toFixed(mantissa)`, for faster computation
 
         var n = parseFloat(Math.round(norm * m) / m);
         cache.set(numTokens, n);
@@ -491,11 +489,13 @@
     function FuseIndex() {
       var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
           _ref$getFn = _ref.getFn,
-          getFn = _ref$getFn === void 0 ? Config.getFn : _ref$getFn;
+          getFn = _ref$getFn === void 0 ? Config.getFn : _ref$getFn,
+          _ref$fieldNormWeight = _ref.fieldNormWeight,
+          fieldNormWeight = _ref$fieldNormWeight === void 0 ? Config.fieldNormWeight : _ref$fieldNormWeight;
 
       _classCallCheck(this, FuseIndex);
 
-      this.norm = norm(3);
+      this.norm = norm(fieldNormWeight, 3);
       this.getFn = getFn;
       this.isCreated = false;
       this.setIndexRecords();
@@ -644,7 +644,7 @@
                       value: item
                     });
                   });
-                }
+                } else ;
               }
 
               record.$[keyIndex] = subRecords;
@@ -674,10 +674,13 @@
   function createIndex(keys, docs) {
     var _ref2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
         _ref2$getFn = _ref2.getFn,
-        getFn = _ref2$getFn === void 0 ? Config.getFn : _ref2$getFn;
+        getFn = _ref2$getFn === void 0 ? Config.getFn : _ref2$getFn,
+        _ref2$fieldNormWeight = _ref2.fieldNormWeight,
+        fieldNormWeight = _ref2$fieldNormWeight === void 0 ? Config.fieldNormWeight : _ref2$fieldNormWeight;
 
     var myIndex = new FuseIndex({
-      getFn: getFn
+      getFn: getFn,
+      fieldNormWeight: fieldNormWeight
     });
     myIndex.setKeys(keys.map(createKey));
     myIndex.setSources(docs);
@@ -687,19 +690,22 @@
   function parseIndex(data) {
     var _ref3 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
         _ref3$getFn = _ref3.getFn,
-        getFn = _ref3$getFn === void 0 ? Config.getFn : _ref3$getFn;
+        getFn = _ref3$getFn === void 0 ? Config.getFn : _ref3$getFn,
+        _ref3$fieldNormWeight = _ref3.fieldNormWeight,
+        fieldNormWeight = _ref3$fieldNormWeight === void 0 ? Config.fieldNormWeight : _ref3$fieldNormWeight;
 
     var keys = data.keys,
         records = data.records;
     var myIndex = new FuseIndex({
-      getFn: getFn
+      getFn: getFn,
+      fieldNormWeight: fieldNormWeight
     });
     myIndex.setKeys(keys);
     myIndex.setIndexRecords(records);
     return myIndex;
   }
 
-  function computeScore(pattern) {
+  function computeScore$1(pattern) {
     var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
         _ref$errors = _ref.errors,
         errors = _ref$errors === void 0 ? 0 : _ref$errors,
@@ -801,7 +807,7 @@
     var index; // Get all exact matches, here for speed up
 
     while ((index = text.indexOf(pattern, bestLocation)) > -1) {
-      var score = computeScore(pattern, {
+      var score = computeScore$1(pattern, {
         currentLocation: index,
         expectedLocation: expectedLocation,
         distance: distance,
@@ -835,7 +841,7 @@
       var binMid = binMax;
 
       while (binMin < binMid) {
-        var _score2 = computeScore(pattern, {
+        var _score2 = computeScore$1(pattern, {
           errors: _i,
           currentLocation: expectedLocation + binMid,
           expectedLocation: expectedLocation,
@@ -877,7 +883,7 @@
         }
 
         if (bitArr[j] & mask) {
-          finalScore = computeScore(pattern, {
+          finalScore = computeScore$1(pattern, {
             errors: _i,
             currentLocation: currentLocation,
             expectedLocation: expectedLocation,
@@ -902,7 +908,7 @@
       } // No hope for a (better) match at greater error levels.
 
 
-      var _score = computeScore(pattern, {
+      var _score = computeScore$1(pattern, {
         errors: _i + 1,
         currentLocation: expectedLocation,
         expectedLocation: expectedLocation,
@@ -940,8 +946,9 @@
     var mask = {};
 
     for (var i = 0, len = pattern.length; i < len; i += 1) {
-      var char = pattern.charAt(i);
-      mask[char] = (mask[char] || 0) | 1 << len - i - 1;
+      var _char = pattern.charAt(i);
+
+      mask[_char] = (mask[_char] || 0) | 1 << len - i - 1;
     }
 
     return mask;
@@ -1106,9 +1113,9 @@
 
     _createClass(BaseMatch, [{
       key: "search",
-      value: function search()
-      /*text*/
-      {}
+      value: function
+        /*text*/
+      search() {}
     }], [{
       key: "isMultiMatch",
       value: function isMultiMatch(pattern) {
@@ -1805,7 +1812,7 @@
     return next(query);
   }
 
-  function computeScore$1(results, _ref) {
+  function computeScore(results, _ref) {
     var _ref$ignoreFieldNorm = _ref.ignoreFieldNorm,
         ignoreFieldNorm = _ref$ignoreFieldNorm === void 0 ? Config.ignoreFieldNorm : _ref$ignoreFieldNorm;
     results.forEach(function (result) {
@@ -1884,14 +1891,14 @@
     });
   }
 
-  var Fuse = /*#__PURE__*/function () {
+  var Fuse$1 = /*#__PURE__*/function () {
     function Fuse(docs) {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var index = arguments.length > 2 ? arguments[2] : undefined;
 
       _classCallCheck(this, Fuse);
 
-      this.options = _objectSpread2({}, Config, {}, options);
+      this.options = _objectSpread2(_objectSpread2({}, Config), options);
 
       if (this.options.useExtendedSearch && !true) {
         throw new Error(EXTENDED_SEARCH_UNAVAILABLE);
@@ -1911,7 +1918,8 @@
         }
 
         this._myIndex = index || createIndex(this.options.keys, this._docs, {
-          getFn: this.options.getFn
+          getFn: this.options.getFn,
+          fieldNormWeight: this.options.fieldNormWeight
         });
       }
     }, {
@@ -1928,11 +1936,10 @@
     }, {
       key: "remove",
       value: function remove() {
-        var predicate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {
-          return (
-            /* doc, idx */
-            false
-          );
+        var predicate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function
+          /* doc, idx */
+        () {
+          return false;
         };
         var results = [];
 
@@ -1975,7 +1982,7 @@
             sortFn = _this$options.sortFn,
             ignoreFieldNorm = _this$options.ignoreFieldNorm;
         var results = isString(query) ? isString(this._docs[0]) ? this._searchStringList(query) : this._searchObjectList(query) : this._searchLogical(query);
-        computeScore$1(results, {
+        computeScore(results, {
           ignoreFieldNorm: ignoreFieldNorm
         });
 
@@ -2237,19 +2244,21 @@
     return Fuse;
   }();
 
-  Fuse.version = '6.4.6';
-  Fuse.createIndex = createIndex;
-  Fuse.parseIndex = parseIndex;
-  Fuse.config = Config;
+  Fuse$1.version = '6.5.0';
+  Fuse$1.createIndex = createIndex;
+  Fuse$1.parseIndex = parseIndex;
+  Fuse$1.config = Config;
 
   {
-    Fuse.parseQuery = parse;
+    Fuse$1.parseQuery = parse;
   }
 
   {
     register(ExtendedSearch);
   }
 
+  var Fuse = Fuse$1;
+
   return Fuse;
 
-})));
+}));
