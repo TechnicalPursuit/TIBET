@@ -2553,13 +2553,9 @@ TP.boot.$uriIsBundled = function(aPath) {
 
     vpath = TP.boot.$uriInTIBETFormat(aPath);
 
-console.log('$uriIsBundled', aPath);
-
     found = TP.boot.$$bundled.some(function(item) {
         return item === vpath;
     });
-
-console.log(found);
 
     return found;
 };
@@ -2586,12 +2582,11 @@ TP.boot.$uriIsInlined = function(aPath, aType) {
     //  The most accurate answer comes from the URI itself. This flag is set by
     //  the rollup/resource commands when they bundle inline resources.
     if (typeof TP.uc === 'function') {
-console.log('$uriIsInlined', aPath);
         uri = TP.uc(aPath);
         found = uri.$flag('inlined') === true;
 
     }
-console.log(found);
+
     return found;
 
 /*
@@ -9251,7 +9246,7 @@ TP.boot.$$setSourceInfo = function(aPath, aPackage, aConfig) {
     /**
      * @method $$setSourceInfo
      * @summary Invoked by rolled-up code packages to adjust the runtime
-     * value(s) for the current source path, package, and config.
+     *     value(s) for the current source path, package, and config.
      */
 
     //  Occasionally bundler will invoke with empty data. In that case we clear
@@ -12677,12 +12672,12 @@ TP.boot.shouldCacheFiles = function() {
 
     //  If the user is running unbundled loads, then we don't cache any
     //  files.
-    if (TP.notTrue(TP.sys.getcfg('boot.bundled'))) {
+    if (TP.sys.getcfg('boot.bundled') !== true) {
         return false;
     }
 
     //  If teamtibet is set then we don't cache either.
-    if (TP.isTrue(TP.sys.getcfg('boot.teamtibet'))) {
+    if (TP.sys.getcfg('boot.teamtibet') === true) {
         return false;
     }
 
