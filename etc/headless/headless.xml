@@ -48,7 +48,7 @@
 
 <config id="interactive" if="boot.phase_one">
     <config ref="properties"/>
-    <config ref="full"/>
+    <config ref="test"/>
 </config>
 
 <config id="reflection" if="boot.phase_one">
@@ -68,12 +68,15 @@
 
 <config id="test" if="boot.phase_one">
     <config ref="properties"/>
+    <property name="boot.bundled" value="false"/>
+    <property name="boot.minified" value="false"/>
+    <property name="boot.inlined" value="false"/>
+    <property name="boot.teamtibet" value="true"/>
     <config ref="contributor"/>
 </config>
 
 <config id="selftest" if="boot.phase_one">
     <config ref="test"/>
-    <config ref="contributor"/>
     <package src="~lib_cfg/tibet_testing.xml" config="selftests" />
 </config>
 
