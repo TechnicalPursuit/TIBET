@@ -217,10 +217,10 @@ function(aRequest) {
     setVal.add(2);
     setVal.add(3);
 
-    const goo = {};
-    const foo = {};
-    const bar = {};
-    const baz = {};
+    const goo = {},
+            foo = {},
+            bar = {},
+            baz = {};
 
     //  WeakMap
     weakMapVal = new WeakMap();
