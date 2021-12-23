@@ -141,7 +141,7 @@
         "mocha": "^8.4.0",
         "mutation-summary": "github:TechnicalPursuit/mutation-summary",
         "node-sass": "^6.0.1",
-        "puppeteer": "^13.0.0",
+        "puppeteer": "^13.0.1",
         "sinon": "^12.0.1",
         "stylelint": "^14.1.0",
         "stylelint-config-standard": "^24.0.0",
