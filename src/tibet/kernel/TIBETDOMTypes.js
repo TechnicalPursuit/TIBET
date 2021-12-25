@@ -1300,10 +1300,6 @@ function(depth, level) {
 
     var nativeNode;
 
-    if (TP.isPrototype(this)) {
-        return this.callNextMethod();
-    }
-
     nativeNode = this.getNativeNode();
 
     return '[' + TP.tname(this) + ' (' + TP.tname(nativeNode) + ')' +
@@ -1346,10 +1342,6 @@ function() {
      * @returns {String} An HTML string.
      */
 
-    if (TP.isPrototype(this)) {
-        return this.callNextMethod();
-    }
-
     return TP.nodeAsHTMLString(this.getNativeNode());
 });
 
@@ -1366,10 +1358,6 @@ function() {
 
     var marker,
         str;
-
-    if (TP.isPrototype(this)) {
-        return this.callNextMethod();
-    }
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asJSONSource';
@@ -1424,10 +1412,6 @@ function() {
      */
 
     var nativeNode;
-
-    if (TP.isPrototype(this)) {
-        return this.callNextMethod();
-    }
 
     nativeNode = this.getNativeNode();
 
@@ -1583,10 +1567,6 @@ function() {
 
     var marker,
         str;
-
-    if (TP.isPrototype(this)) {
-        return this.callNextMethod();
-    }
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asXMLString';

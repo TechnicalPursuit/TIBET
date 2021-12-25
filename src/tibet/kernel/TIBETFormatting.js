@@ -2463,6 +2463,13 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.$$type_method_wrappers.atPut(
+    'asDumpString',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Type));
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('asHTMLString',
 function() {
 
@@ -2480,6 +2487,13 @@ function() {
             this.getName() +
             '</span>';
 });
+
+//  ------------------------------------------------------------------------
+
+TP.sys.$$type_method_wrappers.atPut(
+    'asHTMLString',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Type));
 
 //  ------------------------------------------------------------------------
 
@@ -2522,6 +2536,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.$$type_method_wrappers.atPut(
+    'asJSONSource',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Type));
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('asPrettyString',
 function() {
 
@@ -2558,6 +2579,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.$$type_method_wrappers.atPut(
+    'asPrettyString',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Type));
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('asXMLString',
 function() {
 
@@ -2573,6 +2601,13 @@ function() {
 
     return '<type>' + this.getName() + '</type>';
 });
+
+//  ------------------------------------------------------------------------
+
+TP.sys.$$type_method_wrappers.atPut(
+    'asXMLString',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Type));
 
 //  ------------------------------------------------------------------------
 
@@ -2658,6 +2693,13 @@ function(depth, level) {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.$$inst_method_wrappers.atPut(
+    'asDumpString',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Inst));
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Object.Inst.defineMethod('asHTMLString',
 function() {
 
@@ -2709,6 +2751,13 @@ function() {
 
     return joinStr;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.sys.$$inst_method_wrappers.atPut(
+    'asHTMLString',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Inst));
 
 //  ------------------------------------------------------------------------
 
@@ -2764,6 +2813,13 @@ function() {
 
     return joinStr;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.sys.$$inst_method_wrappers.atPut(
+    'asJSONSource',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Inst));
 
 //  ------------------------------------------------------------------------
 
@@ -2835,6 +2891,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.$$inst_method_wrappers.atPut(
+    'asPrettyString',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Inst));
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Object.Inst.defineMethod('asXMLString',
 function() {
 
@@ -2885,6 +2948,13 @@ function() {
 
     return joinStr;
 });
+
+//  ------------------------------------------------------------------------
+
+TP.sys.$$inst_method_wrappers.atPut(
+    'asXMLString',
+    TP.hc('installerFunction', TP.BUILD_PROTOTYPE_REDIRECTOR,
+            'redirectTarget', TP.lang.Object.Inst));
 
 //  ------------------------------------------------------------------------
 //  end
