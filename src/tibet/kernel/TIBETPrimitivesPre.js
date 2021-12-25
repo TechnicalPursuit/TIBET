@@ -2090,6 +2090,9 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
                                 'namespaces', TP.sys.$$meta_namespaces,
                                 'owners', TP.sys.$$meta_owners,
                                 'attrpaths', TP.sys.$$meta_attrpaths);
+
+    TP.sys.$$type_method_wrappers = TP.hc();
+    TP.sys.$$inst_method_wrappers = TP.hc();
 }());
 
 //  ------------------------------------------------------------------------
@@ -6759,14 +6762,37 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
      * @returns {Function} The newly defined method.
      */
 
-    var track,
-        owner;
+    var newMethod,
+        descriptor,
+
+        track,
+        owner,
+
+        wrapperEntry;
 
     /* eslint-disable consistent-this */
+
+    newMethod = methodBody;
+    descriptor = methodDescriptor;
 
     if (TP.isPrototype(this)) {
         track = TP.TYPE_TRACK;
         owner = this[TP.OWNER];
+
+        //  If there is an entry for type-level methods that matches the method
+        //  name, then we grab it's 'installer function' Function and execute
+        //  it. We'll use the return value of that (if it has one) as the method
+        //  body we're going to install.
+        wrapperEntry = TP.sys.$$type_method_wrappers.at(methodName);
+        if (TP.isValid(wrapperEntry)) {
+            newMethod = wrapperEntry.at('installerFunction')(
+                        this, methodName, methodBody, track, wrapperEntry);
+
+            //  No valid return value? Use what we were originally supplied.
+            if (TP.notValid(newMethod)) {
+                newMethod = methodBody;
+            }
+        }
 
         //  If the traits code has loaded and the owner has traits, then we grab
         //  the reference to the traited method before we lose it.
@@ -6777,7 +6803,7 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
             //  fact, it will be considered our 'next most specific' method.
             //  Capture it here for use by callNextMethod().
             if (TP.owns(this, methodName)) {
-                methodBody.$$nextfunc = this[methodName];
+                newMethod.$$nextfunc = this[methodName];
             }
         }
     } else {
@@ -6788,7 +6814,7 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
     /* eslint-enable consistent-this */
 
     return TP.defineMethodSlot(
-        this, methodName, methodBody, track, methodDescriptor, display,
+        this, methodName, newMethod, track, methodDescriptor, display,
         owner, $isHandler);
 
 },
@@ -6896,14 +6922,37 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
      * @returns {Function} The newly defined method.
      */
 
-    var track,
-        owner;
+    var newMethod,
+        descriptor,
+
+        track,
+        owner,
+
+        wrapperEntry;
 
     /* eslint-disable consistent-this */
+
+    newMethod = methodBody;
+    descriptor = methodDescriptor;
 
     if (TP.isPrototype(this)) {
         track = TP.INST_TRACK;
         owner = this[TP.OWNER];
+
+        //  If there is an entry for instance-level methods that matches the
+        //  method name, then we grab it's 'installer function' Function and
+        //  execute it. We'll use the return value of that (if it has one) as
+        //  the method body we're going to install.
+        wrapperEntry = TP.sys.$$inst_method_wrappers.at(methodName);
+        if (TP.isValid(wrapperEntry)) {
+            newMethod = wrapperEntry.at('installerFunction')(
+                        this, methodName, methodBody, track, wrapperEntry);
+
+            //  No valid return value? Use what we were originally supplied.
+            if (TP.notValid(newMethod)) {
+                newMethod = methodBody;
+            }
+        }
 
         //  If the traits code has loaded and the owner has traits, then we grab
         //  the reference to the traited method before we lose it.
@@ -6914,7 +6963,7 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
             //  fact, it will be considered our 'next most specific' method.
             //  Capture it here for use by callNextMethod().
             if (TP.owns(this, methodName)) {
-                methodBody.$$nextfunc = this[methodName];
+                newMethod.$$nextfunc = this[methodName];
             }
         }
     } else {
@@ -6925,7 +6974,7 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
     /* eslint-enable consistent-this */
 
     return TP.defineMethodSlot(
-        this, methodName, methodBody, track, methodDescriptor, display,
+        this, methodName, newMethod, track, descriptor, display,
         owner, $isHandler);
 
 },
