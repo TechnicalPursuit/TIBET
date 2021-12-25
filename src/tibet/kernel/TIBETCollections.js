@@ -950,6 +950,10 @@ function() {
         i,
         val;
 
+    if (TP.isPrototype(this)) {
+        return this.callNextMethod();
+    }
+
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asObject';
     if (TP.owns(this, marker)) {
@@ -5298,6 +5302,10 @@ function() {
         i,
         val;
 
+    if (TP.isPrototype(this)) {
+        return this.callNextMethod();
+    }
+
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asObject';
     if (TP.owns(this, marker)) {
@@ -5885,6 +5893,10 @@ function() {
      */
 
     var val;
+
+    if (TP.isPrototype(this)) {
+        return this.callNextMethod();
+    }
 
     val = this.at('name');
     if (TP.isValid(val)) {

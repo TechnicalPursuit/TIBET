@@ -11464,6 +11464,10 @@ function() {
      * @returns {String}
      */
 
+    if (TP.isPrototype(this)) {
+        return 'Function';
+    }
+
     //  hook the top-level prototype so we don't say it's a
     //  TP.lang.RootObject
     if (this === TP.lang.RootObject$$Inst.prototype) {
@@ -12780,6 +12784,10 @@ function() {
      * @returns {String}
      */
 
+    if (TP.isPrototype(this)) {
+        return 'Function';
+    }
+
     return 'DOMWindow';
 });
 
@@ -13162,6 +13170,10 @@ function() {
         j,
 
         typename;
+
+    if (TP.isPrototype(this)) {
+        return 'Function';
+    }
 
     //  Grab the keys from ourself. This will not grab internal slot keys, but
     //  that's ok since no types should be registered under those kind of keys.

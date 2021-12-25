@@ -316,6 +316,10 @@ function() {
      * @returns {String} The marker name.
      */
 
+    if (TP.isPrototype(this)) {
+        return this.callNextMethod();
+    }
+
     return this.name;
 });
 
@@ -1945,6 +1949,10 @@ function(aLevel) {
      * @summary Returns the level name, typically one of 'TRACE', 'DEBUG', etc.
      * @returns {String} The level name.
      */
+
+    if (TP.isPrototype(this)) {
+        return this.callNextMethod();
+    }
 
     return this.$get('name');
 });

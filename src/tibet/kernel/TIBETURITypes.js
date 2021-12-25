@@ -2683,6 +2683,10 @@ function() {
      * @returns {String} The receiver's name.
      */
 
+    if (TP.isPrototype(this)) {
+        return this.callNextMethod();
+    }
+
     return this.$getOID();
 });
 
