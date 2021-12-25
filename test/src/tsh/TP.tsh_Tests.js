@@ -35,18 +35,17 @@ function() {
         this.get('drivers').atPut('shell', shellDriver);
     });
 
-    this.it('Can set initial shell variables', function(test, options) {
+    this.it('Can set initial shell variables', async function(test, options) {
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
 
         //  Quiet the test harness. It needs at least one assert.
         test.assert.isTrue(true);
 
-        shellDriver.execShellTest(test, inputVal);
+        await shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('Expands unquoted argv and param values to resolved values',
-    function(test, options) {
+    this.it('Expands unquoted argv and param values to resolved values', async function(test, options) {
         inputVal = 'test:TSHTestCmd $Y -first=$Y --second=$Y';
         correctResult =
             TP.hc(
@@ -73,11 +72,10 @@ function() {
                         'Resolved value', 100)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands double-quoted argv and param values to resolved strings',
-    function(test, options) {
+    this.it('Expands double-quoted argv and param values to resolved strings', async function(test, options) {
         inputVal = 'test:TSHTestCmd "$Y" -first="$Y" --second="$Y"';
         correctResult =
             TP.hc(
@@ -104,11 +102,10 @@ function() {
                         'Resolved value', 100)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands single-quoted argv and param values to literal strings',
-    function(test, options) {
+    this.it('Expands single-quoted argv and param values to literal strings', async function(test, options) {
         inputVal = 'test:TSHTestCmd \'$Y\' -first=\'$Y\' --second=\'$Y\'';
         correctResult =
             TP.hc(
@@ -135,11 +132,10 @@ function() {
                         'Resolved value', '$Y')
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands unquoted argv values to proper input objects',
-    function(test, options) {
+    this.it('Expands unquoted argv values to proper input objects', async function(test, options) {
         inputVal = 'test:TSHTestCmd [] [1, 2, 3] {} {a: 1, b: 2, c: 3} true false 12 12.34 /foo/g TP';
         correctResult =
             TP.hc(
@@ -215,11 +211,10 @@ function() {
                         'Resolved value', TP)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands unquoted argv values with nested objects',
-    function(test, options) {
+    this.it('Expands unquoted argv values with nested objects', async function(test, options) {
         inputVal =
             'test:TSHTestCmd [1, 2, {a: 1, b:2}] {a: 1, b: 2, c: [1,2,3]}';
         correctResult =
@@ -240,11 +235,10 @@ function() {
                         'Resolved value', {a: 1, b: 2, c: [1, 2, 3]})
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands unquoted argv and param backticks to resolved values',
-    function(test, options) {
+    this.it('Expands unquoted argv and param backticks to resolved values', async function(test, options) {
         inputVal = 'test:TSHTestCmd `$Y` -first=`$Y` --second=`$Y`';
         correctResult =
             TP.hc(
@@ -271,11 +265,10 @@ function() {
                         'Resolved value', 100)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands double-quoted argv and param backticks to resolved strings',
-    function(test, options) {
+    this.it('Expands double-quoted argv and param backticks to resolved strings', async function(test, options) {
         inputVal = 'test:TSHTestCmd "`$Y`" -first="`$Y`" --second="`$Y`"';
         correctResult =
             TP.hc(
@@ -302,11 +295,10 @@ function() {
                         'Resolved value', 100)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands single-quoted argv and param backticks to literal strings',
-    function(test, options) {
+    this.it('Expands single-quoted argv and param backticks to literal strings', async function(test, options) {
         inputVal = 'test:TSHTestCmd \'`$Y`\' -first=\'`$Y`\' --second=\'`$Y`\'';
         correctResult =
             TP.hc(
@@ -333,11 +325,10 @@ function() {
                         'Resolved value', '`$Y`')
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands unquoted @ references to resolved values',
-    function(test, options) {
+    this.it('Expands unquoted @ references to resolved values', async function(test, options) {
         inputVal = 'test:TSHTestCmd @Y -first=@Y --second=@Y';
         correctResult =
             TP.hc(
@@ -364,11 +355,10 @@ function() {
                         'Resolved value', 100)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands double-quoted @ references to resolved value strings',
-    function(test, options) {
+    this.it('Expands double-quoted @ references to resolved value strings', async function(test, options) {
         inputVal = 'test:TSHTestCmd "@Y" -first="@Y" --second="@Y"';
         correctResult =
             TP.hc(
@@ -395,11 +385,10 @@ function() {
                         'Resolved value', 100)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Expands single-quoted @ references to literal values',
-    function(test, options) {
+    this.it('Expands single-quoted @ references to literal values', async function(test, options) {
         inputVal = 'test:TSHTestCmd \'@Y\' -first=\'@Y\' --second=\'@Y\'';
         correctResult =
             TP.hc(
@@ -426,7 +415,7 @@ function() {
                         'Resolved value', '@Y')
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
     this.after(
@@ -438,7 +427,7 @@ function() {
             delete window.bar;
             delete window.baz;
         });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -458,7 +447,7 @@ function() {
         this.get('drivers').atPut('shell', shellDriver);
     });
 
-    this.it('data setup', function(test, options) {
+    this.it('data setup', async function(test, options) {
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
@@ -466,10 +455,10 @@ function() {
         //  Merely here to shut up the test harness.
         test.assert.isTrue(true);
 
-        shellDriver.execShellTest(test, inputVal);
+        await shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('simple expansion', function(test, options) {
+    this.it('simple expansion', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd -first --second --third=\'foo\' -fourth="bar" --fifth=$Y --sixth="$Y" --seventh=\'$Y\'';
         correctResult =
@@ -525,7 +514,7 @@ function() {
                         'Resolved value', '$Y')
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
     this.after(
@@ -537,7 +526,7 @@ function() {
             delete window.bar;
             delete window.baz;
         });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -557,7 +546,7 @@ function() {
         this.get('drivers').atPut('shell', shellDriver);
     });
 
-    this.it('data setup', function(test, options) {
+    this.it('data setup', async function(test, options) {
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
@@ -565,15 +554,15 @@ function() {
         //  Merely here to shut up the test harness.
         test.assert.isTrue(true);
 
-        shellDriver.execShellTest(test, inputVal);
+        await shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('new Boolean(true)', function(test, options) {
+    this.it('new Boolean(true)', async function(test, options) {
 
         inputVal = 'new Boolean(true)';
         correctResult = 'Boolean';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -586,12 +575,12 @@ function() {
             });
     });
 
-    this.it('true', function(test, options) {
+    this.it('true', async function(test, options) {
 
         inputVal = 'true';
         correctResult = 'Boolean';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -604,12 +593,12 @@ function() {
             });
     });
 
-    this.it('new Number(42)', function(test, options) {
+    this.it('new Number(42)', async function(test, options) {
 
         inputVal = 'new Number(42)';
         correctResult = 'Number';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -622,12 +611,12 @@ function() {
             });
     });
 
-    this.it('42', function(test, options) {
+    this.it('42', async function(test, options) {
 
         inputVal = '42';
         correctResult = 'Number';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -640,12 +629,12 @@ function() {
             });
     });
 
-    this.it('new String(\'foo\')', function(test, options) {
+    this.it('new String(\'foo\')', async function(test, options) {
 
         inputVal = 'new String(\'foo\')';
         correctResult = 'String';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -658,12 +647,12 @@ function() {
             });
     });
 
-    this.it('\'foo\'', function(test, options) {
+    this.it('\'foo\'', async function(test, options) {
 
         inputVal = '\'foo\'';
         correctResult = 'String';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -676,12 +665,12 @@ function() {
             });
     });
 
-    this.it('new Date()', function(test, options) {
+    this.it('new Date()', async function(test, options) {
 
         inputVal = 'new Date()';
         correctResult = 'Date';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -694,12 +683,12 @@ function() {
             });
     });
 
-    this.it('new Object()', function(test, options) {
+    this.it('new Object()', async function(test, options) {
 
         inputVal = 'new Object()';
         correctResult = 'Object';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -712,13 +701,13 @@ function() {
             });
     });
 
-    this.it('({})', function(test, options) {
+    this.it('({})', async function(test, options) {
 
         //  NB: The parens are required - a limitation of JS 'eval'
         inputVal = '({})';
         correctResult = 'Object';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -731,12 +720,12 @@ function() {
             });
     });
 
-    this.it('new Array()', function(test, options) {
+    this.it('new Array()', async function(test, options) {
 
         inputVal = 'new Array()';
         correctResult = 'Array';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -749,12 +738,12 @@ function() {
             });
     });
 
-    this.it('[]', function(test, options) {
+    this.it('[]', async function(test, options) {
 
         inputVal = '[]';
         correctResult = 'Array';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -767,12 +756,12 @@ function() {
             });
     });
 
-    this.it('new RegExp(\'foo(.+)\', \'g\')', function(test, options) {
+    this.it('new RegExp(\'foo(.+)\', \'g\')', async function(test, options) {
 
         inputVal = 'new RegExp(\'foo(.+)\', \'g\')';
         correctResult = 'RegExp';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -785,12 +774,12 @@ function() {
             });
     });
 
-    this.it('/foo(.+)/g', function(test, options) {
+    this.it('/foo(.+)/g', async function(test, options) {
 
         inputVal = '/foo(.+)/g';
         correctResult = 'RegExp';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -803,12 +792,12 @@ function() {
             });
     });
 
-    this.it('new Function(\'window.alert("hi")\')', function(test, options) {
+    this.it('new Function(\'window.alert("hi")\')', async function(test, options) {
 
         inputVal = 'new Function(\'window.alert("hi")\')';
         correctResult = 'Function';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -821,12 +810,12 @@ function() {
             });
     });
 
-    this.it('function() {window.alert("hi")}', function(test, options) {
+    this.it('function() {window.alert("hi")}', async function(test, options) {
 
         inputVal = 'function() {window.alert("hi")}';
         correctResult = 'Function';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -839,7 +828,7 @@ function() {
             });
     });
 
-    this.it('test:TSHTestCmd "true" foo="true"', function(test, options) {
+    this.it('test:TSHTestCmd "true" foo="true"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "true" foo="true"';
         correctResult =
@@ -860,10 +849,10 @@ function() {
                         'Resolved value', true)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('test:TSHTestCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" "hi {{x}}" foo="\'\'" bar="\'hi\'" baz="hi {{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" "hi {{x}}" foo="\'\'" bar="\'hi\'" baz="hi {{x}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" "hi {{x}}" foo="\'\'" bar="\'hi\'" baz="hi {{x}}"';
         correctResult =
@@ -919,10 +908,10 @@ function() {
                         'Resolved value', TP.UNDEF)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('test:TSHTestCmd "2" "2{{x}}" bar="2" baz="2{{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd "2" "2{{x}}" bar="2" baz="2{{x}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "2" "2{{x}}" bar="2" baz="2{{x}}"';
         correctResult =
@@ -957,10 +946,10 @@ function() {
                         'Resolved value', 22)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('test:TSHTestCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"', function(test, options) {
+    this.it('test:TSHTestCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"';
         correctResult =
@@ -1009,10 +998,10 @@ function() {
                         'Resolved value', [1, 2, 2])
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('test:TSHTestCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"';
         correctResult =
@@ -1061,10 +1050,10 @@ function() {
                         'Resolved value', {foo: 2})
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('test:TSHTestCmd "function() {}" "function(x) {window.alert(x); }" "function() {window.alert({{x}}); }" foo="function() {}" bar="function(x) {window.alert(x); }" baz="function() {window.alert({{x}}); }"', function(test, options) {
+    this.it('test:TSHTestCmd "function() {}" "function(x) {window.alert(x); }" "function() {window.alert({{x}}); }" foo="function() {}" bar="function(x) {window.alert(x); }" baz="function() {window.alert({{x}}); }"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "function() {}" "function(x) {window.alert(x); }" "function() {window.alert({{x}}); }" foo="function() {}" bar="function(x) {window.alert(x); }" baz="function() {window.alert({{x}}); }"';
         correctResult =
@@ -1113,10 +1102,10 @@ function() {
                         'Resolved value', function() {window.alert(2); })
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     }).skip(TP.sys.cfg('project.name') === 'travis');
 
-    this.it('test:TSHTestCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"', function(test, options) {
+    this.it('test:TSHTestCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"';
         correctResult =
@@ -1151,10 +1140,10 @@ function() {
                         'Resolved value', /fuzz2y/)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('test:TSHTestCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"', function(test, options) {
+    this.it('test:TSHTestCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"';
         correctResult =
@@ -1217,10 +1206,10 @@ function() {
                         'Resolved value', [1, 2, 3])
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('test:TSHTestCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"', function(test, options) {
+    this.it('test:TSHTestCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"';
         correctResult =
@@ -1283,7 +1272,7 @@ function() {
                         'Resolved value', [1, 2, 3])
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
     this.after(
@@ -1295,7 +1284,7 @@ function() {
             delete window.bar;
             delete window.baz;
         });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1315,7 +1304,7 @@ function() {
         this.get('drivers').atPut('shell', shellDriver);
     });
 
-    this.it('data setup', function(test, options) {
+    this.it('data setup', async function(test, options) {
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
@@ -1323,16 +1312,16 @@ function() {
         //  Merely here to shut up the test harness.
         test.assert.isTrue(true);
 
-        shellDriver.execShellTest(test, inputVal);
+        await shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('x', function(test, options) {
+    this.it('x', async function(test, options) {
 
         //  Use the variable in an expression by itself
         inputVal = 'x';
         correctResult = 2;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1345,13 +1334,13 @@ function() {
             });
     });
 
-    this.it('{{x}}', function(test, options) {
+    this.it('{{x}}', async function(test, options) {
 
         //  Use the variable in a formatting expression by itself
         inputVal = '{{x}}';
         correctResult = 2;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1364,13 +1353,13 @@ function() {
             });
     });
 
-    this.it('\'x\'', function(test, options) {
+    this.it('\'x\'', async function(test, options) {
 
         //  Use the variable in a single-quoted String expression
         inputVal = '\'x\'';
         correctResult = 'x';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1383,13 +1372,13 @@ function() {
             });
     });
 
-    this.it('"x"', function(test, options) {
+    this.it('"x"', async function(test, options) {
 
         //  Use the variable in a double quoted String expression
         inputVal = '"x"';
         correctResult = 'x';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1402,13 +1391,13 @@ function() {
             });
     });
 
-    this.it('`x`', function(test, options) {
+    this.it('`x`', async function(test, options) {
 
         //  Use the variable in a backtick quoted String expression
         inputVal = '`x`';
         correctResult = 2;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1421,14 +1410,14 @@ function() {
             });
     });
 
-    this.it('\'This is x\'', function(test, options) {
+    this.it('\'This is x\'', async function(test, options) {
 
         //  Use the variable with other String content in a single-quoted String
         //  expression
         inputVal = '\'This is x\'';
         correctResult = 'This is x';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1441,14 +1430,14 @@ function() {
             });
     });
 
-    this.it('"This is x"', function(test, options) {
+    this.it('"This is x"', async function(test, options) {
 
         //  Use the variable with other String content in a double quoted String
         //  expression
         inputVal = '"This is x"';
         correctResult = 'This is x';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1461,7 +1450,7 @@ function() {
             });
     });
 
-    this.it('`This is x`', function(test, options) {
+    this.it('`This is x`', async function(test, options) {
 
         //  Use the variable with other String content in a backtick quoted
         //  String expression
@@ -1469,7 +1458,7 @@ function() {
         inputVal = '`This is x`';
         correctResult = undefined;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1482,7 +1471,7 @@ function() {
             });
     });
 
-    this.it('{{x .% #{##.00}}}', function(test, options) {
+    this.it('{{x .% #{##.00}}}', async function(test, options) {
 
         //  Use the variable in a formatting expression, but since it's not in
         //  double quotes it won't do the interpolation - it will just return the
@@ -1490,7 +1479,7 @@ function() {
         inputVal = '{{x .% #{##.00}}}';
         correctResult = 2;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1503,7 +1492,7 @@ function() {
             });
     });
 
-    this.it('\'{{x .% #{##.00}}}\'', function(test, options) {
+    this.it('\'{{x .% #{##.00}}}\'', async function(test, options) {
 
         //  Use the variable in a formatting expression, but since it's in single
         //  quotes, not in double quotes, it won't do the interpolation - it will
@@ -1511,7 +1500,7 @@ function() {
         inputVal = '\'{{x .% #{##.00}}}\'';
         correctResult = '{{x .% #{##.00}}}';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1524,14 +1513,14 @@ function() {
             });
     });
 
-    this.it('"{{x .% #{##.00}}}"', function(test, options) {
+    this.it('"{{x .% #{##.00}}}"', async function(test, options) {
 
         //  Use the variable in a formatting expression, and since it's in double
         //  quotes it will do the interpolation.
         inputVal = '"{{x .% #{##.00}}}"';
         correctResult = '2.00';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1544,7 +1533,7 @@ function() {
             });
     });
 
-    this.it('`{{x .% #{##.00}}}`', function(test, options) {
+    this.it('`{{x .% #{##.00}}}`', async function(test, options) {
 
         //  Use the variable in a formatting expression, and since it's in backtick
         //  quotes it will both do the interpolation and eval the result - which
@@ -1552,7 +1541,7 @@ function() {
         inputVal = '`{{x .% #{##.00}}}`';
         correctResult = 2;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -1565,7 +1554,7 @@ function() {
             });
     });
 
-    this.it('test:TSHTestCmd foo bar baz', function(test, options) {
+    this.it('test:TSHTestCmd foo bar baz', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd foo bar baz';
         correctResult =
@@ -1593,10 +1582,10 @@ function() {
                         'Resolved value', 42)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('test:TSHTestCmd first=foo second=bar third=baz', function(test, options) {
+    this.it('test:TSHTestCmd first=foo second=bar third=baz', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd first=foo second=bar third=baz';
         correctResult =
@@ -1624,13 +1613,13 @@ function() {
                         'Resolved value', 42)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResult);
+        await shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('test:TSHTestCmd x', function(test, options) {
+    this.it('test:TSHTestCmd x', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd x';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1643,10 +1632,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd @Y', function(test, options) {
+    this.it('test:TSHTestCmd @Y', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd @Y';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1659,10 +1648,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd {{x}}', function(test, options) {
+    this.it('test:TSHTestCmd {{x}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd {{x}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1675,10 +1664,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd \'x\'', function(test, options) {
+    this.it('test:TSHTestCmd \'x\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'x\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1691,10 +1680,10 @@ function() {
                         'Resolved value', 'x')));
     });
 
-    this.it('test:TSHTestCmd "x"', function(test, options) {
+    this.it('test:TSHTestCmd "x"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "x"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1707,10 +1696,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd `x`', function(test, options) {
+    this.it('test:TSHTestCmd `x`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `x`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1723,10 +1712,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd \'@Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'@Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'@Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1739,10 +1728,10 @@ function() {
                         'Resolved value', '@Y')));
     });
 
-    this.it('test:TSHTestCmd "@Y"', function(test, options) {
+    this.it('test:TSHTestCmd "@Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "@Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1755,10 +1744,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd `@Y`', function(test, options) {
+    this.it('test:TSHTestCmd `@Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `@Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1771,10 +1760,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd \'{{x}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{x}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'{{x}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1787,10 +1776,10 @@ function() {
                         'Resolved value', '{{x}}')));
     });
 
-    this.it('test:TSHTestCmd "{{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{x}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "{{x}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1803,10 +1792,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd `{{x}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{x}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `{{x}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1819,10 +1808,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd \'This is x\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is x\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'This is x\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1835,10 +1824,10 @@ function() {
                         'Resolved value', 'This is x')));
     });
 
-    this.it('test:TSHTestCmd "This is x"', function(test, options) {
+    this.it('test:TSHTestCmd "This is x"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "This is x"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1851,10 +1840,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd `This is x`', function(test, options) {
+    this.it('test:TSHTestCmd `This is x`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `This is x`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1867,10 +1856,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd \'This is @Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is @Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'This is @Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1883,10 +1872,10 @@ function() {
                         'Resolved value', 'This is @Y')));
     });
 
-    this.it('test:TSHTestCmd "This is @Y"', function(test, options) {
+    this.it('test:TSHTestCmd "This is @Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "This is @Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1899,10 +1888,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd `This is @Y`', function(test, options) {
+    this.it('test:TSHTestCmd `This is @Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `This is @Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1915,10 +1904,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd \'This is {{x}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is {{x}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'This is {{x}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1931,10 +1920,10 @@ function() {
                         'Resolved value', 'This is {{x}}')));
     });
 
-    this.it('test:TSHTestCmd "This is {{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is {{x}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "This is {{x}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1947,10 +1936,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd `This is {{x}}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is {{x}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `This is {{x}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1963,10 +1952,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=x', function(test, options) {
+    this.it('test:TSHTestCmd stuff=x', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=x';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1979,10 +1968,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd stuff=@Y', function(test, options) {
+    this.it('test:TSHTestCmd stuff=@Y', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=@Y';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -1995,10 +1984,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff={{x}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{x}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff={{x}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2011,10 +2000,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'x\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'x\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'x\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2027,10 +2016,10 @@ function() {
                         'Resolved value', 'x')));
     });
 
-    this.it('test:TSHTestCmd stuff="x"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="x"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="x"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2043,10 +2032,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd stuff=`x`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`x`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`x`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2059,10 +2048,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'@Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'@Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'@Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2075,10 +2064,10 @@ function() {
                         'Resolved value', '@Y')));
     });
 
-    this.it('test:TSHTestCmd stuff="@Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="@Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="@Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2091,10 +2080,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=`@Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`@Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`@Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2107,10 +2096,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'{{x}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{x}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'{{x}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2123,10 +2112,10 @@ function() {
                         'Resolved value', '{{x}}')));
     });
 
-    this.it('test:TSHTestCmd stuff="{{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{x}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="{{x}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2139,10 +2128,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd stuff=`{{x}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{x}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`{{x}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2155,10 +2144,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'This is x\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is x\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'This is x\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2171,10 +2160,10 @@ function() {
                         'Resolved value', 'This is x')));
     });
 
-    this.it('test:TSHTestCmd stuff="This is x"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is x"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="This is x"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2187,10 +2176,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=`This is x`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is x`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`This is x`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2203,10 +2192,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'This is @Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is @Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'This is @Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2219,10 +2208,10 @@ function() {
                         'Resolved value', 'This is @Y')));
     });
 
-    this.it('test:TSHTestCmd stuff="This is @Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is @Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="This is @Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2235,11 +2224,11 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=`This is @Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is @Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`This is @Y`';
 
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2252,10 +2241,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'This is {{x}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is {{x}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'This is {{x}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2268,10 +2257,10 @@ function() {
                         'Resolved value', 'This is {{x}}')));
     });
 
-    this.it('test:TSHTestCmd stuff="This is {{x}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is {{x}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="This is {{x}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2284,10 +2273,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=`This is {{x}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is {{x}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`This is {{x}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2300,10 +2289,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd {{x .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd {{x .% #{##.00}}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd {{x .% #{##.00}}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2316,10 +2305,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd \'{{x .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{x .% #{##.00}}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'{{x .% #{##.00}}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2332,10 +2321,10 @@ function() {
                         'Resolved value', '{{x .% #{##.00}}}')));
     });
 
-    this.it('test:TSHTestCmd "{{x .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{x .% #{##.00}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "{{x .% #{##.00}}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2348,9 +2337,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd `{{x .% #{##.00}}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{x .% #{##.00}}}`', async function(test, options) {
         inputVal = 'test:TSHTestCmd `{{x .% #{##.00}}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2363,10 +2352,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd stuff={{x .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{x .% #{##.00}}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff={{x .% #{##.00}}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2379,10 +2368,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'{{x .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{x .% #{##.00}}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'{{x .% #{##.00}}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2395,10 +2384,10 @@ function() {
                         'Resolved value', '{{x .% #{##.00}}}')));
     });
 
-    this.it('test:TSHTestCmd stuff="{{x .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{x .% #{##.00}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="{{x .% #{##.00}}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2412,10 +2401,10 @@ function() {
 
     });
 
-    this.it('test:TSHTestCmd stuff=`{{x .% #{##.00}}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{x .% #{##.00}}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`{{x .% #{##.00}}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2437,7 +2426,7 @@ function() {
             delete window.bar;
             delete window.baz;
         });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -2457,7 +2446,7 @@ function() {
         this.get('drivers').atPut('shell', shellDriver);
     });
 
-    this.it('data setup', function(test, options) {
+    this.it('data setup', async function(test, options) {
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
@@ -2465,10 +2454,10 @@ function() {
         //  Merely here to shut up the test harness.
         test.assert.isTrue(true);
 
-        shellDriver.execShellTest(test, inputVal);
+        await shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('$Y', function(test, options) {
+    this.it('$Y', async function(test, options) {
 
         //  Use the variable in an expression by itself
 
@@ -2476,7 +2465,7 @@ function() {
         inputVal = '$Y';
         correctResult = '100';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2489,13 +2478,13 @@ function() {
             });
     });
 
-    this.it('${Y}', function(test, options) {
+    this.it('${Y}', async function(test, options) {
 
         //  Extended form
         inputVal = '${Y}';
         correctResult = '100';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2508,7 +2497,7 @@ function() {
             });
     });
 
-    this.it('{{$Y}}', function(test, options) {
+    this.it('{{$Y}}', async function(test, options) {
 
         //  Use the variable in a formatting expression by itself
 
@@ -2516,7 +2505,7 @@ function() {
         inputVal = '{{$Y}}';
         correctResult = 100;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2529,13 +2518,13 @@ function() {
             });
     });
 
-    this.it('{{${Y}}}', function(test, options) {
+    this.it('{{${Y}}}', async function(test, options) {
 
         //  Extended form
         inputVal = '{{${Y}}}';
         correctResult = 100;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2548,7 +2537,7 @@ function() {
             });
     });
 
-    this.it('\'$Y\'', function(test, options) {
+    this.it('\'$Y\'', async function(test, options) {
 
         //  Use the variable in a single-quoted String expression
 
@@ -2556,7 +2545,7 @@ function() {
         inputVal = '\'$Y\'';
         correctResult = '$Y';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2569,13 +2558,13 @@ function() {
             });
     });
 
-    this.it('\'${Y}\'', function(test, options) {
+    this.it('\'${Y}\'', async function(test, options) {
 
         //  Extended form
         inputVal = '\'${Y}\'';
         correctResult = '${Y}';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2588,7 +2577,7 @@ function() {
             });
     });
 
-    this.it('"$Y"', function(test, options) {
+    this.it('"$Y"', async function(test, options) {
 
         //  Use the variable in a double quoted String expression
 
@@ -2596,7 +2585,7 @@ function() {
         inputVal = '"$Y"';
         correctResult = '100';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2609,13 +2598,13 @@ function() {
             });
     });
 
-    this.it('"${Y}"', function(test, options) {
+    this.it('"${Y}"', async function(test, options) {
 
         //  Extended form
         inputVal = '"${Y}"';
         correctResult = '100';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2628,7 +2617,7 @@ function() {
             });
     });
 
-    this.it('`$Y`', function(test, options) {
+    this.it('`$Y`', async function(test, options) {
 
         //  Use the variable in a backtick quoted String expression
 
@@ -2636,7 +2625,7 @@ function() {
         inputVal = '`$Y`';
         correctResult = 100;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2649,13 +2638,13 @@ function() {
             });
     });
 
-    this.it('`${Y}`', function(test, options) {
+    this.it('`${Y}`', async function(test, options) {
 
         //  Extended form
         inputVal = '`${Y}`';
         correctResult = 100;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2668,7 +2657,7 @@ function() {
             });
     });
 
-    this.it('\'This is $Y\'', function(test, options) {
+    this.it('\'This is $Y\'', async function(test, options) {
 
         //  Use the variable with other String content in a single-quoted String
         //  expression
@@ -2677,7 +2666,7 @@ function() {
         inputVal = '\'This is $Y\'';
         correctResult = 'This is $Y';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2690,13 +2679,13 @@ function() {
             });
     });
 
-    this.it('\'This is ${Y}\'', function(test, options) {
+    this.it('\'This is ${Y}\'', async function(test, options) {
 
         //  Extended form
         inputVal = '\'This is ${Y}\'';
         correctResult = 'This is ${Y}';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2709,7 +2698,7 @@ function() {
             });
     });
 
-    this.it('"This is $Y"', function(test, options) {
+    this.it('"This is $Y"', async function(test, options) {
 
         //  Use the variable with other String content in a double quoted String
         //  expression
@@ -2717,7 +2706,7 @@ function() {
         inputVal = '"This is $Y"';
         correctResult = 'This is 100';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2730,12 +2719,12 @@ function() {
             });
     });
 
-    this.it('"This is ${Y}"', function(test, options) {
+    this.it('"This is ${Y}"', async function(test, options) {
 
         inputVal = '"This is ${Y}"';
         correctResult = 'This is 100';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2748,7 +2737,7 @@ function() {
             });
     });
 
-    this.it('`This is $Y`', function(test, options) {
+    this.it('`This is $Y`', async function(test, options) {
 
         //  Use the variable with other String content in a backtick quoted
         //  String expression
@@ -2756,7 +2745,7 @@ function() {
         inputVal = '`This is $Y`';
         correctResult = undefined;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2769,12 +2758,12 @@ function() {
             });
     });
 
-    this.it('`This is ${Y}`', function(test, options) {
+    this.it('`This is ${Y}`', async function(test, options) {
 
         inputVal = '`This is ${Y}`';
         correctResult = undefined;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2787,7 +2776,7 @@ function() {
             });
     });
 
-    this.it('{{$Y .% #{##.00}}}', function(test, options) {
+    this.it('{{$Y .% #{##.00}}}', async function(test, options) {
 
         //  Use the variable in a formatting expression, but since it's not in
         //  double quotes it won't do the interpolation - it will just return the
@@ -2796,7 +2785,7 @@ function() {
         inputVal = '{{$Y .% #{##.00}}}';
         correctResult = 100;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2809,12 +2798,12 @@ function() {
             });
     });
 
-    this.it('{{${Y} .% #{##.00}}}', function(test, options) {
+    this.it('{{${Y} .% #{##.00}}}', async function(test, options) {
 
         inputVal = '{{${Y} .% #{##.00}}}';
         correctResult = 100;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2827,7 +2816,7 @@ function() {
             });
     });
 
-    this.it('\'{{$Y .% #{##.00}}}\'', function(test, options) {
+    this.it('\'{{$Y .% #{##.00}}}\'', async function(test, options) {
 
         //  Use the variable in a formatting expression, but since it's in single
         //  quotes, not in double quotes, it won't do the interpolation - it will
@@ -2836,7 +2825,7 @@ function() {
         inputVal = '\'{{$Y .% #{##.00}}}\'';
         correctResult = '{{$Y .% #{##.00}}}';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2849,12 +2838,12 @@ function() {
             });
     });
 
-    this.it('\'{{${Y} .% #{##.00}}}\'', function(test, options) {
+    this.it('\'{{${Y} .% #{##.00}}}\'', async function(test, options) {
 
         inputVal = '\'{{${Y} .% #{##.00}}}\'';
         correctResult = '{{${Y} .% #{##.00}}}';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2867,7 +2856,7 @@ function() {
             });
     });
 
-    this.it('"{{$Y .% #{##.00}}}"', function(test, options) {
+    this.it('"{{$Y .% #{##.00}}}"', async function(test, options) {
 
         //  Use the variable in a formatting expression, and since it's in
         //  double quotes it will do the interpolation.
@@ -2875,7 +2864,7 @@ function() {
         inputVal = '"{{$Y .% #{##.00}}}"';
         correctResult = '100.00';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2888,12 +2877,12 @@ function() {
             });
     });
 
-    this.it('"{{${Y} .% #{##.00}}}"', function(test, options) {
+    this.it('"{{${Y} .% #{##.00}}}"', async function(test, options) {
 
         inputVal = '"{{${Y} .% #{##.00}}}"';
         correctResult = '100.00';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2906,7 +2895,7 @@ function() {
             });
     });
 
-    this.it('`{{$Y .% #{##.00}}}`', function(test, options) {
+    this.it('`{{$Y .% #{##.00}}}`', async function(test, options) {
 
         //  Use the variable in a formatting expression, and since it's in backtick
         //  quotes it will both do the interpolation and eval the result - which
@@ -2915,7 +2904,7 @@ function() {
         inputVal = '`{{$Y .% #{##.00}}}`';
         correctResult = 100;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2928,12 +2917,12 @@ function() {
             });
     });
 
-    this.it('`{{${Y} .% #{##.00}}}`', function(test, options) {
+    this.it('`{{${Y} .% #{##.00}}}`', async function(test, options) {
 
         inputVal = '`{{${Y} .% #{##.00}}}`';
         correctResult = 100;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -2946,10 +2935,10 @@ function() {
             });
     });
 
-    this.it('test:TSHTestCmd $Y', function(test, options) {
+    this.it('test:TSHTestCmd $Y', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd $Y';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2962,10 +2951,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd ${Y}', function(test, options) {
+    this.it('test:TSHTestCmd ${Y}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd ${Y}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2978,10 +2967,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd @$Y', function(test, options) {
+    this.it('test:TSHTestCmd @$Y', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd @$Y';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -2994,10 +2983,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd @${Y}', function(test, options) {
+    this.it('test:TSHTestCmd @${Y}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd @${Y}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3010,10 +2999,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd {{$Y}}', function(test, options) {
+    this.it('test:TSHTestCmd {{$Y}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd {{$Y}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3026,10 +3015,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd {{${Y}}}', function(test, options) {
+    this.it('test:TSHTestCmd {{${Y}}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd {{${Y}}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3042,10 +3031,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd \'$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'$Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'$Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3058,10 +3047,10 @@ function() {
                         'Resolved value', '$Y')));
     });
 
-    this.it('test:TSHTestCmd \'${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'${Y}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'${Y}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3074,10 +3063,10 @@ function() {
                         'Resolved value', '${Y}')));
     });
 
-    this.it('test:TSHTestCmd "$Y"', function(test, options) {
+    this.it('test:TSHTestCmd "$Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "$Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3090,10 +3079,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd "${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd "${Y}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "${Y}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3106,10 +3095,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd `$Y`', function(test, options) {
+    this.it('test:TSHTestCmd `$Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `$Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3122,10 +3111,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd `${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd `${Y}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `${Y}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3138,10 +3127,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd \'@$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'@$Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'@$Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3154,10 +3143,10 @@ function() {
                         'Resolved value', '@$Y')));
     });
 
-    this.it('test:TSHTestCmd \'@${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'@${Y}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'@${Y}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3170,10 +3159,10 @@ function() {
                         'Resolved value', '@${Y}')));
     });
 
-    this.it('test:TSHTestCmd "@$Y"', function(test, options) {
+    this.it('test:TSHTestCmd "@$Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "@$Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3186,10 +3175,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd "@${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd "@${Y}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "@${Y}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3202,10 +3191,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd `@$Y`', function(test, options) {
+    this.it('test:TSHTestCmd `@$Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `@$Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3218,10 +3207,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd `@${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd `@${Y}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `@${Y}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3234,10 +3223,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd \'{{$Y}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{$Y}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'{{$Y}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3250,10 +3239,10 @@ function() {
                         'Resolved value', '{{$Y}}')));
     });
 
-    this.it('test:TSHTestCmd \'{{${Y}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{${Y}}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'{{${Y}}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3266,10 +3255,10 @@ function() {
                         'Resolved value', '{{${Y}}}')));
     });
 
-    this.it('test:TSHTestCmd "{{$Y}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{$Y}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "{{$Y}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3282,10 +3271,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd "{{${Y}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{${Y}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "{{${Y}}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3298,10 +3287,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd `{{$Y}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{$Y}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `{{$Y}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3314,10 +3303,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd `{{${Y}}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{${Y}}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `{{${Y}}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3330,10 +3319,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd \'This is $Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is $Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'This is $Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3346,10 +3335,10 @@ function() {
                         'Resolved value', 'This is $Y')));
     });
 
-    this.it('test:TSHTestCmd \'This is ${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is ${Y}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'This is ${Y}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3362,10 +3351,10 @@ function() {
                         'Resolved value', 'This is ${Y}')));
     });
 
-    this.it('test:TSHTestCmd "This is $Y"', function(test, options) {
+    this.it('test:TSHTestCmd "This is $Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "This is $Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3378,10 +3367,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd "This is ${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is ${Y}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "This is ${Y}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3394,10 +3383,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd `This is $Y`', function(test, options) {
+    this.it('test:TSHTestCmd `This is $Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `This is $Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3410,10 +3399,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd `This is ${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is ${Y}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `This is ${Y}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3426,10 +3415,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd \'This is @$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is @$Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'This is @$Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3442,10 +3431,10 @@ function() {
                         'Resolved value', 'This is @$Y')));
     });
 
-    this.it('test:TSHTestCmd \'This is @$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is @$Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'This is @${Y}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3458,10 +3447,10 @@ function() {
                         'Resolved value', 'This is @${Y}')));
     });
 
-    this.it('test:TSHTestCmd "This is @$Y"', function(test, options) {
+    this.it('test:TSHTestCmd "This is @$Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "This is @$Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3474,10 +3463,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd "This is @${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is @${Y}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "This is @${Y}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3490,10 +3479,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd `This is @$Y`', function(test, options) {
+    this.it('test:TSHTestCmd `This is @$Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `This is @$Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3506,10 +3495,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd `This is @${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is @${Y}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `This is @${Y}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3522,10 +3511,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd \'This is {{$Y}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is {{$Y}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'This is {{$Y}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3538,10 +3527,10 @@ function() {
                         'Resolved value', 'This is {{$Y}}')));
     });
 
-    this.it('test:TSHTestCmd \'This is {{${Y}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'This is {{${Y}}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'This is {{${Y}}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3554,10 +3543,10 @@ function() {
                         'Resolved value', 'This is {{${Y}}}')));
     });
 
-    this.it('test:TSHTestCmd "This is {{$Y}}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is {{$Y}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "This is {{$Y}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3570,10 +3559,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd "This is {{${Y}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "This is {{${Y}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "This is {{${Y}}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3586,10 +3575,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd `This is {{$Y}}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is {{$Y}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `This is {{$Y}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3602,10 +3591,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd `This is {{${Y}}}`', function(test, options) {
+    this.it('test:TSHTestCmd `This is {{${Y}}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `This is {{${Y}}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test,
             inputVal,
             TP.hc(
@@ -3618,10 +3607,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd {{$Y .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd {{$Y .% #{##.00}}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd {{$Y .% #{##.00}}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
@@ -3633,10 +3622,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd {{${Y} .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd {{${Y} .% #{##.00}}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd {{${Y} .% #{##.00}}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
@@ -3648,10 +3637,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd \'{{$Y .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{$Y .% #{##.00}}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'{{$Y .% #{##.00}}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
@@ -3663,10 +3652,10 @@ function() {
                         'Resolved value', '{{$Y .% #{##.00}}}')));
     });
 
-    this.it('test:TSHTestCmd \'{{${Y} .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd \'{{${Y} .% #{##.00}}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd \'{{${Y} .% #{##.00}}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
@@ -3678,10 +3667,10 @@ function() {
                         'Resolved value', '{{${Y} .% #{##.00}}}')));
     });
 
-    this.it('test:TSHTestCmd "{{$Y .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{$Y .% #{##.00}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "{{$Y .% #{##.00}}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
@@ -3693,10 +3682,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd "{{${Y} .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd "{{${Y} .% #{##.00}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd "{{${Y} .% #{##.00}}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
@@ -3708,10 +3697,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd `{{$Y .% #{##.00}}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{$Y .% #{##.00}}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `{{$Y .% #{##.00}}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
@@ -3723,10 +3712,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd `{{${Y} .% #{##.00}}}`', function(test, options) {
+    this.it('test:TSHTestCmd `{{${Y} .% #{##.00}}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd `{{${Y} .% #{##.00}}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
@@ -3738,10 +3727,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=$Y', function(test, options) {
+    this.it('test:TSHTestCmd stuff=$Y', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=$Y';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3753,10 +3742,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=${Y}', function(test, options) {
+    this.it('test:TSHTestCmd stuff=${Y}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=${Y}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3768,10 +3757,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=@$Y', function(test, options) {
+    this.it('test:TSHTestCmd stuff=@$Y', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=@$Y';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3783,10 +3772,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=@${Y}', function(test, options) {
+    this.it('test:TSHTestCmd stuff=@${Y}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=@${Y}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3798,10 +3787,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff={{$Y}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{$Y}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff={{$Y}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3813,10 +3802,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff={{${Y}}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{${Y}}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff={{${Y}}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3828,10 +3817,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'$Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'$Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3843,10 +3832,10 @@ function() {
                         'Resolved value', '$Y')));
     });
 
-    this.it('test:TSHTestCmd stuff=\'${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'${Y}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'${Y}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3858,10 +3847,10 @@ function() {
                         'Resolved value', '${Y}')));
     });
 
-    this.it('test:TSHTestCmd stuff="$Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="$Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="$Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3873,10 +3862,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff="${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="${Y}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="${Y}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3888,10 +3877,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=`$Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`$Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`$Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3903,10 +3892,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=`${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`${Y}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`${Y}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3918,10 +3907,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'@$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'@$Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'@$Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3933,10 +3922,10 @@ function() {
                         'Resolved value', '@$Y')));
     });
 
-    this.it('test:TSHTestCmd stuff=\'@${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'@${Y}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'@${Y}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3948,10 +3937,10 @@ function() {
                         'Resolved value', '@${Y}')));
     });
 
-    this.it('test:TSHTestCmd stuff="@$Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="@$Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="@$Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3963,10 +3952,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff="@${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="@${Y}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="@${Y}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3978,10 +3967,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=`@$Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`@$Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`@$Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -3993,10 +3982,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=`@${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`@${Y}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`@${Y}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4008,10 +3997,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'{{$Y}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{$Y}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'{{$Y}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4023,10 +4012,10 @@ function() {
                         'Resolved value', '{{$Y}}')));
     });
 
-    this.it('test:TSHTestCmd stuff=\'{{${Y}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{${Y}}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'{{${Y}}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4038,10 +4027,10 @@ function() {
                         'Resolved value', '{{${Y}}}')));
     });
 
-    this.it('test:TSHTestCmd stuff="{{$Y}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{$Y}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="{{$Y}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4053,10 +4042,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff="{{${Y}}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{${Y}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="{{${Y}}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4068,10 +4057,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=`{{$Y}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{$Y}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`{{$Y}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4083,10 +4072,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=`{{${Y}}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{${Y}}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`{{${Y}}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4098,10 +4087,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'This is $Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is $Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'This is $Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4113,10 +4102,10 @@ function() {
                         'Resolved value', 'This is $Y')));
     });
 
-    this.it('test:TSHTestCmd stuff=\'This is ${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is ${Y}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'This is ${Y}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4128,10 +4117,10 @@ function() {
                         'Resolved value', 'This is ${Y}')));
     });
 
-    this.it('test:TSHTestCmd stuff="This is $Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is $Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="This is $Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4143,10 +4132,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff="This is ${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is ${Y}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="This is ${Y}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4158,10 +4147,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=`This is $Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is $Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`This is $Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4173,10 +4162,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=`This is ${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is ${Y}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`This is ${Y}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4188,10 +4177,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'This is @$Y\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is @$Y\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'This is @$Y\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4203,10 +4192,10 @@ function() {
                         'Resolved value', 'This is @$Y')));
     });
 
-    this.it('test:TSHTestCmd stuff=\'This is @${Y}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is @${Y}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'This is @${Y}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4218,10 +4207,10 @@ function() {
                         'Resolved value', 'This is @${Y}')));
     });
 
-    this.it('test:TSHTestCmd stuff="This is @$Y"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is @$Y"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="This is @$Y"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4233,10 +4222,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff="This is @${Y}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is @${Y}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="This is @${Y}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4248,10 +4237,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=`This is @$Y`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is @$Y`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`This is @$Y`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4263,10 +4252,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=`This is @${Y}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is @${Y}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`This is @${Y}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4278,10 +4267,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'This is {{$Y}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is {{$Y}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'This is {{$Y}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4293,10 +4282,10 @@ function() {
                         'Resolved value', 'This is {{$Y}}')));
     });
 
-    this.it('test:TSHTestCmd stuff=\'This is {{${Y}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'This is {{${Y}}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'This is {{${Y}}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4308,10 +4297,10 @@ function() {
                         'Resolved value', 'This is {{${Y}}}')));
     });
 
-    this.it('test:TSHTestCmd stuff="This is {{$Y}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is {{$Y}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="This is {{$Y}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4323,10 +4312,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff="This is {{${Y}}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="This is {{${Y}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="This is {{${Y}}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4338,10 +4327,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=`This is {{$Y}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is {{$Y}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`This is {{$Y}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4353,10 +4342,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff=`This is {{${Y}}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`This is {{${Y}}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`This is {{${Y}}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4368,10 +4357,10 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('test:TSHTestCmd stuff={{$Y .% #{##.00}}}', function(test, options) {
+    this.it('test:TSHTestCmd stuff={{$Y .% #{##.00}}}', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff={{$Y .% #{##.00}}}';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4383,10 +4372,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=\'{{$Y .% #{##.00}}}\'', function(test, options) {
+    this.it('test:TSHTestCmd stuff=\'{{$Y .% #{##.00}}}\'', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=\'{{$Y .% #{##.00}}}\'';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4398,10 +4387,10 @@ function() {
                         'Resolved value', '{{$Y .% #{##.00}}}')));
     });
 
-    this.it('test:TSHTestCmd stuff="{{$Y .% #{##.00}}}"', function(test, options) {
+    this.it('test:TSHTestCmd stuff="{{$Y .% #{##.00}}}"', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff="{{$Y .% #{##.00}}}"';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4413,10 +4402,10 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('test:TSHTestCmd stuff=`{{$Y .% #{##.00}}}`', function(test, options) {
+    this.it('test:TSHTestCmd stuff=`{{$Y .% #{##.00}}}`', async function(test, options) {
 
         inputVal = 'test:TSHTestCmd stuff=`{{$Y .% #{##.00}}}`';
-        shellDriver.execOutputTest(
+        await shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
@@ -4437,7 +4426,7 @@ function() {
             delete window.bar;
             delete window.baz;
         });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -4487,7 +4476,7 @@ function() {
         TP.nodeAppendChild(backgroundElem, childElem, false);
     });
 
-    this.it('data setup', function(test, options) {
+    this.it('data setup', async function(test, options) {
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
@@ -4495,15 +4484,15 @@ function() {
         //  Merely here to shut up the test harness.
         test.assert.isTrue(true);
 
-        shellDriver.execShellTest(test, inputVal);
+        await shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('urn:tibet:TP', function(test, options) {
+    this.it('urn:tibet:TP', async function(test, options) {
 
         inputVal = 'urn:tibet:TP';
         correctResult = TP;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4516,12 +4505,12 @@ function() {
             });
     });
 
-    this.it('tibet:///urn:tibet:TP', function(test, options) {
+    this.it('tibet:///urn:tibet:TP', async function(test, options) {
 
         inputVal = 'tibet:///urn:tibet:TP';
         correctResult = TP;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4534,12 +4523,12 @@ function() {
             });
     });
 
-    this.it('urn:tibet:TP.sig', function(test, options) {
+    this.it('urn:tibet:TP.sig', async function(test, options) {
 
         inputVal = 'urn:tibet:TP.sig';
         correctResult = TP.sig;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4552,12 +4541,12 @@ function() {
             });
     });
 
-    this.it('urn:tibet:TP.sig.Signal', function(test, options) {
+    this.it('urn:tibet:TP.sig.Signal', async function(test, options) {
 
         inputVal = 'urn:tibet:TP.sig.Signal';
         correctResult = TP.sig.Signal;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4570,12 +4559,12 @@ function() {
             });
     });
 
-    this.it('tibet:///urn:tibet:TP.sig.Signal', function(test, options) {
+    this.it('tibet:///urn:tibet:TP.sig.Signal', async function(test, options) {
 
         inputVal = 'tibet:///urn:tibet:TP.sig.Signal';
         correctResult = TP.sig.Signal;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4588,7 +4577,7 @@ function() {
             });
     });
 
-    this.it('urn:tibet:FOO', function(test, options) {
+    this.it('urn:tibet:FOO', async function(test, options) {
 
         var foo;
 
@@ -4598,7 +4587,7 @@ function() {
         inputVal = 'urn:tibet:FOO';
         correctResult = foo;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4611,7 +4600,7 @@ function() {
             });
     });
 
-    this.it('tibet:///urn:tibet:FOO', function(test, options) {
+    this.it('tibet:///urn:tibet:FOO', async function(test, options) {
 
         var foo;
 
@@ -4621,7 +4610,7 @@ function() {
         inputVal = 'tibet:///urn:tibet:FOO';
         correctResult = foo;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4634,12 +4623,12 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas/', function(test, options) {
+    this.it('tibet://uicanvas/', async function(test, options) {
 
         inputVal = 'tibet://uicanvas/';
         correctResult = TP.sys.getUICanvas();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4652,13 +4641,13 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas', function(test, options) {
+    this.it('tibet://uicanvas', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas';
         correctResult = TP.sys.getUICanvas();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4671,12 +4660,12 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas/#document', function(test, options) {
+    this.it('tibet://uicanvas/#document', async function(test, options) {
 
         inputVal = 'tibet://uicanvas/#document';
         correctResult = TP.sys.getUICanvas().getDocument();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4689,13 +4678,13 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas#document', function(test, options) {
+    this.it('tibet://uicanvas#document', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#document';
         correctResult = TP.sys.getUICanvas().getDocument();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4708,13 +4697,13 @@ function() {
             });
     });
 
-    this.it('#document', function(test, options) {
+    this.it('#document', async function(test, options) {
 
         //  The 'tibet://uicanvas' should be optional
         inputVal = '#document';
         correctResult = TP.sys.getUICanvas().getDocument();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4727,12 +4716,12 @@ function() {
             });
     });
 
-    this.it('tibet://UIROOT/', function(test, options) {
+    this.it('tibet://UIROOT/', async function(test, options) {
 
         inputVal = 'tibet://UIROOT/';
         correctResult = TP.core.Window.construct('UIROOT');
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4745,14 +4734,14 @@ function() {
             });
     });
 
-    this.it('tibet://UIROOT', function(test, options) {
+    this.it('tibet://UIROOT', async function(test, options) {
 
         //  The last slash should be optional
 
         inputVal = 'tibet://UIROOT';
         correctResult = TP.core.Window.construct('UIROOT');
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4765,12 +4754,12 @@ function() {
             });
     });
 
-    this.it('tibet://UIROOT/#document', function(test, options) {
+    this.it('tibet://UIROOT/#document', async function(test, options) {
 
         inputVal = 'tibet://UIROOT/#document';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4783,13 +4772,13 @@ function() {
             });
     });
 
-    this.it('tibet://UIROOT#document', function(test, options) {
+    this.it('tibet://UIROOT#document', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://UIROOT#document';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4802,12 +4791,12 @@ function() {
             });
     });
 
-    this.it('tibet://UIROOT/future_path/', function(test, options) {
+    this.it('tibet://UIROOT/future_path/', async function(test, options) {
 
         inputVal = 'tibet://UIROOT/future_path/';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4820,13 +4809,13 @@ function() {
             });
     });
 
-    this.it('tibet://UIROOT/future_path', function(test, options) {
+    this.it('tibet://UIROOT/future_path', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://UIROOT/future_path';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4839,12 +4828,12 @@ function() {
             });
     });
 
-    this.it('tibet://UIROOT/future_path/#document', function(test, options) {
+    this.it('tibet://UIROOT/future_path/#document', async function(test, options) {
 
         inputVal = 'tibet://UIROOT/future_path/#document';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4857,13 +4846,13 @@ function() {
             });
     });
 
-    this.it('tibet://UIROOT/future_path#document', function(test, options) {
+    this.it('tibet://UIROOT/future_path#document', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://UIROOT/future_path#document';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4876,12 +4865,12 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas/#top_background', function(test, options) {
+    this.it('tibet://uicanvas/#top_background', async function(test, options) {
 
         inputVal = 'tibet://uicanvas/#top_background';
         correctResult = TP.byId('top_background', test.getDriver().get('windowContext'), false);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4894,13 +4883,13 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas#top_background', function(test, options) {
+    this.it('tibet://uicanvas#top_background', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#top_background';
         correctResult = TP.byId('top_background', test.getDriver().get('windowContext'), false);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4913,13 +4902,13 @@ function() {
             });
     });
 
-    this.it('#top_background', function(test, options) {
+    this.it('#top_background', async function(test, options) {
 
         //  The 'tibet://uicanvas' should be optional
         inputVal = '#top_background';
         correctResult = TP.byId('top_background', test.getDriver().get('windowContext'), false);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4932,12 +4921,12 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas/#element(/1/2)', function(test, options) {
+    this.it('tibet://uicanvas/#element(/1/2)', async function(test, options) {
 
         inputVal = 'tibet://uicanvas/#element(/1/2)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4950,13 +4939,13 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas#element(/1/2)', function(test, options) {
+    this.it('tibet://uicanvas#element(/1/2)', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#element(/1/2)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4969,13 +4958,13 @@ function() {
             });
     });
 
-    this.it('#element(/1/2)', function(test, options) {
+    this.it('#element(/1/2)', async function(test, options) {
 
         //  The 'tibet://uicanvas' should be optional
         inputVal = '#element(/1/2)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -4988,12 +4977,12 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas/#element(top_background/1)', function(test, options) {
+    this.it('tibet://uicanvas/#element(top_background/1)', async function(test, options) {
 
         inputVal = 'tibet://uicanvas/#element(top_background/1)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5006,12 +4995,12 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas#element(top_background/1)', function(test, options) {
+    this.it('tibet://uicanvas#element(top_background/1)', async function(test, options) {
 
         inputVal = 'tibet://uicanvas#element(top_background/1)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5024,13 +5013,13 @@ function() {
             });
     });
 
-    this.it('#element(top_background/1)', function(test, options) {
+    this.it('#element(top_background/1)', async function(test, options) {
 
         //  The 'tibet://uicanvas/' should be optional
         inputVal = '#element(top_background/1)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5043,12 +5032,12 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas/#xpath1(/$def:html/$def:body)', function(test, options) {
+    this.it('tibet://uicanvas/#xpath1(/$def:html/$def:body)', async function(test, options) {
 
         inputVal = 'tibet://uicanvas/#xpath1(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5061,13 +5050,13 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas#xpath1(/$def:html/$def:body)', function(test, options) {
+    this.it('tibet://uicanvas#xpath1(/$def:html/$def:body)', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#xpath1(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5080,13 +5069,13 @@ function() {
             });
     });
 
-    this.it('#xpath1(/$def:html/$def:body)', function(test, options) {
+    this.it('#xpath1(/$def:html/$def:body)', async function(test, options) {
 
         //  The 'tibet://uicanvas/' should be optional
         inputVal = '#xpath1(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5099,12 +5088,12 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas/#xpointer(/$def:html/$def:body)', function(test, options) {
+    this.it('tibet://uicanvas/#xpointer(/$def:html/$def:body)', async function(test, options) {
 
         inputVal = 'tibet://uicanvas/#xpointer(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5117,13 +5106,13 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas#xpointer(/$def:html/$def:body)', function(test, options) {
+    this.it('tibet://uicanvas#xpointer(/$def:html/$def:body)', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#xpointer(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5136,13 +5125,13 @@ function() {
             });
     });
 
-    this.it('#xpointer(/$def:html/$def:body)', function(test, options) {
+    this.it('#xpointer(/$def:html/$def:body)', async function(test, options) {
 
         //  The 'tibet://uicanvas/' should be optional
         inputVal = '#xpointer(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5155,12 +5144,12 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas/#css(#top_background > *:first-child)', function(test, options) {
+    this.it('tibet://uicanvas/#css(#top_background > *:first-child)', async function(test, options) {
 
         inputVal = 'tibet://uicanvas/#css(#top_background > *:first-child)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5173,13 +5162,13 @@ function() {
             });
     });
 
-    this.it('tibet://uicanvas#css(#top_background > *:first-child)', function(test, options) {
+    this.it('tibet://uicanvas#css(#top_background > *:first-child)', async function(test, options) {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#css(#top_background > *:first-child)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5192,13 +5181,13 @@ function() {
             });
     });
 
-    this.it('#css(#top_background > *:first-child)', function(test, options) {
+    this.it('#css(#top_background > *:first-child)', async function(test, options) {
 
         //  The 'tibet://uicanvas/' should be optional
         inputVal = '#css(#top_background > *:first-child)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5229,7 +5218,7 @@ function() {
             delete window.bar;
             delete window.baz;
         });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -5264,7 +5253,7 @@ function() {
 
     //  ---
 
-    this.it('Shell HTTP URL: Retrieve asynchronously', function(test, options) {
+    this.it('Shell HTTP URL: Retrieve asynchronously', async function(test, options) {
 
         var locStr,
             resultElem,
@@ -5290,7 +5279,7 @@ function() {
         //  that TIBET gets data from the 'server' each time.
         inputVal = locStr + ' -refresh';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5306,7 +5295,7 @@ function() {
 
     //  ---
 
-    this.it('Shell HTTP URL: Set resource using PUT', function(test, options) {
+    this.it('Shell HTTP URL: Set resource using PUT', async function(test, options) {
 
         var locStr,
             testBody,
@@ -5337,7 +5326,7 @@ function() {
         //  criteria, because we want to force the test above.
         inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="put"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5350,7 +5339,7 @@ function() {
 
     //  ---
 
-    this.it('Shell HTTP URL: Set resource using POST', function(test, options) {
+    this.it('Shell HTTP URL: Set resource using POST', async function(test, options) {
 
         var locStr,
             testBody,
@@ -5381,7 +5370,7 @@ function() {
         //  criteria, because we want to force the test above.
         inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="post"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5394,7 +5383,7 @@ function() {
 
     //  ---
 
-    this.it('Shell HTTP URL: Set resource using FORM POST', function(test, options) {
+    this.it('Shell HTTP URL: Set resource using FORM POST', async function(test, options) {
 
         var locStr,
             testBody,
@@ -5427,7 +5416,7 @@ function() {
                     ' --method="post"' +
                     ' --mimetype="application/x-www-form-urlencoded"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5440,7 +5429,7 @@ function() {
 
     //  ---
 
-    this.it('Shell HTTP URL: Set resource using MULTIPART FORM POST - TEXT', function(test, options) {
+    this.it('Shell HTTP URL: Set resource using MULTIPART FORM POST - TEXT', async function(test, options) {
 
         var locStr,
             testBody,
@@ -5474,7 +5463,7 @@ function() {
                     ' --method="post"' +
                     ' --mimetype="multipart/form-data"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5487,7 +5476,7 @@ function() {
 
     //  ---
 
-    this.it('Shell HTTP URL: Set resource using MULTIPART FORM POST - XML', function(test, options) {
+    this.it('Shell HTTP URL: Set resource using MULTIPART FORM POST - XML', async function(test, options) {
 
         var locStr,
             testBody,
@@ -5521,7 +5510,7 @@ function() {
                     ' --method="post"' +
                     ' --mimetype="multipart/form-data"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5534,7 +5523,7 @@ function() {
 
     //  ---
 
-    this.it('Shell HTTP URL: Set resource using MULTIPART RELATED POST - MIXED', function(test, options) {
+    this.it('Shell HTTP URL: Set resource using MULTIPART RELATED POST - MIXED', async function(test, options) {
 
         var locStr,
             testBody,
@@ -5572,7 +5561,7 @@ function() {
                     ' --method="post"' +
                     ' --mimetype="multipart/related"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5585,7 +5574,7 @@ function() {
 
     //  ---
 
-    this.it('Shell HTTP URL: Delete resource using DELETE', function(test, options) {
+    this.it('Shell HTTP URL: Delete resource using DELETE', async function(test, options) {
 
         var locStr,
             testBody,
@@ -5619,7 +5608,7 @@ function() {
         //  criteria, because we want to force the test above.
         inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5659,7 +5648,7 @@ function() {
 
     //  ---
 
-    this.it('Shell JSONP URL: Retrieve resource asynchronously', function(test, options) {
+    this.it('Shell JSONP URL: Retrieve resource asynchronously', async function(test, options) {
 
         var locStr,
 
@@ -5675,7 +5664,7 @@ function() {
         //  Merely here to shut up the test harness.
         test.assert.isTrue(true);
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5692,7 +5681,7 @@ function() {
 
         stub.restore();
     });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -5731,7 +5720,7 @@ function() {
 
     //  ---
 
-    this.it('Shell LOCALDB URL: Retrieve resource', function(test, options) {
+    this.it('Shell LOCALDB URL: Retrieve resource', async function(test, options) {
 
         var locStr,
 
@@ -5741,7 +5730,7 @@ function() {
 
         inputVal = locStr + ' -refresh';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5778,7 +5767,7 @@ function() {
 
     //  ---
 
-    this.it('Shell LOCALDB URL: Retrieve resource info', function(test, options) {
+    this.it('Shell LOCALDB URL: Retrieve resource info', async function(test, options) {
 
         var locStr,
 
@@ -5788,7 +5777,7 @@ function() {
 
         inputVal = locStr + ' -refresh --method="head"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5809,7 +5798,7 @@ function() {
 
     //  ---
 
-    this.it('Shell LOCALDB URL: Retrieve listing of all documents in db', function(test, options) {
+    this.it('Shell LOCALDB URL: Retrieve listing of all documents in db', async function(test, options) {
 
         var locStr,
 
@@ -5819,7 +5808,7 @@ function() {
 
         inputVal = locStr + ' -refresh';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5846,7 +5835,7 @@ function() {
 
     //  ---
 
-    this.it('Shell LOCALDB URL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+    this.it('Shell LOCALDB URL: Set resource using PUT (supplied id means UPDATE if found)', async function(test, options) {
 
         var locStr,
             testBody,
@@ -5863,7 +5852,7 @@ function() {
         //  method here since the default for localdb: URLs is POST.
         inputVal = testBody.asSource() + ' .>! ' + locStr + ' --method="put"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -5872,7 +5861,7 @@ function() {
                     TP.sc('Expected a result with an \'ok\' property'));
             });
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             'localdb://local_test/author_info' + ' -refresh',
             function(testResult) {
@@ -5909,7 +5898,7 @@ function() {
 
     //  ---
 
-    this.it('Shell LOCALDB URL: Set resource using POST (computed id means CREATE)', function(test, options) {
+    this.it('Shell LOCALDB URL: Set resource using POST (computed id means CREATE)', async function(test, options) {
 
         var locStr,
             testBody,
@@ -5928,7 +5917,7 @@ function() {
         //  that TIBET flushes changes to the 'server'.
         inputVal = testBody.asSource() + ' .>! ' + locStr;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(saveResult) {
@@ -5939,47 +5928,44 @@ function() {
                 saveID = saveResult.at('_id');
             });
 
-        test.chain(
-            function() {
-                shellDriver.execShellTest(
-                    test,
-                    'localdb://local_test/' + saveID + ' -refresh',
-                    function(testResult) {
+        await shellDriver.execShellTest(
+            test,
+            'localdb://local_test/' + saveID + ' -refresh',
+            function(testResult) {
 
-                        var obj;
+                var obj;
 
-                        obj = testResult.at('_body');
+                obj = testResult.at('_body');
 
-                        test.assert.isTrue(
-                            obj.hasKey('firstName'),
-                            TP.sc('Expected that result would have a key of \'firstName\' and',
-                                    ' it doesn\'t'));
+                test.assert.isTrue(
+                    obj.hasKey('firstName'),
+                    TP.sc('Expected that result would have a key of \'firstName\' and',
+                            ' it doesn\'t'));
 
-                        test.assert.isEqualTo(
-                                obj.at('firstName'),
-                                'John',
-                                TP.sc('Expected: ', '"John"',
-                                        ' and got instead: ', obj.at('firstName'), '.'));
+                test.assert.isEqualTo(
+                        obj.at('firstName'),
+                        'John',
+                        TP.sc('Expected: ', '"John"',
+                                ' and got instead: ', obj.at('firstName'), '.'));
 
-                        test.assert.isTrue(
-                            obj.hasKey('lastName'),
-                            TP.sc('Expected that result would have a key of \'lastName\' and',
-                                    ' it doesn\'t'));
+                test.assert.isTrue(
+                    obj.hasKey('lastName'),
+                    TP.sc('Expected that result would have a key of \'lastName\' and',
+                            ' it doesn\'t'));
 
-                        test.assert.isEqualTo(
-                                obj.at('lastName'),
-                                'Smith',
-                                TP.sc('Expected: ', '"Smith"',
-                                        ' and got instead: ', obj.at('lastName'), '.'));
+                test.assert.isEqualTo(
+                        obj.at('lastName'),
+                        'Smith',
+                        TP.sc('Expected: ', '"Smith"',
+                                ' and got instead: ', obj.at('lastName'), '.'));
 
-                        TP.uc(locStr).unregister();
-                    });
+                TP.uc(locStr).unregister();
             });
     });
 
     //  ---
 
-    this.it('Shell LOCALDB URL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+    this.it('Shell LOCALDB URL: Delete resource using DELETE (supplied id means DELETE if found)', async function(test, options) {
 
         var locStr,
 
@@ -5993,7 +5979,7 @@ function() {
         testBody = 'DELETE test content';
         inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6007,7 +5993,7 @@ function() {
 
     //  ---
 
-    this.it('Shell LOCALDB URL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+    this.it('Shell LOCALDB URL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', async function(test, options) {
 
         var locStr,
             testBody,
@@ -6020,7 +6006,7 @@ function() {
         testBody = 'DELETE test content';
         inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6038,7 +6024,7 @@ function() {
 
         storage.removeKey(TP.LOCALSTORAGE_DB_NAME);
     });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -6050,41 +6036,37 @@ function() {
 
     this.before(function(suite, options) {
 
+        var now,
+
+            pouchPromise,
+            promise;
+
         shellDriver = TP.test.TSHDriver.construct();
         this.get('drivers').atPut('shell', shellDriver);
 
-        //  'this' refers to the suite here.
-        suite.chain(
-            function() {
-                var now,
+        now = Date.now();
 
-                    pouchPromise,
-                    promise;
+        testDb = new TP.extern.PouchDB('pouch_test');
 
-                now = Date.now();
-
-                testDb = new TP.extern.PouchDB('pouch_test');
-
-                pouchPromise = testDb.put(
-                    {
-                        _id: 'author_info',
-                        date_created: now,
-                        date_modified: now,
-                        body: {
-                            firstName: 'Bill',
-                            lastName: 'Edney'
-                        }
-                    });
-
-                promise = TP.extern.Promise.resolve(pouchPromise);
-
-                return promise;
+        pouchPromise = testDb.put(
+            {
+                _id: 'author_info',
+                date_created: now,
+                date_modified: now,
+                body: {
+                    firstName: 'Bill',
+                    lastName: 'Edney'
+                }
             });
+
+        promise = TP.extern.Promise.resolve(pouchPromise);
+
+        return promise;
     });
 
     //  ---
 
-    this.it('Shell POUCHDB URL: Retrieve resource', function(test, options) {
+    this.it('Shell POUCHDB URL: Retrieve resource', async function(test, options) {
 
         var locStr,
 
@@ -6094,7 +6076,7 @@ function() {
 
         inputVal = locStr + ' -refresh';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6134,7 +6116,7 @@ function() {
 
     //  ---
 
-    this.it('Shell POUCHDB URL: Retrieve resource info', function(test, options) {
+    this.it('Shell POUCHDB URL: Retrieve resource info', async function(test, options) {
 
         var locStr,
 
@@ -6144,7 +6126,7 @@ function() {
 
         inputVal = locStr + ' -refresh --method="head"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6170,7 +6152,7 @@ function() {
 
     //  ---
 
-    this.it('Shell POUCHDB URL: Retrieve listing of all documents in db', function(test, options) {
+    this.it('Shell POUCHDB URL: Retrieve listing of all documents in db', async function(test, options) {
 
         var locStr,
 
@@ -6180,7 +6162,7 @@ function() {
 
         inputVal = locStr + ' -refresh';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6212,7 +6194,7 @@ function() {
 
     //  ---
 
-    this.it('Shell POUCHDB URL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+    this.it('Shell POUCHDB URL: Set resource using PUT (supplied id means UPDATE if found)', async function(test, options) {
 
         var locStr,
 
@@ -6228,7 +6210,7 @@ function() {
         //  method here since the default for pouchdb: URLs is POST.
         inputVal = testBody.asSource() + ' .>! ' + locStr + ' --method="put"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6242,47 +6224,44 @@ function() {
                     TP.sc('Expected a result with an \'ok\' property'));
             });
 
-        test.chain(
-            function() {
-                shellDriver.execShellTest(
-                    test,
-                    'pouchdb://pouch_test/author_info' + ' -refresh',
-                    function(testResult) {
-                        var obj;
+        await shellDriver.execShellTest(
+            test,
+            'pouchdb://pouch_test/author_info' + ' -refresh',
+            function(testResult) {
+                var obj;
 
-                        //  The test result is a TP.core.JSONContent object
-                        obj = TP.hc(testResult.get('data'));
+                //  The test result is a TP.core.JSONContent object
+                obj = TP.hc(testResult.get('data'));
 
-                        test.assert.isTrue(
-                            obj.hasKey('firstName'),
-                            TP.sc('Expected that result would have a key of \'firstName\' and',
-                                    ' it doesn\'t'));
+                test.assert.isTrue(
+                    obj.hasKey('firstName'),
+                    TP.sc('Expected that result would have a key of \'firstName\' and',
+                            ' it doesn\'t'));
 
-                        test.assert.isEqualTo(
-                            obj.at('firstName'),
-                            'November',
-                            TP.sc('Expected: ', '"November"',
-                                    ' and got instead: ', testResult.at('firstName'), '.'));
+                test.assert.isEqualTo(
+                    obj.at('firstName'),
+                    'November',
+                    TP.sc('Expected: ', '"November"',
+                            ' and got instead: ', testResult.at('firstName'), '.'));
 
-                        test.assert.isTrue(
-                            obj.hasKey('lastName'),
-                            TP.sc('Expected that result would have a key of \'lastName\' and',
-                                    ' it doesn\'t'));
+                test.assert.isTrue(
+                    obj.hasKey('lastName'),
+                    TP.sc('Expected that result would have a key of \'lastName\' and',
+                            ' it doesn\'t'));
 
-                        test.assert.isEqualTo(
-                            obj.at('lastName'),
-                            'Jones',
-                            TP.sc('Expected: ', '"Jones"',
-                                    ' and got instead: ', testResult.at('lastName'), '.'));
+                test.assert.isEqualTo(
+                    obj.at('lastName'),
+                    'Jones',
+                    TP.sc('Expected: ', '"Jones"',
+                            ' and got instead: ', testResult.at('lastName'), '.'));
 
-                        TP.uc(locStr).unregister();
-                    });
+                TP.uc(locStr).unregister();
             });
     });
 
     //  ---
 
-    this.it('Shell POUCHDB URL: Set resource using POST (computed id means CREATE)', function(test, options) {
+    this.it('Shell POUCHDB URL: Set resource using POST (computed id means CREATE)', async function(test, options) {
 
         var locStr,
             testBody,
@@ -6301,7 +6280,7 @@ function() {
         //  that TIBET flushes changes to the 'server'.
         inputVal = testBody.asSource() + ' .>! ' + locStr;
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6317,47 +6296,44 @@ function() {
                 saveID = obj.at('id');
             });
 
-        test.chain(
-            function() {
-                shellDriver.execShellTest(
-                    test,
-                    'pouchdb://pouch_test/' + saveID + ' -refresh',
-                    function(testResult) {
-                        var obj;
+        await shellDriver.execShellTest(
+            test,
+            'pouchdb://pouch_test/' + saveID + ' -refresh',
+            function(testResult) {
+                var obj;
 
-                        //  The test result is a TP.core.JSONContent object
-                        obj = TP.hc(testResult.get('data'));
+                //  The test result is a TP.core.JSONContent object
+                obj = TP.hc(testResult.get('data'));
 
-                        test.assert.isTrue(
-                            obj.hasKey('firstName'),
-                            TP.sc('Expected that result would have a key of \'firstName\' and',
-                                    ' it doesn\'t'));
+                test.assert.isTrue(
+                    obj.hasKey('firstName'),
+                    TP.sc('Expected that result would have a key of \'firstName\' and',
+                            ' it doesn\'t'));
 
-                        test.assert.isEqualTo(
-                            obj.at('firstName'),
-                            'John',
-                            TP.sc('Expected: ', '"John"',
-                                    ' and got instead: ', testResult.at('firstName'), '.'));
+                test.assert.isEqualTo(
+                    obj.at('firstName'),
+                    'John',
+                    TP.sc('Expected: ', '"John"',
+                            ' and got instead: ', testResult.at('firstName'), '.'));
 
-                        test.assert.isTrue(
-                            obj.hasKey('lastName'),
-                            TP.sc('Expected that result would have a key of \'lastName\' and',
-                                    ' it doesn\'t'));
+                test.assert.isTrue(
+                    obj.hasKey('lastName'),
+                    TP.sc('Expected that result would have a key of \'lastName\' and',
+                            ' it doesn\'t'));
 
-                        test.assert.isEqualTo(
-                            obj.at('lastName'),
-                            'Smith',
-                            TP.sc('Expected: ', '"Smith"',
-                                    ' and got instead: ', testResult.at('lastName'), '.'));
+                test.assert.isEqualTo(
+                    obj.at('lastName'),
+                    'Smith',
+                    TP.sc('Expected: ', '"Smith"',
+                            ' and got instead: ', testResult.at('lastName'), '.'));
 
-                        TP.uc(locStr).unregister();
-                    });
+                TP.uc(locStr).unregister();
             });
     });
 
     //  ---
 
-    this.it('Shell POUCHDB URL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+    this.it('Shell POUCHDB URL: Delete resource using DELETE (supplied id means DELETE if found)', async function(test, options) {
 
         var locStr,
 
@@ -6371,7 +6347,7 @@ function() {
         testBody = 'DELETE test content';
         inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6390,7 +6366,7 @@ function() {
 
     //  ---
 
-    this.it('Shell POUCHDB URL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+    this.it('Shell POUCHDB URL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', async function(test, options) {
 
         var locStr,
             testBody,
@@ -6403,7 +6379,7 @@ function() {
         testBody = 'DELETE test content';
         inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6425,19 +6401,16 @@ function() {
     this.after(function(suite, options) {
 
         //  'this' refers to the suite here.
-        suite.chain(
-            function() {
-                var pouchPromise,
-                    promise;
+        var pouchPromise,
+            promise;
 
-                pouchPromise = testDb.destroy();
+        pouchPromise = testDb.destroy();
 
-                promise = TP.extern.Promise.resolve(pouchPromise);
+        promise = TP.extern.Promise.resolve(pouchPromise);
 
-                return promise;
-            });
+        return promise;
     });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -6457,12 +6430,12 @@ function() {
 
     //  ---
 
-    this.it('Shell Piping: number to simple format', function(test, options) {
+    this.it('Shell Piping: number to simple format', async function(test, options) {
 
         inputVal = 'z = 1; z .| \'The number is: {{value}}\'';
         correctResult = 'The number is: 1';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6478,12 +6451,12 @@ function() {
 
     //  ---
 
-    this.it('Shell Piping: number to templated format', function(test, options) {
+    this.it('Shell Piping: number to templated format', async function(test, options) {
 
         inputVal = 'z = 1; z .| \'The number is: {{value .% #{##.00}}}\'';
         correctResult = 'The number is: 1.00';
 
-        shellDriver.execShellTest(
+        await shellDriver.execShellTest(
             test,
             inputVal,
             function(testResult) {
@@ -6502,7 +6475,7 @@ function() {
             //  Remove any globals that the shell put there.
             delete window.z;
         });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 //  end
