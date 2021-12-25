@@ -1140,7 +1140,7 @@ TP.boot.PHash = function() {
 
     //  internal hash and list of true keys for the receiver
     /* eslint-disable no-new-object */
-    this.$$hash = new Object();
+    this.$$hash = TP.constructOrphanObject();
     /* eslint-enable no-new-object */
     this[TP.ID] = TP.constructOID();
 
