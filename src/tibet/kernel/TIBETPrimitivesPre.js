@@ -2803,63 +2803,8 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
     if (installCalleePatch) {
 
-        method = function() {
-            var oldCallee,
-                oldArgs,
-                retVal;
-
-            //  Capture the current values of callee and args - we might
-            //  already be in a place where we're using them.
-            oldCallee = TP.$$currentCallee$$;
-            oldArgs = TP.$$currentArgs$$;
-
-            //  Set the value of the current callee.
-            TP.$$currentCallee$$ = realMethod;
-
-            //  Set the value of the current args.
-            TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
-
-            //  Now, call the method, using either call or apply. call tends to
-            //  be quite a bit faster if we can use it.
-            switch (arguments.length) {
-                case 0:
-                    retVal = realMethod.call(this);
-                    break;
-                case 1:
-                    retVal = realMethod.call(this, arguments[0]);
-                    break;
-                case 2:
-                    retVal = realMethod.call(this, arguments[0],
-                                                    arguments[1]);
-                    break;
-                case 3:
-                    retVal = realMethod.call(this, arguments[0],
-                                                    arguments[1],
-                                                    arguments[2]);
-                    break;
-                case 4:
-                    retVal = realMethod.call(this, arguments[0],
-                                                    arguments[1],
-                                                    arguments[2],
-                                                    arguments[3]);
-                    break;
-                case 5:
-                    retVal = realMethod.call(this, arguments[0],
-                                                    arguments[1],
-                                                    arguments[2],
-                                                    arguments[3],
-                                                    arguments[4]);
-                    break;
-                default:
-                    retVal = realMethod.apply(this, arguments);
-            }
-
-            //  Restore the old values for callee and args
-            TP.$$currentCallee$$ = oldCallee;
-            TP.$$currentArgs$$ = oldArgs;
-
-            return retVal;
-        };
+        //  Build a 'callee trap' around the real method.
+        method = TP.buildCalleeTrapAround(realMethod);
 
         //  Let's make sure we can get back to the original function here.
         method.$realFunc = realMethod;
@@ -2970,6 +2915,84 @@ TP.defineMethodSlot[TP.OWNER] = TP;
 TP.defineMethodSlot[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.defineMethodSlot[TP.DISPLAY] = 'TP.defineMethodSlot';
 TP.registerLoadInfo(TP.defineMethodSlot);
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(TP, 'buildCalleeTrapAround',
+function(realMethod) {
+
+    /**
+     * @method buildCalleeTrapAround
+     * @summary Wraps the supplied method with a 'callee trap'. This allows the
+     *     supplied method to have 'magic' methods (like 'callNextMethod') in
+     *     it.
+     * @param {Function} realMethod The actual function to wrap in a callee
+     *     trap.
+     * @returns {Function} The supplied Function wrapped in a callee trap.
+     */
+
+    var method;
+
+    method = function() {
+        var oldCallee,
+            oldArgs,
+            retVal;
+
+        //  Capture the current values of callee and args - we might
+        //  already be in a place where we're using them.
+        oldCallee = TP.$$currentCallee$$;
+        oldArgs = TP.$$currentArgs$$;
+
+        //  Set the value of the current callee.
+        TP.$$currentCallee$$ = realMethod;
+
+        //  Set the value of the current args.
+        TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
+
+        //  Now, call the method, using either call or apply. call tends to
+        //  be quite a bit faster if we can use it.
+        switch (arguments.length) {
+            case 0:
+                retVal = realMethod.call(this);
+                break;
+            case 1:
+                retVal = realMethod.call(this, arguments[0]);
+                break;
+            case 2:
+                retVal = realMethod.call(this, arguments[0],
+                                                arguments[1]);
+                break;
+            case 3:
+                retVal = realMethod.call(this, arguments[0],
+                                                arguments[1],
+                                                arguments[2]);
+                break;
+            case 4:
+                retVal = realMethod.call(this, arguments[0],
+                                                arguments[1],
+                                                arguments[2],
+                                                arguments[3]);
+                break;
+            case 5:
+                retVal = realMethod.call(this, arguments[0],
+                                                arguments[1],
+                                                arguments[2],
+                                                arguments[3],
+                                                arguments[4]);
+                break;
+            default:
+                retVal = realMethod.apply(this, arguments);
+        }
+
+        //  Restore the old values for callee and args
+        TP.$$currentCallee$$ = oldCallee;
+        TP.$$currentArgs$$ = oldArgs;
+
+        return retVal;
+    };
+
+    return method;
+}, TP.PRIMITIVE_TRACK, null, 'TP.buildCalleeTrapAround');
 
 //  ------------------------------------------------------------------------
 
