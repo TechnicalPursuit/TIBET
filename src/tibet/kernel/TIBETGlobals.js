@@ -2441,6 +2441,58 @@ TP.D3_SELECT_ALL = function(aSelector) {
     };
 };
 
+TP.BUILD_PROTOTYPE_REDIRECTOR = function(target, methodName, originalMethod, methodTrack, wrapperEntry) {
+    var redirectTarget,
+
+        newFunc,
+        finalFunc;
+
+    redirectTarget = wrapperEntry.at('redirectTarget');
+
+    //  If the supplied target and the redirect target are the same, we do *not*
+    //  want to install a new method (otherwise, we end up with losing proper
+    //  behavior around our 'this' reference). Just return null here.
+    if (target === redirectTarget) {
+        return null;
+    }
+
+    //  Build a new Function that will execute differently if the 'this' value
+    //  is a prototype object or not.
+    newFunc = function() {
+        if (TP.isPrototype(this)) {
+            return newFunc.protoMethod.apply(this, arguments);
+        }
+
+        return newFunc.nonProtoMethod.apply(this, arguments);
+    };
+
+    //  We need to wire in TP.OWNER, TP.NAME and TP.TRACK on the newly built
+    //  Function so that meta facilities (like CNM) can find things properly.
+
+    //  NB: 'target' is a *prototype*. We want the *type* here - which is the
+    //  prototype's owner.
+    newFunc[TP.OWNER] = target[TP.OWNER];
+
+    newFunc[TP.NAME] = methodName;
+    newFunc[TP.TRACK] = methodTrack;
+
+    //  Wire the redirection target's version of the method as the one to run
+    //  when the 'this' is a prototype and the original method as the one to run
+    //  when the 'this' is not a prototype.
+    newFunc.protoMethod = redirectTarget[methodName];
+    newFunc.nonProtoMethod = originalMethod;
+
+    //  If the original method had some sort of reference (CNM or otherwise)
+    //  that needs a callee trap installed, do so here.
+    if (originalMethod.toString().match(TP.regex.NEEDS_CALLEE)) {
+        finalFunc = TP.buildCalleeTrapAround(newFunc);
+    } else {
+        finalFunc = newFunc;
+    }
+
+    return finalFunc;
+};
+
 //  ------------------------------------------------------------------------
 //  STRING LOCALIZATION / MAPPING
 //  ------------------------------------------------------------------------
