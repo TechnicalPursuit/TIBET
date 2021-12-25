@@ -150,13 +150,29 @@ function(test, shellInput, valueTestFunction) {
 //  ------------------------------------------------------------------------
 
 TP.test.TSHDriver.Inst.defineMethod('execOutputTest',
-function(test, inputVal, correctResults) {
+function(test, shellInput, correctResults) {
+
     /**
+     * @method execOutputTest
+     * @summary Executes the supplied shell input and tests the results against
+     *     the supplied correct results.
+     * @param {TP.test.Case} test The test case to determine the success/failure
+     *     of.
+     * @param {String} shellInput The shell input to execute.
+     * @param {TP.core.Hash} correctResults A hash containing the correct
+     *     results keyed by shell argument name or position (i.e. 'ARG0'
+     *     representing the first argument or 'tsh:foo' representing the value
+     *     of the '--foo' flag.
+     * @exception TP.sig.InvalidURI
+     * @returns {Promise} A Promise which completes when the shell processing is
+     *     complete.
     */
 
-    this.execShellTest(
+    var promise;
+
+    promise = this.execShellTest(
         test,
-        inputVal,
+        shellInput,
         function(testResult) {
 
             correctResults.perform(
@@ -181,7 +197,7 @@ function(test, inputVal, correctResults) {
                         testResultValue.at('Original value tname'),
                         correctResultValue.at('Original value tname'),
                         TP.join(
-                            '"', inputVal, '"',
+                            '"', shellInput, '"',
                             ' produced original result for key: "',
                                 correctResultKey,
                                 '" of type: "',
@@ -194,7 +210,7 @@ function(test, inputVal, correctResults) {
                         testResultValue.at('Original value'),
                         correctResultValue.at('Original value'),
                         TP.join(
-                            '"', inputVal, '"',
+                            '"', shellInput, '"',
                             ' produced original result for key: "',
                                 correctResultKey,
                                 '" of: "',
@@ -207,7 +223,7 @@ function(test, inputVal, correctResults) {
                         testResultValue.at('Expanded value tname'),
                         correctResultValue.at('Expanded value tname'),
                         TP.join(
-                            '"', inputVal, '"',
+                            '"', shellInput, '"',
                             ' produced expanded result for key: "',
                                 correctResultKey,
                                 '" of type: "',
@@ -220,7 +236,7 @@ function(test, inputVal, correctResults) {
                         testResultValue.at('Expanded value'),
                         correctResultValue.at('Expanded value'),
                         TP.join(
-                            '"', inputVal, '"',
+                            '"', shellInput, '"',
                             ' produced expanded result for key: "',
                                 correctResultKey,
                                 '" of: "',
@@ -233,7 +249,7 @@ function(test, inputVal, correctResults) {
                         testResultValue.at('Resolved value tname'),
                         correctResultValue.at('Resolved value tname'),
                         TP.join(
-                            '"', inputVal, '"',
+                            '"', shellInput, '"',
                             ' produced resolved result for key: "',
                                 correctResultKey,
                                 '" of type: "',
@@ -246,7 +262,7 @@ function(test, inputVal, correctResults) {
                         testResultValue.at('Resolved value'),
                         correctResultValue.at('Resolved value'),
                         TP.join(
-                            '"', inputVal, '"',
+                            '"', shellInput, '"',
                             ' produced resolved result for key: "',
                                 correctResultKey,
                                 '" of: "',
@@ -257,18 +273,13 @@ function(test, inputVal, correctResults) {
                 });
         });
 
-    this.get('promiseProvider').chain(
+    promise = promise.then(
         null,
         function(reason) {
             test.fail(reason);
-        }).chainCatch(
-        function(err) {
-            TP.ifError() ?
-                TP.error('Error executing shell driver assertion: ' +
-                            TP.str(err)) : 0;
         });
 
-    return;
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
