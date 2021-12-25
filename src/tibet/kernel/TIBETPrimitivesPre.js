@@ -2684,14 +2684,12 @@ function(target, name, value, track, descriptor, display, owner, $isHandler) {
     //  to true which means that the system will definitely not install a patch,
     //  even if the RegExp passes or 'patchCallee' to true which forces the
     //  system to install a patch, even if the RegExp fails.
-    if (realMethod.toString().match(TP.regex.NEEDS_CALLEE)) {
-        if (descriptor && descriptor.patchCallee === true) {
-            installCalleePatch = true;
-        } else if (descriptor && descriptor.patchCallee === false) {
-            installCalleePatch = false;
-        } else {
-            installCalleePatch = TP.functionNeedsCallee(realMethod, methodName);
-        }
+    if (descriptor && descriptor.patchCallee === true) {
+        installCalleePatch = true;
+    } else if (descriptor && descriptor.patchCallee === false) {
+        installCalleePatch = false;
+    } else if (realMethod.toString().match(TP.regex.NEEDS_CALLEE)) {
+        installCalleePatch = TP.functionNeedsCallee(realMethod, methodName);
     }
 
     installedInvocationsTracker = false;
