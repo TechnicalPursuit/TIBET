@@ -367,7 +367,7 @@ function() {
         result;
 
     this.it('handles node_modules modules properly', function(test, options) {
-        path1 = 'file:///Users/ss/dev/TPI/TIBET/node_modules/@codemirror/basic-setup/dist/index.js';
+        path1 = TP.uriExpandPath('~lib/node_modules/@codemirror/basic-setup/dist/index.js');
         path2 = '~lib_npm/@codemirror/basic-setup/dist/index.js';
         result = TP.uriInTIBETFormat(path1);
         test.assert.isEqualTo(result, path2);
