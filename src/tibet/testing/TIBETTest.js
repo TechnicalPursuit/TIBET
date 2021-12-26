@@ -714,6 +714,10 @@ function(options) {
                 //  test harness, etc.
                 TP.test.Suite.after();
 
+                //  The Promise rejected - make sure to fail the suite after
+                //  wrapping up.
+                currentSuite.fail(err);
+
                 //  Summarize output
                 summarize();
             });
