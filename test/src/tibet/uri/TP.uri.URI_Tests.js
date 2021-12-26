@@ -3616,7 +3616,7 @@ function() {
 
     //  ---
 
-    this.it('HTTPURL: Set resource using PUT', function(test, options) {
+    this.it('HTTPURL: Set resource using PUT', async function(test, options) {
 
         var locStr,
             testBody,
@@ -3643,8 +3643,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 var putParams,
                     putRequest;
 
@@ -3676,14 +3675,14 @@ function() {
 
                 url.setResource(testBody);
                 url.save(putRequest);
-            }));
+            });
 
         server.respond();
     });
 
     //  ---
 
-    this.it('HTTPURL: Set resource using POST', function(test, options) {
+    this.it('HTTPURL: Set resource using POST', async function(test, options) {
 
         var locStr,
             testBody,
@@ -3710,8 +3709,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 var postRequest;
 
                 postRequest = url.constructRequest(params);
@@ -3741,14 +3739,14 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            }));
+            });
 
         server.respond();
     });
 
     //  ---
 
-    this.it('HTTPURL: Set resource using FORM POST', function(test, options) {
+    this.it('HTTPURL: Set resource using FORM POST', async function(test, options) {
 
         var locStr,
             testBody,
@@ -3775,8 +3773,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -3808,14 +3805,14 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            }));
+            });
 
         server.respond();
     });
 
     //  ---
 
-    this.it('HTTPURL: Set resource using MULTIPART FORM POST - TEXT', function(test, options) {
+    this.it('HTTPURL: Set resource using MULTIPART FORM POST - TEXT', async function(test, options) {
 
         var locStr,
             testBody,
@@ -3843,8 +3840,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -3877,14 +3873,14 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            }));
+            });
 
         server.respond();
     });
 
     //  ---
 
-    this.it('HTTPURL: Set resource using MULTIPART RELATED POST - MIXED', function(test, options) {
+    this.it('HTTPURL: Set resource using MULTIPART RELATED POST - MIXED', async function(test, options) {
 
         var locStr,
             testBody,
@@ -3916,8 +3912,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -3950,14 +3945,14 @@ function() {
 
                 url.setResource(testBody);
                 url.save(postRequest);
-            }));
+            });
 
         server.respond();
     });
 
     //  ---
 
-    this.it('HTTPURL: Delete resource using DELETE', function(test, options) {
+    this.it('HTTPURL: Delete resource using DELETE', async function(test, options) {
 
         var locStr,
 
@@ -3980,8 +3975,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 var deleteRequest;
 
                 deleteRequest = url.constructRequest(params);
@@ -4010,7 +4004,7 @@ function() {
                     });
 
                 url.delete(deleteRequest);
-            }));
+            });
 
         server.respond();
     });
@@ -4952,7 +4946,7 @@ function() {
 
     //  ---
 
-    this.it('PouchDBURL: Retrieve resource', function(test, options) {
+    this.it('PouchDBURL: Retrieve resource', async function(test, options) {
 
         var url;
 
@@ -4963,8 +4957,7 @@ function() {
         //  to reload from the underlying source.
         url.isLoaded(false);
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 var pouchRequest;
 
                 //  Implied method here is TP.HTTP_GET. Also, pouchdb://
@@ -5022,12 +5015,12 @@ function() {
                     });
 
                 url.getResource(pouchRequest);
-            }));
+            });
     });
 
     //  ---
 
-    this.it('PouchDBURL: Retrieve resource info', function(test, options) {
+    this.it('PouchDBURL: Retrieve resource info', async function(test, options) {
 
         var url;
 
@@ -5038,8 +5031,7 @@ function() {
         //  to reload from the underlying source.
         url.isLoaded(false);
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 var pouchRequest;
 
                 //  Implied method here is TP.HTTP_GET, which means we need to
@@ -5084,12 +5076,12 @@ function() {
                     });
 
                 url.getResource(pouchRequest);
-            }));
+            });
     });
 
     //  ---
 
-    this.it('PouchDBURL: Retrieve listing of all documents in db', function(test, options) {
+    this.it('PouchDBURL: Retrieve listing of all documents in db', async function(test, options) {
 
         var url;
 
@@ -5101,8 +5093,7 @@ function() {
         //  to reload from the underlying source.
         url.isLoaded(false);
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 var pouchRequest;
 
                 //  Implied method here is TP.HTTP_GET, which means we need to
@@ -5152,7 +5143,7 @@ function() {
                     });
 
                 url.getResource(pouchRequest);
-            }));
+            });
     });
 
     //  ---
@@ -5215,7 +5206,7 @@ function() {
 
     //  ---
 
-    this.it('PouchDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+    this.it('PouchDBURL: Set resource using PUT (supplied id means UPDATE if found)', async function(test, options) {
 
         var url,
             pouchRequest;
@@ -5224,8 +5215,7 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test/author_info');
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_PUT,
@@ -5261,12 +5251,12 @@ function() {
                     });
 
                 url.save(pouchRequest);
-            }));
+            });
     });
 
     //  ---
 
-    this.it('PouchDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
+    this.it('PouchDBURL: Set resource using POST (computed id means CREATE)', async function(test, options) {
 
         var url,
             pouchRequest;
@@ -5276,8 +5266,7 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test');
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_POST,
@@ -5313,12 +5302,12 @@ function() {
                     });
 
                 url.save(pouchRequest);
-            }));
+            });
     });
 
     //  ---
 
-    this.it('PouchDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+    this.it('PouchDBURL: Delete resource using DELETE (supplied id means DELETE if found)', async function(test, options) {
 
         var url,
             pouchRequest;
@@ -5327,8 +5316,7 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test/author_info');
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_DELETE,
@@ -5364,12 +5352,12 @@ function() {
                     });
 
                 url.delete(pouchRequest);
-            }));
+            });
     });
 
     //  ---
 
-    this.it('PouchDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+    this.it('PouchDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', async function(test, options) {
 
         var url,
             pouchRequest;
@@ -5379,8 +5367,7 @@ function() {
 
         url = TP.uc('pouchdb://pouch_test');
 
-        test.chainPromise(
-            Promise.construct(function(resolver, rejector) {
+        await Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_DELETE,
@@ -5420,7 +5407,7 @@ function() {
                     });
 
                 url.delete(pouchRequest);
-            }));
+            });
     });
 
     //  ---
