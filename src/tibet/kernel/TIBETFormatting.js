@@ -1685,6 +1685,93 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+Promise.Inst.defineMethod('asDumpString',
+function(depth, level) {
+
+    /**
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
+     *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
+     * @returns {String} A new String containing the dump string of the
+     *     receiver.
+     */
+
+    //   We use 'toString()' rather than the 'source' property, since it
+    //   includes the flags, etc.
+    return '[' + TP.tname(this) + ' :: ' + this.toString() + ']';
+});
+
+//  ------------------------------------------------------------------------
+
+Promise.Inst.defineMethod('asHTMLString',
+function(verbose) {
+
+    /**
+     * @method asString
+     * @summary Produces an HTML string representation of the receiver.
+     * @param {Boolean} verbose Whether or not to return the 'verbose' version
+     *     of the Promise's String representation. The default is true.
+     * @returns {String} The receiver as a String.
+     */
+
+    return '<span class="Promise"></span>';
+});
+
+//  ------------------------------------------------------------------------
+
+Promise.Inst.defineMethod('asJSONSource',
+function() {
+
+    /**
+     * @method asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
+     * @returns {String} A JSON-formatted string.
+     */
+
+    return '{' + '"type":"Promise"' + '}';
+});
+
+//  ------------------------------------------------------------------------
+
+Promise.Inst.defineMethod('asPrettyString',
+function() {
+
+    /**
+     * @method asPrettyString
+     * @summary Returns the receiver as a string suitable for use in 'pretty
+     *     print' output.
+     * @returns {String} A new String containing the 'pretty print' string of
+     *     the receiver.
+     */
+
+    return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
+            '<dt>Type name</dt>' +
+            '<dd class="pretty typename">' +
+                this.getTypeName() +
+            '</dd>' +
+            '</dl>';
+});
+
+//  ------------------------------------------------------------------------
+
+Promise.Inst.defineMethod('asXMLString',
+function(verbose) {
+
+    /**
+     * @method asString
+     * @summary Produces an XML string representation of the receiver.
+     * @param {Boolean} verbose Whether or not to return the 'verbose' version
+     *     of the Promise's String representation. The default is true.
+     * @returns {String} The receiver as a String.
+     */
+
+    return '<instance type="Promise"></instance>';
+});
+
+//  ------------------------------------------------------------------------
+
 RegExp.Inst.defineMethod('asDumpString',
 function(depth, level) {
 
