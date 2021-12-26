@@ -648,8 +648,14 @@ function(options) {
                     });
             }, Promise.resolve());
 
-    handler = function(reason, unhandledPromise) {
-        var test;
+    handler = function(evt) {
+        var test,
+
+            reason,
+            unhandledPromise;
+
+        reason = evt.reason;
+        unhandledPromise = evt.promise;
 
         test = currentSuite.get('currentTestCase');
 
