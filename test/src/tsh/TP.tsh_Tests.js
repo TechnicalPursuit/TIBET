@@ -6032,6 +6032,7 @@ TP.shell.TSH.Type.describe('Shell POUCHDB URL',
 function() {
 
     var shellDriver,
+        destroySucceeded,
         testDb;
 
     this.before(function(suite, options) {
@@ -6043,6 +6044,12 @@ function() {
 
         shellDriver = TP.test.TSHDriver.construct();
         this.get('drivers').atPut('shell', shellDriver);
+
+        //  We set this to false here, but to true if the test containing
+        //  the database destroy() succeeds, such that we don't try to call
+        //  destroy() twice (once in that test and once in the after()
+        //  code).
+        destroySucceeded = false;
 
         now = Date.now();
 
@@ -6392,6 +6399,10 @@ function() {
                     obj.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
 
+                //  Set this flag to true now that we've successfully
+                //  destroy()ed the database.
+                destroySucceeded = true;
+
                 TP.uc(locStr).unregister();
             });
     });
@@ -6400,11 +6411,14 @@ function() {
 
     this.after(function(suite, options) {
 
-        //  'this' refers to the suite here.
         var pouchPromise,
             promise;
 
-        pouchPromise = testDb.destroy();
+        if (!destroySucceeded) {
+            pouchPromise = testDb.destroy();
+        } else {
+            pouchPromise = undefined;
+        }
 
         promise = Promise.resolve(pouchPromise);
 
