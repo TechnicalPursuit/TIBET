@@ -54,7 +54,7 @@ function() {
         return;
     }
 
-    this.defineDependencies('TP.extern.syn', 'TP.extern.Promise');
+    this.defineDependencies('TP.extern.syn');
 
     //  If Syn isn't loaded, then don't try to manipulate its keymap. Just
     //  return.
@@ -321,7 +321,7 @@ function(aURI, aRequest) {
 
     //  A Promise that will await the 'RequestSucceeded' signal and resolve the
     //  Promise with the result.
-    return TP.extern.Promise.construct(
+    return Promise.construct(
                 function(resolver, rejector) {
                     var subrequest;
 
@@ -343,11 +343,6 @@ function(aURI, aRequest) {
                         });
 
                     aURI.getResource(subrequest);
-                },
-                function(err) {
-                    TP.ifError() ?
-                        TP.error('Error creating fetchResource Promise: ' +
-                                    TP.str(err)) : 0;
                 });
 });
 
@@ -472,29 +467,24 @@ function(aURI, aWindow, aRequest) {
         tpWin = this.get('windowContext');
     }
 
-    return TP.extern.Promise.resolve().then(
-        function() {
-            var promise;
+    return Promise.resolve().then(
+                function() {
+                    var promise;
 
-            promise = TP.extern.Promise.construct(
-                            function(resolver, rejector) {
-                                var request;
+                    promise = Promise.construct(
+                                    function(resolver, rejector) {
+                                        var request;
 
-                                request = TP.request(aRequest);
+                                        request = TP.request(aRequest);
 
-                                request.atPut(TP.ONLOAD, resolver);
-                                request.atPut(TP.ONFAIL, rejector);
+                                        request.atPut(TP.ONLOAD, resolver);
+                                        request.atPut(TP.ONFAIL, rejector);
 
-                                tpWin.setLocation(aURI, request);
-                            });
+                                        tpWin.setLocation(aURI, request);
+                                    });
 
-            return promise;
-        },
-        function(err) {
-            TP.ifError() ?
-                TP.error('Error creating setLocation Promise: ' +
-                            TP.str(err)) : 0;
-        });
+                    return promise;
+                });
 });
 
 //  ------------------------------------------------------------------------
@@ -1381,92 +1371,87 @@ function() {
     //  A Promise that will execute set up a 'work' callback function that
     //  executes each entry in the sequence and then resolves the Promise after
     //  executing the last entry.
-    promise = TP.extern.Promise.construct(
-        function(resolver, rejector) {
+    promise = Promise.construct(
+                function(resolver, rejector) {
 
-            var sequenceEntries,
+                    var sequenceEntries,
 
-                driver,
+                        driver,
 
-                count,
-                workFunc;
+                        count,
+                        workFunc;
 
-            sequenceEntries = thisref.get('sequenceEntries');
-            driver = thisref.get('driver');
+                    sequenceEntries = thisref.get('sequenceEntries');
+                    driver = thisref.get('driver');
 
-            //  'Expand' any event targets in the sequence entries
-            sequenceEntries = thisref.$expandSequenceEntries(
-                                                sequenceEntries);
+                    //  'Expand' any event targets in the sequence entries
+                    sequenceEntries = thisref.$expandSequenceEntries(
+                                                        sequenceEntries);
 
-            //  Set up the work function that will process a single
-            //  entry and then supply a callback that will call back the
-            //  work function, but only after a delay to give the GUI a
-            //  chance to refresh.
-            count = 0;
-            workFunc = function() {
+                    //  Set up the work function that will process a single
+                    //  entry and then supply a callback that will call back the
+                    //  work function, but only after a delay to give the GUI a
+                    //  chance to refresh.
+                    count = 0;
+                    workFunc = function() {
 
-                var seqEntry,
-                    currentElement,
+                        var seqEntry,
+                            currentElement,
 
-                    workCallback;
+                            workCallback;
 
-                //  If the count equals the number of entries, then
-                //  we're done here and we can resolve the Promise.
-                if (count === sequenceEntries.getSize()) {
+                        //  If the count equals the number of entries, then
+                        //  we're done here and we can resolve the Promise.
+                        if (count === sequenceEntries.getSize()) {
 
-                    sequenceEntries = null;
+                            sequenceEntries = null;
 
-                    return resolver();
-                }
+                            return resolver();
+                        }
 
-                seqEntry = sequenceEntries.at(count);
-                count++;
+                        seqEntry = sequenceEntries.at(count);
+                        count++;
 
-                //  If it's an 'exec', then we're just executing a
-                //  Function. Execute it and then make sure to call the
-                //  resolver.
-                if (seqEntry.at(0) === 'exec') {
-                    seqEntry.at(1)();
+                        //  If it's an 'exec', then we're just executing a
+                        //  Function. Execute it and then make sure to call the
+                        //  resolver.
+                        if (seqEntry.at(0) === 'exec') {
+                            seqEntry.at(1)();
 
-                    return workFunc();
-                } else {
+                            return workFunc();
+                        } else {
 
-                    //  If we can't determine a focused element, call
-                    //  the error callback and exit.
-                    if (!TP.isElement(
-                        currentElement = driver.getFocusedElement())) {
+                            //  If we can't determine a focused element, call
+                            //  the error callback and exit.
+                            if (!TP.isElement(
+                                currentElement = driver.getFocusedElement())) {
 
-                        sequenceEntries = null;
+                                sequenceEntries = null;
 
-                        return rejector(
-                            'No current Element for the GUI Driver.');
-                    }
+                                return rejector(
+                                    'No current Element for the GUI Driver.');
+                            }
 
-                    //  We fork the work function here to give the GUI
-                    //  a chance to refresh before we manipulate it.
-                    workCallback =
-                        function() {
-                            workFunc.queueAfterNextRepaint(
-                                TP.nodeGetWindow(currentElement));
-                        };
+                            //  We fork the work function here to give the GUI
+                            //  a chance to refresh before we manipulate it.
+                            workCallback =
+                                function() {
+                                    workFunc.queueAfterNextRepaint(
+                                        TP.nodeGetWindow(currentElement));
+                                };
 
-                    //  Execute the individual sequence step entry.
-                    thisref.$performGUISequenceStep(
-                        seqEntry.at(1),
-                        seqEntry.at(0),
-                        seqEntry.at(2),
-                        workCallback,
-                        currentElement);
-                }
-            };
+                            //  Execute the individual sequence step entry.
+                            thisref.$performGUISequenceStep(
+                                seqEntry.at(1),
+                                seqEntry.at(0),
+                                seqEntry.at(2),
+                                workCallback,
+                                currentElement);
+                        }
+                    };
 
-            workFunc();
-        },
-        function(err) {
-            TP.ifError() ?
-                TP.error('Error creating GUI automation \'run\' Promise: ' +
-                            TP.str(err)) : 0;
-        });
+                    workFunc();
+                });
 
     return promise;
 });

@@ -84,7 +84,7 @@ function(lambdaRequest) {
 
     //  Invoke the AWS Lambda function with the name of 'action' and the params
     //  from the paramsDict as its parameters.
-    TP.extern.Promise.resolve().then(
+    Promise.resolve().then(
         function() {
             return this.invoke(
                     action,
@@ -146,7 +146,7 @@ function(functionName, functionParams) {
 
     //  Create a resolved Promise that will use the AWS.Lambda API to invoke a
     //  Lambda function on AWS and return result.
-    return TP.extern.Promise.resolve().then(
+    return Promise.resolve().then(
         function(result) {
 
             var lambda,
@@ -185,7 +185,7 @@ function(functionName, functionParams) {
             //  Function that will parse the payload and return the body, which
             //  will be a String. That String might contain more JSON-ified
             //  data, but it's the callers responsibility to further parse that.
-            return TP.extern.Promise.resolve(amzPromise).then(
+            return Promise.resolve(amzPromise).then(
                     function(aResult) {
                         var payload;
 

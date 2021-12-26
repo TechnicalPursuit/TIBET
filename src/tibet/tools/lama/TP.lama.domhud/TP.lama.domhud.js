@@ -361,7 +361,7 @@ function(aSourceTPElement) {
         return peerTPElem.getConnectorData(aSourceTPElement);
     }
 
-    return TP.extern.Promise.resolve(null);
+    return Promise.resolve(null);
 });
 
 //  ------------------------------------------------------------------------

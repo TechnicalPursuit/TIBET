@@ -3395,8 +3395,6 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    this.defineDependencies('TP.extern.Promise');
-
     this.set('$workerPoolDict', TP.hc());
 
     return;
@@ -3704,7 +3702,7 @@ function(message, resultProcessor, errorProcessor) {
 
     //  Construct a Promise around sending the supplied source code to the
     //  worker for evaluation.
-    newPromise = TP.extern.Promise.construct(
+    newPromise = Promise.construct(
         function(resolver, rejector) {
 
             workerThread.onmessage = function(e) {

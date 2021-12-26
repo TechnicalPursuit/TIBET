@@ -3585,7 +3585,7 @@ function(anObj) {
      *          anObj = TP.lang.Object.construct();
      *          TP.isThenable(anObj);
      *          <samp>false</samp>
-     *          anObj = TP.extern.Promise.resolve();
+     *          anObj = Promise.resolve();
      *          TP.isThenable(anObj);
      *          <samp>true</samp>
      *          anObj = obj.someMethodThatReturnsResponse();
@@ -7472,7 +7472,7 @@ function(aMessage) {
 
     var promise;
 
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
         function(resolver, rejector) {
 
             /* eslint-disable no-alert */
@@ -7483,8 +7483,6 @@ function(aMessage) {
         });
 
     return promise;
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  Alias TP.$alert to TP.alert. That way if TP.alert gets redefined, the
@@ -7515,7 +7513,7 @@ function(anAction) {
 
     var promise;
 
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
         function(resolver, rejector) {
 
             var retVal;
@@ -7528,8 +7526,6 @@ function(anAction) {
         });
 
     return promise;
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  Alias TP.$confirm to TP.confirm. That way if TP.confirm gets redefined, the
@@ -7562,7 +7558,7 @@ function(aQuestion, aDefaultAnswer) {
 
     var promise;
 
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
         function(resolver, rejector) {
 
             var retVal;
@@ -7577,8 +7573,6 @@ function(aQuestion, aDefaultAnswer) {
         });
 
     return promise;
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  Alias TP.$prompt to TP.prompt. That way if TP.prompt gets redefined, the

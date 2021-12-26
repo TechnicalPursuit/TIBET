@@ -17,60 +17,52 @@ function() {
 
     //  ---
 
-    this.it('Eval string and return result', function(test, options) {
+    this.it('Eval string and return result', async function(test, options) {
 
-        var worker;
+        var worker,
+            result;
 
         worker = TP.core.GenericWorker.construct();
 
-        test.chainPromise(
-            worker.eval('1 + 2').then(
-                function(result) {
-                    test.assert.isEqualTo(result, 3);
-                }));
+        result = await worker.eval('1 + 2');
+        test.assert.isEqualTo(result, 3);
     });
 
     //  ---
 
-    this.it('Import script, invoke function and return result', function(test, options) {
+    this.it('Import script, invoke function and return result', async function(test, options) {
 
         var worker,
-            loc;
+            loc,
+            result;
 
         worker = TP.core.GenericWorker.construct();
 
         loc = TP.uc('~lib_test/src/tibet/worker/test_import_script.js').getLocation();
 
-        test.chainPromise(
-            worker.import(loc).then(
-                function(result) {
-                    return worker.eval('testMessage()');
-                }).then(
-                function(result) {
-                    test.assert.isEqualTo(result, 'This is a test message');
-                }));
+        await worker.import(loc);
+
+        result = await worker.eval('testMessage()');
+        test.assert.isEqualTo(result, 'This is a test message');
     });
 
     //  ---
 
-    this.it('define method, invoke it and return result', function(test, options) {
+    this.it('define method, invoke it and return result', async function(test, options) {
 
-        var worker;
+        var worker,
+            result;
 
         worker = TP.core.GenericWorker.construct();
 
-        test.chainPromise(
-            worker.defineWorkerMethod(
+        await worker.defineWorkerMethod(
                 'testMethod',
                 function() {
                     return 'This is a test message from the test method';
-                }).then(
-                function() {
-                    return worker.testMethod();
-                }).then(
-                function(result) {
-                    test.assert.isEqualTo(result, 'This is a test message from the test method');
-                }));
+                });
+
+        result = await worker.testMethod();
+        test.assert.isEqualTo(result, 'This is a test message from the test method');
     });
 });
 

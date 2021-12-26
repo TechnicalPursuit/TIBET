@@ -3508,7 +3508,7 @@ function() {
     //  Stash away references to the resolver and rejector of the Promise).
     //  We'll need them to resolve() or reject() the Promise later when the
     //  request completes.
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
         function(resolver, rejector) {
             request.set('$deferredPromiseResolver', resolver);
             request.set('$deferredPromiseRejector', rejector);
@@ -3530,8 +3530,6 @@ function() {
     }
 
     return promise;
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------
@@ -4003,11 +4001,11 @@ function(onFulfilled, onRejected) {
     //  Stash away references to the resolver and rejector of the Promise).
     //  We'll need them to resolve() or reject() the Promise later when the
     //  request completes.
-    promise = TP.extern.Promise.construct(
-        function(resolver, rejector) {
-            request.set('$deferredPromiseResolver', resolver);
-            request.set('$deferredPromiseRejector', rejector);
-        });
+    promise = Promise.construct(
+                function(resolver, rejector) {
+                    request.set('$deferredPromiseResolver', resolver);
+                    request.set('$deferredPromiseRejector', rejector);
+                });
 
     if (TP.isCallable(onRejected)) {
         promise = promise.then(onFulfilled, onRejected);
@@ -4031,8 +4029,6 @@ function(onFulfilled, onRejected) {
     }
 
     return promise;
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  ========================================================================
@@ -6346,23 +6342,6 @@ TP.lang.Object.defineSubtype('TP.core.PromiseProvider');
 TP.core.PromiseProvider.isAbstract(true);
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.PromiseProvider.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
-
-    this.defineDependencies('TP.extern.Promise');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -6399,7 +6378,7 @@ function(windowContext) {
      *     refreshed.
      */
 
-    return TP.extern.Promise.construct(
+    return Promise.construct(
         function(resolver, rejector) {
             resolver.queueAfterNextRepaint(windowContext.getNativeWindow());
         });
@@ -6418,7 +6397,7 @@ function(delayMS) {
      *     of time.
      */
 
-    return TP.extern.Promise.delay(delayMS);
+    return Promise.delay(delayMS);
 });
 
 //  ------------------------------------------------------------------------
@@ -6442,7 +6421,7 @@ function(anOrigin, aSignal, timeoutMS) {
     timeout = TP.ifInvalid(timeoutMS,
                             TP.sys.cfg('test.case_mslimit', 10000));
 
-    return TP.extern.Promise.construct(
+    return Promise.construct(
         function(resolver, rejector) {
             var sigName,
                 sigType,
@@ -6588,7 +6567,7 @@ function(onFulfilled, onRejected) {
     //  First, see if there's an existing internal promise. If not, create one
     //  and set the internal promise to be that.
     if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
-        internalPromise = TP.extern.Promise.resolve();
+        internalPromise = Promise.resolve();
         this.$set('$internalPromise', internalPromise);
     }
 
@@ -6614,7 +6593,7 @@ function(onFulfilled, onRejected) {
     //  or a simple one that rejects with the reason
     if (!TP.isCallable(_errback = onRejected)) {
         _errback = function(reason) {
-            return TP.extern.Promise.reject(reason);
+            return Promise.reject(reason);
         };
     }
 
@@ -6631,7 +6610,7 @@ function(onFulfilled, onRejected) {
             //  promise'. This will be used as the 'last promise' (see above)
             //  for any nested 'chain' statements *inside* of the fulfillment
             //  handler.
-            subPromise = TP.extern.Promise.resolve();
+            subPromise = Promise.resolve();
             thisref.$set('$currentPromise', subPromise);
 
             //  Protect the callback in a try...catch to make sure that any
@@ -6639,7 +6618,7 @@ function(onFulfilled, onRejected) {
             try {
                 maybe = _callback(result);
             } catch (e) {
-                maybe = TP.extern.Promise.reject(e);
+                maybe = Promise.reject(e);
             }
 
             //  The fulfillment handler will have set the 'new promise' that it
@@ -6669,7 +6648,7 @@ function(onFulfilled, onRejected) {
             //  All of the same stuff above, except we're dealing with the
             //  rejection handler.
 
-            subPromise = TP.extern.Promise.resolve();
+            subPromise = Promise.resolve();
             thisref.$set('$currentPromise', subPromise);
 
             //  Protect the errback in a try...catch to make sure that any
@@ -6678,7 +6657,7 @@ function(onFulfilled, onRejected) {
             try {
                 maybe = _errback(reason);
             } catch (e) {
-                maybe = TP.extern.Promise.reject(e);
+                maybe = Promise.reject(e);
             }
 
             subReturnPromise = thisref.$get('$currentPromise');
@@ -6726,7 +6705,7 @@ function(aFunction) {
     //  First, see if there's an existing internal promise. If not, create one
     //  and set the internal promise to be that.
     if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
-        internalPromise = TP.extern.Promise.resolve();
+        internalPromise = Promise.resolve();
         this.$set('$internalPromise', internalPromise);
     }
 
@@ -6764,7 +6743,7 @@ function(aPromise) {
      *     (if you will) onto the current internally-held Promise. Note that
      *     this operation will also reset the internally-held Promise to be the
      *     new Promise that it creates.
-     * @param {TP.extern.Promise} aPromise The promise instance to chain.
+     * @param {Promise} aPromise The promise instance to chain.
      * @returns {TP.core.PromiseProvider} The receiver.
      */
 
@@ -6775,7 +6754,7 @@ function(aPromise) {
     //  First, see if there's an existing internal promise. If not, create one
     //  and set the internal promise to be that.
     if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
-        internalPromise = TP.extern.Promise.resolve();
+        internalPromise = Promise.resolve();
         this.$set('$internalPromise', internalPromise);
     }
 

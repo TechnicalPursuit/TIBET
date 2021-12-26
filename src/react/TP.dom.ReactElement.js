@@ -256,7 +256,10 @@ function(aRequest) {
         //  via Promises. When everything is complete, then proceed with setting
         //  up the 'ReactDOM' object and set up each element that wanted to be
         //  set up.
-        TP.extern.Promise.each(
+            /*
+             * TODO: Rewrite this to use ECMA6 iterators - or re-implement this
+             * Bluebird extension method ('each') as a shim on native Promises.
+        Promise.each(
             allScriptLocs,
             function(aScriptLoc) {
                 return TP.sys.fetchScriptInto(
@@ -353,7 +356,7 @@ function(aRequest) {
                 //  We're no longer loading.
                 thisref.set('$$loading', false);
             });
-
+        */
     } else {
         tpElem.setup();
     }
@@ -508,7 +511,10 @@ function() {
             //  time via Promises. When everything is complete, then proceed
             //  with setting up the 'ReactDOM' object and set up each element
             //  that wanted to be set up.
-            TP.extern.Promise.each(
+            /*
+             * TODO: Rewrite this to use ECMA6 iterators - or re-implement this
+             * Bluebird extension method ('each') as a shim on native Promises.
+            Promise.each(
                 componentScripts,
                 function(aScriptLoc) {
                     return TP.sys.fetchScriptInto(
@@ -531,6 +537,7 @@ function() {
                         this.getType().get('$$componentsNeedingSetup').empty();
 
                     }.bind(this));
+            */
         } else {
 
             //  Store this in our type so that our hooked React.createElement

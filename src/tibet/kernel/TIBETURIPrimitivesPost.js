@@ -71,9 +71,9 @@ function(aURI) {
         //  just extract the element from the result.
         value = extractElementFromResult(uri.getResource(req).get('result'));
         if (TP.isElement(value)) {
-            return TP.extern.Promise.resolve(value);
+            return Promise.resolve(value);
         } else {
-            return TP.extern.Promise.reject(new Error('InvalidElement'));
+            return Promise.reject(new Error('InvalidElement'));
         }
     }
 });

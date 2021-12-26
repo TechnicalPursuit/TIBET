@@ -336,7 +336,7 @@ function(info) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
         function(resolver, rejector) {
 
         var displayHandler,

@@ -220,7 +220,7 @@ function() {
         return this;
     }
 
-    promise = TP.extern.Promise.resolve().then(
+    promise = Promise.resolve().then(
         function() {
             var uri,
                 req;
@@ -233,7 +233,7 @@ function() {
                      * TODO: The Electron login process
                      */
                     /*
-                    return TP.extern.Promise.construct(
+                    return Promise.construct(
                         function(resolver, rejector) {
                             var success;
                             success = function(aSignal) {
@@ -626,7 +626,6 @@ function() {
 
     return this;
 }, {
-    dependencies: [TP.extern.Promise],
     patchCallee: false
 });
 

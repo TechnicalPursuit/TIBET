@@ -28,23 +28,6 @@ TP.lang.Object.defineSubtype('test.TSHDriver');
 TP.test.TSHDriver.Inst.defineAttribute('promiseProvider');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.test.TSHDriver.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
-
-    this.defineDependencies('TP.extern.Promise');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -66,7 +49,7 @@ function(test, shellInput, valueTestFunction) {
      *     complete.
     */
 
-    return TP.extern.Promise.construct(
+    return Promise.construct(
         function(resolver, rejector) {
 
             //  Flip the flag on to ignore eval errors in the TSH. We'll test

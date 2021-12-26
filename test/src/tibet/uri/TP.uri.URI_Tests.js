@@ -3644,7 +3644,7 @@ function() {
         url = TP.uc(locStr);
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 var putParams,
                     putRequest;
 
@@ -3711,7 +3711,7 @@ function() {
         url = TP.uc(locStr);
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 var postRequest;
 
                 postRequest = url.constructRequest(params);
@@ -3776,7 +3776,7 @@ function() {
         url = TP.uc(locStr);
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -3844,7 +3844,7 @@ function() {
         url = TP.uc(locStr);
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -3917,7 +3917,7 @@ function() {
         url = TP.uc(locStr);
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 var postParams,
                     postRequest;
 
@@ -3981,7 +3981,7 @@ function() {
         url = TP.uc(locStr);
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 var deleteRequest;
 
                 deleteRequest = url.constructRequest(params);
@@ -4945,7 +4945,7 @@ function() {
                     }
                 });
 
-            promise = TP.extern.Promise.resolve(pouchPromise);
+            promise = Promise.resolve(pouchPromise);
 
             return promise;
         });
@@ -4964,7 +4964,7 @@ function() {
         url.isLoaded(false);
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 var pouchRequest;
 
                 //  Implied method here is TP.HTTP_GET. Also, pouchdb://
@@ -5039,7 +5039,7 @@ function() {
         url.isLoaded(false);
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 var pouchRequest;
 
                 //  Implied method here is TP.HTTP_GET, which means we need to
@@ -5102,7 +5102,7 @@ function() {
         url.isLoaded(false);
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 var pouchRequest;
 
                 //  Implied method here is TP.HTTP_GET, which means we need to
@@ -5165,7 +5165,7 @@ function() {
 
             pouchPromise = testDb.destroy();
 
-            promise = TP.extern.Promise.resolve(pouchPromise);
+            promise = Promise.resolve(pouchPromise);
 
             return promise;
         });
@@ -5208,7 +5208,7 @@ function() {
                     }
                 });
 
-            promise = TP.extern.Promise.resolve(pouchPromise);
+            promise = Promise.resolve(pouchPromise);
 
             return promise;
         });
@@ -5225,7 +5225,7 @@ function() {
         url = TP.uc('pouchdb://pouch_test/author_info');
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_PUT,
@@ -5277,7 +5277,7 @@ function() {
         url = TP.uc('pouchdb://pouch_test');
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_POST,
@@ -5328,7 +5328,7 @@ function() {
         url = TP.uc('pouchdb://pouch_test/author_info');
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_DELETE,
@@ -5380,7 +5380,7 @@ function() {
         url = TP.uc('pouchdb://pouch_test');
 
         test.chainPromise(
-            TP.extern.Promise.construct(function(resolver, rejector) {
+            Promise.construct(function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'method', TP.HTTP_DELETE,
@@ -5435,7 +5435,7 @@ function() {
                 pouchPromise = testDb.destroy();
             }
 
-            promise = TP.extern.Promise.resolve(pouchPromise);
+            promise = Promise.resolve(pouchPromise);
 
             return promise;
         });

@@ -642,7 +642,7 @@ function(afterWaitMS) {
         waitMS = TP.sys.getcfg('queue.delay', 0);
     }
 
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
                 function(resolver, rejector) {
                     var func;
 
@@ -658,8 +658,6 @@ function(afterWaitMS) {
     promise.cancellationID = cancellationID;
 
     return promise;
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------
@@ -725,7 +723,7 @@ function(aWindow, afterWaitMS) {
         waitMS = TP.sys.getcfg('queue.delay', 0);
     }
 
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
                 function(resolver, rejector) {
                     var func;
 
@@ -760,8 +758,6 @@ function(aWindow, afterWaitMS) {
     promise.cancellationID = cancellationID;
 
     return promise;
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------
@@ -815,7 +811,7 @@ function(aWindow) {
         win = TP.sys.getUICanvas(true);
     }
 
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
                 function(resolver, rejector) {
                     var func;
 
@@ -839,8 +835,6 @@ function(aWindow) {
     promise.cancellationID = cancellationID;
 
     return promise;
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------

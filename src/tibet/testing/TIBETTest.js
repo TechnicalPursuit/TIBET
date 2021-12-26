@@ -449,7 +449,7 @@ function(options) {
         TP.sys.logTest('0..0');
         TP.sys.logTest('# PASS: 0 pass, 0 fail, 0 error, 0 skip, 0 todo.');
 
-        return TP.extern.Promise.resolve();
+        return Promise.resolve();
     }
 
     //  Run the 'before' *type* method of TP.test.Suite to set up any global
@@ -646,7 +646,7 @@ function(options) {
                         //  doing an early exit.
                         void 0;
                     });
-            }, TP.extern.Promise.resolve());
+            }, Promise.resolve());
 
     handler = function(reason, unhandledPromise) {
         var test;
@@ -664,9 +664,9 @@ function(options) {
         }
     };
 
-    //  Install the (Bluebird-specific) top-level unhandled rejection handlers
-    TP.extern.Promise.onPossiblyUnhandledRejection(handler);
-    TP.extern.Promise.onUnhandledRejectionHandled(handler);
+    //  Install the top-level unhandled rejection handlers
+    window.addEventListener('unhandledRejection', handler);
+    window.addEventListener('rejectionHandled', handler);
 
     return promise.then(
             function(obj) {
@@ -679,8 +679,8 @@ function(options) {
 
                 TP.sys.setcfg('mouse.click_delay', clickDelay);
 
-                TP.extern.Promise.onPossiblyUnhandledRejection(null);
-                TP.extern.Promise.onUnhandledRejectionHandled(null);
+                window.removeEventListener('unhandledRejection', handler);
+                window.removeEventListener('rejectionHandled', handler);
 
                 //  Run the 'after' *type* method of TP.test.Suite to tear down
                 //  any global settings, like logging appenders specific to the
@@ -700,8 +700,8 @@ function(options) {
 
                 TP.sys.setcfg('mouse.click_delay', clickDelay);
 
-                TP.extern.Promise.onPossiblyUnhandledRejection(null);
-                TP.extern.Promise.onUnhandledRejectionHandled(null);
+                window.removeEventListener('unhandledRejection', handler);
+                window.removeEventListener('rejectionHandled', handler);
 
                 //  Run the 'after' *type* method of TP.test.Suite to tear down
                 //  any global settings, like logging appenders specific to the
@@ -712,8 +712,6 @@ function(options) {
                 summarize();
             });
     /* eslint-enable handle-callback-err */
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  ========================================================================

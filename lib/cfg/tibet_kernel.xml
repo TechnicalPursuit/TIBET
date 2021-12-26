@@ -140,20 +140,6 @@
         ]]>
     </script>
 
-    <script src="~lib_deps/bluebird-tpi.min.js"
-        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
-    <script src="~lib_deps/bluebird-tpi.js"
-        unless="boot.minified" no-lint="no-lint" />
-    <script>
-        <![CDATA[
-        Promise[TP.NAME] = 'Promise';
-        TP.registerExternalObject('Promise', window.Promise);
-        TP.extern.Promise.construct = function(resolver, rejector) {
-            return new Promise(resolver, rejector);
-        };
-        ]]>
-    </script>
-
     <script src="~lib_deps/moment-tpi.min.js"
         if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/moment-tpi.js"

@@ -144,22 +144,22 @@ function(serviceName) {
         //  computed above. This will resolve the Promise with the JWT token
         //  returned if the authentication happened and will reject the Promise
         //  if it didn't.
-        promise = TP.extern.Promise.construct(
-            function(resolver, rejector) {
+        promise = Promise.construct(
+                    function(resolver, rejector) {
 
-                cognitoUser.authenticateUser(authDetails, {
-                    onSuccess: function(result) {
-                        var idToken;
+                        cognitoUser.authenticateUser(authDetails, {
+                            onSuccess: function(result) {
+                                var idToken;
 
-                        idToken = result.getIdToken().getJwtToken();
-                        resolver(idToken);
-                    },
+                                idToken = result.getIdToken().getJwtToken();
+                                resolver(idToken);
+                            },
 
-                    onFailure: function(err) {
-                        rejector(err);
-                    }
-                });
-            });
+                            onFailure: function(err) {
+                                rejector(err);
+                            }
+                        });
+                    });
 
         //  Add a Promise that will take the resultant JWT token and establish a
         //  session with it.
@@ -205,7 +205,7 @@ function(serviceName) {
                 //  Now that the credentials have been updated, construct a
                 //  nested Promise that will attempt to obtain a session using
                 //  the Cognito user.
-                sessionPromise = TP.extern.Promise.construct(
+                sessionPromise = Promise.construct(
                     function(resolver, rejector) {
 
                         cognitoUser.getSession(

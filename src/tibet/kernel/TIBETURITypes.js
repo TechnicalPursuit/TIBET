@@ -201,21 +201,6 @@ TP.uri.URI.Type.defineAttribute('captureStartupURIs', false);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.uri.URI.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
-
-    this.defineDependencies('TP.extern.Promise');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.uri.URI.Type.defineMethod('construct',
 function(aURI, aResource, shouldRegister) {
 
@@ -1082,7 +1067,7 @@ function(aURI) {
 
     aURI.signal('RemoteResourceChanged', TP.hc('isDirty', true));
 
-    return TP.extern.Promise.resolve();
+    return Promise.resolve();
 });
 
 //  ------------------------------------------------------------------------
@@ -6051,7 +6036,7 @@ function(aContent, alternateContent) {
     //  form* and *how it currently exactly exists on the server* but *without
     //  updating the receiver's resource*. To accomplish this, we fetch using a
     //  low-level routine.
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
                 function(resolver, rejector) {
 
                     var req,

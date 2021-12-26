@@ -508,7 +508,7 @@ function(result, options) {
                     TP.raise.$suspended = spy.$suspended;
                 });
     } else {
-        retVal = TP.extern.Promise.resolve().then(
+        retVal = Promise.resolve().then(
                     function() {
                         //  Restore the original TP.raise() call, uninstalling
                         //  its spy. See the 'executeBefore' method as to why we
@@ -582,7 +582,7 @@ function(currentcase, result, options) {
                     }
                 });
     } else {
-        retVal = TP.extern.Promise.resolve().then(
+        retVal = Promise.resolve().then(
                     //  Check to see if raise has been invoked. See the
                     //  'executeBefore' method as to why we install a spy on
                     //  TP.raise(). Note here how we check to make sure that
@@ -695,7 +695,7 @@ function(currentcase, result, options) {
         }
     }
 
-    retVal = TP.extern.Promise.resolve().then(
+    retVal = Promise.resolve().then(
                 function() {
                     //  Reset the raise invocation counter. See the
                     //  'executeBefore' method as to why we install a spy on
@@ -1204,7 +1204,7 @@ function(options) {
     //  Protect against running twice while we already have a pending promise.
     if (this.isActive()) {
         this.error(new Error('InvalidOperation'));
-        return TP.extern.Promise.resolve();
+        return Promise.resolve();
     }
 
     return this.runTestCases(options);
@@ -1305,7 +1305,7 @@ function(options) {
         TP.sys.logTest('# pass: 0 pass, 0 fail, 0 error, ' +
                         skippedCount + ' skip, 0 todo.');
 
-        return TP.extern.Promise.resolve();
+        return Promise.resolve();
     }
 
     //  Zero-out the count of 'exclusive' test cases (i.e. those with '.only()')
@@ -1346,7 +1346,7 @@ function(options) {
     suite = this;
 
     //  Generate the starter promise here.
-    firstPromise = TP.extern.Promise.resolve();
+    firstPromise = Promise.resolve();
 
     //  Run any 'before' hook for the suite *and reassign 'firstPromise' to
     //  it*. This will be the Promise that 'starts things off' below.

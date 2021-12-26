@@ -149,7 +149,7 @@ function(aSourceTPElement) {
             'useServiceTag', false
             );
 
-    return TP.extern.Promise.resolve(info);
+    return Promise.resolve(info);
 });
 
 //  ------------------------------------------------------------------------

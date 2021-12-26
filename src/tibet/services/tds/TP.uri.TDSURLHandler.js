@@ -179,7 +179,7 @@ function(targetURI, patch) {
     //  Make sure that we have non-empty diff patch and virtual location
     //  Strings.
     if (TP.isEmpty(patch)) {
-        return TP.extern.Promise.resolve(false);
+        return Promise.resolve(false);
     }
 
     patchVirtualLoc = targetURI.getVirtualLocation();
@@ -188,7 +188,7 @@ function(targetURI, patch) {
             'Unable to locate source path for content.');
     }
 
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
                 function(resolver, rejector) {
 
                     var patchRequest;
@@ -221,8 +221,6 @@ function(targetURI, patch) {
                 });
 
     return promise;
-}, {
-    dependencies: [TP.extern.Promise]
 });
 
 //  ------------------------------------------------------------------------

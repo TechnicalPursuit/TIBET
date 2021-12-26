@@ -1469,6 +1469,40 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+Promise.Type.defineMethod('construct',
+function(executorFunc) {
+
+    /**
+     * @method construct
+     * @summary Constructs and returns a new instance of the receiver.
+     * @param {Function} executorFunc A Function that will execute immediately
+     *     that ties an outcome to the returned Promise. This function should
+     *     take 2 parameters: a resolver Function and a rejector Function. These
+     *     will be called when the promise is resolved or rejected accordingly.
+     * @returns {Promise} A new instance.
+     */
+
+    return new Promise(executorFunc);
+});
+
+//  ---
+
+/**
+ * Exception indicating that the timeout expired.
+ */
+Promise.Type.defineConstant('TimeoutError',
+    function() {
+        Error.call(this);
+        this.stack = Error().stack;
+
+        this.message = 'Timeout';
+    });
+
+Promise.TimeoutError.prototype = Object.create(Error.prototype);
+Promise.TimeoutError.prototype.name = 'TimeoutError';
+
+//  ------------------------------------------------------------------------
+
 RegExp.Type.defineMethod('construct',
 function(pattern, flags, silent) {
 

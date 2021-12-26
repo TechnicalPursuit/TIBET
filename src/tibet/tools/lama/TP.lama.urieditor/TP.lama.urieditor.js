@@ -320,7 +320,7 @@ function(aSourceTPElement) {
         loc = TP.uriJoinFragments.apply(TP, fragParts);
         uriWithFrag = TP.uc(loc);
 
-        return TP.extern.Promise.resolve(
+        return Promise.resolve(
                 TP.hc('sourceURI', uriWithFrag,
                         'propInfo', propInfo,
                         'isLeaf', isLeaf,
@@ -328,7 +328,7 @@ function(aSourceTPElement) {
                         'useServiceTag', true));
     }
 
-    return TP.extern.Promise.resolve(null);
+    return Promise.resolve(null);
 });
 
 //  ------------------------------------------------------------------------

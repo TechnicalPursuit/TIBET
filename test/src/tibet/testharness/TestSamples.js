@@ -100,7 +100,7 @@ function() {
     this.it('passes async via resolver', function(test, options) {
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 resolver();
             }, 1000);
@@ -110,7 +110,7 @@ function() {
     this.it('fails async via rejector', function(test, options) {
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 rejector();
             }, 1000);
@@ -120,7 +120,7 @@ function() {
     this.it('passes async via test.pass', function(test, options) {
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -131,7 +131,7 @@ function() {
     this.it('fails async via test.fail', function(test, options) {
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.fail();
                 rejector();
@@ -142,7 +142,7 @@ function() {
     this.it('fails async via timeout', function(test, options) {
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 /* eslint-disable no-console */
                 console.log('# say something to keep idle timer happy');
@@ -158,7 +158,7 @@ function() {
     this.it('passes sync via resolver', function(test, options) {
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             //  Don't really need a promise, but we can use them anyway :)
             resolver();
         });
@@ -167,7 +167,7 @@ function() {
     this.it('fails sync via rejector', function(test, options) {
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             //  Don't really need a promise, but we can use them anyway :)
             rejector();
         });
@@ -300,7 +300,7 @@ function() {
 
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -314,7 +314,7 @@ function() {
 
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -328,7 +328,7 @@ function() {
 
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -342,7 +342,7 @@ function() {
 
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -356,7 +356,7 @@ function() {
 
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -370,7 +370,7 @@ function() {
 
         test.assert.isTrue(true);
 
-        return TP.extern.Promise.construct(function(resolver, rejector) {
+        return Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 // Fail since really this shouldn't run.
                 test.fail();

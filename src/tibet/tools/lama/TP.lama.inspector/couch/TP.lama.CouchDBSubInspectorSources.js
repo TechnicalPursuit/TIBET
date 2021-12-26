@@ -26,23 +26,6 @@ TP.lama.CouchDBSubInspectorSources.Inst.defineAttribute('documentID');
 TP.lama.CouchDBSubInspectorSources.Inst.defineAttribute('appAndViewName');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.lama.CouchDBSubInspectorSources.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
-
-    this.defineDependencies('TP.extern.Promise');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -935,7 +918,7 @@ function(options) {
 
                     //  NOTE THAT FETCHING IS STILL HAPPENING ASYNCHRONOUSLY
                     //  HERE.
-                    return TP.extern.Promise.all(promises);
+                    return Promise.all(promises);
                 }).then(
                 function(result) {
 

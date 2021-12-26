@@ -49,8 +49,6 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    this.defineDependencies('TP.extern.Promise');
-
     //  Set up an observation for TP.sig.OpenDialog
     this.observe(TP.ANY, TP.sig.OpenDialog);
 
@@ -331,7 +329,7 @@ function(info) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
         function(resolver, rejector) {
 
             var displayHandler,
@@ -639,7 +637,7 @@ function(aMessage, info) {
 
             button.focus();
 
-            answerPromise = TP.extern.Promise.construct(
+            answerPromise = Promise.construct(
                 function(resolver, rejector) {
                     dialogTPElem.defineHandler('DialogOk',
                     function(aSignal) {
@@ -742,7 +740,7 @@ function(anAction, info) {
 
             button.focus();
 
-            answerPromise = TP.extern.Promise.construct(
+            answerPromise = Promise.construct(
                 function(resolver, rejector) {
                     dialogTPElem.defineHandler('DialogOk',
                     function(aSignal) {
@@ -860,7 +858,7 @@ function(aQuestion, aDefaultAnswer, info) {
                 inputField.set('value', aDefaultAnswer);
             }
 
-            answerPromise = TP.extern.Promise.construct(
+            answerPromise = Promise.construct(
                 function(resolver, rejector) {
                     dialogTPElem.defineHandler('DialogOk',
                     function(aSignal) {
@@ -1164,7 +1162,7 @@ function(aQuestion, choices, aDefaultAnswer, info) {
                 }
             }
 
-            answerPromise = TP.extern.Promise.construct(
+            answerPromise = Promise.construct(
                 function(resolver, rejector) {
                     dialogTPElem.defineHandler('DialogOk',
                     function(aSignal) {

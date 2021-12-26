@@ -112,7 +112,7 @@ function(queryRequest) {
     //  call returns a Promise. We set up a resolver and rejector on that
     //  Promise to either complete or fail the request, depending on the
     //  outcome.
-    TP.extern.Promise.resolve().then(
+    Promise.resolve().then(
         function() {
             return this.query(
                     query
@@ -171,9 +171,8 @@ function(oqlQuery) {
         return this.raise('InvalidQuery', 'Missing query.');
     }
 
-    //  Make sure to return a Bluebird-enhanced Promise here to keep things
-    //  consistent.
-    return TP.extern.Promise.resolve(connection.query(oqlQuery));
+    //  Make sure to return a native Promise here to keep things consistent.
+    return Promise.resolve(connection.query(oqlQuery));
 });
 
 //  ------------------------------------------------------------------------

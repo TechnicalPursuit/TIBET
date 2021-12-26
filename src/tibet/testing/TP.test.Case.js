@@ -935,7 +935,7 @@ function(options) {
     //  Protect against running twice while we already have a pending promise.
     if (this.isActive()) {
         this.error(new Error('InvalidOperation'));
-        return TP.extern.Promise.resolve();
+        return Promise.resolve();
     }
 
     //  Make sure to clear out any previous state and update from our options
@@ -953,7 +953,7 @@ function(options) {
     /* eslint-enable consistent-this */
 
    /* eslint-disable new-cap */
-    promise = TP.extern.Promise.construct(
+    promise = Promise.construct(
             function(resolver, rejector) {
                 var asserter,
                     refuter,
@@ -1237,7 +1237,7 @@ function(options) {
         function(err) {
             if (err instanceof AssertionFailed) {
                 return testcase.fail(err);
-            } else if (err instanceof TP.extern.Promise.TimeoutError) {
+            } else if (err instanceof Promise.TimeoutError) {
                 //  Determine from the message whether it was the case itself or
                 //  the overall suite that failed. How will we know? If the
                 //  timeout value isn't === the timeout for a test case it had

@@ -6059,7 +6059,7 @@ function() {
                 }
             });
 
-        promise = TP.extern.Promise.resolve(pouchPromise);
+        promise = Promise.resolve(pouchPromise);
 
         return promise;
     });
@@ -6406,7 +6406,7 @@ function() {
 
         pouchPromise = testDb.destroy();
 
-        promise = TP.extern.Promise.resolve(pouchPromise);
+        promise = Promise.resolve(pouchPromise);
 
         return promise;
     });
