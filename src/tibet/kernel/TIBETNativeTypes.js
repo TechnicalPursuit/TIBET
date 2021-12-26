@@ -4183,6 +4183,118 @@ function(aQuoteChar) {
 });
 
 //  ========================================================================
+//  Promise
+//  ========================================================================
+
+/**
+ * @summary Extensions that make using Promise a bit easier.
+ * @description This file contains a set of premade constant RegExps that define
+ *     common punctuation characters, numbers, etc.
+ */
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+Promise.Type.defineMethod('delay',
+function(aValue, ms) {
+
+    /**
+     * @method delay
+     * @summary Returns a promise that will be resolved with the supplied value
+     *     (or undefined) after given ms milliseconds.
+     * @param {Object|Promise} aValue The value to resolve the generated Promise
+     *     with.
+     * @param {Number} ms The number of milliseconds to wait before executing
+     *     the promise.
+     * @returns {Promise} A promise that will execute after the given delay.
+     */
+
+    var resolvedValue,
+        delay;
+
+    //  If we only got a single parameter, then we assume its the delay and we
+    //  will resolve the generated promise with an 'undefined'.
+    if (arguments.length === 1) {
+        resolvedValue = undefined;
+        delay = aValue;
+    } else {
+        resolvedValue = aValue;
+        delay = ms;
+    }
+
+    return Promise.resolve(resolvedValue).then(
+            function(value) {
+                return Promise.construct(
+                    function(resolver, rejector) {
+                        setTimeout(
+                            function() {
+                                resolver(value);
+                            }, delay);
+                    });
+            });
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+Promise.Inst.defineMethod('delay',
+function(ms) {
+
+    /**
+     * @method delay
+     * @summary Returns a promise that will be execute after given ms
+     *     milliseconds.
+     * @param {Number} ms The number of milliseconds to wait before executing
+     *     the promise.
+     * @returns {Promise} A promise that will execute after the given delay.
+     */
+
+    return this.getType().delay(this, ms);
+});
+
+//  ------------------------------------------------------------------------
+
+Promise.Inst.defineMethod('timeout',
+function(ms) {
+
+    /**
+     * @method timeout
+     * @summary Returns a Promise that will be fulfilled with this promise's
+     *     fulfillment value or rejection reason. However, if this promise is
+     *     not fulfilled or rejected within ms milliseconds, the returned
+     *     promise is rejected with a TimeoutError or the error as the reason.
+     * @param {Number} ms The number of milliseconds to wait before timing out.
+     * @returns {Promise} The promise that will time out in ms milliseconds.
+     */
+
+    var timeout;
+
+    if (!TP.isNumber(ms)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    return Promise.race(
+        TP.ac(
+            this,
+            Promise.construct(
+                function(resolve, reject) {
+                    timeout = setTimeout(function() {
+                        reject(new Promise.TimeoutError());
+                    }, ms);
+                })
+        )).then(
+            function(value) {
+                clearTimeout(timeout);
+                return value;
+            }, function(err) {
+                clearTimeout(timeout);
+                throw err;
+            });
+});
+
+//  ========================================================================
 //  RegExp
 //  ========================================================================
 
