@@ -6763,7 +6763,6 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
      */
 
     var newMethod,
-        descriptor,
 
         track,
         owner,
@@ -6773,7 +6772,6 @@ function(methodName, methodBody, methodDescriptor, display, $isHandler) {
     /* eslint-disable consistent-this */
 
     newMethod = methodBody;
-    descriptor = methodDescriptor;
 
     if (TP.isPrototype(this)) {
         track = TP.TYPE_TRACK;

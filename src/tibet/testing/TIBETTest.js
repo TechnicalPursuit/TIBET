@@ -655,7 +655,9 @@ function(options) {
             unhandledPromise;
 
         reason = evt.reason;
+        /* eslint-disable no-unused-vars */
         unhandledPromise = evt.promise;
+        /* eslint-enable no-unused-vars */
 
         test = currentSuite.get('currentTestCase');
 
