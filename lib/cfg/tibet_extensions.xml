@@ -25,6 +25,7 @@
     <config ref="crypto"/>
     <config ref="text_processing"/>
     <config ref="react"/>
+    <config ref="webcomponents"/>
 </config>
 
 <config id="content">
@@ -149,6 +150,10 @@
 
     <script src="./react/TP.dom.ReactElement.js"/>
 
+</config>
+
+<config id="webcomponents" basedir="~lib_src">
+    <script src="./tibet/webcomponents/TP.dom.WebComponent.js"/>
 </config>
 
 <config id="workflow">

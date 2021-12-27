@@ -14297,6 +14297,38 @@ TP.defineAttribute('$compiled_doc_cache', TP.hc());
 TP.defineAttribute('$mousewheel_capturer_cache', TP.ac());
 
 //  ------------------------------------------------------------------------
+//  TIBET - WEBCOMPONENTS
+//  ------------------------------------------------------------------------
+
+//  TIBET is fully compatible with the WebComponents standard, but installs them
+//  in a unique way. Since all rendering in TIBET takes place in a different
+//  Realm (the UI canvas), but we want to load the WebComponent code into the
+//  codebase Realm, we 'hook' the 'customElements.define' property on the window
+//  thereby trapping registration calls to that registry (the WebComponents
+//  registry).
+
+//  The hook file will then register all of the WebComponents that were
+//  'installed' into TIBET via this mechanism using the standard 'customElement'
+//  mechanism (which we do *NOT* hook in the UI canvas window).
+
+//  Initialize a hash to hold the WebComponents registry.
+TP.defineAttribute('$webcomponentsRegistry', TP.hc());
+
+//  'Hook' customElements to do what we want.
+Object.defineProperty(
+    window,
+    'customElements',
+    {
+        value: {
+            define: function(tagName, classObj, config) {
+                TP.$webcomponentsRegistry.atPut(
+                    tagName,
+                    TP.ac(classObj.toString(), config));
+                }
+        }
+    });
+
+//  ------------------------------------------------------------------------
 //  TIBET - PLUGIN INFORMATION
 //  ------------------------------------------------------------------------
 

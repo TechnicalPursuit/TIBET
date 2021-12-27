@@ -211,6 +211,50 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
             originalSet.call(this, finalVal);
         }
     });
+
+    //  If we're not executing in the top-level window (the code frame), then we
+    //  need to define WebComponents that TIBET captured in its 'hooked'
+    //  WebComponents registry when any those were loaded into the code frame.
+    if (root !== TP.topWindow) {
+        TP.$webcomponentsRegistry.perform(
+            function(kvPair) {
+                var name,
+                    entry,
+
+                    classDefinitionString,
+                    options,
+
+                    clazz;
+
+                name = kvPair.first();
+                entry = kvPair.last();
+
+                //  The code for the WebComponent will have been stored as a
+                //  String in the registry.
+                classDefinitionString = entry.at(0);
+
+                //  Any options the WebComponent author defined.
+                options = entry.at(1);
+
+                //  If the WebComponent isn't already defined, define it.
+                if (TP.boot.$notValid(root.customElements.get(name))) {
+
+                    //  Eval the class definition String here. A bit ugly, but
+                    //  the only way to properly capture any 'window' or
+                    //  'document' references in the original WebComponents code
+                    //  and have them resolve properly.
+                    /* eslint-disable no-eval */
+                    eval('clazz = ' + classDefinitionString);
+                    /* eslint-enable no-eval */
+
+                    root.customElements.define(
+                        name,
+                        clazz,
+                        options);
+                }
+            });
+    }
+
 }());
 
 //  ========================================================================

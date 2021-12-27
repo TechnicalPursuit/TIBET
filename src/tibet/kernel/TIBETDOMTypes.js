@@ -11073,6 +11073,13 @@ function(aNode, shouldReport) {
     //  shouldn't exist anyway)
     last = name;
     name = TP.elementGetFullName(aNode, true);
+
+    //  Strip out any '-'s from the name. WebComponents are required to use '-'
+    //  as part of their name and those won't work for JavaScript identifiers.
+    //  So a WebComponent with a tag name of 'my-component' should have been
+    //  authored to have a TIBET type name of 'mycomponent'.
+    name = name.strip(/\-/g);
+
     if (name !== last && TP.isType(type = TP.sys.getTypeByName(name))) {
 
         //  Sometime local tag names are also native types in the system - don't
@@ -18579,6 +18586,9 @@ function(aRequest) {
             return;
         }
 
+        //  TODO: This cloning process should be moved into getResourceElement
+        //  since it's caching and it should be cloned out of the cache.
+
         //  Use the *native* mechanism to clone the Element here - otherwise,
         //  the wrapped element will try to return a wrapper and end up going
         //  through the whole cycle to create another wrapper element, etc.
@@ -18593,9 +18603,18 @@ function(aRequest) {
         //  TP.elementSetGenerator.
         replacementClone[TP.GENERATOR] = canonicalName;
 
+        //  TODO: Review this - probably needs to be moved into a method so that
+        //  this behavior can be overridden. Also, review
+        //  populateCompilationAttrs for other behavior that maybe can be
+        //  unified.
+
         //  Merge any remaining attributes. Note that we don't want to overwrite
         //  or duplicate any src attribute we had to compute.
         TP.elementMergeAttributes(elem, replacementClone);
+
+        //  Possibly merge this with above attribute logic. The reason we're
+        //  forcing this is that we want to *force* the ID to overlay. The
+        //  elementMergeAttributes call does *not* force overlay by default.
 
         //  One last thing...since this is a template we need to force any
         //  existing ID from the source element over any ID found on the
