@@ -10006,7 +10006,12 @@ TP.boot.$importComponents = async function(loadSync) {
         image,
         logpackage,
         logpath,
-        source;
+        source,
+
+        otherrealm,
+        otherrealmentry,
+
+        moveon;
 
     TP.boot.$$loadNode = null;
 
@@ -10067,16 +10072,47 @@ TP.boot.$importComponents = async function(loadSync) {
     }
 
     if (tn === 'script') {
+
+        moveon = false;
+
         //  first step is to configure for proper feedback, even when the
         //  node we're processing may be deferred.
         if ((srcpath = nd.getAttribute('src')) != null) {
+
+            //  If the entry defines another 'realm' (a JS Realm) to load this
+            //  script into, we capture the entry and then just move on.
+            if ((otherrealm = nd.getAttribute('realm')) != null) {
+
+                //  Make sure that we have an Array at that realm entry.
+                otherrealmentry = TP.boot.$$otherrealmscripts[otherrealm];
+                if (otherrealmentry == null) {
+                    otherrealmentry = [];
+                    TP.boot.$$otherrealmscripts[otherrealm] = otherrealmentry;
+                }
+
+                //  Push in an entry, capturing various bits of information from
+                //  the config node.
+                otherrealmentry.push(
+                    {
+                        path: srcpath,
+                        symbols: nd.getAttribute('symbols'),
+                        ifpresent: nd.getAttribute('ifpresent')
+                    });
+
+                moveon = true;
+            }
 
             //  skip duplicate imports. this normally only happens if a script
             //  ends up in both phase one and phase two for some reason (usually
             //  oversight in not properly setting up phase filters in the
             //  package).
             if (TP.boot.$$scripts[srcpath]) {
+                moveon = true;
+            }
 
+            //  If we're supposed to 'move on', then kick the index, update the
+            //  progress and invoke the next iteration to process the next node.
+            if (moveon) {
                 //  re-invoke manually so we move on to the next boot node
                 TP.boot.$$bootindex += 1;
                 TP.boot.$displayProgress();
@@ -11814,6 +11850,7 @@ TP.boot.$importApplication = async function() {
     //  Clear script dictionary. This will be used to unique across all imports.
 
     TP.boot.$$scripts = {};
+    TP.boot.$$otherrealmscripts = {};
 
     TP.boot.$$totalwork = 0;
 
