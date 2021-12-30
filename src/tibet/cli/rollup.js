@@ -199,6 +199,13 @@ Cmd.prototype.executeForEach = function(list) {
         src = item.getAttribute('src') || item.getAttribute('href');
 
         if (src) {
+
+            //  There was a real source, but the author did not want the code
+            //  bundled. Must be an external script of some sort.
+            if (item.getAttribute('no-bundle')) {
+                return;
+            }
+
             virtual = pkg.getVirtualPath(src);
 
             if (!CLI.exists(src)) {
