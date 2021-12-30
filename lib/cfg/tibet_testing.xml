@@ -84,6 +84,7 @@
     <config ref="tokenizer"/>
     <config ref="uri"/>
     <config ref="values"/>
+    <config ref="webcomponents"/>
     <config ref="worker"/>
     <config ref="xctrls"/>
     <config ref="xs"/>
@@ -202,6 +203,15 @@
 
 <config id="values">
     <script src="~lib_test/src/tibet/values/Value_Tests.js"/>
+</config>
+
+<config id="webcomponents">
+    <script src="~lib_test/src/tibet/webcomponents/ExpandingList.js" realm="uicanvas" symbols="ExpandingList" ifpresent="*[is='expanding-list']" no-bundle="true"/>
+    <script src="~lib_test/src/tibet/webcomponents/TemplateExpander.js" realm="uicanvas" symbols="TemplateExpander" ifpresent="template-expander" no-bundle="true"/>
+    <script src="~lib_test/src/tibet/webcomponents/CustomSquare.js" realm="uicanvas" symbols="CustomSquare" ifpresent="body.customsquaretest" no-bundle="true"/>
+
+    <script src="~lib_test/src/tibet/webcomponents/WebComponentTestTypes.js"/>
+    <script src="~lib_test/src/tibet/webcomponents/TP.dom.WebComponent_tests.js"/>
 </config>
 
 <config id="worker">
