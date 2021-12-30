@@ -27,7 +27,9 @@
         $$find,
         tibet,
 
-        $$url;
+        $$url,
+
+        oldCustomElementsDefine;
 
 //  ----------------------------------------------------------------------------
 
@@ -168,6 +170,29 @@ if (TP.sys.cfg('log.hook') && !TP.sys.isHeadless()) {
     TP.boot.$stdout($$msg, TP.INFO);
 }
 
+//  Hook 'customElements.define' to populate TIBET's 'TP.$webcomponentsRegistry'
+//  hash. We keep this around to allow us to have metadata about loaded
+//  WebComponents.
+if (window.customElements.customDefine !== true) {
+
+    oldCustomElementsDefine = window.customElements.define;
+
+    Object.defineProperty(
+        window.customElements,
+        'define',
+        {
+            value: function(tagName, classObj, config) {
+                    TP.$webcomponentsRegistry.atPut(
+                        tagName,
+                        TP.ac(classObj.toString(), config));
+                    return oldCustomElementsDefine.call(
+                            this, tagName, classObj, config);
+                }
+        });
+
+    window.customElements.customDefine = true;
+}
+
 //  ------------------------------------------------------------------------
 //  Shims
 //  ------------------------------------------------------------------------
@@ -184,7 +209,10 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
 (function() {
 
     var elemProto,
-        originalSet;
+        originalSet,
+
+        realmscripts,
+        scripts;
 
     elemProto = root.Element.prototype;
     originalSet = Object.getOwnPropertyDescriptor(elemProto, 'innerHTML').set;
@@ -216,43 +244,75 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
     //  need to define WebComponents that TIBET captured in its 'hooked'
     //  WebComponents registry when any those were loaded into the code frame.
     if (root !== TP.topWindow) {
-        TP.$webcomponentsRegistry.perform(
-            function(kvPair) {
-                var name,
-                    entry,
 
-                    classDefinitionString,
-                    options,
+        //  Grab the 'uicanvas' entry in the 'other realm scripts' property.
+        //  This will have been populated by the boot system as it reads the
+        //  config system's XML file, looking for script entries that are to be
+        //  loaded into another JS Realm (i.e. 'iframe' for our purposes). In
+        //  this case, the 'uicanvas' realm.
+        realmscripts = TP.boot.$$otherrealmscripts.uicanvas;
 
-                    clazz;
+        if (TP.boot.$notEmpty(realmscripts)) {
+            realmscripts = realmscripts.filter(
+                function(entry) {
+                    var hadScript,
 
-                name = kvPair.first();
-                entry = kvPair.last();
+                        symbol,
+                        symbols;
 
-                //  The code for the WebComponent will have been stored as a
-                //  String in the registry.
-                classDefinitionString = entry.at(0);
+                    //  Look to see if the document's head already has this
+                    //  script entry.
+                    hadScript = root.document.head.querySelector(
+                                    'script[src="' + entry.path + '"]');
+                    if (hadScript) {
+                        //  The script already exists in the document. Filter
+                        //  out this script.
+                        return false;
+                    }
 
-                //  Any options the WebComponent author defined.
-                options = entry.at(1);
+                    //  Check to make sure that any global-level symbols have
+                    //  *not* already been defined, otherwise the engine will
+                    //  throw an exception that we cannot catch. We must use
+                    //  eval() here in order to test for ECMA classes, since
+                    //  there's no other way (they're not global properties on
+                    //  the Window - sigh).
+                    symbols = entry.symbols.split(',');
+                    for (symbol of symbols) {
+                        try {
+                            /* eslint-disable no-eval */
+                            if (eval(symbol)) {
+                            /* eslint-enable no-eval */
+                                //  The symbol has already been defined. Filter
+                                //  out this script.
+                                return false;
+                            }
+                        } catch (e) {
+                            //  It was *not* defined. Continue on to check the
+                            //  next symbol.
+                        }
+                    }
 
-                //  If the WebComponent isn't already defined, define it.
-                if (TP.boot.$notValid(root.customElements.get(name))) {
+                    if (TP.notEmpty(entry.ifpresent)) {
+                        if (TP.isEmpty(TP.byPath(entry.ifpresent))) {
+                            //  There are no nodes that match the 'ifpresent'
+                            //  condition. Filter out this script.
+                            return false;
+                        }
+                    }
 
-                    //  Eval the class definition String here. A bit ugly, but
-                    //  the only way to properly capture any 'window' or
-                    //  'document' references in the original WebComponents code
-                    //  and have them resolve properly.
-                    /* eslint-disable no-eval */
-                    eval('clazz = ' + classDefinitionString);
-                    /* eslint-enable no-eval */
+                    return true;
+                });
 
-                    root.customElements.define(
-                        name,
-                        clazz,
-                        options);
-                }
-            });
+            //  Gather the 'path' value from the script entries and fetch them.
+            if (TP.notEmpty(realmscripts)) {
+                scripts = realmscripts.map(
+                            function(anEntry) {
+                                return anEntry.path;
+                            });
+
+                TP.sys.fetchScriptsInto(scripts, root.document);
+            }
+        }
     }
 
 }());
