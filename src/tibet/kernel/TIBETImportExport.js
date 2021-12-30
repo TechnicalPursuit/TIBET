@@ -214,7 +214,7 @@ function(aURIList, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
                 function(aURI) {
                     var childReq;
 
-                    childReq = TP.request(aRequest.getPayload());
+                    childReq = TP.request(req.getPayload());
                     req.andJoinChild(childReq);
 
                     return TP.sys.fetchScriptInto(
