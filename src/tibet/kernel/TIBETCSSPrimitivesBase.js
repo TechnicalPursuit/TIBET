@@ -92,6 +92,8 @@ function(targetDoc, linkHref, beforeNode, shouldSignal, loadedHandler) {
     var url,
 
         targetHead,
+        targetLoc,
+
         newLinkElement,
 
         before,
@@ -123,6 +125,8 @@ function(targetDoc, linkHref, beforeNode, shouldSignal, loadedHandler) {
     //  Make sure that the target document has a valid 'head' element or
     //  we're going nowhere.
     targetHead = TP.documentEnsureHeadElement(targetDoc);
+
+    targetLoc = url.getLocation();
 
     //  Create a new 'link' element.
     newLinkElement = TP.documentConstructElement(targetDoc,
@@ -192,7 +196,7 @@ function(targetDoc, linkHref, beforeNode, shouldSignal, loadedHandler) {
 
             //  Set the new link element's href to the URL. This loads the
             //  style sheet rules asynchronously.
-            TP.elementSetAttribute(newLinkElement, 'href', url);
+            TP.elementSetAttribute(newLinkElement, 'href', targetLoc);
         });
 
     return promise;
