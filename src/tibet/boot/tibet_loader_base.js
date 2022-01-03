@@ -10009,7 +10009,6 @@ TP.boot.$importComponents = async function(loadSync) {
         source,
 
         otherrealm,
-        otherrealmentry,
 
         moveon;
 
@@ -10080,24 +10079,16 @@ TP.boot.$importComponents = async function(loadSync) {
         if ((srcpath = nd.getAttribute('src')) != null) {
 
             //  If the entry defines another 'realm' (a JS Realm) to load this
-            //  script into, we capture the entry and then just move on.
+            //  script into, we register it as a 'other realm asset' and just
+            //  move on.
             if ((otherrealm = nd.getAttribute('realm')) != null) {
 
-                //  Make sure that we have an Array at that realm entry.
-                otherrealmentry = TP.boot.$$otherrealmscripts[otherrealm];
-                if (otherrealmentry == null) {
-                    otherrealmentry = [];
-                    TP.boot.$$otherrealmscripts[otherrealm] = otherrealmentry;
-                }
-
-                //  Push in an entry, capturing various bits of information from
-                //  the config node.
-                otherrealmentry.push(
-                    {
-                        path: srcpath,
-                        symbols: nd.getAttribute('symbols'),
-                        ifpresent: nd.getAttribute('ifpresent')
-                    });
+                TP.boot.$registerOtherRealmAsset(
+                            otherrealm,
+                            'script',
+                            srcpath,
+                            nd.getAttribute('ifpresent'),
+                            nd.getAttribute('symbols'));
 
                 moveon = true;
             }
@@ -10310,6 +10301,22 @@ TP.boot.$importComponents = async function(loadSync) {
             } finally {
                 TP.boot.$$loadNode = null;
             }
+        }
+
+    } else if (tn === 'resource') {
+
+        srcpath = nd.getAttribute('href');
+
+        //  if it's a '.css' file and it wants to be in another realm, register
+        //  it as an 'other realm asset'.
+        if (srcpath.endsWith('.css') &&
+            (otherrealm = nd.getAttribute('realm')) != null) {
+
+            TP.boot.$registerOtherRealmAsset(
+                        otherrealm,
+                        'style',
+                        srcpath,
+                        nd.getAttribute('ifpresent'));
         }
 
     } else if (tn === 'tibet_image') {
@@ -11839,6 +11846,57 @@ TP.boot.$refreshPackages = async function(aURI) {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
+    symbols) {
+
+    /**
+     * @method $registerOtherRealmAsset
+     * @summary Registers the supplied asset information under the supplied
+     *     realm. This allows the system to register assets such as scripts and
+     *     css resources that should be loaded into another realm, such as
+     *     'uncanvas'.
+     * @param {string} realmid The id of the realm to register the supplied
+     *     information for. When this realm is activated, entries registered for
+     *     it will be checked to see if they should load into it. This is done
+     *     by the TIBET hook file.
+     * @param {string} type The type of asset (e.g. 'script', 'style', etc).
+     * @param {string} path The path to the asset (usually a virtual path).
+     * @param {string} [ifpresent] A CSS/XPath expression to execute to test
+     *     whether a particular asset should be loaded. If this path results in
+     *     real nodes, then the asset will be installed into the realm and each
+     *     individual node will be notified. If this parameter is empty, then
+     *     the asset will be installed no matter what content is in the realm.
+     * @param {string} [symbols] A comma separated set of JavaScript symbols
+     *     that, if detected in the realm, will cause the asset (usually a
+     *     JavaScript asset) to *not* be loaded. Sometimes JavaScript will throw
+     *     an error if a particular global symbol is re-defined (such as ECMA
+     *     classes). This will prevent that. If this parameter is empty, this
+     *     check will *not* be performed.
+     */
+
+    var otherrealmentry;
+
+    //  Make sure that we have an Array at that realm entry.
+    otherrealmentry = TP.boot.$$otherrealmassets[realmid];
+    if (otherrealmentry == null) {
+        otherrealmentry = [];
+        TP.boot.$$otherrealmassets[realmid] = otherrealmentry;
+    }
+
+    //  Push in an entry, capturing various bits of information from
+    //  the config node.
+    otherrealmentry.push({
+            type: type,
+            path: path,
+            ifpresent: ifpresent,
+            symbols: symbols
+        });
+
+    return;
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$importApplication = async function() {
 
     /**
@@ -11850,7 +11908,7 @@ TP.boot.$importApplication = async function() {
     //  Clear script dictionary. This will be used to unique across all imports.
 
     TP.boot.$$scripts = {};
-    TP.boot.$$otherrealmscripts = {};
+    TP.boot.$$otherrealmassets = {};
 
     TP.boot.$$totalwork = 0;
 

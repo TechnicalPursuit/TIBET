@@ -206,13 +206,24 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
 
 //  Make the '.innerHTML' setter convert the value to XHTML if the document
 //  'surface' isn't just pure HTML.
-(function() {
+(async function() {
 
     var elemProto,
         originalSet,
 
-        realmscripts,
-        scripts;
+        realmassets,
+        entries,
+
+        interestEntries,
+
+        elemsOrModulesInfo,
+        interestEntry,
+
+        path,
+        nodes,
+        node,
+
+        resourceElem;
 
     elemProto = root.Element.prototype;
     originalSet = Object.getOwnPropertyDescriptor(elemProto, 'innerHTML').set;
@@ -245,72 +256,126 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
     //  WebComponents registry when any those were loaded into the code frame.
     if (root !== TP.topWindow) {
 
-        //  Grab the 'uicanvas' entry in the 'other realm scripts' property.
+        //  Grab the 'uicanvas' entry in the 'other realm assets' property.
         //  This will have been populated by the boot system as it reads the
-        //  config system's XML file, looking for script entries that are to be
-        //  loaded into another JS Realm (i.e. 'iframe' for our purposes). In
-        //  this case, the 'uicanvas' realm.
-        realmscripts = TP.boot.$$otherrealmscripts.uicanvas;
+        //  config system's XML file, looking for script and other resource
+        //  entries that are to be loaded into another JS Realm (i.e. 'iframe'
+        //  for our purposes). In this case, the 'uicanvas' realm.
+        realmassets = TP.boot.$$otherrealmassets.uicanvas;
 
-        if (TP.boot.$notEmpty(realmscripts)) {
-            realmscripts = realmscripts.filter(
+        interestEntries = TP.hc();
+
+        if (TP.boot.$notEmpty(realmassets)) {
+            realmassets = realmassets.filter(
                 function(entry) {
-                    var hadScript,
+                    var hadAsset,
 
                         symbol,
-                        symbols;
+                        symbols,
 
-                    //  Look to see if the document's head already has this
-                    //  script entry.
-                    hadScript = root.document.head.querySelector(
-                                    'script[src="' + entry.path + '"]');
-                    if (hadScript) {
-                        //  The script already exists in the document. Filter
-                        //  out this script.
-                        return false;
-                    }
+                        presentNodes;
 
-                    //  Check to make sure that any global-level symbols have
-                    //  *not* already been defined, otherwise the engine will
-                    //  throw an exception that we cannot catch. We must use
-                    //  eval() here in order to test for ECMA classes, since
-                    //  there's no other way (they're not global properties on
-                    //  the Window - sigh).
-                    symbols = entry.symbols.split(',');
-                    for (symbol of symbols) {
-                        try {
-                            /* eslint-disable no-eval */
-                            if (eval(symbol)) {
-                            /* eslint-enable no-eval */
-                                //  The symbol has already been defined. Filter
-                                //  out this script.
+                    switch (entry.type) {
+                        case 'script':
+                            //  Look to see if the document's head already has
+                            //  this script entry.
+                            hadAsset = root.document.head.querySelector(
+                                            'script[src="' + entry.path + '"]');
+                            if (hadAsset) {
+                                //  The script already exists in the document.
+                                //  Filter out this script.
                                 return false;
                             }
-                        } catch (e) {
-                            //  It was *not* defined. Continue on to check the
-                            //  next symbol.
-                        }
+
+                            //  Check to make sure that any global-level symbols
+                            //  have *not* already been defined, otherwise the
+                            //  engine will throw an exception that we cannot
+                            //  catch. We must use eval() here in order to test
+                            //  for ECMA classes, since there's no other way
+                            //  (they're not global properties on the Window -
+                            //  sigh).
+                            symbols = entry.symbols.split(',');
+                            for (symbol of symbols) {
+                                try {
+                                    /* eslint-disable no-eval */
+                                    if (eval(symbol)) {
+                                    /* eslint-enable no-eval */
+                                        //  The symbol has already been defined.
+                                        //  Filter out this script.
+                                        return false;
+                                    }
+                                } catch (e) {
+                                    //  It was *not* defined. Continue on to
+                                    //  check the next symbol.
+                                }
+                            }
+                            break;
+
+                        case 'style':
+                            //  Look to see if the document's head already has
+                            //  this style entry.
+                            hadAsset = root.document.head.querySelector(
+                                            'link[href="' + entry.path + '"]');
+                            if (hadAsset) {
+                                //  The script already exists in the document.
+                                //  Filter out this script.
+                                return false;
+                            }
+                            break;
+
+                        default:
+                            break;
                     }
 
+                    //  If 'ifpresent' is defined, then check to see if there
+                    //  are any nodes that match the expression in the current
+                    //  document.
                     if (TP.notEmpty(entry.ifpresent)) {
-                        if (TP.isEmpty(TP.byPath(entry.ifpresent))) {
+                        presentNodes = TP.byPath(entry.ifpresent,
+                                                    root.document);
+                        if (TP.isEmpty(presentNodes)) {
                             //  There are no nodes that match the 'ifpresent'
                             //  condition. Filter out this script.
                             return false;
+                        } else {
+                           interestEntries.atPut(entry.path, presentNodes);
                         }
                     }
 
                     return true;
                 });
 
-            //  Gather the 'path' value from the script entries and fetch them.
-            if (TP.notEmpty(realmscripts)) {
-                scripts = realmscripts.map(
-                            function(anEntry) {
-                                return anEntry.path;
-                            });
+            //  Iterate through the filtered realm assets and make hashes
+            //  containing the path and type.
+            entries = realmassets.map(
+                        function(anEntry) {
+                            return TP.hc(
+                                    'uri', anEntry.path,
+                                    'type', anEntry.type
+                                    );
+                        });
 
-                TP.sys.fetchScriptsInto(scripts, root.document);
+            //  Fetch all of the assets in the entries and populate them into
+            //  the root document.
+            elemsOrModulesInfo = await TP.sys.fetchAssetsInto(
+                                                entries, root.document);
+
+            //  Iterate over all of the 'interest' entries (i.e. a hash of paths
+            //  to the nodes that were found above using the 'ifpresent' query)
+            //  and notify them that a particular asset has been loaded. Note
+            //  that this is done on an await, since the default code for an
+            //  TP.dom.UIElementNode consults its resource list from its
+            //  manifest).
+            for (interestEntry of interestEntries) {
+                path = interestEntry.first();
+                nodes = interestEntry.last();
+
+                resourceElem = elemsOrModulesInfo.at(path);
+
+                for (node of nodes) {
+                    await node.otherRealmAssetLoaded(
+                            'uicanvas', path, resourceElem);
+                }
             }
         }
     }
