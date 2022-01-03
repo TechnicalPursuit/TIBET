@@ -54,6 +54,10 @@ TP.dom.UIElementNode.Type.set('booleanAttrs',
                     'pclass:hidden', 'pclass:invalid', 'pclass:out-of-range',
                     'pclass:readonly', 'pclass:required', 'pclass:selected')));
 
+//  'Other realm' resources - those that are loaded into other realms, like the
+//  UICANVAS
+TP.dom.UIElementNode.Type.defineAttribute('$otherRealmAssets');
+
 //  Note how these properties are TYPE_LOCAL, by design.
 
 //  The TP.dom.UIElementNode that focus is moving to, based on TIBET
@@ -762,6 +766,25 @@ function() {
     }
 
     return gids;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Type.defineMethod('getOtherRealmAssetURIs',
+function() {
+
+    /**
+     * @method getOtherRealmAssetURIs
+     * @summary Returns an Array of URIs that correspond to 'other realm'
+     *     assets that this type uses that need to be loaded into another
+     *     'realm' besides the main TIBET code frame.
+     * @description This method is meant to supplied a 'well known, hardcoded'
+     *     list of assets and should return null if it cannot do so. The system
+     *     will then try to compute one from the type's manifest entries.
+     * @returns {String[]} The Array of URIs of 'other realm' assets.
+     */
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -1818,6 +1841,14 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  'Other realm' resources - those that are loaded into other realms, like the
+//  UICANVAS - that have been processed for this instance.
+TP.dom.UIElementNode.Inst.defineAttribute('$processedOtherRealmAssets');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -1866,6 +1897,25 @@ function() {
     }
 
     return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('allOtherRealmAssetsLoaded',
+function(resources) {
+
+    /**
+     * @method allOtherRealmAssetsLoaded
+     * @summary This method is called on each instance of this type when all of
+     *     the type's 'other realm' assets have been loaded.
+     * @param {TP.core.Hash} resources A hash of the 'other realm' assets that
+     *     were loaded. This will have the path of the asset as the key and the
+     *     'asset object' (usually an Element) that was inserted to represent
+     *     that asset in the other realm.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -4404,6 +4454,62 @@ function(moveAction, fromFocusedElement) {
         //  Note that we pass the moveAction here - if this is a group, it will
         //  act as a hint as to where to put the focus within the group.
         successorTPElem.focus(moveAction);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Inst.defineMethod('otherRealmAssetLoaded',
+async function(realmID, assetURL, assetObject) {
+
+    /**
+     * @method otherRealmAssetLoaded
+     * @summary This method is called on each instance of this type when a
+     *     particular 'other realm' asset has been loaded. This method is
+     *     typically invoked from TIBET's hook file.
+     * @param {String} realmID The ID of the 'realm' that the asset was loaded
+     *     into.
+     * @param {String} assetURL The URL of the asset that was loaded.
+     * @param {Object} assetObject The object that was created when the asset
+     *     was loaded. This is typically the Element object that was created in
+     *     the target realm to represent the asset.
+     * @returns {TP.dom.UIElementNode} The receiver.
+     */
+
+    var otherRealmAssets,
+        otherRealmAssetURIs,
+        processedResources;
+
+    //  Get 'other realm' assets
+    otherRealmAssets = this.getType().get('$otherRealmAssets');
+
+    //  If this is null, then we ask TIBET to compute 'other realm asset'
+    //  listings.
+    if (TP.notValid(otherRealmAssets)) {
+        otherRealmAssetURIs = this.getType().getOtherRealmAssetURIs();
+        if (TP.isEmpty(otherRealmAssetURIs)) {
+            otherRealmAssets = await TP.sys.getOtherRealmAssets(
+                                                    this.getName(), realmID);
+        }
+        this.getType().set('$otherRealmAssets', otherRealmAssets);
+    }
+
+    //  Grab the hash of assets that have already been processed.
+    processedResources = this.get('$processedOtherRealmAssets');
+    if (TP.isEmpty(processedResources)) {
+        processedResources = TP.hc();
+        this.set('$processedOtherRealmAssets', processedResources);
+    }
+
+    //  Add this asset to it.
+    processedResources.atPut(assetURL, assetObject);
+
+    //  NB: This logic relies on the fact that the resource will only be loaded
+    //  once. The hook file ensures this.
+    if (processedResources.getSize() === otherRealmAssets.getSize()) {
+        this.allOtherRealmAssetsLoaded(processedResources);
     }
 
     return this;
