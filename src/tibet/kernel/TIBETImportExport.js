@@ -103,18 +103,23 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
     } else {
         newPromise = Promise.construct(
             function(resolver, rejector) {
-                var loadedCB,
+                var successHandler,
+                    errorHandler,
+
                     scriptElem,
 
                     err;
 
-                loadedCB = function() {
+                successHandler = function() {
 
                     var req;
 
-                    //  Start by removing the 'onload' handler from our script
-                    //  element.
-                    scriptElem.removeEventListener('load', loadedCB, false);
+                    //  Start by removing the 'onload' and 'onerror' handlers
+                    //  from our script element.
+                    scriptElem.removeEventListener(
+                                    'load', successHandler, false);
+                    scriptElem.removeEventListener(
+                                    'error', errorHandler, false);
 
                     //  Activate any "awakening logic" specific to the script.
                     req = TP.request();
@@ -132,6 +137,22 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
                     request.complete(scriptElem);
 
                     return resolver(scriptElem);
+                };
+
+                errorHandler = function(error) {
+
+                    //  Start by removing the 'onload' and 'onerror' handlers
+                    //  from our script element.
+                    scriptElem.removeEventListener(
+                                    'load', successHandler, false);
+                    scriptElem.removeEventListener(
+                                    'error', errorHandler, false);
+
+                    //  Error the request and reject the Promise.
+
+                    request.complete(scriptElem);
+
+                    return rejector(error);
                 };
 
                 //  Construct an XHTML script element on the supplied document
@@ -152,7 +173,11 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
 
                 //  Set our loaded callback as the 'onload' handler for the
                 //  script element.
-                scriptElem.addEventListener('load', loadedCB, false);
+                scriptElem.addEventListener('load', successHandler, false);
+
+                //  Set our error callback as the 'onerror' handler for the
+                //  script element.
+                scriptElem.addEventListener('error', errorHandler, false);
 
                 if (TP.notValid(scriptElem) || TP.isError(scriptElem)) {
                     err = new Error('Error fetching source URL: ' + targetLoc);
