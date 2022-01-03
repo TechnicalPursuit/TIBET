@@ -447,9 +447,6 @@
 
     <package src="xctrls/TP.xctrls.editor/TP.xctrls.editor.xml" config="base"/>
 
-    <resource href="~lib_deps/discovery/discovery-tpi.min.js" no-inline="true"/>
-    <resource href="~lib_deps/discovery/discovery.css" no-inline="true"/>
-
     <package src="xctrls/TP.xctrls.jsonview/TP.xctrls.jsonview.xml" config="base"/>
 </config>
 

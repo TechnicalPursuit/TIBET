@@ -48,74 +48,6 @@ TP.xctrls.jsonview.defineAttribute('themeURI', TP.NO_RESULT);
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.xctrls.jsonview.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem,
-
-        thisref;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have an Element to work from
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception.
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    thisref = this;
-
-    //  If the 'discovery' viewer isn't loaded, then we must load it *into the
-    //  target document of the element that we're processing*.
-    if (TP.notValid(TP.extern.discovery)) {
-
-        TP.sys.fetchScriptInto(
-            TP.uc('~lib_deps/discovery/discovery-tpi.min.js'),
-            TP.doc(elem)
-        ).then(function() {
-                var discoveryObj;
-
-                discoveryObj = TP.nodeGetWindow(elem).discovery;
-
-                TP.registerExternalObject('discovery', discoveryObj);
-
-                //  NB: Wire these in *after* the registerExternalObject method
-                //  is executed because it will try to devine these settings
-                //  from the loader, which is no longer involved - the app is
-                //  running.
-                discoveryObj[TP.LOAD_PATH] = 'embedded';
-                discoveryObj[TP.LOAD_CONFIG] = thisref[TP.LOAD_CONFIG];
-                discoveryObj[TP.LOAD_PACKAGE] = thisref[TP.LOAD_PACKAGE];
-                discoveryObj[TP.LOAD_STAGE] = TP.PHASE_TWO;
-
-                discoveryObj[TP.SOURCE_PATH] = 'embedded';
-                discoveryObj[TP.SOURCE_CONFIG] = thisref[TP.SOURCE_CONFIG];
-                discoveryObj[TP.SOURCE_PACKAGE] = thisref[TP.SOURCE_PACKAGE];
-
-                thisref.defineDependencies('TP.extern.discovery');
-
-                tpElem.setup();
-            });
-    } else {
-        tpElem.setup();
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.jsonview.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
@@ -154,6 +86,34 @@ TP.xctrls.jsonview.Inst.defineAttribute('$discoveryObj');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.jsonview.Inst.defineMethod('allOtherRealmAssetsLoaded',
+function(resources) {
+
+    /**
+     * @method allOtherRealmAssetsLoaded
+     * @summary This method is called on each instance of this type when all of
+     *     the type's 'other realm' assets have been loaded.
+     * @param {TP.core.Hash} resources A hash of the 'other realm' assets that
+     *     were loaded. This will have the path of the asset as the key and the
+     *     'asset object' (usually an Element) that was inserted to represent
+     *     that asset in the other realm.
+     * @returns {TP.xctrls.jsonview} The receiver.
+     */
+
+    var styleElem;
+
+    styleElem = resources.at(
+                    TP.uriExpandPath('~lib_deps/discovery/discovery.css'));
+
+    TP.elementSetAttribute(styleElem, 'id', 'discoveryStyle', true);
+
+    this.setup();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.jsonview.Inst.defineMethod('configDiscovery',
 function(aDiscoveryObj) {
 
@@ -170,7 +130,8 @@ function(aDiscoveryObj) {
 
     //  ---
 
-    const {complexViews} = TP.extern.discovery;
+    const {complexViews} = this.getNativeWindow().discovery;
+
     aDiscoveryObj.apply(complexViews);
 
     //  ---
@@ -413,15 +374,9 @@ function() {
      */
 
     var discoveryElem,
-        discoveryObj,
+        discoveryObj;
 
-        doc,
-
-        sheetElemID,
-        styleElem,
-        loadedHandler;
-
-    const {Widget} = TP.extern.discovery;
+    const {Widget} = this.getNativeWindow().discovery;
 
     //  The Element that we'll attach the Discovery view to. This is the 'div'
     //  that we supply in our associated markup.
@@ -443,63 +398,10 @@ function() {
     //  nav items, etc.
     this.configDiscovery(discoveryObj);
 
-    //  ---
+    //  We're all set up and ready - signal that.
+    this.dispatch('TP.sig.DOMReady');
 
-    //  Load the stylesheet associated with the Discovery widget if it's not
-    //  already loaded.
-    doc = this.getNativeDocument();
-
-    sheetElemID = 'discoveryStyle';
-    styleElem = TP.byId(sheetElemID, doc, false);
-
-    //  If the style element in question doesn't exist in the document, then we
-    //  have to load it. Do so, waiting until it loads, and then render the
-    //  widget.
-    if (!TP.isElement(styleElem)) {
-        //  Set up stylesheet element
-
-        this.set('$discoverySheetReady', false);
-
-        //  Create a loaded handler (bound to the receiver) that will notify all
-        //  instances that the stylesheet has loaded.
-        loadedHandler = function(aSignal) {
-
-            //  The sheet is now ready to go - just call send a signal saying
-            //  that we're ready and render.
-
-            this.set('$discoverySheetReady', true);
-
-            //  We're all set up and ready - signal that.
-            this.dispatch('TP.sig.DOMReady');
-
-            this.render();
-
-        }.bind(this);
-
-        styleElem = TP.documentAddCSSLinkElement(
-                            doc,
-                            TP.uriExpandPath('~lib_deps/discovery/discovery.css'),
-                            null,
-                            false,
-                            loadedHandler);
-
-        //  Mark this element as having been generated by TIBET.
-        styleElem[TP.GENERATED] = true;
-
-        TP.elementSetAttribute(styleElem, 'id', sheetElemID, true);
-
-    } else {
-
-        //  Otherwise, the sheet is ready to go - just call send a signal saying
-        //  that we're ready and render.
-
-        this.set('$discoverySheetReady', true);
-
-        //  We're all set up and ready - signal that.
-        this.dispatch('TP.sig.DOMReady');
-
-        this.render();
-    }
+    this.render();
 
     return this;
 });

@@ -17,11 +17,15 @@
 <config id="scripts">
     <!-- tag-related source file references here -->
     <script src="TP.xctrls.jsonview.js"/>
+
+    <script src="~lib_deps/discovery/discovery-tpi.min.js" realm="uicanvas" symbols="discovery" ifpresent="xctrls|jsonview" no-bundle="no-bundle" no-lint="no-lint" no-minify="no-minify"/>
 </config>
 
 <config id="resources">
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.jsonview.xhtml"/>
+
+    <resource href="~lib_deps/discovery/discovery.css" realm="uicanvas" ifpresent="xctrls|jsonview" no-inline="no-inline" no-lint="no-lint"/>
 </config>
 
 <config id="tests">
