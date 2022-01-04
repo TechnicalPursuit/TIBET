@@ -67,6 +67,8 @@ function(assetInfoList, aDocument) {
                                             TP.elementSetAttributes(
                                                 linkElem, elemAttrs, true);
                                         }
+
+                                        return linkElem;
                                     });
                         default:
                             break;
