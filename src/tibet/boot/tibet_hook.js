@@ -349,10 +349,18 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
             //  containing the path and type.
             entries = realmassets.map(
                         function(anEntry) {
-                            return TP.hc(
+                            var result;
+
+                            result = TP.hc(
                                     'uri', anEntry.path,
                                     'type', anEntry.type
                                     );
+
+                            if (anEntry.isecmamodule) {
+                                result.atPut('isECMAModule', true);
+                            }
+
+                            return result;
                         });
 
             //  Fetch all of the assets in the entries and populate them into

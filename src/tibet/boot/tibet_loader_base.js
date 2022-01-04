@@ -10078,6 +10078,8 @@ TP.boot.$importComponents = async function(loadSync) {
         //  node we're processing may be deferred.
         if ((srcpath = nd.getAttribute('src')) != null) {
 
+            isECMAModule = nd.getAttribute('type') === 'module';
+
             //  If the entry defines another 'realm' (a JS Realm) to load this
             //  script into, we register it as a 'other realm asset' and just
             //  move on.
@@ -10088,7 +10090,8 @@ TP.boot.$importComponents = async function(loadSync) {
                             'script',
                             srcpath,
                             nd.getAttribute('ifpresent'),
-                            nd.getAttribute('symbols'));
+                            nd.getAttribute('symbols'),
+                            isECMAModule);
 
                 moveon = true;
             }
@@ -10205,8 +10208,6 @@ TP.boot.$importComponents = async function(loadSync) {
         //  condensed or commented format.
         //  Once the source is available we can then treat it consistently by
         //  invoking the sourceImport call to do the actual work.
-
-        isECMAModule = nd.getAttribute('type') === 'module';
 
         loadUsingSrcAttr = TP.sys.cfg('import.use_src_attr');
 
@@ -11847,7 +11848,7 @@ TP.boot.$refreshPackages = async function(aURI) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
-    symbols) {
+    symbols, isecmamodule) {
 
     /**
      * @method $registerOtherRealmAsset
@@ -11872,6 +11873,8 @@ TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
      *     an error if a particular global symbol is re-defined (such as ECMA
      *     classes). This will prevent that. If this parameter is empty, this
      *     check will *not* be performed.
+     * @param {boolean} [isecmamodule] Whether or not the asset points to an
+     *     ECMA module.
      */
 
     var otherrealmentry;
@@ -11889,7 +11892,8 @@ TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
             type: type,
             path: path,
             ifpresent: ifpresent,
-            symbols: symbols
+            symbols: symbols,
+            isecmamodule: isecmamodule
         });
 
     return;
