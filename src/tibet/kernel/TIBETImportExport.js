@@ -170,12 +170,16 @@ function(aURI, aDocument, aRequest, scriptElemAttrs, isECMAModule) {
     targetLoc = url.getLocation();
 
     //  If the script to be fetched is modeled as an ECMA6 module, then we use
-    //  the TIBET 'importModule' call, which is smart around bundled vs.
-    //  unbundled as well as HTTP vs. non-HTTP loading.
+    //  the TIBET 'importModule' call. Note that we pass true as the second
+    //  parameter here to force the use of the native global 'import()'
+    //  function. This forces TIBET to ignore all of the smarts around bundled
+    //  vs. unbundled as well as HTTP vs. non-HTTP loading. This is because when
+    //  we are calling from here, we are most likely loading an ECMAScript
+    //  module into another realm than the code frame.
     if (isECMAModule) {
         newPromise = Promise.construct(
             function(resolver, rejector) {
-                return TP.sys.importModule(targetLoc).then(
+                return TP.sys.importModule(targetLoc, true).then(
                     function(moduleObj) {
                         //  If the request provided a callback, then use it.
                         if (TP.isCallable(callback)) {
@@ -995,7 +999,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('importModule',
-function(aSpecifier) {
+function(aSpecifier, forceNativeImport) {
 
     /**
      * @method importModule
@@ -1004,6 +1008,11 @@ function(aSpecifier) {
      *     callback.
      * @param {TP.uri.URI|String} aSpecifier A TP.uri.URI or String referencing
      *     the module location.
+     * @param {Boolean} [forceNativeImport=false] This forces the use of the
+     *     native global 'import()' method, ignoring all of the smarts around
+     *     bundled vs. unbundled as well as HTTP vs. non-HTTP loading. This flag
+     *     is usually true when loading a module into another realm than the
+     *     code frame.
      * @returns {Promise} A promise which resolves based on success.
      */
 
@@ -1012,7 +1021,7 @@ function(aSpecifier) {
         url,
 
         targetLoc,
-        blobUrl;
+        finalUrl;
 
     specifier = TP.str(aSpecifier);
 
@@ -1046,38 +1055,42 @@ function(aSpecifier) {
 
     targetLoc = url.getLocation();
 
-    //  If the URI is bundled, then we use the 'SystemJS' loader. This means
-    //  that we're running in a packaged environment. In that case our
-    //  'packaging' step will have embedded any ECMA modules and SystemJS will
-    //  handle any pathing issues itself.
-    if (TP.uriIsBundled(targetLoc)) {
-        //  When the packages were built and the module content was embedded,
-        //  the bare spec module map was populated with virtual URIs. Since
-        //  SystemJS won't actually do expansion of those URIs and is just using
-        //  them as a name to do module lookup, we have to use the virtual
-        //  location here.
-        targetLoc = url.getVirtualLocation();
-        return TP.extern.System.import(targetLoc);
+    if (TP.notTrue(forceNativeImport)) {
+        //  If the URI is bundled, then we use the 'SystemJS' loader. This means
+        //  that we're running in a packaged environment. In that case our
+        //  'packaging' step will have embedded any ECMA modules and SystemJS
+        //  will handle any pathing issues itself.
+        if (TP.uriIsBundled(targetLoc)) {
+            //  When the packages were built and the module content was embedded,
+            //  the bare spec module map was populated with virtual URIs. Since
+            //  SystemJS won't actually do expansion of those URIs and is just
+            //  using them as a name to do module lookup, we have to use the
+            //  virtual location here.
+            targetLoc = url.getVirtualLocation();
+            return TP.extern.System.import(targetLoc);
+        }
+
+        //  If we're not running in an bundled (i.e. 'packaged') environment,
+        //  then we need to use the module definitions that the TIBET loader
+        //  will have repackaged into 'blob' URLs.
+        finalUrl = TP.boot.$moduleBlobURLMap[targetLoc];
+        if (TP.isEmpty(finalUrl)) {
+            this.raise('TP.sig.URINotFound', targetLoc);
+
+            return Promise.reject(
+                    new Error('URINotFound: ' + targetLoc));
+        }
+    } else {
+        finalUrl = targetLoc;
     }
 
-    //  If we're not running in an bundled (i.e. 'packaged') environment, then
-    //  we need to use the module definitions that the TIBET loader will have
-    //  repackaged into 'blob' URLs.
-    blobUrl = TP.boot.$moduleBlobURLMap[targetLoc];
-    if (TP.isEmpty(blobUrl)) {
-        this.raise('TP.sig.URINotFound', targetLoc);
-
-        return Promise.reject(
-                new Error('URINotFound: ' + targetLoc));
-    }
-
-    return import(blobUrl);
+    return import(finalUrl);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('importModules',
-function(aSpecifierList) {
+function(aSpecifierList, forceNativeImport) {
 
     /**
      * @method importModules
@@ -1087,6 +1100,11 @@ function(aSpecifierList) {
      *     resolution callback.
      * @param {TP.uri.URI[]|String[]} aSpecifierList A list of TP.uri.URIs or
      *     Strings referencing the module locations.
+     * @param {Boolean} [forceNativeImport=false] This forces the use of the
+     *     native global 'import()' method, ignoring all of the smarts around
+     *     bundled vs. unbundled as well as HTTP vs. non-HTTP loading. This flag
+     *     is usually true when loading a module into another realm than the
+     *     code frame.
      * @returns {Promise} A promise which resolves based on success.
      */
 
@@ -1096,7 +1114,7 @@ function(aSpecifierList) {
     //  represent the loading of those specifiers.
     promises = aSpecifierList.map(
                 function(specifier) {
-                    return TP.sys.importModule(specifier);
+                    return TP.sys.importModule(specifier, forceNativeImport);
                 });
 
     //  Return the Promise generated by Promise.all that returns a Hash of
