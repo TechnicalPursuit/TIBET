@@ -117,7 +117,7 @@ function(targetDoc, linkHref, beforeNode, shouldSignal, loadedHandler) {
         url = url.rewrite();
     }
 
-    TP.ifInfo() ? TP.info('Fetching script: ' +
+    TP.ifInfo() ? TP.info('Fetching style: ' +
                             TP.str(url) +
                             ' into: ' +
                             TP.gid(targetDoc)) : 0;
