@@ -156,6 +156,19 @@ Object.defineProperty(
         value: tibet.TP, writable: false
     });
 
+//  Define a method here that allows us to dynamically import an ECMAScript
+//  module *in this realm context*.
+if (!root.importModule) {
+    Object.defineProperty(
+        root,
+        'importModule',
+        {
+            value: function(aModuleSpecifier) {
+                        return import(aModuleSpecifier);
+                    }
+        });
+}
+
 if (TP.sys.cfg('log.hook') && !TP.sys.isHeadless()) {
     $$msg = 'TIBET hook in \'' + root.name +
         '\' found TIBET in \'top\'.';
