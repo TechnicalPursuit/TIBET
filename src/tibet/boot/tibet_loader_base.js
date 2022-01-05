@@ -10090,7 +10090,7 @@ TP.boot.$importComponents = async function(loadSync) {
                             'script',
                             srcpath,
                             nd.getAttribute('ifpresent'),
-                            nd.getAttribute('symbols'),
+                            nd.getAttribute('unlessdefined'),
                             isECMAModule);
 
                 moveon = true;
@@ -11848,7 +11848,7 @@ TP.boot.$refreshPackages = async function(aURI) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
-    symbols, isecmamodule) {
+    unlessdefined, isecmamodule) {
 
     /**
      * @method $registerOtherRealmAsset
@@ -11867,12 +11867,12 @@ TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
      *     real nodes, then the asset will be installed into the realm and each
      *     individual node will be notified. If this parameter is empty, then
      *     the asset will be installed no matter what content is in the realm.
-     * @param {string} [symbols] A comma separated set of JavaScript symbols
-     *     that, if detected in the realm, will cause the asset (usually a
-     *     JavaScript asset) to *not* be loaded. Sometimes JavaScript will throw
-     *     an error if a particular global symbol is re-defined (such as ECMA
-     *     classes). This will prevent that. If this parameter is empty, this
-     *     check will *not* be performed.
+     * @param {string} [unlessdefined] A comma separated set of JavaScript
+     *     symbols that, if detected in the realm, will cause the asset
+     *     (usually a JavaScript asset) to *not* be loaded. Sometimes JavaScript
+     *     will throw an error if a particular global symbol is re-defined (such
+     *     as ECMA classes). This will prevent that. If this parameter is empty,
+     *     this check will *not* be performed.
      * @param {boolean} [isecmamodule] Whether or not the asset points to an
      *     ECMA module.
      */
@@ -11892,7 +11892,7 @@ TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
             type: type,
             path: path,
             ifpresent: ifpresent,
-            symbols: symbols,
+            unlessdefined: unlessdefined,
             isecmamodule: isecmamodule
         });
 

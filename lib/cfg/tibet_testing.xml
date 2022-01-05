@@ -206,9 +206,9 @@
 </config>
 
 <config id="webcomponents">
-    <script src="~lib_test/src/tibet/webcomponents/ExpandingList.js" realm="uicanvas" symbols="ExpandingList" ifpresent="*[is='expanding-list']" no-bundle="no-bundle" no-lint="no-lint"/>
-    <script src="~lib_test/src/tibet/webcomponents/TemplateExpander.js" realm="uicanvas" symbols="TemplateExpander" ifpresent="template-expander" no-bundle="no-bundle" no-lint="no-lint"/>
-    <script src="~lib_test/src/tibet/webcomponents/CustomSquare.js" realm="uicanvas" symbols="CustomSquare" ifpresent="body.customsquaretest" no-bundle="no-bundle" no-lint="no-lint"/>
+    <script src="~lib_test/src/tibet/webcomponents/ExpandingList.js" realm="uicanvas" unlessdefined="ExpandingList" ifpresent="*[is='expanding-list']" no-bundle="no-bundle" no-lint="no-lint"/>
+    <script src="~lib_test/src/tibet/webcomponents/TemplateExpander.js" realm="uicanvas" unlessdefined="TemplateExpander" ifpresent="template-expander" no-bundle="no-bundle" no-lint="no-lint"/>
+    <script src="~lib_test/src/tibet/webcomponents/CustomSquare.js" realm="uicanvas" unlessdefined="CustomSquare" ifpresent="body.customsquaretest" no-bundle="no-bundle" no-lint="no-lint"/>
 
     <script src="~lib_test/src/tibet/webcomponents/WebComponentTestTypes.js"/>
     <script src="~lib_test/src/tibet/webcomponents/TP.dom.WebComponent_tests.js"/>

@@ -284,7 +284,7 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
                     var hadAsset,
 
                         symbol,
-                        symbols,
+                        unlessdefined,
 
                         presentNodes;
 
@@ -307,8 +307,8 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
                             //  for ECMA classes, since there's no other way
                             //  (they're not global properties on the Window -
                             //  sigh).
-                            symbols = entry.symbols.split(',');
-                            for (symbol of symbols) {
+                            unlessdefined = entry.unlessdefined.split(',');
+                            for (symbol of unlessdefined) {
                                 try {
                                     /* eslint-disable no-eval */
                                     if (eval(symbol)) {
