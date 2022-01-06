@@ -11952,13 +11952,10 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         pkg,
         config,
 
-        bundleFlag,
-        tibetFlag,
-
         bundledEnv,
 
         packageAssets,
-        unbundledAssets,
+        nonInlinedAssets,
         loadableAssets,
 
         loadablePaths,
@@ -12023,12 +12020,9 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         TP.sys.getcfg('boot.teamtibet') === false;
     if (bundledEnv) {
 
-        bundleFlag = TP.sys.getcfg('boot.bundled');
-        tibetFlag = TP.sys.getcfg('boot.teamtibet');
-
         //  Set the flags to load individual non-inlined, resources.
         TP.sys.setcfg('boot.bundled', false);
-        TP.sys.setcfg('boot.teamtibet', false);
+        TP.sys.setcfg('boot.teamtibet', true);
 
         //  'production' means that we're interested in what the manifest
         //  system calls 'base'.
@@ -12037,24 +12031,25 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         }
 
         //  Grab the list of resources using that package and config.
-        unbundledAssets = await TP.boot.$listPackageAssets(
+        nonInlinedAssets = await TP.boot.$listPackageAssets(
                                 pkg, config, null, true, false, false);
 
         //  Reset config in case we want to use it later.
         config = TP.sys.cfg('boot.config');
 
         //  Filter out the assets that are not 'resource' tags.
-        unbundledAssets = unbundledAssets.filter(
+        nonInlinedAssets = nonInlinedAssets.filter(
                     function(anElem) {
-                        return anElem.tagName === 'resource';
+                        return anElem.tagName === 'resource' &&
+                                anElem.getAttribute('no-inline');
                     });
 
         //  Add those assets to the list of assets we already have.
-        packageAssets = packageAssets.concat(unbundledAssets);
+        packageAssets = packageAssets.concat(nonInlinedAssets);
 
         //  Put the flags back.
-        TP.sys.setcfg('boot.bundled', bundleFlag);
-        TP.sys.setcfg('boot.teamtibet', tibetFlag);
+        TP.sys.setcfg('boot.bundled', true);
+        TP.sys.setcfg('boot.teamtibet', false);
     }
 
     //  Restore the previous values for 'boot.phase_one' and 'boot.phase_two'.
