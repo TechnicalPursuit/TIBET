@@ -10835,7 +10835,7 @@ TP.boot.$expandConfig = async function(anElement, configName) {
 
                     //  Capture the set of package chain paths onto the package
                     //  element.
-                    pkg.PACKAGE_CHAIN_PATHS =
+                    pkg.PACKAGE_CHAIN =
                                 TP.boot.$$packagePathsStack.slice();
 
                     //  Pop the last pushed package path - this is important to
@@ -11585,7 +11585,7 @@ TP.boot.$listConfigAssets = async function(anElement, aList, configName, useCach
                         //  to one, then just continue, skipping this resource.
                         if (includeAlacarte === false &&
                             TP.boot.$isAlacarteResource(
-                                src, child.ownerDocument.PACKAGE_CHAIN_PATHS)) {
+                                src, child.ownerDocument.PACKAGE_CHAIN)) {
                             continue;
                         }
 
@@ -12080,7 +12080,7 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
 
             if (/\/main\.xml$/.test(path) ||
                 TP.boot.$isAlacarteResource(
-                    path, TP.boot.$$packages[path].PACKAGE_CHAIN_PATHS)) {
+                    path, TP.boot.$$packages[path].PACKAGE_CHAIN)) {
                 packagePaths.splice(i, 1);
                 i--;
             }

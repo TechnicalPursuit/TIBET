@@ -8120,6 +8120,46 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('objectGetPackageChain',
+function(anObject) {
+
+    /**
+     * @method objectGetPackageChain
+     * @summary Returns the package path from which the script defining the
+     *     object's node was loaded.
+     * @summary Returns a 'hierarchical' chain of package paths (location urls
+     *     and configs) that loaded the supplied type name, from the 'root'
+     *     package that the app is currently loading all the way down to the
+     *     package that had the script entry that contained the supplied type.
+     * @param {Object} anObject The object to query.
+     * @returns {String} The package path for the object's node.
+     */
+
+    var leafPackage,
+        packageChain;
+
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    //  Grab the 'leaf' package that contains the script entry that loaded the
+    //  object.
+    leafPackage = TP.objectGetLoadPackage(anObject);
+    if (TP.notEmpty(leafPackage)) {
+        //  Grab the set of 'package paths' all the way from the 'root' down
+        //  that loaded the type.
+        packageChain = TP.boot.$$packages[leafPackage].PACKAGE_CHAIN;
+    }
+
+    if (TP.notValid(packageChain)) {
+        return TP.ac();
+    }
+
+    return packageChain;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('objectGetLoadPath',
 function(anObject) {
 
