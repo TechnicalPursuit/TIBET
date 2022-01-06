@@ -1427,13 +1427,22 @@ async function(aTypeName, aRealmID) {
      */
 
     var type,
-        packageName,
+        canonicalName,
+
+        pkgPath,
+        pkgConfig,
+
+        packageChain,
 
         assets,
+
+        packageEntry,
 
         result,
 
         asset,
+        assetElemName,
+
         path;
 
     //  Compute the type from the supplied name.
@@ -1444,20 +1453,37 @@ async function(aTypeName, aRealmID) {
         return TP.ac();
     }
 
-    //  Grab the name of the package that loaded that type.
-    packageName = TP.objectGetLoadPackage(type);
+    canonicalName = TP.name(type);
 
-    //  TODO: Package name should have '<typename>.xml'
+    result = TP.ac();
 
-    //  This will return an Array of Elements from the boot system that contain
-    //  all of the entries from the package.
-    assets = await TP.boot.$listPackageAssets(
-                packageName, null, null, true, true, false);
+    //  Obtain the 'chain of packages' from the top-level package recursively
+    //  down through the leaf package that loaded type.
+    packageChain = TP.objectGetPackageChain(type);
+
+    assets = TP.ac();
+
+    //  Now, we iterate over the package chain, split the entry on '@' to obtain
+    //  the config and fetch it.
+    for (packageEntry of packageChain) {
+        [pkgPath, pkgConfig] = packageEntry.split('@');
+        assets = assets.concat(
+                    await TP.boot.$listPackageAssets(
+                        pkgPath, pkgConfig, null, true, true, false));
+    }
 
     //  Iterate over the returned list of Elements and, if its an 'other realm'
     //  asset, then add its path to the result.
-    result = TP.ac();
     for (asset of assets) {
+        assetElemName = TP.lname(asset);
+        if (assetElemName !== 'script' && assetElemName !== 'resource') {
+            continue;
+        }
+
+        if (TP.elementGetAttribute(asset, 'for') !== canonicalName) {
+            continue;
+        }
+
         if (TP.elementGetAttribute(asset, 'realm', true) === aRealmID) {
             path = TP.ifEmpty(
                     TP.elementGetAttribute(asset, 'src'),
