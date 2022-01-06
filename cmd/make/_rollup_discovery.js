@@ -26,6 +26,12 @@
             make.CLI.joinPaths('.', 'discovery-preloader.js'),
             make.CLI.joinPaths('..', '..', '..', '..', 'deps', 'discovery', 'discovery-preloader-tpi.min.js'));
 
+        make.sh.cd(make.CLI.joinPaths('..', '..', 'json-ext', 'dist'));
+
+        make.sh.cp(
+            make.CLI.joinPaths('.', 'json-ext.min.js'),
+            make.CLI.joinPaths('..', '..', '..', '..', 'deps', 'discovery', 'json-ext-tpi.min.js'));
+
         resolve();
     };
 

@@ -18,7 +18,9 @@
     <!-- tag-related source file references here -->
     <script src="TP.xctrls.jsonview.js"/>
 
-    <script src="~lib_deps/discovery/discovery-tpi.min.js" realm="uicanvas" symbols="discovery" ifpresent="xctrls|jsonview" no-bundle="no-bundle" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/discovery/discovery-preloader-tpi.min.js" type="module" realm="uicanvas" for="TP.xctrls.jsonview" unlessdefined="discovery" no-bundle="no-bundle" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/discovery/discovery-tpi.min.js" type="module" realm="uicanvas" for="TP.xctrls.jsonview" unlessdefined="discovery" no-bundle="no-bundle" no-lint="no-lint" no-minify="no-minify"/>
+    <script src="~lib_deps/discovery/json-ext-tpi.min.js" realm="uicanvas" for="TP.xctrls.jsonview" unlessdefined="discovery" no-bundle="no-bundle" no-lint="no-lint" no-minify="no-minify"/>
 </config>
 
 <config id="resources">
