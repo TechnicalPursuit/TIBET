@@ -70,6 +70,10 @@ helpers.augment_args = function(make, args) {
     if (!make.options.silent) {
         args.push('--no-silent');
     }
+
+    if (make.options.debugger) {
+        args.push('--debugger');
+    }
 };
 
 
@@ -253,6 +257,11 @@ helpers.package_check = function(make, options) {
     } else {
         cmd = CLI.joinPaths(
                     module.filename, '..', '..', '..', 'bin', 'tibet');
+    }
+
+    //  Augment for 'debug' variant of the tibet command.
+    if (options.debugger) {
+        cmd += '_debug';
     }
 
     args = ['package', '--unresolved'];
