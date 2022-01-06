@@ -10,7 +10,12 @@
 
         proc = make.spawn('tibet', ['lint', '--stop']);
         proc.on('exit', function(code) {
-            code === 0 ? resolve() : reject();
+            if (code === 0) {
+                resolve();
+            } else {
+                make.error('make exiting with ' + code + ' lint errors.');
+                reject();
+            }
         });
     };
 
