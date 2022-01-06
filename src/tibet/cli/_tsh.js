@@ -1248,6 +1248,11 @@ Cmd.prototype.stringifyForStdio = function(obj) {
                 return cmd.stringifyForStdio(it);
             });
 
+        } else if (CLI.isError(item)) {
+            val = item.message;
+            if (CLI.isValid(item.stack)) {
+                val += '\n' + item.stack;
+            }
         } else if (CLI.isFunction(item.text)) {
             //  Might be a 'ConsoleMessage' object from puppeteer...
             val = item.text();

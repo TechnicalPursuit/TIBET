@@ -326,6 +326,17 @@ CLI.isEmpty = function(aReference) {
     /* eslint-enable no-extra-parens */
 };
 
+/**
+ * Returns true if the object provided is an Error instance.
+ * @param {Object} obj The object to test.
+ * @returns {Boolean} true if the object appears to be an Error
+ */
+CLI.isError = function(obj) {
+    return CLI.isValid(obj) &&
+            CLI.isValid(obj.message) &&
+            CLI.isValid(obj.stack);
+};
+
 CLI.isFalse = function(aReference) {
     return aReference === false;
 };
