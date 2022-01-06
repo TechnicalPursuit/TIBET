@@ -21,4 +21,4 @@ if (parseInt(version.split('.'), 12) < 12) {
     return;
 }
 
-cli.run({tibet: {}, npm: {}});
+cli.run({tibet: {node: {"inspect-brk": true}}, npm: {}});

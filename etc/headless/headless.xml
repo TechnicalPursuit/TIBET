@@ -41,9 +41,22 @@
     <property name="uri.source.process_changes" value="false"/>
 </config>
 
+<config id="full_source" if="boot.phase_one">
+    <property name="boot.bundled" value="false"/>
+    <property name="boot.minified" value="false"/>
+    <property name="boot.inlined" value="false"/>
+    <property name="boot.teamtibet" value="true"/>
+</config>
+
 <config id="base" if="boot.phase_one">
     <config ref="properties"/>
     <config ref="full"/>
+</config>
+
+<config id="debugger" if="boot.phase_one">
+    <config ref="properties"/>
+    <config ref="full_source"/>
+    <config ref="contributor"/>
 </config>
 
 <config id="interactive" if="boot.phase_one">
@@ -59,10 +72,7 @@
 
 <config id="resources" if="boot.phase_one">
     <config ref="properties"/>
-    <property name="boot.bundled" value="false"/>
-    <property name="boot.minified" value="false"/>
-    <property name="boot.inlined" value="false"/>
-    <property name="boot.teamtibet" value="true"/>
+    <config ref="full_source"/>
     <config ref="contributor"/>
 </config>
 

@@ -2178,6 +2178,14 @@ CLI.run = function(config) {
     this.config = this.config || {};
     this.config = CLI.blend(this.config, cfg);
 
+    //  If we were passed config as part of the run() operation itself (which
+    //  occurs via the tibet command et al) we need to blend that into our
+    //  configuration since the package will have init'd onload and won't be
+    //  aware of those settings yet.
+    if (config) {
+        this.getPackage().overlayProperties(config);
+    }
+
     //  ---
     //  Process the command-line arguments to find the command name.
     //  ---

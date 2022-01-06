@@ -997,9 +997,10 @@ Cmd.prototype.getBootProfileConfig = function() {
     }
 
     //  NOTE the majority of commands should load the full suite of code to
-    //  ensure proper operation.
-    if (this.options.interactive) {
-        config = config || 'interactive';
+    //  ensure proper operation. We check specifically for the debug variant
+    //  to make sure we launch with a debugger profile.
+    if (CLI.getcfg('tibet.node.inspect-brk')) {
+        config = 'debugger';
     } else {
         config = config || this.getDefaultBootConfig();
     }
@@ -1038,6 +1039,11 @@ Cmd.prototype.getBootProfileRoot = function() {
  * @Returns {String} The config value to use if no other is provided.
  */
 Cmd.prototype.getDefaultBootConfig = function() {
+
+    if (this.options.interactive) {
+        return 'interactive';
+    }
+
     return 'base';
 };
 
@@ -1077,11 +1083,7 @@ Cmd.prototype.getProfileConfig = function() {
         return this.options.config;
     }
 
-    if (CLI.inProject()) {
-        config = config || 'base';
-    } else {
-        config = config || this.getDefaultBootConfig();
-    }
+    config = config || this.getDefaultBootConfig();
 
     return config;
 };
