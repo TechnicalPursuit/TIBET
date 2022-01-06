@@ -497,6 +497,11 @@ helpers.rollup = function(make, options) {
         args.push('--since=' + timestamp);
     }
 
+    //  Add a prefix to use for any logging messages. We can then use this in
+    //  the on(data) handler to filter out logging messages while retaining
+    //  the actual rollup content
+    args.push('--log-prefix', '### - ');
+
     //  Add any final "common arguments" such as debug/verbose/etc
     this.augment_args(make, args);
 
@@ -508,8 +513,16 @@ helpers.rollup = function(make, options) {
         proc = make.spawn(cmd, args, {stdio: 'pipe'});
 
         proc.stdout.on('data', function(data) {
+            var str;
+
             if (!buffer) {
                 buffer = '';
+            }
+
+            //  Check for our log prefix and filter those lines.
+            str = '' + data;
+            if (/^### - /.test(str)) {
+                return;
             }
 
             buffer = buffer + data;

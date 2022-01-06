@@ -66,7 +66,7 @@ Cmd.NAME = 'rollup';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
     boolean: ['debug', 'headers', 'minify', 'clean'],
-    string: ['package', 'config', 'phase', 'since'],
+    string: ['package', 'config', 'phase', 'since', 'log-prefix'],
     default: {
         clean: false,
         color: false,
@@ -416,8 +416,20 @@ Cmd.prototype.getCompletionOptions = function() {
  *     finishes.
  */
 Cmd.prototype.execute = function() {
-    var list,
+    var prefix,
+        list,
         result;
+
+    prefix = this.options['log-prefix'];
+    if (CLI.notEmpty(prefix)) {
+        CLI.$$log = CLI.$log;
+        CLI.$log = function(level, msg, spec) {
+            var str;
+
+            str = msg && msg.startsWith(prefix) ? msg.replace(prefix, '') : msg;
+            CLI.$$log(level, str, spec);
+        };
+    }
 
     this.configurePackageOptions();
 
@@ -430,7 +442,7 @@ Cmd.prototype.execute = function() {
     //  as a termination message.
     result = this.executeListPrereqs(list);
     if (!Array.isArray(result)) {
-        console.log(result);
+        this.log(result);
         return 0;
     }
 
