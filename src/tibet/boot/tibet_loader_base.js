@@ -12119,6 +12119,9 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
                                         packagePaths,
                                         loadablePaths);
 
+    //  Unique the list
+    allPaths = Array.from(new Set(allPaths));
+
     //  Separate lib vs. app paths into two groups to load into the two
     //  different caches.
 
