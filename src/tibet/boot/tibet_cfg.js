@@ -263,6 +263,10 @@
     //  typically leveraged during rollup for production.
     TP.sys.setcfg('boot.inlined', true);
 
+    //  Do we want to load in a 'Team TIBET' mode? This means that the
+    //  'bundled', 'minified' and 'inlined' flags are basically ignored.
+    TP.sys.setcfg('boot.teamtibet', false);
+
     //  Do we want to use the programmable browser cache? This cache is
     //  controlled by code in the boot system and driven by the same the package
     //  config files used for booting..
