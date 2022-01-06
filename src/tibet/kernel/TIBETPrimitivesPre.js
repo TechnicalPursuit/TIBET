@@ -3744,6 +3744,13 @@ function(anObject) {
     //  Starting at the receiver's constructor prototype, iterate up the
     //  prototype chain. If you find an object that matches the supplied object,
     //  then it's a prototype.
+
+    //  Make sure we have a valid constructor first - some objects (i.e.
+    //  ECMAScript Module objects) won't have them.
+    if (TP.notValid(anObject.constructor)) {
+        return false;
+    }
+
     obj = anObject.constructor.prototype;
     while (obj) {
         if (anObject === obj) {

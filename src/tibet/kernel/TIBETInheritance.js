@@ -11636,6 +11636,7 @@ function() {
 
     //  watch for circularities on the native types
     while (proto !== TP.ObjectProto &&
+            proto.constructor &&
             proto !== proto.constructor.prototype) {
         proto = proto.getPrototype();
         protos.add(proto);

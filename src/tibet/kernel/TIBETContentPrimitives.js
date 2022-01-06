@@ -575,6 +575,7 @@ function(aString, smartConversion, shouldReport) {
                         //  the TP.core.Hash's instance prototype and set its
                         //  '$$type' to TP.core.Hash.
                         if (value &&
+                            value.constructor &&
                             value.constructor.prototype === TP.ObjectProto) {
 
                             //  Create a new value to replace the object handed

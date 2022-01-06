@@ -4469,7 +4469,9 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
             }
         case 'number':
             //  isNaN lies: isNaN({}) => true. Welcome to JavaScript.
-            if (isNaN(anObject) && anObject.constructor === Number) {
+            if (isNaN(anObject) &&
+                anObject.constructor &&
+                anObject.constructor === Number) {
                 return 'NaN';
             } else {
                 return '' + anObject;
@@ -4557,7 +4559,9 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
             //  it gets better. If you run isNaN on the wrong thing it'll throw
             //  an exception about being unable to convert to a primitive.
             try {
-                if (isNaN(anObject) && anObject.constructor === Number) {
+                if (isNaN(anObject) &&
+                    anObject.constructor &&
+                    anObject.constructor === Number) {
                     return 'NaN';
                 }
             } catch (e) {
