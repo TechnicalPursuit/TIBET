@@ -308,19 +308,21 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
                             //  for ECMA classes, since there's no other way
                             //  (they're not global properties on the Window -
                             //  sigh).
-                            unlessdefined = entry.unlessdefined.split(',');
-                            for (symbol of unlessdefined) {
-                                try {
-                                    /* eslint-disable no-eval */
-                                    if (eval(symbol)) {
-                                    /* eslint-enable no-eval */
-                                        //  The symbol has already been defined.
-                                        //  Filter out this script.
-                                        return false;
+                            if (entry.unlessdefined) {
+                                unlessdefined = entry.unlessdefined.split(',');
+                                for (symbol of unlessdefined) {
+                                    try {
+                                        /* eslint-disable no-eval */
+                                        if (eval(symbol)) {
+                                        /* eslint-enable no-eval */
+                                            //  The symbol has already been
+                                            //  defined. Filter out this script.
+                                            return false;
+                                        }
+                                    } catch (e) {
+                                        //  It was *not* defined. Continue on to
+                                        //  check the next symbol.
                                     }
-                                } catch (e) {
-                                    //  It was *not* defined. Continue on to
-                                    //  check the next symbol.
                                 }
                             }
                             break;
