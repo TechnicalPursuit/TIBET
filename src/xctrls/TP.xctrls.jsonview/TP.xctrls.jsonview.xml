@@ -25,7 +25,7 @@
     <!-- tag-related resource entries here -->
     <resource href="TP.xctrls.jsonview.xhtml"/>
 
-    <resource href="~lib_deps/discovery/discovery.css" realm="uicanvas" ifpresent="xctrls|jsonview" no-inline="no-inline" no-lint="no-lint"/>
+    <resource href="~lib_deps/discovery/discovery.css" realm="uicanvas" for="TP.xctrls.jsonview" no-inline="no-inline" no-lint="no-lint"/>
 </config>
 
 <config id="tests">

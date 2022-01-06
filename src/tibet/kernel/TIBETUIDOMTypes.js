@@ -1709,6 +1709,43 @@ function(keyname, signal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.dom.UIElementNode.Type.defineMethod('instancesForOtherRealmAsset',
+function(aRealm, assetType, assetPath) {
+
+    /**
+     * @method instancesForOtherRealmAsset
+     * @summary Returns an Array of instances of this element in the supplied
+     *     realm that will be considered when installing the asset with the
+     *     supplied type and path. Note that since TIBET is browser-based,
+     *     realm should be a Window.
+     * @description If the Array of elements returned by this method is empty,
+     *     the asset will *not* be installed in the supplied realm.
+     * @param {Window} aRealm The realm to install the asset into.
+     * @param {String} assetType The type of asset that is going to be
+     *     installed. Currently, this will either be 'script' or 'resource'.
+     * @param {String} assetPath The path to the asset that is going to be
+     *     installed.
+     * @returns {TP.dom.UIElementNode[]} An Array of TP.dom.UIElementNodes that
+     *     should be considered as to whether to install the asset.
+     */
+
+    var instances;
+
+    //  By default, we allow any assets associated with this type to be
+    //  installed as long as there are instances of this element in the realm.
+    //  Note here that we don't care about nested versions of our element, but
+    //  we do want to search for 'compiled versions' of ourself (TIBET wrapper
+    //  tag types for Web Components, in particular, care about this).
+    instances = TP.byCSSPath(this.getQueryPath(false, true),
+                                aRealm.document,
+                                false,
+                                true);
+
+    return instances;
+});
+
+//  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 

@@ -286,6 +286,7 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
                         symbol,
                         unlessdefined,
 
+                        type,
                         presentNodes;
 
                     switch (entry.type) {
@@ -340,18 +341,26 @@ GeneratorFunction = Object.getPrototypeOf(function*() {}).constructor;
                             break;
                     }
 
-                    //  If 'ifpresent' is defined, then check to see if there
-                    //  are any nodes that match the expression in the current
-                    //  document.
-                    if (TP.notEmpty(entry.ifpresent)) {
-                        presentNodes = TP.byPath(entry.ifpresent,
-                                                    root.document);
-                        if (TP.isEmpty(presentNodes)) {
-                            //  There are no nodes that match the 'ifpresent'
-                            //  condition. Filter out this script.
-                            return false;
-                        } else {
-                           interestEntries.atPut(entry.path, presentNodes);
+                    //  If 'fortype' is defined, then compute a TIBET type from
+                    //  that value. If a real type can be computed and it
+                    //  responds to 'shouldInstallOtherRealmAsset', then send
+                    //  that message. If the result is true, install the asset.
+                    if (TP.notEmpty(entry.fortype)) {
+                        type = TP.sys.getTypeByName(entry.fortype);
+
+                        if (TP.isType(type) &&
+                            TP.canInvoke(type, 'instancesForOtherRealmAsset')) {
+
+                            presentNodes = type.instancesForOtherRealmAsset(
+                                                root,
+                                                entry.type,
+                                                entry.path);
+
+                            if (TP.notEmpty(presentNodes)) {
+                                interestEntries.atPut(entry.path, presentNodes);
+                            } else {
+                                return false;
+                            }
                         }
                     }
 

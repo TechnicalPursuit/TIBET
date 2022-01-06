@@ -10089,7 +10089,7 @@ TP.boot.$importComponents = async function(loadSync) {
                             otherrealm,
                             'script',
                             srcpath,
-                            nd.getAttribute('ifpresent'),
+                            nd.getAttribute('for'),
                             nd.getAttribute('unlessdefined'),
                             isECMAModule);
 
@@ -10317,7 +10317,7 @@ TP.boot.$importComponents = async function(loadSync) {
                         otherrealm,
                         'style',
                         srcpath,
-                        nd.getAttribute('ifpresent'));
+                        nd.getAttribute('for'));
         }
 
     } else if (tn === 'tibet_image') {
@@ -11847,7 +11847,7 @@ TP.boot.$refreshPackages = async function(aURI) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
+TP.boot.$registerOtherRealmAsset = function(realmid, type, path, fortype,
     unlessdefined, isecmamodule) {
 
     /**
@@ -11862,11 +11862,11 @@ TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
      *     by the TIBET hook file.
      * @param {string} type The type of asset (e.g. 'script', 'style', etc).
      * @param {string} path The path to the asset (usually a virtual path).
-     * @param {string} [ifpresent] A CSS/XPath expression to execute to test
-     *     whether a particular asset should be loaded. If this path results in
-     *     real nodes, then the asset will be installed into the realm and each
-     *     individual node will be notified. If this parameter is empty, then
-     *     the asset will be installed no matter what content is in the realm.
+     * @param {string} [fortype] A TIBET type to message as to whether a
+     *     particular asset should be loaded. If message returns true, then the
+     *     asset will be installed into the realm and each individual node will
+     *     be notified. If this parameter is empty, then the asset will be
+     *     installed no matter what content is in the realm.
      * @param {string} [unlessdefined] A comma separated set of JavaScript
      *     symbols that, if detected in the realm, will cause the asset
      *     (usually a JavaScript asset) to *not* be loaded. Sometimes JavaScript
@@ -11891,7 +11891,7 @@ TP.boot.$registerOtherRealmAsset = function(realmid, type, path, ifpresent,
     otherrealmentry.push({
             type: type,
             path: path,
-            ifpresent: ifpresent,
+            fortype: fortype,
             unlessdefined: unlessdefined,
             isecmamodule: isecmamodule
         });
