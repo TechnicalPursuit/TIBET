@@ -8112,10 +8112,10 @@ function(anObject) {
 
     /**
      * @method objectGetLoadPackage
-     * @summary Returns the package name from which the script defining the
+     * @summary Returns the package path from which the script defining the
      *     object's node was loaded.
      * @param {Object} anObject The object to query.
-     * @returns {String} The module name for the object's node.
+     * @returns {String} The package path for the object's node.
      */
 
     if (TP.notValid(anObject)) {
