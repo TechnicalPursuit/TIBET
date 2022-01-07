@@ -22,7 +22,7 @@ TP.dom.ElementNode.defineSubtype('xs:schema');
 //  ------------------------------------------------------------------------
 
 TP.xs.schema.Type.defineMethod('loadSchemaFrom',
-function(aSchemaURI) {
+async function(aSchemaURI) {
 
     /**
      * @method loadSchemaFrom
@@ -34,14 +34,13 @@ function(aSchemaURI) {
 
     var fetchParams,
 
-        resp,
         schemaObj;
 
-    fetchParams = TP.hc('async', false, 'resultType', TP.WRAP);
+    fetchParams = TP.hc('resultType', TP.WRAP);
 
-    resp = aSchemaURI.getResource(fetchParams);
+    schemaObj = await aSchemaURI.getResource(fetchParams);
 
-    if (TP.isValid(schemaObj = resp.get('result'))) {
+    if (TP.isValid(schemaObj)) {
         if (TP.isKindOf(schemaObj, TP.dom.XMLDocumentNode)) {
             schemaObj = schemaObj.getDocumentElement();
         }

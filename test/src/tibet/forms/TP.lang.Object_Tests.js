@@ -941,6 +941,10 @@ TP.core.XMLContent.defineSubtype('test.BaseMarkupEmployee');
 
 //  Load the XML schema containing the data types that we'll need here. This
 //  will also define the type objects themselves.
+
+//  Note that, since we're not interested in the return value here, we don't
+//  await on the value.
+
 TP.xs.schema.loadSchemaFrom(TP.uc('~lib_schema/tibet_common_types.xsd'));
 
 //  Load some JSON Schema as well...

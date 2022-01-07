@@ -92,7 +92,7 @@ function(sourceObject, definitionName) {
 //  ------------------------------------------------------------------------
 
 TP.json.JSONSchema.Type.defineMethod('loadSchemaFrom',
-function(aSchemaURI) {
+async function(aSchemaURI) {
 
     /**
      * @method loadSchemaFrom
@@ -104,19 +104,16 @@ function(aSchemaURI) {
 
     var fetchParams,
 
-        resp,
         schemaObj;
 
-    fetchParams = TP.hc('async', false, 'resultType', TP.WRAP);
+    fetchParams = TP.hc('resultType', TP.WRAP);
 
     if (aSchemaURI.getExtension() === 'json') {
         fetchParams.atPut('resultType', TP.CONTENT);
         fetchParams.atPut('contentType', TP.json.JSONSchemaContent);
     }
 
-    resp = aSchemaURI.getResource(fetchParams);
-
-    schemaObj = resp.get('result');
+    schemaObj = await aSchemaURI.getResource(fetchParams);
 
     //  This should have loaded a content object of type
     //  TP.json.JSONSchemaContent, which will have a method of 'defineTypes' on
