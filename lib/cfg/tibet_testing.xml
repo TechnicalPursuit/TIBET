@@ -98,6 +98,10 @@
     -->
     <script src="~lib_test/src/tibet/testharness/TP.test.Suite_Tests.js"/>
     <script src="~lib_test/src/tibet/driver/TP.test.GUIDriver_Tests.js"/>
+
+    <!-- NB: We make this 'no-inline' because the call that loads it forces
+    'refresh' to true -->
+    <resource href="~lib_test/src/tibet/testharness/described_suite_test_description.json" no-inline="no-inline"/>
 </config>
 
 <config id="collections">

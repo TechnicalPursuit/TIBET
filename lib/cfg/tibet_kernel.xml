@@ -383,6 +383,9 @@
 
     <script src="~lib_schema/html401_strict.js"/>
 
+    <resource href="~lib_schema/tibet_common_types.json"/>
+    <resource href="~lib_schema/tibet_common_types.xsd"/>
+
     <resource href="~lib_dat/keyrings.xml"/>
     <resource href="~lib_dat/TP.core.USAscii101Keyboard.xml"/>
     <resource href="~lib_dat/vcards.xml"/>
