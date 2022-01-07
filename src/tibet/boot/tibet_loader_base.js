@@ -12005,9 +12005,18 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
     pkg = TP.sys.cfg('boot.package');
     config = TP.sys.cfg('boot.config');
 
-    //  Grab the list of resources using that package and config.
+    //  Grab the list of resources using that package and config. This will
+    //  include script and resource elements for the application and a few
+    //  script elements (notably the TIBET bundle) from the lib.
     packageAssets = await TP.boot.$listPackageAssets(
                                 pkg, config, null, true, false, false);
+
+    //  Filter out any elements that are not a 'script' or 'resource' element.
+    packageAssets = packageAssets.filter(
+                        function(anElem) {
+                            return anElem.tagName === 'script' ||
+                                    anElem.tagName === 'resource';
+                        });
 
     //  If we're running in a bundled environment, that means that we're
     //  running with at least the lib (and possibly the app) in a form where
@@ -12037,8 +12046,10 @@ TP.boot.populateCaches = async function(libCacheNeedsPopulating,
         //  Reset config in case we want to use it later.
         config = TP.sys.cfg('boot.config');
 
-        //  Filter out the assets that are not 'resource' tags.
-        nonInlinedAssets = nonInlinedAssets.filter(
+        //  Filter out any elements that are not a 'resource' element marked
+        //  with a 'no-inline' attribute.
+        nonInlinedAssets =
+            nonInlinedAssets.filter(
                     function(anElem) {
                         return anElem.tagName === 'resource' &&
                                 anElem.getAttribute('no-inline');
