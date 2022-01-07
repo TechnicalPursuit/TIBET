@@ -219,7 +219,8 @@ Cmd.prototype.constructResults = function() {
         checked: 0,
         unchanged: 0,
         filtered: 0,
-        files: 0
+        files: 0,
+        recheck: []
     };
 
     data = this.getLastRunData();
