@@ -81,7 +81,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({
                 'add', 'all', 'config', 'context', 'exclude', 'include',
                     'package', 'phase', 'profile', 'remove',
                 'esconfig', 'esrules', 'esignore',
-                'styleconfig'
+                'stylebase', 'styleconfig'
     ],
     default: {
         style: true,
@@ -191,7 +191,14 @@ Cmd.prototype.configureStylelintOptions = function() {
         }
     }
 
-    config.configBasedir = path.dirname(config.configFile);
+    //  Adjust basedir as needed. We can override on command line but normally
+    //  its going to be pointing at the lib.
+    if (this.options.stylebase) {
+        config.configBasedir = path.dirname(
+            CLI.expandPath(this.options.stylebase));
+    } else {
+        config.configBasedir = path.dirname(config.configFile);
+    }
 
     return config;
 };

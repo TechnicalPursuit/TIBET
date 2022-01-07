@@ -16,8 +16,8 @@
         "electron": "^15.3.0",
         "electron-builder": "^22.13.1",
         "electron-notarize": "^1.0.0",
-        "stylelint": "^13.13.1",
-        "stylelint-config-standard": "^22.0.0"
+        "stylelint": "^14.1.0",
+        "stylelint-config-standard": "^24.0.0"
     },
     "engines": {
         "node": ">=12",
