@@ -117,8 +117,14 @@ self.addEventListener('message', function(event) {
 //  Add a listener to intercept 'fetch' events.
 self.addEventListener('fetch', function(event) {
 
-    var url,
+    var req,
+
+        url,
         filename,
+
+        parsedURL,
+
+        startPage,
 
         tibetURNMatcher,
 
@@ -128,19 +134,51 @@ self.addEventListener('fetch', function(event) {
 
         shouldWarn;
 
+    req = event.request;
+
     //  Grab the url that we're fetching.
-    url = event.request.url;
+    url = req.url;
 
     //  Grab it's filename.
     filename = url.slice(url.lastIndexOf('/') + 1);
 
     //  If the filename has no extension or it has a query string then it's a
-    //  route that's not a file (probably a server call of some sort). Exit here
-    //  without logging, allowing the server to vend back what it normally
-    //  would.
+    //  route that's not a file (probably a server call of some sort). It could
+    //  be the 'root' URL, in which case we build a new Request to return the
+    //  homepage (usually 'index.html').
+    //  Otherwise, we exit here without logging, allowing the server to vend
+    //  back what it normally would.
     if (/\.\w+$/.test(filename) === false ||
         /\?.+=.+/.test(filename) === true) {
-        return;
+
+        //  Create a URL and check it's 'pathname' property. If that's '/', then
+        //  its the 'root' URL.
+        parsedURL = new URL(url);
+        if (parsedURL.pathname === '/') {
+            //  TODO: Pluck the start page from the URL params, if it has that.
+            //  Otherwise, there's no way to get it. For now, just set it to
+            //  null.
+            startPage = null;
+            if (startPage) {
+                startPage = startPage.slice(startPage.lastIndexOf('/'));
+            } else {
+                startPage = '/index.html';
+            }
+
+            //  Set the URL for the new Request to be the old URL's origin and
+            //  the start page.
+            url = parsedURL.origin + startPage;
+            filename = startPage;
+
+            //  Create a new Request for the code down below to fetch the start
+            //  page.
+            req = new Request(url,
+                                {
+                                    method: 'GET'
+                                });
+        } else {
+            return;
+        }
     }
 
     tibetURNMatcher = /urn:tibet:|urn::/;
@@ -232,7 +270,7 @@ self.addEventListener('fetch', function(event) {
 
             promise = caches.open('TIBET_LIB_CACHE').then(
                             function(cache) {
-                                return cache.match(event.request);
+                                return cache.match(req);
                             }).then(function(response) {
                                 if (!response) {
                                     if (shouldWarn) {
@@ -241,7 +279,7 @@ self.addEventListener('fetch', function(event) {
                                             url);
                                     }
 
-                                    return fetch(event.request).then(
+                                    return fetch(req).then(
                                         function(resp) {
                                             return resp;
                                         });
@@ -256,7 +294,7 @@ self.addEventListener('fetch', function(event) {
 
             promise = caches.open('TIBET_APP_CACHE').then(
                             function(cache) {
-                                return cache.match(event.request);
+                                return cache.match(req);
                             }).then(function(response) {
                                 if (!response) {
                                     if (shouldWarn) {
@@ -265,7 +303,7 @@ self.addEventListener('fetch', function(event) {
                                             url);
                                     }
 
-                                    return fetch(event.request).then(
+                                    return fetch(req).then(
                                         function(resp) {
                                             return resp;
                                         });
