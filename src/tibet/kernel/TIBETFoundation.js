@@ -2458,10 +2458,10 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         }
 
         str = msg || 'Error';
-        str += ' in file: ' + path + ' line: ' + line + ' column: ' + column;
+        str += '\n\nfile: ' + path + ' line: ' + line + ' column: ' + column;
 
         if (TP.sys.shouldLogStack() && TP.isError(errorObj)) {
-            str += '\nSTACK:\n' + TP.errorFormatStack(errorObj);
+            str += '\n\n' + TP.errorFormatStack(errorObj);
         }
 
         //  If we're still booting errors that are uncaught are considered FATAL.

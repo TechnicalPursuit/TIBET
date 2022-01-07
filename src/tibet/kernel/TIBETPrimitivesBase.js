@@ -176,12 +176,24 @@ function(errorObj, joinChar) {
 
     var stackEntries,
         joiner,
-
+        objCleanse,
+        linkBuild,
         stackStr;
 
     stackEntries = TP.getStackInfo(errorObj);
 
     joiner = TP.ifEmpty(joinChar, '\n');
+
+    objCleanse = function(str) {
+        if (/Object\.(TP|APP)\./.test(str)) {
+            return str.slice(7);
+        }
+        return str;
+    };
+
+    linkBuild = function(info) {
+        return `${info.at(1)}:${info.at(2)}`;
+    };
 
     if (TP.notEmpty(stackEntries)) {
         stackStr = '';
@@ -190,17 +202,8 @@ function(errorObj, joinChar) {
             function(infoPiece) {
                 var infoStr;
 
-                infoStr =
-                    'at ' +
-                    infoPiece.at(0) +
-                    '(' +
-                    infoPiece.at(1) +
-                    ':' +
-                    infoPiece.at(2) +
-                    ':' +
-                    infoPiece.at(3) +
-                    ')' +
-                    joiner;
+                infoStr = objCleanse(infoPiece.at(0)) + ' @ ' +
+                    linkBuild(infoPiece) + joiner;
 
                 return infoStr;
             });

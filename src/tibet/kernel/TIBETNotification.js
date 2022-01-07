@@ -2881,13 +2881,11 @@ function(verbose) {
     err = this.getError();
 
     if (TP.isValid(err)) {
-        msg += ' !! ' + TP.str(err) || err.toString();
+        msg += '\n\n' + TP.str(err) || err.toString();
     }
 
     try {
-        str = this.getSignalName() +
-                ' :: ' +
-                '(' + msg + ')';
+        str = this.getSignalName() + ': ' + msg;
     } catch (e) {
         str = this.toString();
     } finally {
