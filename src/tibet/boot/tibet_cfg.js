@@ -1182,8 +1182,16 @@
     //  cache computation has begun.
     TP.sys.setcfg('path.preboot_app_paths',
         [
+            '~app/index.html',
+            '~app/index.js',
             '~app_boot/xhtml/blank.xhtml',
+            '~app_boot/xhtml/home.xhtml',
             '~app_boot/xhtml/UIBOOT.xhtml',
+            '~app_boot/xhtml/UIROOT.xhtml',
+            '~app_boot/scripts/UIBOOT.js',
+            '~app_boot/styles/normalize.css',
+            '~app_boot/styles/tibet_normalize.css',
+            '~app_boot/styles/tibet_reset.css',
             '~app_boot/styles/tibet_content.css',
             '~app_boot/styles/tibet_boot.css',
             '~app/styles/app.css',
@@ -1193,6 +1201,8 @@
             '~app_boot/styles/tibet_intro.css',
             '~app_boot/media/tibet_world.gif',
             '~app_boot/media/tibet_logo.png',
+            '~app_cfg/main.xml',
+            '~app_cfg/production.xml',
             '~app/tibet.json'
         ]);
 
