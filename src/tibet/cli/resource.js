@@ -98,6 +98,7 @@ Cmd.INLINED_RESOURCES = [
     /\.css$/,
     /\.xhtml$/,
     /\.xml$/,
+    /\.xsd$/,
     /\.json/
 ];
 
