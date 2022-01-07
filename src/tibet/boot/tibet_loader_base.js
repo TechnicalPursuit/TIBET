@@ -12770,12 +12770,6 @@ TP.boot.shouldCacheAppFiles = function() {
         return false;
     }
 
-    //  If we're caching files at all, we cache app files as long as we're not
-    //  in developer mode.
-    if (TP.sys.inDeveloperMode() === true) {
-        return false;
-    }
-
     //  And we're HTTP based.
     return TP.sys.isHTTPBased();
 };
