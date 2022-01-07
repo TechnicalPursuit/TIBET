@@ -8,7 +8,7 @@
 <!-- EDITING NOT RECOMMENDED -->
 <!-- xxxxxxxxxxxxxxxxxxxxxxx -->
 
-<config id="properties" if="boot.phase_one">
+<config id="properties">
     <property name="boot.inlined" value="false"/>
     <property name="boot.use_login" value="false"/>
     <property name="lama.enabled" value="false"/>
@@ -27,7 +27,7 @@
     <property name="project.name" value="{{appname}}"/>
 </config>
 
-<config id="full_source" if="boot.phase_one">
+<config id="full_source">
     <property name="boot.bundled" value="false"/>
     <property name="boot.minified" value="false"/>
     <property name="boot.inlined" value="false"/>
@@ -39,29 +39,29 @@
     <package src="~app_cfg/main.xml" config="full"/>
 </config>
 
-<config id="debugger" if="boot.phase_one">
+<config id="debugger">
     <config ref="properties"/>
     <config ref="full_source"/>
     <package src="~app_cfg/main.xml" config="developer"/>
 </config>
 
-<config id="interactive" if="boot.phase_one">
+<config id="interactive">
     <config ref="test"/>
 </config>
 
-<config id="reflection" if="boot.phase_one">
+<config id="reflection">
     <config ref="properties"/>
     <property name="boot.minified" value="false"/>
     <package src="~app_cfg/main.xml" config="full"/>
 </config>
 
-<config id="resources" if="boot.phase_one">
+<config id="resources">
     <config ref="properties"/>
     <config ref="full_source"/>
     <package src="~app_cfg/main.xml" config="full"/>
 </config>
 
-<config id="test" if="boot.phase_one">
+<config id="test">
     <config ref="properties"/>
     <package src="~app_cfg/main.xml" config="developer"/>
 </config>
