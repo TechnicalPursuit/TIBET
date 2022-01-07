@@ -60,7 +60,6 @@
 </config>
 
 <config id="interactive" if="boot.phase_one">
-    <config ref="properties"/>
     <config ref="test"/>
 </config>
 
