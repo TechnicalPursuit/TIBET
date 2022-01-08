@@ -999,7 +999,7 @@ Cmd.prototype.getBootProfileConfig = function() {
     //  NOTE the majority of commands should load the full suite of code to
     //  ensure proper operation. We check specifically for the debug variant
     //  to make sure we launch with a debugger profile.
-    if (CLI.getcfg('tibet.node.inspect-brk')) {
+    if (CLI.getcfg('tibet.node.inspect-brk') || this.options.debugger) {
         config = 'debugger';
     } else {
         config = config || this.getDefaultBootConfig();
@@ -1079,13 +1079,18 @@ Cmd.prototype.getProfileConfig = function() {
 
     if (CLI.notEmpty(this.options.profile)) {
         config = this.options.profile.split('@')[1];
+        if (CLI.notEmpty(config)) {
+            return config;
+        }
     } else if (CLI.notEmpty(this.options.config)) {
         return this.options.config;
     }
 
-    config = config || this.getDefaultBootConfig();
+    if (this.options.debugger) {
+        return 'debugger';
+    }
 
-    return config;
+    return this.getDefaultBootConfig();
 };
 
 
@@ -1100,12 +1105,15 @@ Cmd.prototype.getProfileRoot = function() {
 
     if (CLI.notEmpty(this.options.profile)) {
         profile = this.options.profile.split('@')[0];
+        if (CLI.notEmpty(profile)) {
+            return profile;
+        }
     } else if (CLI.notEmpty(this.options.package)) {
         return this.options.package;
     }
 
     if (CLI.inProject()) {
-        profile = profile || '~app_cfg/main';
+        profile = profile || '~app_cfg/headless';
     } else {
         profile = profile || '~lib_etc/headless/headless';
     }
