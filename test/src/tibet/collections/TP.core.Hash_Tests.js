@@ -148,5 +148,27 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Hash.Inst.describe('at',
+function() {
+
+    this.it('can access flattened dotted keys',
+    function(test, options) {
+        var hash;
+
+        hash = TP.hc('foo.bar', 'baz');
+        test.assert.isEqualTo(hash.at('foo.bar'), 'baz');
+    });
+
+    this.it('does not access nested dotted keys',
+    function(test, options) {
+        var hash;
+
+        hash = TP.hc('foo', {bar: 'baz'});
+        test.refute.isDefined(hash.at('foo.bar'));
+    });
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
