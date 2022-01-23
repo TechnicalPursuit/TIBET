@@ -6779,14 +6779,6 @@ function(aDescriptor) {
         signal = aDescriptor.signal;
     }
 
-    if (!descriptor) {
-        handler = TP.$$computedHandlers.at(signal);
-        if (handler) {
-            TP.$$computedHandlers.$lookups += 1;
-            return handler;
-        }
-    }
-
     //  Signal types, signal instances, and Strings all respond to this.
     if (signal === TP.ANY) {
         //  Default is 'handleSignal', not handleANY.
@@ -6796,6 +6788,17 @@ function(aDescriptor) {
     } else {
         //  Default is 'handleSignal', not handleANY.
         signame = 'Signal';
+    }
+
+    //  ensure "type name" formatting (e.g. titlecase) for any handler name
+    signame = signame.asTitleCase();
+
+    if (!descriptor) {
+        handler = TP.$$computedHandlers.at(signame);
+        if (handler) {
+            TP.$$computedHandlers.$lookups += 1;
+            return handler;
+        }
     }
 
     //  Simplify for internal signals. 'APP.sig.' prefixing (or signal types
@@ -6845,7 +6848,7 @@ function(aDescriptor) {
 
     //  Simple handlers (very common) are cached.
     if (!descriptor) {
-        TP.$$computedHandlers.atPut(signal, handler);
+        TP.$$computedHandlers.atPut(signame, handler);
     }
 
     return handler;
