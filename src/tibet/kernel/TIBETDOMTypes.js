@@ -9524,15 +9524,21 @@ function(aRequest, replaceNode, alternateNode) {
             workNode = node;
         }
 
-        //  Wrap the work node in a 'root element for processing'. This is
-        //  because, the way the transformation engine works, it holds onto the
-        //  root node reference as it processes and replaces, so we want to give
-        //  it a root that means nothing to the caller of this method. Also,
-        //  this facilitates processing DocumentFragments in case we are one of
-        //  those.
-        workNode = TP.elem('<processingroot>' +
+        //  If we're rebuilding a node (during rebuildUI etc) we need to work
+        //  within the existing tree to support bind: and other operations which
+        //  need the ancestor chain preserved during processing.
+        if (TP.isTrue(request.atIfInvalid('processingroot', true))) {
+
+            //  Wrap the work node in a 'root element for processing'. This is
+            //  because, the way the transformation engine works, it holds onto
+            //  the root node reference as it processes and replaces, so we want
+            //  to give it a root that means nothing to the caller of this
+            //  method. Also, this facilitates processing DocumentFragments in
+            //  case we are one of those.
+            workNode = TP.elem('<processingroot>' +
                             TP.str(workNode) +
                             '</processingroot>');
+        }
 
         if (!TP.isCollectionNode(workNode)) {
             request.fail('work node is not a collection node', TP.FAILED);
