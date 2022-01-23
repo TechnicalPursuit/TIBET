@@ -4997,12 +4997,16 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  handlers to be swapped out from under observations without
             //  affecting the signal map itself.
 
-            //  a side effect of having objects registered under 'tibet:urn's is
-            //  that the handler can't be the TIBETURN URI itself. Therefore, if
-            //  the item's handler starts with 'tibet:urn', then go ahead and
-            //  use the URI object as the handler object.
-            if (TP.regex.ANY_URN.test(item.handler)) {
+            //  registrations for "local URIs" (e.g. urn: and tibet: schemes)
+            //  need us to access the underlying object being referenced by
+            //  constructing the URI instance and requesting its object.
+            if (TP.regex.ANY_URN.test(item.handler) ||
+                    TP.regex.TIBET_URL.test(item.handler)) {
                 handler = TP.uc(item.handler);
+                if (TP.isURI(handler)) {
+                    //  TODO:   add await here in updated async variant
+                    handler = handler.getContent();
+                }
             } else {
                 //  Otherwise, just get the handler by it's system ID
                 handler = TP.bySystemId(item.handler);
