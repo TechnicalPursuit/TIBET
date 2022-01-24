@@ -5000,12 +5000,16 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  registrations for "local URIs" (e.g. urn: and tibet: schemes)
             //  need us to access the underlying object being referenced by
             //  constructing the URI instance and requesting its object.
-            if (TP.regex.ANY_URN.test(item.handler) ||
-                    TP.regex.TIBET_URL.test(item.handler)) {
+            if (TP.regex.ANY_URN.test(item.handler)) {
+                handler = TP.uc(item.handler);
+                //  TODO:   if handler points to a real object... ???
+                //          vs. handler points to a scalar value...
+            } else if (TP.regex.TIBET_URL.test(item.handler)) {
                 handler = TP.uc(item.handler);
                 if (TP.isURI(handler)) {
                     //  TODO:   add await here in updated async variant
-                    handler = handler.getContent();
+                    handler = handler.getContent(
+                        TP.request('signalChange', false));
                 }
             } else {
                 //  Otherwise, just get the handler by it's system ID
