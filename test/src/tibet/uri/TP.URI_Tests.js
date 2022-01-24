@@ -388,9 +388,6 @@ function() {
     });
 
     this.it('joins path segments into tibet fragment', function(test, options) {
-
-        debugger;
-
         //  Partially formed URI - has scheme but no path, pointer with scheme.
         uri = 'urn:tibet:foo';
         pointerOrPath1 = 'bar';
