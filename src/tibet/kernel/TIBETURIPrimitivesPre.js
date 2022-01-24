@@ -57,7 +57,8 @@ function(anObject, schemeOptional) {
 
     return TP.regex.SCHEME.test(str) &&
         !TP.regex.HAS_LINEBREAK.test(str) &&
-        TP.regex.URI_STRICT.test(str);
+        TP.regex.URI_STRICT.test(str) &&
+        !TP.sys.getTypeByName(str.split('.').first());
 });
 
 //  ------------------------------------------------------------------------
@@ -1278,6 +1279,7 @@ function(aPath, aFragment) {
 
         url,
         expr,
+        char0,
 
         pathFragment,
         pathScheme,
@@ -1380,6 +1382,9 @@ function(aPath, aFragment) {
     //  If there was an existing path expression, join it together with the
     //  fragment's expression using the standard 'join character'.
     if (TP.notEmpty(pathExpr)) {
+
+        char0 = expr.charAt(0);
+
         switch (fragmentScheme) {
             case 'css':
                 joinChar = ' ';
@@ -1390,12 +1395,15 @@ function(aPath, aFragment) {
 
                 //  If a JSONPath starts with a '$', then it's an absolute path.
                 //  Don't use any of the supplied path.
-                if (expr.charAt(0) === '$') {
+                if (char0 === '$') {
                     return url + '#' + fragmentScheme + '(' + expr + ')';
                 }
 
-                if (expr.charAt(0) === '[') {
+                if (char0 === '[') {
                     joinChar = '';
+                } else if (char0 === '#') {
+                    expr = expr.slice(1);
+                    joinChar = '.';
                 } else {
                     joinChar = '.';
                 }
@@ -1407,11 +1415,11 @@ function(aPath, aFragment) {
 
                 //  If an XPath starts with a '/', then it's an absolute path.
                 //  Don't use any of the supplied path.
-                if (expr.charAt(0) === '/') {
+                if (char0 === '/') {
                     return url + '#' + fragmentScheme + '(' + expr + ')';
                 }
 
-                if (expr.charAt(0) === '[') {
+                if (char0 === '[') {
                     joinChar = '';
                 } else {
                     joinChar = '/';

@@ -8,6 +8,47 @@
  */
 //  ========================================================================
 
+TP.describe('isURIString',
+function() {
+
+    this.it('Does not treat tag:name.foo paths as URI strings', function(test, options) {
+        var uri,
+            result;
+
+        uri = 'tibet:root.foo';
+        result = TP.isURIString(uri);
+        test.assert.isFalse(result);
+    });
+
+    this.it('Does not treat #foo barenames as URI strings', function(test, options) {
+        var uri,
+            result;
+
+        uri = '#fooId';
+        result = TP.isURIString(uri);
+        test.assert.isFalse(result);
+    });
+
+
+    this.it('Treats urn:tibet:foo format as a URI string', function(test, options) {
+        var uri,
+            result;
+
+        uri = 'urn:tibet:foo'
+        result = TP.isURIString(uri);
+        test.assert.isTrue(result);
+    });
+
+    this.it('Treats tibet://some/long/path#and(fragment) as a URI string', function(test, options) {
+        var uri,
+            result;
+
+        uri = 'tibet://some/long/path#and(fragment)'
+        result = TP.isURIString(uri);
+        test.assert.isTrue(result);
+    });
+});
+
 TP.describe('uriJoinFragments',
 function() {
 
@@ -335,6 +376,27 @@ function() {
         pointerOrPath2 = '#xpath1(baz)';
         result = TP.uriJoinFragments(uri, pointerOrPath1, pointerOrPath2);
         test.assert.isEqualTo(result, 'urn:tibet:foo#xpath1(bar/baz)');
+    });
+
+    this.it('joins path segments into tibet fragment', function(test, options) {
+        //  Partially formed URI - has scheme but no path, pointer with scheme.
+        uri = 'urn:tibet:foo';
+        pointerOrPath1 = 'bar';
+        pointerOrPath2 = '#tibet(baz)';
+        result = TP.uriJoinFragments(uri, pointerOrPath1, pointerOrPath2);
+        test.assert.isEqualTo(result, 'urn:tibet:foo#tibet(bar.baz)');
+    });
+
+    this.it('joins path segments into tibet fragment', function(test, options) {
+
+        debugger;
+
+        //  Partially formed URI - has scheme but no path, pointer with scheme.
+        uri = 'urn:tibet:foo';
+        pointerOrPath1 = 'bar';
+        pointerOrPath2 = '#baz';
+        result = TP.uriJoinFragments(uri, pointerOrPath1, pointerOrPath2);
+        test.assert.isEqualTo(result, 'urn:tibet:foo#tibet(bar.baz)');
     });
 });
 
