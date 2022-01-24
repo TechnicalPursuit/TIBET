@@ -379,6 +379,11 @@ function() {
     });
 
     this.it('joins path segments into tibet fragment', function(test, options) {
+        var uri,
+            pointerOrPath1,
+            pointerOrPath2,
+            result;
+
         //  Partially formed URI - has scheme but no path, pointer with scheme.
         uri = 'urn:tibet:foo';
         pointerOrPath1 = 'bar';
@@ -388,6 +393,11 @@ function() {
     });
 
     this.it('joins trailing barenames into tibet fragment', function(test, options) {
+        var uri,
+            pointerOrPath1,
+            pointerOrPath2,
+            result;
+
         //  Partially formed URI - has scheme but no path, pointer with scheme.
         uri = 'urn:tibet:foo';
         pointerOrPath1 = 'bar';
@@ -397,6 +407,11 @@ function() {
     });
 
     this.it('joins trailing barenames into xpath fragment', function(test, options) {
+        var uri,
+            pointerOrPath1,
+            pointerOrPath2,
+            result;
+
         uri = 'urn:tibet:foo';
         pointerOrPath1 = './bar';
         pointerOrPath2 = '#baz';
