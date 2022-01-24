@@ -1421,6 +1421,9 @@ function(aPath, aFragment) {
 
                 if (char0 === '[') {
                     joinChar = '';
+                } else if (char0 === '#') {
+                    expr = expr.slice(1);
+                    joinChar = '/';
                 } else {
                     joinChar = '/';
                 }

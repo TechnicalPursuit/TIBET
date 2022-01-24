@@ -387,13 +387,21 @@ function() {
         test.assert.isEqualTo(result, 'urn:tibet:foo#tibet(bar.baz)');
     });
 
-    this.it('joins path segments into tibet fragment', function(test, options) {
+    this.it('joins trailing barenames into tibet fragment', function(test, options) {
         //  Partially formed URI - has scheme but no path, pointer with scheme.
         uri = 'urn:tibet:foo';
         pointerOrPath1 = 'bar';
         pointerOrPath2 = '#baz';
         result = TP.uriJoinFragments(uri, pointerOrPath1, pointerOrPath2);
         test.assert.isEqualTo(result, 'urn:tibet:foo#tibet(bar.baz)');
+    });
+
+    this.it('joins trailing barenames into xpath fragment', function(test, options) {
+        uri = 'urn:tibet:foo';
+        pointerOrPath1 = './bar';
+        pointerOrPath2 = '#baz';
+        result = TP.uriJoinFragments(uri, pointerOrPath1, pointerOrPath2);
+        test.assert.isEqualTo(result, 'urn:tibet:foo#xpath1(./bar/baz)');
     });
 });
 
