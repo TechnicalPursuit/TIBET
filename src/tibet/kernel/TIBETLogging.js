@@ -3194,10 +3194,14 @@ function(anEntry) {
         case 'info':
             writer = 'info';
             break;
-        case 'trace':
+        case 'debug':
             //  Chrome at least treats 'debug' as a 'verbose' mode so use that
             //  if found, otherwise just use standard logging.
             writer = TP.isValid(TP.topWindow.console.debug) ? 'debug' : 'log';
+            break;
+        case 'trace':
+            //  Chrome's trace logger also dumps the stack... nice option.
+            writer = TP.isValid(TP.topWindow.console.trace) ? 'trace' : 'log';
             break;
         default:
             //  debug, system, all
