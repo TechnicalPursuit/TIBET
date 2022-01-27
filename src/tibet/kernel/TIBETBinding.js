@@ -1538,7 +1538,7 @@ function(targetElement, attributeName, attributeValue) {
 
     //  If we couldn't get a JSON String, try to default it to {"value":"..."}
     if (!TP.isJSONString(entryStr)) {
-        entryStr = '{"value":"' + attributeValue + '"}';
+        entryStr = '{"value":' + attributeValue.unquoted().quoted('"') + '}';
     }
 
     //  Try to parse the entry string into a TP.core.Hash.

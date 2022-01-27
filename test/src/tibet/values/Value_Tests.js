@@ -3403,6 +3403,19 @@ function() {
         test.assert.isEqualTo(val, correctVal);
     });
 
+    this.it('embedded tag names ala {attr: tibet:root.isFluffy}', function(test, options) {
+
+        var val,
+            correctVal;
+
+        //  no separating whitespace
+        val = TP.reformatJSToJSON('{foo: sherpa:footag.isFluffy}');
+        correctVal = TP.json({foo: 'sherpa:footag.isFluffy'});
+
+        test.assert.isEqualTo(val, correctVal);
+    });
+
+
 });
 
 //  ------------------------------------------------------------------------

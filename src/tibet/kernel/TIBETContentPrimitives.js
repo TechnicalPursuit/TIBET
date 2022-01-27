@@ -103,6 +103,9 @@ function(aString, shouldConvertArrayBrackets) {
         lastTokenNeedsQuote,
         nextTokenNeedsQuote,
 
+        inValue,
+        arrCount,
+
         tokens,
 
         str,
@@ -221,6 +224,9 @@ function(aString, shouldConvertArrayBrackets) {
         return true;
     };
 
+    arrCount = 0;
+    inValue = false;
+
     for (i = 0; i < len; i++) {
 
         token = tokens.at(i);
@@ -244,10 +250,16 @@ function(aString, shouldConvertArrayBrackets) {
                         context = TP.global[val];
                     } else {
                         //  There was no context or value that resolved to a
-                        //  context, so we trim the value and then unquote the
-                        //  result (but only unquote double quotes - leave
-                        //  single quotes alone).
-                        str += TP.trim(val).unquoted('"');
+                        //  context, so we trim the value and then ensure we
+                        //  deal with any wrapping quotes on strings.
+                        if (token.name === 'string') {
+                            //  NOTE we focus on double quotes here because
+                            //  we'll be putting them back on via next/last
+                            //  tokenNeedsQuote logic
+                            str += TP.trim(val).unquoted('"');
+                        } else {
+                            str += TP.trim(val);
+                        }
                     }
                 }
 
@@ -295,11 +307,15 @@ function(aString, shouldConvertArrayBrackets) {
                     str += '{';
 
                     if (nextTokenNeedsQuote(i)) {
+                        inValue = false;
                         str += '"';
                     }
 
                     context = null;
                 } else if (val === '[' && convertArrayBrackets) {
+
+                    arrCount += 1;
+
                     str += '[';
 
                     if (nextTokenNeedsQuote(i)) {
@@ -308,14 +324,26 @@ function(aString, shouldConvertArrayBrackets) {
 
                     context = null;
                 } else if (val === ':') {
-                    if (lastTokenNeedsQuote(i)) {
+
+                    //  imagine...
+                    //  { foo : bar:baz.blah }
+                    //  first colon... weren't inValue... need to quote foo"
+                    //      and turn on inValue...
+                    //  second colon... we are inValue... no quote for bar:baz
+
+                    if (!inValue && lastTokenNeedsQuote(i)) {
                         str += '"';
                     }
 
                     str += ':';
 
-                    if (nextTokenNeedsQuote(i)) {
+                    if (!inValue && nextTokenNeedsQuote(i)) {
                         str += '"';
+                    }
+
+                    //  If we were in a key and found : we're done with key.
+                    if (!inValue) {
+                        inValue = true;
                     }
 
                     context = null;
@@ -324,6 +352,12 @@ function(aString, shouldConvertArrayBrackets) {
                     //  value.
                     useGlobalContext = true;
                 } else if (val === ',') {
+
+                    //  If we were in a value and we find a , we're done with
+                    //  value... unless we're in an array... etc.
+                    if (inValue && arrCount === 0) {
+                        inValue = false;
+                    }
 
                     //  We're at the end of a value - need to consume the
                     //  context.
@@ -349,6 +383,8 @@ function(aString, shouldConvertArrayBrackets) {
                     useGlobalContext = true;
                 } else if (val === ']' && convertArrayBrackets) {
 
+                    arrCount -= 1;
+
                     //  We're at the end of a value - need to consume the
                     //  context.
                     if (TP.isValid(context)) {
@@ -368,6 +404,10 @@ function(aString, shouldConvertArrayBrackets) {
                     //  value.
                     useGlobalContext = true;
                 } else if (val === '}') {
+
+                    if (inValue && arrCount === 0) {
+                        inValue = false;
+                    }
 
                     //  We're at the end of a value - need to consume the
                     //  context.
