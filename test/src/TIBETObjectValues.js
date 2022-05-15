@@ -1370,8 +1370,8 @@ function(aRequest) {
         'Boolean',                              TP.IDENTITY,
         'Date',                                 TP.IDENTITY,
         'Function',                             'fluffy',           //  Return value of function
-        'AsyncFunction',                        /{return "async fluffy"; }/,
-        'GeneratorFunction',                    /{return "generator fluffy"; }/,
+        'AsyncFunction',                        '[object Promise]',
+        'GeneratorFunction',                    '[object Generator]',
         'InvalidDate',                          TP.IDENTITY,
         'NaN',                                  TP.IDENTITY,
         'Number',                               TP.IDENTITY,

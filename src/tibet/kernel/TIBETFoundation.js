@@ -8006,6 +8006,94 @@ function(deep, aFilterNameOrKeys, contentOnly) {
 
 //  ------------------------------------------------------------------------
 
+AsyncFunction.Inst.defineMethod('copy',
+function(deep, aFilterNameOrKeys, contentOnly) {
+
+    /**
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
+     *     whose value is equalTo that of the receiver. When copying a function
+     *     the original is instrumented to know how many copies have been made
+     *     and the new copy has the name of the original with an _n appended
+     *     where n is the copy number.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array.
+     * @param {Boolean} [contentOnly=true] Copy content only?
+     * @returns {Function} A copy of the receiver.
+     */
+
+    var count,
+        source,
+        $$funcCopy,
+        realFunc,
+
+        onlyContent,
+
+        filter,
+        keys,
+
+        len,
+        i,
+        ndx,
+        val;
+
+    //  NB: We don't use TP.getRealFunction() here, since we're not interested
+    //  in any trait '$resolutionMethod' slots.
+    realFunc = this.$realFunc || this;
+
+    //  track number of copies
+    count = realFunc.$$copyCount || 0;
+    count++;
+    realFunc.$$copyCount = count;
+
+    //  trick here is to turn the receiver's source into source for an
+    //  anonymous function so we don't just get another with the same name
+    //  Note the non-greediness of the RegExp here - don't want to match
+    //  past the actual end of the parameter list.
+    source = '$$funcCopy = ' +
+                realFunc.toString().replace(/function (.*?)\(/,
+                    'function $1_' + count + '(');
+    /* eslint-disable no-eval */
+    eval(source);
+    /* eslint-enable no-eval */
+    $$funcCopy.$realFunc = realFunc;
+
+    onlyContent = TP.ifInvalid(contentOnly, true);
+    if (onlyContent) {
+        return $$funcCopy;
+    } else {
+        filter = TP.ifInvalid(aFilterNameOrKeys, TP.UNIQUE);
+
+        if (TP.isString(filter)) {
+            keys = realFunc.getLocalInterface(filter);
+        } else if (TP.isArray(filter)) {
+            keys = filter;
+        } else {
+            //  Unusable filter
+            return $$funcCopy;
+        }
+
+        len = keys.getSize();
+
+        for (i = 0; i < len; i++) {
+            ndx = keys.at(i);
+            val = realFunc.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            $$funcCopy.$set(ndx, val, false, true);
+        }
+    }
+
+    return $$funcCopy;
+});
+
+//  ------------------------------------------------------------------------
+
 Boolean.Inst.defineMethod('copy',
 function(deep, aFilterNameOrKeys, contentOnly) {
 
@@ -8092,6 +8180,94 @@ function(deep, aFilterNameOrKeys, contentOnly) {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('copy',
+function(deep, aFilterNameOrKeys, contentOnly) {
+
+    /**
+     * @method copy
+     * @summary Returns a 'copy' of the receiver. Actually, a new instance
+     *     whose value is equalTo that of the receiver. When copying a function
+     *     the original is instrumented to know how many copies have been made
+     *     and the new copy has the name of the original with an _n appended
+     *     where n is the copy number.
+     * @param {Boolean} [deep=false] True to force clones to be deep.
+     * @param {String|String[]} aFilterNameOrKeys get*Interface() filter or key
+     *     array.
+     * @param {Boolean} [contentOnly=true] Copy content only?
+     * @returns {Function} A copy of the receiver.
+     */
+
+    var count,
+        source,
+        $$funcCopy,
+        realFunc,
+
+        onlyContent,
+
+        filter,
+        keys,
+
+        len,
+        i,
+        ndx,
+        val;
+
+    //  NB: We don't use TP.getRealFunction() here, since we're not interested
+    //  in any trait '$resolutionMethod' slots.
+    realFunc = this.$realFunc || this;
+
+    //  track number of copies
+    count = realFunc.$$copyCount || 0;
+    count++;
+    realFunc.$$copyCount = count;
+
+    //  trick here is to turn the receiver's source into source for an
+    //  anonymous function so we don't just get another with the same name
+    //  Note the non-greediness of the RegExp here - don't want to match
+    //  past the actual end of the parameter list.
+    source = '$$funcCopy = ' +
+                realFunc.toString().replace(/function (.*?)\(/,
+                    'function $1_' + count + '(');
+    /* eslint-disable no-eval */
+    eval(source);
+    /* eslint-enable no-eval */
+    $$funcCopy.$realFunc = realFunc;
+
+    onlyContent = TP.ifInvalid(contentOnly, true);
+    if (onlyContent) {
+        return $$funcCopy;
+    } else {
+        filter = TP.ifInvalid(aFilterNameOrKeys, TP.UNIQUE);
+
+        if (TP.isString(filter)) {
+            keys = realFunc.getLocalInterface(filter);
+        } else if (TP.isArray(filter)) {
+            keys = filter;
+        } else {
+            //  Unusable filter
+            return $$funcCopy;
+        }
+
+        len = keys.getSize();
+
+        for (i = 0; i < len; i++) {
+            ndx = keys.at(i);
+            val = realFunc.at(ndx);
+
+            if (TP.isTrue(deep) && TP.isReferenceType(val)) {
+                //  NB: We do *not* pass along the filter name or keys here
+                val = TP.copy(val, deep, null, contentOnly);
+            }
+
+            $$funcCopy.$set(ndx, val, false, true);
+        }
+    }
+
+    return $$funcCopy;
+});
+
+//  ------------------------------------------------------------------------
+
+GeneratorFunction.Inst.defineMethod('copy',
 function(deep, aFilterNameOrKeys, contentOnly) {
 
     /**

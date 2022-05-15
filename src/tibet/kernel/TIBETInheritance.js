@@ -1078,6 +1078,13 @@ function() {
     return dependencies;
 });
 
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('getDependencies',
+    TP.FunctionProto.getDependencies);
+TP.GeneratorFunctionProto.defineMethod('getDependencies',
+    TP.FunctionProto.getDependencies);
+
 //  ------------------------------------------------------------------------
 //  INSTANCE CREATION
 //  ------------------------------------------------------------------------
@@ -1305,6 +1312,9 @@ match approach, but with a few extras. See parse() for more info.
 */
 
 TP.FunctionProto.defineAttribute('parsers');
+TP.AsyncFunctionProto.defineAttribute('parsers');
+TP.GeneratorFunctionProto.defineAttribute('parsers');
+
 TP.lang.RootObject.Type.defineAttribute('parsers');
 
 //  ------------------------------------------------------------------------
@@ -1563,6 +1573,13 @@ function(aString, sourceLocale) {
                                 null,
                                 TP.ac(aString, sourceLocale));
 });
+
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('parse',
+    TP.FunctionProto.parse);
+TP.GeneratorFunctionProto.defineMethod('parse',
+    TP.FunctionProto.parse);
 
 //  ------------------------------------------------------------------------
 
@@ -3672,7 +3689,9 @@ function(aName) {
 
     //  we support this on the Function object itself as a lookup mechanism
     //  when aName is provided.
-    if (this === Function) {
+    if (this === Function ||
+        this === AsyncFunction ||
+        this === GeneratorFunction) {
         return TP.sys.getMethodOwners(aName);
     }
 
@@ -3682,6 +3701,13 @@ function(aName) {
 
     return TP.sys.getMethodOwners(this);
 });
+
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('getImplementers',
+    TP.FunctionProto.getImplementers);
+TP.GeneratorFunctionProto.defineMethod('getImplementers',
+    TP.FunctionProto.getImplementers);
 
 //  ------------------------------------------------------------------------
 
@@ -3989,6 +4015,13 @@ function() {
     return this.apply(null, arguments);
 });
 
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('getValue',
+    TP.FunctionProto.getValue);
+TP.GeneratorFunctionProto.defineMethod('getValue',
+    TP.FunctionProto.getValue);
+
 //  ------------------------------------------------------------------------
 //  TP.FunctionProto - SIGNAL HANDLING
 //  ------------------------------------------------------------------------
@@ -4030,6 +4063,13 @@ function(aSignal) {
 
     return inst.handle(aSignal);
 });
+
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('handle',
+    TP.FunctionProto.handle);
+TP.GeneratorFunctionProto.defineMethod('handle',
+    TP.FunctionProto.handle);
 
 //  ========================================================================
 //  TYPE HANDLERS
@@ -11938,7 +11978,9 @@ function(aName, aTrack) {
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
     //  method of all Function objects.
-    if (this === TP.FunctionProto) {
+    if (this === TP.FunctionProto ||
+        this === TP.AsyncFunctionProto ||
+        this === TP.GeneratorFunctionProto) {
         target = Function;
         track = TP.ifEmpty(aTrack, TP.INST_TRACK);
     } else if (TP.isType(this)) {
@@ -11971,6 +12013,13 @@ function(aName, aTrack) {
 
     return TP.method(target, aName, track);
 });
+
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('getMethod',
+    TP.FunctionProto.getMethod);
+TP.GeneratorFunctionProto.defineMethod('getMethod',
+    TP.FunctionProto.getMethod);
 
 //  ------------------------------------------------------------------------
 
@@ -12032,6 +12081,13 @@ function(aTrack) {
 
     return TP.methods(target, track);
 });
+
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('getMethods',
+    TP.FunctionProto.getMethods);
+TP.GeneratorFunctionProto.defineMethod('getMethods',
+    TP.FunctionProto.getMethods);
 
 //  ------------------------------------------------------------------------
 
@@ -12146,7 +12202,9 @@ function(aName, aTrack) {
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
     //  method of all Function objects.
-    if (this === TP.FunctionProto) {
+    if (this === TP.FunctionProto ||
+        this === TP.AsyncFunctionProto ||
+        this === TP.GeneratorFunctionProto) {
         target = Function;
         track = TP.ifEmpty(aTrack, TP.INST_TRACK);
     } else if (TP.isType(this)) {
@@ -12187,6 +12245,13 @@ function(aName, aTrack) {
                     'track', track,
                     'display', display);
 });
+
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('getMethodInfoFor',
+    TP.FunctionProto.getMethodInfoFor);
+TP.GeneratorFunctionProto.defineMethod('getMethodInfoFor',
+    TP.FunctionProto.getMethodInfoFor);
 
 //  ------------------------------------------------------------------------
 
@@ -12582,6 +12647,13 @@ function() {
     return owner[this.getName()];
 });
 
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('getRefreshedInstance',
+    TP.FunctionProto.getRefreshedInstance);
+TP.GeneratorFunctionProto.defineMethod('getRefreshedInstance',
+    TP.FunctionProto.getRefreshedInstance);
+
 //  ------------------------------------------------------------------------
 
 TP.FunctionProto.defineMethod('replaceWith',
@@ -12697,6 +12769,13 @@ function(aFunction, copySourceInfo) {
     return newMethod;
 });
 
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('replaceWith',
+    TP.FunctionProto.replaceWith);
+TP.GeneratorFunctionProto.defineMethod('replaceWith',
+    TP.FunctionProto.replaceWith);
+
 //  ------------------------------------------------------------------------
 
 TP.FunctionProto.defineMethod('replaceWithSourceText',
@@ -12748,6 +12827,13 @@ function(newSourceText, copySourceInfo) {
     //  newly defined replacement.
     return obj.replaceWith($$newinst, copySourceInfo);
 });
+
+//  ---
+
+TP.AsyncFunctionProto.defineMethod('replaceWithSourceText',
+    TP.FunctionProto.replaceWithSourceText);
+TP.GeneratorFunctionProto.defineMethod('replaceWithSourceText',
+    TP.FunctionProto.replaceWithSourceText);
 
 //  ------------------------------------------------------------------------
 //  WINDOW OBJECT
