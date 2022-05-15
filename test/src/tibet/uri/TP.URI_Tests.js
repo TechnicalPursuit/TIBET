@@ -34,7 +34,7 @@ function() {
         var uri,
             result;
 
-        uri = 'urn:tibet:foo'
+        uri = 'urn:tibet:foo';
         result = TP.isURIString(uri);
         test.assert.isTrue(result);
     });
@@ -43,7 +43,7 @@ function() {
         var uri,
             result;
 
-        uri = 'tibet://some/long/path#and(fragment)'
+        uri = 'tibet://some/long/path#and(fragment)';
         result = TP.isURIString(uri);
         test.assert.isTrue(result);
     });
