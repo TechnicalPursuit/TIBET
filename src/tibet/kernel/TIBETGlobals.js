@@ -1511,7 +1511,14 @@ TP.RELEVANT = 'relevant';
 TP.REQUIRED = 'required';
 TP.VALID = 'valid';
 
-TP.FACET_NAMES = [TP.READONLY, TP.RELEVANT, TP.REQUIRED, TP.VALID];
+//  Order is important here as facets are checked in this order in the facet
+//  checking methods. Since 'disabled'ness affects whether other facets of a
+//  control are used in the responder chain, etc. relevancy is checked first.
+//  TP.RELEVANT ->  Enabled/Disabled
+//  TP.READONLY ->  Readonly/Readwrite
+//  TP.REQUIRED ->  Required/Optional
+//  TP.VALID    ->  Valid/Invalid
+TP.FACET_NAMES = [TP.RELEVANT, TP.READONLY, TP.REQUIRED, TP.VALID];
 
 //  lama operations
 TP.ASSIST = 'assist';
