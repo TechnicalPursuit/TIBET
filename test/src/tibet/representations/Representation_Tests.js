@@ -735,7 +735,7 @@ function() {
         'TP.lang.Object',               'foo: bar',
         'TP.core.Hash',                 'foo => bar',
         'TP.sig.Signal',                'TP.sig.Signal :: (foo => bar)',
-        'TP.sig.Exception',             /^TP.sig.Exception: There really was an Error([\s\S]*)$/,
+        'TP.sig.Exception',             /^TP.sig.Exception :: \(There really was an Error([\s\S]*)\)$/,
 
         'TP.core.Window',               /^TP.core.Window :: \(([\s\S]+)\)$/,
         'TP.dom.HTMLDocumentNode',      /([\s\S]+)/,

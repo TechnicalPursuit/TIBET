@@ -2885,7 +2885,7 @@ function(verbose) {
     }
 
     try {
-        str = this.getSignalName() + ': ' + msg;
+        str = this.getSignalName() + ' :: (' + msg + ')';
     } catch (e) {
         str = this.toString();
     } finally {
