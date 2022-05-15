@@ -1379,6 +1379,22 @@ TP.defineMethodAlias(TP, 'fc', Function.construct);
 
 //  ------------------------------------------------------------------------
 
+Map.Type.defineMethod('construct',
+function(iterable) {
+
+    /**
+     * @method construct
+     * @summary Constructs and returns a new instance of the receiver.
+     * @param {Object} [iterable] An iterable object that will be used to
+     *     initialize the new instance.
+     * @returns {Map} A new instance.
+     */
+
+    return new Map(iterable);
+});
+
+//  ------------------------------------------------------------------------
+
 Number.Type.defineMethod('construct',
 function(anObject) {
 
@@ -1571,6 +1587,22 @@ TP.defineMethodAlias(TP, 'rc', RegExp.construct);
 
 //  ------------------------------------------------------------------------
 
+Set.Type.defineMethod('construct',
+function(iterable) {
+
+    /**
+     * @method construct
+     * @summary Constructs and returns a new instance of the receiver.
+     * @param {Object} [iterable] An iterable object that will be used to
+     *     initialize the new instance.
+     * @returns {Set} A new instance.
+     */
+
+    return new Set(iterable);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$sc', TP.sc);
 
 //  ------------------------------------------------------------------------
@@ -1625,6 +1657,38 @@ function(varargs) {
 
 //  alias
 TP.defineMethodAlias(TP, 'sc', String.construct);
+
+//  ------------------------------------------------------------------------
+
+WeakMap.Type.defineMethod('construct',
+function(iterable) {
+
+    /**
+     * @method construct
+     * @summary Constructs and returns a new instance of the receiver.
+     * @param {Object} [iterable] An iterable object that will be used to
+     *     initialize the new instance.
+     * @returns {WeakMap} A new instance.
+     */
+
+    return new WeakMap(iterable);
+});
+
+//  ------------------------------------------------------------------------
+
+WeakSet.Type.defineMethod('construct',
+function(iterable) {
+
+    /**
+     * @method construct
+     * @summary Constructs and returns a new instance of the receiver.
+     * @param {Object} [iterable] An iterable object that will be used to
+     *     initialize the new instance.
+     * @returns {WeakSet} A new instance.
+     */
+
+    return new WeakSet(iterable);
+});
 
 //  ------------------------------------------------------------------------
 //  NATIVE TYPES - MEMBERSHIP
