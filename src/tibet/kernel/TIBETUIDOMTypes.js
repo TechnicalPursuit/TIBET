@@ -1214,6 +1214,10 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
+    if (TP.elementIsDisabled(aTargetElem)) {
+        return this;
+    }
+
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
@@ -1343,6 +1347,10 @@ function(aTargetElem, anEvent) {
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
+    }
+
+    if (TP.elementIsDisabled(aTargetElem)) {
+        return this;
     }
 
     //  Grab the event target element and wrap it
@@ -1482,6 +1490,10 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
+    if (TP.elementIsDisabled(aTargetElem)) {
+        return this;
+    }
+
     //  We will only signal UIActivate and focus if the button that was
     //  depressed was TP.LEFT.
     if (TP.eventGetButton(anEvent) !== TP.LEFT) {
@@ -1550,6 +1562,10 @@ function(aTargetElem, anEvent) {
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
+    }
+
+    if (TP.elementIsDisabled(aTargetElem)) {
+        return this;
     }
 
     //  We will only signal UIDeactivate and focus if the button that was
