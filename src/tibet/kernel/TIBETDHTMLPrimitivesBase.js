@@ -176,6 +176,496 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentConstructEvent',
+function(aDocument, anEventSpec) {
+
+    /**
+     * @method documentConstructEvent
+     * @summary Creates a native Event object, populating it with the event
+     *     spec data provided. The spec must exist, and must contain a
+     *     'type' key to construct a valid Event. NOTE that the keys in the
+     *     event spec must match those expected for the particular event,
+     *     making this method somewhat touchy with respect to input.
+     * @param {Document} aDocument The native document the event will be
+     *     created within. Default is TIBET's current UI canvas document.
+     * @param {Event|TP.core.Hash} anEventSpec A hash containing the event
+     *     specification as key/value pairs.
+     * @returns {Event} The newly constructed native Event.
+     */
+
+    var spec,
+        doc,
+        type,
+        evt;
+
+    if (TP.isEvent(anEventSpec)) {
+        spec = anEventSpec;
+
+        //  Go ahead and instance program an 'at' function on the Event
+        //  object, so that calls below work without a lot of shuffle.
+        spec.at = function(aKey) {
+            return this[aKey];
+        };
+    } else if (TP.isValid(anEventSpec)) {
+        spec = TP.hc(anEventSpec);
+    } else {
+        spec = TP.hc();
+    }
+
+    doc = aDocument;
+    if (TP.notValid(doc)) {
+        doc = TP.sys.getUICanvas().getNativeDocument();
+    }
+
+    //  The following fields are used to initialize an Event. We start with the
+    //  baseline 'EventInit' interface.
+
+    //  Field       Default
+    //  -----       -------
+    //  bubbles     false
+    //  cancelable  false
+    //  composed    false
+
+    type = spec.at('type');
+
+    switch (type) {
+        //  Events
+        case 'abort':
+        case 'DOMContentLoaded':
+        case 'afterprint':
+        case 'beforeprint':
+        case 'beforeunload':
+        case 'cancel':
+        case 'change':
+        case 'contextlost':
+        case 'contextrestored':
+        case 'cut':
+        case 'copy':
+        case 'input':
+        case 'invalid':
+        case 'languagechange':
+        case 'load':
+        case 'offline':
+        case 'online':
+        case 'open':
+        case 'paste':
+        case 'readystatechange':
+        case 'reset':
+        case 'securitypolicyviolation':
+        case 'selectionchange':
+        case 'scroll':
+        case 'select':
+        case 'slotchange':
+        case 'toggle':
+        case 'unload':
+        case 'visibilitychange':
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new Event(type, TP.obj(spec));
+
+            break;
+
+        //  Animation Events
+        case 'animationend':
+
+            //  For animation events we add the following to supplement the
+            //  standard 'EventInit' interface (all optional):
+
+            //  AnimationEventInit
+
+            //  Field           Default
+            //  -----           -------
+            //  animationName   ''
+            //  elapsedTime     0.0
+            //  pseudoElement   ''
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new AnimationEvent(type, TP.obj(spec));
+
+            break;
+
+        //  CloseEvent
+        case 'close':
+
+            //  For close events we add the following to supplement the
+            //  standard 'EventInit' interface (all optional):
+
+            //  CloseEventInit
+
+            //  Field           Default
+            //  -----           -------
+            //  wasClean        false
+            //  code            0
+            //  reason          ''
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new CloseEvent(type, TP.obj(spec));
+
+            break;
+
+        //  ErrorEvent
+        case 'error':
+
+            //  For error events we add the following to supplement the
+            //  standard 'EventInit' interface (all optional):
+
+            //  Unknown and undocumented in any standards
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new ErrorEvent(type, TP.obj(spec));
+
+            break;
+
+        //  FormDataEvent
+        case 'formdata':
+
+            //  For form data events we add the following to supplement the
+            //  standard 'EventInit' interface (all optional):
+
+            //  FormEventInit
+
+            //  Field           Default
+            //  -----           -------
+            //  formdata        null
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new FormDataEvent(type, TP.obj(spec));
+
+            break;
+
+        //  FocusEvent
+        case 'blur':
+        case 'focus':
+        case 'focusin':
+        case 'focusout':
+
+            //  For focus events we add the following to supplement the
+            //  standard 'EventInit' interface (all optional):
+
+            //  FocusEventInit
+
+            //  Field           Default
+            //  -----           -------
+            //  relatedTarget   null
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new FocusEvent(type, TP.obj(spec));
+
+            break;
+
+        //  MessageEvent
+        case 'connect':
+        case 'message':
+        case 'messageerror':
+
+            //  For message events we add the following to supplement the
+            //  standard 'EventInit' interface (all optional):
+
+            //  FocusEventInit
+
+            //  Field           Default
+            //  -----           -------
+            //  data            null
+            //  origin          ''
+            //  lastEventId     ''
+            //  source          null
+            //  ports           []
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new MessageEvent(type, TP.obj(spec));
+
+            break;
+
+        //  Key Events
+        case 'keydown':
+        case 'keypress':
+        case 'keyup':
+
+            //  For key events we add the following to supplement the standard
+            //  'EventInit' interface (all optional):
+
+            //  UIEventInit
+
+            //  Field       Default
+            //  -----       -------
+            //  detail      0
+            //  view        null
+
+            //  KeyboardEventInit
+
+            //  Field       Default
+            //  -----       -------
+            //  key         ''
+            //  code        ''
+            //  location    0
+            //  ctrlKey     false
+            //  shiftKey    false
+            //  altKey      false
+            //  metaKey     false
+            //  isComposing false
+            //  charCode    0   (deprecated)
+            //  keyCode     0   (deprecated)
+            //  which       0   (deprecated)
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('view', TP.nodeGetWindow(doc));
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new KeyboardEvent(type, TP.obj(spec));
+
+            break;
+
+        //  Mouse Events
+
+        case 'click':
+        case 'contextmenu':
+        case 'dblclick':
+        case 'mousedown':
+        case 'mouseenter':
+        case 'mousemove':
+        case 'mouseleave':
+        case 'mouseout':
+        case 'mouseover':
+        case 'mouseup':
+            //  For mouse events we add the following to supplement the standard
+            //  'EventInit' interface (all optional):
+
+            //  UIEventInit
+
+            //  Field       Default
+            //  -----       -------
+            //  detail      0
+            //  view        null
+
+            //  MouseEventInit
+
+            //  Field           Default
+            //  -----           -------
+            //  screenX         0
+            //  screenY         0
+            //  clientX         0
+            //  clientY         0
+            //  ctrlKey         false
+            //  shiftKey        false
+            //  altKey          false
+            //  metaKey         false
+            //  button          0
+            //  buttons         0
+            //  relatedTarget   null
+            //  region          null
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('view', TP.nodeGetWindow(doc));
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            //  For mouse events, 'detail' should 1 plus the current click
+            //  count.
+            if (type === 'click') {
+                spec.atPutIfAbsent('detail', 1);
+            } else if (type === 'dblclick') {
+                spec.atPutIfAbsent('detail', 2);
+            }
+
+            if (type === 'contextmenu') {
+                spec.atPutIfAbsent('button', 2);
+            }
+
+            evt = new MouseEvent(type, TP.obj(spec));
+
+            break;
+
+        //  StorageEvent
+        case 'storage':
+
+            //  For storage events we add the following to supplement the
+            //  standard 'EventInit' interface (all optional):
+
+            //  Unknown and undocumented in any standards
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new StorageEvent(type, TP.obj(spec));
+
+            break;
+
+        //  SubmitEvent
+        case 'submit':
+
+            //  For submit events we add the following to supplement the
+            //  standard 'EventInit' interface (all optional):
+
+            //  SubmitEventInit
+
+            //  Field           Default
+            //  -----           -------
+            //  submitter       null
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new SubmitEvent(type, TP.obj(spec));
+
+            break;
+
+        //  UI Events
+        case 'resize':
+
+            //  For key events we add the following to supplement the standard
+            //  'EventInit' interface (all optional):
+
+            //  UIEventInit
+
+            //  Field       Default
+            //  -----       -------
+            //  detail      0
+            //  view        null
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('view', TP.nodeGetWindow(doc));
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new UIEvent(type, TP.obj(spec));
+
+            break;
+
+        //  Wheel Events
+        case 'wheel':
+            //  For wheel events we add the following to supplement the standard
+            //  'EventInit' interface (all optional):
+
+            //  UIEventInit
+
+            //  Field       Default
+            //  -----       -------
+            //  detail      0
+            //  view        null
+
+            //  MouseEventInit
+
+            //  Field           Default
+            //  -----           -------
+            //  screenX         0
+            //  screenY         0
+            //  clientX         0
+            //  clientY         0
+            //  ctrlKey         false
+            //  shiftKey        false
+            //  altKey          false
+            //  metaKey         false
+            //  button          0
+            //  buttons         0
+            //  relatedTarget   null
+            //  region          null
+
+            //  WheelEventInit
+
+            //  Field       Default
+            //  -----       -------
+            //  deltaX      0.0
+            //  deltaY      0.0
+            //  deltaZ      0.0
+            //  deltaMode   0
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('view', TP.nodeGetWindow(doc));
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new WheelEvent(type, TP.obj(spec));
+
+            break;
+
+        //  Transition Events
+        case 'transitionend':
+            //  For transition events we add the following to supplement the
+            //  standard 'EventInit' interface (all optional):
+
+            //  TransitionEventInit
+
+            //  Field           Default
+            //  -----           -------
+            //  propertyName    ''
+            //  elapsedTime     0.0
+            //  pseudoElement   ''
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new TransitionEvent(type, TP.obj(spec));
+
+            break;
+
+        default:
+
+            //  Generic Event creation fallthrough
+
+            //  We default these to sane values
+            spec.atPutIfAbsent('bubbles', true);
+            spec.atPutIfAbsent('cancelable', true);
+
+            evt = new Event(type, TP.obj(spec));
+
+            //  Not an officially-defined event. Just put the slots from
+            //  the supplied hash onto the Event as instance properties.
+            TP.keys(spec).perform(
+                    function(aKey) {
+                        //  We filter out specified properties - Mozilla
+                        //  throws an exception. Webkit may not, but it
+                        //  probably won't like it.
+                        if (TP.W3C_EVENT_PROPERTIES.test(aKey) ||
+                            TP.EXTRA_EVENT_PROPERTIES.test(aKey)) {
+                            return;
+                        }
+
+                        evt[aKey] = spec.at(aKey);
+                    });
+
+            break;
+    }
+
+    //  additional properties not necessarily covered by spec
+    TP.TIBET_EVENT_PROPERTIES.perform(
+        function(item) {
+            try {
+                evt[item] = spec.at(item.slice(2));
+            } catch (e) {
+                TP.ifError() ?
+                    TP.error(TP.ec(e, 'Error configuring event.')) : 0;
+            }
+        });
+
+    return evt;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentCopyTextToClipboard',
 function(aDocument, aText) {
 
