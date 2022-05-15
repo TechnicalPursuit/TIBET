@@ -503,7 +503,7 @@ TP.hc(
     'test',
     TP.sys.getBrowser,
     'firefox',
-    function(errorObj) {
+    function(errorObj, stackOffset) {
 
         /**
          * @method getStackInfo
@@ -514,6 +514,10 @@ TP.hc(
          *          [function name, file name, line number]
          * @param {Error} errorObj The Error object to obtain the stack
          *     information from.
+         * @param {Number} [stackOffset=0] If this is supplied, then the number
+         *     of stack entries is sliced off from the start of the list. This
+         *     allows the caller to omit stack frames put there by the debugging
+         *     machinery they're using.
          * @returns {String[]} An Array of Strings containing stack information.
          */
 
@@ -560,10 +564,14 @@ TP.hc(
             results.shift();
         }
 
+        if (TP.isNumber(stackOffset)) {
+            results = results.slice(stackOffset);
+        }
+
         return results;
     },
     'safari',
-    function(errorObj) {
+    function(errorObj, stackOffset) {
 
         /**
          * @method getStackInfo
@@ -574,6 +582,10 @@ TP.hc(
          *          [function name, file name, line number]
          * @param {Error} errorObj The Error object to obtain the stack
          *     information from.
+         * @param {Number} [stackOffset=0] If this is supplied, then the number
+         *     of stack entries is sliced off from the start of the list. This
+         *     allows the caller to omit stack frames put there by the debugging
+         *     machinery they're using.
          * @returns {String[]} An Array of Strings containing stack information.
          */
 
@@ -621,10 +633,14 @@ TP.hc(
             results.shift();
         }
 
+        if (TP.isNumber(stackOffset)) {
+            results = results.slice(stackOffset);
+        }
+
         return results;
     },
     'chrome',
-    function(errorObj) {
+    function(errorObj, stackOffset) {
 
         /**
          * @method getStackInfo
@@ -635,6 +651,10 @@ TP.hc(
          *          [function name, file name, line number, character number]
          * @param {Error} errorObj The Error object to obtain the stack
          *     information from.
+         * @param {Number} [stackOffset=0] If this is supplied, then the number
+         *     of stack entries is sliced off from the start of the list. This
+         *     allows the caller to omit stack frames put there by the debugging
+         *     machinery they're using.
          * @returns {String[]} An Array of Strings containing stack information.
          */
 
@@ -700,6 +720,10 @@ TP.hc(
 
         if (err.message === 'StackDump') {
             results.shift();
+        }
+
+        if (TP.isNumber(stackOffset)) {
+            results = results.slice(stackOffset);
         }
 
         return results;

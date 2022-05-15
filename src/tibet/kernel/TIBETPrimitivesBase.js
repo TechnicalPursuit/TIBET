@@ -160,7 +160,7 @@ function(pluginKey) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('errorFormatStack',
-function(errorObj, joinChar) {
+function(errorObj, joinChar, stackOffset) {
 
     /**
      * @method errorFormatStack
@@ -170,6 +170,10 @@ function(errorObj, joinChar) {
      *     from.
      * @param {String} [joinChar] The character to use to join the entries. This
      *     defaults to newline.
+     * @param {Number} [stackOffset=0] If this is supplied, then the number of
+     *     stack entries is sliced off from the start of the list. This allows
+     *     the caller to omit stack frames put there by the debugging machinery
+     *     they're using.
      * @returns {String} Stack information from the supplied error object
      *     formatted as a String.
      */
@@ -180,7 +184,7 @@ function(errorObj, joinChar) {
         linkBuild,
         stackStr;
 
-    stackEntries = TP.getStackInfo(errorObj);
+    stackEntries = TP.getStackInfo(errorObj, stackOffset);
 
     joiner = TP.ifEmpty(joinChar, '\n');
 
