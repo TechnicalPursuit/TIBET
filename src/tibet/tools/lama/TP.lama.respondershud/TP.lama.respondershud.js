@@ -234,8 +234,6 @@ function(aSignal) {
 
         tileTPElem,
 
-        newContentTPElem,
-
         sheet,
         mainRule,
 
@@ -307,11 +305,10 @@ function(aSignal) {
         tileTPElem = TP.bySystemId('Lama').makeTile('ResponderSummary_Tile');
         tileTPElem.setHeaderText('Responder Methods - ' + itemData.at(1));
 
-        newContentTPElem = tileTPElem.setContent(
-                                TP.getContentForTool(
-                                    sourceTPElem,
-                                    'RespondersHUDTileBody',
-                                    TP.hc('dataURI', dataURI)));
+        tileTPElem.setContent(TP.getContentForTool(
+                                sourceTPElem,
+                                'RespondersHUDTileBody',
+                                TP.hc('dataURI', dataURI)));
 
         tileTPElem.get('footer').setContent(
                                 TP.getContentForTool(

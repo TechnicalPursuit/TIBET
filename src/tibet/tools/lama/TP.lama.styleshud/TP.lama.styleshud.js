@@ -147,7 +147,6 @@ function(aSignal) {
         newFooterElem,
 
         tileTPElem,
-        newContentTPElem,
 
         setResourceParams,
 
@@ -221,7 +220,7 @@ function(aSignal) {
         tileTPElem = TP.bySystemId('Lama').makeTile('StyleSummary_Tile');
         tileTPElem.setHeaderText('Rule Properties');
 
-        newContentTPElem = tileTPElem.setContent(newBodyElem);
+        tileTPElem.setContent(newBodyElem);
 
         tileTPElem.get('footer').setContent(newFooterElem);
 
@@ -234,7 +233,7 @@ function(aSignal) {
                             tileTPElem.get('footer').getFirstChildElement());
 
         if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
-            newContentTPElem = tileTPElem.setContent(newBodyElem);
+            tileTPElem.setContent(newBodyElem);
         }
         if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
             tileTPElem.get('footer').setContent(newFooterElem);

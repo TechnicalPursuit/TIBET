@@ -663,7 +663,6 @@ function(aTPElem) {
         newFooterElem,
 
         tileTPElem,
-        newContentTPElem,
 
         currentBodyElem,
         currentFooterElem,
@@ -748,7 +747,7 @@ function(aTPElem) {
 
         tileTPElem = TP.bySystemId('Lama').makeTile('DOMInfo_Tile');
 
-        newContentTPElem = tileTPElem.setContent(newBodyElem);
+        tileTPElem.setContent(newBodyElem);
 
         tileTPElem.get('footer').setContent(newFooterElem);
 
@@ -763,7 +762,7 @@ function(aTPElem) {
                             tileTPElem.get('footer').getFirstChildElement());
 
         if (TP.name(currentBodyElem) !== TP.name(newBodyElem)) {
-            newContentTPElem = tileTPElem.setContent(newBodyElem);
+            tileTPElem.setContent(newBodyElem);
         }
         if (TP.name(currentFooterElem) !== TP.name(newFooterElem)) {
             tileTPElem.get('footer').setContent(newFooterElem);
