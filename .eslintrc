@@ -19,6 +19,8 @@
         "Reflect": false,
         "AsyncFunction": false,
         "GeneratorFunction": false,
+        "FormDataEvent": false,
+        "SubmitEvent": false,
         "import": false
     },
     "rules": {
