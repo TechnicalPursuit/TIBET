@@ -13370,7 +13370,9 @@ function(attributeName) {
     }
 
     //  If we got handed an 'access path', then we need to let it handle this.
-    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
+    if (!TP.isString(attributeName) &&
+            TP.canInvoke(attributeName, 'isAccessPath') &&
+            attributeName.isAccessPath()) {
         path = attributeName;
 
         //  If the path's String representation is a simple JS_IDENTIFIER, then
@@ -14929,7 +14931,9 @@ function(attributeName, attributeValue, shouldSignal) {
     }
 
     //  If we got handed an 'access path', then we need to let it handle this.
-    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
+    if (!TP.isString(attributeName) &&
+            TP.canInvoke(attributeName, 'isAccessPath') &&
+            attributeName.isAccessPath()) {
         path = attributeName;
 
         //  If the path's String representation is a simple JS_IDENTIFIER, then
@@ -16897,7 +16901,9 @@ function(attributeName) {
     }
 
     //  If we got handed an 'access path', then we need to let it handle this.
-    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
+    if (!TP.isString(attributeName) &&
+            TP.canInvoke(attributeName, 'isAccessPath') &&
+            attributeName.isAccessPath()) {
         path = attributeName;
 
         //  If the path's String representation is a simple JS_IDENTIFIER, then

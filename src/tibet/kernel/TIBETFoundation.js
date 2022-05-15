@@ -6991,7 +6991,9 @@ function(prefix, attributeName) {
         attrName;
 
     //  If it's a TP.path.AccessPath
-    if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
+    if (!TP.isString(attributeName) &&
+            TP.canInvoke(attributeName, 'isAccessPath') &&
+            attributeName.isAccessPath()) {
 
         //  The attribute name is a path and we also want the String
         //  representation.
