@@ -353,7 +353,12 @@ TP.oc = TP.constructOrphanObject;
 
 //  ------------------------------------------------------------------------
 
-TP.constructProxyObject = function(target, config) {
+//  NB: This *MUST* be considered a private slot - otherwise we get endless
+//  recursion when iterating over a Proxy. Also, this is a Symbol for
+//  uniqueness.
+TP.PROXIED = Symbol('__Proxied__');
+
+TP.constructProxyObject = function(proxyTarget, proxyConfig) {
 
     /**
      * @method constructProxyObject
@@ -362,18 +367,35 @@ TP.constructProxyObject = function(target, config) {
      *     whether an object is a Proxy or not, which is normally very difficult
      *     if not impossible to determine. Use TP.isProxy to determine if an
      *     object is an E6 Proxy.
-     * @param {Object} target The object to act as a proxy for.
-     * @param {Object} config The proxy configuration
+     * @param {Object} proxyTarget The object to act as a proxy for.
+     * @param {Object} proxyConfig The proxy configuration.
      * @returns {Proxy} An ECMA E6 proxy object.
      */
 
-    var newProxy;
+    var newProxyConfig,
+        newProxy;
 
-    newProxy = new Proxy(target, config);
-    newProxy.__isProxy__ = true;
+    newProxyConfig = TP.copy(proxyConfig);
 
-    //  Capture the proxied object so that we can access later.
-    newProxy[TP.PROXIED] = target;
+    if (TP.isValid(proxyConfig.get)) {
+        newProxyConfig.get = function(target, property, receiver) {
+            if (property === TP.PROXIED) {
+                return target;
+            }
+
+            return proxyConfig.get(target, property, receiver);
+        };
+    } else {
+        newProxyConfig.get = function(target, property, receiver) {
+            if (property === TP.PROXIED) {
+                return target;
+            }
+
+            return Reflect.get(target, property, receiver);
+        };
+    }
+
+    newProxy = new Proxy(proxyTarget, newProxyConfig);
 
     return newProxy;
 };
@@ -1434,7 +1456,6 @@ TP.SIGNAL_BATCH = 'batch';
 TP.END_SIGNAL_BATCH = 'endbatch';
 
 TP.TARGET = 'Target';
-TP.PROXIED = 'Proxied';
 
 //  ---
 //  requests

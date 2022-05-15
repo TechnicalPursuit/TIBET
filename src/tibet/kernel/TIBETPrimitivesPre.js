@@ -9425,7 +9425,7 @@ function(anObj) {
      *     object.
      */
 
-    return TP.isValid(anObj) && TP.owns(anObj, '__isProxy__');
+    return TP.isValid(anObj) && TP.isValid(anObj[TP.PROXIED]);
 });
 
 //  ------------------------------------------------------------------------

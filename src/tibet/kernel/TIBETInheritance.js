@@ -569,14 +569,14 @@ function(name, classDefFunction) {
             optinst,
             finalinst;
 
-        //  If the current 'this' object is not a Proxy (which means its not the
-        //  standin itself), then it must be an ECMAScript class that is a
-        //  subclass of the Proxy. In this case, we need to construct the
-        //  instance in the standard way. Note that we use this '__nonProxy__'
-        //  flag to mark the constructor because, otherwise, we will loop
-        //  endlessly as this calls back on itself during the construction
-        //  process.
-        if (!TP.isProxy(this) && !TP.owns(this, '__nonProxy__')) {
+        //  If the current 'this' object doesn't have the '__nonProxy' flag,
+        //  then it hasn't been through here yet and it must be an ECMAScript
+        //  class that is a subclass of the 'Proxy'ed superclass. In this case,
+        //  we need to construct the instance in the standard way. Note that we
+        //  use this '__nonProxy__' flag to mark the constructor because,
+        //  otherwise, we will loop endlessly as this calls back on itself
+        //  during the construction process.
+        if (!TP.owns(this, '__nonProxy__')) {
             this.__nonProxy__ = true;
             newinst = Reflect.construct(this, arguments);
             delete this.__nonProxy__;
@@ -622,13 +622,9 @@ function(name, classDefFunction) {
             finalinst = newinst;
         }
 
-        //  If the new target is *not* a Proxy, then we're running because
-        //  instance of *an ECMA subclass* of this class is being created.
-        //  In that case, we need to wire in the __proto__ of the new
-        //  instance to the prototype of that object.
-        if (!TP.isProxy(this)) {
-            Object.setPrototypeOf(finalinst, this.prototype);
-        }
+        //  We need to wire in the __proto__ of the new instance to the
+        //  prototype of that object.
+        Object.setPrototypeOf(finalinst, this.prototype);
 
         return finalinst;
     };
@@ -743,13 +739,9 @@ function(name, classDefFunction) {
                 finalinst = newinst;
             }
 
-            //  If the new target is *not* a Proxy, then we're running because
-            //  instance of *an ECMA subclass* of this class is being created.
-            //  In that case, we need to wire in the __proto__ of the new
-            //  instance to the prototype of that object.
-            if (!TP.isProxy(newTarget)) {
-                Object.setPrototypeOf(finalinst, newTarget.prototype);
-            }
+            //  We need to wire in the __proto__ of the new instance to the
+            //  prototype of that object.
+            Object.setPrototypeOf(finalinst, newTarget.prototype);
 
             return finalinst;
         }
