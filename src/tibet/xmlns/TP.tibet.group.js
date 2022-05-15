@@ -433,7 +433,7 @@ function(includesGroups) {
 
     //  Query for any immediate children that either don't have a tibet:group
     //  attribute or have a 'tibet:group' attribute that matches our group ID.
-    queryStr = TP.computeFocusableQuery('> ', ':not([tibet|group=])') + ', ' +
+    queryStr = TP.computeFocusableQuery('> ', ':not([tibet|group])') + ', ' +
                 TP.computeFocusableQuery('> ', '[tibet|group="' + lid + '"]');
 
     results.push(
