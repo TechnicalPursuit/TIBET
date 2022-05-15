@@ -888,7 +888,6 @@ function(moveAction) {
             this.blurFocusedDescendantElement();
 
             this.scrollTopToRow(0);
-            this.render();
 
             listTPElems = this.get('allItems');
             successorTPElem = listTPElems.first();
@@ -902,7 +901,6 @@ function(moveAction) {
             this.blurFocusedDescendantElement();
 
             this.scrollTopToRow(lastDataItemIndex);
-            this.render();
 
             listTPElems = this.get('allItems');
             successorTPElem = listTPElems.last();
@@ -918,7 +916,6 @@ function(moveAction) {
             focusRowNum = (startIndex - pageSize).max(0);
 
             this.scrollTopToRow(focusRowNum);
-            this.render();
 
             listTPElems = this.get('allItems');
             successorTPElem = listTPElems.first();
@@ -937,7 +934,6 @@ function(moveAction) {
             /* eslint-enable no-extra-parens */
 
             this.scrollTopToRow(focusRowNum + (pageSize - 1));
-            this.render();
 
             listTPElems = this.get('allItems');
             successorTPElem = listTPElems.first();
@@ -948,7 +944,6 @@ function(moveAction) {
             if (currentFocusedTPElem === lastVisualItem) {
                 if (endIndex < lastDataItemIndex) {
                     this.scrollTopToRow(endIndex + 1);
-                    this.render();
 
                     successorTPElem = this.getStartAndEndVisualRows().last();
                 } else {
@@ -958,7 +953,6 @@ function(moveAction) {
                     this.blurFocusedDescendantElement();
 
                     this.scrollTopToRow(0);
-                    this.render();
 
                     listTPElems = this.get('allItems');
                     successorTPElem = listTPElems.first();
@@ -971,7 +965,6 @@ function(moveAction) {
             if (currentFocusedTPElem === firstVisualItem) {
                 if (startIndex > 0) {
                     this.scrollTopToRow(startIndex - 1);
-                    this.render();
 
                     successorTPElem = this.getStartAndEndVisualRows().first();
                 } else {
@@ -981,7 +974,6 @@ function(moveAction) {
                     this.blurFocusedDescendantElement();
 
                     this.scrollTopToRow(lastDataItemIndex);
-                    this.render();
 
                     listTPElems = this.get('allItems');
 
