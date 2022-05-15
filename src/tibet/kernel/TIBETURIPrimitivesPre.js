@@ -923,7 +923,6 @@ function(aURI, aNode, shouldClone) {
         //  content. This avoids DOM pointer weirdness.
         arr = resultElements.collect(
             function(item) {
-
                 return TP.nodeCloneNode(item, true);
             });
 

@@ -436,7 +436,7 @@ function(aDocument) {
      * @summary Returns the enclosing document's body element.
      * @param {Document} aDocument The document to use.
      * @exception TP.sig.InvalidDocument
-     * @returns {String} The document's body element.
+     * @returns {Element} The document's body element.
      */
 
     var body;

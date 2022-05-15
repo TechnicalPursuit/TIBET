@@ -274,7 +274,7 @@ function(attrName, conditionAttrVal, invertConditions) {
     if (invertConditions) {
 
         //  Inverting the value of the condition. (i.e. 'valid' when 'all' of
-        //  them are valid means 'invalid' when 'any' are invalid.
+        //  them are valid means 'invalid' when 'any' are invalid).
         if (conditionAttrVal === 'all') {
             condition = 'any';
         } else if (conditionAttrVal === 'any') {

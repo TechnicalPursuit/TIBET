@@ -1948,19 +1948,16 @@ function(aProvider) {
 
     this.notify =
             function(anObject, aRequest) {
-
                 return aProvider.notify(anObject, aRequest);
             };
 
     this.stdin =
             function(aQuery, aDefault, aRequest) {
-
                 return aProvider.stdin(aQuery, aDefault, aRequest);
             };
 
     this.stdout =
             function(anObject, aRequest) {
-
                 return aProvider.stdout(anObject, aRequest);
             };
 

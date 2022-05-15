@@ -3514,6 +3514,8 @@ function() {
             request.set('$deferredPromiseRejector', rejector);
         });
 
+    //  If the request already completed, then resolve the Promise with either
+    //  the fulfilled value or the rejected value.
     if (request.didComplete()) {
         if (request.didSucceed()) {
             request.get('$deferredPromiseResolver')(request.getResult());

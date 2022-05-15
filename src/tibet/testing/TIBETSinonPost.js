@@ -84,7 +84,8 @@ function(altValue) {
      * @description If the receiver is a method on an object, then this method
      *     will replace that method with a stub. If the receiver is not a
      *     method, this method will raise a TP.sig.InvalidMethod exception.
-     * @param {Object} altValue The alternative method value (aka method 'body').
+     * @param {Function} altValue The alternative method value (aka method
+     *     'body').
      * @exception TP.sig.InvalidParameter
      * @exception TP.sig.InvalidFunction
      * @returns {Function} The stubbing Function object.

@@ -2569,6 +2569,8 @@ TP.registerLoadInfo(TP.functionNeedsCallee);
 //  system-wide flag anyway, so using this mechanism is not a problem.
 TP.__trackInvocations__ = TP.sys.cfg('oo.$$track_invocations');
 
+//  ------------------------------------------------------------------------
+
 TP.defineMethodSlot =
 function(target, name, value, track, descriptor, display, owner, $isHandler) {
 
