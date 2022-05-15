@@ -417,6 +417,7 @@ Cmd.prototype.execute = function() {
             devtools: devtoolsPref,
             userDataDir: userDataPath,
             headless: headlessPref,
+            defaultViewport: null,
             slowMo: CLI.getcfg('puppeteer.slowMo', false)
         };
 
