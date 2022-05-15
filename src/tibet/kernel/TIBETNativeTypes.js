@@ -4239,6 +4239,25 @@ function(aValue, ms) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+Promise.Inst.defineMethod('asPromise',
+function() {
+
+    /**
+     * @method asPromise
+     * @summary Returns a promise that will be execute after given ms
+     *     milliseconds.
+     * @param {Number} ms The number of milliseconds to wait before executing
+     *     the promise.
+     * @returns {Promise} A promise that will execute after the given delay.
+     */
+
+    TP.ifWarn() ? TP.warn('Already a Promise') : 0;
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 Promise.Inst.defineMethod('delay',
 function(ms) {
 

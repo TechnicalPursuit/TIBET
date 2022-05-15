@@ -9401,6 +9401,23 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isPromise',
+function(anObj) {
+
+    /**
+     * @method isPromise
+     * @summary Returns true if the object provided is an ECMA E6 Promise
+     *     object.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean} Whether or not the supplied object is an ECMA E6
+     *     Promise object.
+     */
+
+    return TP.ObjectProto.toString.call(anObj) === '[object Promise]';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isProxy',
 function(anObj) {
 
