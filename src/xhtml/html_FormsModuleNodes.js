@@ -1065,9 +1065,7 @@ function(aPosition) {
                     0;
     }
 
-    //  According to the spec, the end index is one character *after* the
-    //  intended selection.
-    node.setSelectionRange(aPosition, aPosition + 1);
+    node.setSelectionRange(aPosition, aPosition);
 
     return this;
 });
