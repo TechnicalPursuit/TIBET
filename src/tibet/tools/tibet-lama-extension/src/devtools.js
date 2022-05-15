@@ -171,7 +171,7 @@ const panelDidCreate = function(extensionPanel, info) {
     //  Add listener for onShown and use that to capture and instrument the
     //  window. NOTE that the extensionPanel passed to the panelDidCreate method
     //  is NOT a window but for TIBET operation we need the window handle.
-    extensionPanel.onShown.addListener((panelWin) => {
+    extensionPanel.onShown.addListener(function(panelWin) {
 
         log('showing panel ' + info.title);
 
@@ -200,7 +200,7 @@ const panelDidCreate = function(extensionPanel, info) {
         return;
     });
 
-    extensionPanel.onHidden.addListener((panelWin) => {
+    extensionPanel.onHidden.addListener(function(panelWin) {
         log('hiding panel ' + info.title);
         if (isInstrumented(panelWin)) {
             TP.signal(
@@ -236,7 +236,7 @@ const sidebarDidCreate = function(sidebarPane, info) {
     //  Instrument with window ref etc. etc. and render initial content.
     //  NOTE that this must be done in the onShown handler during the first
     //  display operation for the pane. The window is not real until then.
-    sidebarPane.onShown.addListener((panelWin) => {
+    sidebarPane.onShown.addListener(function(panelWin) {
 
         log('showing sidebar ' + info.title);
 
@@ -265,7 +265,7 @@ const sidebarDidCreate = function(sidebarPane, info) {
         return;
     });
 
-    sidebarPane.onHidden.addListener((panelWin) => {
+    sidebarPane.onHidden.addListener(function(panelWin) {
         log('hiding sidebar ' + info.title);
         if (isInstrumented(panelWin)) {
             TP.signal(TP.gid(panelWin),
