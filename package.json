@@ -1,35 +1,21 @@
 {
     "name": "tibet",
-    "version": "5.6.0",
+    "version": "5.6.1",
     "description": "TIBET Full-Stack Low-Code Platform.",
-    "keywords": [
-        "Electron",
-        "Express",
-        "Framework",
-        "Full-Stack",
-        "Single-Page",
-        "Low-Code",
-        "No-Code",
-        "IDE",
-        "Workflow",
-        "CouchDB"
-    ],
+    "keywords": ["Electron", "Express", "Framework", "Full-Stack", "Single-Page", "Low-Code", "No-Code", "IDE", "Workflow", "CouchDB"],
     "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
         "email": "tibet@technicalpursuit.com",
         "url": "http://www.technicalpursuit.com"
     },
-    "contributors": [
-        {
-            "name": "Scott Shattuck",
-            "email": "ss@technicalpursuit.com"
-        },
-        {
-            "name": "William J. Edney",
-            "email": "bedney@technicalpursuit.com"
-        }
-    ],
+    "contributors": [{
+        "name": "Scott Shattuck",
+        "email": "ss@technicalpursuit.com"
+    }, {
+        "name": "William J. Edney",
+        "email": "bedney@technicalpursuit.com"
+    }],
     "repository": {
         "type": "git",
         "url": "http://github.com/TechnicalPursuit/TIBET"
