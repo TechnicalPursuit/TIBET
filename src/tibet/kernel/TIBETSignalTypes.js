@@ -1710,12 +1710,15 @@ function(aPayload) {
      * @returns {Event|Object} A native Event or Object with Event slots.
      */
 
-    var hash;
+    var fauxTarget,
+        hash;
+
+    fauxTarget = TP.sys.uidoc(true).documentElement;
 
     hash = TP.isHash(aPayload) ? aPayload : TP.hc();
     hash.addIfAbsent(
-            'target', null,
-            'currentTarget', null,
+            'target', fauxTarget,
+            'currentTarget', fauxTarget,
             'relatedTarget', null,
 
             'type', this.getType().NATIVE_NAME,
@@ -1727,7 +1730,7 @@ function(aPayload) {
             'offsetX', 0,
             'offsetY', 0,
 
-            'view', null,
+            'view', TP.nodeGetWindow(fauxTarget),
 
             'pageX', 0,
             'pageY', 0,
