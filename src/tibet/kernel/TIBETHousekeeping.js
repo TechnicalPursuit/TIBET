@@ -20,22 +20,29 @@ kernel so we can reduce the amount of housekeeping required here.
 //  ------------------------------------------------------------------------
 
 //  ---
-//  tibet_boot.js
+//  tibet_loader_base.js
 //  ---
 
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/boot/tibet_boot.js';
 
 TP.boot.defineMethod('$$importAsync', TP.boot.$$importAsync);
 
-TP.sys.defineMethod('hasLoaded', TP.sys.hasLoaded);
-TP.sys.defineMethod('hasKernel', TP.sys.hasKernel);
 TP.sys.defineMethod('hasInitialized', TP.sys.hasInitialized);
+TP.sys.defineMethod('hasKernel', TP.sys.hasKernel);
+TP.sys.defineMethod('hasLoaded', TP.sys.hasLoaded);
 TP.sys.defineMethod('hasStarted', TP.sys.hasStarted);
+TP.sys.defineMethod('inExtension', TP.sys.inExtension);
+
+TP.boot.defineMethod('shouldStop', TP.boot.shouldStop);
+
+TP.sys.defineMethod('installSystemPropertyGetter',
+                                        TP.sys.installSystemPropertyGetter);
 
 TP.boot.defineMethod('$$getprop', TP.boot.$$getprop);
 TP.boot.defineMethod('$$setprop', TP.boot.$$setprop);
 
 TP.sys.defineMethod('cfg', TP.sys.cfg);
+TP.sys.defineMethod('cfgAsNestedObj', TP.sys.cfgAsNestedObj);
 TP.sys.defineMethod('getcfg', TP.sys.getcfg);
 TP.sys.defineMethod('setcfg', TP.sys.setcfg);
 
@@ -43,7 +50,11 @@ TP.sys.defineMethod('env', TP.sys.env);
 TP.boot.defineMethod('$getenv', TP.boot.$getenv);
 TP.boot.defineMethod('$$setenv', TP.boot.$$setenv);
 
+TP.boot.defineMethod('$$buildTheme', TP.boot.$$buildTheme);
+
 TP.sys.defineMethod('hasFeature', TP.sys.hasFeature);
+TP.sys.defineMethod('addFeatureTest', TP.sys.addFeatureTest);
+TP.sys.defineMethod('hasFeatureTest', TP.sys.hasFeatureTest);
 TP.sys.defineMethod('hasPackage', TP.sys.hasPackage);
 
 TP.sys.defineMethod('defineGlobal', TP.sys.defineGlobal);
@@ -64,38 +75,61 @@ TP.boot.defineMethod('$stderr', TP.boot.$stderr);
 TP.boot.defineMethod('$stdin', TP.boot.$stdin);
 TP.boot.defineMethod('$stdout', TP.boot.$stdout);
 
+TP.boot.defineMethod('$$log', TP.boot.$$log);
+
 TP.boot.defineMethod('$raise', TP.boot.$raise);
 
-TP.sys.defineMethod('isHTTPBased', TP.sys.isHTTPBased);
+TP.sys.defineMethod('getBrowser', TP.sys.getBrowser);
+TP.sys.defineMethod('getBrowserUI', TP.sys.getBrowserUI);
+
 TP.sys.defineMethod('isMac', TP.sys.isMac);
 TP.sys.defineMethod('isNix', TP.sys.isNix);
 TP.sys.defineMethod('isWin', TP.sys.isWin);
 
 TP.sys.defineMethod('isUA', TP.sys.isUA);
 
+TP.sys.defineMethod('inDeveloperMode', TP.sys.inDeveloperMode);
+TP.sys.defineMethod('needsLoadingIndicator', TP.sys.needsLoadingIndicator);
+
 TP.sys.defineMethod('isObsolete', TP.sys.isObsolete);
 TP.sys.defineMethod('isSupported', TP.sys.isSupported);
 
+TP.sys.defineMethod('isHeadless', TP.sys.isHeadless);
+TP.sys.defineMethod('isHTTPBased', TP.sys.isHTTPBased);
+TP.sys.defineMethod('isHTTPSBased', TP.sys.isHTTPSBased);
+TP.sys.defineMethod('isSecureContext', TP.sys.isSecureContext);
+
+TP.sys.defineMethod('getLaunchDocument', TP.sys.getLaunchDocument);
+TP.sys.defineMethod('getLaunchNode', TP.sys.getLaunchNode);
 TP.sys.defineMethod('getLaunchRoot', TP.sys.getLaunchRoot);
 TP.sys.defineMethod('getLaunchURL', TP.sys.getLaunchURL);
+TP.sys.defineMethod('getLaunchWindow', TP.sys.getLaunchWindow);
 TP.sys.defineMethod('getLaunchHost', TP.sys.getLaunchHost);
 TP.sys.defineMethod('getLaunchPathname', TP.sys.getLaunchPathname);
 TP.sys.defineMethod('getLaunchPort', TP.sys.getLaunchPort);
 TP.sys.defineMethod('getLaunchScheme', TP.sys.getLaunchScheme);
 
+TP.sys.defineMethod('getHomeURL', TP.sys.getHomeURL);
+
+TP.boot.defineMethod('$httpCall', TP.boot.$httpCall);
 TP.boot.defineMethod('$httpConstruct', TP.boot.$httpConstruct);
 TP.boot.defineMethod('$httpError', TP.boot.$httpError);
-TP.boot.defineMethod('$httpCall', TP.boot.$httpCall);
 
+TP.boot.defineMethod('$parseURIParameters', TP.boot.$parseURIParameters);
 TP.boot.defineMethod('$uriCollapsePath', TP.boot.$uriCollapsePath);
 TP.boot.defineMethod('$uriExpandPath', TP.boot.$uriExpandPath);
+TP.boot.defineMethod('$uriFragmentParameters', TP.boot.$uriFragmentParameters);
+
 TP.boot.defineMethod('$uriInLocalFormat', TP.boot.$uriInLocalFormat);
+TP.boot.defineMethod('$uriIsAbsolute', TP.boot.$uriIsAbsolute);
+TP.boot.defineMethod('$uriIsBundled', TP.boot.$uriIsBundled);
+TP.boot.defineMethod('$uriIsInlined', TP.boot.$uriIsInlined);
+TP.boot.defineMethod('$uriIsVirtual', TP.boot.$uriIsVirtual);
+
 TP.boot.defineMethod('$uriJoinPaths', TP.boot.$uriJoinPaths);
 TP.boot.defineMethod('$uriMinusFileScheme', TP.boot.$uriMinusFileScheme);
 TP.boot.defineMethod('$uriPlusFileScheme', TP.boot.$uriPlusFileScheme);
 TP.boot.defineMethod('$uriRelativeToPath', TP.boot.$uriRelativeToPath);
-TP.boot.defineMethod('$uriResult', TP.boot.$uriResult);
-TP.boot.defineMethod('$uriResultType', TP.boot.$uriResultType);
 
 TP.boot.defineMethod('$uriWithRoot', TP.boot.$uriWithRoot);
 
@@ -105,11 +139,19 @@ TP.boot.defineMethod('$uriLoadIEFile', TP.boot.$uriLoadIEFile);
 TP.boot.defineMethod('$uriLoadMozFile', TP.boot.$uriLoadMozFile);
 TP.boot.defineMethod('$uriLoadCommonHttp', TP.boot.$uriLoadCommonHttp);
 
-TP.boot.defineMethod('$sourceImport', TP.boot.$sourceImport);
+TP.boot.defineMethod('$uriResult', TP.boot.$uriResult);
+TP.boot.defineMethod('$uriResultType', TP.boot.$uriResultType);
 
-TP.boot.defineMethod('$documentConstruct', TP.boot.$documentConstruct);
 TP.boot.defineMethod('$activeXDocumentConstructIE',
                                         TP.boot.$activeXDocumentConstructIE);
+TP.boot.defineMethod('$documentAddCSSStyleElement',
+                                        TP.boot.$documentAddCSSStyleElement);
+TP.boot.defineMethod('$documentConstruct', TP.boot.$documentConstruct);
+
+TP.boot.defineMethod('$documentGetElementById', TP.boot.$documentGetElementById);
+TP.boot.defineMethod('$documentGetWindow', TP.boot.$documentGetWindow);
+
+TP.boot.defineMethod('$$nodeAppendError', TP.boot.$$nodeAppendError);
 
 TP.boot.defineMethod('$nodeAppendChild', TP.boot.$nodeAppendChild);
 TP.boot.defineMethod('$nodeInsertBefore', TP.boot.$nodeInsertBefore);
@@ -124,81 +166,240 @@ TP.boot.defineMethod('$documentFromStringIE',
 TP.boot.defineMethod('$nodeAsString', TP.boot.$nodeAsString);
 TP.boot.defineMethod('$nodeAsStringCommon', TP.boot.$nodeAsStringCommon);
 
+TP.boot.defineMethod('$currentDocumentLocation',
+                                        TP.boot.$currentDocumentLocation);
+
 TP.sys.defineMethod('getWindowById', TP.sys.getWindowById);
 TP.definePrimitive('windowIsInstrumented', TP.windowIsInstrumented);
 
 TP.boot.defineMethod('$elementAddClass', TP.boot.$elementAddClass);
+TP.boot.defineMethod('$elementHasClass', TP.boot.$elementHasClass);
+TP.boot.defineMethod('$elementReplaceClass', TP.boot.$elementReplaceClass);
+
 TP.boot.defineMethod('$elementSetInnerContent',
                                         TP.boot.$elementSetInnerContent);
 
 TP.boot.defineMethod('$stringify', TP.boot.$stringify);
 
+TP.boot.defineMethod('$xmlEscape', TP.boot.$xmlEscape);
+TP.boot.defineMethod('$join', TP.boot.$join);
+TP.boot.defineMethod('$lpad', TP.boot.$lpad);
+TP.boot.defineMethod('$quoted', TP.boot.$quoted);
+TP.boot.defineMethod('$rpad', TP.boot.$rpad);
+TP.boot.defineMethod('$str', TP.boot.$str);
 TP.boot.defineMethod('$trim', TP.boot.$trim);
-
-TP.boot.defineMethod('$currentDocumentLocation',
-                                        TP.boot.$currentDocumentLocation);
 
 TP.boot.defineMethod('$annotate', TP.boot.$annotate);
 TP.boot.defineMethod('$ec', TP.boot.$ec);
-TP.boot.defineMethod('$join', TP.boot.$join);
-TP.boot.defineMethod('$str', TP.boot.$str);
+
+TP.boot.defineMethod('$flushLog', TP.boot.$flushLog);
+TP.boot.defineMethod('$scrollLog', TP.boot.$scrollLog);
+TP.boot.defineMethod('$clearLog', TP.boot.$clearLog);
+
+TP.boot.defineMethod('$$formatLogEntry', TP.boot.$$formatLogEntry);
+TP.boot.defineMethod('$colorize', TP.boot.$colorize);
+
+TP.boot.defineMethod('$consoleReporter', TP.boot.$consoleReporter);
+TP.boot.defineMethod('$bootuiReporter', TP.boot.$bootuiReporter);
+TP.boot.defineMethod('$headlessReporter', TP.boot.$headlessReporter);
+TP.boot.defineMethod('$silentReporter', TP.boot.$silentReporter);
 
 TP.sys.defineMethod('getBootLog', TP.sys.getBootLog);
 
 TP.boot.defineMethod('log', TP.boot.log);
 
+TP.boot.defineMethod('$byId', TP.boot.$byId);
+TP.boot.defineMethod('$getBootElement', TP.boot.$getBootElement);
+TP.boot.defineMethod('$getBootHeadElement', TP.boot.$getBootHeadElement);
+TP.boot.defineMethod('$getBootImageElement', TP.boot.$getBootImageElement);
+TP.boot.defineMethod('$getBootInputElement', TP.boot.$getBootInputElement);
+TP.boot.defineMethod('$getBootLogElement', TP.boot.$getBootLogElement);
+
+TP.boot.defineMethod('$getProgressBarElement', TP.boot.$getProgressBarElement);
+TP.boot.defineMethod('$getBootSubheadElement', TP.boot.$getBootSubheadElement);
+
+TP.boot.defineMethod('$getUIElement', TP.boot.$getUIElement);
+
+TP.boot.defineMethod('getUIBoot', TP.boot.getUIBoot);
+TP.boot.defineMethod('getUIRoot', TP.boot.getUIRoot);
+
 TP.boot.defineMethod('$releaseUIElements', TP.boot.$releaseUIElements);
 
-TP.boot.defineMethod('$getProgressBarElement',
-                                    TP.boot.$getProgressBarElement);
+TP.boot.defineMethod('$computeLogBufferSize', TP.boot.$computeLogBufferSize);
+TP.boot.defineMethod('$flushUIBuffer', TP.boot.$flushUIBuffer);
+TP.boot.defineMethod('$clearUIBuffer', TP.boot.$clearUIBuffer);
+TP.boot.defineMethod('$scrollUIBuffer', TP.boot.$scrollUIBuffer);
 
+TP.boot.defineMethod('$displayImage', TP.boot.$displayImage);
+TP.boot.defineMethod('$displayMessage', TP.boot.$displayMessage);
+TP.boot.defineMethod('$displayProgress', TP.boot.$displayProgress);
+TP.boot.defineMethod('$displayStage', TP.boot.$displayStage);
+TP.boot.defineMethod('$displayStatus', TP.boot.$displayStatus);
+
+TP.boot.defineMethod('hideContent', TP.boot.hideContent);
+TP.boot.defineMethod('hideUIBoot', TP.boot.hideUIBoot);
+TP.boot.defineMethod('hideUIRoot', TP.boot.hideUIRoot);
+TP.boot.defineMethod('showUIBoot', TP.boot.showUIBoot);
+TP.boot.defineMethod('showUICanvas', TP.boot.showUICanvas);
+TP.boot.defineMethod('showUIRoot', TP.boot.showUIRoot);
+TP.boot.defineMethod('toggleUI', TP.boot.toggleUI);
+
+TP.sys.defineMethod('writeBootLog', TP.sys.writeBootLog);
+
+TP.boot.defineMethod('$getBootStats', TP.boot.$getBootStats);
+
+TP.boot.defineMethod('$getStage', TP.boot.$getStage);
+TP.boot.defineMethod('$getStageInfo', TP.boot.$getStageInfo);
+TP.boot.defineMethod('$hasReachedStage', TP.boot.$hasReachedStage);
 TP.boot.defineMethod('$setStage', TP.boot.$setStage);
+TP.boot.defineMethod('$getNextStage', TP.boot.$getNextStage);
+TP.boot.defineMethod('$getPriorStage', TP.boot.$getPriorStage);
+TP.boot.defineMethod('$getStageTime', TP.boot.$getStageTime);
+TP.boot.defineMethod('$getArgumentPrimitive', TP.boot.$getArgumentPrimitive);
 
+TP.boot.defineMethod('$getAppHead', TP.boot.$getAppHead);
 TP.boot.defineMethod('$getAppRoot', TP.boot.$getAppRoot);
 TP.boot.defineMethod('$getLibRoot', TP.boot.$getLibRoot);
 TP.boot.defineMethod('$getRootPath', TP.boot.$getRootPath);
 TP.boot.defineMethod('$setAppRoot', TP.boot.$setAppRoot);
 TP.boot.defineMethod('$setLibRoot', TP.boot.$setLibRoot);
 
-TP.boot.defineMethod('$configureEnvironment',
-                                    TP.boot.$configureEnvironment);
+TP.boot.defineMethod('$configurePackage', TP.boot.$configurePackage);
+TP.boot.defineMethod('$configureBootstrap', TP.boot.$configureBootstrap);
+TP.boot.defineMethod('$configureEnvironment', TP.boot.$configureEnvironment);
+TP.boot.defineMethod('$configureOptions', TP.boot.$configureOptions);
+TP.boot.defineMethod('$$configureOverrides', TP.boot.$$configureOverrides);
+TP.boot.defineMethod('$configureProject', TP.boot.$configureProject);
+TP.boot.defineMethod('$configureTarget', TP.boot.$configureTarget);
+TP.boot.defineMethod('$configureUI', TP.boot.$configureUI);
+
+TP.boot.defineMethod('$updateDependentVars', TP.boot.$updateDependentVars);
 
 TP.boot.defineMethod('$ifUnlessPassed', TP.boot.$ifUnlessPassed);
 TP.boot.defineMethod('$getElementCount', TP.boot.$getElementCount);
 TP.boot.defineMethod('$uniqueNodeList', TP.boot.$uniqueNodeList);
 
-TP.boot.defineMethod('$importApplication', TP.boot.$importApplication);
-TP.boot.defineMethod('$importComponents', TP.boot.$importComponents);
+TP.boot.defineMethod('$$setModuleInfo', TP.boot.$$setModuleInfo);
+TP.boot.defineMethod('$$setSourceInfo', TP.boot.$$setSourceInfo);
 
-TP.sys.defineMethod('writeBootLog', TP.sys.writeBootLog);
+TP.boot.defineMethod('$moduleImport', TP.boot.$moduleImport);
+TP.boot.defineMethod('$sourceUrlImport', TP.boot.$sourceUrlImport);
+TP.boot.defineMethod('$sourceImport', TP.boot.$sourceImport);
+
+TP.boot.defineMethod('$$importComplete', TP.boot.$$importComplete);
+TP.boot.defineMethod('$importComponents', TP.boot.$importComponents);
+TP.boot.defineMethod('$$importPhase', TP.boot.$$importPhase);
+TP.boot.defineMethod('$$importPhaseOne', TP.boot.$$importPhaseOne);
+TP.boot.defineMethod('$$importPhaseTwo', TP.boot.$$importPhaseTwo);
+TP.boot.defineMethod('$$processModuleSpecifiers',
+                                    TP.boot.$$processModuleSpecifiers);
+
+TP.boot.defineMethod('$config', TP.boot.$config);
+TP.boot.defineMethod('$expand', TP.boot.$expand);
+TP.boot.defineMethod('$expandConfig', TP.boot.$expandConfig);
+TP.boot.defineMethod('$expandPackage', TP.boot.$expandPackage);
+TP.boot.defineMethod('$expandPath', TP.boot.$expandPath);
+TP.boot.defineMethod('$expandReference', TP.boot.$expandReference);
+TP.boot.defineMethod('$getCurrentPackage', TP.boot.$getCurrentPackage);
+TP.boot.defineMethod('$getDefaultConfig', TP.boot.$getDefaultConfig);
+TP.boot.defineMethod('$getFullPath', TP.boot.$getFullPath);
+TP.boot.defineMethod('$getLoadedPackages', TP.boot.$getLoadedPackages);
+TP.boot.defineMethod('$getLoadedScripts', TP.boot.$getLoadedScripts);
+TP.boot.defineMethod('$getPackageNode', TP.boot.$getPackageNode);
+TP.boot.defineMethod('$ifAssetPassed', TP.boot.$ifAssetPassed);
+TP.boot.defineMethod('$isAlacarteResource', TP.boot.$isAlacarteResource);
+TP.boot.defineMethod('$isLoadableScript', TP.boot.$isLoadableScript);
+TP.boot.defineMethod('$isLoadedScript', TP.boot.$isLoadedScript);
+TP.boot.defineMethod('$listConfigAssets', TP.boot.$listConfigAssets);
+TP.boot.defineMethod('$listPackageAssets', TP.boot.$listPackageAssets);
+TP.boot.defineMethod('$popPackagePath', TP.boot.$popPackagePath);
+TP.boot.defineMethod('$pushPackagePath', TP.boot.$pushPackagePath);
+TP.boot.defineMethod('$popPackage', TP.boot.$popPackage);
+TP.boot.defineMethod('$pushPackage', TP.boot.$pushPackage);
+TP.boot.defineMethod('$pushPostImport', TP.boot.$pushPostImport);
+TP.boot.defineMethod('$refreshPackages', TP.boot.$refreshPackages);
+
+TP.boot.defineMethod('$registerOtherRealmAsset',
+                                    TP.boot.$registerOtherRealmAsset);
+
+TP.boot.defineMethod('$importApplication', TP.boot.$importApplication);
+
+TP.boot.defineMethod('populateCaches', TP.boot.populateCaches);
+TP.boot.defineMethod('configureAndPopulateCaches',
+                                    TP.boot.configureAndPopulateCaches);
+TP.boot.defineMethod('receiveMessageFromServiceWorker',
+                                    TP.boot.receiveMessageFromServiceWorker);
+TP.boot.defineMethod('sendMessageToServiceWorker',
+                                    TP.boot.sendMessageToServiceWorker);
+TP.boot.defineMethod('setupServiceWorker', TP.boot.setupServiceWorker);
+TP.boot.defineMethod('setupServiceWorkerChannel',
+                                TP.boot.setupServiceWorkerChannel);
+TP.boot.defineMethod('shouldCacheFiles', TP.boot.shouldCacheFiles);
+TP.boot.defineMethod('shouldCacheAppFiles', TP.boot.shouldCacheAppFiles);
+TP.boot.defineMethod('shouldCacheLibFiles', TP.boot.shouldCacheLibFiles);
+TP.boot.defineMethod('teardownCaches', TP.boot.teardownCaches);
 
 TP.boot.defineMethod('boot', TP.boot.boot);
-TP.boot.defineMethod('$config', TP.boot.$config);
-
 TP.boot.defineMethod('launch', TP.boot.launch);
-
 TP.boot.defineMethod('main', TP.boot.main);
 
+TP.boot.defineMethod('$activate', TP.boot.$activate);
+TP.boot.defineMethod('$stageAction', TP.boot.$stageAction);
+
+TP.boot.defineMethod('$uiBootConfig', TP.boot.$uiBootConfig);
+TP.boot.defineMethod('$uiBootReady', TP.boot.$uiBootReady);
+TP.boot.defineMethod('$uiRootConfig', TP.boot.$uiRootConfig);
+TP.boot.defineMethod('$uiRootReady', TP.boot.$uiRootReady);
+
 //  ---
-//  tibet_hook.js
+//  tibet_loader_post.js
+//  ---
+
+TP.boot.defineMethod('$isEvent', TP.boot.$isEvent);
+
+TP.boot.defineMethod('$$isIE', TP.boot.$$isIE);
+TP.boot.defineMethod('$$isMoz', TP.boot.$$isMoz);
+TP.boot.defineMethod('$$isWebkit', TP.boot.$$isWebkit);
+
+TP.boot.defineMethod('$$computeDispatchOrigin', TP.boot.$$computeDispatchOrigin);
+TP.boot.defineMethod('$$displaySignalData', TP.boot.$$displaySignalData);
+TP.boot.defineMethod('$$dispatch', TP.boot.$$dispatch);
+
+TP.boot.defineMethod('$raise', TP.boot.$raise);
+
+TP.boot.defineMethod('installPatches', TP.boot.installPatches);
+
+TP.boot.defineMethod('$$addUIHandler', TP.boot.$$addUIHandler);
+TP.boot.defineMethod('$$removeUIHandler', TP.boot.$$removeUIHandler);
+
+TP.boot.defineMethod('$$addMutationSource', TP.boot.$$addMutationSource);
+TP.boot.defineMethod('$$removeMutationSource', TP.boot.$$removeMutationSource);
+
+TP.boot.defineMethod('$$documentSetup', TP.boot.$$documentSetup);
+TP.boot.defineMethod('$$documentTeardown', TP.boot.$$documentTeardown);
+
+TP.boot.defineMethod('initializeCanvas', TP.boot.initializeCanvas);
+TP.boot.defineMethod('initializeCanvasDocument',
+                                    TP.boot.initializeCanvasDocument);
+TP.boot.defineMethod('initializeCanvasWindow', TP.boot.initializeCanvasWindow);
+
+//  ---
+//  tibet_loader_pre.js
 //  ---
 
 //  whether or not we can move on to phase two processing
 TP.sys.defineGlobal('$$phase_two', null);
 
+TP.boot.defineMethod('$isArgumentArray', TP.boot.$isArgumentArray);
 TP.boot.defineMethod('$isElement', TP.boot.$isElement);
 TP.boot.defineMethod('$isEmpty', TP.boot.$isEmpty);
+TP.boot.defineMethod('$isNumber', TP.boot.$isNumber);
+TP.boot.defineMethod('$isString', TP.boot.$isString);
 TP.boot.defineMethod('$isValid', TP.boot.$isValid);
+TP.boot.defineMethod('$isVisible', TP.boot.$isVisible);
 TP.boot.defineMethod('$isWindow', TP.boot.$isWindow);
+TP.boot.defineMethod('$notEmpty', TP.boot.$notEmpty);
 TP.boot.defineMethod('$notValid', TP.boot.$notValid);
-
-TP.boot.defineMethod('$byId', TP.boot.$byId);
-
-TP.boot.defineMethod('hideContent', TP.boot.hideContent);
-TP.boot.defineMethod('hideUIRoot', TP.boot.hideUIRoot);
-
-TP.boot.defineMethod('showUICanvas', TP.boot.showUICanvas);
-TP.boot.defineMethod('showUIRoot', TP.boot.showUIRoot);
 
 //  ---
 //  TIBETGlobals.js
