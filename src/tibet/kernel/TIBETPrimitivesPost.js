@@ -5832,6 +5832,8 @@ function(anObject) {
         result = anObject.asNumber();
     } else if (anObject.charAt(0) === '{' || anObject.charAt(0) === '[') {
         result = TP.$tokenizedConstruct(anObject);
+    } else if (TP.isString(anObject)) {
+        result = anObject.unquoted();
     } else {
         result = anObject;
     }
