@@ -1142,10 +1142,6 @@ TP.hc(
             return '[object Function]';
         }
 
-        if (TP.isProxy(anObject)) {
-            return '[object Proxy]';
-        }
-
         if (TP.canInvoke(anObject, 'toString')) {
             try {
                 str = anObject.toString();

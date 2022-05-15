@@ -75,7 +75,7 @@ function() {
         'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
         'DataView',                             /^DataView\$(\w+)$/,
         'Promise',                              /^Promise\$(\w+)$/,
-        'Proxy',                                /^Proxy\$(\w+)$/,
+        'Proxy',                                /^Object\$(\w+)$/, // Proxies are see-thru
 
         'Window',                               topLevelNativeWinName,
         'IFrameWindow',                         'UIROOT',
@@ -281,7 +281,7 @@ function() {
         'ArrayBuffer',                          'ArrayBuffer',
         'DataView',                             'DataView',
         'Promise',                              'Promise',
-        'Proxy',                                'Proxy',
+        'Proxy',                                'Object', // Proxies are see-thru
 
         'Window',                               'DOMWindow',
         'IFrameWindow',                         'DOMWindow',
@@ -486,7 +486,7 @@ function() {
         'ArrayBuffer',          '[object ArrayBuffer]',
         'DataView',             '[object DataView]',
         'Promise',              '[object Promise]',
-        'Proxy',                '[object Proxy]',
+        'Proxy',                '[object Object]', //  Proxies are see-thru
 
         'Window',               '[object DOMWindow]',
         'IFrameWindow',         '[object DOMWindow]',
@@ -698,7 +698,7 @@ function() {
         'ArrayBuffer',          '[object ArrayBuffer]',
         'DataView',             '[object DataView]',
         'Promise',              '[object Promise]',
-        'Proxy',                '[object Proxy]',
+        'Proxy',                'goo: boo',  //  Proxies are see-thru
 
         'Window',               TP.rc('^' + topLevelWinName + ', ([\\s\\S]+)'),
         'IFrameWindow',         TP.rc('^' + topLevelWinName + '.UIROOT, ([\\s\\S]+)'),
@@ -911,7 +911,7 @@ function() {
         'ArrayBuffer',          '[ArrayBuffer :: [object ArrayBuffer]]',
         'DataView',             '[DataView :: [object DataView]]',
         'Promise',              '[Promise :: [object Promise]]',
-        'Proxy',                '[Proxy :: [object Proxy]]',
+        'Proxy',                '[Object :: goo => boo]', // Proxies are see-thru
 
         'Window',               TP.rc('^\\[DOMWindow :: ' + topLevelWinName + ', ([\\s\\S]+)\\]'),
         'IFrameWindow',         TP.rc('^\\[DOMWindow :: ' + topLevelWinName + '.UIROOT, ([\\s\\S]+)\\]'),
@@ -1122,7 +1122,7 @@ function() {
         'ArrayBuffer',          '<span class="ArrayBuffer"></span>',
         'DataView',             '<span class="DataView"></span>',
         'Promise',              '<span class="Promise"></span>',
-        'Proxy',                '<span class="Proxy"></span>',
+        'Proxy',                'goo: boo', //  Proxies are see-thru
 
         'Window',               TP.rc('^<span class="DOMWindow" gid="' + topLevelWinName + '"><span([\\s\\S]*)<\\/span>$'),
         'IFrameWindow',         TP.rc('^<span class="DOMWindow" gid="' + topLevelWinName + '.UIROOT"><span([\\s\\S]*)<\\/span>$'),
@@ -1331,7 +1331,7 @@ function() {
         'ArrayBuffer',          '<instance type="ArrayBuffer"></instance>',
         'DataView',             '<instance type="DataView"></instance>',
         'Promise',              '<instance type="Promise"></instance>',
-        'Proxy',                '<instance type="Proxy"></instance>',
+        'Proxy',                'goo: boo', //  Proxies are see-thru
 
         'Window',               TP.rc('^<window gid="' + topLevelWinName + '"([\\s\\S]*)\\/>$'),
         'IFrameWindow',         TP.rc('^<window gid="' + topLevelWinName + '.UIROOT"([\\s\\S]*)\\/>$'),
@@ -1541,7 +1541,7 @@ function() {
         'ArrayBuffer',          '<dl class="pretty ArrayBuffer"><dt>Type name</dt><dd class="pretty typename">ArrayBuffer</dd></dl>',
         'DataView',             '<dl class="pretty DataView"><dt>Type name</dt><dd class="pretty typename">DataView</dd></dl>',
         'Promise',              '<dl class="pretty Promise"><dt>Type name</dt><dd class="pretty typename">Promise</dd></dl>',
-        'Proxy',                '<dl class="pretty Proxy"><dt>Type name</dt><dd class="pretty typename">Proxy</dd></dl>', //  Proxies are see-thru
+        'Proxy',                'goo: boo', //  Proxies are see-thru
 
         'Window',               TP.rc('^<dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + topLevelWinName + '<\\/dd>([\\s\\S]*)<\\/dl>$'),
         'IFrameWindow',         TP.rc('^<dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + topLevelWinName + '.UIROOT<\\/dd>([\\s\\S]*)<\\/dl>$'),
@@ -1749,7 +1749,7 @@ function() {
         'ArrayBuffer',          '{"type":"ArrayBuffer"}',
         'DataView',             '{"type":"DataView"}',
         'Promise',              '{"type":"Promise"}',
-        'Proxy',                '{"type":"Proxy"}', //  Proxies are see-thru
+        'Proxy',                '{"goo":"boo"}', //  Proxies are see-thru
 
         'Window',               TP.rc('^{"type":"DOMWindow","data":{"gid":"' + topLevelWinName + '"([\\s\\S]*)}}$'),
         'IFrameWindow',         TP.rc('^{"type":"DOMWindow","data":{"gid":"' + topLevelWinName + '.UIROOT"([\\s\\S]*)}}$'),

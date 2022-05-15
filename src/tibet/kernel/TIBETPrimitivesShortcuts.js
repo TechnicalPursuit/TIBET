@@ -2182,12 +2182,6 @@ function(anObject, depth, level) {
         return str;
     }
 
-    //  Proxies
-    if (TP.isProxy(anObject)) {
-        str += TP.tostr(anObject) + ']';
-        return str;
-    }
-
     if (TP.canInvoke(anObject, 'asDumpString')) {
 
         $depth = TP.ifInvalid(depth, 1);
@@ -2559,14 +2553,6 @@ function(anObject) {
                     '<dd class="pretty typename">' + TP.tname(anObject) + '</dd>' +
                     '<dt class="pretty key">Content</dt>' +
                     '<dd class="pretty value">' + anObject.cssText + '</dd>' +
-                '</dl>';
-    }
-
-    //  Proxies
-    if (TP.isProxy(anObject)) {
-        return '<dl class="pretty Proxy">' +
-                    '<dt>Type name</dt>' +
-                    '<dd class="pretty typename">Proxy</dd>' +
                 '</dl>';
     }
 

@@ -117,7 +117,7 @@ function() {
         'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
         'DataView',                             /^DataView\$(\w+)$/,
         'Promise',                              /^Promise\$(\w+)$/,
-        'Proxy',                                /^Proxy\$(\w+)$/,
+        'Proxy',                                /^Object\$(\w+)$/,  // Proxies are see-thru
 
         'Window',                               TP.sys.cfg('tibet.top_win_name'),
         'IFrameWindow',                         'UIROOT',
@@ -332,7 +332,7 @@ function() {
         'ArrayBuffer',                          /^ArrayBuffer\$(\w+)$/,
         'DataView',                             /^DataView\$(\w+)$/,
         'Promise',                              /^Promise\$(\w+)$/,
-        'Proxy',                                /^Proxy\$(\w+)$/,
+        'Proxy',                                /^Object\$(\w+)$/,  // Proxies are see-thru
 
         'Window',                               winGID,
         'IFrameWindow',                         winGID + '.UIROOT',
@@ -1267,7 +1267,7 @@ function() {
                 testFunc);
         }());
 
-        if (testKey === 'Object') {
+        if (testKey === 'Object' || testKey === 'Proxy') {
             (function() {
                 var testFunc;
 
@@ -2262,7 +2262,7 @@ function() {
                 testFunc =
                     function(test, options) {
                         test.assert.isEqualTo(
-                            testFunc.val, testFunc.correctVal);
+                            TP.tostr(testFunc.val), testFunc.correctVal);
                     };
 
                 testFunc.val = TP.val(val);
@@ -2271,7 +2271,7 @@ function() {
                 testFunc =
                     function(test, options) {
                         test.assert.matches(
-                            testFunc.val, testFunc.correctVal);
+                            TP.tostr(testFunc.val), testFunc.correctVal);
                     };
 
                 testFunc.val = TP.val(val);
