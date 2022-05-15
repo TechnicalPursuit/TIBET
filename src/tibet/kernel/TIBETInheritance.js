@@ -13533,6 +13533,11 @@ function(namespaceName, forceDefinition, populateMetadata) {
     //  have circular dependencies here, it is important to keep this code in
     //  the exact order it was written.
 
+    //  ALSO NOTE: This function uses JS primitives *only*. Because baseline
+    //  things like 'TP.' are being reconstructed here, we *don't* want to use
+    //  *any* TIBET methods here, in case they call upon things like 'TP.' or
+    //  'TP.sys.'.
+
     var newNamespaces,
 
         len,
@@ -13552,22 +13557,22 @@ function(namespaceName, forceDefinition, populateMetadata) {
         len2,
         j;
 
-    newNamespaces = TP.ac();
+    newNamespaces = [];
 
-    len = TP.$$bootstrap_namespaces.getSize();
+    len = TP.$$bootstrap_namespaces.length;
 
     for (i = 0; i < len; i++) {
 
         //  Grab the existing namespace *object* (i.e. POJO) that was registered
         //  using the bootstrap version of TP.defineNamespace.
-        oldNamespace = TP.$$bootstrap_namespaces.at(i);
+        oldNamespace = TP.$$bootstrap_namespaces[i];
 
         //  Get the old namespace's name and split it into two parts: the root
         //  and the name (which might itself be dot-separated, but we join
         //  together to form a full name - minus the root, which is how the
         //  TP.defineNamespace call expects it).
         names = oldNamespace[TP.NAME].split('.');
-        root = names.at(0);
+        root = names[0];
         name = names.slice(1).join('.');
 
         //  Define a new real namespace object to supplant the old namespace.
@@ -13638,7 +13643,7 @@ function(namespaceName, forceDefinition, populateMetadata) {
         //  namespace to the new namespace, except for the locally-programmed
         //  'getTypeNames' method - we already have a similar one defined as an
         //  instance method on the real TP.lang.Namespace type.
-        len2 = oldKeys.getSize();
+        len2 = oldKeys.length;
         for (j = 0; j < len2; j++) {
 
             //  Note here how we use primitive '[]' syntax to access the key
@@ -13656,9 +13661,9 @@ function(namespaceName, forceDefinition, populateMetadata) {
 
     //  Now that we're done with rewriting all of our built-ins, we register
     //  them with the metadata.
-    len = newNamespaces.getSize();
+    len = newNamespaces.length;
     for (i = 0; i < len; i++) {
-        TP.sys.addMetadata(null, newNamespaces.at(i), TP.NAMESPACE);
+        TP.sys.addMetadata(null, newNamespaces[i], TP.NAMESPACE);
     }
 
     //  Clear the Array that was holding our list of old namespaces.
